@@ -10,7 +10,6 @@ class BeamModel:
 
     @classmethod
     def __init__(cls, Lx, skewx, Ly, spacingx, spacingy, numbeam):
-
         cls.spacingx = spacingx
         cls.spacingy = spacingy
         cls.skewx = skewx
@@ -18,6 +17,19 @@ class BeamModel:
         cls.Ly = Ly
         cls.numbeam = numbeam
         cls.numyele = int((cls.Ly / cls.spacingy) )
+        cls.ele_x = [0]  # initialize X coord vector
+        cls.ele_y = np.linspace(0, cls.Ly, cls.numyele) # generate uniform y coord vector
+        count = 1 # counter for x coord loop
+        # generate x and y axis vector of edge points
+        for x in range(0, cls.numbeam + 1): # loop for each X coord to insert corrd
+            b = (cls.Lx - cls.numbeam * cls.spacingx) / 2  # equal edge [Future versions edit here for flexible b]
+            if x == 1 or cls.numbeam:  # for first and last node point, spacing is b distance from regular beam spacing
+                count += 1
+                cls.ele_x.append(x * cls.spacingx + b * count)  # add X coord to list, output is a vector
+            else:
+                cls.ele_x.append((x * cls.spacingx + b))
+        # future versions consider skew - assemble different vector into matrix list
+        cls.xv, cls.yv = np.meshgrid(cls.ele_x, cls.ele_y) # used for element_assemble()
 
     # set modelbuilder
     @classmethod
@@ -28,31 +40,24 @@ class BeamModel:
     # create nodes
     @classmethod
     def createnodes(cls):
-        cls.ele_X = [0]  # initialize X coord vector
-        cls.ele_Y = np.linspace(0, cls.Ly, cls.numyele) # generate uniform y coord vector
-        count = 1 # counter for x coord loop
-        for x in range(0, cls.numbeam + 1): # loop for each X coord to insert corrd
-            b = (cls.Lx - cls.numbeam * cls.spacingx) / 2  # equal edge [Future versions edit here for flexible b]
-            if x == 1 or cls.numbeam:  # for first and last node point, spacing is b distance from regular beam spacing
-                count += 1
-                cls.ele_X.append(x * cls.spacingx + b * count)  # add X coord to list, output is a vector
-            else:
-                cls.ele_X.append((x * cls.spacingx + b))
-        cls.xv, cls.yv = np.meshgrid(cls.ele_X, cls.ele_Y)  # meshgrid of coordinates - used for element definitions later
-        print(cls.ele_Y)
-        print(cls.ele_X)
-        for x in range(len(cls.ele_X)):  # loop each node cord pairs in xv and yv
-            for y in range(len(cls.ele_Y)):
-                x1 = cls.ele_X[x]  # x coor
-                y1 = cls.ele_Y[y]  # y coor
+        for x in range(len(cls.ele_x)):  # loop each node cord pairs in xv and yv, using ele_X as surrogate
+            for y in range(len(cls.ele_y)):
                 z1 = 0  # [current version is for plane model, future versions allow z to be input]
-                node(x*len(cls.ele_Y) + y + 1, x1, y1, z1) # tag starts from 1 (hence the +1 behind "y")
-        print('Total nodes generated = ', x*len(cls.ele_Y)+y+1)
+                node(x*len(cls.ele_y) + y + 1, cls.xv[y,x], cls.yv[y,x] , z1)  # tag starts from 1
+        print('Nodes generated = ', x*len(cls.ele_y) + y + 1)  # number here is the total nodes
 
     # set boundary condition
     @classmethod
     def boundaryconditions(cls):
         countdof = 0
+
+        for x in range(len(cls.ele_x)):
+            if x == 0 or x == len(cls.ele_x):  # first and last row correspond to boundary condition
+                for y in range(len(cls.ele_y)): #loop each
+                    fixval = [1, 1, 1, 1, 1, 1]
+                    fix(x*len(cls.ele_y) + y + 1,fixval)
+
+
         for x in range(cls.nnode):  # loop each node input
             # fix translation DOF
             fx1 = int(cls.node_data.cell(x + 2, 4).value)
@@ -69,7 +74,7 @@ class BeamModel:
                 else:  # for ndm = 3-D model
                     fix(x + 1, *fixval)  # fix x y and z
                     countdof += 1
-        print('DOF constrained',countdof)
+        print('DOF constrained', countdof)
 
     # define materials
     @classmethod
@@ -140,15 +145,18 @@ class BeamModel:
 
 # --------------------------------------------------------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------------------------------------------------
-# Running model using object class
+# Running FE model as objects
+
+
 wipe()
 eg = BeamModel(10.175,0,28,2,2.4,5)
-eg.generatemodel(3,6)
+eg.generatemodel(3,6)    # 3 dimension, 6 dof (do not change)
 eg.createnodes()
+print(eg.xv)
 breakpoint()
 eg.boundaryconditions()
 eg.materialprop()
-eg.ele_transform([0, 0, 1],[-1, 0, 0])  # herein insert transformation (case to case)
+eg.ele_transform([0, 0, 1],[-1, 0, 0])  # insert transformation (default)
 # - default values are [0,0,1] for longitudinal, [-1,0,0] for transverse
 eg.element_assemble()
 
