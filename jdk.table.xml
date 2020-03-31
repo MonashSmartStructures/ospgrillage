@@ -1,0 +1,87 @@
+<application>
+  <component name="ProjectJdkTable">
+    <jdk version="2">
+      <name value="Python 3.7 (Python_Project)" />
+      <type value="Python SDK" />
+      <version value="Python 3.7.1" />
+      <homePath value="C:\Users\jngan\AppData\Local\Continuum\anaconda3\python.exe" />
+      <roots>
+        <classPath>
+          <root type="composite">
+            <root url="file://$USER_HOME$/AppData/Local/Continuum/anaconda3/DLLs" type="simple" />
+            <root url="file://$USER_HOME$/AppData/Local/Continuum/anaconda3/Lib" type="simple" />
+            <root url="file://$USER_HOME$/AppData/Local/Continuum/anaconda3/Lib/site-packages" type="simple" />
+            <root url="file://$USER_HOME$/AppData/Local/Continuum/anaconda3/Lib/site-packages/win32" type="simple" />
+            <root url="file://$USER_HOME$/AppData/Local/Continuum/anaconda3/Lib/site-packages/win32/lib" type="simple" />
+            <root url="file://$USER_HOME$/AppData/Local/Continuum/anaconda3/Lib/site-packages/pythonwin" type="simple" />
+            <root url="file://E:/2019_CIV4280_recordings" type="simple" />
+            <root url="file://C:/ffmpeg/bin" type="simple" />
+            <root url="file://$USER_HOME$/.PyCharmCE2019.1/system/python_stubs/2105377638" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/python-skeletons" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/3" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/2and3" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/third_party/3" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/third_party/2and3" type="simple" />
+          </root>
+        </classPath>
+        <sourcePath>
+          <root type="composite" />
+        </sourcePath>
+      </roots>
+      <additional>
+        <PATHS_ADDED_BY_USER_ROOT PATH_ADDED_BY_USER="file://C:/ffmpeg/bin" />
+        <PATHS_ADDED_BY_USER_ROOT PATH_ADDED_BY_USER="file://E:/2019_CIV4280_recordings" />
+      </additional>
+    </jdk>
+    <jdk version="2">
+      <name value="Python 3.7 (Machine learning)" />
+      <type value="Python SDK" />
+      <version value="Python 3.7.4" />
+      <homePath value="C:\Users\jngan\AppData\Local\Continuum\anaconda3\envs\Machine learning\python.exe" />
+      <roots>
+        <classPath>
+          <root type="composite">
+            <root url="file://$USER_HOME$/AppData/Local/Continuum/anaconda3/envs/Machine learning/DLLs" type="simple" />
+            <root url="file://$USER_HOME$/AppData/Local/Continuum/anaconda3/envs/Machine learning/Lib" type="simple" />
+            <root url="file://$USER_HOME$/AppData/Local/Continuum/anaconda3/envs/Machine learning/Lib/site-packages" type="simple" />
+            <root url="file://$USER_HOME$/.PyCharmCE2019.1/system/python_stubs/854268821" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/python-skeletons" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/3" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/2and3" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/third_party/3" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/third_party/2and3" type="simple" />
+          </root>
+        </classPath>
+        <sourcePath>
+          <root type="composite" />
+        </sourcePath>
+      </roots>
+      <additional ASSOCIATED_PROJECT_PATH="$USER_HOME$/PycharmProjects/Machine learning" />
+    </jdk>
+    <jdk version="2">
+      <name value="Python 3.6 (tensor)" />
+      <type value="Python SDK" />
+      <version value="Python 3.6.9" />
+      <homePath value="C:\Users\jngan\AppData\Local\Continuum\anaconda3\envs\tensor\pythonw.exe" />
+      <roots>
+        <classPath>
+          <root type="composite">
+            <root url="file://$USER_HOME$/AppData/Local/Continuum/anaconda3/envs/tensor/DLLs" type="simple" />
+            <root url="file://$USER_HOME$/AppData/Local/Continuum/anaconda3/envs/tensor/Lib" type="simple" />
+            <root url="file://$USER_HOME$/AppData/Local/Continuum/anaconda3/envs/tensor/Lib/site-packages" type="simple" />
+            <root url="file://$USER_HOME$/.PyCharmCE2019.1/system/python_stubs/2074737644" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/python-skeletons" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/3" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/2and3" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/third_party/3" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/third_party/2and3" type="simple" />
+          </root>
+        </classPath>
+        <sourcePath>
+          <root type="composite" />
+        </sourcePath>
+      </roots>
+      <additional ASSOCIATED_PROJECT_PATH="$USER_HOME$/PycharmProjects/Machine learning" />
+    </jdk>
+  </component>
+</application>
