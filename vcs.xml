@@ -10,6 +10,10 @@
           <option name="url" value="https://github.com/MonashSmartStructures/Opensees-project" />
           <option name="userName" value="" />
         </UrlAndUserName>
+        <UrlAndUserName>
+          <option name="url" value="https://github.com/MonashSmartStructures/Opensees-project.git" />
+          <option name="userName" value="" />
+        </UrlAndUserName>
       </list>
     </option>
     <option name="cloneParentDir" value="C:\Users\dangh_g04ux4c\Desktop\CIV4210" />
