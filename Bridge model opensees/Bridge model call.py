@@ -85,7 +85,7 @@ Bridgemodel.analysis("Static")
 # perform the analysis
 Bridgemodel.analyze(1)
 
-
+# Print node displacement results
 print(Bridgemodel.nodeDisp(6))
 print(Bridgemodel.nodeDisp(17))
 print(Bridgemodel.nodeDisp(28))
