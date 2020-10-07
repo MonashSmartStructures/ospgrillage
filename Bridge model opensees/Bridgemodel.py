@@ -61,6 +61,7 @@ class OpenseesModel(Bridge):
     # set modelbuilder
     @classmethod
     def create_Opensees_model(cls):
+        wipe()                  # clear model space prior
         cls.generatemodel(3,6)  # run model generation
         cls.createnodes()       # create nodes of model
         cls.boundaryconditions() # assign boundary conditions to nodes at ends of model (i.e. x = 0 and x = Lx)
