@@ -1,5 +1,6 @@
 from Bridgemodel import *
 from Bridge_member import BridgeMember
+import pandas as pd
 # ---------------------------------------------------------------------------------------------------------------------
 # Opensees model generation for Bridge class
 # ---------------------------------------------------------------------------------------------------------------------
@@ -27,9 +28,15 @@ LRbeam = longbeam
 edgebeam = BridgeMember(0.044625,34.6522E9 ,20E9 ,0.26E-3 ,0.114E-3,0.242E-3,0.0371875,0.0371875,beamelement)
 slab = BridgeMember(0.4428,34.6522E9 ,20E9 ,2.28E-3 ,0.2233,1.19556E-3,0.369,0.369,beamelement)
 diaphragm = BridgeMember(0.2214,34.6522E9,20E9 ,2.17E-3 ,0.111,0.597E-3,0.1845,0.1845,beamelement)
+
+Nodedetail = pd.read_excel('Benchmark bridge.xlsx',sheet_name = 'Node')
+Connectivitydetail = pd.read_excel('Benchmark bridge.xlsx',sheet_name = 'Connectivity')
 # = = =  = = = =  = = =  = = = = = = = = =  = = = =  = = =  = = = = = = = = =  = = = =  = = =  = = = = = = =
 #  Inputs: Lz,  skew angle, Zspacing, number of beams, Lx, Xspacing,:
-Bridge2 = OpenseesModel(10.175, 0, 2, 5, 24.6, 2.46,beamelement)
+#Bridge2 = OpenseesModel(10.175, 0, 2, 5, 24.6, 2.46,beamelement)
+
+Bridge2 = OpenseesModel(Nodedetail,Connectivitydetail,beamelement)
+
 #  Inputs: Lz,  skew angle, Zspacing, number of beams, Lx, Xspacing,:
 #Bridge2 = Bridgemodel.OpenseesModel(10.11, 0, 1.4224 , 7, 18.288, 0.762)
 Bridge2.assign_beam_member_prop(longbeam.get_beam_prop,LRbeam.get_beam_prop,edgebeam.get_beam_prop,slab.get_beam_prop, diaphragm.get_beam_prop)
@@ -64,6 +71,7 @@ Bridge2.loadID()
 # ------------------------------
 # Start of analysis generation
 # ------------------------------
+#wipe analysis
 wipeAnalysis()
 
 # create SOE

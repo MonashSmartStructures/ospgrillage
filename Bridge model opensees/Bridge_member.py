@@ -1,4 +1,5 @@
 # class for bridge member properties
+
 class BridgeMember:
     #                           A  E  G  Jx  Iy   Iz                   # N m
     def __init__(self, a, e, g, jx, iy, iz,Avy,Avz,beameletype):
@@ -11,16 +12,20 @@ class BridgeMember:
         self.Avy = Avy
         self.Avz = Avz
         self.beameletype = beameletype
+
     @property
+    # formatting the output: formatsummary array for use in the OpenseesModel class
     def get_beam_prop(self):
         if self.beameletype == 'elasticBeamColumn':
-        #                           A  E  G  Jx  Iy   Iz                   # N m
+        #       Notion             A  E  G  Jx  Iy   Iz                   # N m
             self.formatsummary = [self.A, self.E, self.G, self.Jx, self.Iy, self.Iz]
 
         else:
             self.formatsummary = [self.E, self.G, self.A, self.Jx, self.Iy, self.Iz, self.Avy, self.Avz]
 
         return self.formatsummary
+
+
 
 
 
