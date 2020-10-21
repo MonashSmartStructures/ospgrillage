@@ -50,9 +50,8 @@ class OpenseesModel(Bridge):
         #        trans: (1)long beam, (2) transverse  [ x y z]
         self.ele_transform([0, 0, 1], [1, 0, 0]) # NEED ABSTRACTION
         # - default values are [0,0,1] for longitudinal, [-1,0,0] for transverse
-        breakpoint()
         self.assemble_element()
-
+        breakpoint()
 
     def generatemodel(self,ndm,ndf):
         model('basic', '-ndm', ndm, '-ndf', ndf)
@@ -132,7 +131,7 @@ class OpenseesModel(Bridge):
 
     @classmethod
     def loadpattern(cls):
-        #           load pattern type, load pattern tag, load ,
+        #           load pattern type, load pattern tag, load factor (1) ,
         pattern("Plain", 1, 1)
 
     # ==================================================================================================
@@ -152,49 +151,74 @@ class OpenseesModel(Bridge):
     # ==================================================================================================
 
     # Load methods
-    @classmethod
-    def loadtype(cls,argument):
+    def loadtype(self,argument):
         # selected load type is taken as argument str to return method (e.g. point, axle, or UDL)
         method_name = 'load_'+str(argument)
-        method = getattr(cls,method_name,lambda:"nothing")
+        method = getattr(self,method_name,lambda:"nothing")
         return method()
 
     #  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # find load position given load's (x,0, z) coordinate
-    def get_load_position(self):
-        #method to return load position of point load in between node points.
-        # method also assigns
+    def search_nodes(self):
+        #
+        #     1 O - - - - O 2
+        #       |         |                 # notations and node search numbering
+        #       |    x    |
+        #     3 O - - - - O 4
+        #
+        # n1
+        boolpos = self.Nodedata[(self.Nodedata['x']< self.pos[0]) & (self.Nodedata['z']< self.pos[1])] #
+        self.n1 = boolpos['nodetag'][(boolpos['x'] == boolpos['x'].max()) & (boolpos['z'] == boolpos['z'].max())]
 
-    @classmethod
-    def load_position(cls,pos,axlwt):
-        # method to return 4 beam elements or 1 shell element correspond to the location of which the axle load acts.
+        #n2
+        boolpos = self.Nodedata[(self.Nodedata['x'] > self.pos[0]) & (self.Nodedata['z'] < self.pos[1])]  #
+        self.n2 = boolpos['nodetag'][(boolpos['x'] == boolpos['x'].min()) & (boolpos['z'] == boolpos['z'].max())]
+
+        # n3
+        boolpos = self.Nodedata[(self.Nodedata['x'] < self.pos[0]) & (self.Nodedata['z'] > self.pos[1])]  #
+        self.n3 = boolpos['nodetag'][(boolpos['x'] == boolpos['x'].max()) & (boolpos['z'] == boolpos['z'].min())]
+
+        # n4
+        boolpos = self.Nodedata[(self.Nodedata['x'] > self.pos[0]) & (self.Nodedata['z'] > self.pos[1])]  #
+        self.n4 = boolpos['nodetag'][(boolpos['x'] == boolpos['x'].min()) & (boolpos['z'] == boolpos['z'].min())]
+        #
+        # returned as a pandas class object with 1x1 dimension [keyindex, value of nodetag] . to return the nodetag val
+        # simply call self.n1.max()
+
+    def load_position(self,pos,axlwt):
+        self.pos = pos
+        # inputs, pos is array [1x2] x and z coordinate
+        # axlwt is the axle weight units N
+
+        # first get nodes that are less than the position # second return the node that has highest combination
+        # returns attributes n1 n2 n3 and n4 assigned to object. e.g. self.n1
+        self.search_nodes() # searches nodes on the grillage
+        #
         # pos has a X0 and Z0 , need to find the elements and return tag of nodes in the grid where, X0 resides in
-        cls.n1 = cls.nodetag[(cls.xv <= pos[0]) * (cls.zv <= pos[1]) ][-1]  # find the reference node
-        # from ref node, populate other 3 nodes that forms the grid correspond to location of load
-        cls.n2 = cls.n1+1
-        cls.n4 = cls.n1+ len(cls.ele_x)  #ordering for clockwise defition
-        cls.n3 = cls.n2+len(cls.ele_x)
+
         #cls.xcor1 = nodeCoord(eleNodes(3)[0])  # coor of first node
-        a = (nodeCoord(cls.n2)[0]-nodeCoord(cls.n1)[0])# X dir
-        b = (nodeCoord(cls.n4)[2] - nodeCoord(cls.n1)[2])# Z Dir
-        cls.zeta = (pos[0]-nodeCoord(cls.n1)[0])/a # X dir
-        cls.eta = (pos[1] - nodeCoord(cls.n1)[2]) /b  # Z Dir
+        a = abs(self.Nodedata['x'][self.n1.index].max()-self.Nodedata['x'][self.n2.index].max())# X dir
+        b = abs(self.Nodedata['z'][self.n3.index].max()-self.Nodedata['z'][self.n1.index].max())# Z Dir
+        self.zeta = (self.pos[0]-self.Nodedata['x'][self.n1.index].max())/a # X dir
+        self.eta = (self.pos[1] - self.Nodedata['z'][self.n1.index].max()) /b  # Z Dir
+        breakpoint()
+        # option for linear shape function possible
+        Nzeta = self.hermite_shape_function(self.zeta,a)
+        Neta = self.hermite_shape_function(self.eta,b)
 
-        Nzeta = cls.hermite_shape_function(cls.zeta,a)
-        Neta = cls.hermite_shape_function(cls.eta,b)
-
+        # shape function dot multi
         Nv = [Nzeta[0]*Neta[0],Nzeta[2]*Neta[0],Nzeta[2]*Neta[2],Nzeta[0]*Neta[2]]
         Nmx = [Nzeta[1]*Neta[0],Nzeta[3]*Neta[0],Nzeta[3]*Neta[2],Nzeta[0]*Neta[3]]
         Nmz = [Nzeta[0]*Neta[1],Nzeta[2]*Neta[1],Nzeta[2]*Neta[3],Nzeta[0]*Neta[3]]
         #   N1 -> cls.n1 , N2 -> cls.n2 . . . . . N4 -> cls.n4
         # assign forces
-
+        breakpoint()
         for nn in range(0,3):
-            load(eval('cls.n%d' % (nn+1)),*np.dot([0,Nmx[nn],Nv[nn],0,0,Nmz[nn]],axlwt))
-
+            load(int(eval('self.n%d.max()' % (nn+1))),*np.dot([0,Nv[nn],0,Nmx[nn],0,Nmz[nn]],axlwt))
+        breakpoint()
     #  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    @classmethod
-    def hermite_shape_function(cls,zeta,a): # using zeta and a as placeholders for normal coor + length of edge element
+    @staticmethod
+    def hermite_shape_function(zeta,a): # using zeta and a as placeholders for normal coor + length of edge element
         # hermite shape functions
         N1 = (1-3*zeta**2+2*zeta**3)
         N2 = (zeta-2*zeta**2+zeta**3)*a
@@ -202,8 +226,8 @@ class OpenseesModel(Bridge):
         N4 = (-zeta**2+zeta**3)*a
         return [N1, N2, N3, N4]
 
-    @classmethod
-    def linear_shape_function(cls,zeta,eta):
+    @staticmethod
+    def linear_shape_function(zeta,eta):
         N1 = 0.25*(1-zeta)*(1-eta)
         N2 = 0.25*(1+zeta)*(1-eta)
         N3 = 0.25 * (1 + zeta) * (1 + eta)

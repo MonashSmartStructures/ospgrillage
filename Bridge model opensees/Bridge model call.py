@@ -64,10 +64,10 @@ axlwidth = 5  # m    # width of truck
 Xloc = [0]      # initial load location (front tyre heading from X = 0)
 Zloc = 0        # top axle with resp to Z axis, starting from Z = 0. (code auto calcs bott axle based on truck width)
 
-#Bridge2.load_position([13.5,5],2)
-Bridge2.loadID()
+Bridge2.load_position([13.5,5],2)
+#Bridge2.loadID()
 #Bridge2.load_movingtruck([13.5,5],axlwts,axlspc,axlwidth)
-#breakpoint()
+breakpoint()
 # ------------------------------
 # Start of analysis generation
 # ------------------------------
@@ -96,7 +96,7 @@ analysis("Static")
 analyze(1)
 
 # Print node displacement results at midspan
-print(nodeDisp(6))
+print(nodeDisp(6))              # OpenseesModel's method accessible from outside of OpenseesModel class.
 print(nodeDisp(17))
 print(nodeDisp(28))
 print(nodeDisp(39, 0))
