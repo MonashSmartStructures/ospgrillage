@@ -31,11 +31,13 @@ diaphragm = BridgeMember(0.2214,34.6522E9,20E9 ,2.17E-3 ,0.111,0.597E-3,0.1845,0
 
 Nodedetail = pd.read_excel('Benchmark bridge.xlsx',sheet_name = 'Node')
 Connectivitydetail = pd.read_excel('Benchmark bridge.xlsx',sheet_name = 'Connectivity')
+Memberdetail = pd.read_excel('Benchmark bridge.xlsx',sheet_name = 'Member')
+
 # = = =  = = = =  = = =  = = = = = = = = =  = = = =  = = =  = = = = = = = = =  = = = =  = = =  = = = = = = =
 #  Inputs: Lz,  skew angle, Zspacing, number of beams, Lx, Xspacing,:
 #Bridge2 = OpenseesModel(10.175, 0, 2, 5, 24.6, 2.46,beamelement)
 
-Bridge2 = OpenseesModel(Nodedetail,Connectivitydetail,beamelement)
+Bridge2 = OpenseesModel(Nodedetail,Connectivitydetail,beamelement,Memberdetail)
 
 #  Inputs: Lz,  skew angle, Zspacing, number of beams, Lx, Xspacing,:
 #Bridge2 = Bridgemodel.OpenseesModel(10.11, 0, 1.4224 , 7, 18.288, 0.762)
@@ -45,7 +47,6 @@ Bridge2.assign_material_prop(concreteprop,steelprop)
 # ---------------------------------------------------------------------------------------------------------------------
 # Model generation
 Bridge2.create_Opensees_model()
-breakpoint()
 # ---------------------------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------------------------
 
@@ -67,7 +68,6 @@ Zloc = 0        # top axle with resp to Z axis, starting from Z = 0. (code auto 
 Bridge2.load_position([13.5,5],2)
 #Bridge2.loadID()
 #Bridge2.load_movingtruck([13.5,5],axlwts,axlspc,axlwidth)
-breakpoint()
 # ------------------------------
 # Start of analysis generation
 # ------------------------------

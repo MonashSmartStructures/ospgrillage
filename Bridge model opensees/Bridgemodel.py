@@ -1,6 +1,6 @@
 from openseespy.opensees import *
 import numpy as np
-
+import decimal
 # --------------------------------------------------------------------------------------------------------------------------------
 # Class definition - Black box!!! do not change - -- - --
 # --------------------------------------------------------------------------------------------------------------------------------
@@ -10,11 +10,12 @@ import numpy as np
 class Bridge:
 
     #  Inputs: Lz,  skew angle, Zspacing, number of beams,Lx, Xspacing,:
-    def __init__(cls,Nodedata,ConnectivityData,beamtype):
+    def __init__(cls,Nodedata,ConnectivityData,beamtype,MemberData):
         cls.Nodedata = Nodedata  # instantiate Node data attribute
         cls.ConnectivityData = ConnectivityData  # instantiate Node connectivity attribute
+        cls.MemberData = MemberData
         cls.beameletype = beamtype
-
+        # on object init, create members for
     @classmethod
     # bridge member objects (composition class)
     def assign_beam_member_prop(cls,longbeam,LRbeam,edgebeam,slab,diaphragm):
@@ -36,9 +37,8 @@ class Bridge:
 
 class OpenseesModel(Bridge):
     # set modelbuilder
-
-    def __init__(self,Nodedata,ConnectivityData,beamtype):
-        super().__init__(Nodedata,ConnectivityData,beamtype)
+    def __init__(self,Nodedata,ConnectivityData,beamtype,MemberData):
+        super().__init__(Nodedata,ConnectivityData,beamtype,MemberData)
         print(self.Nodedata)
 
     def create_Opensees_model(self):
@@ -51,7 +51,7 @@ class OpenseesModel(Bridge):
         self.ele_transform([0, 0, 1], [1, 0, 0]) # NEED ABSTRACTION
         # - default values are [0,0,1] for longitudinal, [-1,0,0] for transverse
         self.assemble_element()
-        breakpoint()
+
 
     def generatemodel(self,ndm,ndf):
         model('basic', '-ndm', ndm, '-ndf', ndf)
@@ -108,15 +108,24 @@ class OpenseesModel(Bridge):
         transdict = {'L': 'longitudinalTransf', 'LR': 'longitudinalTransf', 'E': 'longitudinalTransf',
                      'S': 'transverseTransf', 'D': 'transverseTransf'} #dict for section transformation
         for eleind in self.ConnectivityData.index:
-            #sectiondict = {L:'Longbeam',LR:'LRbeam',E:'edgebeam',S:'slab',D:'diaphragm'}
             expression = self.ConnectivityData['Section'][eleind]                                      ###
-            sectioninput = eval("self.{}".format(sectiondict[expression]))
+            #sectioninput = eval("self.{}".format(sectiondict[expression]))
+            member = self.MemberData[self.MemberData['Section']==expression]
+
+            sectioninput = [np.float(member['E(N/m2)'].max()), np.float(member['G(N/m2)'].max()), np.float(member['A(m^2)'].max()),
+                         np.float(member['J (m^4)'].max()), np.float(member['Iy (m^4)'].max()), np.float(member['Iz (m^4)'].max()),
+                         np.float(member['Ay (m^2)'].max()), np.float(member['Az (m^2)'].max())]
+            np.float32
+            # get ele nodes- from attribute self.ConnectivityData
             eleNodes = [int(self.ConnectivityData['node_i'][eleind]),int(self.ConnectivityData['node_j'][eleind])]
+            # get ele tag from attribute self.ConnectivityData
             eleTag = int(self.ConnectivityData['tag'][eleind])
+            # get transfromation tag for current element eleind
             trans = eval("self.{}".format(transdict[expression])) #ele transform input, 1 or 2, long or trans respective
             #         element  tag   *[ndI ndJ]  A  E  G  Jx  Iy   Iz  transfOBJs
             element(self.beameletype, eleTag,*eleNodes,*sectioninput, trans) ###
             print("element created ->", int(self.ConnectivityData['tag'][eleind])) ###
+
 
         #print("Total Number of elements = ", cls.totalele)
 
@@ -201,10 +210,10 @@ class OpenseesModel(Bridge):
         b = abs(self.Nodedata['z'][self.n3.index].max()-self.Nodedata['z'][self.n1.index].max())# Z Dir
         self.zeta = (self.pos[0]-self.Nodedata['x'][self.n1.index].max())/a # X dir
         self.eta = (self.pos[1] - self.Nodedata['z'][self.n1.index].max()) /b  # Z Dir
-        breakpoint()
         # option for linear shape function possible
         Nzeta = self.hermite_shape_function(self.zeta,a)
         Neta = self.hermite_shape_function(self.eta,b)
+
 
         # shape function dot multi
         Nv = [Nzeta[0]*Neta[0],Nzeta[2]*Neta[0],Nzeta[2]*Neta[2],Nzeta[0]*Neta[2]]
@@ -212,10 +221,9 @@ class OpenseesModel(Bridge):
         Nmz = [Nzeta[0]*Neta[1],Nzeta[2]*Neta[1],Nzeta[2]*Neta[3],Nzeta[0]*Neta[3]]
         #   N1 -> cls.n1 , N2 -> cls.n2 . . . . . N4 -> cls.n4
         # assign forces
-        breakpoint()
         for nn in range(0,3):
-            load(int(eval('self.n%d.max()' % (nn+1))),*np.dot([0,Nv[nn],0,Nmx[nn],0,Nmz[nn]],axlwt))
-        breakpoint()
+            load(int(eval('self.n%d.max()' % (nn+1))),*np.dot([0,Nv[nn],0,0,0,0],axlwt))
+
     #  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     @staticmethod
     def hermite_shape_function(zeta,a): # using zeta and a as placeholders for normal coor + length of edge element
