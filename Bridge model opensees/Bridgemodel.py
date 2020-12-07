@@ -8,7 +8,6 @@ import decimal
 
 
 class Bridge:
-
     #  Inputs: Lz,  skew angle, Zspacing, number of beams,Lx, Xspacing,:
     def __init__(cls,Nodedata,ConnectivityData,beamtype,MemberData):
         cls.Nodedata = Nodedata  # instantiate Node data attribute
@@ -106,7 +105,7 @@ class OpenseesModel(Bridge):
     def assemble_element(self):
         sectiondict = {'L': 'longbeam', 'LR': 'LRbeam', 'E': 'edgebeam', 'S': 'slab', 'D': 'diaphragm'} #dict for section tag
         transdict = {'L': 'longitudinalTransf', 'LR': 'longitudinalTransf', 'E': 'longitudinalTransf',
-                     'S': 'transverseTransf', 'D': 'transverseTransf'} #dict for section transformation
+                     'S': 'transverseTransf', 'D': 'transverseTransf'} # dict for section transformation
         for eleind in self.ConnectivityData.index:
             expression = self.ConnectivityData['Section'][eleind]                                      ###
             #sectioninput = eval("self.{}".format(sectiondict[expression]))
@@ -115,7 +114,7 @@ class OpenseesModel(Bridge):
             sectioninput = [np.float(member['E(N/m2)'].max()), np.float(member['G(N/m2)'].max()), np.float(member['A(m^2)'].max()),
                          np.float(member['J (m^4)'].max()), np.float(member['Iy (m^4)'].max()), np.float(member['Iz (m^4)'].max()),
                          np.float(member['Ay (m^2)'].max()), np.float(member['Az (m^2)'].max())]
-            np.float32
+
             # get ele nodes- from attribute self.ConnectivityData
             eleNodes = [int(self.ConnectivityData['node_i'][eleind]),int(self.ConnectivityData['node_j'][eleind])]
             # get ele tag from attribute self.ConnectivityData
@@ -144,19 +143,6 @@ class OpenseesModel(Bridge):
         pattern("Plain", 1, 1)
 
     # ==================================================================================================
-
-    @classmethod
-    def loadID(cls):
-        # This is for Test Load 1000 case for model - 245m example
-        load(6, 0, -100000,0,0,0,0) # Fx Fy Fz, M-x , M-y, M-z
-        load(17, 0, -100000, 0, 0, 0, 0)  # Fx Fy Fz, M-x , M-y, M-z
-        #load(28, 0, -100000, 0, 0, 0, 0)  # Fx Fy Fz, M-x , M-y, M-z
-        #load(39, 0, -100000, 0, 0, 0, 0)  # Fx Fy Fz, M-x , M-y, M-z
-        #load(50, 0, -100000, 0, 0, 0, 0)  # Fx Fy Fz, M-x , M-y, M-z
-        load(61, 0, -100000, 0, 0, 0, 0)  # Fx Fy Fz, M-x , M-y, M-z
-        load(72, 0, -100000, 0, 0, 0, 0)  # Fx Fy Fz, M-x , M-y, M-z
-
-
     # ==================================================================================================
 
     # Load methods
@@ -169,22 +155,22 @@ class OpenseesModel(Bridge):
     #  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # find load position given load's (x,0, z) coordinate
     def search_nodes(self):
-        #
+        #            x
         #     1 O - - - - O 2
-        #       |         |                 # notations and node search numbering
+        #   z   |         |                 # notations and node search numbering
         #       |    x    |
         #     3 O - - - - O 4
         #
         # n1
-        boolpos = self.Nodedata[(self.Nodedata['x']< self.pos[0]) & (self.Nodedata['z']< self.pos[1])] #
+        boolpos = self.Nodedata[(self.Nodedata['x']<= self.pos[0]) & (self.Nodedata['z']<= self.pos[1])] #
         self.n1 = boolpos['nodetag'][(boolpos['x'] == boolpos['x'].max()) & (boolpos['z'] == boolpos['z'].max())]
 
-        #n2
-        boolpos = self.Nodedata[(self.Nodedata['x'] > self.pos[0]) & (self.Nodedata['z'] < self.pos[1])]  #
+        # n2
+        boolpos = self.Nodedata[(self.Nodedata['x'] > self.pos[0]) & (self.Nodedata['z'] <= self.pos[1])]  #
         self.n2 = boolpos['nodetag'][(boolpos['x'] == boolpos['x'].min()) & (boolpos['z'] == boolpos['z'].max())]
 
         # n3
-        boolpos = self.Nodedata[(self.Nodedata['x'] < self.pos[0]) & (self.Nodedata['z'] > self.pos[1])]  #
+        boolpos = self.Nodedata[(self.Nodedata['x'] <= self.pos[0]) & (self.Nodedata['z'] > self.pos[1])]  #
         self.n3 = boolpos['nodetag'][(boolpos['x'] == boolpos['x'].max()) & (boolpos['z'] == boolpos['z'].min())]
 
         # n4
@@ -205,24 +191,25 @@ class OpenseesModel(Bridge):
         #
         # pos has a X0 and Z0 , need to find the elements and return tag of nodes in the grid where, X0 resides in
 
-        #cls.xcor1 = nodeCoord(eleNodes(3)[0])  # coor of first node
         a = abs(self.Nodedata['x'][self.n1.index].max()-self.Nodedata['x'][self.n2.index].max())# X dir
         b = abs(self.Nodedata['z'][self.n3.index].max()-self.Nodedata['z'][self.n1.index].max())# Z Dir
         self.zeta = (self.pos[0]-self.Nodedata['x'][self.n1.index].max())/a # X dir
         self.eta = (self.pos[1] - self.Nodedata['z'][self.n1.index].max()) /b  # Z Dir
         # option for linear shape function possible
-        Nzeta = self.hermite_shape_function(self.zeta,a)
-        Neta = self.hermite_shape_function(self.eta,b)
+        Nzeta = self.hermite_shape_function(self.zeta,a) # X
+        Neta = self.hermite_shape_function(self.eta,b)  # Z
 
+        # linear shape function - 2 node beam element , on two directions
+        Nv = [(1-self.zeta)*(1-self.eta),(self.zeta)*(1-self.eta),(1-self.zeta)*(self.eta),(self.zeta)*self.eta]
 
-        # shape function dot multi
-        Nv = [Nzeta[0]*Neta[0],Nzeta[2]*Neta[0],Nzeta[2]*Neta[2],Nzeta[0]*Neta[2]]
-        Nmx = [Nzeta[1]*Neta[0],Nzeta[3]*Neta[0],Nzeta[3]*Neta[2],Nzeta[0]*Neta[3]]
-        Nmz = [Nzeta[0]*Neta[1],Nzeta[2]*Neta[1],Nzeta[2]*Neta[3],Nzeta[0]*Neta[3]]
+        # shape function dot multi0
+        Nv = [Nzeta[0]*Neta[0],Nzeta[2]*Neta[0],Nzeta[0]*Neta[2],Nzeta[2]*Neta[2]]
+        #Nmx = [Nzeta[1]*Neta[0],Nzeta[3]*Neta[0],Nzeta[0]*Neta[3],Nzeta[3]*Neta[2]]
+        #Nmz = [Nzeta[0]*Neta[1],Nzeta[2]*Neta[1],Nzeta[0]*Neta[3],Nzeta[2]*Neta[3]]
         #   N1 -> cls.n1 , N2 -> cls.n2 . . . . . N4 -> cls.n4
         # assign forces
         for nn in range(0,3):
-            load(int(eval('self.n%d.max()' % (nn+1))),*np.dot([0,Nv[nn],0,0,0,0],axlwt))
+            load(int(eval('self.n%d.max()' % (nn+1))),*np.dot([0,Nv[nn],0,0,0,0],axlwt)) # x y z mx my mz
 
     #  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     @staticmethod
@@ -242,45 +229,57 @@ class OpenseesModel(Bridge):
         N4= 0.25*(1-zeta)*(1+eta)
         return [N1, N2, N3, N4]
 
-
     #  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    # single point load
-    @classmethod
-    def load_singlepoint(cls,nodes, forcevector):
-        load(nodes, *forcevector)  # x x y y z z
 
-    # multiple point loads of equal force
-    @classmethod
-    def load_multipoint(cls,nodes, forcevector):
-        # force vector passes shape function to distribute ele forces to nodes
-        load(nodes, *forcevector)  # x y z mx my mz
-
-    def load_UDLpatch(cls,nodetags,force):
-        # takes two nodes , a start and end node, then distribute the load
-        for n in range(nodetags[1]-nodetags[0]):
-            load(nodetags[0]+n, *force)
-        # notes: force must be pre-determined - calculated elsewhere to work out the UDL onto each point
-
-
-    def load_movingtruck(cls,truck_pos,axlwts,axlspc,axlwidth):
+    def load_movingtruck(self,truck_pos,axlwts,axlspc,axlwidth):
         # from truck pos(X>0 and Z>0), determine relative location of front top axle on the bridge model
         # truck_pos is a list [X0, Z0]
         # read direction of axlwts and axlspc is from left (i.e. index = 0).
         # first element of axlspc is a placeholder 0, to account for front of vehicle (i.e. first axle)
+        # add placeholder 0 to axlspc
+        zero = 0
+        axlspc.insert(0,zero)
+
         for n in range(len(axlwts)):  # loop do for each axle
             # axl position with respect to bridge
             # X coor, Z coor
 
-            X1 = truck_pos[0] - axlspc[n]  # X coord of axle
+            X1 = truck_pos[0] + axlspc[n]  # X coord of axle
 
             if X1 > 0 :  # check if axle is on bridge
                 #   Inputs:                position[x0,z0],        axle weight at position
-                cls.load_position([X1, truck_pos[1]], axlwts[n])  # one side axle
-                cls.load_position([X1, truck_pos[1]+axlwidth], axlwts[n])  # other side of axle
+                self.load_position([X1, truck_pos[1]], axlwts[n])  # one side axle
+                self.load_position([X1, truck_pos[1]+axlwidth], axlwts[n])  # other side of axle
+            else:
+                print("load axle is out of bound of bridge grillage = ", X1)
 
 
 # --------------------------------------------------------------------------------------------------------------------------------
-# --------------------------------------------------------------------------------------------------------------------------------
+    # i-node bending moment of element
+    def BendingMoment_i(cls,BendingNode):
+        cls.BendingNode =  BendingNode
+        moment_i = eleForce(cls.BendingNode)[5] # Rotation about Z-axis
+        return int(moment_i)
+
+    # j-node bending moment
+    def BendingMoment_j(cls,BendingNodeEnd):
+        cls.BendingNodeEnd =  BendingNodeEnd
+        moment_j = eleForce(cls.BendingNodeEnd)[11] # Rotation about Z-axis
+        return int(moment_j)
+
+    # i-node shear force
+    def ShearForce_i(cls,ShearNode):
+        cls.ShearNode =  ShearNode
+        shear_i = eleForce(cls.ShearNode)[1] # Translation about Y-axis
+        return int(shear_i)
+
+    # j-node shear force
+    def ShearForce_j(cls,ShearNode):
+        cls.ShearNode =  ShearNode
+        shear_j = eleForce(cls.ShearNode)[7] # Translation about Y-axis
+        return int(shear_j)
+
+# ----------------------------------------------------------------------------------------------------------------------
 # Model generation objects
 
 

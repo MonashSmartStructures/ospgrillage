@@ -26,9 +26,6 @@ class BridgeMember:
         return self.formatsummary
 
 
-
-
-
 # Longbeam = BridgeMember(0.41631,31.113E9 ,1 ,4.23662E-3,0.0380607,0.0484717)
 #
 # print(Longbeam.E)
