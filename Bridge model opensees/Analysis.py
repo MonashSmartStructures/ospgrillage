@@ -48,7 +48,12 @@ class Grillage:
             for i in range(len(X)):
                 # for each value is X (Xlist) for truck axle, impose load into model
                 currentpos = [X[i] + self.refPos_X[r], Y[i] + self.truckclass.initial_position[1]]
-                self.OPBridge.load_position(currentpos, weights[i])
+                # set axle load onto bridge
+                try:
+                    self.OPBridge.load_position(currentpos, weights[i])
+                    print("truck at ref point",currentpos)
+                except:
+                    print("axle no longer on bridge, move to next")
 
             # 3 run analysis
             runmoving(self)
@@ -110,20 +115,20 @@ def runmoving(self):
            nodeDisp(7)[1], nodeDisp(8)[1], nodeDisp(9)[1], nodeDisp(10)[1], nodeDisp(11)[1]])
 
 #-----------------------------------------------------------------------------------------------------------------------
-# Picklefile containing bridge
+# Example of how the code is ran
 
 
-# refbridge = pickle.load(open( "save.p", "rb" ))
-# # Truck properties
-# axlwts = [800,3200,3200]
-# # axlspc = [7,7]
-# axlwidth = 5
-# initial_position = [0,3.0875]
-# travel_length = 50
-# increment = 2
-# direction = "X"
+refbridge = pickle.load(open( "save.p", "rb" ))
+ # Truck properties
+axlwts = [800,3200,3200]
+axlspc = [7,7]
+axlwidth = 5
+initial_position = [0,3.0875]
+travel_length = 50
+increment = 2
+direction = "X"
 #
-# # create truck
-# RefTruck = vehicle(axlwts,axlspc,axlwidth,initial_position,travel_length, increment,direction)
+ # create truck
+RefTruck = vehicle(axlwts,axlspc,axlwidth,initial_position,travel_length, increment,direction)
 # # load pickle file of bridge and pass truck class to grillage analysis class.
-# Grillage(refbridge,RefTruck)
+Grillage(refbridge,RefTruck)

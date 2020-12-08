@@ -38,11 +38,10 @@ class OpenseesModel(Bridge):
     # set modelbuilder
     def __init__(self,Nodedata,ConnectivityData,beamtype,MemberData):
         super().__init__(Nodedata,ConnectivityData,beamtype,MemberData)
-        print(self.Nodedata)
 
     def create_Opensees_model(self):
         wipe()                  # clear model space prior to model generation
-        self.generatemodel(3,6)  # run model generation
+        self.generatemodel(3,6)  # run model generation # default number 3 D 6 DOF per node
         self.createnodes()       # create nodes of model
         self.boundaryconditions() # assign boundary conditions to nodes at ends of model (i.e. x = 0 and x = Lx)
         self.concrete_materialprop()      # material properties (default concrete and steel)
@@ -54,14 +53,14 @@ class OpenseesModel(Bridge):
 
     def generatemodel(self,ndm,ndf):
         model('basic', '-ndm', ndm, '-ndf', ndf)
-        print("Model dim ={},Model DOF = {}".format(ndm, ndf))
+        #print("Model dim ={},Model DOF = {}".format(ndm, ndf))
     # create nodes
 
     def createnodes(self):
         for eachnode in self.Nodedata.index:
             node(int(self.Nodedata['nodetag'][eachnode]),int(self.Nodedata['x'][eachnode]),
                  int(self.Nodedata['y'][eachnode]),int(self.Nodedata['z'][eachnode]))
-            print("node created ->", int(self.Nodedata['nodetag'][eachnode]))
+            #print("node created ->", int(self.Nodedata['nodetag'][eachnode]))
 
     # ==================================================================================================
     # set boundary condition
@@ -74,12 +73,12 @@ class OpenseesModel(Bridge):
             fixvalroller = [0,1,1,0,0,0] #roller
             if self.Nodedata['supflag'][supp] == 'F':# pinned
                 fix(int(self.Nodedata['nodetag'][supp]), *fixvalpin) # x y z, mx my mz
-                print("pinned node ->", int(self.Nodedata['nodetag'][supp]))
+                #print("pinned node ->", int(self.Nodedata['nodetag'][supp]))
             else: #roller
                 fix(int(self.Nodedata['nodetag'][supp]), *fixvalroller) # x y z, mx my mz
-                print("roller node ->", int(self.Nodedata['nodetag'][supp]))
+                #print("roller node ->", int(self.Nodedata['nodetag'][supp]))
             countdof +=1 # counter
-        print('DOF constrained = ', countdof)
+        #print('DOF constrained = ', countdof)
 
     # ==================================================================================================
 
@@ -87,7 +86,7 @@ class OpenseesModel(Bridge):
     def concrete_materialprop(self):
         self.concrete = 1  # number tag for concrete is "1"
         uniaxialMaterial("Concrete01", self.concrete, *self.concreteprop)
-        print('Concrete material defined')
+        #print('Concrete material defined')
     # ==================================================================================================
 
     def ele_transform(self,zaxis,xaxis):
@@ -96,7 +95,7 @@ class OpenseesModel(Bridge):
         self.transverseTransf = 2  # tag
         geomTransf(self.transfType, self.longitudinalTransf, *zaxis)
         geomTransf(self.transfType, self.transverseTransf, *xaxis)
-        print('geometrical transform object created')
+        #print('geometrical transform object created')
 
     # ==================================================================================================
     # define elements
@@ -123,7 +122,7 @@ class OpenseesModel(Bridge):
             trans = eval("self.{}".format(transdict[expression])) #ele transform input, 1 or 2, long or trans respective
             #         element  tag   *[ndI ndJ]  A  E  G  Jx  Iy   Iz  transfOBJs
             element(self.beameletype, eleTag,*eleNodes,*sectioninput, trans) ###
-            print("element created ->", int(self.ConnectivityData['tag'][eleind])) ###
+            #print("element created ->", int(self.ConnectivityData['tag'][eleind])) ###
 
 
         #print("Total Number of elements = ", cls.totalele)

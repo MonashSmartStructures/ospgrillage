@@ -1,4 +1,4 @@
-import unittest
+import pytest
 from Bridgemodel import *  # bridge opensees model
 from Bridge_member import BridgeMember  # bridge opensees model
 from Vehicle import *
@@ -6,7 +6,7 @@ import Analysis
 import pickle
 
 
-class TestBridgeOPpy(unittest.TestCase):
+class TestBridgeOPpy():
     def test_vehicle(self):
         # Assume
         axlwts = [800, 3200, 3200]
@@ -18,11 +18,11 @@ class TestBridgeOPpy(unittest.TestCase):
         direction = "X"
 
         # Action
-        RefTruck = vehicle(axlwts, axlspc, axlwidth, initial_position, travel_length, increment, direction)
+        self.RefTruck = vehicle(axlwts, axlspc, axlwidth, initial_position, travel_length, increment, direction)
 
         # Assert
-        self.assertTrue(RefTruck)
+        assert self.RefTruck.axles_spacing[0] == 6
+
+        #
 
 
-if __name__ == '__main__':
-    unittest.main()
