@@ -1,6 +1,7 @@
 from Bridgemodel import *
 from Vehicle import *
 import pickle
+import PlotWizard
 
 class Grillage:
     def __init__(self,bridgepickle,truckclass):
@@ -11,34 +12,38 @@ class Grillage:
         # initialize Bridge class object within Grillage class instance
         self.OPBridge = OpenseesModel(self.bridgepickle["Nodedetail"], self.bridgepickle["Connectivitydetail"],
                                           self.bridgepickle["beamelement"], self.bridgepickle["Memberdetail"])
+        # assign properties of concrete and steel
         self.OPBridge.assign_material_prop(self.bridgepickle["concreteprop"], self.bridgepickle["steelprop"])
+        # send attribute to OP framework to create OP model
         self.OPBridge.create_Opensees_model()
 
-        # in future version expand analysis recorder option
+        # time series and load pattern options
         self.OPBridge.time_series()
         self.OPBridge.loadpattern()
-        self.perfromtruckanalysis()
+        # option to report
+        self.summarize_bridge()
+        PlotWizard.plotOPmodel(self)
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
     def perfromtruckanalysis(self):
         self.truckloading()
 
+    def summarize_bridge(self):
+        print('s')
     # order
     def truckloading(self):
-        # create vehicle class
-        # inputs:                axlwts, axlspc, axlwidth, start coordinate, increment, travel distance
-        self.ModelledTruck = vehicle(self.truckclass.axles_weight, self.truckclass.axles_spacing, self.truckclass.width,
-                                     self.truckclass.initial_position, self.truckclass.increment,self.truckclass.travel_length,
-                                     self.truckclass.direction)
-
         # function to call moving force, with switcher depending on travelling direction : either X or Z direction
-        if self.ModelledTruck.direction == 'X':
+        if self.truckclass.direction == 'X':
             no_point = (self.truckclass.initial_position[0] + self.truckclass.travel_length
                         + self.truckclass.increment) / self.truckclass.increment
-        else: # direction is 'Z'
-            no_point = (self.truckclass.initial_position[0] + self.truckclass.travel_length
+            self.refPos_X = np.linspace(self.truckclass.initial_position[0], self.truckclass.travel_length,
+                                        round(no_point))
+        else:  # direction is 'Z'
+            no_point = (self.truckclass.initial_position[1] + self.truckclass.travel_length
                         + self.truckclass.increment) / self.truckclass.increment
+            self.refPos_X = np.linspace(self.truckclass.initial_position[1], self.truckclass.travel_length,
+                                        round(no_point))
 
-        self.refPos_X = np.linspace(self.truckclass.initial_position[0], self.truckclass.travel_length,
-                                    round(no_point))
         X, Y, weights = self.getaxles()
         # for each position,
         for r in range(len(self.refPos_X)):
@@ -48,14 +53,15 @@ class Grillage:
             for i in range(len(X)):
                 # for each value is X (Xlist) for truck axle, impose load into model
                 currentpos = [X[i] + self.refPos_X[r], Y[i] + self.truckclass.initial_position[1]]
+
                 # set axle load onto bridge
                 try:
                     self.OPBridge.load_position(currentpos, weights[i])
-                    print("truck at ref point",currentpos)
+                    print("axles position =",currentpos)
                 except:
                     print("axle no longer on bridge, move to next")
 
-            # 3 run analysis
+            # 3 run analysis for current position
             runmoving(self)
             # save (BM. SF)
 
@@ -131,4 +137,6 @@ direction = "X"
  # create truck
 RefTruck = vehicle(axlwts,axlspc,axlwidth,initial_position,travel_length, increment,direction)
 # # load pickle file of bridge and pass truck class to grillage analysis class.
-Grillage(refbridge,RefTruck)
+RefBridge = Grillage(refbridge,RefTruck)
+#RefBridge.perfromtruckanalysis()
+breakpoint()
