@@ -2,7 +2,7 @@ from Bridgemodel import *
 from Vehicle import *
 import pickle
 import PlotWizard
-
+import openseespy.postprocessing as postproc
 class Grillage:
     def __init__(self,bridgepickle,truckclass):
         # assign attributes
@@ -22,7 +22,9 @@ class Grillage:
         self.OPBridge.loadpattern()
         # option to report
         self.summarize_bridge()
-        PlotWizard.plotOPmodel(self)
+        # plot
+        #PlotWizard.plotOPmodel(self)
+
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     def perfromtruckanalysis(self):
@@ -109,6 +111,9 @@ def runmoving(self):
     # create integrator
     integrator("LoadControl", 1.0)
 
+    # create ODB object to record analysis results
+    #postproc.Get_Rendering.createODB("testbridge","loadcase")
+
     # create algorithm
     algorithm("Linear")
 
@@ -117,9 +122,14 @@ def runmoving(self):
 
     # perform the analysis
     analyze(1)
+    # print features of model
+    #printModel()
+    #PlotWizard.plotOPmodel(self)
     print([nodeDisp(1)[1], nodeDisp(2)[1], nodeDisp(3)[1], nodeDisp(4)[1], nodeDisp(5)[1], nodeDisp(6)[1],
            nodeDisp(7)[1], nodeDisp(8)[1], nodeDisp(9)[1], nodeDisp(10)[1], nodeDisp(11)[1]])
-
+    breakpoint()
+    PlotWizard.plotDeformation(self)
+    breakpoint()
 #-----------------------------------------------------------------------------------------------------------------------
 # Example of how the code is ran
 
@@ -138,5 +148,5 @@ direction = "X"
 RefTruck = vehicle(axlwts,axlspc,axlwidth,initial_position,travel_length, increment,direction)
 # # load pickle file of bridge and pass truck class to grillage analysis class.
 RefBridge = Grillage(refbridge,RefTruck)
-#RefBridge.perfromtruckanalysis()
+RefBridge.perfromtruckanalysis()
 breakpoint()
