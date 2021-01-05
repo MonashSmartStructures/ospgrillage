@@ -9,10 +9,24 @@ def plotOPmodel(self):
     opsplt.plot_model("nodes")
 
 def plotBending(self):
-    pass
+    Ew = {}
+    sfacMy = 1.e-2
+    minY, maxY = opsv.section_force_diagram_3d('Mz', Ew, sfacMy)
+    plt.title(f'Bending moments My, max = {maxY:.2f}, min = {minY:.2f}')
+    plt.show()
+
+def plotShear(self):
+    Ew = {}
+    sfacMy = 1.e-2
+    minY, maxY = opsv.section_force_diagram_3d('Vy', Ew, sfacMy)
+    plt.title(f'Bending moments My, max = {maxY:.2f}, min = {minY:.2f}')
+    plt.show()
 
 def plotDeformation(self):
     fig_wi_he = 30., 20.
     sfac = 2
     nep =17
-    opsv.plot_defo()
+    opsv.plot_defo(sfac, nep, fmt_interp='b-', az_el=(-68., 39.),
+               fig_wi_he=fig_wi_he, endDispFlag=0)
+    plt.show()
+    breakpoint()

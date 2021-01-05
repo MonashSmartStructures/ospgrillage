@@ -93,60 +93,71 @@ class Grillage:
 
 # static methods
 # method to run OP framework - callable from outside of class instance
+
 def runmoving(self):
     # method calls OP instance methods - operating the methods and return outputs back to Grillage instance class
 
     # wipe analysis
-    wipeAnalysis()
+    ops.wipeAnalysis()
 
     # create SOE
-    system("BandSPD")
-
+    ops.system("BandGeneral")
+    ops.test('NormDispIncr', 1.0e-6, 6,2,0)
     # create DOF number
-    numberer("RCM")
+    ops.numberer("RCM")
 
     # create constraint handler
-    constraints("Plain")
+    ops.constraints("Transformation")
 
     # create integrator
-    integrator("LoadControl", 1.0)
+    ops.integrator("LoadControl", 1.0)
 
     # create ODB object to record analysis results
     #postproc.Get_Rendering.createODB("testbridge","loadcase")
 
     # create algorithm
-    algorithm("Linear")
+    ops.algorithm("Linear")
 
     # create analysis object
-    analysis("Static")
+    ops.analysis("Static")
 
     # perform the analysis
-    analyze(1)
+    ops.analyze(1)
     # print features of model
     #printModel()
     #PlotWizard.plotOPmodel(self)
-    print([nodeDisp(1)[1], nodeDisp(2)[1], nodeDisp(3)[1], nodeDisp(4)[1], nodeDisp(5)[1], nodeDisp(6)[1],
-           nodeDisp(7)[1], nodeDisp(8)[1], nodeDisp(9)[1], nodeDisp(10)[1], nodeDisp(11)[1]])
+    print([ops.nodeDisp(1)[1], ops.nodeDisp(2)[1], ops.nodeDisp(3)[1],
+           ops.nodeDisp(4)[1], ops.nodeDisp(5)[1], ops.nodeDisp(6)[1],
+           ops.nodeDisp(7)[1], ops.nodeDisp(8)[1], ops.nodeDisp(9)[1],
+           ops.nodeDisp(10)[1], ops.nodeDisp(11)[1]])
+    print(ops.eleResponse(1, 'xlocal'))
+    PlotWizard.plotBending(self)
     breakpoint()
     PlotWizard.plotDeformation(self)
     breakpoint()
 #-----------------------------------------------------------------------------------------------------------------------
-# Example of how the code is ran
+# Procedure to run grillage analysis (OP framework)
+# imports
+# - Analysis.py, Bridgemodel.py,PlotWizard.py,Vehicle.py
+# 1 load bridge pickle file
+with open("save.p","rb") as f:
+    refbridge = pickle.load(f)
 
+refbridge["beamelement"] = 'elasticBeamColumn'
+ # 2 Define truck properties
+axlwts = [800,3200,3200] # axle weights
+axlspc = [7,7]          # axl spacings
+axlwidth = 5            #axl widths
+initial_position = [0,1]    # start position of truck (ref point axle)
+travel_length = 50          # distance (m)
+increment = 2               # truck location increment
+direction = "X"             # travel direction (global)
 
-refbridge = pickle.load(open( "save.p", "rb" ))
- # Truck properties
-axlwts = [800,3200,3200]
-axlspc = [7,7]
-axlwidth = 5
-initial_position = [0,3.0875]
-travel_length = 50
-increment = 2
-direction = "X"
-#
- # create truck
+# 3 create truck object
 RefTruck = vehicle(axlwts,axlspc,axlwidth,initial_position,travel_length, increment,direction)
-# # load pickle file of bridge and pass truck class to grillage analysis class.
+# pass pickle file of bridge and truck object to grillage class.
 RefBridge = Grillage(refbridge,RefTruck)
+# 4 run method to perform analysis
 RefBridge.perfromtruckanalysis()
 breakpoint()
+# 5 plots and save results

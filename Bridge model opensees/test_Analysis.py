@@ -1,5 +1,7 @@
 import pytest
 from Vehicle import vehicle
+import pickle
+import Analysis
 
 truckdata = {20,30,40,True}
 @pytest.mark.parametrize("truckdetails",truckdata)
@@ -17,6 +19,12 @@ def createvehicle():
     # create truck
     RefTruck = vehicle(axlwts, axlspc, axlwidth, initial_position, travel_length, increment, direction)
     return RefTruck
+
+@pytest.fixture
+def createtestbridge():
+    refbridge = pickle.load(open("save.p", "rb"))
+    RefTr = createvehicle()
+    RefBridge = Analysis.Grillage(refbridge,RefTr)
 
 def test_vehicle(createvehicle):
     truck = createvehicle

@@ -1,4 +1,4 @@
-from openseespy.opensees import *
+import openseespy.opensees as ops
 import numpy as np
 import decimal
 # --------------------------------------------------------------------------------------------------------------------------------
@@ -40,7 +40,7 @@ class OpenseesModel(Bridge):
         super().__init__(Nodedata,ConnectivityData,beamtype,MemberData)
 
     def create_Opensees_model(self):
-        wipe()                  # clear model space prior to model generation
+        ops.wipe()                # clear model space prior to model generation
         self.generatemodel(3,6)  # run model generation # default number 3 D 6 DOF per node
         self.createnodes()       # create nodes of model
         self.boundaryconditions() # assign boundary conditions to nodes at ends of model (i.e. x = 0 and x = Lx)
@@ -52,13 +52,13 @@ class OpenseesModel(Bridge):
 
 
     def generatemodel(self,ndm,ndf):
-        model('basic', '-ndm', ndm, '-ndf', ndf)
+        ops.model('basic', '-ndm', ndm, '-ndf', ndf)
         #print("Model dim ={},Model DOF = {}".format(ndm, ndf))
     # create nodes
 
     def createnodes(self):
         for eachnode in self.Nodedata.index:
-            node(int(self.Nodedata['nodetag'][eachnode]),int(self.Nodedata['x'][eachnode]),
+            ops.node(int(self.Nodedata['nodetag'][eachnode]),int(self.Nodedata['x'][eachnode]),
                  int(self.Nodedata['y'][eachnode]),int(self.Nodedata['z'][eachnode]))
             #print("node created ->", int(self.Nodedata['nodetag'][eachnode]))
 
@@ -72,10 +72,10 @@ class OpenseesModel(Bridge):
             fixvalpin = [1, 1, 1, 0, 0, 0] # pinned
             fixvalroller = [0,1,1,0,0,0] #roller
             if self.Nodedata['supflag'][supp] == 'F':# pinned
-                fix(int(self.Nodedata['nodetag'][supp]), *fixvalpin) # x y z, mx my mz
+                ops.fix(int(self.Nodedata['nodetag'][supp]), *fixvalpin) # x y z, mx my mz
                 #print("pinned node ->", int(self.Nodedata['nodetag'][supp]))
             else: #roller
-                fix(int(self.Nodedata['nodetag'][supp]), *fixvalroller) # x y z, mx my mz
+                ops.fix(int(self.Nodedata['nodetag'][supp]), *fixvalroller) # x y z, mx my mz
                 #print("roller node ->", int(self.Nodedata['nodetag'][supp]))
             countdof +=1 # counter
         #print('DOF constrained = ', countdof)
@@ -85,7 +85,7 @@ class OpenseesModel(Bridge):
     # create material tags
     def concrete_materialprop(self):
         self.concrete = 1  # number tag for concrete is "1"
-        uniaxialMaterial("Concrete01", self.concrete, *self.concreteprop)
+        ops.uniaxialMaterial("Concrete01", self.concrete, *self.concreteprop)
         #print('Concrete material defined')
     # ==================================================================================================
 
@@ -93,8 +93,8 @@ class OpenseesModel(Bridge):
         self.transfType = 'Linear'  # transformation type
         self.longitudinalTransf = 1  # tag
         self.transverseTransf = 2  # tag
-        geomTransf(self.transfType, self.longitudinalTransf, *zaxis)
-        geomTransf(self.transfType, self.transverseTransf, *xaxis)
+        ops.geomTransf(self.transfType, self.longitudinalTransf, *zaxis)
+        ops.geomTransf(self.transfType, self.transverseTransf, *xaxis)
         #print('geometrical transform object created')
 
     # ==================================================================================================
@@ -110,46 +110,53 @@ class OpenseesModel(Bridge):
             #sectioninput = eval("self.{}".format(sectiondict[expression]))
             member = self.MemberData[self.MemberData['Section']==expression]
 
-            sectioninput = [np.float(member['E(N/m2)'].max()), np.float(member['G(N/m2)'].max()), np.float(member['A(m^2)'].max()),
-                         np.float(member['J (m^4)'].max()), np.float(member['Iy (m^4)'].max()), np.float(member['Iz (m^4)'].max()),
-                         np.float(member['Ay (m^2)'].max()), np.float(member['Az (m^2)'].max())]
+            # get sectioninput based on ele type
+            sectioninput = self.get_sectioninput(member)
 
             # get ele nodes- from attribute self.ConnectivityData
             eleNodes = [int(self.ConnectivityData['node_i'][eleind]),int(self.ConnectivityData['node_j'][eleind])]
+
             # get ele tag from attribute self.ConnectivityData
             eleTag = int(self.ConnectivityData['tag'][eleind])
+
             # get transfromation tag for current element eleind
             trans = eval("self.{}".format(transdict[expression])) #ele transform input, 1 or 2, long or trans respective
             #         element  tag   *[ndI ndJ]  A  E  G  Jx  Iy   Iz  transfOBJs
-            element(self.beameletype, eleTag,*eleNodes,*sectioninput, trans) ###
+            ops.element(self.beameletype, eleTag,*eleNodes,*sectioninput, trans) ###
             #print("element created ->", int(self.ConnectivityData['tag'][eleind])) ###
+            #print("Total Number of elements = ", cls.totalele)
 
-
-        #print("Total Number of elements = ", cls.totalele)
-
+    def get_sectioninput(self,member):
+        # assignment input based on ele type
+        if self.beameletype == "ElasticTimoshenkoBeam":
+            sectioninput = [np.float(member['E(N/m2)'].max()), np.float(member['G(N/m2)'].max()),
+                            np.float(member['A(m^2)'].max()),
+                            np.float(member['J (m^4)'].max()), np.float(member['Iy (m^4)'].max()),
+                            np.float(member['Iz (m^4)'].max()),
+                            np.float(member['Ay (m^2)'].max()), np.float(member['Az (m^2)'].max())]
+        elif self.beameletype == "elasticBeamColumn":  # eleColumn
+            sectioninput = [np.float(member['E(N/m2)'].max()), np.float(member['G(N/m2)'].max()),
+                            np.float(member['A(m^2)'].max()),
+                            np.float(member['J (m^4)'].max()), np.float(member['Iy (m^4)'].max()),
+                            np.float(member['Iz (m^4)'].max())]
+        return sectioninput
     # ==================================================================================================
 
     @classmethod
     def time_series(cls):
         #           time series type, time series tag
-        timeSeries("Linear", 1)
+        ops.timeSeries("Constant", 1)
 
     # ==================================================================================================
 
     @classmethod
     def loadpattern(cls):
         #           load pattern type, load pattern tag, load factor (1) ,
-        pattern("Plain", 1, 1)
+        ops.pattern("Plain", 1, 1)
 
     # ==================================================================================================
     # ==================================================================================================
-
-    # Load methods
-    def loadtype(self,argument):
-        # selected load type is taken as argument str to return method (e.g. point, axle, or UDL)
-        method_name = 'load_'+str(argument)
-        method = getattr(self,method_name,lambda:"nothing")
-        return method()
+    # functions for moving loads
 
     #  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # find load position given load's (x,0, z) coordinate
@@ -208,7 +215,7 @@ class OpenseesModel(Bridge):
         #   N1 -> cls.n1 , N2 -> cls.n2 . . . . . N4 -> cls.n4
         # assign forces
         for nn in range(0,3):
-            load(int(eval('self.n%d.max()' % (nn+1))),*np.dot([0,Nv[nn],0,0,0,0],axlwt)) # x y z mx my mz
+            ops.load(int(eval('self.n%d.max()' % (nn+1))),*np.dot([0,Nv[nn],0,0,0,0],axlwt)) # x y z mx my mz
 
     #  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     @staticmethod
@@ -235,8 +242,8 @@ class OpenseesModel(Bridge):
         # truck_pos is a list [X0, Z0]
         # read direction of axlwts and axlspc is from left (i.e. index = 0).
         # first element of axlspc is a placeholder 0, to account for front of vehicle (i.e. first axle)
-        # add placeholder 0 to axlspc
         zero = 0
+        # add placeholder 0 to axlspc
         axlspc.insert(0,zero)
 
         for n in range(len(axlwts)):  # loop do for each axle
@@ -249,6 +256,7 @@ class OpenseesModel(Bridge):
                 #   Inputs:                position[x0,z0],        axle weight at position
                 self.load_position([X1, truck_pos[1]], axlwts[n])  # one side axle
                 self.load_position([X1, truck_pos[1]+axlwidth], axlwts[n])  # other side of axle
+                break
             else:
                 print("load axle is out of bound of bridge grillage = ", X1)
 
@@ -257,25 +265,25 @@ class OpenseesModel(Bridge):
     # i-node bending moment of element
     def BendingMoment_i(cls,BendingNode):
         cls.BendingNode =  BendingNode
-        moment_i = eleForce(cls.BendingNode)[5] # Rotation about Z-axis
+        moment_i = ops.eleForce(cls.BendingNode)[5] # Rotation about Z-axis
         return int(moment_i)
 
     # j-node bending moment
     def BendingMoment_j(cls,BendingNodeEnd):
         cls.BendingNodeEnd =  BendingNodeEnd
-        moment_j = eleForce(cls.BendingNodeEnd)[11] # Rotation about Z-axis
+        moment_j = ops.eleForce(cls.BendingNodeEnd)[11] # Rotation about Z-axis
         return int(moment_j)
 
     # i-node shear force
     def ShearForce_i(cls,ShearNode):
         cls.ShearNode =  ShearNode
-        shear_i = eleForce(cls.ShearNode)[1] # Translation about Y-axis
+        shear_i = ops.eleForce(cls.ShearNode)[1] # Translation about Y-axis
         return int(shear_i)
 
     # j-node shear force
     def ShearForce_j(cls,ShearNode):
         cls.ShearNode =  ShearNode
-        shear_j = eleForce(cls.ShearNode)[7] # Translation about Y-axis
+        shear_j = ops.eleForce(cls.ShearNode)[7] # Translation about Y-axis
         return int(shear_j)
 
 # ----------------------------------------------------------------------------------------------------------------------
