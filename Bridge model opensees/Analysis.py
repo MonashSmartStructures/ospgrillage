@@ -1,17 +1,32 @@
+# -*-encoding: utf-8 -*-
+"""
+Grillage analysis module containing base class for Opensees Grillage analysis
+framework. It also contains methods for moving load analysis which iterates
+over the load path of the Vehicle class, which is passed into.
+"""
 from Bridgemodel import *
 from Vehicle import *
 import pickle
 import PlotWizard
-import openseespy.postprocessing as postproc
+
 class Grillage:
+    """
+    Grillage class
+    """
     def __init__(self,bridgepickle,truckclass):
+        """
+
+        :param bridgepickle:
+        :param truckclass:
+        """
         # assign attributes
         self.bridgepickle = bridgepickle
         self.truckclass = truckclass
 
         # initialize Bridge class object within Grillage class instance
         self.OPBridge = OpenseesModel(self.bridgepickle["Nodedetail"], self.bridgepickle["Connectivitydetail"],
-                                          self.bridgepickle["beamelement"], self.bridgepickle["Memberdetail"])
+                                        self.bridgepickle["beamelement"], self.bridgepickle["Memberdetail"],
+                                      self.bridgepickle["Member transformation"])
         # assign properties of concrete and steel
         self.OPBridge.assign_material_prop(self.bridgepickle["concreteprop"], self.bridgepickle["steelprop"])
         # send attribute to OP framework to create OP model
@@ -28,12 +43,20 @@ class Grillage:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     def perfromtruckanalysis(self):
+        """
+        Code runs truck loading input
+        :return:
+        """
         self.truckloading()
 
     def summarize_bridge(self):
         print('s')
     # order
     def truckloading(self):
+        """
+
+        :return:
+        """
         # function to call moving force, with switcher depending on travelling direction : either X or Z direction
         if self.truckclass.direction == 'X':
             no_point = (self.truckclass.initial_position[0] + self.truckclass.travel_length
@@ -68,6 +91,10 @@ class Grillage:
             # save (BM. SF)
 
     def getaxles(self):
+        """
+
+        :return:
+        """
         # create array of truck axles X and Y lists for plotting
         xList = [0, 0]
         yList = [0, self.truckclass.width]
@@ -83,7 +110,8 @@ class Grillage:
     def recreatemodel_instance(self):
         # method to run in between each time step of moving truck analysis
         self.OPBridge = OpenseesModel(self.bridgepickle["Nodedetail"], self.bridgepickle["Connectivitydetail"],
-                                      self.bridgepickle["beamelement"], self.bridgepickle["Memberdetail"])
+                                      self.bridgepickle["beamelement"], self.bridgepickle["Memberdetail"],
+                                      self.bridgepickle["Member transformation"])
         self.OPBridge.assign_material_prop(self.bridgepickle["concreteprop"], self.bridgepickle["steelprop"])
         self.OPBridge.create_Opensees_model()
 
@@ -95,6 +123,11 @@ class Grillage:
 # method to run OP framework - callable from outside of class instance
 
 def runmoving(self):
+    """
+
+    :param self:
+    :return:
+    """
     # method calls OP instance methods - operating the methods and return outputs back to Grillage instance class
 
     # wipe analysis
@@ -131,8 +164,11 @@ def runmoving(self):
            ops.nodeDisp(7)[1], ops.nodeDisp(8)[1], ops.nodeDisp(9)[1],
            ops.nodeDisp(10)[1], ops.nodeDisp(11)[1]])
     print(ops.eleResponse(1, 'xlocal'))
-    PlotWizard.plotBending(self)
-    breakpoint()
+
+    # PlotWizard.py commands
+    #PlotWizard.plotBending(self)
+    #PlotWizard.plotShear(self)
+
     PlotWizard.plotDeformation(self)
     breakpoint()
 #-----------------------------------------------------------------------------------------------------------------------
@@ -140,24 +176,28 @@ def runmoving(self):
 # imports
 # - Analysis.py, Bridgemodel.py,PlotWizard.py,Vehicle.py
 # 1 load bridge pickle file
-with open("save.p","rb") as f:
-    refbridge = pickle.load(f)
 
-refbridge["beamelement"] = 'elasticBeamColumn'
- # 2 Define truck properties
-axlwts = [800,3200,3200] # axle weights
-axlspc = [7,7]          # axl spacings
-axlwidth = 5            #axl widths
-initial_position = [0,1]    # start position of truck (ref point axle)
-travel_length = 50          # distance (m)
-increment = 2               # truck location increment
-direction = "X"             # travel direction (global)
+# # Uncomment here
 
-# 3 create truck object
-RefTruck = vehicle(axlwts,axlspc,axlwidth,initial_position,travel_length, increment,direction)
-# pass pickle file of bridge and truck object to grillage class.
-RefBridge = Grillage(refbridge,RefTruck)
-# 4 run method to perform analysis
-RefBridge.perfromtruckanalysis()
-breakpoint()
-# 5 plots and save results
+# with open("save.p","rb") as f:
+#     refbridge = pickle.load(f)
+#
+# refbridge["beamelement"] = 'elasticBeamColumn'
+#
+#  # 2 Define truck properties
+# axlwts = [800,3200,3200] # axle weights
+# axlspc = [2,2]          # axl spacings
+# axlwidth = 2            #axl widths
+# initial_position = [-3,6]    # start position of truck (ref point axle)
+# travel_length = 50          # distance (m)
+# increment = 2               # truck location increment
+# direction = "X"             # travel direction (global)
+#
+# # 3 create truck object
+# RefTruck = vehicle(axlwts,axlspc,axlwidth,initial_position,travel_length, increment,direction)
+# # 4 pass pickle file of bridge and truck object to grillage class.
+# RefBridge = Grillage(refbridge,RefTruck)
+# # 5 run method to perform analysis
+# RefBridge.perfromtruckanalysis()
+# breakpoint()
+# # 5 plots and save results

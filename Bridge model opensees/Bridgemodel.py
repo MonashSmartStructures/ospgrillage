@@ -1,6 +1,9 @@
 import openseespy.opensees as ops
 import numpy as np
-import decimal
+import ast
+"""
+
+"""
 # --------------------------------------------------------------------------------------------------------------------------------
 # Class definition - Black box!!! do not change - -- - --
 # --------------------------------------------------------------------------------------------------------------------------------
@@ -8,16 +11,31 @@ import decimal
 
 
 class Bridge:
+    """
+    Class containing bridge informations from Bridge Pickle file for use in Openseespy framework
+    """
     #  Inputs: Lz,  skew angle, Zspacing, number of beams,Lx, Xspacing,:
-    def __init__(cls,Nodedata,ConnectivityData,beamtype,MemberData):
+    def __init__(cls,Nodedata,ConnectivityData,beamtype,MemberData,membtrans):
+        """ Class constructor - collecting the dataframes for bridge properties """
         cls.Nodedata = Nodedata  # instantiate Node data attribute
         cls.ConnectivityData = ConnectivityData  # instantiate Node connectivity attribute
         cls.MemberData = MemberData
         cls.beameletype = beamtype
+        cls.membtrans = membtrans
         # on object init, create members for
     @classmethod
     # bridge member objects (composition class)
     def assign_beam_member_prop(cls,longbeam,LRbeam,edgebeam,slab,diaphragm):
+        """
+        Setters for bridge properties - structural members
+
+        :param longbeam:
+        :param LRbeam:
+        :param edgebeam:
+        :param slab:
+        :param diaphragm:
+        :return:
+        """
         # arguments are in a list returned by class method of Bridge_member class() - get_beam_prop()
         cls.longbeam = longbeam
         cls.LRbeam = LRbeam
@@ -27,6 +45,13 @@ class Bridge:
 
     @classmethod
     def assign_material_prop(cls,concreteprop=None,steelprop = None):
+        """
+        Setters for bridge properties - Materials
+
+        :param concreteprop:
+        :param steelprop:
+        :return:
+        """
         if concreteprop is None:
             cls.steelprop = steelprop
         else:
@@ -35,28 +60,46 @@ class Bridge:
     # ==================================================================================================
 
 class OpenseesModel(Bridge):
+    """
+    Class to create bridge model in Openseespy framework by passing
+    bridge model properties in `Bridge` class
+    """
     # set modelbuilder
-    def __init__(self,Nodedata,ConnectivityData,beamtype,MemberData):
-        super().__init__(Nodedata,ConnectivityData,beamtype,MemberData)
+    def __init__(self,Nodedata,ConnectivityData,beamtype,MemberData,memtrans):
+        super().__init__(Nodedata,ConnectivityData,beamtype,MemberData,memtrans)
 
     def create_Opensees_model(self):
+        """
+        Code handling the creation of bridge model in Openseespy framework
+        :return:
+        """
         ops.wipe()                # clear model space prior to model generation
         self.generatemodel(3,6)  # run model generation # default number 3 D 6 DOF per node
         self.createnodes()       # create nodes of model
         self.boundaryconditions() # assign boundary conditions to nodes at ends of model (i.e. x = 0 and x = Lx)
         self.concrete_materialprop()      # material properties (default concrete and steel)
         #        trans: (1)long beam, (2) transverse  [ x y z]
-        self.ele_transform([0, 0, 1], [1, 0, 0]) # NEED ABSTRACTION
-        # - default values are [0,0,1] for longitudinal, [-1,0,0] for transverse
+        self.ele_transform() # NEED ABSTRACTION
+        # - default values are [0,0,1] for longitudinal, [1,0,0] for transverse
         self.assemble_element()
-
+        #self.create_ele_transform()
 
     def generatemodel(self,ndm,ndf):
+        """
+        Code handling the start of bridge model generation - Opensees model space properties
+        :param ndm: model dimension [Default 3 ]
+        :param ndf: degree-of-freedoms for each model nodes [Default 6]
+
+        """
         ops.model('basic', '-ndm', ndm, '-ndf', ndf)
         #print("Model dim ={},Model DOF = {}".format(ndm, ndf))
     # create nodes
 
     def createnodes(self):
+        """
+        Code handling generation of nodes in Openseespy. Nodes specified in attribute of `Bridge` class
+        :return:
+        """
         for eachnode in self.Nodedata.index:
             ops.node(int(self.Nodedata['nodetag'][eachnode]),int(self.Nodedata['x'][eachnode]),
                  int(self.Nodedata['y'][eachnode]),int(self.Nodedata['z'][eachnode]))
@@ -65,6 +108,11 @@ class OpenseesModel(Bridge):
     # ==================================================================================================
     # set boundary condition
     def boundaryconditions(self):
+        """
+        Code handling generation of boundary conditions in Openseespy. Boundary conditions specified
+        in attribute of `Bridge` class.
+        :return:
+        """
         countdof = 0 # initialize counter of assigned boundary conditions
         self.supportnode = self.Nodedata[self.Nodedata['support']==1].index.values
         #self.supporttype = self.Nodedata[self.Nodedata['supflag']].index.values
@@ -84,17 +132,33 @@ class OpenseesModel(Bridge):
 
     # create material tags
     def concrete_materialprop(self):
+        """
+        Code handling the creation of material tags in Openseespy. Default concrete = 1
+        """
         self.concrete = 1  # number tag for concrete is "1"
         ops.uniaxialMaterial("Concrete01", self.concrete, *self.concreteprop)
         #print('Concrete material defined')
     # ==================================================================================================
 
-    def ele_transform(self,zaxis,xaxis):
+    def ele_transform(self):
+        """
+        Code handling the definition of geometric transformation of members. Transformation
+         specified in attribute of `Bridge` class.
+        :return:
+        """
         self.transfType = 'Linear'  # transformation type
-        self.longitudinalTransf = 1  # tag
-        self.transverseTransf = 2  # tag
-        ops.geomTransf(self.transfType, self.longitudinalTransf, *zaxis)
-        ops.geomTransf(self.transfType, self.transverseTransf, *xaxis)
+        #self.longitudinalTransf = 1  # tag
+        #self.transverseTransf = 2  # tag
+
+        for ind in self.membtrans.index:
+            tag = int(self.membtrans["Transform tag"][ind])
+            vxz = ast.literal_eval(self.membtrans["Vector"][ind])
+            ops.geomTransf(self.transfType, tag, *vxz)
+
+
+
+        #ops.geomTransf(self.transfType, self.longitudinalTransf, *zaxis)
+        #ops.geomTransf(self.transfType, self.transverseTransf, *xaxis)
         #print('geometrical transform object created')
 
     # ==================================================================================================
@@ -102,9 +166,11 @@ class OpenseesModel(Bridge):
     #  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     def assemble_element(self):
-        sectiondict = {'L': 'longbeam', 'LR': 'LRbeam', 'E': 'edgebeam', 'S': 'slab', 'D': 'diaphragm'} #dict for section tag
-        transdict = {'L': 'longitudinalTransf', 'LR': 'longitudinalTransf', 'E': 'longitudinalTransf',
-                     'S': 'transverseTransf', 'D': 'transverseTransf'} # dict for section transformation
+        """
+        Code specifying generation of grillage elements.
+        :return:
+        """
+        # loop for each element in dataframe ConnectivityData
         for eleind in self.ConnectivityData.index:
             expression = self.ConnectivityData['Section'][eleind]                                      ###
             #sectioninput = eval("self.{}".format(sectiondict[expression]))
@@ -119,14 +185,20 @@ class OpenseesModel(Bridge):
             # get ele tag from attribute self.ConnectivityData
             eleTag = int(self.ConnectivityData['tag'][eleind])
 
-            # get transfromation tag for current element eleind
-            trans = eval("self.{}".format(transdict[expression])) #ele transform input, 1 or 2, long or trans respective
+            # get ele transform tag for current element eleind
+            transtag = int(self.MemberData["Trans tag"][self.MemberData["Section"]==expression].max())
+
             #         element  tag   *[ndI ndJ]  A  E  G  Jx  Iy   Iz  transfOBJs
-            ops.element(self.beameletype, eleTag,*eleNodes,*sectioninput, trans) ###
+            ops.element(self.beameletype, eleTag,*eleNodes,*sectioninput, transtag) ###
             #print("element created ->", int(self.ConnectivityData['tag'][eleind])) ###
             #print("Total Number of elements = ", cls.totalele)
 
     def get_sectioninput(self,member):
+        """
+        Function to obtain member attribute from Bridge class attribute.
+        :param member:
+        :return:
+        """
         # assignment input based on ele type
         if self.beameletype == "ElasticTimoshenkoBeam":
             sectioninput = [np.float(member['E(N/m2)'].max()), np.float(member['G(N/m2)'].max()),
@@ -144,6 +216,10 @@ class OpenseesModel(Bridge):
 
     @classmethod
     def time_series(cls):
+        """
+        Code handling the time series generation for Openseespy. Default "Constant", tag 1
+        :return:
+        """
         #           time series type, time series tag
         ops.timeSeries("Constant", 1)
 
@@ -151,6 +227,10 @@ class OpenseesModel(Bridge):
 
     @classmethod
     def loadpattern(cls):
+        """
+        Code handling the pattern load case for Openseespy. Default "Plain", tag 1, load factor 1
+        :return:
+        """
         #           load pattern type, load pattern tag, load factor (1) ,
         ops.pattern("Plain", 1, 1)
 
@@ -161,6 +241,10 @@ class OpenseesModel(Bridge):
     #  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # find load position given load's (x,0, z) coordinate
     def search_nodes(self):
+        """
+        Function to search grillage element emcompassing load position by
+        :return:
+        """
         #            x
         #     1 O - - - - O 2
         #   z   |         |                 # notations and node search numbering
@@ -187,13 +271,19 @@ class OpenseesModel(Bridge):
         # simply call self.n1.max()
 
     def load_position(self,pos,axlwt):
+        """
+        Code handling the load definition for Openseespy.
+        :param pos:
+        :param axlwt:
+        :return:
+        """
         self.pos = pos
         # inputs, pos is array [1x2] x and z coordinate
         # axlwt is the axle weight units N
 
         # first get nodes that are less than the position # second return the node that has highest combination
         # returns attributes n1 n2 n3 and n4 assigned to object. e.g. self.n1
-        self.search_nodes() # searches nodes on the grillage
+        self.search_nodes()  # searches nodes on the grillage
         #
         # pos has a X0 and Z0 , need to find the elements and return tag of nodes in the grid where, X0 resides in
 
@@ -201,14 +291,15 @@ class OpenseesModel(Bridge):
         b = abs(self.Nodedata['z'][self.n3.index].max()-self.Nodedata['z'][self.n1.index].max())# Z Dir
         self.zeta = (self.pos[0]-self.Nodedata['x'][self.n1.index].max())/a # X dir
         self.eta = (self.pos[1] - self.Nodedata['z'][self.n1.index].max()) /b  # Z Dir
-        # option for linear shape function possible
+
+        # Hermite functions for two orthogonal directions of grillage
         Nzeta = self.hermite_shape_function(self.zeta,a) # X
         Neta = self.hermite_shape_function(self.eta,b)  # Z
 
         # linear shape function - 2 node beam element , on two directions
         Nv = [(1-self.zeta)*(1-self.eta),(self.zeta)*(1-self.eta),(1-self.zeta)*(self.eta),(self.zeta)*self.eta]
 
-        # shape function dot multi0
+        # hermite shape function dot multi0
         Nv = [Nzeta[0]*Neta[0],Nzeta[2]*Neta[0],Nzeta[0]*Neta[2],Nzeta[2]*Neta[2]]
         #Nmx = [Nzeta[1]*Neta[0],Nzeta[3]*Neta[0],Nzeta[0]*Neta[3],Nzeta[3]*Neta[2]]
         #Nmz = [Nzeta[0]*Neta[1],Nzeta[2]*Neta[1],Nzeta[0]*Neta[3],Nzeta[2]*Neta[3]]
@@ -218,9 +309,21 @@ class OpenseesModel(Bridge):
             ops.load(int(eval('self.n%d.max()' % (nn+1))),*np.dot([0,Nv[nn],0,0,0,0],axlwt)) # x y z mx my mz
 
     #  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    # shape functions for patching truck forces onto grillage nodes
     @staticmethod
     def hermite_shape_function(zeta,a): # using zeta and a as placeholders for normal coor + length of edge element
         # hermite shape functions
+        """
+
+        :param zeta: absolute position in x direction
+        :param a: absolute position in x direction
+        :return: Four terms [N1, N2, N3, N4] of hermite shape function
+
+        .. note::
+
+            The shape functions need verifications
+
+        """
         N1 = (1-3*zeta**2+2*zeta**3)
         N2 = (zeta-2*zeta**2+zeta**3)*a
         N3 = (3*zeta**2-2*zeta**3)
@@ -229,6 +332,17 @@ class OpenseesModel(Bridge):
 
     @staticmethod
     def linear_shape_function(zeta,eta):
+        """
+
+        :param zeta: absolute position in x direction
+        :param eta: absolute position in z direction
+        :return: Four terms [N1, N2, N3, N4] of Linear shape function
+
+        .. note::
+
+            The shape functions need verifications
+
+        """
         N1 = 0.25*(1-zeta)*(1-eta)
         N2 = 0.25*(1+zeta)*(1-eta)
         N3 = 0.25 * (1 + zeta) * (1 + eta)
@@ -238,6 +352,18 @@ class OpenseesModel(Bridge):
     #  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     def load_movingtruck(self,truck_pos,axlwts,axlspc,axlwidth):
+        """
+        Code handling moving truck simulation. This method loops for each position in the Vehicle class
+        This function handles the subfunctions
+        - searchnodes()
+        - load_positions()
+        -
+        :param truck_pos:
+        :param axlwts:
+        :param axlspc:
+        :param axlwidth:
+        :return:
+        """
         # from truck pos(X>0 and Z>0), determine relative location of front top axle on the bridge model
         # truck_pos is a list [X0, Z0]
         # read direction of axlwts and axlspc is from left (i.e. index = 0).
@@ -260,31 +386,8 @@ class OpenseesModel(Bridge):
             else:
                 print("load axle is out of bound of bridge grillage = ", X1)
 
-
 # --------------------------------------------------------------------------------------------------------------------------------
-    # i-node bending moment of element
-    def BendingMoment_i(cls,BendingNode):
-        cls.BendingNode =  BendingNode
-        moment_i = ops.eleForce(cls.BendingNode)[5] # Rotation about Z-axis
-        return int(moment_i)
 
-    # j-node bending moment
-    def BendingMoment_j(cls,BendingNodeEnd):
-        cls.BendingNodeEnd =  BendingNodeEnd
-        moment_j = ops.eleForce(cls.BendingNodeEnd)[11] # Rotation about Z-axis
-        return int(moment_j)
-
-    # i-node shear force
-    def ShearForce_i(cls,ShearNode):
-        cls.ShearNode =  ShearNode
-        shear_i = ops.eleForce(cls.ShearNode)[1] # Translation about Y-axis
-        return int(shear_i)
-
-    # j-node shear force
-    def ShearForce_j(cls,ShearNode):
-        cls.ShearNode =  ShearNode
-        shear_j = ops.eleForce(cls.ShearNode)[7] # Translation about Y-axis
-        return int(shear_j)
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Model generation objects

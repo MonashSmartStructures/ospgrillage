@@ -119,12 +119,14 @@ class StartPage(tk.Frame):
             self.Nodedetail = pd.read_excel(self.filepath, sheet_name='Node')
             self.Connectivitydetail = pd.read_excel(self.filepath, sheet_name='Connectivity')
             self.Memberdetail = pd.read_excel(self.filepath, sheet_name='Member')
+            self.membertrans = pd.read_excel(self.filepath, sheet_name='Member transformation')
             self.concreteprop = [-6.0, -0.004, -6.0, -0.014]
             self.steelprop = []
             self.beamelement = "ElasticTimoshenkoBeam"
 
             # instantiate OpenseesModel class first, set as attribute of ClassPage.
-            self.Bridge = OpenseesModel(self.Nodedetail, self.Connectivitydetail, self.beamelement, self.Memberdetail)
+            self.Bridge = OpenseesModel(self.Nodedetail, self.Connectivitydetail, self.beamelement, self.Memberdetail
+             ,self.membertrans)
 
             self.Bridge.assign_material_prop(self.concreteprop, self.steelprop)
             self.Bridge.create_Opensees_model()
@@ -132,10 +134,12 @@ class StartPage(tk.Frame):
                         "Nodedetail": self.Nodedetail,
                         "Connectivitydetail":self.Connectivitydetail,
                         "Memberdetail": self.Memberdetail,
+                        "Member transformation": self.membertrans,
                         "concreteprop":[-6.0, -0.004, -6.0, -0.014],
                         "steelprop":[],
                         "beamelement":"ElasticTimoshenkoBeam"}
             pickle.dump(bridgeit, open("save.p", "wb"))
+            print("bridge loaded and saved as {}".format("save.p"))
         except:
             print("no bridge loaded")
 
