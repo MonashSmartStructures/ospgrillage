@@ -49,12 +49,12 @@ class Grillage:
         """
         self.truckloading()
 
-    def summarize_bridge(self):
-        print('s')
     # order
     def truckloading(self):
         """
-
+        Truckloading directions is fixed at "X" and "Z" (orthogonal direction)
+        future versions for varying direction (of given angle or customized) needs
+        to be implemented
         :return:
         """
         # function to call moving force, with switcher depending on travelling direction : either X or Z direction
@@ -69,8 +69,9 @@ class Grillage:
             self.refPos_X = np.linspace(self.truckclass.initial_position[1], self.truckclass.travel_length,
                                         round(no_point))
 
+        # get coordinate of axles with respective to bridge global coordinates
         X, Y, weights = self.getaxles()
-        # for each position,
+        # for each positions in X and Y,
         for r in range(len(self.refPos_X)):
             # 1 recreate model instance
             self.recreatemodel_instance()
@@ -92,7 +93,8 @@ class Grillage:
 
     def getaxles(self):
         """
-
+        Function to return the coordinates of truck axles with respect
+        to the global coordinate of the bridge model
         :return:
         """
         # create array of truck axles X and Y lists for plotting
@@ -108,6 +110,17 @@ class Grillage:
         return xList, yList, weightlist
 
     def recreatemodel_instance(self):
+        """
+        Function for moving load analysis:
+        Due to the single instance of bridge model in Openseespy, the model
+        has to be recreated after each time increment of analysis.
+
+        Warning:
+        This is only limited for static grillage analysis. For dynamic analysis
+        (with time integration) this method is not feasible
+
+        :return:
+        """
         # method to run in between each time step of moving truck analysis
         self.OPBridge = OpenseesModel(self.bridgepickle["Nodedetail"], self.bridgepickle["Connectivitydetail"],
                                       self.bridgepickle["beamelement"], self.bridgepickle["Memberdetail"],
@@ -124,6 +137,10 @@ class Grillage:
 
 def runmoving(self):
     """
+    Code to call after Code implementing truck load onto bridge model
+    (recreate_model and truck loading)
+    The method communicates with Openseespy, running the inbuilt
+    functions for static analysis
 
     :param self:
     :return:

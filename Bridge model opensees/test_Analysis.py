@@ -17,24 +17,27 @@ def createvehicle():
     print("-----------setup truck-----------")
     # create truck
     RefTruck = vehicle(axlwts, axlspc, axlwidth, initial_position, travel_length, increment, direction)
-    return RefTruck
+    yield RefTruck
+    print("----------test on truck finish---")
 
 @pytest.fixture
 def createtestbridge():
     refbridge = pickle.load(open("save.p", "rb"))
     RefTr = createvehicle()
     RefBridge = Analysis.Grillage(refbridge,RefTr)
+    print("-------------setup grillage -------------")
     return RefBridge
 # - - - - - - - - - - - -
+# Tests for vehicle class
 def test_vehicle(createvehicle):
-    truck = createvehicle
-    assert truck.direction == 'X'
+    assert isinstance(createvehicle.direction,str)
+
 
 # test variation of input for vehicle class
 #           num, strings, bool, float, zero
-truckdatatype = {20,'X',True,10.5,0}
+truckdatatype = {int,str,bool,float}
 
-@pytest.mark.parametrize("truck",truckdatatype)
-def test_input_vehicle_alwts(createvehicle,truck):
-    truck = createvehicle
-    assert truck.direction == 'X'
+#@pytest.mark.parametrize('truck',truckdatatype)
+#def test_input_vehicle_alwts(createvehicle,truck):
+    #truckd = createvehicle
+    #assert isinstance(createvehicle.direction,truckdatatype)
