@@ -1,0 +1,25 @@
+# Pybridge - Opensees Module
+
+This page contains the guidelines 
+for using the Opensees (OP) module for grillage
+analysis.
+
+   
+
+## `Bridge` class
+
+The ```Bridge``` class object contains all information from bridge pickle file
+and hold it. 
+
+The class then creates an ```OpenseesModel``` object which uses ```Openseespy``` methods to 
+create the bridge model within the ```Openseespy``` framework.
+
+The ```Bridge``` class object and ```OpenseesModel``` object is only instantiated through the ```Grillage``` class
+
+## ```Grillage``` class
+
+The ```Grillage``` class takes two inputs: (1) a bridge pickle file, and (2) a ```vehicle``` class object.
+
+## Bridge pickle file format
+
+The bridge pickle file 

@@ -3,12 +3,22 @@ import matplotlib.pyplot as plt
 import openseespy.postprocessing.ops_vis as opsv
 # file containing functions adopting plot/visualization features
 # from Opensees post processing package version 3.2.2.6
-
+"""
+Module containing static methods that handles Openseespy/postprocessing.ops_vis moodule
+"""
 def plotOPmodel(self):
+    """
+    Function to plot model - showing options for nodes,
+
+    """
     # Display active model with Node tags and elements
     opsplt.plot_model("nodes")
 
 def plotBending(self):
+    """
+    Function to plot bending moment of model
+
+    """
     Ew = {}
     sfacMy = 1.e-2
     minY, maxY = opsv.section_force_diagram_3d('Mz', Ew, sfacMy)
@@ -16,6 +26,11 @@ def plotBending(self):
     plt.show()
 
 def plotShear(self):
+    """
+
+    :param self:
+    :return:
+    """
     Ew = {}
     sfacMy = 1.e-2
     minY, maxY = opsv.section_force_diagram_3d('Vy', Ew, sfacMy)
@@ -23,6 +38,11 @@ def plotShear(self):
     plt.show()
 
 def plotDeformation(self):
+    """
+
+    :param self:
+    :return:
+    """
     fig_wi_he = 30., 20.
     sfac = 1
     nep =17

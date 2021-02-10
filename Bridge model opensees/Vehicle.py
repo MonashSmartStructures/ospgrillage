@@ -44,9 +44,9 @@ class vehicle:
         check_negative(self.axles_weight)
         check_negative(self.axles_spacing)
         check_negative(self.width)
-        check_negative(self.initial_position)
         check_negative(self.travel_length)
         check_negative(self.increment)
+
 
 def check_negative(variable):
     """
@@ -54,5 +54,13 @@ def check_negative(variable):
     :param variable: Attribute of class
     :return: Raise Value error if negative detected
     """
-    if any(attri<0 for attri in variable):
-        raise ValueError("Values in :{} are negative".format(variable))
+    try:
+        iter(variable)
+        # iterable run check
+        if any(attri < 0 for attri in variable):
+            raise ValueError("Values in :{} are negative".format(variable))
+    except:
+        # not an iterable run check
+        if variable<0:
+            raise ValueError("Values in :{} is negative".format(variable))
+

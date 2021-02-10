@@ -35,8 +35,7 @@ class Grillage:
         # time series and load pattern options
         self.OPBridge.time_series()
         self.OPBridge.loadpattern()
-        # option to report
-        self.summarize_bridge()
+
         # plot
         #PlotWizard.plotOPmodel(self)
 
@@ -101,7 +100,7 @@ class Grillage:
         xList = [0, 0]
         yList = [0, self.truckclass.width]
         weightlist = [self.truckclass.axles_weight[0], self.truckclass.axles_weight[0]]  # first two axles ,first two inputs of axlwts
-        for i in range(len(axlspc)):
+        for i in range(len(xList)):
             last = xList[-1]  # get last element in current xList array
             for ycoor in [0, self.truckclass.width]:
                 xList.append(last + self.truckclass.axles_spacing[i])  # add axl spacing to current last element of xList
@@ -196,25 +195,25 @@ def runmoving(self):
 
 # # Uncomment here
 
-# with open("save.p","rb") as f:
-#     refbridge = pickle.load(f)
-#
-# refbridge["beamelement"] = 'elasticBeamColumn'
-#
-#  # 2 Define truck properties
-# axlwts = [800,3200,3200] # axle weights
-# axlspc = [2,2]          # axl spacings
-# axlwidth = 2            #axl widths
-# initial_position = [-3,6]    # start position of truck (ref point axle)
-# travel_length = 50          # distance (m)
-# increment = 2               # truck location increment
-# direction = "X"             # travel direction (global)
-#
-# # 3 create truck object
-# RefTruck = vehicle(axlwts,axlspc,axlwidth,initial_position,travel_length, increment,direction)
-# # 4 pass pickle file of bridge and truck object to grillage class.
-# RefBridge = Grillage(refbridge,RefTruck)
-# # 5 run method to perform analysis
-# RefBridge.perfromtruckanalysis()
-# breakpoint()
-# # 5 plots and save results
+with open("save.p","rb") as f:
+    refbridge = pickle.load(f)
+
+refbridge["beamelement"] = 'elasticBeamColumn'
+
+ # 2 Define truck properties
+axlwts = [800,3200,3200] # axle weights
+axlspc = [2,2]          # axl spacings
+axlwidth = 2            #axl widths
+initial_position = [-3,6]    # start position of truck (ref point axle)
+travel_length = 50          # distance (m)
+increment = 2               # truck location increment
+direction = "X"             # travel direction (global)
+
+# 3 create truck object
+RefTruck = vehicle(axlwts,axlspc,axlwidth,initial_position,travel_length, increment,direction)
+# 4 pass pickle file of bridge and truck object to grillage class.
+RefBridge = Grillage(refbridge,RefTruck)
+# 5 run method to perform analysis
+RefBridge.perfromtruckanalysis()
+breakpoint()
+# 5 plots and save results
