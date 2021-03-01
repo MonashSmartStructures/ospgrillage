@@ -1,0 +1,22 @@
+# Created by .ignore support plugin (hsz.mobi)
+.gitignore
+.idea/
+Bridge model opensees/CSV.csv
+Bridge model opensees/Data transfer and downloader/
+Bridge model opensees/Example Bridge CSV generator.py
+Bridge model opensees/README.txt
+Bridge model opensees/SN3595 Node.xlsx
+Bridge model opensees/SN3595 simple grillage.xlsx
+Bridge model opensees/__pycache__/Analysis.cpython-38.pyc
+Bridge model opensees/__pycache__/Bridge_member.cpython-38.pyc
+Bridge model opensees/__pycache__/Bridgemodel.cpython-38.pyc
+Bridge model opensees/__pycache__/OpenModellerInterface.cpython-38.pyc
+Bridge model opensees/__pycache__/PlotWizard.cpython-38.pyc
+Bridge model opensees/__pycache__/Vehicle.cpython-38.pyc
+Bridge model opensees/__pycache__/test_Analysis.cpython-38.pyc
+Bridge model opensees/docs/source/_static/
+Bridge model opensees/docs/source/_templates/
+Bridge model opensees/runrun.py
+Bridge model opensees/testbridge_ODB/
+Bridge model opensees/~$Benchmark bridge.xlsx
+Bridge model opensees/~$SN3595 Node.xlsx

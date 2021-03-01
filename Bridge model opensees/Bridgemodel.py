@@ -61,8 +61,8 @@ class Bridge:
 
 class OpenseesModel(Bridge):
     """
-    Class to create bridge model in Openseespy framework by passing
-    bridge model properties in `Bridge` class
+    Class to create bridge model in Openseespy framework based on input of
+    `Bridge` model class
     """
     # set modelbuilder
     def __init__(self,Nodedata,ConnectivityData,beamtype,MemberData,memtrans):
@@ -163,10 +163,13 @@ class OpenseesModel(Bridge):
         Code handling the definition of geometric transformation of members. Transformation
          specified in attribute of `Bridge` class.
         :return:
+
+        .. note::
+
+            This function needs the implementation of active skew modelling - consideration of orthorgonal element transform
+            for highly skewed (>50deg) grillages.
+
         """
-        #self.transfType = 'Linear'  # transformation type
-        #self.longitudinalTransf = 1  # tag
-        #self.transverseTransf = 2  # tag
 
         for ind in self.membtrans.index:
             tag = int(self.membtrans["Transform tag"][ind])
@@ -229,7 +232,10 @@ class OpenseesModel(Bridge):
                             np.float(member['Iz (m^4)'].max())]
         return sectioninput
     # ==================================================================================================
-
+    # ==================================================================================================
+    # Following sections contains code for MF implementation - this model needs to be segregated
+    # ==================================================================================================
+    # ==================================================================================================
     @classmethod
     def time_series(cls,defSeries = "Constant"):
         """

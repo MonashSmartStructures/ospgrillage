@@ -193,12 +193,12 @@ def runmoving(self):
 # - Analysis.py, Bridgemodel.py,PlotWizard.py,Vehicle.py
 # 1 load bridge pickle file
 
-# # Uncomment here
-
 with open("save.p","rb") as f:
     refbridge = pickle.load(f)
 
 refbridge["beamelement"] = 'elasticBeamColumn'
+
+# 1.1 Procedure to create bridge pickle file + save
 
  # 2 Define truck properties
 axlwts = [800,3200,3200] # axle weights
