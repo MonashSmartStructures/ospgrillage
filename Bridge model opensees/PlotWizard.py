@@ -9,7 +9,7 @@ Module containing static methods that handles Openseespy/postprocessing.ops_vis 
 def plotOPmodel(self):
     """
     Function to plot model - showing options for nodes,
-
+    test
     """
     # Display active model with Node tags and elements
     opsplt.plot_model("nodes")
