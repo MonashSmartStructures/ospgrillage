@@ -8,6 +8,9 @@ Bridge class and Openseesmodel class
 
 Example: Call structure
 -----------------
+
+
+
 .. code-block:: python
 
     with open("save.p","rb") as f:

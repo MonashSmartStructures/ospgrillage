@@ -70,7 +70,7 @@ class OpenseesModel(Bridge):
 
     def create_Opensees_model(self):
         """
-        Code handling the creation of bridge model in Openseespy framework
+        Code handling the generation of bridge model in Openseespy framework
         :return:
         """
         ops.wipe()                # clear model space prior to model generation
@@ -114,20 +114,38 @@ class OpenseesModel(Bridge):
         :return:
         """
         countdof = 0 # initialize counter of assigned boundary conditions
-        self.supportnode = self.Nodedata[self.Nodedata['support']==1].index.values
-        #self.supporttype = self.Nodedata[self.Nodedata['supflag']].index.values
-        for supp in self.supportnode: # loop for each cls.edgesupport items
-            fixvalpin = [1, 1, 1, 0, 0, 0] # pinned
-            fixvalroller = [0,1,1,0,0,0] #roller
-            if self.Nodedata['supflag'][supp] == 'F':# pinned
-                ops.fix(int(self.Nodedata['nodetag'][supp]), *fixvalpin) # x y z, mx my mz
+        self.supportnode = self.Nodedata[self.Nodedata['support'] != 0].index.values
+
+        #fixvalpin = [1, 1, 1, 0, 0, 0]  # pinned
+        #fixvalroller = [0, 1, 1, 0, 0, 0]  # roller
+        for supp in self.supportnode: # loop for each valuein supportnode list
+
+            test = self.Nodedata['fixity code'][supp]
+            fixval = self.get_fixity(test)
+            ops.fix(int(self.Nodedata['nodetag'][supp]), *fixval)
+
+            #if self.Nodedata['supflag'][supp] == 'F':# pinned
+            #    ops.fix(int(self.Nodedata['nodetag'][supp]), *fixvalpin) # x y z, mx my mz
                 #print("pinned node ->", int(self.Nodedata['nodetag'][supp]))
-            else: #roller
-                ops.fix(int(self.Nodedata['nodetag'][supp]), *fixvalroller) # x y z, mx my mz
+            #else: #roller
+            #    ops.fix(int(self.Nodedata['nodetag'][supp]), *fixvalroller) # x y z, mx my mz
                 #print("roller node ->", int(self.Nodedata['nodetag'][supp]))
             countdof +=1 # counter
         #print('DOF constrained = ', countdof)
-
+    @staticmethod
+    def get_fixity(fixity_code):
+        """
+        Static method to translate fixity code to communicate with Openseespy's boundary definition
+        :param fixity_code: list of string containing fixity symbol F for Free, R for restrained
+        :return: boundary: list of 1 and 0 for fixity information 1 = fix, 0 = free
+        """
+        #fixity code is a list contain 6 elements
+        #letters F (Free) or R (Restrained)
+        boundary = [ 0, 0, 0, 0, 0, 0]
+        for bd in range(len(boundary)):
+            if fixity_code[bd] == "R":
+                boundary[bd] = 1
+        return boundary
     # ==================================================================================================
 
     # create material tags
@@ -135,27 +153,25 @@ class OpenseesModel(Bridge):
         """
         Code handling the creation of material tags in Openseespy. Default concrete = 1
         """
-        self.concrete = 1  # number tag for concrete is "1"
+        self.concrete = 1  # default number tag for concrete is "1"
         ops.uniaxialMaterial("Concrete01", self.concrete, *self.concreteprop)
         #print('Concrete material defined')
     # ==================================================================================================
 
-    def ele_transform(self):
+    def ele_transform(self,transfType = "Linear"):
         """
         Code handling the definition of geometric transformation of members. Transformation
          specified in attribute of `Bridge` class.
         :return:
         """
-        self.transfType = 'Linear'  # transformation type
+        #self.transfType = 'Linear'  # transformation type
         #self.longitudinalTransf = 1  # tag
         #self.transverseTransf = 2  # tag
 
         for ind in self.membtrans.index:
             tag = int(self.membtrans["Transform tag"][ind])
             vxz = ast.literal_eval(self.membtrans["Vector"][ind])
-            ops.geomTransf(self.transfType, tag, *vxz)
-
-
+            ops.geomTransf(transfType, tag, *vxz)
 
         #ops.geomTransf(self.transfType, self.longitudinalTransf, *zaxis)
         #ops.geomTransf(self.transfType, self.transverseTransf, *xaxis)
@@ -196,8 +212,8 @@ class OpenseesModel(Bridge):
     def get_sectioninput(self,member):
         """
         Function to obtain member attribute from Bridge class attribute.
-        :param member:
-        :return:
+        :param member: int/str, section tag
+        :return: section input for member section matching section tag
         """
         # assignment input based on ele type
         if self.beameletype == "ElasticTimoshenkoBeam":
@@ -215,24 +231,24 @@ class OpenseesModel(Bridge):
     # ==================================================================================================
 
     @classmethod
-    def time_series(cls):
+    def time_series(cls,defSeries = "Constant"):
         """
         Code handling the time series generation for Openseespy. Default "Constant", tag 1
         :return:
         """
         #           time series type, time series tag
-        ops.timeSeries("Constant", 1)
+        ops.timeSeries(defSeries, 1)
 
     # ==================================================================================================
 
     @classmethod
-    def loadpattern(cls):
+    def loadpattern(cls,pat = "Plain"):
         """
         Code handling the pattern load case for Openseespy. Default "Plain", tag 1, load factor 1
         :return:
         """
         #           load pattern type, load pattern tag, load factor (1) ,
-        ops.pattern("Plain", 1, 1)
+        ops.pattern(pat, 1, 1)
 
     # ==================================================================================================
     # ==================================================================================================
@@ -321,7 +337,7 @@ class OpenseesModel(Bridge):
 
         .. note::
 
-            The shape functions need verifications
+            Further validation needed - trial on different bridge models
 
         """
         N1 = (1-3*zeta**2+2*zeta**3)
@@ -340,7 +356,7 @@ class OpenseesModel(Bridge):
 
         .. note::
 
-            The shape functions need verifications
+            Further validation needed - trial on different bridge models
 
         """
         N1 = 0.25*(1-zeta)*(1-eta)
@@ -358,8 +374,8 @@ class OpenseesModel(Bridge):
         - searchnodes()
         - load_positions()
         -
-        :param truck_pos:
-        :param axlwts:
+        :param truck_pos: Truck position [x,z]
+        :param axlwts: list , axle weights
         :param axlspc:
         :param axlwidth:
         :return:

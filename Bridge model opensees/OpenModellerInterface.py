@@ -125,11 +125,11 @@ class StartPage(tk.Frame):
             self.beamelement = "ElasticTimoshenkoBeam"
 
             # instantiate OpenseesModel class first, set as attribute of ClassPage.
-            self.Bridge = OpenseesModel(self.Nodedetail, self.Connectivitydetail, self.beamelement, self.Memberdetail
-             ,self.membertrans)
+            #self.Bridge = OpenseesModel(self.Nodedetail, self.Connectivitydetail, self.beamelement, self.Memberdetail
+            # ,self.membertrans)
 
-            self.Bridge.assign_material_prop(self.concreteprop, self.steelprop)
-            self.Bridge.create_Opensees_model()
+            #self.Bridge.assign_material_prop(self.concreteprop, self.steelprop)
+            #self.Bridge.create_Opensees_model()
             bridgeit = {"Name": "Reference Bridge 24.6m",
                         "Nodedetail": self.Nodedetail,
                         "Connectivitydetail":self.Connectivitydetail,

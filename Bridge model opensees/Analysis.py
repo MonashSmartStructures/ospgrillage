@@ -97,8 +97,8 @@ class Grillage:
         :return:
         """
         # create array of truck axles X and Y lists for plotting
-        xList = [0, 0]
-        yList = [0, self.truckclass.width]
+        xList = [0, 0] # starting position of ref axle , X coors
+        yList = [0, self.truckclass.width] # Y coors
         weightlist = [self.truckclass.axles_weight[0], self.truckclass.axles_weight[0]]  # first two axles ,first two inputs of axlwts
         for i in range(len(xList)):
             last = xList[-1]  # get last element in current xList array
@@ -204,7 +204,7 @@ refbridge["beamelement"] = 'elasticBeamColumn'
 axlwts = [800,3200,3200] # axle weights
 axlspc = [2,2]          # axl spacings
 axlwidth = 2            #axl widths
-initial_position = [-3,6]    # start position of truck (ref point axle)
+initial_position = [2,0]    # start position of truck (ref point axle)
 travel_length = 50          # distance (m)
 increment = 2               # truck location increment
 direction = "X"             # travel direction (global)

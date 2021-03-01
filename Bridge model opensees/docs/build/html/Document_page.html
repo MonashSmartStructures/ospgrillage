@@ -89,7 +89,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Pybridge - Opensees Module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#bridge-class"><code class="docutils literal notranslate"><span class="pre">Bridge</span></code> class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#grillage-class"><code class="docutils literal notranslate"><span class="pre">Grillage</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#bridge-pickle-file-format">Bridge pickle file format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#guidelines-for-bridge-pickle-file">Guidelines for bridge pickle file</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="rst/Bridgemodel.html">Bridge class and Openseesmodel class</a></li>
@@ -173,14 +173,72 @@ and hold it.</p>
 <p>The class then creates an <code class="docutils literal notranslate"><span class="pre">OpenseesModel</span></code> object which uses <code class="docutils literal notranslate"><span class="pre">Openseespy</span></code> methods to
 create the bridge model within the <code class="docutils literal notranslate"><span class="pre">Openseespy</span></code> framework.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">Bridge</span></code> class object and <code class="docutils literal notranslate"><span class="pre">OpenseesModel</span></code> object is only instantiated through the <code class="docutils literal notranslate"><span class="pre">Grillage</span></code> class</p>
+<p>Example: Using the bridge class</p>
+<hr class="docutils" />
+<p>.. code-block::python</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># initialize Bridge class object within Grillage class instance</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">OPBridge</span> <span class="o">=</span> <span class="n">OpenseesModel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bridgepickle</span><span class="p">[</span><span class="s2">&quot;Nodedetail&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">bridgepickle</span><span class="p">[</span><span class="s2">&quot;Connectivitydetail&quot;</span><span class="p">],</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">bridgepickle</span><span class="p">[</span><span class="s2">&quot;beamelement&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">bridgepickle</span><span class="p">[</span><span class="s2">&quot;Memberdetail&quot;</span><span class="p">],</span>
+                                  <span class="bp">self</span><span class="o">.</span><span class="n">bridgepickle</span><span class="p">[</span><span class="s2">&quot;Member transformation&quot;</span><span class="p">])</span>
+<span class="c1"># assign properties of concrete and steel</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">OPBridge</span><span class="o">.</span><span class="n">assign_material_prop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bridgepickle</span><span class="p">[</span><span class="s2">&quot;concreteprop&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">bridgepickle</span><span class="p">[</span><span class="s2">&quot;steelprop&quot;</span><span class="p">])</span>
+<span class="c1"># send attribute to OP framework to create OP model</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">OPBridge</span><span class="o">.</span><span class="n">create_Opensees_model</span><span class="p">()</span>
+
+<span class="c1"># time series and load pattern options</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">OPBridge</span><span class="o">.</span><span class="n">time_series</span><span class="p">()</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">OPBridge</span><span class="o">.</span><span class="n">loadpattern</span><span class="p">()</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="grillage-class">
 <h2><code class="docutils literal notranslate"><span class="pre">Grillage</span></code> class<a class="headerlink" href="#grillage-class" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">Grillage</span></code> class takes two inputs: (1) a bridge pickle file, and (2) a <code class="docutils literal notranslate"><span class="pre">vehicle</span></code> class object.</p>
+<p>Example: Using the grillage class</p>
+<hr class="docutils" />
+<p>.. code-block::python</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Properties of truck</span>
+<span class="n">axlwts</span> <span class="o">=</span> <span class="p">[</span><span class="mi">800</span><span class="p">,</span> <span class="mi">3200</span><span class="p">,</span> <span class="mi">3200</span><span class="p">]</span>
+<span class="n">axlspc</span> <span class="o">=</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
+<span class="n">axlwidth</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">initial_position</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">3.0875</span><span class="p">]</span>
+<span class="n">travel_length</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">increment</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">direction</span> <span class="o">=</span> <span class="s2">&quot;X&quot;</span>
+
+<span class="c1"># create Truck object</span>
+<span class="n">RefTruck</span> <span class="o">=</span> <span class="n">vehicle</span><span class="p">(</span><span class="n">axlwts</span><span class="p">,</span> <span class="n">axlspc</span><span class="p">,</span> <span class="n">axlwidth</span><span class="p">,</span> <span class="n">initial_position</span><span class="p">,</span> <span class="n">travel_length</span><span class="p">,</span> <span class="n">increment</span><span class="p">,</span> <span class="n">direction</span><span class="p">)</span>
+
+<span class="c1"># Open bridge pickle file</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;save.p&quot;</span><span class="p">,</span><span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">refbridge</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="c1"># create Grillage object</span>
+<span class="n">RefBridge</span> <span class="o">=</span> <span class="n">Grillage</span><span class="p">(</span><span class="n">refbridge</span><span class="p">,</span><span class="n">RefTruck</span><span class="p">)</span>
+
+<span class="c1"># perform moving truck analysis</span>
+<span class="n">RefBridge</span><span class="o">.</span><span class="n">perfromtruckanalysis</span><span class="p">()</span>
+</pre></div>
 </div>
-<div class="section" id="bridge-pickle-file-format">
-<h2>Bridge pickle file format<a class="headerlink" href="#bridge-pickle-file-format" title="Permalink to this headline">¶</a></h2>
-<p>The bridge pickle file</p>
+</div>
+<div class="section" id="guidelines-for-bridge-pickle-file">
+<h2>Guidelines for bridge pickle file<a class="headerlink" href="#guidelines-for-bridge-pickle-file" title="Permalink to this headline">¶</a></h2>
+<p>A bridge model is loaded through a pickle
+file which contain the bridge information.</p>
+<p>The pickle file is formatted to communicate with the classes and methods of the module. Note: no modifications should be
+performed with respect to the bridge pickle fill unless reviewed with changes in the classes and methods.</p>
+<p>The pickle file contains a dictionary of dataframas (pandas), each details the properties
+of the bridge. The entries include:</p>
+<ol class="simple">
+<li><p>Node data</p></li>
+<li><p>Connectivity data</p></li>
+<li><p>Member properties</p></li>
+<li><p>Material properties</p></li>
+</ol>
+<p>For more information of the data frame and its content please refer to the
+example excel file - ReferenceBridge.xlsx</p>
+<p>Example: bridge pickle file</p>
+<hr class="docutils" />
 </div>
 </div>
 
