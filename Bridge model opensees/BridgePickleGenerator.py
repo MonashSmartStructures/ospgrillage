@@ -4,10 +4,10 @@ import numpy as np
 import math
 
 class GrillageGenerator:
-    def __init__(self,longdim,transdim,skew, numlonggrid, numtransgrid, cantileveredge):
+    def __init__(self,longdim,width,skew, numlonggrid, numtransgrid, cantileveredge):
         # global dimensions of grillage
         self.longdim = longdim   # span , also c/c between support bearings
-        self.transdim = transdim # length of the bearing support - if skew  = 0 , this corresponds to width of bridge
+        self.width = width # length of the bearing support - if skew  = 0 , this corresponds to width of bridge
         self.skew = skew         # angle in degrees
         # Properties of grillage
         self.numlonggird = numlonggrid      # number of longitudinal beams
@@ -15,7 +15,7 @@ class GrillageGenerator:
         self.edgewidth = cantileveredge     # width of cantilever edge beam
 
         # instantiate matrices for geometric dependent properties
-        self.width = None                   # to be calculated automatically based on skew
+        self.transdim = None                   # to be calculated automatically based on skew
         self.breadth = None                 # to be calculated automatically based on skew
         self.spclonggirder = None           # to be automated
         self.spctransslab = None            # to be automated
@@ -53,7 +53,7 @@ class GrillageGenerator:
     # node functions
     def Nodedatageneration(self):
         # calculate grillage width
-        self.width = self.transdim * math.cos(self.skew / 180 * math.pi)  # determine width of grillage
+        self.transdim = self.width / math.cos(self.skew / 180 * math.pi)  # determine width of grillage
         # check for orthogonal mesh requirement
         self.checkskew()
         if self.orthomesh:
@@ -123,7 +123,6 @@ class GrillageGenerator:
             regBupdate = regBupdate[:-1] # remote last element (skew boundary)
         print(self.Nodedata)
 
-    #Nodedata, ConnectivityData, beamtype, MemberData, memtrans
 
     # Element connectivity functions
     def ConnectivityAutomation(self):
@@ -147,7 +146,8 @@ class GrillageGenerator:
 
     def long_grid_nodes(self):
         # determine coordinate of longitudinal girders
-        lastgirder = self.width - self.edgewidth  # coord of last girder
+
+        lastgirder = (self.width - self.edgewidth)   # coord of last girder
         noxgirder = np.linspace(self.edgewidth, lastgirder, self.numlonggird)
         step = np.hstack((np.hstack((0, noxgirder)), self.width))  # array containing z coordinate
         return step
