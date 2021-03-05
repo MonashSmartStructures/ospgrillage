@@ -39,11 +39,16 @@ class GrillageGenerator:
         self.noxspecial = None # array specifying custom coordinate of longitudinal nodes
         self.nozspecial = None # array specifying custom coordinate of transverse nodes
         self.skewthreshold = 20 # threshold for grillage to generate nodes with orthogonal mesh (units degree)
+        # to be added
+        # - special rule for multiple skew
+        # - rule for multiple span + multi skew
+        # - rule for pier
 
+        # Grillage automation procedure
+        # 1 run node generation
+        # 2 run Connectivity generation
+        # 3 prompt user to run member input
 
-        #run automations
-        #1 node
-        #2 Connectivity
 
     # node functions
     def Nodedatageneration(self):
@@ -55,7 +60,7 @@ class GrillageGenerator:
             # perform orthogonal meshing
             self.orthogonalmeshAutomation()
         else: # skew mesh requirement
-            # perform repeated step generation
+            # perform skewed mesh
             self.skewmeshAutomation()
 
 
@@ -69,21 +74,27 @@ class GrillageGenerator:
         nodetagcounter = 1 # counter for nodetag
 
         for pointz in step: # loop for each mesh point in z dir
-            for pointx in self.nox: # loop for each mesh point in x dir (nox)
+            noxupdate = self.nox - pointz*np.tan(self.skew/180*math.pi) # get nox for current step in transverse mesh
+            for pointx in noxupdate: # loop for each mesh point in x dir (nox)
                 # populate nodedata array - inputs [nodetag,x,y,z]
-                self.Nodedata.append([nodetagcounter,pointx,self.yelevation,pointz])
+                self.Nodedata.append([nodetagcounter,pointx,self.yelevation,pointz])    # NOTE here is where to change X Y plane
                 nodetagcounter+=1
         print(self.Nodedata)
 
     def orthogonalmeshAutomation(self):
         # Note special rule for nox does not apply to orthogonal mesh - automatically calculates the optimal ortho mesh
+        #             o o o o o o
+        #           o
+        #         o
+        #       o o o o o o
+        #         b    +  ortho
         self.breadth = self.transdim * math.sin(self.skew/180*math.pi)
 
-        step = self.long_grid_nodes()  # mesh points in z direction
-        # Generate nox based on two region: (A) orthogonal area, and (B) support triangular area
-        regA = np.linspace(0, self.breadth, self.mingridortho)
-        regB = np.linspace(regA[-1],self.longdim,len(step))
-        self.nox = np.hstack((regA[:-1],regB))
+        step = self.long_grid_nodes()  # mesh points in transverse direction
+        # Generate nox based on two orthogonal region: (A)  quadrilateral area, and (B)  triangular area
+        regA = np.linspace(0, self.breadth, self.mingridortho) # RegA consist of overlapping last element
+        regB = np.linspace(regA[-1],self.longdim,len(step))  # RegB first element overlap with RegA last element
+        self.nox = np.hstack((regA[:-1],regB))  # removed overlapping element
 
         # mesh region A
         nodetagcounter = 1 # counter for nodetag
@@ -100,9 +111,17 @@ class GrillageGenerator:
         for pointz in step: # loop for each mesh point in z dir
             for pointx in regBupdate: # loop for each mesh point in x dir (nox)
                 self.Nodedata.append([nodetagcounter, pointx, self.yelevation, pointz])
-            regBupdate = regBupdate[:-1]
-        # B2
+                nodetagcounter += 1
+            regBupdate = regBupdate[:-1] # remote last element (skew boundary)
 
+        # B2
+        regBupdate = -regB + regA[-1] # reinstantiate regBupdate
+        for pointz in reversed(step):
+            for pointx in regBupdate[1:]:
+                self.Nodedata.append([nodetagcounter, pointx, self.yelevation, pointz])
+                nodetagcounter += 1
+            regBupdate = regBupdate[:-1] # remote last element (skew boundary)
+        print(self.Nodedata)
 
     #Nodedata, ConnectivityData, beamtype, MemberData, memtrans
 
@@ -110,7 +129,12 @@ class GrillageGenerator:
     def ConnectivityAutomation(self):
         pass
 
+    # Functions to be run for defining inputs
     def MemberPropertyInput(self):
+        pass
+
+    #
+    def BoundaryCondInput(self):
         pass
 
     # subfunctions
