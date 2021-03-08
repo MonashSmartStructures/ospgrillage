@@ -204,6 +204,7 @@ refbridge["beamelement"] = 'elasticBeamColumn'
 axlwts = [800,3200,3200] # axle weights
 axlspc = [2,2]          # axl spacings
 axlwidth = 2            #axl widths
+
 initial_position = [2,0]    # start position of truck (ref point axle)
 travel_length = 50          # distance (m)
 increment = 2               # truck location increment
