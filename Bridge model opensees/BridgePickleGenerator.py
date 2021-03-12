@@ -205,7 +205,6 @@ class GrillageGenerator:
         for num_z in range(0, len(step)):
             # link nodes from region A
             if num_z == 0:
-                #pass
                 self.long_edge_1.append([reg_a_col, row_start + 1, 2])
             else:
                 self.long_mem.append([row_start + 1, reg_a_col, 1])
