@@ -4,14 +4,21 @@ This page contains the guidelines
 for using the Opensees (OP) module for grillage
 analysis.
 
-   
+## Overview
+
+The OPmodelwrapper module is a wrapper for ```Openseespy``` module. This wrapper adds capabilities to 
+Python intepreter to generate grillage models in ```Openseespy```. 
+
+The wrapper is designed for quick and easy grillage generation in a few basic command lines in Python 
+interface. It should provide a solid foundation for grillage analysis tool using ```Openseespy```. 
+
 
 ## `Bridge` class
 
-The ```Bridge``` class object contains all information from bridge pickle file
-and hold it. 
+The ```Bridge``` class object contains information of the bridge grillage model.
 
-The class then creates an ```OpenseesModel``` object which uses ```Openseespy``` methods to 
+The ```Bridge``` class object is passed into ```GrillageGenerator``` class object which 
+creates an ```OpenseesModel``` object which uses ```Openseespy``` methods to 
 create the bridge model within the ```Openseespy``` framework.
 
 The ```Bridge``` class object and ```OpenseesModel``` object is only instantiated through the ```Grillage``` class
@@ -68,25 +75,6 @@ ____________________
     # perform moving truck analysis
     RefBridge.perfromtruckanalysis()
 
-## Guidelines for bridge pickle file
 
-A bridge model is loaded through a pickle
-file which contain the bridge information.
-
-The pickle file is formatted to communicate with the classes and methods of the module. Note: no modifications should be 
- performed with respect to the bridge pickle fill unless reviewed with changes in the classes and methods. 
- 
-The pickle file contains a dictionary of dataframas (pandas), each details the properties
-of the bridge. The entries include:
-1) Node data
-2) Connectivity data
-3) Member properties
-4) Material properties
-
-For more information of the data frame and its content please refer to the 
-example excel file - ReferenceBridge.xlsx
-
-Example: bridge pickle file
-____________________
 
 

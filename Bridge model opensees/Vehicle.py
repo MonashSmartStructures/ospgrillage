@@ -1,5 +1,9 @@
+from collections import namedtuple
+
+
 class vehicle:
-    def __init__(self,axles_weight,axles_spacing,width,initial_position,travel_length, increment,direction): # UNIT: Newton (N) and meter (m)
+    def __init__(self, axles_weight, axles_spacing, width, initial_position, travel_length, increment,
+                 direction):  # UNIT: Newton (N) and meter (m)
         """Init class: use units Newton(N) and metre (m)"""
         # truck properties
         self.axles_weight = axles_weight
@@ -7,12 +11,11 @@ class vehicle:
         self.width = width
         self.L_truck = sum(axles_spacing)
 
-
         # movement properties
-        self.initial_position = initial_position # array [1x2]
-        self.travel_length = travel_length # float
-        self.increment = increment # float
-        self.direction = direction # string
+        self.initial_position = initial_position  # array [1x2]
+        self.travel_length = travel_length  # float
+        self.increment = increment  # float
+        self.direction = direction  # string
 
         # test of vehicle data
         self.check_data()
@@ -22,25 +25,25 @@ class vehicle:
         Function to verify inputs of class
         :return:
         """
-    # Input type
+        # Input type
         if type(self.axles_weight) != list or type(self.axles_spacing) != list:
             raise TypeError('Axles weight and axles_spacing input need to be list')
-        if not isinstance(self.width,(int,float)):
+        if not isinstance(self.width, (int, float)):
             raise TypeError('Truck width need to be a number')
-        if not isinstance(self.increment,(int,float)):
+        if not isinstance(self.increment, (int, float)):
             raise TypeError('Increment defined as a list - increment needs to be a float or int')
-        if not isinstance(self.travel_length,(int,float)):
+        if not isinstance(self.travel_length, (int, float)):
             raise TypeError('travel length defined as a list - increment needs to be a float or int')
-        if not isinstance(self.initial_position,(list)):
+        if not isinstance(self.initial_position, (list)):
             raise TypeError('Initial position needs to be list of coordinate [x,y,z] - default y = 0')
         # check direction - set direction if TypeError
-        if not isinstance(self.direction,str):
+        if not isinstance(self.direction, str):
             print("Truck direction needs to be a string [X Y or Z]")
             # set to default X direction
             self.direction = "X"
             print("setting direction to default X ")
 
-    # Check for non-negative value:
+        # Check for non-negative value:
         check_negative(self.axles_weight)
         check_negative(self.axles_spacing)
         check_negative(self.width)
@@ -61,6 +64,9 @@ def check_negative(variable):
             raise ValueError("Values in :{} are negative".format(variable))
     except:
         # not an iterable run check
-        if variable<0:
+        if variable < 0:
             raise ValueError("Values in :{} is negative".format(variable))
+
+
+move_path = namedtuple('Travel path', ['initial position', 'travel length', 'distance increment', 'direction'])
 
