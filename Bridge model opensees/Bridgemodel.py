@@ -82,9 +82,8 @@ class OpenseesModel(Bridge):
         self.ele_transform() # NEED ABSTRACTION
         # - default values are [0,0,1] for longitudinal, [1,0,0] for transverse
         self.assemble_element()
-        #self.create_ele_transform()
 
-    def generatemodel(self,ndm,ndf):
+    def generatemodel(self, ndm, ndf):
         """
         Code handling the start of bridge model generation - Opensees model space properties
         :param ndm: model dimension [Default 3 ]

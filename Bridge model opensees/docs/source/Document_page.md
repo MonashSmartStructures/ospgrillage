@@ -6,12 +6,21 @@ analysis.
 
 ## Overview
 
-The OPmodelwrapper module is a wrapper for ```Openseespy``` module. This wrapper adds capabilities to 
-Python intepreter to generate grillage models in ```Openseespy```. 
+The OPmodelwrapper module is a wrapper for ```Openseespy``` module. The aim of this module is to provide
+python users functions and a programmable interface in Python interpreter that generates structural
+grillage model in Open System for Earthquake Engineering Simulation (OpenSees) software framework.
 
 The wrapper is designed for quick and easy grillage generation in a few basic command lines in Python 
 interface. It should provide a solid foundation for grillage analysis tool using ```Openseespy```. 
 
+## Setup
+
+To run the wrapper, download from github link() and import the following files
+
+.. code-block::python
+
+    test
+    
 
 ## `Bridge` class
 
