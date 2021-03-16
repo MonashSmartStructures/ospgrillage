@@ -269,17 +269,24 @@ class GrillageGenerator:
         print('Elements automation complete for region B1 B2 and A')
 
     #
-    def boundary_cond_input(self,restraint_vector):
+    def boundary_cond_input(self, restraint_nodes, restraint_vector):
         """
-
+        Function to define support boundary conditions of grillage model
+        :param restraint_nodes: list of node tags to be restrained
         :param restraint_vector: list representing node restraint for Nx Ny Nz, Mx My Mz respectively.
                                     represented by 1 (fixed), and 0 (free)
         :return: populate self.support_node
         """
-        pass
+        for nodes in restraint_nodes:
+            self.support_nodes.append([nodes, restraint_vector])
 
-    def ele_transform_input(self,trans_tag):
-
+    def ele_transform_input(self,trans_tag, vector_xz):
+        """
+        Function to define element transform input for Opensees
+        :param vector_xz: list containing vector perpendicular to plane xz of member element
+        :param trans_tag: (int) tag for definition (default 1 to 6 see documentation)
+        :return: populate
+        """
         pass
 
     def modify_skew_threshold(self, new_angle):
@@ -301,14 +308,12 @@ class GrillageGenerator:
         vec = [x/length,y/length]
         return vec
 
-    def test_values(self):
-        pass
-
     def get_region_b(self, reg_a_end, step):
         """
         Function to calculate the node coordinate for skew region B
          -> triangular breadth along the longitudinal direction
-        :param reg_a_end: last element for regA (quadrilateral region)
+        :param step: list containing transverse nodes (along z dir)
+        :param reg_a_end: last node from regA (quadrilateral region)
         step
         :return: node coordinate for skew triangular area (region B1 or B2)
         """

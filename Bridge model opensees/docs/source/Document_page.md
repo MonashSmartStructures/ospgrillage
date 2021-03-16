@@ -1,14 +1,10 @@
-# Pybridge - Opensees Module
-
-This page contains the guidelines 
-for using the Opensees (OP) module for grillage
-analysis.
+# PyBridge Openseespy Wrapper
 
 ## Overview
 
 The OPmodelwrapper module is a wrapper for ```Openseespy``` module. The aim of this module is to provide
-python users functions and a programmable interface in Python interpreter that generates structural
-grillage model in Open System for Earthquake Engineering Simulation (OpenSees) software framework.
+python users a programmable interface in Python interpreter to evaluate structural grillages 
+in Open System for Earthquake Engineering Simulation (OpenSees) software framework.
 
 The wrapper is designed for quick and easy grillage generation in a few basic command lines in Python 
 interface. It should provide a solid foundation for grillage analysis tool using ```Openseespy```. 
@@ -16,9 +12,7 @@ interface. It should provide a solid foundation for grillage analysis tool using
 ## Setup
 
 To run the wrapper, download from github link() and import the following files
-
-.. code-block::python
-
+    
     test
     
 
@@ -36,8 +30,6 @@ The ```OpenseesModel``` object contains internal functions that communicates wit
 
 Example: Using the bridge class
 ____________________
-
-.. code-block::python
 
     # initialize Bridge class object within Grillage class instance
     self.OPBridge = OpenseesModel(self.bridgepickle["Nodedetail"], self.bridgepickle["Connectivitydetail"],
@@ -65,8 +57,6 @@ The ```Grillage``` class takes two inputs:
 
 An example of using the ```Grillage``` class in Python Interface is presented as follows:
 ____________________
-
-.. code-block::python
 
     # Properties of truck
     axlwts = [800, 3200, 3200]
