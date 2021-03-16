@@ -55,9 +55,15 @@ ____________________
 
 ## ```Grillage``` class
 
-The ```Grillage``` class takes two inputs: (1) a bridge pickle file, and (2) a ```vehicle``` class object.
+The ```Grillage``` class performs analysis on the input bridge based on the input vehicle 
+properties and traverse pattern.
 
-Example: Using the grillage class
+The ```Grillage``` class takes two inputs:
+(1) bridge class object - created or loaded from GrillageGenerator, 
+(2) A ```vehicle``` named tuple
+(3) 
+
+An example of using the ```Grillage``` class in Python Interface is presented as follows:
 ____________________
 
 .. code-block::python
@@ -74,7 +80,7 @@ ____________________
     # create Truck object
     RefTruck = vehicle(axlwts, axlspc, axlwidth, initial_position, travel_length, increment, direction)
 
-    # Open bridge pickle file
+    # Load bridge properties, or generate new bridge model data 
     with open("save.p","rb") as f:
         refbridge = pickle.load(f)
     
