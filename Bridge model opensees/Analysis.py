@@ -9,35 +9,42 @@ from Vehicle import *
 import pickle
 import PlotWizard
 
-class Grillage:
-    """
-    Grillage class
-    """
-    def __init__(self,bridgepickle,truckclass):
-        """
 
-        :param bridgepickle:
+class MovingLoadAnalysis:
+    """
+    Moving force class. This class handles a given bridge model (either an Opensees model or otherwise specified)
+    , a moving vehicle object (class) and a traverse pattern (namedtuple).
+    """
+
+    def __init__(self, bridge_obj, truck_class, traverse_prop, analysis_type):
+        """
+        Create the MovingLoadAnalysis class object
+        :param bridge_obj:
         :param truckclass:
         """
         # assign attributes
-        self.bridgepickle = bridgepickle
-        self.truckclass = truckclass
+        self.traverse_prop = traverse_prop
+        self.truck_class = truck_class
+        self.bridge_obj = bridge_obj
 
-        # initialize Bridge class object within Grillage class instance
-        self.OPBridge = OpenseesModel(self.bridgepickle["Nodedetail"], self.bridgepickle["Connectivitydetail"],
-                                        self.bridgepickle["beamelement"], self.bridgepickle["Memberdetail"],
-                                      self.bridgepickle["Member transformation"])
-        # assign properties of concrete and steel
-        self.OPBridge.assign_material_prop(self.bridgepickle["concreteprop"], self.bridgepickle["steelprop"])
-        # send attribute to OP framework to create OP model
-        self.OPBridge.create_Opensees_model()
+        if analysis_type == "Opensees":
+            # initialize Bridge class object within Grillage class instance
+            self.OPBridge = OpenseesModel(self.bridge_obj["Nodedetail"], self.bridge_obj["Connectivitydetail"],
+                                          self.bridge_obj["beamelement"], self.bridge_obj["Memberdetail"],
+                                          self.bridge_obj["Member transformation"])
+            # assign properties of concrete and steel
+            self.OPBridge.assign_material_prop(self.bridge_obj["concreteprop"], self.bridge_obj["steelprop"])
+            # send attribute to OP framework to create OP model
+            self.OPBridge.create_Opensees_model()
 
-        # time series and load pattern options
-        self.OPBridge.time_series()
-        self.OPBridge.loadpattern()
+            # time series and load pattern options
+            self.OPBridge.time_series(defSeries="Linear")
+            self.OPBridge.loadpattern(pat="Plain")
+        else:
+            pass
 
         # plot
-        #PlotWizard.plotOPmodel(self)
+        # PlotWizard.plotOPmodel(self)
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -57,84 +64,72 @@ class Grillage:
         :return:
         """
         # function to call moving force, with switcher depending on travelling direction : either X or Z direction
-        if self.truckclass.direction == 'X':
-            no_point = (self.truckclass.initial_position[0] + self.truckclass.travel_length
-                        + self.truckclass.increment) / self.truckclass.increment
-            self.refPos_X = np.linspace(self.truckclass.initial_position[0], self.truckclass.travel_length,
+        if self.traverse_prop.direction == 'X':
+            no_point = (self.traverse_prop.initial_position[0] + self.traverse_prop.length
+                        + self.traverse_prop.increment) / self.traverse_prop.increment
+            self.refPos_X = np.linspace(self.traverse_prop.initial_position[0], self.traverse_prop.length,
                                         round(no_point))
         else:  # direction is 'Z'
-            no_point = (self.truckclass.initial_position[1] + self.truckclass.travel_length
-                        + self.truckclass.increment) / self.truckclass.increment
-            self.refPos_X = np.linspace(self.truckclass.initial_position[1], self.truckclass.travel_length,
+            no_point = (self.traverse_prop.initial_position[1] + self.traverse_prop.length
+                        + self.traverse_prop.increment) / self.traverse_prop.increment
+            self.refPos_X = np.linspace(self.traverse_prop.initial_position[1], self.traverse_prop.length,
                                         round(no_point))
 
         # get coordinate of axles with respective to bridge global coordinates
         X, Y, weights = self.getaxles()
         # for each positions in X and Y,
-        for r in range(len(self.refPos_X)):
+        for index, r in enumerate(self.refPos_X):
             # 1 recreate model instance
-            self.recreatemodel_instance()
+            # self.recreatemodel_instance()
+            if index != 0:  # not first step
+                self.remove_previous_analysis()
             # 2 position axle loads at r onto OPmodel
             for i in range(len(X)):
                 # for each value is X (Xlist) for truck axle, impose load into model
-                currentpos = [X[i] + self.refPos_X[r], Y[i] + self.truckclass.initial_position[1]]
+                currentpos = [X[i] + self.refPos_X[index], Y[i] + self.traverse_prop.initial_position[1]]
 
                 # set axle load onto bridge
                 try:
                     self.OPBridge.load_position(currentpos, weights[i])
-                    print("axles position =",currentpos)
+                    print("axles position =", currentpos)
                 except:
                     print("axle no longer on bridge, move to next")
 
             # 3 run analysis for current position
-            runmoving(self)
-            # save (BM. SF)
+
+            op_run_moving(self)
+
+
+    def remove_previous_analysis(self):
+        ops.remove('loadPattern',1)
+
+        self.OPBridge.loadpattern(pat="Plain")
 
     def getaxles(self):
         """
         Function to return the coordinates of truck axles with respect
-        to the global coordinate of the bridge model
+        to the global coordinate of the bridge model. Callable outside of class for readable axle positions
         :return:
         """
         # create array of truck axles X and Y lists for plotting
-        xList = [0, 0] # starting position of ref axle , X coors
-        yList = [0, self.truckclass.width] # Y coors
-        weightlist = [self.truckclass.axles_weight[0], self.truckclass.axles_weight[0]]  # first two axles ,first two inputs of axlwts
+        xList = [0, 0]  # starting position of ref axle , X coors
+        yList = [0, self.truck_class.width]  # Y coors
+        weightlist = [self.truck_class.axles_weight[0],
+                      self.truck_class.axles_weight[0]]  # first two axles ,first two inputs of axlwts
         for i in range(len(xList)):
             last = xList[-1]  # get last element in current xList array
-            for ycoor in [0, self.truckclass.width]:
-                xList.append(last + self.truckclass.axles_spacing[i])  # add axl spacing to current last element of xList
+            for ycoor in [0, self.truck_class.width]:
+                xList.append(
+                    last + self.truck_class.axles_spacing[i])  # add axl spacing to current last element of xList
                 yList.append(ycoor)  # add y coord to list
-                weightlist.append(self.truckclass.axles_weight[i + 1])
+                weightlist.append(self.truck_class.axles_weight[i + 1])
         return xList, yList, weightlist
 
-    def recreatemodel_instance(self):
-        """
-        Function for moving load analysis:
-        Due to the single instance of bridge model in Openseespy, the model
-        has to be recreated after each time increment of analysis.
-
-        Warning:
-        This is only limited for static grillage analysis. For dynamic analysis
-        (with time integration) this method is not feasible
-
-        :return:
-        """
-        # method to run in between each time step of moving truck analysis
-        self.OPBridge = OpenseesModel(self.bridgepickle["Nodedetail"], self.bridgepickle["Connectivitydetail"],
-                                      self.bridgepickle["beamelement"], self.bridgepickle["Memberdetail"],
-                                      self.bridgepickle["Member transformation"])
-        self.OPBridge.assign_material_prop(self.bridgepickle["concreteprop"], self.bridgepickle["steelprop"])
-        self.OPBridge.create_Opensees_model()
-
-        # in future version expand analysis recorder option
-        self.OPBridge.time_series()
-        self.OPBridge.loadpattern()
 
 # static methods
 # method to run OP framework - callable from outside of class instance
 
-def runmoving(self):
+def op_run_moving(self):
     """
     Code to call after Code implementing truck load onto bridge model
     (recreate_model and truck loading)
@@ -148,21 +143,22 @@ def runmoving(self):
 
     # wipe analysis
     ops.wipeAnalysis()
-
+    # ops.remove('loadPattern',1)
+    # create recorder
+    ops.recorder('Node', '-file', 'Disp.txt', '-time', '-node', 41, '-dof', 2, 'disp')
     # create SOE
     ops.system("BandGeneral")
-    ops.test('NormDispIncr', 1.0e-6, 6,2,0)
+    ops.test('NormDispIncr', 1.0e-6, 6, 2, 0)
     # create DOF number
     ops.numberer("RCM")
 
     # create constraint handler
-    ops.constraints("Transformation")
+    ops.constraints('Plain')
 
     # create integrator
     ops.integrator("LoadControl", 1.0)
 
     # create ODB object to record analysis results
-    #postproc.Get_Rendering.createODB("testbridge","loadcase")
 
     # create algorithm
     ops.algorithm("Linear")
@@ -171,49 +167,56 @@ def runmoving(self):
     ops.analysis("Static")
 
     # perform the analysis
-    ops.analyze(1)
-    # print features of model
-    #printModel()
-    #PlotWizard.plotOPmodel(self)
+    ops.analyze(10)
+    # Plotting features
+    # printModel()
+    # PlotWizard.plotOPmodel(self)
+    # get readable displacements
     print([ops.nodeDisp(1)[1], ops.nodeDisp(2)[1], ops.nodeDisp(3)[1],
            ops.nodeDisp(4)[1], ops.nodeDisp(5)[1], ops.nodeDisp(6)[1],
            ops.nodeDisp(7)[1], ops.nodeDisp(8)[1], ops.nodeDisp(9)[1],
            ops.nodeDisp(10)[1], ops.nodeDisp(11)[1]])
-    print(ops.eleResponse(1, 'xlocal'))
 
     # PlotWizard.py commands
-    #PlotWizard.plotBending(self)
-    #PlotWizard.plotShear(self)
-
+    # PlotWizard.plotBending(self)
+    # PlotWizard.plotShear(self)
+    # ops.wipeAnalysis()
     PlotWizard.plotDeformation(self)
+
     breakpoint()
-#-----------------------------------------------------------------------------------------------------------------------
+
+
+# -----------------------------------------------------------------------------------------------------------------------
 # Procedure to run grillage analysis (OP framework)
 # imports
 # - Analysis.py, Bridgemodel.py,PlotWizard.py,Vehicle.py
 # 1 load bridge pickle file
 
-with open("save.p","rb") as f:
+with open("save.p", "rb") as f:
     refbridge = pickle.load(f)
 
 refbridge["beamelement"] = 'elasticBeamColumn'
 
 # 1.1 Procedure to create bridge pickle file + save
 
- # 2 Define truck properties
-axlwts = [800,3200,3200] # axle weights
-axlspc = [2,2]          # axl spacings
-axlwidth = 2            #axl widths
+# 2 Define truck properties
+axlwts = [800, 3200, 3200]  # axle weights
+axlspc = [2, 2]  # axl spacings
+axlwidth = 2  # axl widths
 
-initial_position = [2,0]    # start position of truck (ref point axle)
-travel_length = 50          # distance (m)
-increment = 2               # truck location increment
-direction = "X"             # travel direction (global)
+initial_position = [2, 0]  # start position of truck (ref point axle)
+travel_length = 50  # distance (m)
+increment = 2  # truck location increment
+direction = "X"  # travel direction (global)
+analysis_type = "Opensees"
 
+# 2.1 traverse properties
+move_path = namedtuple('Travel_path', ('initial_position', 'length', 'increment', 'direction'))
+move_1 = move_path([2, 0],50,2,"X")
 # 3 create truck object
-RefTruck = vehicle(axlwts,axlspc,axlwidth,initial_position,travel_length, increment,direction)
+RefTruck = vehicle(axlwts, axlspc, axlwidth, initial_position, travel_length, increment, direction)
 # 4 pass pickle file of bridge and truck object to grillage class.
-RefBridge = Grillage(refbridge,RefTruck)
+RefBridge = MovingLoadAnalysis(refbridge, RefTruck, move_1,analysis_type)
 # 5 run method to perform analysis
 RefBridge.perfromtruckanalysis()
 breakpoint()

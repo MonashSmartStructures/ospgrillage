@@ -11,14 +11,14 @@ class vehicle:
         self.width = width
         self.L_truck = sum(axles_spacing)
 
-        # movement properties
-        self.initial_position = initial_position  # array [1x2]
-        self.travel_length = travel_length  # float
-        self.increment = increment  # float
-        self.direction = direction  # string
-
-        # test of vehicle data
-        self.check_data()
+        # # movement properties
+        # self.initial_position = initial_position  # array [1x2]
+        # self.travel_length = travel_length  # float
+        # self.increment = increment  # float
+        # self.direction = direction  # string
+        #
+        # # test of vehicle data
+        # self.check_data()
 
     def check_data(self):
         """
@@ -68,5 +68,5 @@ def check_negative(variable):
             raise ValueError("Values in :{} is negative".format(variable))
 
 
-move_path = namedtuple('Travel path', ['initial position', 'travel length', 'distance increment', 'direction'])
+#move_path = namedtuple('Travel_path', ['initial position', 'travel length', 'distance increment', 'direction'])
 

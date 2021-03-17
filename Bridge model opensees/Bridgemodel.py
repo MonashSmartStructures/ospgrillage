@@ -131,6 +131,7 @@ class OpenseesModel(Bridge):
                 #print("roller node ->", int(self.Nodedata['nodetag'][supp]))
             countdof +=1 # counter
         #print('DOF constrained = ', countdof)
+
     @staticmethod
     def get_fixity(fixity_code):
         """
@@ -162,11 +163,6 @@ class OpenseesModel(Bridge):
         Code handling the definition of geometric transformation of members. Transformation
          specified in attribute of `Bridge` class.
         :return:
-
-        .. note::
-
-            This function needs the implementation of active skew modelling - consideration of orthorgonal element transform
-            for highly skewed (>50deg) grillages.
 
         """
 
@@ -236,13 +232,13 @@ class OpenseesModel(Bridge):
     # ==================================================================================================
     # ==================================================================================================
     @classmethod
-    def time_series(cls,defSeries = "Constant"):
+    def time_series(cls,defSeries = "Linear"):
         """
         Code handling the time series generation for Openseespy. Default "Constant", tag 1
         :return:
         """
         #           time series type, time series tag
-        ops.timeSeries(defSeries, 1)
+        ops.timeSeries(defSeries, 1,)
 
     # ==================================================================================================
 

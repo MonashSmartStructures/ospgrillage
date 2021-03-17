@@ -21,3 +21,5 @@ Bridge model opensees/testbridge_ODB/
 Bridge model opensees/~$Benchmark bridge.xlsx
 Bridge model opensees/~$SN3595 Node.xlsx
 /keymaps/
+/Bridge model opensees/Disp.txt
+/Bridge model opensees/ReactionPY.txt
