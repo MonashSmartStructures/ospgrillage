@@ -1,0 +1,439 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Bridge class and Openseesmodel class &mdash; PyBridge OPframework 0.0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Grillage module" href="Analysis.html" />
+    <link rel="prev" title="Pybridge - Opensees Module" href="../Document_page.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> PyBridge OPframework
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../Document_page.html">Pybridge - Opensees Module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Bridge class and Openseesmodel class</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#example-call-structure">Example: Call structure</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Analysis.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Grillage</span></code> module</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyBridge OPframework</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Bridge class and Openseesmodel class</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/rst/Bridgemodel.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="bridge-class-and-openseesmodel-class">
+<h1>Bridge class and Openseesmodel class<a class="headerlink" href="#bridge-class-and-openseesmodel-class" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-Bridgemodel"></span><dl class="py class">
+<dt id="Bridgemodel.Bridge">
+<em class="property">class </em><code class="sig-prename descclassname">Bridgemodel.</code><code class="sig-name descname">Bridge</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Nodedata</span></em>, <em class="sig-param"><span class="n">ConnectivityData</span></em>, <em class="sig-param"><span class="n">beamtype</span></em>, <em class="sig-param"><span class="n">MemberData</span></em>, <em class="sig-param"><span class="n">membtrans</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Bridgemodel.Bridge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class containing bridge informations from Bridge Pickle file for use in Openseespy framework</p>
+<p>Class constructor - collecting the dataframes for bridge properties</p>
+<dl class="py method">
+<dt id="Bridgemodel.Bridge.assign_beam_member_prop">
+<em class="property">classmethod </em><code class="sig-name descname">assign_beam_member_prop</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">longbeam</span></em>, <em class="sig-param"><span class="n">LRbeam</span></em>, <em class="sig-param"><span class="n">edgebeam</span></em>, <em class="sig-param"><span class="n">slab</span></em>, <em class="sig-param"><span class="n">diaphragm</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Bridgemodel.Bridge.assign_beam_member_prop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setters for bridge properties - structural members</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>longbeam</strong> – </p></li>
+<li><p><strong>LRbeam</strong> – </p></li>
+<li><p><strong>edgebeam</strong> – </p></li>
+<li><p><strong>slab</strong> – </p></li>
+<li><p><strong>diaphragm</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Bridgemodel.Bridge.assign_material_prop">
+<em class="property">classmethod </em><code class="sig-name descname">assign_material_prop</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">concreteprop</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">steelprop</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Bridgemodel.Bridge.assign_material_prop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setters for bridge properties - Materials</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>concreteprop</strong> – </p></li>
+<li><p><strong>steelprop</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="Bridgemodel.OpenseesModel">
+<em class="property">class </em><code class="sig-prename descclassname">Bridgemodel.</code><code class="sig-name descname">OpenseesModel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Nodedata</span></em>, <em class="sig-param"><span class="n">ConnectivityData</span></em>, <em class="sig-param"><span class="n">beamtype</span></em>, <em class="sig-param"><span class="n">MemberData</span></em>, <em class="sig-param"><span class="n">memtrans</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Bridgemodel.OpenseesModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#Bridgemodel.Bridge" title="Bridgemodel.Bridge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bridgemodel.Bridge</span></code></a></p>
+<p>Class to create bridge model in Openseespy framework based on input of
+<cite>Bridge</cite> model class</p>
+<p>Class constructor - collecting the dataframes for bridge properties</p>
+<dl class="py method">
+<dt id="Bridgemodel.OpenseesModel.create_Opensees_model">
+<code class="sig-name descname">create_Opensees_model</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Bridgemodel.OpenseesModel.create_Opensees_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Code handling the generation of bridge model in Openseespy framework
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Bridgemodel.OpenseesModel.generatemodel">
+<code class="sig-name descname">generatemodel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ndm</span></em>, <em class="sig-param"><span class="n">ndf</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Bridgemodel.OpenseesModel.generatemodel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Code handling the start of bridge model generation - Opensees model space properties
+:param ndm: model dimension [Default 3 ]
+:param ndf: degree-of-freedoms for each model nodes [Default 6]</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Bridgemodel.OpenseesModel.createnodes">
+<code class="sig-name descname">createnodes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Bridgemodel.OpenseesModel.createnodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Code handling generation of nodes in Openseespy. Nodes specified in attribute of <cite>Bridge</cite> class
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Bridgemodel.OpenseesModel.boundaryconditions">
+<code class="sig-name descname">boundaryconditions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Bridgemodel.OpenseesModel.boundaryconditions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Code handling generation of boundary conditions in Openseespy. Boundary conditions specified
+in attribute of <cite>Bridge</cite> class.
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Bridgemodel.OpenseesModel.get_fixity">
+<em class="property">static </em><code class="sig-name descname">get_fixity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fixity_code</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Bridgemodel.OpenseesModel.get_fixity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Static method to translate fixity code to communicate with Openseespy’s boundary definition
+:param fixity_code: list of string containing fixity symbol F for Free, R for restrained
+:return: boundary: list of 1 and 0 for fixity information 1 = fix, 0 = free</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Bridgemodel.OpenseesModel.concrete_materialprop">
+<code class="sig-name descname">concrete_materialprop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Bridgemodel.OpenseesModel.concrete_materialprop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Code handling the creation of material tags in Openseespy. Default concrete = 1</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Bridgemodel.OpenseesModel.ele_transform">
+<code class="sig-name descname">ele_transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">transfType</span><span class="o">=</span><span class="default_value">'Linear'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Bridgemodel.OpenseesModel.ele_transform" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Code handling the definition of geometric transformation of members. Transformation</dt><dd><p>specified in attribute of <cite>Bridge</cite> class.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This function needs the implementation of active skew modelling - consideration of orthorgonal element transform
+for highly skewed (&gt;50deg) grillages.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Bridgemodel.OpenseesModel.assemble_element">
+<code class="sig-name descname">assemble_element</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Bridgemodel.OpenseesModel.assemble_element" title="Permalink to this definition">¶</a></dt>
+<dd><p>Code specifying generation of grillage elements.
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Bridgemodel.OpenseesModel.get_sectioninput">
+<code class="sig-name descname">get_sectioninput</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">member</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Bridgemodel.OpenseesModel.get_sectioninput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to obtain member attribute from Bridge class attribute.
+:param member: int/str, section tag
+:return: section input for member section matching section tag</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Bridgemodel.OpenseesModel.time_series">
+<em class="property">classmethod </em><code class="sig-name descname">time_series</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">defSeries</span><span class="o">=</span><span class="default_value">'Constant'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Bridgemodel.OpenseesModel.time_series" title="Permalink to this definition">¶</a></dt>
+<dd><p>Code handling the time series generation for Openseespy. Default “Constant”, tag 1
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Bridgemodel.OpenseesModel.loadpattern">
+<em class="property">classmethod </em><code class="sig-name descname">loadpattern</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pat</span><span class="o">=</span><span class="default_value">'Plain'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Bridgemodel.OpenseesModel.loadpattern" title="Permalink to this definition">¶</a></dt>
+<dd><p>Code handling the pattern load case for Openseespy. Default “Plain”, tag 1, load factor 1
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Bridgemodel.OpenseesModel.search_nodes">
+<code class="sig-name descname">search_nodes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Bridgemodel.OpenseesModel.search_nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to search grillage element emcompassing load position by
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Bridgemodel.OpenseesModel.load_position">
+<code class="sig-name descname">load_position</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pos</span></em>, <em class="sig-param"><span class="n">axlwt</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Bridgemodel.OpenseesModel.load_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Code handling the load definition for Openseespy.
+:param pos:
+:param axlwt:
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Bridgemodel.OpenseesModel.hermite_shape_function">
+<em class="property">static </em><code class="sig-name descname">hermite_shape_function</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">zeta</span></em>, <em class="sig-param"><span class="n">a</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Bridgemodel.OpenseesModel.hermite_shape_function" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>zeta</strong> – absolute position in x direction</p></li>
+<li><p><strong>a</strong> – absolute position in x direction</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Four terms [N1, N2, N3, N4] of hermite shape function</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Further validation needed - trial on different bridge models</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Bridgemodel.OpenseesModel.linear_shape_function">
+<em class="property">static </em><code class="sig-name descname">linear_shape_function</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">zeta</span></em>, <em class="sig-param"><span class="n">eta</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Bridgemodel.OpenseesModel.linear_shape_function" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>zeta</strong> – absolute position in x direction</p></li>
+<li><p><strong>eta</strong> – absolute position in z direction</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Four terms [N1, N2, N3, N4] of Linear shape function</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Further validation needed - trial on different bridge models</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Bridgemodel.OpenseesModel.load_movingtruck">
+<code class="sig-name descname">load_movingtruck</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">truck_pos</span></em>, <em class="sig-param"><span class="n">axlwts</span></em>, <em class="sig-param"><span class="n">axlspc</span></em>, <em class="sig-param"><span class="n">axlwidth</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Bridgemodel.OpenseesModel.load_movingtruck" title="Permalink to this definition">¶</a></dt>
+<dd><p>Code handling moving truck simulation. This method loops for each position in the Vehicle class
+This function handles the subfunctions
+- searchnodes()
+- load_positions()
+-
+:param truck_pos: Truck position [x,z]
+:param axlwts: list , axle weights
+:param axlspc:
+:param axlwidth:
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+<div class="section" id="example-call-structure">
+<h2>Example: Call structure<a class="headerlink" href="#example-call-structure" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;save.p&quot;</span><span class="p">,</span><span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">refbridge</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>After loading bridge pickle file,</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="Analysis.html" class="btn btn-neutral float-right" title="Grillage module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../Document_page.html" class="btn btn-neutral float-left" title="Pybridge - Opensees Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Justin Ngan, Colin Caprani.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
