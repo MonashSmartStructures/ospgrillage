@@ -32,15 +32,17 @@ class GrillageGenerator:
         self.trans_edge_1 = []
         self.trans_edge_2 = []  # np.array([],dtype="object")
         self.support_nodes = [] # to be populated by self.bound_cond_input
+        self.concrete_prop = []
+        self.steel_prop = []
 
         # rules for grillage automation - default values are in place, use keyword during class instantiation
-        self.min_longspacing = 1  # default 1m
+        self.min_long_spacing = 1  # default 1m
         self.max_long_spacing = 2  # default 1m
         self.min_trans_spacing = 1  # default 1m
         self.max_trans_spacing = 2  # default 2m
         self.trans_to_long_spacing = 1  # default 1m
-        self.min_grid_long = 9  # default 9 mesh
-        self.min_grid_trans = 5  # default 5 mesh
+        self.min_grid_long = 9  # default 9 mesh odd number
+        self.min_grid_trans = 5  # default 5 mesh odd number
         self.ortho_mesh = False  # boolean for grillages with skew < 15-20 deg
         self.y_elevation = 0  # default elevation of grillage wrt OPmodel coordinate system
         self.min_grid_ortho = 3  # for orthogonal mesh (skew>skew_threshold) region of orthogonal area default 3
@@ -83,17 +85,6 @@ class GrillageGenerator:
         self.op_create_elements()
 
         v = self.vector_xz_skew_mesh()
-
-    def op_model_space(self):
-        ops.model('basic', '-ndm', self.ndm, '-ndf', self.ndf)
-
-    def op_create_nodes(self):
-        for node_point in self.Nodedata:
-            ops.node(node_point[0], node_point[1], node_point[2], node_point[3])
-            # print("Node number: {} created".format(node_point[0]))
-
-    def op_create_elements(self):
-        pass
 
     def skew_mesh_automation(self):
         if self.nox_special is None:  # check  special rule for slab spacing, else proceed automation of node
@@ -293,7 +284,19 @@ class GrillageGenerator:
         self.skew_threshold = new_angle
         print("Skew mesh threshold (default 15) is modified to {}".format(self.skew_threshold))
 
-    # sub functions - not accessible from user interface
+    # functions to create bridge model in Opensees software
+    def op_model_space(self):
+        ops.model('basic', '-ndm', self.ndm, '-ndf', self.ndf)
+
+    def op_create_nodes(self):
+        for node_point in self.Nodedata:
+            ops.node(node_point[0], node_point[1], node_point[2], node_point[3])
+            # print("Node number: {} created".format(node_point[0]))
+
+    def op_create_elements(self):
+        pass
+
+    # sub functions
     def vector_xz_skew_mesh(self):
         """
         Function to calculate vector xz used for geometric transformation of local section properties

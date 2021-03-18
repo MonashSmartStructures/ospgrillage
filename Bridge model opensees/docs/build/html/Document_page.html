@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Pybridge - Opensees Module &mdash; PyBridge OPframework 0.0.1 documentation</title>
+  <title>PyBridge Openseespy Wrapper &mdash; PyBridge OPframework 0.0.1 documentation</title>
   
 
   
@@ -86,10 +86,12 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Pybridge - Opensees Module</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">PyBridge Openseespy Wrapper</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setup">Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#grillagegenerator-class"><code class="docutils literal notranslate"><span class="pre">GrillageGenerator</span></code> class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bridge-class"><code class="docutils literal notranslate"><span class="pre">Bridge</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#grillage-class"><code class="docutils literal notranslate"><span class="pre">Grillage</span></code> class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#movingforceanalysis-class"><code class="docutils literal notranslate"><span class="pre">MovingForceAnalysis</span></code> class</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="rst/Bridgemodel.html">Bridge class and Openseesmodel class</a></li>
@@ -142,7 +144,7 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Pybridge - Opensees Module</li>
+      <li>PyBridge Openseespy Wrapper</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -161,39 +163,65 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="pybridge-opensees-module">
-<h1>Pybridge - Opensees Module<a class="headerlink" href="#pybridge-opensees-module" title="Permalink to this headline">¶</a></h1>
-<p>This page contains the guidelines
-for using the Opensees (OP) module for grillage
-analysis.</p>
+  <div class="section" id="pybridge-openseespy-wrapper">
+<h1>PyBridge Openseespy Wrapper<a class="headerlink" href="#pybridge-openseespy-wrapper" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>The OPmodelwrapper module is a wrapper for <code class="docutils literal notranslate"><span class="pre">Openseespy</span></code> module. The aim of this module is to provide
-python users functions and a programmable interface in Python interpreter that generates structural
-grillage models for</p>
+python users a programmable interface in Python interpreter to evaluate structural grillages
+in Open System for Earthquake Engineering Simulation (OpenSees) software framework.</p>
 <p>The wrapper is designed for quick and easy grillage generation in a few basic command lines in Python
 interface. It should provide a solid foundation for grillage analysis tool using <code class="docutils literal notranslate"><span class="pre">Openseespy</span></code>.</p>
-<p>Create a OpenSees node.</p>
-<p>========================   ===========================================================================
-<code class="docutils literal notranslate"><span class="pre">nodeTag</span></code> |int|          node tag.
-<code class="docutils literal notranslate"><span class="pre">crds</span></code> |listf|           nodal coordinates.
-<code class="docutils literal notranslate"><span class="pre">ndf</span></code> |float|            nodal ndf. (optional)
-<code class="docutils literal notranslate"><span class="pre">mass</span></code> |listf|           nodal mass. (optional)
-<code class="docutils literal notranslate"><span class="pre">vel</span></code> |listf|            nodal velocities. (optional)
-<code class="docutils literal notranslate"><span class="pre">accel</span></code> |listf|          nodal accelerations. (optional)
-========================   ===========================================================================</p>
+</div>
+<div class="section" id="setup">
+<h2>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h2>
+<p>To run the wrapper, download from github link() and import the following files</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">test</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="grillagegenerator-class">
+<h2><code class="docutils literal notranslate"><span class="pre">GrillageGenerator</span></code> class<a class="headerlink" href="#grillagegenerator-class" title="Permalink to this headline">¶</a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">GrillageGenerator</span></code> class to</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">GrillageGenerator</span></code> class contains functions to create the bridge model in <code class="docutils literal notranslate"><span class="pre">Opensees</span></code> software.
+These functions starts with “op” in the function name.
+For example, <code class="docutils literal notranslate"><span class="pre">GrillageGenerator.op_create_nodes()</span></code>.</p>
+<p>Example using <code class="docutils literal notranslate"><span class="pre">GrillageGenerator</span></code> class:
+First step create the object instance</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">test_bridge</span> <span class="o">=</span> <span class="n">GrillageGenerator</span><span class="p">(</span><span class="n">long_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">skew</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">num_long_grid</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">cantilever_edge</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Next, input appropriate sections. For skew meshes, define for sections 1 to 4. For orthogonal
+meshes, define for sections 1 to 6. Table shows</p>
+<p>.. list-table:: Title
+:widths: 25 25 50
+:header-rows: 1</p>
+<ul class="simple">
+<li><ul>
+<li><p>Heading row 1, column 1</p></li>
+<li><p>Heading row 1, column 2</p></li>
+<li><p>Heading row 1, column 3</p></li>
+</ul>
+</li>
+<li><ul>
+<li><p>Row 1, column 1</p></li>
+<li></li>
+<li><p>Row 1, column 3</p></li>
+</ul>
+</li>
+<li><ul>
+<li><p>Row 2, column 1</p></li>
+<li><p>Row 2, column 2</p></li>
+<li><p>Row 2, column 3</p></li>
+</ul>
+</li>
+</ul>
 </div>
 <div class="section" id="bridge-class">
 <h2><code class="docutils literal notranslate"><span class="pre">Bridge</span></code> class<a class="headerlink" href="#bridge-class" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">Bridge</span></code> class object contains information of the bridge grillage model.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">Bridge</span></code> class object is passed into <code class="docutils literal notranslate"><span class="pre">GrillageGenerator</span></code> class object which
-creates an <code class="docutils literal notranslate"><span class="pre">OpenseesModel</span></code> object which uses <code class="docutils literal notranslate"><span class="pre">Openseespy</span></code> methods to
-create the bridge model within the <code class="docutils literal notranslate"><span class="pre">Openseespy</span></code> framework.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">Bridge</span></code> class object and <code class="docutils literal notranslate"><span class="pre">OpenseesModel</span></code> object is only instantiated through the <code class="docutils literal notranslate"><span class="pre">Grillage</span></code> class</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">OpenseesModel</span></code> object contains internal functions that communicates with <code class="docutils literal notranslate"><span class="pre">Openseespy</span></code> framework</p>
-<p>Example: Using the bridge class</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">GrillageGenerator</span></code> object has a <code class="docutils literal notranslate"><span class="pre">Bridge</span></code> class object.</p>
+<p>Example: How bridge class is called within Grillage generator</p>
 <hr class="docutils" />
-<p>.. code-block::python</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># initialize Bridge class object within Grillage class instance</span>
 <span class="bp">self</span><span class="o">.</span><span class="n">OPBridge</span> <span class="o">=</span> <span class="n">OpenseesModel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bridgepickle</span><span class="p">[</span><span class="s2">&quot;Nodedetail&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">bridgepickle</span><span class="p">[</span><span class="s2">&quot;Connectivitydetail&quot;</span><span class="p">],</span>
                                     <span class="bp">self</span><span class="o">.</span><span class="n">bridgepickle</span><span class="p">[</span><span class="s2">&quot;beamelement&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">bridgepickle</span><span class="p">[</span><span class="s2">&quot;Memberdetail&quot;</span><span class="p">],</span>
@@ -209,12 +237,16 @@ create the bridge model within the <code class="docutils literal notranslate"><s
 </pre></div>
 </div>
 </div>
-<div class="section" id="grillage-class">
-<h2><code class="docutils literal notranslate"><span class="pre">Grillage</span></code> class<a class="headerlink" href="#grillage-class" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">Grillage</span></code> class takes two inputs: (1) a bridge pickle file, and (2) a <code class="docutils literal notranslate"><span class="pre">vehicle</span></code> class object.</p>
-<p>Example: Using the grillage class</p>
+<div class="section" id="movingforceanalysis-class">
+<h2><code class="docutils literal notranslate"><span class="pre">MovingForceAnalysis</span></code> class<a class="headerlink" href="#movingforceanalysis-class" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">MovingForceAnalysis</span></code> class performs analysis on the input bridge based on the input vehicle
+properties and traverse pattern.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">MovingForceAnalysis</span></code> class takes two inputs:
+(1) bridge class object - created or loaded from GrillageGenerator,
+(2) A <code class="docutils literal notranslate"><span class="pre">vehicle</span></code> named tuple
+(3)</p>
+<p>Example: using <code class="docutils literal notranslate"><span class="pre">MovingForceAnalysis</span></code> class:</p>
 <hr class="docutils" />
-<p>.. code-block::python</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Properties of truck</span>
 <span class="n">axlwts</span> <span class="o">=</span> <span class="p">[</span><span class="mi">800</span><span class="p">,</span> <span class="mi">3200</span><span class="p">,</span> <span class="mi">3200</span><span class="p">]</span>
 <span class="n">axlspc</span> <span class="o">=</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
@@ -227,15 +259,15 @@ create the bridge model within the <code class="docutils literal notranslate"><s
 <span class="c1"># create Truck object</span>
 <span class="n">RefTruck</span> <span class="o">=</span> <span class="n">vehicle</span><span class="p">(</span><span class="n">axlwts</span><span class="p">,</span> <span class="n">axlspc</span><span class="p">,</span> <span class="n">axlwidth</span><span class="p">,</span> <span class="n">initial_position</span><span class="p">,</span> <span class="n">travel_length</span><span class="p">,</span> <span class="n">increment</span><span class="p">,</span> <span class="n">direction</span><span class="p">)</span>
 
-<span class="c1"># Open bridge pickle file</span>
+<span class="c1"># Load bridge properties, or generate new bridge model data </span>
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;save.p&quot;</span><span class="p">,</span><span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">refbridge</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
 <span class="c1"># create Grillage object</span>
-<span class="n">RefBridge</span> <span class="o">=</span> <span class="n">Grillage</span><span class="p">(</span><span class="n">refbridge</span><span class="p">,</span><span class="n">RefTruck</span><span class="p">)</span>
+<span class="n">Analysis_1</span> <span class="o">=</span> <span class="n">MovingForceAnalysis</span><span class="p">(</span><span class="n">refbridge</span><span class="p">,</span><span class="n">RefTruck</span><span class="p">)</span>
 
 <span class="c1"># perform moving truck analysis</span>
-<span class="n">RefBridge</span><span class="o">.</span><span class="n">perfromtruckanalysis</span><span class="p">()</span>
+<span class="n">Analysis_1</span><span class="o">.</span><span class="n">perfromtruckanalysis</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>

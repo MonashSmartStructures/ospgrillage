@@ -66,7 +66,3 @@ def check_negative(variable):
         # not an iterable run check
         if variable < 0:
             raise ValueError("Values in :{} is negative".format(variable))
-
-
-#move_path = namedtuple('Travel_path', ['initial position', 'travel length', 'distance increment', 'direction'])
-

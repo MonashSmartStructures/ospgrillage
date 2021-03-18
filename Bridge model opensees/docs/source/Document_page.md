@@ -16,19 +16,39 @@ To run the wrapper, download from github link() and import the following files
     test
     
 
+## `GrillageGenerator` class
+
+Use `GrillageGenerator` class to 
+
+The `GrillageGenerator` class contains functions to create the bridge model in `Opensees` software. 
+These functions starts with "op" in the function name. 
+For example, `GrillageGenerator.op_create_nodes()`.
+
+Example using `GrillageGenerator` class:
+First step create the object instance
+    
+    test_bridge = GrillageGenerator(long_dim=10,width=5,skew=45, num_long_grid=4, num_trans_grid=13, cantilever_edge=1)
+
+Next, input appropriate sections. For skew meshes, define for sections 1 to 4. For orthogonal
+meshes, define for sections 1 to 6. Refer following table and figure for section information of
+bridge model
+
+| Tags    | Skew mesh| Orthogonal mesh |
+| ----------- | ----------- | ----------- |
+| 1   | Longitudinal beam    | | 
+| 2   | Longitudinal edge beams        |
+| 3   | Transverse slab        |
+| 4   | Transverse edge slab         |
+| 5   | Text        |
+| 6   | Text        |
+
+
+
 ## `Bridge` class
 
-The ```Bridge``` class object contains information of the bridge grillage model.
+A `GrillageGenerator` object has a `Bridge` class object. 
 
-The ```Bridge``` class object is passed into ```GrillageGenerator``` class object which 
-creates an ```OpenseesModel``` object which uses ```Openseespy``` methods to 
-create the bridge model within the ```Openseespy``` framework.
-
-The ```Bridge``` class object and ```OpenseesModel``` object is only instantiated through the ```Grillage``` class
-
-The ```OpenseesModel``` object contains internal functions that communicates with ```Openseespy``` framework
-
-Example: Using the bridge class
+Example: How bridge class is called within Grillage generator
 ____________________
 
     # initialize Bridge class object within Grillage class instance
@@ -44,18 +64,17 @@ ____________________
     self.OPBridge.time_series()
     self.OPBridge.loadpattern()
 
+## ```MovingForceAnalysis``` class
 
-## ```Grillage``` class
-
-The ```Grillage``` class performs analysis on the input bridge based on the input vehicle 
+The ```MovingForceAnalysis``` class performs analysis on the input bridge based on the input vehicle 
 properties and traverse pattern.
 
-The ```Grillage``` class takes two inputs:
+The ```MovingForceAnalysis``` class takes two inputs:
 (1) bridge class object - created or loaded from GrillageGenerator, 
 (2) A ```vehicle``` named tuple
 (3) 
 
-An example of using the ```Grillage``` class in Python Interface is presented as follows:
+Example: using ```MovingForceAnalysis``` class:
 ____________________
 
     # Properties of truck
@@ -75,10 +94,10 @@ ____________________
         refbridge = pickle.load(f)
     
     # create Grillage object
-    RefBridge = Grillage(refbridge,RefTruck)
+    Analysis_1 = MovingForceAnalysis(refbridge,RefTruck)
     
     # perform moving truck analysis
-    RefBridge.perfromtruckanalysis()
+    Analysis_1.perfromtruckanalysis()
 
 
 
