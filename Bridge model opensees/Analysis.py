@@ -40,7 +40,7 @@ class MovingLoadAnalysis:
             # time series and load pattern options
             self.OPBridge.time_series(defSeries="Linear")
             self.OPBridge.loadpattern(pat="Plain")
-        else:
+        else: # Add more options for bridge model types (e.g. matlab)
             pass
 
         # plot

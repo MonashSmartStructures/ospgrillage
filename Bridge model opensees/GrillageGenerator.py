@@ -16,7 +16,7 @@ class GrillageGenerator:
         self.edge_width = cantilever_edge  # width of cantilever edge beam
 
         # instantiate matrices for geometric dependent properties
-        self.transdim = None  # to be calculated automatically based on skew
+        self.trans_dim = None  # to be calculated automatically based on skew
         self.breadth = None  # to be calculated automatically based on skew
         self.spclonggirder = None  # to be automated
         self.spctransslab = None  # to be automated
@@ -31,9 +31,10 @@ class GrillageGenerator:
         self.long_edge_2 = []
         self.trans_edge_1 = []
         self.trans_edge_2 = []  # np.array([],dtype="object")
-        self.support_nodes = [] # to be populated by self.bound_cond_input
+        self.support_nodes = []  # to be populated by self.bound_cond_input
         self.concrete_prop = []
         self.steel_prop = []
+        self.vxz_skew = []  # vector xz for skew members
 
         # rules for grillage automation - default values are in place, use keyword during class instantiation
         self.min_long_spacing = 1  # default 1m
@@ -66,34 +67,142 @@ class GrillageGenerator:
     # node functions
     def node_data_generation(self):
         # calculate grillage width
-        self.transdim = self.width / math.cos(self.skew / 180 * math.pi)  # determine width of grillage
+        self.trans_dim = self.width / math.cos(self.skew / 180 * math.pi)  # determine width of grillage
         # check for orthogonal mesh requirement
         self.check_skew()
+
+        # 1 create Opensees model space
+        self.op_model_space()
         # procedure to generate node and connectivity data of Opensees Model
         if self.ortho_mesh:
             print("orthogonal meshing, skew angle {} greater than threshold {} ".format(self.skew, self.skew_threshold))
             # perform orthogonal meshing
             self.orthogonal_mesh_automation()
+            v = self.vector_xz_skew_mesh()
+            # three ele transform for skew mesh
+            self.op_ele_transform_input(1, [0, 0, 1])  # x dir members
+            self.op_ele_transform_input(2, [v[0], 0, v[1]])  # z dir members (skew)
+            self.op_ele_transform_input(3, [1, 0, 0])  # z dir members orthogonal
         else:  # skew mesh requirement
             print("skew meshing, skew angle {} less than threshold {} ".format(self.skew, self.skew_threshold))
             # perform skewed mesh
             self.skew_mesh_automation()
+            v = self.vector_xz_skew_mesh()
+            # two ele transformation for skew mesh
+            self.op_ele_transform_input(1, [0, 0, 1])  # x dir members
+            self.op_ele_transform_input(2, [v[0], 0, v[1]])  # z dir members (skew)
 
         # procedure to create bridge in Opensees software framework
-        self.op_model_space()
-        self.op_create_nodes()
-        self.op_create_elements()
 
-        v = self.vector_xz_skew_mesh()
+        self.op_create_nodes()
+
+        self.op_fix()
+
+    #
+    def boundary_cond_input(self, restraint_nodes, restraint_vector):
+        """
+        Function to define support boundary conditions of grillage model
+        :param restraint_nodes: list of node tags to be restrained
+        :param restraint_vector: list representing node restraint for Nx Ny Nz, Mx My Mz respectively.
+                                    represented by 1 (fixed), and 0 (free)
+        :return: populate self.support_node
+        """
+        for nodes in restraint_nodes:
+            self.support_nodes.append([nodes, restraint_vector])
+
+    def op_ele_transform_input(self, trans_tag, vector_xz, transform_type='Linear'):
+        """
+        Function to define element transform input for Opensees
+        :param transform_type:
+        :param vector_xz: list containing vector perpendicular to plane xz of member element
+        :param trans_tag: (int) tag for definition (default 1 to 6 see documentation)
+        :return: populate
+        """
+
+        ops.geomTransf(transform_type, trans_tag, *vector_xz)
+
+    def modify_skew_threshold(self, new_angle):
+        self.skew_threshold = new_angle
+        print("Skew mesh threshold (default 15) is modified to {}".format(self.skew_threshold))
+
+    # functions to create bridge model in Opensees software
+    def op_model_space(self):
+        ops.model('basic', '-ndm', self.ndm, '-ndf', self.ndf)
+
+    def op_create_nodes(self):
+        for node_point in self.Nodedata:
+            ops.node(node_point[0], node_point[1], node_point[2], node_point[3])
+            # print("Node number: {} created".format(node_point[0]))
+
+    def op_create_elements(self, op_member_prop_class, trans_tag, beam_ele_type, expression='long_mem'):
+        # element list in attributes
+        grillage_section = eval("self.{}".format(expression))
+
+        #         element  tag   *[ndI ndJ]  A  E  G  Jx  Iy   Iz  transfOBJs
+        for ele in grillage_section:
+            ops.element(beam_ele_type, ele[3],
+                        *[ele[0], ele[1]], *op_member_prop_class, trans_tag)  ###
+
+    def op_fix(self):
+        pass
+
+    # sub functions
+    def vector_xz_skew_mesh(self):
+        """
+        Function to calculate vector xz used for geometric transformation of local section properties
+        to match skew angle
+        :return: vector parallel to plane xz of member (see geotransform Opensees) for skew members (member tag 5)
+        """
+        # rotated 90 deg clockwise (x,y) -> (y,-x)
+        x = self.width
+        y = -(-self.breadth)
+        # normalize
+        length = math.sqrt(x ** 2 + y ** 2)
+        vec = [x / length, y / length]
+        return vec
+
+    def get_region_b(self, reg_a_end, step):
+        """
+        Function to calculate the node coordinate for skew region B
+         -> triangular breadth along the longitudinal direction
+        :param step: list containing transverse nodes (along z dir)
+        :param reg_a_end: last node from regA (quadrilateral region)
+        step
+        :return: node coordinate for skew triangular area (region B1 or B2)
+        """
+        regB = [reg_a_end]  # initiate array regB
+        for node in range(2, len(step)):  # minus 2 to ignore first and last element of step
+            regB.append(self.long_dim - step[-node] * np.tan(self.skew / 180 * math.pi))
+        # after append, add last element - self.long_dim
+        regB.append(self.long_dim)
+        regB = np.array(regB)
+        return regB
+
+    def check_skew(self):
+        # checks skew
+        if self.skew > self.skew_threshold:
+            self.ortho_mesh = True
+
+    def long_grid_nodes(self):
+        """
+        Function to output array of grid nodes along longitudinal direction
+        :return: step: array/list containing node spacings along longitudinal direction (float)
+        """
+
+        last_girder = (self.width - self.edge_width)  # coord of last girder
+        nox_girder = np.linspace(self.edge_width, last_girder, self.num_long_gird)
+        step = np.hstack((np.hstack((0, nox_girder)), self.width))  # array containing z coordinate
+        return step
 
     def skew_mesh_automation(self):
         if self.nox_special is None:  # check  special rule for slab spacing, else proceed automation of node
             self.nox = np.linspace(0, self.long_dim, self.num_trans_grid)  # array like containing node x cooridnate
         else:
             self.nox = self.nox_special  # assign custom array to nox array
-        self.breadth = self.transdim * math.sin(self.skew / 180 * math.pi)  # length of skew edge in x dir
+        self.breadth = self.trans_dim * math.sin(self.skew / 180 * math.pi)  # length of skew edge in x dir
         step = self.long_grid_nodes()  # mesh points in z direction
         nodetagcounter = 1  # counter for nodetag
+        eletagcounter = 1  # counter for eletag
 
         for pointz in step:  # loop for each mesh point in z dir
             noxupdate = self.nox - pointz * np.tan(
@@ -109,28 +218,34 @@ class GrillageGenerator:
                 cumulative_row_z = node_row_z * len(self.nox)  # incremental nodes per step (node grid along transverse)
                 next_cumulative_row_z = (node_row_z + 1) * len(
                     self.nox)  # increment nodes after next step (node grid along transverse)
+                # procedure to create connectivity for x dir members
                 if node_row_z == 0 or node_row_z == len(step) - 1:  # first and last row are edge beams
                     self.long_edge_1.append([cumulative_row_z + node_col_x, cumulative_row_z + node_col_x + 1,
-                                             2])  # record as edge beam with section 2
+                                             2, eletagcounter])  # record as edge beam with section 2
+                    eletagcounter += 1
                 else:
                     self.long_mem.append([cumulative_row_z + node_col_x, cumulative_row_z + node_col_x + 1,
-                                          1])  # record as longitudinal beam with section 1
-
-                if next_cumulative_row_z == nodetagcounter - 1:
+                                          1, eletagcounter])  # record as longitudinal beam with section 1
+                    eletagcounter += 1
+                # procedure to create connectivity for z dir members (including skew members)
+                if next_cumulative_row_z == nodetagcounter - 1:  # last row of line mesh z
                     pass
                 elif cumulative_row_z + node_col_x - node_row_z * len(
-                        self.nox) == 1:  # check if transverse is support edge
+                        self.nox) == 1:  # check if coincide with edge of line mesh z
                     self.trans_edge_1.append(
                         [cumulative_row_z + node_col_x, next_cumulative_row_z + node_col_x,
-                         4])  # record as edge slab with section 4
+                         4, eletagcounter])  # record as edge slab with section 4
+                    eletagcounter += 1
                 else:
                     self.trans_mem.append([cumulative_row_z + node_col_x, next_cumulative_row_z + node_col_x,
-                                           3])  # record as slab with section 3
+                                           3, eletagcounter])  # record as slab with section 3
+                    eletagcounter += 1
             if next_cumulative_row_z >= len(self.nox) * len(step):  # when loop last row
                 pass
             else:
                 self.trans_edge_2.append([cumulative_row_z + node_col_x + 1, next_cumulative_row_z + node_col_x + 1,
-                                          4])  # record opposite edge slab with section 4
+                                          4, eletagcounter])  # record opposite edge slab with section 4
+                eletagcounter += 1
         print(self.trans_mem)
 
     def orthogonal_mesh_automation(self):
@@ -140,7 +255,7 @@ class GrillageGenerator:
         #         o
         #       o o o o o o
         #         b    +  ortho
-        self.breadth = self.transdim * math.sin(self.skew / 180 * math.pi)  # length of skew edge in x dir
+        self.breadth = self.trans_dim * math.sin(self.skew / 180 * math.pi)  # length of skew edge in x dir
         step = self.long_grid_nodes()  # mesh points in transverse direction
 
         # Generate nox based on two orthogonal region: (A)  quadrilateral area, and (B)  triangular area
@@ -171,7 +286,7 @@ class GrillageGenerator:
                 else:
                     self.long_mem.append(
                         [inc + node_col_x, inc + node_col_x + 1, 1])  # record as longitudinal beam with section 1
-                if node_row_z != len(step) - 1: # last row
+                if node_row_z != len(step) - 1:  # last row
                     self.trans_mem.append([inc + node_col_x, next_inc + node_col_x, 3])  # record as slab with section 3
             # last column of parallel
             if node_row_z != len(step) - 1:
@@ -259,95 +374,12 @@ class GrillageGenerator:
             reg_a_col = reg_a_col - len(regA[:-1])  # update next step node correspond with region A
         print('Elements automation complete for region B1 B2 and A')
 
-    #
-    def boundary_cond_input(self, restraint_nodes, restraint_vector):
-        """
-        Function to define support boundary conditions of grillage model
-        :param restraint_nodes: list of node tags to be restrained
-        :param restraint_vector: list representing node restraint for Nx Ny Nz, Mx My Mz respectively.
-                                    represented by 1 (fixed), and 0 (free)
-        :return: populate self.support_node
-        """
-        for nodes in restraint_nodes:
-            self.support_nodes.append([nodes, restraint_vector])
-
-    def ele_transform_input(self,trans_tag, vector_xz):
-        """
-        Function to define element transform input for Opensees
-        :param vector_xz: list containing vector perpendicular to plane xz of member element
-        :param trans_tag: (int) tag for definition (default 1 to 6 see documentation)
-        :return: populate
-        """
-        pass
-
-    def modify_skew_threshold(self, new_angle):
-        self.skew_threshold = new_angle
-        print("Skew mesh threshold (default 15) is modified to {}".format(self.skew_threshold))
-
-    # functions to create bridge model in Opensees software
-    def op_model_space(self):
-        ops.model('basic', '-ndm', self.ndm, '-ndf', self.ndf)
-
-    def op_create_nodes(self):
-        for node_point in self.Nodedata:
-            ops.node(node_point[0], node_point[1], node_point[2], node_point[3])
-            # print("Node number: {} created".format(node_point[0]))
-
-    def op_create_elements(self):
-        pass
-
-    # sub functions
-    def vector_xz_skew_mesh(self):
-        """
-        Function to calculate vector xz used for geometric transformation of local section properties
-        to match skew angle
-        :return: vector parallel to plane xz of member (see geotransform Opensees) for skew members (member tag 5)
-        """
-        # rotated 90 deg clockwise (x,y) -> (y,-x)
-        x = self.width
-        y = -(-self.breadth)
-        # normalize
-        length = math.sqrt(x ** 2 + y ** 2)
-        vec = [x/length,y/length]
-        return vec
-
-    def get_region_b(self, reg_a_end, step):
-        """
-        Function to calculate the node coordinate for skew region B
-         -> triangular breadth along the longitudinal direction
-        :param step: list containing transverse nodes (along z dir)
-        :param reg_a_end: last node from regA (quadrilateral region)
-        step
-        :return: node coordinate for skew triangular area (region B1 or B2)
-        """
-        regB = [reg_a_end]  # initiate array regB
-        for node in range(2, len(step)):  # minus 2 to ignore first and last element of step
-            regB.append(self.long_dim - step[-node] * np.tan(self.skew / 180 * math.pi))
-        # after append, add last element - self.long_dim
-        regB.append(self.long_dim)
-        regB = np.array(regB)
-        return regB
-
-    def check_skew(self):
-        # checks skew
-        if self.skew > self.skew_threshold:
-            self.ortho_mesh = True
-
-    def long_grid_nodes(self):
-        """
-        Function to output array of grid nodes along longitudinal direction
-        :return: step: array/list containing node spacings along longitudinal direction (float)
-        """
-
-        last_girder = (self.width - self.edge_width)  # coord of last girder
-        nox_girder = np.linspace(self.edge_width, last_girder, self.num_long_gird)
-        step = np.hstack((np.hstack((0, nox_girder)), self.width))  # array containing z coordinate
-        return step
-
 
 # Member properties class
 class OPMemberProp:
-    def __init__(self, member_tag, trans_tag, A, E, G, J, Iy, Iz, Ay, Az, principal_angle):
+    def __init__(self, member_tag, trans_tag, A, E, G, J, Iy, Iz, Ay, Az,
+                 principal_angle, beam_ele_type="elasticBeamColumn"):
+        self.beam_ele_type = beam_ele_type
         self.principal_angle = principal_angle
         self.Az = Az
         self.Ay = Ay
@@ -355,8 +387,20 @@ class OPMemberProp:
         self.Iy = Iy
         self.J = J
         self.G = G
-        self.trans_tag = trans_tag         #
+        self.trans_tag = trans_tag  #
         self.member_tag = member_tag
         self.E = E
         self.A = A
 
+    def get_section_input(self):
+        """
+        Function to obtain member attribute from OPMemberProp attribute.
+        :return: section input for member section for input to Openseespy functions
+        """
+        section_input = None
+        # assignment input based on ele type
+        if self.beam_ele_type == "ElasticTimoshenkoBeam":
+            section_input = [self.E, self.G, self.A, self.J, self.Iy, self.Iz, self.Ay, self.Az]
+        elif self.beam_ele_type == "elasticBeamColumn":  # eleColumn
+            section_input = [self.E, self.G, self.A, self.J, self.Iy, self.Iz]
+        return section_input

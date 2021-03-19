@@ -29,18 +29,18 @@ First step create the object instance
     
     test_bridge = GrillageGenerator(long_dim=10,width=5,skew=45, num_long_grid=4, num_trans_grid=13, cantilever_edge=1)
 
-Next, input appropriate sections. For skew meshes, define for sections 1 to 4. For orthogonal
+Next, input section properties. For skew meshes, define for sections 1 to 4. For orthogonal
 meshes, define for sections 1 to 6. Refer following table and figure for section information of
 bridge model
 
 | Tags    | Skew mesh| Orthogonal mesh |
 | ----------- | ----------- | ----------- |
-| 1   | Longitudinal beam    | | 
-| 2   | Longitudinal edge beams        |
-| 3   | Transverse slab        |
-| 4   | Transverse edge slab         |
-| 5   | Text        |
-| 6   | Text        |
+| 1   | Longitudinal beam    | Longitudinal beam| 
+| 2   | Longitudinal edge beams | Longitudinal edge beams  |
+| 3   | Transverse slab        | Transverse region A   |
+| 4   | Transverse edge slab         | Transverse between region A and B |
+| 5   | n/a      | Transverse region B) |
+| 6   | n/a        | Tranverse skew region B1 and B2|
 
 
 
@@ -73,6 +73,14 @@ The ```MovingForceAnalysis``` class takes two inputs:
 (1) bridge class object - created or loaded from GrillageGenerator, 
 (2) A ```vehicle``` named tuple
 (3) 
+
+Example: defining a member section properties to a ```MovingForceAnalysis``` class
+
+    longmem = OPMemberProp(1,1,0.896,3.47E+10,2.00E+10,0.133,0.213,0.259,0.233,0.58,principal_angle = 0)
+    longmem_prop = longmem.get_section_input()
+    trans_tag = 1
+    test_bridge.op_create_elements(longmem_prop, trans_tag, longmem.beam_ele_type,expression='long_mem')
+
 
 Example: using ```MovingForceAnalysis``` class:
 ____________________
