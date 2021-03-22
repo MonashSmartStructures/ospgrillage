@@ -70,9 +70,10 @@ The ```MovingForceAnalysis``` class performs analysis on the input bridge based 
 properties and traverse pattern.
 
 The ```MovingForceAnalysis``` class takes two inputs:
-(1) bridge class object - created or loaded from GrillageGenerator, 
-(2) A ```vehicle``` named tuple
-(3) 
+(1) bridge model  
+(2) A vehicle object
+(3) Traverse path 
+(4) Option for analysis (e.g. Opensees)
 
 Example: defining a member section properties to a ```MovingForceAnalysis``` class
 

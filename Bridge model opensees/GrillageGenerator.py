@@ -5,7 +5,10 @@ import openseespy.opensees as ops
 
 
 class GrillageGenerator:
-    def __init__(self, long_dim, width, skew, num_long_grid, num_trans_grid, cantilever_edge):
+    def __init__(self, bridge_name, long_dim, width, skew, num_long_grid,
+                 num_trans_grid, cantilever_edge, mesh_type):
+        self.mesh_type = mesh_type
+        self.bridge_name = bridge_name
         # global dimensions of grillage
         self.long_dim = long_dim  # span , also c/c between support bearings
         self.width = width  # length of the bearing support - if skew  = 0 , this corresponds to width of bridge
@@ -44,7 +47,7 @@ class GrillageGenerator:
         self.trans_to_long_spacing = 1  # default 1m
         self.min_grid_long = 9  # default 9 mesh odd number
         self.min_grid_trans = 5  # default 5 mesh odd number
-        self.ortho_mesh = False  # boolean for grillages with skew < 15-20 deg
+        self.ortho_mesh = True  # boolean for grillages with skew < 15-20 deg
         self.y_elevation = 0  # default elevation of grillage wrt OPmodel coordinate system
         self.min_grid_ortho = 3  # for orthogonal mesh (skew>skew_threshold) region of orthogonal area default 3
         self.ndm = 3  # num model dimension - default 3
@@ -53,16 +56,21 @@ class GrillageGenerator:
         # special rules for grillage - alternative to Properties of grillage definition - use for special dimensions
         self.nox_special = None  # array specifying custom coordinate of longitudinal nodes
         self.noz_special = None  # array specifying custom coordinate of transverse nodes
-        self.skew_threshold = 15  # threshold for grillage to generate nodes with orthogonal mesh (units degree)
+        self.skew_threshold = [10, 30]  # threshold for grillage to allow option of mesh choices
         # to be added
         # - special rule for multiple skew
         # - rule for multiple span + multi skew
         # - rule for pier
 
-        # Grillage automation procedure
-        # 1 run node generation
-        # 2 run Connectivity generation
-        # 3 prompt user to run member input
+        # Wizard py file generation procedure
+        # 0 initialize py file
+        self.filename = "{}_op.py".format(self.bridge_name)
+        with open(self.filename, 'w') as file_handle:
+            # create py file or overwrite existing
+            # header of file
+            file_handle.write("# Grillage generator wizard\n # Bridge Model name: {}\n".format(self.bridge_name))
+            # to be fill in with other descriptions
+            # imports
 
     # node functions
     def node_data_generation(self):
@@ -109,6 +117,8 @@ class GrillageGenerator:
         """
         for nodes in restraint_nodes:
             self.support_nodes.append([nodes, restraint_vector])
+            with open(self.filename, 'a') as file_handle:
+                file_handle
 
     def op_ele_transform_input(self, trans_tag, vector_xz, transform_type='Linear'):
         """
@@ -121,7 +131,7 @@ class GrillageGenerator:
 
         ops.geomTransf(transform_type, trans_tag, *vector_xz)
 
-    def modify_skew_threshold(self, new_angle):
+    def check_skew_threshold(self, new_angle):
         self.skew_threshold = new_angle
         print("Skew mesh threshold (default 15) is modified to {}".format(self.skew_threshold))
 
@@ -132,6 +142,10 @@ class GrillageGenerator:
     def op_create_nodes(self):
         for node_point in self.Nodedata:
             ops.node(node_point[0], node_point[1], node_point[2], node_point[3])
+            with open(self.filename, 'a') as file_handle:
+                file_handle.write("ops.node({tag}, {x}, {y}, {z})\n".format(tag=node_point[0],
+                                                                            x=node_point[1], y=node_point[2],
+                                                                            z=node_point[3]))
             # print("Node number: {} created".format(node_point[0]))
 
     def op_create_elements(self, op_member_prop_class, trans_tag, beam_ele_type, expression='long_mem'):
@@ -142,6 +156,9 @@ class GrillageGenerator:
         for ele in grillage_section:
             ops.element(beam_ele_type, ele[3],
                         *[ele[0], ele[1]], *op_member_prop_class, trans_tag)  ###
+            # with open(self.filename, 'a') as file_handle:
+            #   file_handle.write("ops.element({type}, {tag}, *[{i},{j}],"
+            #                    " {z})\n".format()
 
     def op_fix(self):
         pass
@@ -179,9 +196,17 @@ class GrillageGenerator:
         return regB
 
     def check_skew(self):
-        # checks skew
-        if self.skew > self.skew_threshold:
+        if self.mesh_type == "Ortho":
             self.ortho_mesh = True
+        else:
+            self.ortho_mesh = False
+
+        # checks mesh type options are defined within the allowance threshold
+        if self.skew <= self.skew_threshold[0] and self.ortho_mesh:
+            # print
+            raise Exception('Orthogonal mesh not allowed for angle less than {}'.format(self.skew_threshold[0]))
+        elif self.skew >= self.skew_threshold[1] and not self.ortho_mesh:
+            raise Exception('Oblique mesh not allowed for angle greater than {}'.format(self.skew_threshold[1]))
 
     def long_grid_nodes(self):
         """
@@ -373,6 +398,29 @@ class GrillageGenerator:
             regBupdate = regBupdate[:-1]  # remove last element for next step (skew boundary)
             reg_a_col = reg_a_col - len(regA[:-1])  # update next step node correspond with region A
         print('Elements automation complete for region B1 B2 and A')
+
+    def compile_output(self, bridge_name):
+        filename = "{}_properties.txt".format(bridge_name)
+        with open(filename, 'w') as file_handle:
+            # compile nodes
+            file_handle.write("NODES\n")  # Header
+            # file_handle.write(str(self.Nodedata))
+            file_handle.writelines("%s\n" % nodes for nodes in self.Nodedata)  # Node data
+            # compile connectivity
+            file_handle.write("\nConnectivity\n")  # Header
+            # write for each sections
+            file_handle.write("long_mem \n")  # Sub_Header
+            file_handle.writelines("%s\n" % ele for ele in self.long_mem)  #
+            file_handle.write("long_edge_1\n")  # Sub_Header
+            file_handle.writelines("%s\n" % ele for ele in self.long_edge_1)  #
+            file_handle.write("long_edge_2\n")  # Sub_Header
+            file_handle.writelines("%s\n" % ele for ele in self.long_edge_2)  #
+            file_handle.write("trans_mem\n")  # Sub_Header
+            file_handle.writelines("%s\n" % ele for ele in self.trans_mem)  #
+            file_handle.write("trans_edge_1\n")  # Sub_Header
+            file_handle.writelines("%s\n" % ele for ele in self.trans_edge_1)  #
+            file_handle.write("trans_edge_2\n")  # Sub_Header
+            file_handle.writelines("%s\n" % ele for ele in self.trans_edge_2)  #
 
 
 # Member properties class

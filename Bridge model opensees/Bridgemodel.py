@@ -168,7 +168,7 @@ class OpenseesModel(Bridge):
 
     # ==================================================================================================
 
-    def ele_transform(self, transfType="Linear"):
+    def ele_transform(self, transfType= "Linear"):
         """
         Code handling the definition of geometric transformation of members. Transformation
          specified in attribute of `Bridge` class.

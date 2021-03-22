@@ -8,7 +8,8 @@ import matplotlib.pyplot as plt
 
 
 # OPmodel object
-test_bridge = GrillageGenerator(long_dim=10,width=5,skew=14, num_long_grid=4, num_trans_grid=13, cantilever_edge=1)
+test_bridge = GrillageGenerator(bridge_name= "BenchMark", long_dim= 10,width=5,skew=13,
+                                num_long_grid=4, num_trans_grid=13, cantilever_edge=1, mesh_type="Obllique")
 
 # node generation
 test_bridge.node_data_generation()
@@ -17,7 +18,7 @@ test_bridge.node_data_generation()
 # input member properties
 
 # define member properties to model
-
+test_bridge.compile_output("test_bridge")
 c = test_bridge.vector_xz_skew_mesh()
 print(c)
 x = [sub[1] for sub in test_bridge.Nodedata]
@@ -46,6 +47,8 @@ longmem = OPMemberProp(1,1,0.896,3.47E+10,2.00E+10,0.133,0.213,0.259,0.233,0.58,
 longmem_prop = longmem.get_section_input()
 trans_tag = 1
 test_bridge.op_create_elements(longmem_prop, trans_tag, longmem.beam_ele_type,expression='long_mem')
+
+
 # workbook = xlsxwriter.Workbook('arrays.xlsx')
 # worksheet = workbook.add_worksheet()
 #
