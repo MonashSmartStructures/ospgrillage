@@ -2,13 +2,14 @@ import pandas as pd
 import numpy as np
 import math
 import openseespy.opensees as ops
+from datetime import datetime
 
 
 class GrillageGenerator:
     def __init__(self, bridge_name, long_dim, width, skew, num_long_grid,
                  num_trans_grid, cantilever_edge, mesh_type):
         self.mesh_type = mesh_type
-        self.bridge_name = bridge_name
+        self.model_name = bridge_name
         # global dimensions of grillage
         self.long_dim = long_dim  # span , also c/c between support bearings
         self.width = width  # length of the bearing support - if skew  = 0 , this corresponds to width of bridge
@@ -63,14 +64,18 @@ class GrillageGenerator:
         # - rule for pier
 
         # Wizard py file generation procedure
-        # 0 initialize py file
-        self.filename = "{}_op.py".format(self.bridge_name)
+        # 0 construct py file and details
+        self.filename = "{}_op.py".format(self.model_name)
         with open(self.filename, 'w') as file_handle:
             # create py file or overwrite existing
             # header of file
-            file_handle.write("# Grillage generator wizard\n # Bridge Model name: {}\n".format(self.bridge_name))
+            file_handle.write("# Grillage generator wizard\n# Model name: {}\n".format(self.model_name))
             # to be fill in with other descriptions
+            now = datetime.now()
+            dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+            file_handle.write("# Constructed on:{}\n".format(dt_string))
             # imports
+            file_handle.write("import numpy as np\nimport math\nimport openseespy.opensees as ops\n")
 
     # node functions
     def node_data_generation(self):
@@ -101,9 +106,7 @@ class GrillageGenerator:
             self.op_ele_transform_input(2, [v[0], 0, v[1]])  # z dir members (skew)
 
         # procedure to create bridge in Opensees software framework
-
         self.op_create_nodes()
-
         self.op_fix()
 
     #
@@ -117,19 +120,12 @@ class GrillageGenerator:
         """
         for nodes in restraint_nodes:
             self.support_nodes.append([nodes, restraint_vector])
-            with open(self.filename, 'a') as file_handle:
-                file_handle
 
-    def op_ele_transform_input(self, trans_tag, vector_xz, transform_type='Linear'):
-        """
-        Function to define element transform input for Opensees
-        :param transform_type:
-        :param vector_xz: list containing vector perpendicular to plane xz of member element
-        :param trans_tag: (int) tag for definition (default 1 to 6 see documentation)
-        :return: populate
-        """
-
+    def op_ele_transform_input(self, trans_tag, vector_xz, transform_type="Linear"):
         ops.geomTransf(transform_type, trans_tag, *vector_xz)
+        with open(self.filename, 'a') as file_handle:
+            file_handle.write("ops.geomTransf(\"{type}\", {tag}, *{vxz})\n".format(
+                type=transform_type, tag=trans_tag, vxz=vector_xz))
 
     def check_skew_threshold(self, new_angle):
         self.skew_threshold = new_angle
@@ -138,6 +134,8 @@ class GrillageGenerator:
     # functions to create bridge model in Opensees software
     def op_model_space(self):
         ops.model('basic', '-ndm', self.ndm, '-ndf', self.ndf)
+        with open(self.filename, 'a') as file_handle:
+            file_handle.write("ops.model('basic', '-ndm', {ndm}, '-ndf', {ndf})\n".format(ndm=self.ndm, ndf=self.ndf))
 
     def op_create_nodes(self):
         for node_point in self.Nodedata:
@@ -156,9 +154,10 @@ class GrillageGenerator:
         for ele in grillage_section:
             ops.element(beam_ele_type, ele[3],
                         *[ele[0], ele[1]], *op_member_prop_class, trans_tag)  ###
-            # with open(self.filename, 'a') as file_handle:
-            #   file_handle.write("ops.element({type}, {tag}, *[{i},{j}],"
-            #                    " {z})\n".format()
+            with open(self.filename, 'a') as file_handle:
+                file_handle.write("ops.element(\"{type}\", {tag}, *[{i},{j}], *{memberprop},{transtag})\n"
+                                  .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
+                                          memberprop=op_member_prop_class, transtag=trans_tag))
 
     def op_fix(self):
         pass
