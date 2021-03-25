@@ -35,7 +35,8 @@ test_bridge.op_create_elements(transedge1_prop, trans_tag, edge.beam_ele_type, e
 transedge2 = OPMemberProp(2, 1, 0.02214, 3.47E+10, 2.00E+10, 2.17e-3, 1.11e-1, 5.97e-4, 1.85e-1, 1.85e-1, principal_angle=0)
 transedge2_prop = transedge2.get_section_input()
 test_bridge.op_create_elements(transedge2_prop, trans_tag, edge.beam_ele_type, expression='trans_edge_2')
-# input member properties
+
+# fix transverse edges 1 and 2
 
 # option for user to output bridge nodes and connectivity data
 test_bridge.compile_output("test_bridge")

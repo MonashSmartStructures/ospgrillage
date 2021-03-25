@@ -54,6 +54,9 @@ class GrillageGenerator:
         self.ndm = 3  # num model dimension - default 3
         self.ndf = 6  # num degree of freedom - default 6
 
+        # default for support
+        self.fix_val_pin = [1, 1, 1, 0, 0, 0]  # pinned
+        self.fix_val_roller_x = [0, 1, 1, 0, 0, 0]  # roller
         # special rules for grillage - alternative to Properties of grillage definition - use for special dimensions
         self.nox_special = None  # array specifying custom coordinate of longitudinal nodes
         self.noz_special = None  # array specifying custom coordinate of transverse nodes
@@ -135,6 +138,7 @@ class GrillageGenerator:
     def op_model_space(self):
         ops.model('basic', '-ndm', self.ndm, '-ndf', self.ndf)
         with open(self.filename, 'a') as file_handle:
+            file_handle.write("ops.wipe()\n")
             file_handle.write("ops.model('basic', '-ndm', {ndm}, '-ndf', {ndf})\n".format(ndm=self.ndm, ndf=self.ndf))
 
     def op_create_nodes(self):
@@ -160,7 +164,14 @@ class GrillageGenerator:
                                           memberprop=op_member_prop_class, transtag=trans_tag))
 
     def op_fix(self):
-        pass
+        for sup in self.trans_edge_1:
+            ops.fix(sup[0], *self.fix_val_pin)
+            with open(self.filename, 'a') as file_handle:
+                file_handle.write("ops.fix({}, *{})\n".format(sup[0], self.fix_val_pin))
+        for sup in self.trans_edge_2:
+            ops.fix(sup[0], *self.fix_val_roller_x)
+            with open(self.filename, 'a') as file_handle:
+                file_handle.write("ops.fix({}, *{})\n".format(sup[0], self.fix_val_roller_x))
 
     # sub functions
     def vector_xz_skew_mesh(self):

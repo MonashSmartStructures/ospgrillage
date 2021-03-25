@@ -249,7 +249,7 @@ class OpenseesModel(Bridge):
         :return:
         """
         #           time series type, time series tag
-        ops.timeSeries(defSeries, 1, )
+        ops.timeSeries(defSeries, 1 )
 
     # ==================================================================================================
 
