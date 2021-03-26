@@ -36,10 +36,13 @@ transedge2 = OPMemberProp(2, 1, 0.02214, 3.47E+10, 2.00E+10, 2.17e-3, 1.11e-1, 5
 transedge2_prop = transedge2.get_section_input()
 test_bridge.op_create_elements(transedge2_prop, trans_tag, edge.beam_ele_type, expression='trans_edge_2')
 
-# fix transverse edges 1 and 2
+# define material
+test_bridge.material_definition(mat_type="Concrete01", mat_vec=[-6.0, -0.004, -6.0, -0.014])
+test_bridge.op_uniaxial_material()
 
 # option for user to output bridge nodes and connectivity data
 test_bridge.compile_output("test_bridge")
+
 
 # plot nodes
 x = [sub[1] for sub in test_bridge.Nodedata]

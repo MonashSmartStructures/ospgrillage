@@ -53,8 +53,10 @@ class GrillageGenerator:
         self.min_grid_ortho = 3  # for orthogonal mesh (skew>skew_threshold) region of orthogonal area default 3
         self.ndm = 3  # num model dimension - default 3
         self.ndf = 6  # num degree of freedom - default 6
-
-        # default for support
+        # rules for material definition
+        self.mat_type_op = "Concrete01"  # material tag based on Openseespy convention (default Concrete01)
+        self.mat_matrix = []  # material matrix - user define based on Openseespy convention
+        # default vector for support
         self.fix_val_pin = [1, 1, 1, 0, 0, 0]  # pinned
         self.fix_val_roller_x = [0, 1, 1, 0, 0, 0]  # roller
         # special rules for grillage - alternative to Properties of grillage definition - use for special dimensions
@@ -108,7 +110,7 @@ class GrillageGenerator:
             self.op_ele_transform_input(1, [0, 0, 1])  # x dir members
             self.op_ele_transform_input(2, [v[0], 0, v[1]])  # z dir members (skew)
 
-        # procedure to create bridge in Opensees software framework
+        # procedure to create bridge in Opensees software framework # edits here
         self.op_create_nodes()
         self.op_fix()
 
@@ -159,7 +161,7 @@ class GrillageGenerator:
             ops.element(beam_ele_type, ele[3],
                         *[ele[0], ele[1]], *op_member_prop_class, trans_tag)  ###
             with open(self.filename, 'a') as file_handle:
-                file_handle.write("ops.element(\"{type}\", {tag}, *[{i},{j}], *{memberprop},{transtag})\n"
+                file_handle.write("ops.element(\"{type}\", {tag}, *[{i},{j}], *{memberprop}, {transtag})\n"
                                   .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
                                           memberprop=op_member_prop_class, transtag=trans_tag))
 
@@ -172,6 +174,12 @@ class GrillageGenerator:
             ops.fix(sup[0], *self.fix_val_roller_x)
             with open(self.filename, 'a') as file_handle:
                 file_handle.write("ops.fix({}, *{})\n".format(sup[0], self.fix_val_roller_x))
+
+    def op_uniaxial_material(self):
+        # function to generate op command for uniaxial material
+        ops.uniaxialMaterial(self.mat_type_op, 1, *self.mat_matrix)
+        with open(self.filename, 'a') as file_handle:
+            file_handle.write("ops.uniaxialMaterial(\"{}\", 1, *{})\n".format(self.mat_type_op, self.mat_matrix))
 
     # sub functions
     def vector_xz_skew_mesh(self):
@@ -431,6 +439,12 @@ class GrillageGenerator:
             file_handle.writelines("%s\n" % ele for ele in self.trans_edge_1)  #
             file_handle.write("trans_edge_2\n")  # Sub_Header
             file_handle.writelines("%s\n" % ele for ele in self.trans_edge_2)  #
+
+    def material_definition(self, mat_vec, mat_type="Concrete01"):
+        """Method to call to define material properties variables
+        """
+        self.mat_matrix = mat_vec  # material matrix for
+        self.mat_type_op = mat_type  # material type based on Openseespy
 
 
 # Member properties class

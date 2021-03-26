@@ -45,6 +45,22 @@ bridge model
 | 5   | n/a      | Transverse region B) |
 | 6   | n/a        | Tranverse skew region B1 and B2|
 
+Example showing section for element is defined:
+
+    longmem = OPMemberProp(1, 1, 0.896, 3.47E+10, 2.00E+10, 0.133, 0.213, 0.259, 0.233, 0.58, principal_angle=0)
+    longmem_prop = longmem.get_section_input()
+    long_tag = 1
+    test_bridge.op_create_elements(longmem_prop, long_tag, longmem.beam_ele_type, expression='long_mem')
+
+Users repeat for the number of tags which corresponds to the mesh type (oblique or orthogonal) shown in
+Table 1.
+
+The material properties of grilage model is defined through the class function:
+
+Example showing the procedure to define the material properties of grillage model.
+
+    test_bridge.material_definition(mat_type="Concrete01", mat_vec=[-6.0, -0.004, -6.0, -0.014])
+    test_bridge.op_uniaxial_material()
 
 
 ## `Bridge` class
