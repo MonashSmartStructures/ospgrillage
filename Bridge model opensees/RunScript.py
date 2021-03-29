@@ -1,5 +1,6 @@
 from GrillageGenerator import GrillageGenerator, OPMemberProp
 import pickle
+import openseespy.opensees as ops
 # import xlsxwriter
 import matplotlib.pyplot as plt
 
@@ -9,6 +10,11 @@ test_bridge = GrillageGenerator(bridge_name="BenchMark", long_dim=10, width=5, s
 
 # run node generation
 test_bridge.node_data_generation()
+
+# define material
+test_bridge.material_definition(mat_type="Concrete01", mat_vec=[-6.0, -0.004, -6.0, -0.014])
+test_bridge.op_uniaxial_material()
+
 # connectivity generation
 # user to define each member prop object (OPMemberProp) and pass it through GrillageGenerator.op_create_elements
 longmem = OPMemberProp(1, 1, 0.896, 3.47E+10, 2.00E+10, 0.133, 0.213, 0.259, 0.233, 0.58, principal_angle=0)
@@ -36,9 +42,6 @@ transedge2 = OPMemberProp(2, 1, 0.02214, 3.47E+10, 2.00E+10, 2.17e-3, 1.11e-1, 5
 transedge2_prop = transedge2.get_section_input()
 test_bridge.op_create_elements(transedge2_prop, trans_tag, edge.beam_ele_type, expression='trans_edge_2')
 
-# define material
-test_bridge.material_definition(mat_type="Concrete01", mat_vec=[-6.0, -0.004, -6.0, -0.014])
-test_bridge.op_uniaxial_material()
 
 # option for user to output bridge nodes and connectivity data
 test_bridge.compile_output("test_bridge")

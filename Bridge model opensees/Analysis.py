@@ -81,7 +81,6 @@ class MovingLoadAnalysis:
         X, Y, weights = self.get_axles()
         # for each positions in X and Y,
         for index, r in enumerate(self.refPos_X):
-
             if index != 0:  # not first step
                 self.remove_previous_analysis()
             # 2 position axle loads at r onto OPmodel
@@ -96,9 +95,7 @@ class MovingLoadAnalysis:
                     print("axles position =", currentpos)
                 except:
                     print("axle no longer on bridge, move to next")
-
             # 3 run analysis for current position
-
             op_run_moving(self)
 
     def moving_transient(self):

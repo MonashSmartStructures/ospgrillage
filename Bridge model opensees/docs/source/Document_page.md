@@ -62,6 +62,10 @@ Example showing the procedure to define the material properties of grillage mode
     test_bridge.material_definition(mat_type="Concrete01", mat_vec=[-6.0, -0.004, -6.0, -0.014])
     test_bridge.op_uniaxial_material()
 
+If section is required for the Opensees model, run function to define section and generate code line
+in the grillage wizard.
+
+Example showing procedure to define section of grillage model
 
 ## `Bridge` class
 

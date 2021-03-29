@@ -8,6 +8,11 @@ from datetime import datetime
 class GrillageGenerator:
     def __init__(self, bridge_name, long_dim, width, skew, num_long_grid,
                  num_trans_grid, cantilever_edge, mesh_type):
+        # Section placeholders
+        self.section_arg = None
+        self.section_tag = None
+        self.section_type = None
+
         self.mesh_type = mesh_type
         self.model_name = bridge_name
         # global dimensions of grillage
@@ -126,17 +131,28 @@ class GrillageGenerator:
         for nodes in restraint_nodes:
             self.support_nodes.append([nodes, restraint_vector])
 
+    def section_property_input(self, section_tag, section_type, section_arg):
+        """
+        Function to assign properties for a section class object
+        :param section_tag:
+        :param section_type:
+        :param section_arg:
+        :return:
+        """
+        self.section_type = section_type
+        self.section_tag = section_tag
+        self.section_arg = section_arg
+        # run and generate code line for section
+        self.op_section_generate()
+
+    # functions to create bridge model in Opensees software
     def op_ele_transform_input(self, trans_tag, vector_xz, transform_type="Linear"):
         ops.geomTransf(transform_type, trans_tag, *vector_xz)
         with open(self.filename, 'a') as file_handle:
+            file_handle.write("# create transformation {}\n".format(trans_tag))
             file_handle.write("ops.geomTransf(\"{type}\", {tag}, *{vxz})\n".format(
                 type=transform_type, tag=trans_tag, vxz=vector_xz))
 
-    def check_skew_threshold(self, new_angle):
-        self.skew_threshold = new_angle
-        print("Skew mesh threshold (default 15) is modified to {}".format(self.skew_threshold))
-
-    # functions to create bridge model in Opensees software
     def op_model_space(self):
         ops.model('basic', '-ndm', self.ndm, '-ndf', self.ndf)
         with open(self.filename, 'a') as file_handle:
@@ -144,6 +160,8 @@ class GrillageGenerator:
             file_handle.write("ops.model('basic', '-ndm', {ndm}, '-ndf', {ndf})\n".format(ndm=self.ndm, ndf=self.ndf))
 
     def op_create_nodes(self):
+        with open(self.filename, 'a') as file_handle:
+            file_handle.write("# Node generation procedure")
         for node_point in self.Nodedata:
             ops.node(node_point[0], node_point[1], node_point[2], node_point[3])
             with open(self.filename, 'a') as file_handle:
@@ -155,7 +173,8 @@ class GrillageGenerator:
     def op_create_elements(self, op_member_prop_class, trans_tag, beam_ele_type, expression='long_mem'):
         # element list in attributes
         grillage_section = eval("self.{}".format(expression))
-
+        with open(self.filename, 'a') as file_handle:
+            file_handle.write("# Element generation for section: {}\n".format(expression))
         #         element  tag   *[ndI ndJ]  A  E  G  Jx  Iy   Iz  transfOBJs
         for ele in grillage_section:
             ops.element(beam_ele_type, ele[3],
@@ -165,7 +184,15 @@ class GrillageGenerator:
                                   .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
                                           memberprop=op_member_prop_class, transtag=trans_tag))
 
+    def op_section_generate(self):
+        with open(self.filename, 'a') as file_handle:
+            file_handle.write("# Create section: \n")
+            file_handle.write(
+                "ops.section({}, {}, *{})\n".format(self.section_type, self.section_tag, self.section_arg))
+
     def op_fix(self):
+        with open(self.filename, 'a') as file_handle:
+            file_handle.write("# Boundary condition implementation\n")
         for sup in self.trans_edge_1:
             ops.fix(sup[0], *self.fix_val_pin)
             with open(self.filename, 'a') as file_handle:
@@ -179,6 +206,7 @@ class GrillageGenerator:
         # function to generate op command for uniaxial material
         ops.uniaxialMaterial(self.mat_type_op, 1, *self.mat_matrix)
         with open(self.filename, 'a') as file_handle:
+            file_handle.write("# Material definition \n")
             file_handle.write("ops.uniaxialMaterial(\"{}\", 1, *{})\n".format(self.mat_type_op, self.mat_matrix))
 
     # sub functions

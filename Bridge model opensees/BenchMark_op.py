@@ -1,14 +1,16 @@
 # Grillage generator wizard
 # Model name: BenchMark
-# Constructed on:26/03/2021 13:19:05
+# Constructed on:29/03/2021 18:06:46
 import numpy as np
 import math
 import openseespy.opensees as ops
 ops.wipe()
 ops.model('basic', '-ndm', 3, '-ndf', 6)
+# create transformation 1
 ops.geomTransf("Linear", 1, *[0, 0, 1])
+# create transformation 2
 ops.geomTransf("Linear", 2, *[0.9743700647852351, 0, 0.22495105434386498])
-ops.node(1, 0.0, 0, 0.0)
+# Node generation procedureops.node(1, 0.0, 0, 0.0)
 ops.node(2, 0.8333333333333334, 0, 0.0)
 ops.node(3, 1.6666666666666667, 0, 0.0)
 ops.node(4, 2.5, 0, 0.0)
@@ -86,6 +88,7 @@ ops.node(75, 6.3456590443721845, 0, 5.0)
 ops.node(76, 7.1789923777055185, 0, 5.0)
 ops.node(77, 8.012325711038851, 0, 5.0)
 ops.node(78, 8.845659044372184, 0, 5.0)
+# Boundary condition implementation
 ops.fix(1, *[1, 1, 1, 0, 0, 0])
 ops.fix(14, *[1, 1, 1, 0, 0, 0])
 ops.fix(27, *[1, 1, 1, 0, 0, 0])
@@ -96,6 +99,9 @@ ops.fix(26, *[0, 1, 1, 0, 0, 0])
 ops.fix(39, *[0, 1, 1, 0, 0, 0])
 ops.fix(52, *[0, 1, 1, 0, 0, 0])
 ops.fix(65, *[0, 1, 1, 0, 0, 0])
+# Material definition 
+ops.uniaxialMaterial("Concrete01", 1, *[-6.0, -0.004, -6.0, -0.014])
+# Element generation for section: long_mem
 ops.element("elasticBeamColumn", 26, *[14,15], *[34700000000.0, 20000000000.0, 0.896, 0.133, 0.213, 0.259], 1)
 ops.element("elasticBeamColumn", 28, *[15,16], *[34700000000.0, 20000000000.0, 0.896, 0.133, 0.213, 0.259], 1)
 ops.element("elasticBeamColumn", 30, *[16,17], *[34700000000.0, 20000000000.0, 0.896, 0.133, 0.213, 0.259], 1)
@@ -144,6 +150,7 @@ ops.element("elasticBeamColumn", 117, *[61,62], *[34700000000.0, 20000000000.0, 
 ops.element("elasticBeamColumn", 119, *[62,63], *[34700000000.0, 20000000000.0, 0.896, 0.133, 0.213, 0.259], 1)
 ops.element("elasticBeamColumn", 121, *[63,64], *[34700000000.0, 20000000000.0, 0.896, 0.133, 0.213, 0.259], 1)
 ops.element("elasticBeamColumn", 123, *[64,65], *[34700000000.0, 20000000000.0, 0.896, 0.133, 0.213, 0.259], 1)
+# Element generation for section: long_edge_1
 ops.element("elasticBeamColumn", 1, *[1,2], *[34700000000.0, 20000000000.0, 0.044625, 0.00026, 0.00011, 0.000242], 1)
 ops.element("elasticBeamColumn", 3, *[2,3], *[34700000000.0, 20000000000.0, 0.044625, 0.00026, 0.00011, 0.000242], 1)
 ops.element("elasticBeamColumn", 5, *[3,4], *[34700000000.0, 20000000000.0, 0.044625, 0.00026, 0.00011, 0.000242], 1)
@@ -168,6 +175,7 @@ ops.element("elasticBeamColumn", 134, *[74,75], *[34700000000.0, 20000000000.0, 
 ops.element("elasticBeamColumn", 135, *[75,76], *[34700000000.0, 20000000000.0, 0.044625, 0.00026, 0.00011, 0.000242], 1)
 ops.element("elasticBeamColumn", 136, *[76,77], *[34700000000.0, 20000000000.0, 0.044625, 0.00026, 0.00011, 0.000242], 1)
 ops.element("elasticBeamColumn", 137, *[77,78], *[34700000000.0, 20000000000.0, 0.044625, 0.00026, 0.00011, 0.000242], 1)
+# Element generation for section: trans_mem
 ops.element("elasticBeamColumn", 4, *[2,15], *[34700000000.0, 20000000000.0, 0.04428, 0.00228, 0.223, 0.0012], 2)
 ops.element("elasticBeamColumn", 6, *[3,16], *[34700000000.0, 20000000000.0, 0.04428, 0.00228, 0.223, 0.0012], 2)
 ops.element("elasticBeamColumn", 8, *[4,17], *[34700000000.0, 20000000000.0, 0.04428, 0.00228, 0.223, 0.0012], 2)
@@ -223,14 +231,15 @@ ops.element("elasticBeamColumn", 118, *[61,74], *[34700000000.0, 20000000000.0, 
 ops.element("elasticBeamColumn", 120, *[62,75], *[34700000000.0, 20000000000.0, 0.04428, 0.00228, 0.223, 0.0012], 2)
 ops.element("elasticBeamColumn", 122, *[63,76], *[34700000000.0, 20000000000.0, 0.04428, 0.00228, 0.223, 0.0012], 2)
 ops.element("elasticBeamColumn", 124, *[64,77], *[34700000000.0, 20000000000.0, 0.04428, 0.00228, 0.223, 0.0012], 2)
+# Element generation for section: trans_edge_1
 ops.element("elasticBeamColumn", 2, *[1,14], *[34700000000.0, 20000000000.0, 0.02214, 0.00217, 0.111, 0.000597], 2)
 ops.element("elasticBeamColumn", 27, *[14,27], *[34700000000.0, 20000000000.0, 0.02214, 0.00217, 0.111, 0.000597], 2)
 ops.element("elasticBeamColumn", 52, *[27,40], *[34700000000.0, 20000000000.0, 0.02214, 0.00217, 0.111, 0.000597], 2)
 ops.element("elasticBeamColumn", 77, *[40,53], *[34700000000.0, 20000000000.0, 0.02214, 0.00217, 0.111, 0.000597], 2)
 ops.element("elasticBeamColumn", 102, *[53,66], *[34700000000.0, 20000000000.0, 0.02214, 0.00217, 0.111, 0.000597], 2)
+# Element generation for section: trans_edge_2
 ops.element("elasticBeamColumn", 25, *[13,26], *[34700000000.0, 20000000000.0, 0.02214, 0.00217, 0.111, 0.000597], 2)
 ops.element("elasticBeamColumn", 50, *[26,39], *[34700000000.0, 20000000000.0, 0.02214, 0.00217, 0.111, 0.000597], 2)
 ops.element("elasticBeamColumn", 75, *[39,52], *[34700000000.0, 20000000000.0, 0.02214, 0.00217, 0.111, 0.000597], 2)
 ops.element("elasticBeamColumn", 100, *[52,65], *[34700000000.0, 20000000000.0, 0.02214, 0.00217, 0.111, 0.000597], 2)
 ops.element("elasticBeamColumn", 125, *[65,78], *[34700000000.0, 20000000000.0, 0.02214, 0.00217, 0.111, 0.000597], 2)
-ops.uniaxialMaterial("Concrete01", 1, *[-6.0, -0.004, -6.0, -0.014])
