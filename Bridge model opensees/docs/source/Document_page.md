@@ -36,14 +36,14 @@ Next, input section properties. For skew meshes, define for sections 1 to 4. For
 meshes, define for sections 1 to 6. Refer following table and figure for section information of
 bridge model
 
-| Tags    | Skew mesh| Orthogonal mesh |
+| Section tag    | Skew mesh| Orthogonal mesh | Transform tag 
 | ----------- | ----------- | ----------- |
-| 1   | Longitudinal beam    | Longitudinal beam| 
-| 2   | Longitudinal edge beams | Longitudinal edge beams  |
-| 3   | Transverse slab        | Transverse region A   |
-| 4   | Transverse edge slab         | Transverse between region A and B |
-| 5   | n/a      | Transverse region B) |
-| 6   | n/a        | Tranverse skew region B1 and B2|
+| 1   | Longitudinal beam    | Longitudinal beam|  1 |
+| 2   | Longitudinal edge beams | Longitudinal edge beams  | 1|
+| 3   | Transverse slab        | Transverse region A   | 2  |
+| 4   | Transverse edge slab         | Transverse between region A and B | 2 |
+| 5   | n/a      | Transverse region B) | 2 |
+| 6   | n/a        | Tranverse skew region B1 and B2| 3| 
 
 Example showing section for element is defined:
 
@@ -67,33 +67,13 @@ in the grillage wizard.
 
 Example showing procedure to define section of grillage model
 
-## `Bridge` class
-
-A `GrillageGenerator` object has a `Bridge` class object. 
-
-Example: How bridge class is called within Grillage generator
-____________________
-
-    # initialize Bridge class object within Grillage class instance
-    self.OPBridge = OpenseesModel(self.bridgepickle["Nodedetail"], self.bridgepickle["Connectivitydetail"],
-                                        self.bridgepickle["beamelement"], self.bridgepickle["Memberdetail"],
-                                      self.bridgepickle["Member transformation"])
-    # assign properties of concrete and steel
-    self.OPBridge.assign_material_prop(self.bridgepickle["concreteprop"], self.bridgepickle["steelprop"])
-    # send attribute to OP framework to create OP model
-    self.OPBridge.create_Opensees_model()
-
-    # time series and load pattern options
-    self.OPBridge.time_series()
-    self.OPBridge.loadpattern()
-
 ## ```MovingForceAnalysis``` class
 
 The ```MovingForceAnalysis``` class performs analysis on the input bridge based on the input vehicle 
 properties and traverse pattern.
 
 The ```MovingForceAnalysis``` class takes two inputs:
-(1) bridge model  
+(1) A `GrillageGenerator` object - output file 
 (2) A vehicle object
 (3) Traverse path 
 (4) Option for analysis (e.g. Opensees)
