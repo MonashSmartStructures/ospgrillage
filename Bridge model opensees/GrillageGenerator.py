@@ -85,7 +85,8 @@ class GrillageGenerator:
             dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
             file_handle.write("# Constructed on:{}\n".format(dt_string))
             # imports
-            file_handle.write("import numpy as np\nimport math\nimport openseespy.opensees as ops\n")
+            file_handle.write("import numpy as np\nimport math\nimport openseespy.opensees as ops"
+                              "\nimport openseespy.postprocessing.Get_Rendering as opsplt\n")
 
     # node functions
     def node_data_generation(self):

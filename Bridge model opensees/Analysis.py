@@ -19,8 +19,8 @@ class MovingLoadAnalysis:
     def __init__(self, bridge_obj, truck_class, traverse_prop, analysis_type):
         """
         Create the MovingLoadAnalysis class object
-        :param bridge_obj:
-        :param truckclass:
+        :param bridge_obj: py file name of bridge generation created from GrillageGenerator class
+        :param truck_class: vehicle class obj
         """
         # assign attributes
         self.traverse_prop = traverse_prop
@@ -41,7 +41,9 @@ class MovingLoadAnalysis:
             self.OPBridge.time_series(defSeries="Linear")
             self.OPBridge.loadpattern(pat="Plain")
         else: # Add more options for bridge model types (e.g. matlab)
-            pass
+            __import__(self.bridge_obj)
+            ops.timeSeries("Linear", 1)
+            ops.pattern("Plain", 1, 1)
 
         # plot
         # PlotWizard.plotOPmodel(self)
@@ -204,10 +206,10 @@ def op_run_moving(self):
 # - Analysis.py, Bridgemodel.py,PlotWizard.py,Vehicle.py
 # 1 load bridge pickle file
 
-with open("save.p", "rb") as f:
-    refbridge = pickle.load(f)
+#with open("save.p", "rb") as f:
+    #refbridge = pickle.load(f)
 
-refbridge["beamelement"] = 'elasticBeamColumn'
+#refbridge["beamelement"] = 'elasticBeamColumn'
 # 1 Provide bridge model
 # 1.1 Procedure to create bridge model in Opensees
 
@@ -220,16 +222,17 @@ initial_position = [2, 0]  # start position of truck (ref point axle)
 travel_length = 50  # distance (m)
 increment = 2  # truck location increment
 direction = "X"  # travel direction (global)
-model_option= "Opensees"
-
+# model_option= "Opensees"
+model_option= "Custom"
 # 2.1 traverse properties
 move_path = namedtuple('Travel_path', ('initial_position', 'length', 'increment', 'direction'))
-move_1 = move_path([2, 0], 50, 2, "X")
+move_1 = move_path([5, 2], 50, 2, "X")
+refbridge = "BenchMark_op"
 # 3 create truck object
 RefTruck = vehicle(axlwts, axlspc, axlwidth, initial_position, travel_length, increment, direction)
 # 4 pass pickle file of bridge and truck object to grillage class.
-RefBridge = MovingLoadAnalysis(refbridge, RefTruck, move_1, model_option)
+analysis = MovingLoadAnalysis(refbridge, RefTruck, move_1, model_option)
 # 5 run method to perform analysis
-RefBridge.run_analysis()
+analysis.run_analysis()
 breakpoint()
 # 5 plots and save results
