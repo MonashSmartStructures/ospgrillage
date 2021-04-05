@@ -16,7 +16,7 @@ def plot_section(ma_object, list_input):
 
 # construct op grillage object
 test_bridge = GrillageGenerator(bridge_name="BenchMark", long_dim=10, width=5, skew=25,
-                                num_long_grid=4, num_trans_grid=13, cantilever_edge=1, mesh_type="Ortho")
+                                num_long_grid=4, num_trans_grid=13, cantilever_edge=1, mesh_type="ob")
 
 # run node generation
 test_bridge.node_data_generation()
@@ -42,7 +42,7 @@ test_bridge.op_create_elements(edge_prop, long_tag, edge.beam_ele_type, expressi
 # Trans
 trans = OPMemberProp(2, 1, 0.04428, 3.47E+10, 2.00E+10, 2.28e-3, 2.23e-1, 1.2e-3, 3.69e-1, 3.69e-1, principal_angle=0)
 trans_prop = trans.get_section_input()
-test_bridge.op_create_elements(trans_prop, trans_tag, edge.beam_ele_type, expression='trans_mem')
+test_bridge.op_create_elements(trans_prop, skew_tag, edge.beam_ele_type, expression='trans_mem')
 
 # Trans edge1
 transedge1 = OPMemberProp(2, 1, 0.02214, 3.47E+10, 2.00E+10, 2.17e-3, 1.11e-1, 5.97e-4, 1.85e-1, 1.85e-1,

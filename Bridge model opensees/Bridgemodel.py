@@ -168,7 +168,7 @@ class OpenseesModel(Bridge):
 
     # ==================================================================================================
 
-    def ele_transform(self, transfType= "Linear"):
+    def ele_transform(self, transfType="Linear"):
         """
         Code handling the definition of geometric transformation of members. Transformation
          specified in attribute of `Bridge` class.
@@ -249,7 +249,7 @@ class OpenseesModel(Bridge):
         :return:
         """
         #           time series type, time series tag
-        ops.timeSeries(defSeries, 1 )
+        ops.timeSeries(defSeries, 1)
 
     # ==================================================================================================
 
@@ -336,6 +336,46 @@ class OpenseesModel(Bridge):
         # assign forces
         for nn in range(0, 3):
             ops.load(int(eval('self.n%d.max()' % (nn + 1))), *np.dot([0, Nv[nn], 0, 0, 0, 0], axlwt))  # x y z mx my mz
+
+    def op_load_positioning(self, pos, axlwt):
+        # function to implement load onto
+        self.op_search_nodes()
+        pass
+
+    def op_search_nodes(self):
+        #            x
+        #     1 O - - - - O 2
+        #   z   |         |                 # notations and node search numbering
+        #       |    x    |
+        #     3 O - - - - O 4
+        #
+        # n1                # x 1                     z 3
+        bool_list = self.Nodedata[(self.extract(self.Nodedata, 1) <= self.pos[0]) &
+                                  (self.extract(self.Nodedata, 3) <= self.pos[1])]
+        bool_list = bool_list[max(self.extract(bool_list, 1)) & max(self.extract(bool_list, 1))]
+        n1 = self.extract(bool_list, 0)
+
+        bool_list = self.Nodedata[(self.extract(self.Nodedata, 1) > self.pos[0]) &
+                                  (self.extract(self.Nodedata, 3) <= self.pos[1])]
+        bool_list = bool_list[max(self.extract(bool_list, 1)) & max(self.extract(bool_list, 1))]
+        n2 = self.extract(bool_list, 0)
+
+        bool_list = self.Nodedata[(self.extract(self.Nodedata, 1) <= self.pos[0]) &
+                                  (self.extract(self.Nodedata, 3) > self.pos[1])]
+        bool_list = bool_list[max(self.extract(bool_list, 1)) & max(self.extract(bool_list, 1))]
+        n3 = self.extract(bool_list, 0)
+
+        bool_list = self.Nodedata[(self.extract(self.Nodedata, 1) > self.pos[0]) &
+                                  (self.extract(self.Nodedata, 3) > self.pos[1])]
+        bool_list = bool_list[max(self.extract(bool_list, 1)) & max(self.extract(bool_list, 1))]
+        n4 = self.extract(bool_list, 0)
+
+        return n1, n2, n3, n4
+
+    @staticmethod
+    def extract(lst, num):
+        # static method to extract an element from a sublist - used for node and element searching procedures
+        return [item[num] for item in lst]
 
     #  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # shape functions for patching truck forces onto grillage nodes

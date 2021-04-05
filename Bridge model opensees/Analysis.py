@@ -41,7 +41,7 @@ class MovingLoadAnalysis:
             self.OPBridge.time_series(defSeries="Linear")
             self.OPBridge.loadpattern(pat="Plain")
         else: # Add more options for bridge model types (e.g. matlab)
-            __import__(self.bridge_obj)
+            __import__(self.bridge_obj)  # run file
             ops.timeSeries("Linear", 1)
             ops.pattern("Plain", 1, 1)
 
@@ -211,6 +211,7 @@ def op_run_moving(self):
 
 #refbridge["beamelement"] = 'elasticBeamColumn'
 # 1 Provide bridge model
+refbridge = "BenchMark_op"
 # 1.1 Procedure to create bridge model in Opensees
 
 # 2 Define truck properties
@@ -227,10 +228,10 @@ model_option= "Custom"
 # 2.1 traverse properties
 move_path = namedtuple('Travel_path', ('initial_position', 'length', 'increment', 'direction'))
 move_1 = move_path([5, 2], 50, 2, "X")
-refbridge = "BenchMark_op"
+
 # 3 create truck object
 RefTruck = vehicle(axlwts, axlspc, axlwidth, initial_position, travel_length, increment, direction)
-# 4 pass pickle file of bridge and truck object to grillage class.
+# 4 pass py file of bridge and truck object to MovingLoadAnalysis.
 analysis = MovingLoadAnalysis(refbridge, RefTruck, move_1, model_option)
 # 5 run method to perform analysis
 analysis.run_analysis()
