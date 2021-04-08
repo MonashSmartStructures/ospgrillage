@@ -6,7 +6,6 @@ over the load path of the Vehicle class, which is passed into.
 """
 from Bridgemodel import *
 from Vehicle import *
-import pickle
 import PlotWizard
 
 
@@ -16,13 +15,14 @@ class MovingLoadAnalysis:
     , a moving vehicle object (class) and a traverse pattern (namedtuple).
     """
 
-    def __init__(self, bridge_obj, truck_class, traverse_prop, analysis_type):
+    def __init__(self, bridge_obj, truck_class, traverse_prop, analysis_type, op_wizard_obj=None):
         """
         Create the MovingLoadAnalysis class object
         :param bridge_obj: py file name of bridge generation created from GrillageGenerator class
         :param truck_class: vehicle class obj
         """
         # assign attributes
+        self.op_wizard_obj = op_wizard_obj
         self.traverse_prop = traverse_prop
         self.truck_class = truck_class
         self.bridge_obj = bridge_obj
@@ -40,7 +40,7 @@ class MovingLoadAnalysis:
             # time series and load pattern options
             self.OPBridge.time_series(defSeries="Linear")
             self.OPBridge.loadpattern(pat="Plain")
-        else: # Add more options for bridge model types (e.g. matlab)
+        else:  # Add more options for bridge model types (e.g. matlab)
             __import__(self.bridge_obj)  # run file
             ops.timeSeries("Linear", 1)
             ops.pattern("Plain", 1, 1)
@@ -93,12 +93,32 @@ class MovingLoadAnalysis:
                 # set axle load onto bridge                                         #### Note here provide options for
                 #                                                                   #### different analysis model option
                 try:
+                    self.op_load_positioning(currentpos, weights[i])
                     self.OPBridge.load_position(currentpos, weights[i])
                     print("axles position =", currentpos)
                 except:
                     print("axle no longer on bridge, move to next")
             # 3 run analysis for current position
             op_run_moving(self)
+
+    def op_load_positioning(self, pos, axlwt):
+        # function to implement load onto
+        nl = self.op_search_nodes(pos)
+
+    def op_search_nodes(self,pos):
+        #            x
+        #     1 O - - - - O 2
+        #   z   |         |                 # notations and node search numbering
+        #       |    x    |
+        #     3 O - - - - O 4
+        #
+        # n1                # x 1                     z 3
+        bool_list = self.op_wizard_obj.Nodedata[(extract(self.op_wizard_obj.Nodedata, 1) <= pos[0]) &
+                                  (extract(self.op_wizard_obj.Nodedata, 3) <= pos[1])]
+        bool_list = bool_list[max(extract(bool_list, 1)) & max(extract(bool_list, 1))]
+        n1 = extract(bool_list, 0)
+
+        return n1
 
     def moving_transient(self):
         """
@@ -109,6 +129,7 @@ class MovingLoadAnalysis:
             To be added in future versions
         """
         pass
+
     #
 
     def remove_previous_analysis(self):
@@ -141,6 +162,11 @@ class MovingLoadAnalysis:
 # method to access Opensees software - callable from outside of class instance
 def op_define_recorder():
     pass
+
+
+def extract(lst, num):
+    # static method to extract an element from a sublist - used for node and element searching procedures
+    return [item[num] for item in lst]
 
 
 def op_run_moving(self):
@@ -206,12 +232,13 @@ def op_run_moving(self):
 # - Analysis.py, Bridgemodel.py,PlotWizard.py,Vehicle.py
 # 1 load bridge pickle file
 
-#with open("save.p", "rb") as f:
-    #refbridge = pickle.load(f)
+# with open("save.p", "rb") as f:
+# refbridge = pickle.load(f)
 
-#refbridge["beamelement"] = 'elasticBeamColumn'
+# refbridge["beamelement"] = 'elasticBeamColumn'
 # 1 Provide bridge model
 refbridge = "BenchMark_op"
+from RunScript import test_bridge  # import GrillageGenerator object created for op file
 # 1.1 Procedure to create bridge model in Opensees
 
 # 2 Define truck properties
@@ -224,7 +251,7 @@ travel_length = 50  # distance (m)
 increment = 2  # truck location increment
 direction = "X"  # travel direction (global)
 # model_option= "Opensees"
-model_option= "Custom"
+model_option = "Custom"
 # 2.1 traverse properties
 move_path = namedtuple('Travel_path', ('initial_position', 'length', 'increment', 'direction'))
 move_1 = move_path([5, 2], 50, 2, "X")
@@ -232,7 +259,7 @@ move_1 = move_path([5, 2], 50, 2, "X")
 # 3 create truck object
 RefTruck = vehicle(axlwts, axlspc, axlwidth, initial_position, travel_length, increment, direction)
 # 4 pass py file of bridge and truck object to MovingLoadAnalysis.
-analysis = MovingLoadAnalysis(refbridge, RefTruck, move_1, model_option)
+analysis = MovingLoadAnalysis(refbridge, RefTruck, move_1, model_option, test_bridge)
 # 5 run method to perform analysis
 analysis.run_analysis()
 breakpoint()

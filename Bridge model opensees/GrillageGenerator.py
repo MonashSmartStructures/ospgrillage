@@ -171,6 +171,9 @@ class GrillageGenerator:
                                                                             x=node_point[1], y=node_point[2],
                                                                             z=node_point[3]))
             # print("Node number: {} created".format(node_point[0]))
+        # create node recorder line
+        # with open(self.filename, 'a') as file_handle:
+        #     file_handle.write("ops.recorder('Node', '-file', \'{}.txt\')\n".format(self.filename[:-3]))
 
     def op_create_elements(self, op_member_prop_class, trans_tag, beam_ele_type, expression='long_mem'):
         # element list in attributes

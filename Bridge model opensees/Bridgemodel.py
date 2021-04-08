@@ -313,6 +313,8 @@ class OpenseesModel(Bridge):
         # returns attributes n1 n2 n3 and n4 assigned to object. e.g. self.n1
         self.search_nodes()  # searches nodes on the grillage
         #
+        self.op_load_positioning()
+        #
         # pos has a X0 and Z0 , need to find the elements and return tag of nodes in the grid where, X0 resides in
 
         a = abs(self.Nodedata['x'][self.n1.index].max() - self.Nodedata['x'][self.n2.index].max())  # X dir
@@ -339,7 +341,7 @@ class OpenseesModel(Bridge):
 
     def op_load_positioning(self, pos, axlwt):
         # function to implement load onto
-        self.op_search_nodes()
+        nl = self.op_search_nodes()
         pass
 
     def op_search_nodes(self):
