@@ -7,6 +7,7 @@ over the load path of the Vehicle class, which is passed into.
 from Bridgemodel import *
 from Vehicle import *
 import PlotWizard
+from itertools import compress
 
 
 class MovingLoadAnalysis:
@@ -105,7 +106,7 @@ class MovingLoadAnalysis:
         # function to implement load onto
         nl = self.op_search_nodes(pos)
 
-    def op_search_nodes(self,pos):
+    def op_search_nodes(self, pos):
         #            x
         #     1 O - - - - O 2
         #   z   |         |                 # notations and node search numbering
@@ -113,12 +114,18 @@ class MovingLoadAnalysis:
         #     3 O - - - - O 4
         #
         # n1                # x 1                     z 3
-        bool_list = self.op_wizard_obj.Nodedata[(extract(self.op_wizard_obj.Nodedata, 1) <= pos[0]) &
-                                  (extract(self.op_wizard_obj.Nodedata, 3) <= pos[1])]
-        bool_list = bool_list[max(extract(bool_list, 1)) & max(extract(bool_list, 1))]
-        n1 = extract(bool_list, 0)
 
-        return n1
+        bool_list_2 = []
+        for nodes in self.op_wizard_obj.Nodedata:
+            # z                       # x
+            if nodes[3] > pos[1] and nodes[1] > pos[0]:
+                bool_list_2.append(True)
+            else:
+                bool_list_2.append(False)
+
+        res = list(compress(self.op_wizard_obj.Nodedata, bool_list_2))
+
+        return
 
     def moving_transient(self):
         """
@@ -239,6 +246,7 @@ def op_run_moving(self):
 # 1 Provide bridge model
 refbridge = "BenchMark_op"
 from RunScript import test_bridge  # import GrillageGenerator object created for op file
+
 # 1.1 Procedure to create bridge model in Opensees
 
 # 2 Define truck properties
