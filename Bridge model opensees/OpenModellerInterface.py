@@ -1,17 +1,11 @@
 import tkinter as tk
-from tkinter.ttk import *
 from tkinter import ttk,filedialog
 from Bridgemodel import *                       # bridge opensees model
-from Bridge_member import BridgeMember          # bridge opensees model
 import pandas as pd                             # pandas for opensees framework
 import matplotlib as plt
-from matplotlib import style                    # bridge plot
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from matplotlib.figure import Figure
-import matplotlib.animation as animation
-from matplotlib import style
 from Vehicle import *
-import pytest
 import pickle
 plt.use("TkAgg")
 
