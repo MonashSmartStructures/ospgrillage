@@ -4,10 +4,12 @@ Grillage analysis module containing base class for Opensees Grillage analysis
 framework. It also contains methods for moving load analysis which iterates
 over the load path of the Vehicle class, which is passed into.
 """
-from Bridgemodel import *
+
 from Vehicle import *
 import PlotWizard
 from itertools import compress
+import openseespy as ops
+from BridgeModel import *
 
 
 class MovingLoadAnalysis:
@@ -118,30 +120,15 @@ class MovingLoadAnalysis:
         bool_list_2 = []
         for nodes in self.op_wizard_obj.Nodedata:
             # x                       # z
-            if nodes[1] <= pos[0] and nodes[3] > pos[1]:
-                bool_list_2.append(True)
-            else:
-                bool_list_2.append(False)
+            dis = np.sqrt((nodes[1] - pos[0]) ** 2 + 0 + (nodes[3] - pos[1]) ** 2)
+            bool_list_2.append([nodes[0], dis])
 
-        res = list(compress(self.op_wizard_obj.Nodedata, bool_list_2))
-        # pick x is largest, z is smallest
-        t = extract(res, 3)
-        n1 = max(list(compress(res, t == min(t))))
-
-        bool_list_2 = []
-        for nodes in self.op_wizard_obj.Nodedata:
-            # x                       # z
-            if nodes[1] > pos[0] and nodes[3] <= pos[1]:
-                bool_list_2.append(True)
-            else:
-                bool_list_2.append(False)
-
-        res = list(compress(self.op_wizard_obj.Nodedata, bool_list_2))
-        t = extract(res, 3)
-        n4 = min(list(compress(res, t == max(t))))
-        # search elements which contain common nodes n1 and n2
-        ops.eleNodes()
-        return n1, n4
+        res = sort_list(bool_list_2)
+        n1 = res[0]
+        n2 = res[1]
+        n3 = res[2]
+        n4 = res[4]
+        return n1
 
     def moving_transient(self):
         """
@@ -190,6 +177,11 @@ def op_define_recorder():
 def extract(lst, num):
     # static method to extract an element from a sublist - used for node and element searching procedures
     return [item[num] for item in lst]
+
+
+def sort_list(lst):
+    lst.sort(key=lambda x: x[1])
+    return lst
 
 
 def op_run_moving(self):
