@@ -14,8 +14,8 @@ Bridge model opensees/__pycache__/OpenModellerInterface.cpython-38.pyc
 Bridge model opensees/__pycache__/PlotWizard.cpython-38.pyc
 Bridge model opensees/__pycache__/Vehicle.cpython-38.pyc
 Bridge model opensees/__pycache__/test_Analysis.cpython-38.pyc
-Bridge model opensees/docs/source/_static/
-Bridge model opensees/docs/source/_templates/
+docs/source/_static/
+docs/source/_templates/
 Bridge model opensees/runrun.py
 Bridge model opensees/testbridge_ODB/
 Bridge model opensees/~$Benchmark bridge.xlsx
