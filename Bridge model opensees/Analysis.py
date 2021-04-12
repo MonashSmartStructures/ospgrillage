@@ -117,15 +117,31 @@ class MovingLoadAnalysis:
 
         bool_list_2 = []
         for nodes in self.op_wizard_obj.Nodedata:
-            # z                       # x
-            if nodes[3] > pos[1] and nodes[1] > pos[0]:
+            # x                       # z
+            if nodes[1] <= pos[0] and nodes[3] > pos[1]:
                 bool_list_2.append(True)
             else:
                 bool_list_2.append(False)
 
         res = list(compress(self.op_wizard_obj.Nodedata, bool_list_2))
+        # pick x is largest, z is smallest
+        t = extract(res, 3)
+        n1 = max(list(compress(res, t == min(t))))
 
-        return
+        bool_list_2 = []
+        for nodes in self.op_wizard_obj.Nodedata:
+            # x                       # z
+            if nodes[1] > pos[0] and nodes[3] <= pos[1]:
+                bool_list_2.append(True)
+            else:
+                bool_list_2.append(False)
+
+        res = list(compress(self.op_wizard_obj.Nodedata, bool_list_2))
+        t = extract(res, 3)
+        n4 = min(list(compress(res, t == max(t))))
+        # search elements which contain common nodes n1 and n2
+        ops.eleNodes()
+        return n1, n4
 
     def moving_transient(self):
         """
@@ -262,7 +278,7 @@ direction = "X"  # travel direction (global)
 model_option = "Custom"
 # 2.1 traverse properties
 move_path = namedtuple('Travel_path', ('initial_position', 'length', 'increment', 'direction'))
-move_1 = move_path([5, 2], 50, 2, "X")
+move_1 = move_path([5, 2.5], 50, 2, "X")
 
 # 3 create truck object
 RefTruck = vehicle(axlwts, axlspc, axlwidth, initial_position, travel_length, increment, direction)

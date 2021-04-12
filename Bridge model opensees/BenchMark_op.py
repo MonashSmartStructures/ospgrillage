@@ -1,6 +1,6 @@
 # Grillage generator wizard
 # Model name: BenchMark
-# Constructed on:09/04/2021 16:51:55
+# Constructed on:12/04/2021 13:13:30
 import numpy as np
 import math
 import openseespy.opensees as ops

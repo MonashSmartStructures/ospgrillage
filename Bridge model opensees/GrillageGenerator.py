@@ -527,7 +527,7 @@ class OPMemberProp:
     def get_section_input(self):
         """
         Function to obtain member attribute from OPMemberProp attribute.
-        :return: section input for member section for input to Openseespy functions
+        :return: list containing member properties in accordance with Openseespy input convention
         """
         section_input = None
         # assignment input based on ele type
