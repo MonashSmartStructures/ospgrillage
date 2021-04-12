@@ -15,7 +15,7 @@ def plot_section(ma_object, list_input):
 
 
 # construct op grillage object
-test_bridge = GrillageGenerator(bridge_name="BenchMark", long_dim=10, width=5, skew=25,
+test_bridge = GrillageGenerator(bridge_name="Example_superT_10m", long_dim=10, width=5, skew=25,
                                 num_long_grid=4, num_trans_grid=13, cantilever_edge=1, mesh_type="ob")
 
 # run node generation

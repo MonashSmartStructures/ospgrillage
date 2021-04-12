@@ -10,9 +10,8 @@ PyBridge OPframework's documentation
    :maxdepth: 2
    :caption: Contents:
 
-   Document_page
+   README
    rst/Bridgemodel
-   rst/Analysis
 
 Indices and tables
 ==================

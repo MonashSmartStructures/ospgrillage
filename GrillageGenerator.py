@@ -6,6 +6,9 @@ from datetime import datetime
 
 
 class GrillageGenerator:
+    """
+    Grillage Generator class
+    """
     def __init__(self, bridge_name, long_dim, width, skew, num_long_grid,
                  num_trans_grid, cantilever_edge, mesh_type):
         # Section placeholders
@@ -182,8 +185,8 @@ class GrillageGenerator:
             file_handle.write("# Element generation for section: {}\n".format(expression))
         #         element  tag   *[ndI ndJ]  A  E  G  Jx  Iy   Iz  transfOBJs
         for ele in grillage_section:
-            ops.element(beam_ele_type, ele[3],
-                        *[ele[0], ele[1]], *op_member_prop_class, trans_tag)  ###
+            # ops.element(beam_ele_type, ele[3],
+            #            *[ele[0], ele[1]], *op_member_prop_class, trans_tag)  ###
             with open(self.filename, 'a') as file_handle:
                 file_handle.write("ops.element(\"{type}\", {tag}, *[{i},{j}], *{memberprop}, {transtag})\n"
                                   .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
@@ -199,13 +202,13 @@ class GrillageGenerator:
         with open(self.filename, 'a') as file_handle:
             file_handle.write("# Boundary condition implementation\n")
         for boundary in self.support_nodes:
-            ops.fix(boundary[0], *boundary[1])
+            # ops.fix(boundary[0], *boundary[1])
             with open(self.filename, 'a') as file_handle:
                 file_handle.write("ops.fix({}, *{})\n".format(boundary[0], boundary[1]))
 
     def op_uniaxial_material(self):
         # function to generate op command for uniaxial material
-        ops.uniaxialMaterial(self.mat_type_op, 1, *self.mat_matrix)
+        # ops.uniaxialMaterial(self.mat_type_op, 1, *self.mat_matrix)
         with open(self.filename, 'a') as file_handle:
             file_handle.write("# Material definition \n")
             file_handle.write("ops.uniaxialMaterial(\"{}\", 1, *{})\n".format(self.mat_type_op, self.mat_matrix))
@@ -533,6 +536,10 @@ class OPMemberProp:
         # assignment input based on ele type
         if self.beam_ele_type == "ElasticTimoshenkoBeam":
             section_input = [self.E, self.G, self.A, self.J, self.Iy, self.Iz, self.Ay, self.Az]
+            section_input = "[{:e},{:e},{:e},{:e},{:e},{:e},{:e},{:e}]".format(self.E, self.G, self.A, self.J,
+                                                                               self.Iy, self.Iz, self.Ay, self.Az)
         elif self.beam_ele_type == "elasticBeamColumn":  # eleColumn
             section_input = [self.E, self.G, self.A, self.J, self.Iy, self.Iz]
+            section_input = "[{:e},{:e},{:e},{:e},{:e},{:e}]".format(self.E, self.G, self.A,
+                                                                               self.J, self.Iy, self.Iz)
         return section_input

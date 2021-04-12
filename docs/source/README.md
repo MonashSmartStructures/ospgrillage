@@ -1,8 +1,6 @@
-# PyBridge - Openseespy Wrapper
+# Overview
 
-## Overview
-
-The OPmodelwrapper module is a wrapper for ```Openseespy``` module. This module provides 
+The opmodule is a wrapper for ```Openseespy``` module. This module provides 
 python users a programmable interface in Python interpreter to create py file that generates 
 bridge grillage models in Open System for Earthquake Engineering Simulation (OpenSees) software framework.
 
@@ -37,7 +35,7 @@ and mesh properties (number of meshes in orthogonal dimensions).
     test_bridge = GrillageGenerator(bridge_name="BenchMark", long_dim=10, width=5, skew=25,
                                 num_long_grid=4, num_trans_grid=13, cantilever_edge=1, mesh_type="ob")
 
-Next, users will define the member properties of the grillage model. Properties are defined through
+Next, users define the member properties of the grillage model. Properties are defined through
 the ```OPMemberProp``` class. The object then automatically sorts the output of the members into 
 format compatible with the Opensees framework through ```.get_section_input()``` method. Following,
 this output member properties are passed into ```GrillageGenerator``` object.
@@ -49,17 +47,18 @@ Example showing definition of bridge members.
     long_tag = 1
     test_bridge.op_create_elements(longmem_prop, long_tag, longmem.beam_ele_type, expression='long_mem')
 
+
 For skew meshes, define for sections 1 to 4. For orthogonal
 meshes, define for sections 1 to 6. Refer following table and figure for section information of
 bridge model
 
-| Section tag    | Skew mesh| Orthogonal mesh | Transform tag 
-| ----------- | ----------- | ----------- |
+| Section tag    | Skew mesh| Orthogonal mesh | Transform tag |
+| ----------- |: ----------- :| ----------- | ----- 
 | 1   | Longitudinal beam    | Longitudinal beam|  1 |
 | 2   | Longitudinal edge beams | Longitudinal edge beams  | 1|
 | 3   | Transverse slab        | Transverse region A   | 2  |
 | 4   | Transverse edge slab         | Transverse between region A and B | 2 |
-| 5   | n/a      | Transverse region B) | 2 |
+| 5   | n/a      | Transverse region B | 2 |
 | 6   | n/a        | Tranverse skew region B1 and B2| 3| 
 
 

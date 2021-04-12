@@ -1,7 +1,7 @@
-Bridge class and Openseesmodel class
+opsy-grillage module
 ==================
 
-.. automodule:: Bridgemodel
+.. autoclass:: GrillageGenerator
    :members:
    :undoc-members:
    :show-inheritance:
@@ -9,11 +9,8 @@ Bridge class and Openseesmodel class
 Example: Call structure
 -----------------
 
-
-
 .. code-block:: python
 
     with open("save.p","rb") as f:
         refbridge = pickle.load(f)
 
-After loading bridge pickle file,
