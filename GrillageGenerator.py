@@ -131,7 +131,7 @@ class GrillageGenerator:
         :param restraint_nodes: list of node tags to be restrained
         :param restraint_vector: list representing node restraint for Nx Ny Nz, Mx My Mz respectively.
                                     represented by 1 (fixed), and 0 (free)
-        :return: populate self.support_node
+        :return:
         """
         for nodes in restraint_nodes:
             self.support_nodes.append([nodes, restraint_vector])
@@ -215,11 +215,9 @@ class GrillageGenerator:
 
     # sub functions
     def vector_xz_skew_mesh(self):
-        """
-        Function to calculate vector xz used for geometric transformation of local section properties
-        to match skew angle
-        :return: vector parallel to plane xz of member (see geotransform Opensees) for skew members (member tag 5)
-        """
+        # Function to calculate vector xz used for geometric transformation of local section properties
+        # return: vector parallel to plane xz of member (see geotransform Opensees) for skew members (member tag 5)
+
         # rotated 90 deg clockwise (x,y) -> (y,-x)
         x = self.width
         y = -(-self.breadth)
@@ -237,14 +235,13 @@ class GrillageGenerator:
         self.support_nodes.append([sup[1], self.fix_val_roller_x])  # at last loop, last node is
 
     def get_region_b(self, reg_a_end, step):
-        """
-        Function to calculate the node coordinate for skew region B
-         -> triangular breadth along the longitudinal direction
-        :param step: list containing transverse nodes (along z dir)
-        :param reg_a_end: last node from regA (quadrilateral region)
-        step
-        :return: node coordinate for skew triangular area (region B1 or B2)
-        """
+
+        # Function to calculate the node coordinate for skew region B
+        # -> triangular breadth along the longitudinal direction
+        # :param step: list containing transverse nodes (along z dir)
+        # :param reg_a_end: last node from regA (quadrilateral region)
+        # :return: node coordinate for skew triangular area (region B1 or B2)
+
         regB = [reg_a_end]  # initiate array regB
         for node in range(2, len(step)):  # minus 2 to ignore first and last element of step
             regB.append(self.long_dim - step[-node] * np.tan(self.skew / 180 * math.pi))
@@ -267,17 +264,14 @@ class GrillageGenerator:
             raise Exception('Oblique mesh not allowed for angle greater than {}'.format(self.skew_threshold[1]))
 
     def long_grid_nodes(self):
-        """
-        Function to output array of grid nodes along longitudinal direction
-        :return: step: array/list containing node spacings along longitudinal direction (float)
-        """
-
+        #Function to output array of grid nodes along longitudinal direction
         last_girder = (self.width - self.edge_width)  # coord of last girder
         nox_girder = np.linspace(self.edge_width, last_girder, self.num_long_gird)
         step = np.hstack((np.hstack((0, nox_girder)), self.width))  # array containing z coordinate
         return step
 
     def skew_mesh_automation(self):
+        # automate meshing -skew mesh
         if self.nox_special is None:  # check  special rule for slab spacing, else proceed automation of node
             self.nox = np.linspace(0, self.long_dim, self.num_trans_grid)  # array like containing node x cooridnate
         else:

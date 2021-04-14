@@ -1,4 +1,5 @@
-Bridge\_member module
+=====================
+Module procedures
 =====================
 
 .. automodule:: Bridge_member

@@ -12,6 +12,8 @@ Openseespy Grillage wizard
 
    README
    rst/Bridgemodel
+   rst/Bridge_member
+   rst/Vehicle
 
 Indices and tables
 ==================

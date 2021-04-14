@@ -1,13 +1,23 @@
+====================
 opsy-grillage module
-==================
+====================
 
 .. automodule:: GrillageGenerator
    :members:
-   :undoc-members:
-   :show-inheritance:
+
+
+The following contain information about the properties of ``GrillageGenerator``
+:doc:`Bridge_member`
+
+   ================================   ===========================================================================
+   ``constraintType`` |str|           constraints type
+   ``constraintArgs`` |list|          a list of constraints arguments
+   ================================   ===========================================================================
 
 Example: Call structure
 ---------------------------
+
+
 
 .. code-block:: python
 

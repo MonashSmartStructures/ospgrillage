@@ -1,4 +1,5 @@
-Vehicle module
+==============
+Examples
 ==============
 
 .. automodule:: Vehicle

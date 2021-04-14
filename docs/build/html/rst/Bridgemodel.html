@@ -38,7 +38,8 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="Grillage wizard module" href="../README.html" /> 
+    <link rel="next" title="Meshing procedure" href="Bridge_member.html" />
+    <link rel="prev" title="Overview" href="../README.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -85,11 +86,12 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../README.html">Grillage wizard module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../README.html">Overview</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">opsy-grillage module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#example-call-structure">Example: Call structure</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="Bridge_member.html">Meshing procedure</a></li>
 </ul>
 
             
@@ -157,12 +159,68 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="opsy-grillage-module">
-<h1>opsy-grillage module<a class="headerlink" href="#opsy-grillage-module" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-GrillageGenerator">
+<span id="opsy-grillage-module"></span><h1>opsy-grillage module<a class="headerlink" href="#module-GrillageGenerator" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="GrillageGenerator.GrillageGenerator">
+<em class="property">class </em><code class="sig-prename descclassname">GrillageGenerator.</code><code class="sig-name descname">GrillageGenerator</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bridge_name</span></em>, <em class="sig-param"><span class="n">long_dim</span></em>, <em class="sig-param"><span class="n">width</span></em>, <em class="sig-param"><span class="n">skew</span></em>, <em class="sig-param"><span class="n">num_long_grid</span></em>, <em class="sig-param"><span class="n">num_trans_grid</span></em>, <em class="sig-param"><span class="n">cantilever_edge</span></em>, <em class="sig-param"><span class="n">mesh_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#GrillageGenerator.GrillageGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Grillage Generator class</p>
+<dl class="py method">
+<dt id="GrillageGenerator.GrillageGenerator.boundary_cond_input">
+<code class="sig-name descname">boundary_cond_input</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">restraint_nodes</span></em>, <em class="sig-param"><span class="n">restraint_vector</span></em><span class="sig-paren">)</span><a class="headerlink" href="#GrillageGenerator.GrillageGenerator.boundary_cond_input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to define support boundary conditions of grillage model
+:param restraint_nodes: list of node tags to be restrained
+:param restraint_vector: list representing node restraint for Nx Ny Nz, Mx My Mz respectively.</p>
+<blockquote>
+<div><p>represented by 1 (fixed), and 0 (free)</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="GrillageGenerator.GrillageGenerator.section_property_input">
+<code class="sig-name descname">section_property_input</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">section_tag</span></em>, <em class="sig-param"><span class="n">section_type</span></em>, <em class="sig-param"><span class="n">section_arg</span></em><span class="sig-paren">)</span><a class="headerlink" href="#GrillageGenerator.GrillageGenerator.section_property_input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to assign properties for a section class object
+:param section_tag:
+:param section_type:
+:param section_arg:
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="GrillageGenerator.GrillageGenerator.material_definition">
+<code class="sig-name descname">material_definition</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mat_vec</span></em>, <em class="sig-param"><span class="n">mat_type</span><span class="o">=</span><span class="default_value">'Concrete01'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#GrillageGenerator.GrillageGenerator.material_definition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to call to define material properties variables</p>
+</dd></dl>
+
+</dd></dl>
+
+<p>The following contain information about the properties of <code class="docutils literal notranslate"><span class="pre">GrillageGenerator</span></code>
+#. <a class="reference internal" href="Bridge_member.html"><span class="doc">Meshing procedure</span></a></p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 70%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">constraintType</span></code> <a href="#id1"><span class="problematic" id="id2">|str|</span></a></p></td>
+<td><p>constraints type</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">constraintArgs</span></code> <a href="#id3"><span class="problematic" id="id4">|list|</span></a></p></td>
+<td><p>a list of constraints arguments</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
 <div class="section" id="example-call-structure">
 <h2>Example: Call structure<a class="headerlink" href="#example-call-structure" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;save.p&quot;</span><span class="p">,</span><span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">refbridge</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">test_bridge</span> <span class="o">=</span> <span class="n">GrillageGenerator</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;Example_superT_10m&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">skew</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span>
+                            <span class="n">num_long_grid</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">cantilever_edge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mesh_type</span><span class="o">=</span><span class="s2">&quot;ob&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -174,7 +232,8 @@
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="../README.html" class="btn btn-neutral float-left" title="Grillage wizard module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Bridge_member.html" class="btn btn-neutral float-right" title="Meshing procedure" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../README.html" class="btn btn-neutral float-left" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

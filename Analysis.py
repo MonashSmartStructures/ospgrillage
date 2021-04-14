@@ -127,8 +127,8 @@ class MovingLoadAnalysis:
         n1 = res[0]
         n2 = res[1]
         n3 = res[2]
-        n4 = res[4]
-        return n1
+        n4 = res[3]
+        return n1, n2, n3, n4
 
     def moving_transient(self):
         """
@@ -242,41 +242,3 @@ def op_run_moving(self):
 
 
 # -----------------------------------------------------------------------------------------------------------------------
-# Procedure to run grillage analysis (OP framework)
-# imports
-# - Analysis.py, Bridgemodel.py,PlotWizard.py,Vehicle.py
-# 1 load bridge pickle file
-
-# with open("save.p", "rb") as f:
-# refbridge = pickle.load(f)
-
-# refbridge["beamelement"] = 'elasticBeamColumn'
-# 1 Provide bridge model
-refbridge = "BenchMark_op"
-from RunScript import test_bridge  # import GrillageGenerator object created for op file
-
-# 1.1 Procedure to create bridge model in Opensees
-
-# 2 Define truck properties
-axlwts = [800, 3200, 3200]  # axle weights
-axlspc = [2, 2]  # axl spacings
-axlwidth = 2  # axl widths
-
-initial_position = [2, 0]  # start position of truck (ref point axle)
-travel_length = 50  # distance (m)
-increment = 2  # truck location increment
-direction = "X"  # travel direction (global)
-# model_option= "Opensees"
-model_option = "Custom"
-# 2.1 traverse properties
-move_path = namedtuple('Travel_path', ('initial_position', 'length', 'increment', 'direction'))
-move_1 = move_path([5, 2.5], 50, 2, "X")
-
-# 3 create truck object
-RefTruck = vehicle(axlwts, axlspc, axlwidth, initial_position, travel_length, increment, direction)
-# 4 pass py file of bridge and truck object to MovingLoadAnalysis.
-analysis = MovingLoadAnalysis(refbridge, RefTruck, move_1, model_option, test_bridge)
-# 5 run method to perform analysis
-analysis.run_analysis()
-breakpoint()
-# 5 plots and save results
