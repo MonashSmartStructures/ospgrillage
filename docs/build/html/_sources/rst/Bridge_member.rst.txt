@@ -1,8 +1,0 @@
-=====================
-Meshing procedure
-=====================
-
-.. automodule:: Bridge_member
-   :members:
-   :undoc-members:
-   :show-inheritance:

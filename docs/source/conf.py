@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'PyBridge OPframework'
+project = 'Openseespy Grillage Wizard'
 copyright = '2021, Justin Ngan, Colin Caprani'
 author = 'Justin Ngan, Colin Caprani, Mayer Melhem, Shihab Khan'
 

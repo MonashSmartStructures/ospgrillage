@@ -7,7 +7,7 @@ opsy-grillage module
 
 
 The following contain information about the properties of ``GrillageGenerator``
-#. :doc:`Bridge_member`
+:doc:`ModuleDoc`
 
    ================================   ===========================================================================
    ``constraintType`` |str|           constraints type

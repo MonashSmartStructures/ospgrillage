@@ -3,6 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+================================================
 Openseespy Grillage wizard
 ================================================
 
@@ -12,8 +13,8 @@ Openseespy Grillage wizard
 
    README
    rst/Bridgemodel
-   rst/Bridge_member
-   rst/Vehicle
+   rst/ModuleDoc
+   rst/ChangeLog
 
 Indices and tables
 ==================

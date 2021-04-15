@@ -257,10 +257,10 @@ class GrillageGenerator:
             self.ortho_mesh = False
 
         # checks mesh type options are defined within the allowance threshold
-        if self.skew <= self.skew_threshold[0] and self.ortho_mesh:
+        if np.abs(self.skew) <= self.skew_threshold[0] and self.ortho_mesh:
             # print
             raise Exception('Orthogonal mesh not allowed for angle less than {}'.format(self.skew_threshold[0]))
-        elif self.skew >= self.skew_threshold[1] and not self.ortho_mesh:
+        elif np.abs(self.skew) >= self.skew_threshold[1] and not self.ortho_mesh:
             raise Exception('Oblique mesh not allowed for angle greater than {}'.format(self.skew_threshold[1]))
 
     def long_grid_nodes(self):
@@ -380,10 +380,10 @@ class GrillageGenerator:
         print('Elements automation complete for region A')
         # mesh region B triangular area
         # B1 @ right support
-        b1_node_tag_start = nodetagcounter - 1
-        regBupdate = regB  # placeholder for mesh grid - to be updated during each loop
-        for pointz in step:  # loop for each mesh point in z dir
-            for pointx in regBupdate:  # loop for each mesh point in x dir (nox)
+        b1_node_tag_start = nodetagcounter - 1  # last node tag of region A
+        regBupdate = regB  # initiate list for line mesh of region B1 - updated each loop by removing last element
+        for pointz in step:  # loop for each line mesh in z dir (0 to ascending)
+            for pointx in regBupdate:  # loop for each line mesh in x dir (nox)
                 self.Nodedata.append([nodetagcounter, pointx, self.y_elevation, pointz])
                 nodetagcounter += 1
             regBupdate = regBupdate[:-1]  # remove last element for next step (skew boundary)
@@ -475,6 +475,8 @@ class GrillageGenerator:
         print('Elements automation complete for region B1 B2 and A')
 
     def compile_output(self, bridge_name):
+        # function to output txt file containing model information:
+        # Nodes and member elements.
         filename = "{}_properties.txt".format(bridge_name)
         with open(filename, 'w') as file_handle:
             # compile nodes
@@ -498,7 +500,12 @@ class GrillageGenerator:
             file_handle.writelines("%s\n" % ele for ele in self.trans_edge_2)  #
 
     def material_definition(self, mat_vec, mat_type="Concrete01"):
-        """Method to call to define material properties variables
+        """
+        Function to define material for Openseespy material model. For example, uniaxialMaterial, nDMaterial.
+
+        :param mat_vec: list containing material properties following convention specified in Openseespy
+        :param mat_type: str containing material type tag following available tags specified in Openseespy
+        :return: Function populates object variables: (1) mat_matrix, and (2) mat_type_op.
         """
         self.mat_matrix = mat_vec  # material matrix for
         self.mat_type_op = mat_type  # material type based on Openseespy

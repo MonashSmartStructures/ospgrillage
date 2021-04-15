@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>opsy-grillage module &mdash; PyBridge OPframework 0.0.1 documentation</title>
+  <title>opsy-grillage module &mdash; Openseespy Grillage Wizard 0.0.1 documentation</title>
   
 
   
@@ -38,7 +38,7 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Meshing procedure" href="Bridge_member.html" />
+    <link rel="next" title="Module documentation" href="ModuleDoc.html" />
     <link rel="prev" title="Overview" href="../README.html" /> 
 </head>
 
@@ -53,7 +53,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> PyBridge OPframework
+            <a href="../index.html" class="icon icon-home"> Openseespy Grillage Wizard
           
 
           
@@ -91,7 +91,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#example-call-structure">Example: Call structure</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="Bridge_member.html">Meshing procedure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ModuleDoc.html">Module documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ChangeLog.html">Change Log</a></li>
 </ul>
 
             
@@ -107,7 +108,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">PyBridge OPframework</a>
+          <a href="../index.html">Openseespy Grillage Wizard</a>
         
       </nav>
 
@@ -194,13 +195,24 @@
 <dl class="py method">
 <dt id="GrillageGenerator.GrillageGenerator.material_definition">
 <code class="sig-name descname">material_definition</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mat_vec</span></em>, <em class="sig-param"><span class="n">mat_type</span><span class="o">=</span><span class="default_value">'Concrete01'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#GrillageGenerator.GrillageGenerator.material_definition" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method to call to define material properties variables</p>
+<dd><p>Function to define material for Openseespy material model. For example, uniaxialMaterial, nDMaterial.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mat_vec</strong> – list containing material properties following convention specified in Openseespy</p></li>
+<li><p><strong>mat_type</strong> – str containing material type tag following available tags specified in Openseespy</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Function populates object variables: (1) mat_matrix, and (2) mat_type_op.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
 <p>The following contain information about the properties of <code class="docutils literal notranslate"><span class="pre">GrillageGenerator</span></code>
-#. <a class="reference internal" href="Bridge_member.html"><span class="doc">Meshing procedure</span></a></p>
+<a class="reference internal" href="ModuleDoc.html"><span class="doc">Module documentation</span></a></p>
 <blockquote>
 <div><table class="docutils align-default">
 <colgroup>
@@ -232,7 +244,7 @@
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="Bridge_member.html" class="btn btn-neutral float-right" title="Meshing procedure" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="ModuleDoc.html" class="btn btn-neutral float-right" title="Module documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="../README.html" class="btn btn-neutral float-left" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 

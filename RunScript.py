@@ -3,20 +3,11 @@ import pickle
 import openseespy.opensees as ops
 # import xlsxwriter
 import matplotlib.pyplot as plt
-
-
-def plot_section(ma_object, list_input):
-    for num, ele in enumerate(list_input):
-        matches_i_x = [x[1] for x in ma_object.Nodedata if ele[0] == x[0]]
-        matches_i_z = [x[3] for x in ma_object.Nodedata if ele[0] == x[0]]
-        matches_j_x = [x[1] for x in ma_object.Nodedata if ele[1] == x[0]]
-        matches_j_z = [x[3] for x in ma_object.Nodedata if ele[1] == x[0]]
-        plt.plot([matches_i_x, matches_j_x], [matches_i_z, matches_j_z])
-
+from PlotWizard import *
 
 # construct op grillage object
-test_bridge = GrillageGenerator(bridge_name="Example_superT_10m", long_dim=10, width=5, skew=25,
-                                num_long_grid=4, num_trans_grid=13, cantilever_edge=1, mesh_type="ob")
+test_bridge = GrillageGenerator(bridge_name="Example_superT_10m", long_dim=10, width=5, skew=-15,
+                                num_long_grid=4, num_trans_grid=13, cantilever_edge=1, mesh_type="Ortho")
 
 # run node generation
 test_bridge.node_data_generation()
@@ -66,7 +57,7 @@ plt.axis('equal')
 
 # plot elements
 plot_section(test_bridge, test_bridge.long_edge_1)
-# plot_section(test_bridge,test_bridge.long_mem)
+plot_section(test_bridge,test_bridge.long_mem)
 plot_section(test_bridge, test_bridge.trans_mem)
 plot_section(test_bridge, test_bridge.trans_edge_1)
 plot_section(test_bridge, test_bridge.trans_edge_2)
