@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from PlotWizard import *
 
 # construct op grillage object
-test_bridge = GrillageGenerator(bridge_name="Example_superT_10m", long_dim=10, width=5, skew=-15,
+test_bridge = GrillageGenerator(bridge_name="Example_superT_10m", long_dim=10, width=5, skew=-11,
                                 num_long_grid=4, num_trans_grid=13, cantilever_edge=1, mesh_type="Ortho")
 
 # run node generation

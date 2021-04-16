@@ -9,6 +9,7 @@ class GrillageGenerator:
     """
     Grillage Generator class
     """
+
     def __init__(self, bridge_name, long_dim, width, skew, num_long_grid,
                  num_trans_grid, cantilever_edge, mesh_type):
         # Section placeholders
@@ -150,7 +151,7 @@ class GrillageGenerator:
         # run and generate code line for section
         self.op_section_generate()
 
-    # functions to create bridge model in Opensees software
+    # methods associate with creation of executable py file
     def op_ele_transform_input(self, trans_tag, vector_xz, transform_type="Linear"):
         ops.geomTransf(transform_type, trans_tag, *vector_xz)
         with open(self.filename, 'a') as file_handle:
@@ -244,7 +245,7 @@ class GrillageGenerator:
 
         regB = [reg_a_end]  # initiate array regB
         for node in range(2, len(step)):  # minus 2 to ignore first and last element of step
-            regB.append(self.long_dim - step[-node] * np.tan(self.skew / 180 * math.pi))
+            regB.append(self.long_dim - step[-node] * np.abs(np.tan(self.skew / 180 * math.pi)))
         # after append, add last element - self.long_dim
         regB.append(self.long_dim)
         regB = np.array(regB)
@@ -264,14 +265,15 @@ class GrillageGenerator:
             raise Exception('Oblique mesh not allowed for angle greater than {}'.format(self.skew_threshold[1]))
 
     def long_grid_nodes(self):
-        #Function to output array of grid nodes along longitudinal direction
+        # Function to output array of grid nodes along longitudinal direction
         last_girder = (self.width - self.edge_width)  # coord of last girder
         nox_girder = np.linspace(self.edge_width, last_girder, self.num_long_gird)
         step = np.hstack((np.hstack((0, nox_girder)), self.width))  # array containing z coordinate
         return step
 
+    # main meshing procedure/method
     def skew_mesh_automation(self):
-        # automate meshing -skew mesh
+        # automate skew meshing
         if self.nox_special is None:  # check  special rule for slab spacing, else proceed automation of node
             self.nox = np.linspace(0, self.long_dim, self.num_trans_grid)  # array like containing node x cooridnate
         else:
@@ -332,7 +334,7 @@ class GrillageGenerator:
         #         o
         #       o o o o o o
         #         b    +  ortho
-        self.breadth = self.trans_dim * math.sin(self.skew / 180 * math.pi)  # length of skew edge in x dir
+        self.breadth = self.trans_dim * np.abs(math.sin(self.skew / 180 * math.pi))  # length of skew edge in x dir
         step = self.long_grid_nodes()  # mesh points in transverse direction
 
         # Generate nox based on two orthogonal region: (A)  quadrilateral area, and (B)  triangular area
@@ -378,11 +380,16 @@ class GrillageGenerator:
                 # record as slab with section 3
                 eletagcounter += 1
         print('Elements automation complete for region A')
+
         # mesh region B triangular area
         # B1 @ right support
         b1_node_tag_start = nodetagcounter - 1  # last node tag of region A
         regBupdate = regB  # initiate list for line mesh of region B1 - updated each loop by removing last element
-        for pointz in step:  # loop for each line mesh in z dir (0 to ascending)
+        if self.skew < 0:  # check for angle sign
+            line_mesh_z_b1 = reversed(step)  # (0 to ascending for positive angle,descending for -ve)
+        else:
+            line_mesh_z_b1 = step
+        for pointz in line_mesh_z_b1:  # loop for each line mesh in z dir
             for pointx in regBupdate:  # loop for each line mesh in x dir (nox)
                 self.Nodedata.append([nodetagcounter, pointx, self.y_elevation, pointz])
                 nodetagcounter += 1
@@ -390,8 +397,11 @@ class GrillageGenerator:
 
         # Elements mesh for region B1
         regBupdate = regB  # reset placeholder
-        row_start = b1_node_tag_start
-        reg_a_col = len(regA[:-1])  # ignore last element of reg A which overlap with regB
+        row_start = b1_node_tag_start  # last nodetag of region A
+        if self.skew < 0:
+            reg_a_col = row_start   # nodetag of last node in last row of region A (last nodetag of region A)
+        else:  # nodetag of last node in first row of region A
+            reg_a_col = len(regA[:-1])  # ignore last element of reg A which overlap with regB
         for num_z in range(0, len(step)):
             # link nodes from region A
             if num_z == 0 or num_z == len(step) - 1:
@@ -420,14 +430,21 @@ class GrillageGenerator:
                     [row_start + num_x + 1, row_start + num_x + len(regBupdate), 6, eletagcounter])  # support skew
                 eletagcounter += 1
 
-            row_start = row_start + len(regBupdate)  # update next step start node
+            row_start = row_start + len(regBupdate)  # update next step start node of region B
             regBupdate = regBupdate[:-1]  # remove last element for next step (skew boundary)
-            reg_a_col = reg_a_col + len(regA[:-1])  # update next step node correspond with region A
+            if self.skew < 0:
+                reg_a_col = reg_a_col - len(regA[:-1])  # update next step node correspond with region A
+            else:
+                reg_a_col = reg_a_col + len(regA[:-1])  # update next step node correspond with region A
         print('Elements automation complete for region B1 and A')
 
         # B2 left support
-        regBupdate = -regB + regA[-1]  # left side of quadrilateral area, regB is now negative region
-        for pointz in reversed(step):
+        regBupdate = -regB + regA[-1]  # left side of quadrilateral area, regB can lie in negative x axis
+        if self.skew < 0:  # check for angle sign
+            line_mesh_z_b2 = step  # (descending for positive angle,ascending for -ve)
+        else:
+            line_mesh_z_b2 = reversed(step)
+        for pointz in line_mesh_z_b2:
             for pointx in regBupdate[1:]:  # remove counting first element overlap with region A
                 self.Nodedata.append([nodetagcounter, pointx, self.y_elevation, pointz])
                 nodetagcounter += 1
@@ -435,7 +452,10 @@ class GrillageGenerator:
 
         # Element meshing for region B2
         # takes row_start from B1 auto meshing loop
-        reg_a_col = 1 + (len(step) - 1) * len(regA[:-1])  # reset placeholder, start at node 1 for region B1
+        if self.skew < 0:
+            reg_a_col = 1  # links to first node (region A)
+        else:
+            reg_a_col = 1 + (len(step) - 1) * len(regA[:-1])  # links to first node last row of region A
         regBupdate = -regB + regA[-1]  # reset placeholder
         for num_z in range(0, len(step)):
             # link nodes from region A
@@ -460,9 +480,14 @@ class GrillageGenerator:
                 self.trans_mem.append([row_start + num_x, row_start + num_x + len(regBupdate[1:]), 5, eletagcounter])
                 eletagcounter += 1
             if num_z == len(step) - 2:
-                self.trans_edge_1.append(
-                    [1, row_start + len(regBupdate[1:]), 6, eletagcounter])  # ele of node 1 to last node skew
-                eletagcounter += 1
+                if self.skew < 0:  # if negative angle
+                    self.trans_edge_1.append(
+                        [reg_a_col+len(regA[:-1]), row_start + len(regBupdate[1:]), 6, eletagcounter])  # ele of node 1 to last node skew
+                    eletagcounter += 1
+                else:
+                    self.trans_edge_1.append(
+                        [1, row_start + len(regBupdate[1:]), 6, eletagcounter])  # ele of node 1 to last node skew
+                    eletagcounter += 1
             elif num_z != len(step) - 1:  # num of nodes = num ele + 1, thus ignore last step for implementing ele
                 self.trans_edge_1.append(
                     [row_start + num_x + 1, row_start + num_x + len(regBupdate[1:]), 6, eletagcounter])  # support skew
@@ -471,7 +496,11 @@ class GrillageGenerator:
 
             row_start = row_start + len(regBupdate[1:])  # update next step start node
             regBupdate = regBupdate[:-1]  # remove last element for next step (skew boundary)
-            reg_a_col = reg_a_col - len(regA[:-1])  # update next step node correspond with region A
+
+            if self.skew < 0:
+                reg_a_col = reg_a_col + len(regA[:-1])  # update next step node correspond with region A
+            else:
+                reg_a_col = reg_a_col - len(regA[:-1])  # update next step node correspond with region A
         print('Elements automation complete for region B1 B2 and A')
 
     def compile_output(self, bridge_name):
@@ -542,5 +571,5 @@ class OPMemberProp:
         elif self.beam_ele_type == "elasticBeamColumn":  # eleColumn
             section_input = [self.E, self.G, self.A, self.J, self.Iy, self.Iz]
             section_input = "[{:e},{:e},{:e},{:e},{:e},{:e}]".format(self.E, self.G, self.A,
-                                                                               self.J, self.Iy, self.Iz)
+                                                                     self.J, self.Iy, self.Iz)
         return section_input
