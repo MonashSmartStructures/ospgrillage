@@ -12,11 +12,13 @@ class GrillageGenerator:
 
     def __init__(self, bridge_name, long_dim, width, skew, num_long_grid,
                  num_trans_grid, cantilever_edge, mesh_type):
+        """Initialize the GrillageGenerator class"""
         # Section placeholders
         self.section_arg = None
         self.section_tag = None
         self.section_type = None
 
+        # model information
         self.mesh_type = mesh_type
         self.model_name = bridge_name
         # global dimensions of grillage
@@ -33,21 +35,21 @@ class GrillageGenerator:
         self.breadth = None  # to be calculated automatically based on skew
         self.spclonggirder = None  # to be automated
         self.spctransslab = None  # to be automated
-        # placeholder for nodes
+        # node information
         self.Nodedata = []  # array like to be populated
-        self.nox = []
-        self.noz = []
-        # list containing elements of grillage model
-        self.long_mem = []  #
-        self.trans_mem = []
-        self.long_edge_1 = []
-        self.long_edge_2 = []
-        self.trans_edge_1 = []
-        self.trans_edge_2 = []  # np.array([],dtype="object")
-        self.support_nodes = []  # to be populated by self.bound_cond_input
-        self.concrete_prop = []
-        self.steel_prop = []
-        self.vxz_skew = []  # vector xz for skew members
+        self.nox = []  # line mesh in x direction
+        self.noz = []  # line mesh in z direction
+        # initiate list of various elements of grillage model, each entry of list is a sublist [node_i, node_j, eletag]
+        self.long_mem = []  # longitudinal members
+        self.trans_mem = []  # transverse members
+        self.long_edge_1 = []  # longitudinal edge beam 1
+        self.long_edge_2 = []  # longitudinal edge beam 2
+        self.trans_edge_1 = []  # transverse edge element 1 (typically skew)
+        self.trans_edge_2 = []  # transverse edge element 2 (typically skew)
+        self.support_nodes = []  # list of nodes at support regions
+        self.concrete_prop = []  # list of concrete properties arguments
+        self.steel_prop = []  # list of steel properties arguments
+        self.vxz_skew = []  # vector xz of skew elements - for section transformation
 
         # rules for grillage automation - default values are in place, use keyword during class instantiation
         self.min_long_spacing = 1  # default 1m
@@ -77,58 +79,60 @@ class GrillageGenerator:
         # - rule for multiple span + multi skew
         # - rule for pier
 
-        # Wizard py file generation procedure
-        # 0 construct py file and details
+        # Initiate py file output
         self.filename = "{}_op.py".format(self.model_name)
         with open(self.filename, 'w') as file_handle:
             # create py file or overwrite existing
-            # header of file
+            # writing headers and description at top of file
             file_handle.write("# Grillage generator wizard\n# Model name: {}\n".format(self.model_name))
-            # to be fill in with other descriptions
+            # time
             now = datetime.now()
             dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
             file_handle.write("# Constructed on:{}\n".format(dt_string))
-            # imports
+            # write imports
             file_handle.write("import numpy as np\nimport math\nimport openseespy.opensees as ops"
                               "\nimport openseespy.postprocessing.Get_Rendering as opsplt\n")
 
-    # node functions
-    def node_data_generation(self):
-        # calculate grillage width
-        self.trans_dim = self.width / math.cos(self.skew / 180 * math.pi)  # determine width of grillage
+        self.create_nodes()
+
+    # node procedure
+    def create_nodes(self):
+        # calculate edge length of grillage
+        self.trans_dim = self.width / math.cos(self.skew / 180 * math.pi)
         # check for orthogonal mesh requirement
         self.check_skew()
 
         # 1 create Opensees model space
         self.op_model_space()
-        # procedure to generate node and connectivity data of Opensees Model
+        # check mesh type and run procedure accordingly
         if self.ortho_mesh:
             print("orthogonal meshing, skew angle {} greater than threshold {} ".format(self.skew, self.skew_threshold))
             # perform orthogonal meshing
-            self.orthogonal_mesh_automation()
+            self.orthogonal_mesh()
             v = self.vector_xz_skew_mesh()
-            # three ele transform for skew mesh
+            # generate command lines for 3 ele transformation in orthogonal mesh
             self.op_ele_transform_input(1, [0, 0, 1])  # x dir members
             self.op_ele_transform_input(2, [v[0], 0, v[1]])  # z dir members (skew)
             self.op_ele_transform_input(3, [1, 0, 0])  # z dir members orthogonal
         else:  # skew mesh requirement
             print("skew meshing, skew angle {} less than threshold {} ".format(self.skew, self.skew_threshold))
-            # perform skewed mesh
-            self.skew_mesh_automation()
+            # perform skewed meshing
+            self.skew_mesh()
             v = self.vector_xz_skew_mesh()
-            # two ele transformation for skew mesh
+            # generate command lines for 2 ele transformation in skew mesh
             self.op_ele_transform_input(1, [0, 0, 1])  # x dir members
             self.op_ele_transform_input(2, [v[0], 0, v[1]])  # z dir members (skew)
 
-        # procedure to create bridge in Opensees software framework # edits here
-        self.op_create_nodes()
-        self.get_trans_edge_nodes()
-        self.op_fix()
+        # 2 generate command lines in output py file
+        self.op_create_nodes()  # write node() command for each node generated in step 1
+        self.get_trans_edge_nodes()  # find support nodes at edges of grillage model
+        self.op_fix()  # write fix() command for support nodes from get_trans_edge_nodes()
 
     #
     def boundary_cond_input(self, restraint_nodes, restraint_vector):
         """
-        Function to define support boundary conditions of grillage model
+        Function to define support boundary conditions for fix command arguments
+
         :param restraint_nodes: list of node tags to be restrained
         :param restraint_vector: list representing node restraint for Nx Ny Nz, Mx My Mz respectively.
                                     represented by 1 (fixed), and 0 (free)
@@ -139,10 +143,11 @@ class GrillageGenerator:
 
     def section_property_input(self, section_tag, section_type, section_arg):
         """
-        Function to assign properties for a section class object
-        :param section_tag:
-        :param section_type:
-        :param section_arg:
+        Function to define section variables for section command arguments.
+
+        :param section_tag: tag argument of section
+        :param section_type: type argument of section - see Opensees for appropriate types
+        :param section_arg: list of arguments for section command - see Opensees for conventions of arguments
         :return:
         """
         self.section_type = section_type
@@ -151,7 +156,7 @@ class GrillageGenerator:
         # run and generate code line for section
         self.op_section_generate()
 
-    # methods associate with creation of executable py file
+    # methods to write ops commands in output py file
     def op_ele_transform_input(self, trans_tag, vector_xz, transform_type="Linear"):
         ops.geomTransf(transform_type, trans_tag, *vector_xz)
         with open(self.filename, 'a') as file_handle:
@@ -179,11 +184,21 @@ class GrillageGenerator:
         # with open(self.filename, 'a') as file_handle:
         #     file_handle.write("ops.recorder('Node', '-file', \'{}.txt\')\n".format(self.filename[:-3]))
 
-    def op_create_elements(self, op_member_prop_class, trans_tag, beam_ele_type, expression='long_mem'):
+    def op_create_elements(self, op_member_prop_class, trans_tag, beam_ele_type, member='long_mem'):
+        """
+        Function to define element properties for element command arguments
+
+        :param op_member_prop_class: an OPmemberProp class object - see OPmemberProp class
+        :param trans_tag: tag argument of element
+        :param beam_ele_type: string of type argument of element - see Opensees for appropriate type
+        :param member: string name of member components according to GrillageGenerator Object -  see
+                            Grillagegenerator docs for more information
+        :return:
+        """
         # element list in attributes
-        grillage_section = eval("self.{}".format(expression))
+        grillage_section = eval("self.{}".format(member))
         with open(self.filename, 'a') as file_handle:
-            file_handle.write("# Element generation for section: {}\n".format(expression))
+            file_handle.write("# Element generation for section: {}\n".format(member))
         #         element  tag   *[ndI ndJ]  A  E  G  Jx  Iy   Iz  transfOBJs
         for ele in grillage_section:
             # ops.element(beam_ele_type, ele[3],
@@ -208,7 +223,7 @@ class GrillageGenerator:
                 file_handle.write("ops.fix({}, *{})\n".format(boundary[0], boundary[1]))
 
     def op_uniaxial_material(self):
-        # function to generate op command for uniaxial material
+        # function to generate uniaxialMaterial() command in output py file
         # ops.uniaxialMaterial(self.mat_type_op, 1, *self.mat_matrix)
         with open(self.filename, 'a') as file_handle:
             file_handle.write("# Material definition \n")
@@ -219,7 +234,8 @@ class GrillageGenerator:
         # Function to calculate vector xz used for geometric transformation of local section properties
         # return: vector parallel to plane xz of member (see geotransform Opensees) for skew members (member tag 5)
 
-        # rotated 90 deg clockwise (x,y) -> (y,-x)
+        # vector rotate 90 deg clockwise (x,y) -> (y,-x)
+        # [breadth width] is a vector parallel to skew
         x = self.width
         y = -(-self.breadth)
         # normalize
@@ -228,6 +244,8 @@ class GrillageGenerator:
         return vec
 
     def get_trans_edge_nodes(self):
+        # function to identify nodes at edges of the model along transverse direction (trans_edge_1 and trans_edge_2)
+        # function then assigns pinned support and roller support to nodes in trans_edge_1 and trans_edge_2 respectively
         for sup in self.trans_edge_1:
             self.support_nodes.append([sup[0], self.fix_val_pin])
         self.support_nodes.append([sup[1], self.fix_val_pin])  # at last loop, last node is
@@ -252,6 +270,7 @@ class GrillageGenerator:
         return regB
 
     def check_skew(self):
+        # function: (1) controlling boolean for mesh type and (2) check mesh threshold
         if self.mesh_type == "Ortho":
             self.ortho_mesh = True
         else:
@@ -264,22 +283,22 @@ class GrillageGenerator:
         elif np.abs(self.skew) >= self.skew_threshold[1] and not self.ortho_mesh:
             raise Exception('Oblique mesh not allowed for angle greater than {}'.format(self.skew_threshold[1]))
 
-    def long_grid_nodes(self):
+    def get_long_grid_nodes(self):
         # Function to output array of grid nodes along longitudinal direction
         last_girder = (self.width - self.edge_width)  # coord of last girder
         nox_girder = np.linspace(self.edge_width, last_girder, self.num_long_gird)
         step = np.hstack((np.hstack((0, nox_girder)), self.width))  # array containing z coordinate
         return step
 
-    # main meshing procedure/method
-    def skew_mesh_automation(self):
+    # skew meshing function
+    def skew_mesh(self):
         # automate skew meshing
         if self.nox_special is None:  # check  special rule for slab spacing, else proceed automation of node
             self.nox = np.linspace(0, self.long_dim, self.num_trans_grid)  # array like containing node x cooridnate
         else:
             self.nox = self.nox_special  # assign custom array to nox array
         self.breadth = self.trans_dim * math.sin(self.skew / 180 * math.pi)  # length of skew edge in x dir
-        step = self.long_grid_nodes()  # mesh points in z direction
+        step = self.get_long_grid_nodes()  # mesh points in z direction
         nodetagcounter = 1  # counter for nodetag
         eletagcounter = 1  # counter for eletag
 
@@ -327,7 +346,8 @@ class GrillageGenerator:
                 eletagcounter += 1
         print(self.trans_mem)
 
-    def orthogonal_mesh_automation(self):
+    # orthogonal meshing method
+    def orthogonal_mesh(self):
         # Note special rule for nox does not apply to orthogonal mesh - automatically calculates the optimal ortho mesh
         #             o o o o o o
         #           o
@@ -335,18 +355,18 @@ class GrillageGenerator:
         #       o o o o o o
         #         b    +  ortho
         self.breadth = self.trans_dim * np.abs(math.sin(self.skew / 180 * math.pi))  # length of skew edge in x dir
-        step = self.long_grid_nodes()  # mesh points in transverse direction
+        step = self.get_long_grid_nodes()  # mesh points in transverse direction
 
         # Generate nox based on two orthogonal region: (A)  quadrilateral area, and (B)  triangular area
         regA = np.linspace(0, self.long_dim - self.breadth, self.num_trans_grid)
         # RegA consist of overlapping last element
         # RegB first element overlap with RegA last element
-        regB = self.get_region_b(regA[-1], step)
+        regB = self.get_region_b(regA[-1], step)  # nodes @ region B startswith last entry of region A up to
         self.nox = np.hstack((regA[:-1], regB))  # removed overlapping element
 
         # mesh region A quadrilateral area
-        nodetagcounter = 1  # counter for nodetag
-        eletagcounter = 1
+        nodetagcounter = 1  # counter for nodetag, updates after creating each nodes
+        eletagcounter = 1  # counter for element, updates after creating each elements
         for pointz in step:  # loop for each mesh point in z dir
             for pointx in regA[:-1]:  # loop for each mesh point in x dir (nox)
                 # populate nodedata array - inputs [nodetag,x,y,z]
@@ -399,7 +419,7 @@ class GrillageGenerator:
         regBupdate = regB  # reset placeholder
         row_start = b1_node_tag_start  # last nodetag of region A
         if self.skew < 0:
-            reg_a_col = row_start   # nodetag of last node in last row of region A (last nodetag of region A)
+            reg_a_col = row_start  # nodetag of last node in last row of region A (last nodetag of region A)
         else:  # nodetag of last node in first row of region A
             reg_a_col = len(regA[:-1])  # ignore last element of reg A which overlap with regB
         for num_z in range(0, len(step)):
@@ -482,7 +502,8 @@ class GrillageGenerator:
             if num_z == len(step) - 2:
                 if self.skew < 0:  # if negative angle
                     self.trans_edge_1.append(
-                        [reg_a_col+len(regA[:-1]), row_start + len(regBupdate[1:]), 6, eletagcounter])  # ele of node 1 to last node skew
+                        [reg_a_col + len(regA[:-1]), row_start + len(regBupdate[1:]), 6,
+                         eletagcounter])  # ele of node 1 to last node skew
                     eletagcounter += 1
                 else:
                     self.trans_edge_1.append(

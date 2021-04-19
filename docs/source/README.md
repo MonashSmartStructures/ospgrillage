@@ -4,6 +4,10 @@ The opsy-grillage module is a python wrapper for ```Openseespy``` module. This m
 python users to create py file that generates a grillage model 
 using Open System for Earthquake Engineering Simulation (OpenSees) software framework.
 
+In OpenSees, each nodes and elements are defined in lines of code which typically results in a py file with
+thousands lines of code for a model. The opsy-grillage module automates py file generation for the required grillage 
+information.
+
 The wrapper constructs a Python .py file containing ```Openseespy``` commands for constructing a 
 Opensees model. The wrapper allows quick generation of py file with few basic command lines in Python 
 interface. It should provide a solid foundation for creating various grillage models in Opensees 

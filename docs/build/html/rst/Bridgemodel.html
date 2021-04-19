@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>opsy-grillage module &mdash; Openseespy Grillage Wizard 0.0.1 documentation</title>
+  <title>API documentation &mdash; Openseespy Grillage Wizard 0.0.1 documentation</title>
   
 
   
@@ -39,7 +39,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Module documentation" href="ModuleDoc.html" />
-    <link rel="prev" title="Overview" href="../README.html" /> 
+    <link rel="prev" title="Structure of Analysis" href="Structure%20description.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -87,11 +87,18 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../README.html">Overview</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">opsy-grillage module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#example-call-structure">Example: Call structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Structure%20description.html">Structure of Analysis</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-GrillageGenerator">GrillageGenerator class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-wrapper-module">Using wrapper module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#defining-concrete-and-steel-properties">Defining concrete and steel properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#defining-element-and-section-properties">Defining element and section properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#execute-output-py-file">Execute output py file</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ModuleDoc.html">Module documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ChangeLog.html">Change Log</a></li>
 </ul>
 
@@ -141,7 +148,7 @@
     
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>opsy-grillage module</li>
+      <li>API documentation</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -160,24 +167,29 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-GrillageGenerator">
-<span id="opsy-grillage-module"></span><h1>opsy-grillage module<a class="headerlink" href="#module-GrillageGenerator" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="api-documentation">
+<h1>API documentation<a class="headerlink" href="#api-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-GrillageGenerator">
+<span id="grillagegenerator-class"></span><h2>GrillageGenerator class<a class="headerlink" href="#module-GrillageGenerator" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt id="GrillageGenerator.GrillageGenerator">
 <em class="property">class </em><code class="sig-prename descclassname">GrillageGenerator.</code><code class="sig-name descname">GrillageGenerator</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bridge_name</span></em>, <em class="sig-param"><span class="n">long_dim</span></em>, <em class="sig-param"><span class="n">width</span></em>, <em class="sig-param"><span class="n">skew</span></em>, <em class="sig-param"><span class="n">num_long_grid</span></em>, <em class="sig-param"><span class="n">num_trans_grid</span></em>, <em class="sig-param"><span class="n">cantilever_edge</span></em>, <em class="sig-param"><span class="n">mesh_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#GrillageGenerator.GrillageGenerator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Grillage Generator class</p>
+<p>Initialize the GrillageGenerator class</p>
 <dl class="py method">
 <dt id="GrillageGenerator.GrillageGenerator.boundary_cond_input">
 <code class="sig-name descname">boundary_cond_input</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">restraint_nodes</span></em>, <em class="sig-param"><span class="n">restraint_vector</span></em><span class="sig-paren">)</span><a class="headerlink" href="#GrillageGenerator.GrillageGenerator.boundary_cond_input" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to define support boundary conditions of grillage model
-:param restraint_nodes: list of node tags to be restrained
-:param restraint_vector: list representing node restraint for Nx Ny Nz, Mx My Mz respectively.</p>
-<blockquote>
-<div><p>represented by 1 (fixed), and 0 (free)</p>
-</div></blockquote>
+<dd><p>Function to define support boundary conditions for fix command arguments</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p></p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>restraint_nodes</strong> – list of node tags to be restrained</p></li>
+<li><p><strong>restraint_vector</strong> – list representing node restraint for Nx Ny Nz, Mx My Mz respectively.
+represented by 1 (fixed), and 0 (free)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
 </dd>
 </dl>
 </dd></dl>
@@ -185,11 +197,39 @@
 <dl class="py method">
 <dt id="GrillageGenerator.GrillageGenerator.section_property_input">
 <code class="sig-name descname">section_property_input</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">section_tag</span></em>, <em class="sig-param"><span class="n">section_type</span></em>, <em class="sig-param"><span class="n">section_arg</span></em><span class="sig-paren">)</span><a class="headerlink" href="#GrillageGenerator.GrillageGenerator.section_property_input" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to assign properties for a section class object
-:param section_tag:
-:param section_type:
-:param section_arg:
-:return:</p>
+<dd><p>Function to define section variables for section command arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>section_tag</strong> – tag argument of section</p></li>
+<li><p><strong>section_type</strong> – type argument of section - see Opensees for appropriate types</p></li>
+<li><p><strong>section_arg</strong> – list of arguments for section command - see Opensees for conventions of arguments</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="GrillageGenerator.GrillageGenerator.op_create_elements">
+<code class="sig-name descname">op_create_elements</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">op_member_prop_class</span></em>, <em class="sig-param"><span class="n">trans_tag</span></em>, <em class="sig-param"><span class="n">beam_ele_type</span></em>, <em class="sig-param"><span class="n">member</span><span class="o">=</span><span class="default_value">'long_mem'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#GrillageGenerator.GrillageGenerator.op_create_elements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to define element properties for element command arguments</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>op_member_prop_class</strong> – an OPmemberProp class object - see OPmemberProp class</p></li>
+<li><p><strong>trans_tag</strong> – tag argument of element</p></li>
+<li><p><strong>beam_ele_type</strong> – string of type argument of element - see Opensees for appropriate type</p></li>
+<li><p><strong>member</strong> – string name of member components according to GrillageGenerator Object -  see
+Grillagegenerator docs for more information</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -211,30 +251,77 @@
 
 </dd></dl>
 
-<p>The following contain information about the properties of <code class="docutils literal notranslate"><span class="pre">GrillageGenerator</span></code>
+<p>For information on the <code class="docutils literal notranslate"><span class="pre">GrillageGenerator</span></code> class, see
 <a class="reference internal" href="ModuleDoc.html"><span class="doc">Module documentation</span></a></p>
 <blockquote>
 <div><table class="docutils align-default">
 <colgroup>
-<col style="width: 30%" />
-<col style="width: 70%" />
+<col style="width: 28%" />
+<col style="width: 72%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">constraintType</span></code> <a href="#id1"><span class="problematic" id="id2">|str|</span></a></p></td>
-<td><p>constraints type</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">bridge_name</span></code> <a href="#id1"><span class="problematic" id="id2">|str|</span></a></p></td>
+<td><p>name string of bridge model</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">constraintArgs</span></code> <a href="#id3"><span class="problematic" id="id4">|list|</span></a></p></td>
-<td><p>a list of constraints arguments</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">long_dim</span></code> <a href="#id3"><span class="problematic" id="id4">|float|</span></a></p></td>
+<td><p>longitudinal dimension argument</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">width</span></code> <a href="#id5"><span class="problematic" id="id6">|float|</span></a></p></td>
+<td><p>width argument</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">skew</span></code> <a href="#id7"><span class="problematic" id="id8">|float|</span></a></p></td>
+<td><p>skew angle argument: angle can be positive or negative (skew clockwise if positive)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">num_long_grid</span></code> <a href="#id9"><span class="problematic" id="id10">|float|</span></a></p></td>
+<td><p>number of line meshes in the longitudinal direction</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">num_trans_grid</span></code> <a href="#id11"><span class="problematic" id="id12">|float|</span></a></p></td>
+<td><p>number of line mesh in the transverse direction</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cantilever_edge</span></code> <a href="#id13"><span class="problematic" id="id14">|float|</span></a></p></td>
+<td><p>distance between edg</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mesh_type</span></code> <a href="#id15"><span class="problematic" id="id16">|str|</span></a></p></td>
+<td><dl class="simple">
+<dt>string argument for type of mesh:</dt><dd><ul class="simple">
+<li><p>“Ortho”: Orthogonal mesh</p></li>
+<li><p>“Oblique” : Skew mesh</p></li>
+</ul>
+</dd>
+</dl>
+</td>
 </tr>
 </tbody>
 </table>
 </div></blockquote>
-<div class="section" id="example-call-structure">
-<h2>Example: Call structure<a class="headerlink" href="#example-call-structure" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="using-wrapper-module">
+<h2>Using wrapper module<a class="headerlink" href="#using-wrapper-module" title="Permalink to this headline">¶</a></h2>
+<p>The following shows the generation of an exemplar bridge model having the following properties:
+* long_dim = 10 m
+* width = 5
+* skew = 11 degrees
+* num_long_grid = 4
+* num_trans_grid = 13
+* cantilever_edge = 1 m
+* mesh_type = Orthogonal (“Ortho”)</p>
+<p>Note: Units of inputs are newton (N), meter (m), and degrees ().</p>
+<p>Users use <code class="docutils literal notranslate"><span class="pre">`GrillageGenerator`</span></code> class and input the arguments accordingly.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">test_bridge</span> <span class="o">=</span> <span class="n">GrillageGenerator</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;Example_superT_10m&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">skew</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span>
                             <span class="n">num_long_grid</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">cantilever_edge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mesh_type</span><span class="o">=</span><span class="s2">&quot;ob&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="defining-concrete-and-steel-properties">
+<h2>Defining concrete and steel properties<a class="headerlink" href="#defining-concrete-and-steel-properties" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="defining-element-and-section-properties">
+<h2>Defining element and section properties<a class="headerlink" href="#defining-element-and-section-properties" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="execute-output-py-file">
+<h2>Execute output py file<a class="headerlink" href="#execute-output-py-file" title="Permalink to this headline">¶</a></h2>
+<p>And output .py file named “Example_superT_10m_op.py” is created simultaneously in the current directory.
+The py file is and executable file which upon execution creates the required bridge model in Opensees software.</p>
 </div>
 </div>
 
@@ -245,7 +332,7 @@
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="ModuleDoc.html" class="btn btn-neutral float-right" title="Module documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="../README.html" class="btn btn-neutral float-left" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Structure%20description.html" class="btn btn-neutral float-left" title="Structure of Analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

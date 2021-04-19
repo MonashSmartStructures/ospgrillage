@@ -2,10 +2,8 @@
 Module documentation
 #####################
 
-In OpenSees, each nodes and elements are defined in lines of code which can end up with a file with
-thousands of lines for a very detailed model. The opsy-grillage wizard automates the py file that generates a given
-grillage model in Opensees using python (Openseespy). The following section describes the automation procedure,
-from which future improvements can be added upon it.
+This documentation describes the automated procedures of the opsy-grillage module. In providing the outline procedure,
+the developers welcome any improvements to its procedures via pull requests.
 
 ====================
 Grillage model
@@ -16,19 +14,31 @@ A typical two-dimensional (2D) grillage model of a bridge in Opensees is shown i
 
 Coordinate system
 ---------------------
-The grillage model comprise the following convention for coordinate system of Opensees:
+The module follows the convention for coordinate system in Opensees:
 
-* x direction is allocated to longtidinal members
+* x direction is allocated to longitudinal members
 
 * z direction is allocated to transverse members
 
 * y direction is the vertical axis of the grillage
 
+
+
 ============================================
 Default settings and rules of grillage model
 ============================================
 
+Model space
+---------------------
+The following settings are defaulted for each ```GrillageGenerator``` class object:
 
+* Opensees model space is 3-D with each model node having 6 degrees-of-freedom.
+
+* The opensees model exist as a 2-D model in the 3-D model space, with model located at vertical y coordinate = 0.
+
+meshing rules
+---------------------
+*
 
 ====================
 Meshing Procedure
@@ -56,20 +66,38 @@ Orthogonal meshing is carried out different for three regions of the grillage mo
 * Region B2 -
 
 
-Module commands
 
-#. :doc:`constraints`
-#. :doc:`numberer`
-#. :doc:`system`
-#. :doc:`test`
-#. :doc:`algorithm`
-#. :doc:`integrator`
+====================
+Module Commands
+====================
+
+The `GrillageGenerator` class is a collection of commands that: (1) evaluate information regarding the model, and (2)
+translate and writes information into `Openseespy` commands.
+
+#. :doc:`GrillageGenerator`
+#. :doc:`Bridge model call`
+#. :doc:`node_data_generation`
+#. :doc:`OPMemberProp`
+#. :doc:`op_create_elements`
+#. :doc:`op_create_nodes`
+#. :doc:`op_section_generate`
+#. :doc:`op_fix`
+#. :doc:`section_property_input`
+#. :doc:`boundary_cond_input`
+#. :doc:`compile_output`
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+
+   Bridge model call
+
 
 Opensees references
 
-#. :doc:`constraints`
-#. :doc:`numberer`
-#. :doc:`system`
-#. :doc:`test`
-#. :doc:`algorithm`
-#. :doc:`integrator`
+#. :doc:`node command`
+#. :doc:`element command`
+#. :doc:`GeoTrans command`
+#. :doc:`section command`
+#. :doc:`Material command`
+#. :doc:`fix command`
