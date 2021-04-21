@@ -61,6 +61,7 @@ Orthogonal mesh
 ---------------------
 The meshing procedure for orthogonal mesh follows the similar procedure as the Oblique mesh. In addition,
 Orthogonal meshing is carried out different for three regions of the grillage model:
+
 * Region A -
 * Region B1 -
 * Region B2 -

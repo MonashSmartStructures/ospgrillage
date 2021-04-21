@@ -5,7 +5,7 @@ import openseespy.opensees as ops
 from datetime import datetime
 
 
-class GrillageGenerator:
+class opGrillage:
     """
     Grillage Generator class
     """
@@ -51,6 +51,17 @@ class GrillageGenerator:
         self.steel_prop = []  # list of steel properties arguments
         self.vxz_skew = []  # vector xz of skew elements - for section transformation
 
+        # define tags of grillage elements - Following are standard elements of grillage
+        # note these tags are used to link set properties via element() commands to appropriate elements
+        self.element_tag = {"longitudinal": 1, "longitudinal edge 1": 2, "longitudinal edge 2": 3,
+                            "transverse": 4, "transverse edge 1": 5, "transverse edge 2": 6}
+        self.longitudinal_tag = 1
+        self.longitudinal_edge_1_tag = 2
+        self.longitudinal_edge_2_tag = 3
+        self.transverse_tag = 4
+        self.transverse_edge_1_tag = 5
+        self.transverse_edge_2_tag = 6
+
         # rules for grillage automation - default values are in place, use keyword during class instantiation
         self.min_long_spacing = 1  # default 1m
         self.max_long_spacing = 2  # default 1m
@@ -92,7 +103,7 @@ class GrillageGenerator:
             # write imports
             file_handle.write("import numpy as np\nimport math\nimport openseespy.opensees as ops"
                               "\nimport openseespy.postprocessing.Get_Rendering as opsplt\n")
-
+        # run node generation
         self.create_nodes()
 
     # node procedure
@@ -106,7 +117,8 @@ class GrillageGenerator:
         self.op_model_space()
         # check mesh type and run procedure accordingly
         if self.ortho_mesh:
-            print("orthogonal meshing, skew angle {} greater than threshold {} ".format(self.skew, self.skew_threshold))
+            print("Mesh type = Orthogonal. Valid angle {} greater than threshold {} ".format(self.skew,
+                                                                                             self.skew_threshold))
             # perform orthogonal meshing
             self.orthogonal_mesh()
             v = self.vector_xz_skew_mesh()
@@ -115,7 +127,8 @@ class GrillageGenerator:
             self.op_ele_transform_input(2, [v[0], 0, v[1]])  # z dir members (skew)
             self.op_ele_transform_input(3, [1, 0, 0])  # z dir members orthogonal
         else:  # skew mesh requirement
-            print("skew meshing, skew angle {} less than threshold {} ".format(self.skew, self.skew_threshold))
+            print(
+                "Mesh type = Skew. Valid skew angle: {} less than threshold {} ".format(self.skew, self.skew_threshold))
             # perform skewed meshing
             self.skew_mesh()
             v = self.vector_xz_skew_mesh()
@@ -184,7 +197,7 @@ class GrillageGenerator:
         # with open(self.filename, 'a') as file_handle:
         #     file_handle.write("ops.recorder('Node', '-file', \'{}.txt\')\n".format(self.filename[:-3]))
 
-    def op_create_elements(self, op_member_prop_class, trans_tag, beam_ele_type, member='long_mem'):
+    def set_grillage_members(self, op_member_prop_class, trans_tag, beam_ele_type, member='long_mem'):
         """
         Function to define element properties for element command arguments
 
@@ -195,18 +208,21 @@ class GrillageGenerator:
                             Grillagegenerator docs for more information
         :return:
         """
-        # element list in attributes
+        # get list of elements for specified element member of grillage
         grillage_section = eval("self.{}".format(member))
         with open(self.filename, 'a') as file_handle:
             file_handle.write("# Element generation for section: {}\n".format(member))
         #         element  tag   *[ndI ndJ]  A  E  G  Jx  Iy   Iz  transfOBJs
+        # get output string - sorted according to convention of Openseespy
+        prop = op_member_prop_class.output_arguments()
+        # loop each element in list, assign and write element() command
         for ele in grillage_section:
             # ops.element(beam_ele_type, ele[3],
             #            *[ele[0], ele[1]], *op_member_prop_class, trans_tag)  ###
             with open(self.filename, 'a') as file_handle:
                 file_handle.write("ops.element(\"{type}\", {tag}, *[{i},{j}], *{memberprop}, {transtag})\n"
                                   .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
-                                          memberprop=op_member_prop_class, transtag=trans_tag))
+                                          memberprop=prop, transtag=trans_tag))
 
     def op_section_generate(self):
         with open(self.filename, 'a') as file_handle:
@@ -248,10 +264,10 @@ class GrillageGenerator:
         # function then assigns pinned support and roller support to nodes in trans_edge_1 and trans_edge_2 respectively
         for sup in self.trans_edge_1:
             self.support_nodes.append([sup[0], self.fix_val_pin])
-        self.support_nodes.append([sup[1], self.fix_val_pin])  # at last loop, last node is
+        self.support_nodes.append([sup[1], self.fix_val_pin])  # at last loop, last node is support
         for sup in self.trans_edge_2:
             self.support_nodes.append([sup[0], self.fix_val_roller_x])
-        self.support_nodes.append([sup[1], self.fix_val_roller_x])  # at last loop, last node is
+        self.support_nodes.append([sup[1], self.fix_val_roller_x])  # at last loop, last node is is support
 
     def get_region_b(self, reg_a_end, step):
 
@@ -294,7 +310,7 @@ class GrillageGenerator:
     def skew_mesh(self):
         # automate skew meshing
         if self.nox_special is None:  # check  special rule for slab spacing, else proceed automation of node
-            self.nox = np.linspace(0, self.long_dim, self.num_trans_grid)  # array like containing node x cooridnate
+            self.nox = np.linspace(0, self.long_dim, self.num_trans_grid)  # array like containing node x coordinate
         else:
             self.nox = self.nox_special  # assign custom array to nox array
         self.breadth = self.trans_dim * math.sin(self.skew / 180 * math.pi)  # length of skew edge in x dir
@@ -310,41 +326,54 @@ class GrillageGenerator:
                 self.Nodedata.append(
                     [nodetagcounter, pointx, self.y_elevation, pointz])  # NOTE here is where to change X Y plane
                 nodetagcounter += 1
+        # print to terminal
+        print("Node generation completed. Number of nodes created = {}".format(nodetagcounter - 1))
 
-        for node_row_z in range(0, len(step)):
-            for node_col_x in range(1, len(self.nox)):
-                cumulative_row_z = node_row_z * len(self.nox)  # incremental nodes per step (node grid along transverse)
+        # procedure to link nodes to form Elements of grillage model
+        # each element is then assigned a "standard element tag" e.g. self.longitudinal_tag = 1
+        for node_row_z in range(0, len(step)):  # loop for each line mesh in z direction
+            for node_col_x in range(1, len(self.nox)):  # loop for each line mesh in x direction
+                cumulative_row_z = node_row_z * len(self.nox)  # get current row's (z axis) nodetagcounter
                 next_cumulative_row_z = (node_row_z + 1) * len(
-                    self.nox)  # increment nodes after next step (node grid along transverse)
-                # procedure to create connectivity for x dir members
-                if node_row_z == 0 or node_row_z == len(step) - 1:  # first and last row are edge beams
+                    self.nox)  # get next row's (z axis) nodetagcounter
+                # link nodes along current row (z axis), in the x direction
+                if node_row_z == 0:  # first row (z axis) of nodes
                     self.long_edge_1.append([cumulative_row_z + node_col_x, cumulative_row_z + node_col_x + 1,
-                                             2, eletagcounter])  # record as edge beam with section 2
+                                             self.longitudinal_edge_1_tag, eletagcounter])
+                    # record as edge beam with tag 2
                     eletagcounter += 1
-                else:
+                elif node_row_z == len(step) - 1:  # last row (z axis) of nodes
+                    self.long_edge_2.append([cumulative_row_z + node_col_x, cumulative_row_z + node_col_x + 1,
+                                             self.longitudinal_edge_2_tag,
+                                             eletagcounter])  # record as edge beam with section 3
+                    eletagcounter += 1
+                else:  # row of nodes in between edges of grillage ( 0 < z < z max)
                     self.long_mem.append([cumulative_row_z + node_col_x, cumulative_row_z + node_col_x + 1,
-                                          1, eletagcounter])  # record as longitudinal beam with section 1
+                                          self.longitudinal_tag, eletagcounter])
+                    # record as longitudinal beam with section tag 1
                     eletagcounter += 1
-                # procedure to create connectivity for z dir members (including skew members)
-                if next_cumulative_row_z == nodetagcounter - 1:  # last row of line mesh z
-                    pass
+
+                # link nodes in the z direction (e.g. transverse members)
+                if next_cumulative_row_z == nodetagcounter - 1:  # if looping last row of line mesh z
+                    pass  # do nothing (exceeded the z axis edge of the grillage)
                 elif cumulative_row_z + node_col_x - node_row_z * len(
                         self.nox) == 1:  # check if coincide with edge of line mesh z
                     self.trans_edge_1.append(
                         [cumulative_row_z + node_col_x, next_cumulative_row_z + node_col_x,
-                         4, eletagcounter])  # record as edge slab with section 4
+                         self.transverse_tag, eletagcounter])  # record as edge slab with section 4
                     eletagcounter += 1
                 else:
                     self.trans_mem.append([cumulative_row_z + node_col_x, next_cumulative_row_z + node_col_x,
-                                           3, eletagcounter])  # record as slab with section 3
+                                           self.transverse_edge_1_tag, eletagcounter])  # record as slab with section 3
                     eletagcounter += 1
-            if next_cumulative_row_z >= len(self.nox) * len(step):  # when loop last row
-                pass
+            if next_cumulative_row_z >= len(self.nox) * len(step):  # if looping last node in x dir
+                pass  # do nothing
             else:
                 self.trans_edge_2.append([cumulative_row_z + node_col_x + 1, next_cumulative_row_z + node_col_x + 1,
-                                          4, eletagcounter])  # record opposite edge slab with section 4
+                                          self.transverse_edge_2_tag, eletagcounter])
+                # record opposite edge slab with section 4
                 eletagcounter += 1
-        print(self.trans_mem)
+        print("Element generation completed. Number of elements created = {}".format(eletagcounter - 1))
 
     # orthogonal meshing method
     def orthogonal_mesh(self):
@@ -372,34 +401,40 @@ class GrillageGenerator:
                 # populate nodedata array - inputs [nodetag,x,y,z]
                 self.Nodedata.append([nodetagcounter, pointx, self.y_elevation, pointz])
                 nodetagcounter += 1
+        print('Number of elements in Region A: {}'.format(nodetagcounter - 1))
 
-        # Elements mesh for region A
+        # create elements of region A
         for node_row_z in range(0, len(step)):
             for node_col_x in range(1, len(regA[:-1])):
                 inc = node_row_z * len(regA[:-1])  # incremental nodes per step (node grid along transverse)
                 next_inc = (node_row_z + 1) * len(
                     regA[:-1])  # increment nodes after next step (node grid along transverse)
-                if node_row_z == 0 or node_row_z == len(step) - 1:  # first and last row are edge beams
+                if node_row_z == 0:  # first and last row are edge beams
                     self.long_edge_1.append(
-                        [inc + node_col_x, inc + node_col_x + 1, 2, eletagcounter])
+                        [inc + node_col_x, inc + node_col_x + 1, self.longitudinal_edge_1_tag, eletagcounter])
+                    # record as edge beam with section 2
+                    eletagcounter += 1
+                elif node_row_z == len(step) - 1:
+                    self.long_edge_2.append(
+                        [inc + node_col_x, inc + node_col_x + 1, self.longitudinal_edge_2_tag, eletagcounter])
                     # record as edge beam with section 2
                     eletagcounter += 1
                 else:
                     self.long_mem.append(
-                        [inc + node_col_x, inc + node_col_x + 1, 1, eletagcounter])
+                        [inc + node_col_x, inc + node_col_x + 1, self.longitudinal_tag, eletagcounter])
                     # record as longitudinal beam with section 1
                     eletagcounter += 1
                 if node_row_z != len(step) - 1:  # last row
-                    self.trans_mem.append([inc + node_col_x, next_inc + node_col_x, 3, eletagcounter])
+                    self.trans_mem.append([inc + node_col_x, next_inc + node_col_x, self.transverse_tag, eletagcounter])
                     # record as slab with section 3
                     eletagcounter += 1
             # last column of parallel
             if node_row_z != len(step) - 1:
                 self.trans_mem.append(
-                    [inc + node_col_x + 1, next_inc + node_col_x + 1, 4, eletagcounter])
+                    [inc + node_col_x + 1, next_inc + node_col_x + 1, self.transverse_tag, eletagcounter])
                 # record as slab with section 3
                 eletagcounter += 1
-        print('Elements automation complete for region A')
+        print('Elements automation complete for region A: Number of elements = {}'.format(eletagcounter - 1))
 
         # mesh region B triangular area
         # B1 @ right support
@@ -421,41 +456,64 @@ class GrillageGenerator:
         if self.skew < 0:
             reg_a_col = row_start  # nodetag of last node in last row of region A (last nodetag of region A)
         else:  # nodetag of last node in first row of region A
-            reg_a_col = len(regA[:-1])  # ignore last element of reg A which overlap with regB
+            reg_a_col = len(regA[:-1])  # the last node of a single row + ignore last element of reg A (overlap regB)
         for num_z in range(0, len(step)):
-            # link nodes from region A
-            if num_z == 0 or num_z == len(step) - 1:
-                self.long_edge_1.append([reg_a_col, row_start + 1, 2, eletagcounter])
-                eletagcounter += 1
-            else:
-                self.long_mem.append([reg_a_col, row_start + 1, 1, eletagcounter])
-                eletagcounter += 1
+            # element that link nodes with those from region A
+            if self.skew < 0:  # if negative skew, loop starts from the last row (@ row = width)
+                if num_z == 0:
+                    self.long_edge_2.append([reg_a_col, row_start + 1, self.longitudinal_edge_2_tag, eletagcounter])
+                    eletagcounter += 1
+                elif num_z == len(step) - 1:
+                    self.long_edge_1.append([reg_a_col, row_start + 1, self.longitudinal_edge_1_tag, eletagcounter])
+                    eletagcounter += 1
+                else:
+                    self.long_mem.append([reg_a_col, row_start + 1, self.longitudinal_tag, eletagcounter])
+                    eletagcounter += 1
+            else:  # skew is positive,
+                if num_z == 0:
+                    self.long_edge_1.append([reg_a_col, row_start + 1, self.longitudinal_edge_1_tag, eletagcounter])
+                    eletagcounter += 1
+                elif num_z == len(step) - 1:
+                    self.long_edge_2.append([reg_a_col, row_start + 1, self.longitudinal_edge_2_tag, eletagcounter])
+                    eletagcounter += 1
+                else:
+                    self.long_mem.append([reg_a_col, row_start + 1, self.longitudinal_tag, eletagcounter])
+                    eletagcounter += 1
             # loop for each column node in x dir
+            # create elements for each nodes in current row (z axis) in the x direction (list regBupdate)
             for num_x in range(1, len(regBupdate)):
                 if num_z == 0:  # first and last row are edge beams
-                    self.long_edge_1.append(
-                        [row_start + num_x, row_start + num_x + 1, 2, eletagcounter])
-                    eletagcounter += 1
-                    # record as edge beam with section 2
+                    if self.skew < 0:
+                        self.long_edge_2.append(
+                            [row_start + num_x, row_start + num_x + 1, self.longitudinal_edge_2_tag, eletagcounter])
+                        eletagcounter += 1
+                        # record as edge beam with section 2
+                    else:
+                        self.long_edge_1.append(
+                            [row_start + num_x, row_start + num_x + 1, self.longitudinal_edge_1_tag, eletagcounter])
+                        eletagcounter += 1
+                        # record as edge beam with section 2
                 elif num_z != len(step) - 1:
                     self.long_mem.append(
                         [row_start + num_x, row_start + num_x + 1, 1, eletagcounter])
                     # record as longitudinal beam with section 1
                     eletagcounter += 1
                 # transverse member
-                self.trans_mem.append([row_start + num_x, row_start + num_x + len(regBupdate), 5, eletagcounter])
+                self.trans_mem.append([row_start + num_x, row_start + num_x + len(regBupdate),
+                                       self.transverse_tag, eletagcounter])
                 eletagcounter += 1
             if num_z != len(step) - 1:  # last node of skew is single node, no element, break step
-                self.trans_edge_2.append(
-                    [row_start + num_x + 1, row_start + num_x + len(regBupdate), 6, eletagcounter])  # support skew
+                self.trans_edge_2.append([row_start + num_x + 1, row_start + num_x + len(regBupdate),
+                                          self.transverse_edge_2_tag, eletagcounter])  # support skew
                 eletagcounter += 1
 
             row_start = row_start + len(regBupdate)  # update next step start node of region B
             regBupdate = regBupdate[:-1]  # remove last element for next step (skew boundary)
+            # check for skew angle varients of region B1 loop (positive or negative)
             if self.skew < 0:
-                reg_a_col = reg_a_col - len(regA[:-1])  # update next step node correspond with region A
+                reg_a_col = reg_a_col - len(regA[:-1])  # update row node number correspond with region A (decreasing)
             else:
-                reg_a_col = reg_a_col + len(regA[:-1])  # update next step node correspond with region A
+                reg_a_col = reg_a_col + len(regA[:-1])  # update row node number correspond with region A (increasing)
         print('Elements automation complete for region B1 and A')
 
         # B2 left support
@@ -480,38 +538,51 @@ class GrillageGenerator:
         for num_z in range(0, len(step)):
             # link nodes from region A
             if num_z == 0:
-                self.long_edge_1.append([reg_a_col, row_start + 1, 2, eletagcounter])
-                eletagcounter += 1
+                if self.skew < 0:
+                    self.long_edge_1.append([reg_a_col, row_start + 1, self.longitudinal_edge_1_tag, eletagcounter])
+                    eletagcounter += 1
+                else:
+                    self.long_edge_2.append([reg_a_col, row_start + 1, self.longitudinal_edge_2_tag, eletagcounter])
+                    eletagcounter += 1
             elif num_z != len(step) - 1:
-                self.long_mem.append([row_start + 1, reg_a_col, 1, eletagcounter])
+                self.long_mem.append([row_start + 1, reg_a_col, self.longitudinal_tag, eletagcounter])
                 eletagcounter += 1
             # loop for each column node in x dir
             for num_x in range(1, len(regBupdate[1:])):
                 if num_z == 0:  # first and last row are edge beams
-                    self.long_edge_1.append([row_start + num_x + 1, row_start + num_x, 2, eletagcounter])
-                    eletagcounter += 1
+                    if self.skew < 0:
+                        self.long_edge_1.append([row_start + num_x + 1, row_start + num_x, self.longitudinal_edge_1_tag
+                                                    , eletagcounter])
+                        eletagcounter += 1
+                    else:
+                        self.long_edge_2.append([row_start + num_x + 1, row_start + num_x, self.longitudinal_edge_2_tag
+                                                    , eletagcounter])
+                        eletagcounter += 1
                     # record as edge beam with section 2
                 elif num_z != len(step) - 1:
                     self.long_mem.append(
-                        [row_start + num_x + 1, row_start + num_x, 1, eletagcounter])
+                        [row_start + num_x + 1, row_start + num_x, self.longitudinal_tag, eletagcounter])
                     # record as longitudinal beam with section 1
                     eletagcounter += 1
                 # transverse member
-                self.trans_mem.append([row_start + num_x, row_start + num_x + len(regBupdate[1:]), 5, eletagcounter])
+                self.trans_mem.append([row_start + num_x, row_start + num_x + len(regBupdate[1:]),
+                                       self.transverse_tag, eletagcounter])
                 eletagcounter += 1
             if num_z == len(step) - 2:
                 if self.skew < 0:  # if negative angle
                     self.trans_edge_1.append(
-                        [reg_a_col + len(regA[:-1]), row_start + len(regBupdate[1:]), 6,
+                        [reg_a_col + len(regA[:-1]), row_start + len(regBupdate[1:]), self.transverse_edge_1_tag,
                          eletagcounter])  # ele of node 1 to last node skew
                     eletagcounter += 1
                 else:
                     self.trans_edge_1.append(
-                        [1, row_start + len(regBupdate[1:]), 6, eletagcounter])  # ele of node 1 to last node skew
+                        [1, row_start + len(regBupdate[1:]), self.transverse_edge_1_tag,
+                         eletagcounter])  # ele of node 1 to last node skew
                     eletagcounter += 1
             elif num_z != len(step) - 1:  # num of nodes = num ele + 1, thus ignore last step for implementing ele
                 self.trans_edge_1.append(
-                    [row_start + num_x + 1, row_start + num_x + len(regBupdate[1:]), 6, eletagcounter])  # support skew
+                    [row_start + num_x + 1, row_start + num_x + len(regBupdate[1:]), self.transverse_edge_1_tag
+                        , eletagcounter])  # support skew
                 eletagcounter += 1
             # steps in transverse mesh, assign nodes of skew nodes
 
@@ -549,7 +620,7 @@ class GrillageGenerator:
             file_handle.write("trans_edge_2\n")  # Sub_Header
             file_handle.writelines("%s\n" % ele for ele in self.trans_edge_2)  #
 
-    def material_definition(self, mat_vec, mat_type="Concrete01"):
+    def set_uniaxial_material(self, mat_vec, mat_type="Concrete01"):
         """
         Function to define material for Openseespy material model. For example, uniaxialMaterial, nDMaterial.
 
@@ -560,27 +631,38 @@ class GrillageGenerator:
         self.mat_matrix = mat_vec  # material matrix for
         self.mat_type_op = mat_type  # material type based on Openseespy
 
+        self.op_uniaxial_material()
+
+    # test output file
+    def run_check(self):
+        try:
+            __import__(self.filename[:-3])  # run file
+            print("File imported and run, OK")
+        except:
+            print("File error not executable")
+
 
 # Member properties class
-class OPMemberProp:
-    def __init__(self, member_tag, trans_tag, A, E, G, J, Iy, Iz, Ay, Az,
-                 principal_angle, beam_ele_type="elasticBeamColumn"):
+class Member:
+    def __init__(self, name, A, E, G, J, Iy, Iz, Ay, Az, beam_ele_type="elasticBeamColumn"):
+        self.name = name
         self.beam_ele_type = beam_ele_type
-        self.principal_angle = principal_angle
         self.Az = Az
         self.Ay = Ay
         self.Iz = Iz
         self.Iy = Iy
         self.J = J
         self.G = G
-        self.trans_tag = trans_tag  #
-        self.member_tag = member_tag
         self.E = E
         self.A = A
 
-    def get_section_input(self):
+        # return argument list string
+        self.output_arguments()
+
+    def output_arguments(self):
         """
-        Function to obtain member attribute from OPMemberProp attribute.
+        Function to output list argument according to element() command of variety of element tags
+        in Opensees
         :return: list containing member properties in accordance with Openseespy input convention
         """
         section_input = None
@@ -594,3 +676,47 @@ class OPMemberProp:
             section_input = "[{:e},{:e},{:e},{:e},{:e},{:e}]".format(self.E, self.G, self.A,
                                                                      self.J, self.Iy, self.Iz)
         return section_input
+
+
+# ----------------------------------------------------------------------------------------------------------------
+class Material:
+    """
+    Class for material properties
+    """
+
+    def __init__(self):
+        pass
+
+
+class UniAxialElasticMaterial(Material):
+    """
+    Class for uniaxial material prop
+    """
+
+    def __init__(self, length):
+        super(UniAxialElasticMaterial, self).__init__(length, length)
+
+
+class nDMaterial(Material):
+    """
+    Class for nD Material
+    NOTE: Feature to be added after Uniaxial Material
+    """
+
+    def __init__(self):
+        super(nDMaterial, self).__init__()
+        pass
+
+
+# ----------------------------------------------------------------------------------------------------------------
+class SectionGeometry:
+    def __init__(self, material_class, ):
+        pass
+
+
+# ----------------------------------------------------------------------------------------------------------------
+class NewMember:
+    def __init__(self, section, material, name="Super-T"):
+        self.name = name
+        self.section = section
+        self.material = material

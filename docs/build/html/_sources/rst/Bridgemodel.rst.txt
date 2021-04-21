@@ -12,6 +12,8 @@ GrillageGenerator class
 For information on the ``GrillageGenerator`` class, see
 :doc:`ModuleDoc`
 
+Input arguments for Bridge:
+
    ================================   ===========================================================================
    ``bridge_name`` |str|              name string of bridge model
    ``long_dim`` |float|               longitudinal dimension argument
@@ -24,6 +26,7 @@ For information on the ``GrillageGenerator`` class, see
                                         * "Ortho": Orthogonal mesh
                                         * "Oblique" : Skew mesh
    ================================   ===========================================================================
+
 
 Using wrapper module
 ---------------------------

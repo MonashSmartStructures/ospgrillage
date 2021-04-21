@@ -19,18 +19,11 @@ To run the wrapper, download from github link() and import the following files
     
     import GrillageGenerator
     
-## Type of Grillages
+## Example
 
 The grillage module allows user to specify dimensions and properties 
 of grillage model as shown in Figure 1.
 Notably, users can specify the type of mesh - choose between orthogonal or oblique (skew) mesh. 
-
-## `GrillageGenerator` class
-
-The wrapper comprises the `GrillageGenerator` class which outputs an executable py file 
-containing `Openseespy` functions related to constructing grillage model based on the prescribed
-bridge inputs. Users are required to specify the keyword inputs 
-- see GrillageGenerator page for more information.
 
 Example showing usage of `GrillageGenerator` class:
 Creating the object

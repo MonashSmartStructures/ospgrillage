@@ -52,10 +52,10 @@ def plotDeformation(self):
     breakpoint()
 
 
-def plot_section(ma_object, list_input):
+def plot_section(ma_object, list_input,char):
     for num, ele in enumerate(list_input):
         matches_i_x = [x[1] for x in ma_object.Nodedata if ele[0] == x[0]]
         matches_i_z = [x[3] for x in ma_object.Nodedata if ele[0] == x[0]]
         matches_j_x = [x[1] for x in ma_object.Nodedata if ele[1] == x[0]]
         matches_j_z = [x[3] for x in ma_object.Nodedata if ele[1] == x[0]]
-        plt.plot([matches_i_x, matches_j_x], [matches_i_z, matches_j_z],'b')
+        plt.plot([matches_i_x, matches_j_x], [matches_i_z, matches_j_z],char)
