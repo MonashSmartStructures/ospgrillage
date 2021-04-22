@@ -35,7 +35,7 @@ class opGrillage:
         self.breadth = None  # to be calculated automatically based on skew
         self.spclonggirder = None  # to be automated
         self.spctransslab = None  # to be automated
-        # node information
+        # initialize lists
         self.Nodedata = []  # array like to be populated
         self.nox = []  # line mesh in x direction
         self.noz = []  # line mesh in z direction
@@ -51,8 +51,8 @@ class opGrillage:
         self.steel_prop = []  # list of steel properties arguments
         self.vxz_skew = []  # vector xz of skew elements - for section transformation
 
-        # define tags of grillage elements - Following are standard elements of grillage
-        # note these tags are used to link set properties via element() commands to appropriate elements
+        # initialize tags of grillage elements - default tags are for standard elements of grillage
+        # tags are used to link set properties to appropriate elements for element() command
         self.element_tag = {"longitudinal": 1, "longitudinal edge 1": 2, "longitudinal edge 2": 3,
                             "transverse": 4, "transverse edge 1": 5, "transverse edge 2": 6}
         self.longitudinal_tag = 1
@@ -76,15 +76,17 @@ class opGrillage:
         self.ndm = 3  # num model dimension - default 3
         self.ndf = 6  # num degree of freedom - default 6
         # rules for material definition
-        self.mat_type_op = "Concrete01"  # material tag based on Openseespy convention (default Concrete01)
-        self.mat_matrix = []  # material matrix - user define based on Openseespy convention
-        # default vector for support
+        self.mat_type_op = "Concrete01"  # material tag of concrete (default uniaxial Concrete01)
+        self.mat_matrix = []  # list of argument for material - user define based on Openseespy convention
+        # default vector for support (for 2D grillage in x - z plane)
         self.fix_val_pin = [1, 1, 1, 0, 0, 0]  # pinned
         self.fix_val_roller_x = [0, 1, 1, 0, 0, 0]  # roller
         # special rules for grillage - alternative to Properties of grillage definition - use for special dimensions
         self.nox_special = None  # array specifying custom coordinate of longitudinal nodes
         self.noz_special = None  # array specifying custom coordinate of transverse nodes
         self.skew_threshold = [10, 30]  # threshold for grillage to allow option of mesh choices
+        self.member_group_tol = 0.001
+        self.deci_tol = 4 # tol of decimal places
         # to be added
         # - special rule for multiple skew
         # - rule for multiple span + multi skew
@@ -103,7 +105,7 @@ class opGrillage:
             # write imports
             file_handle.write("import numpy as np\nimport math\nimport openseespy.opensees as ops"
                               "\nimport openseespy.postprocessing.Get_Rendering as opsplt\n")
-        # run node generation
+        # generate nodes and elements of model
         self.create_nodes()
 
     # node procedure
@@ -169,7 +171,7 @@ class opGrillage:
         # run and generate code line for section
         self.op_section_generate()
 
-    # methods to write ops commands in output py file
+    # functions to write ops commands to output py file
     def op_ele_transform_input(self, trans_tag, vector_xz, transform_type="Linear"):
         ops.geomTransf(transform_type, trans_tag, *vector_xz)
         with open(self.filename, 'a') as file_handle:
@@ -189,9 +191,10 @@ class opGrillage:
         for node_point in self.Nodedata:
             ops.node(node_point[0], node_point[1], node_point[2], node_point[3])
             with open(self.filename, 'a') as file_handle:
-                file_handle.write("ops.node({tag}, {x}, {y}, {z})\n".format(tag=node_point[0],
-                                                                            x=node_point[1], y=node_point[2],
-                                                                            z=node_point[3]))
+                file_handle.write("ops.node({tag}, {x:.4f}, {y:.4f}, {z:.4f})\n".format(tag=node_point[0],
+                                                                                        x=node_point[1],
+                                                                                        y=node_point[2],
+                                                                                        z=node_point[3]))
             # print("Node number: {} created".format(node_point[0]))
         # create node recorder line
         # with open(self.filename, 'a') as file_handle:
@@ -245,7 +248,7 @@ class opGrillage:
             file_handle.write("# Material definition \n")
             file_handle.write("ops.uniaxialMaterial(\"{}\", 1, *{})\n".format(self.mat_type_op, self.mat_matrix))
 
-    # sub functions
+    # Functions related to mesh generation
     def vector_xz_skew_mesh(self):
         # Function to calculate vector xz used for geometric transformation of local section properties
         # return: vector parallel to plane xz of member (see geotransform Opensees) for skew members (member tag 5)
@@ -302,9 +305,35 @@ class opGrillage:
     def get_long_grid_nodes(self):
         # Function to output array of grid nodes along longitudinal direction
         last_girder = (self.width - self.edge_width)  # coord of last girder
-        nox_girder = np.linspace(self.edge_width, last_girder, self.num_long_gird)
+        nox_girder = np.linspace(start=self.edge_width, stop=last_girder, num=self.num_long_gird)
         step = np.hstack((np.hstack((0, nox_girder)), self.width))  # array containing z coordinate
         return step
+
+    def identify_member_groups(self):
+        # identify element groups in grillage based on line mesh vectors self.nox and self.noz
+        # identify groups in self.noz
+        list_group_noz = [1]  # edge beam is 1
+        diff_noz = np.round(np.diff(self.noz), decimals=self.deci_tol)
+        d = {ni: indi for indi, ni in enumerate(set(diff_noz))}
+        self.list_group_noz = [d[ni] for ni in diff_noz]
+
+        # identify groups in self.nox
+        list_group_nox = [1]  # edge beam is 1
+        diff_nox = np.round(np.diff(self.nox), decimals=self.deci_tol)
+        d = {ni: indi for indi, ni in enumerate(set(diff_nox))}
+        self.list_group_nox = [d[ni] for ni in diff_nox]
+        # assign to vectors
+        print("a")
+    @staticmethod
+    def filter_list(lst):
+        filter = {}
+        idx = 0
+        ret_list = [1]
+        for (count,diff) in enumerate(lst):
+            if count>len(lst):
+                break
+            else:
+                pp = [diff,lst[count+1]]
 
     # skew meshing function
     def skew_mesh(self):
@@ -314,11 +343,12 @@ class opGrillage:
         else:
             self.nox = self.nox_special  # assign custom array to nox array
         self.breadth = self.trans_dim * math.sin(self.skew / 180 * math.pi)  # length of skew edge in x dir
-        step = self.get_long_grid_nodes()  # mesh points in z direction
+        self.noz = self.get_long_grid_nodes()  # mesh points in z direction
+        self.identify_member_groups()
         nodetagcounter = 1  # counter for nodetag
         eletagcounter = 1  # counter for eletag
 
-        for pointz in step:  # loop for each mesh point in z dir
+        for pointz in self.noz:  # loop for each mesh point in z dir
             noxupdate = self.nox - pointz * np.tan(
                 self.skew / 180 * math.pi)  # get nox for current step in transverse mesh
             for pointx in noxupdate:  # loop for each mesh point in x dir (nox)
@@ -331,7 +361,7 @@ class opGrillage:
 
         # procedure to link nodes to form Elements of grillage model
         # each element is then assigned a "standard element tag" e.g. self.longitudinal_tag = 1
-        for node_row_z in range(0, len(step)):  # loop for each line mesh in z direction
+        for node_row_z in range(0, len(self.noz)):  # loop for each line mesh in z direction
             for node_col_x in range(1, len(self.nox)):  # loop for each line mesh in x direction
                 cumulative_row_z = node_row_z * len(self.nox)  # get current row's (z axis) nodetagcounter
                 next_cumulative_row_z = (node_row_z + 1) * len(
@@ -342,7 +372,7 @@ class opGrillage:
                                              self.longitudinal_edge_1_tag, eletagcounter])
                     # record as edge beam with tag 2
                     eletagcounter += 1
-                elif node_row_z == len(step) - 1:  # last row (z axis) of nodes
+                elif node_row_z == len(self.noz) - 1:  # last row (z axis) of nodes
                     self.long_edge_2.append([cumulative_row_z + node_col_x, cumulative_row_z + node_col_x + 1,
                                              self.longitudinal_edge_2_tag,
                                              eletagcounter])  # record as edge beam with section 3
@@ -366,7 +396,7 @@ class opGrillage:
                     self.trans_mem.append([cumulative_row_z + node_col_x, next_cumulative_row_z + node_col_x,
                                            self.transverse_edge_1_tag, eletagcounter])  # record as slab with section 3
                     eletagcounter += 1
-            if next_cumulative_row_z >= len(self.nox) * len(step):  # if looping last node in x dir
+            if next_cumulative_row_z >= len(self.nox) * len(self.noz):  # if looping last node in x dir
                 pass  # do nothing
             else:
                 self.trans_edge_2.append([cumulative_row_z + node_col_x + 1, next_cumulative_row_z + node_col_x + 1,
@@ -641,9 +671,17 @@ class opGrillage:
         except:
             print("File error not executable")
 
+    def run_gravity_analysis(self):
+        pass
 
+
+# ----------------------------------------------------------------------------------------------------------------
 # Member properties class
 class Member:
+    """
+    Class for grillage members
+    """
+
     def __init__(self, name, A, E, G, J, Iy, Iz, Ay, Az, beam_ele_type="elasticBeamColumn"):
         self.name = name
         self.beam_ele_type = beam_ele_type
@@ -669,19 +707,21 @@ class Member:
         # assignment input based on ele type
         if self.beam_ele_type == "ElasticTimoshenkoBeam":
             section_input = [self.E, self.G, self.A, self.J, self.Iy, self.Iz, self.Ay, self.Az]
-            section_input = "[{:e},{:e},{:e},{:e},{:e},{:e},{:e},{:e}]".format(self.E, self.G, self.A, self.J,
-                                                                               self.Iy, self.Iz, self.Ay, self.Az)
+            section_input = "[{:.3e},{:.3e},{:.3e},{:.3e},{:.3e},{:.3e},{:.3e},{:.3e}]".format(self.E, self.G, self.A,
+                                                                                               self.J,
+                                                                                               self.Iy, self.Iz,
+                                                                                               self.Ay, self.Az)
         elif self.beam_ele_type == "elasticBeamColumn":  # eleColumn
             section_input = [self.E, self.G, self.A, self.J, self.Iy, self.Iz]
-            section_input = "[{:e},{:e},{:e},{:e},{:e},{:e}]".format(self.E, self.G, self.A,
-                                                                     self.J, self.Iy, self.Iz)
+            section_input = "[{:.3e},{:.3e},{:.3e},{:.3e},{:.3e},{:.3e}]".format(self.E, self.G, self.A,
+                                                                                 self.J, self.Iy, self.Iz)
         return section_input
 
 
 # ----------------------------------------------------------------------------------------------------------------
 class Material:
     """
-    Class for material properties
+    Class for material properties definition
     """
 
     def __init__(self):
@@ -716,7 +756,7 @@ class SectionGeometry:
 
 # ----------------------------------------------------------------------------------------------------------------
 class NewMember:
-    def __init__(self, section, material, name="Super-T"):
+    def __init__(self, arguments, material, name="Super-T"):
         self.name = name
-        self.section = section
+        self.arguments = arguments
         self.material = material
