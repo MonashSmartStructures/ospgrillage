@@ -312,28 +312,55 @@ class opGrillage:
     def identify_member_groups(self):
         # identify element groups in grillage based on line mesh vectors self.nox and self.noz
         # identify groups in self.noz
-        list_group_noz = [1]  # edge beam is 1
         diff_noz = np.round(np.diff(self.noz), decimals=self.deci_tol)
         d = {ni: indi for indi, ni in enumerate(set(diff_noz))}
         self.list_group_noz = [d[ni] for ni in diff_noz]
 
         # identify groups in self.nox
-        list_group_nox = [1]  # edge beam is 1
         diff_nox = np.round(np.diff(self.nox), decimals=self.deci_tol)
         d = {ni: indi for indi, ni in enumerate(set(diff_nox))}
         self.list_group_nox = [d[ni] for ni in diff_nox]
         # assign to vectors
-        print("a")
+        section_group_noz = self.characterize_node_diff(self.noz, diff_noz)
+        section_group_nox = self.characterize_node_diff(self.nox, diff_nox)
+        # test line
+        vec = [1, 1.6, 2.6, 3.6, 4.6, 5.6, 7]
+        ddd = np.diff(vec)
+        c = self.characterize_node_diff(vec, ddd)
+        print(section_group_nox)
+        print(section_group_noz)
+
     @staticmethod
-    def filter_list(lst):
-        filter = {}
-        idx = 0
-        ret_list = [1]
-        for (count,diff) in enumerate(lst):
-            if count>len(lst):
-                break
+    def characterize_node_diff(node_list, diff_list):
+        ele_group = [1]  # edge, LR beam
+        spacing_diff_set = {}
+        counter = 1
+        for count in range(1, len(node_list)):
+            # calculate the spacing diff between left and right node of current node
+            if count >= len(diff_list): # counter exceed the diff_list (size of diff list = size of node_list - 1)
+                break   # break from loop, return list
+            spacing_diff = diff_list[count - 1] - diff_list[count]
+            if spacing_diff in spacing_diff_set:
+                # spacing recorded in spacing_diff_set
+                # set the tag
+                ele_group.append(spacing_diff_set[spacing_diff])
             else:
-                pp = [diff,lst[count+1]]
+                # record new spacing in spacing_diff_set
+                spacing_diff_set[spacing_diff] = counter + 1
+                # set tag
+                ele_group.append(spacing_diff_set[spacing_diff])
+                counter += 1
+        # listed[-1] = max(listed)+1  # second last element
+        # for special case
+        if np.all(diff_list == diff_list[0]): # case when all elements are equally spaced
+            ele_group[-1] = ele_group[-1]+1
+            new_group = [x + 1 for x in ele_group[2:]]
+            new_list = ele_group[0:2]+new_group
+            ele_group = new_list
+
+        ele_group.append(max(ele_group) + 1)  # add last element group
+        return ele_group
+
 
     # skew meshing function
     def skew_mesh(self):

@@ -9,7 +9,7 @@ from PlotWizard import *
 
 # construct op grillage object
 test_bridge = opGrillage(bridge_name="Example_superT_10m", long_dim=10, width=5, skew=-11,
-                         num_long_grid=4, num_trans_grid=13, cantilever_edge=0.1, mesh_type="Orth")
+                         num_long_grid=6, num_trans_grid=13, cantilever_edge=1, mesh_type="Orth")
 
 # define material
 test_bridge.set_uniaxial_material(mat_type="Concrete01", mat_vec=[-6.0, -0.004, -6.0, -0.014])
