@@ -55,6 +55,8 @@ class opGrillage:
         # tags are used to link set properties to appropriate elements for element() command
         self.element_tag = {"longitudinal": 1, "longitudinal edge 1": 2, "longitudinal edge 2": 3,
                             "transverse": 4, "transverse edge 1": 5, "transverse edge 2": 6}
+        # later change these to match the transformation tag of either: (1) global orthogonal direction (x and z) or
+        # (2) skew
         self.longitudinal_tag = 1
         self.longitudinal_edge_1_tag = 2
         self.longitudinal_edge_2_tag = 3
@@ -86,7 +88,7 @@ class opGrillage:
         self.noz_special = None  # array specifying custom coordinate of transverse nodes
         self.skew_threshold = [10, 30]  # threshold for grillage to allow option of mesh choices
         self.member_group_tol = 0.001
-        self.deci_tol = 4 # tol of decimal places
+        self.deci_tol = 4  # tol of decimal places
         # to be added
         # - special rule for multiple skew
         # - rule for multiple span + multi skew
@@ -325,7 +327,7 @@ class opGrillage:
         section_group_nox = self.characterize_node_diff(self.nox, diff_nox)
         # test line
         vec = [1, 1.6, 2.6, 3.6, 4.6, 5.6, 7]
-        ddd = np.diff(vec)
+        ddd = np.round(np.diff(vec),decimals=self.deci_tol)
         c = self.characterize_node_diff(vec, ddd)
         print(section_group_nox)
         print(section_group_noz)
@@ -337,30 +339,30 @@ class opGrillage:
         counter = 1
         for count in range(1, len(node_list)):
             # calculate the spacing diff between left and right node of current node
-            if count >= len(diff_list): # counter exceed the diff_list (size of diff list = size of node_list - 1)
-                break   # break from loop, return list
-            spacing_diff = diff_list[count - 1] - diff_list[count]
-            if spacing_diff in spacing_diff_set:
+            if count >= len(diff_list):  # counter exceed the diff_list (size of diff list = size of node_list - 1)
+                break  # break from loop, return list
+            # spacing_diff = diff_list[count - 1] - diff_list[count]
+            spacing_diff = [diff_list[count - 1], diff_list[count]]
+            if repr(spacing_diff) in spacing_diff_set:
                 # spacing recorded in spacing_diff_set
                 # set the tag
-                ele_group.append(spacing_diff_set[spacing_diff])
+                ele_group.append(spacing_diff_set[repr(spacing_diff)])
             else:
                 # record new spacing in spacing_diff_set
-                spacing_diff_set[spacing_diff] = counter + 1
+                spacing_diff_set[repr(spacing_diff)] = counter + 1
                 # set tag
-                ele_group.append(spacing_diff_set[spacing_diff])
+                ele_group.append(spacing_diff_set[repr(spacing_diff)])
                 counter += 1
         # listed[-1] = max(listed)+1  # second last element
         # for special case
-        if np.all(diff_list == diff_list[0]): # case when all elements are equally spaced
-            ele_group[-1] = ele_group[-1]+1
-            new_group = [x + 1 for x in ele_group[2:]]
-            new_list = ele_group[0:2]+new_group
-            ele_group = new_list
+        # if np.all(diff_list == diff_list[0]): # case when all elements are equally spaced
+        #    ele_group[-1] = ele_group[-1]+1
+        #    new_group = [x + 1 for x in ele_group[2:]]
+        #    new_list = ele_group[0:2]+new_group
+        #    ele_group = new_list
 
         ele_group.append(max(ele_group) + 1)  # add last element group
         return ele_group
-
 
     # skew meshing function
     def skew_mesh(self):
@@ -441,19 +443,19 @@ class opGrillage:
         #       o o o o o o
         #         b    +  ortho
         self.breadth = self.trans_dim * np.abs(math.sin(self.skew / 180 * math.pi))  # length of skew edge in x dir
-        step = self.get_long_grid_nodes()  # mesh points in transverse direction
+        self.noz = self.get_long_grid_nodes()  # mesh points in transverse direction
 
         # Generate nox based on two orthogonal region: (A)  quadrilateral area, and (B)  triangular area
         regA = np.linspace(0, self.long_dim - self.breadth, self.num_trans_grid)
         # RegA consist of overlapping last element
         # RegB first element overlap with RegA last element
-        regB = self.get_region_b(regA[-1], step)  # nodes @ region B startswith last entry of region A up to
+        regB = self.get_region_b(regA[-1], self.noz)  # nodes @ region B startswith last entry of region A up to
         self.nox = np.hstack((regA[:-1], regB))  # removed overlapping element
-
+        self.identify_member_groups()
         # mesh region A quadrilateral area
         nodetagcounter = 1  # counter for nodetag, updates after creating each nodes
         eletagcounter = 1  # counter for element, updates after creating each elements
-        for pointz in step:  # loop for each mesh point in z dir
+        for pointz in self.noz:  # loop for each mesh point in z dir
             for pointx in regA[:-1]:  # loop for each mesh point in x dir (nox)
                 # populate nodedata array - inputs [nodetag,x,y,z]
                 self.Nodedata.append([nodetagcounter, pointx, self.y_elevation, pointz])
@@ -461,17 +463,17 @@ class opGrillage:
         print('Number of elements in Region A: {}'.format(nodetagcounter - 1))
 
         # create elements of region A
-        for node_row_z in range(0, len(step)):
+        for node_row_z in range(0, len(self.noz)):
             for node_col_x in range(1, len(regA[:-1])):
-                inc = node_row_z * len(regA[:-1])  # incremental nodes per step (node grid along transverse)
+                inc = node_row_z * len(regA[:-1])  # incremental nodes per self.noz (node grid along transverse)
                 next_inc = (node_row_z + 1) * len(
-                    regA[:-1])  # increment nodes after next step (node grid along transverse)
+                    regA[:-1])  # increment nodes after next self.noz (node grid along transverse)
                 if node_row_z == 0:  # first and last row are edge beams
                     self.long_edge_1.append(
                         [inc + node_col_x, inc + node_col_x + 1, self.longitudinal_edge_1_tag, eletagcounter])
                     # record as edge beam with section 2
                     eletagcounter += 1
-                elif node_row_z == len(step) - 1:
+                elif node_row_z == len(self.noz) - 1:
                     self.long_edge_2.append(
                         [inc + node_col_x, inc + node_col_x + 1, self.longitudinal_edge_2_tag, eletagcounter])
                     # record as edge beam with section 2
@@ -481,12 +483,12 @@ class opGrillage:
                         [inc + node_col_x, inc + node_col_x + 1, self.longitudinal_tag, eletagcounter])
                     # record as longitudinal beam with section 1
                     eletagcounter += 1
-                if node_row_z != len(step) - 1:  # last row
+                if node_row_z != len(self.noz) - 1:  # last row
                     self.trans_mem.append([inc + node_col_x, next_inc + node_col_x, self.transverse_tag, eletagcounter])
                     # record as slab with section 3
                     eletagcounter += 1
             # last column of parallel
-            if node_row_z != len(step) - 1:
+            if node_row_z != len(self.noz) - 1:
                 self.trans_mem.append(
                     [inc + node_col_x + 1, next_inc + node_col_x + 1, self.transverse_tag, eletagcounter])
                 # record as slab with section 3
@@ -498,14 +500,14 @@ class opGrillage:
         b1_node_tag_start = nodetagcounter - 1  # last node tag of region A
         regBupdate = regB  # initiate list for line mesh of region B1 - updated each loop by removing last element
         if self.skew < 0:  # check for angle sign
-            line_mesh_z_b1 = reversed(step)  # (0 to ascending for positive angle,descending for -ve)
+            line_mesh_z_b1 = reversed(self.noz)  # (0 to ascending for positive angle,descending for -ve)
         else:
-            line_mesh_z_b1 = step
+            line_mesh_z_b1 = self.noz
         for pointz in line_mesh_z_b1:  # loop for each line mesh in z dir
             for pointx in regBupdate:  # loop for each line mesh in x dir (nox)
                 self.Nodedata.append([nodetagcounter, pointx, self.y_elevation, pointz])
                 nodetagcounter += 1
-            regBupdate = regBupdate[:-1]  # remove last element for next step (skew boundary)
+            regBupdate = regBupdate[:-1]  # remove last element for next self.noz (skew boundary)
 
         # Elements mesh for region B1
         regBupdate = regB  # reset placeholder
@@ -514,13 +516,13 @@ class opGrillage:
             reg_a_col = row_start  # nodetag of last node in last row of region A (last nodetag of region A)
         else:  # nodetag of last node in first row of region A
             reg_a_col = len(regA[:-1])  # the last node of a single row + ignore last element of reg A (overlap regB)
-        for num_z in range(0, len(step)):
+        for num_z in range(0, len(self.noz)):
             # element that link nodes with those from region A
             if self.skew < 0:  # if negative skew, loop starts from the last row (@ row = width)
                 if num_z == 0:
                     self.long_edge_2.append([reg_a_col, row_start + 1, self.longitudinal_edge_2_tag, eletagcounter])
                     eletagcounter += 1
-                elif num_z == len(step) - 1:
+                elif num_z == len(self.noz) - 1:
                     self.long_edge_1.append([reg_a_col, row_start + 1, self.longitudinal_edge_1_tag, eletagcounter])
                     eletagcounter += 1
                 else:
@@ -530,7 +532,7 @@ class opGrillage:
                 if num_z == 0:
                     self.long_edge_1.append([reg_a_col, row_start + 1, self.longitudinal_edge_1_tag, eletagcounter])
                     eletagcounter += 1
-                elif num_z == len(step) - 1:
+                elif num_z == len(self.noz) - 1:
                     self.long_edge_2.append([reg_a_col, row_start + 1, self.longitudinal_edge_2_tag, eletagcounter])
                     eletagcounter += 1
                 else:
@@ -550,7 +552,7 @@ class opGrillage:
                             [row_start + num_x, row_start + num_x + 1, self.longitudinal_edge_1_tag, eletagcounter])
                         eletagcounter += 1
                         # record as edge beam with section 2
-                elif num_z != len(step) - 1:
+                elif num_z != len(self.noz) - 1:
                     self.long_mem.append(
                         [row_start + num_x, row_start + num_x + 1, 1, eletagcounter])
                     # record as longitudinal beam with section 1
@@ -559,13 +561,13 @@ class opGrillage:
                 self.trans_mem.append([row_start + num_x, row_start + num_x + len(regBupdate),
                                        self.transverse_tag, eletagcounter])
                 eletagcounter += 1
-            if num_z != len(step) - 1:  # last node of skew is single node, no element, break step
+            if num_z != len(self.noz) - 1:  # last node of skew is single node, no element, break self.noz
                 self.trans_edge_2.append([row_start + num_x + 1, row_start + num_x + len(regBupdate),
                                           self.transverse_edge_2_tag, eletagcounter])  # support skew
                 eletagcounter += 1
 
-            row_start = row_start + len(regBupdate)  # update next step start node of region B
-            regBupdate = regBupdate[:-1]  # remove last element for next step (skew boundary)
+            row_start = row_start + len(regBupdate)  # update next self.noz start node of region B
+            regBupdate = regBupdate[:-1]  # remove last element for next self.noz (skew boundary)
             # check for skew angle varients of region B1 loop (positive or negative)
             if self.skew < 0:
                 reg_a_col = reg_a_col - len(regA[:-1])  # update row node number correspond with region A (decreasing)
@@ -576,23 +578,23 @@ class opGrillage:
         # B2 left support
         regBupdate = -regB + regA[-1]  # left side of quadrilateral area, regB can lie in negative x axis
         if self.skew < 0:  # check for angle sign
-            line_mesh_z_b2 = step  # (descending for positive angle,ascending for -ve)
+            line_mesh_z_b2 = self.noz  # (descending for positive angle,ascending for -ve)
         else:
-            line_mesh_z_b2 = reversed(step)
+            line_mesh_z_b2 = reversed(self.noz)
         for pointz in line_mesh_z_b2:
             for pointx in regBupdate[1:]:  # remove counting first element overlap with region A
                 self.Nodedata.append([nodetagcounter, pointx, self.y_elevation, pointz])
                 nodetagcounter += 1
-            regBupdate = regBupdate[:-1]  # remove last element (skew boundary) for next step
+            regBupdate = regBupdate[:-1]  # remove last element (skew boundary) for next self.noz
 
         # Element meshing for region B2
         # takes row_start from B1 auto meshing loop
         if self.skew < 0:
             reg_a_col = 1  # links to first node (region A)
         else:
-            reg_a_col = 1 + (len(step) - 1) * len(regA[:-1])  # links to first node last row of region A
+            reg_a_col = 1 + (len(self.noz) - 1) * len(regA[:-1])  # links to first node last row of region A
         regBupdate = -regB + regA[-1]  # reset placeholder
-        for num_z in range(0, len(step)):
+        for num_z in range(0, len(self.noz)):
             # link nodes from region A
             if num_z == 0:
                 if self.skew < 0:
@@ -601,7 +603,7 @@ class opGrillage:
                 else:
                     self.long_edge_2.append([reg_a_col, row_start + 1, self.longitudinal_edge_2_tag, eletagcounter])
                     eletagcounter += 1
-            elif num_z != len(step) - 1:
+            elif num_z != len(self.noz) - 1:
                 self.long_mem.append([row_start + 1, reg_a_col, self.longitudinal_tag, eletagcounter])
                 eletagcounter += 1
             # loop for each column node in x dir
@@ -616,7 +618,7 @@ class opGrillage:
                                                     , eletagcounter])
                         eletagcounter += 1
                     # record as edge beam with section 2
-                elif num_z != len(step) - 1:
+                elif num_z != len(self.noz) - 1:
                     self.long_mem.append(
                         [row_start + num_x + 1, row_start + num_x, self.longitudinal_tag, eletagcounter])
                     # record as longitudinal beam with section 1
@@ -625,7 +627,7 @@ class opGrillage:
                 self.trans_mem.append([row_start + num_x, row_start + num_x + len(regBupdate[1:]),
                                        self.transverse_tag, eletagcounter])
                 eletagcounter += 1
-            if num_z == len(step) - 2:
+            if num_z == len(self.noz) - 2:
                 if self.skew < 0:  # if negative angle
                     self.trans_edge_1.append(
                         [reg_a_col + len(regA[:-1]), row_start + len(regBupdate[1:]), self.transverse_edge_1_tag,
@@ -636,20 +638,20 @@ class opGrillage:
                         [1, row_start + len(regBupdate[1:]), self.transverse_edge_1_tag,
                          eletagcounter])  # ele of node 1 to last node skew
                     eletagcounter += 1
-            elif num_z != len(step) - 1:  # num of nodes = num ele + 1, thus ignore last step for implementing ele
+            elif num_z != len(self.noz) - 1:  # num of nodes = num ele + 1, thus ignore last self.noz for implementing ele
                 self.trans_edge_1.append(
                     [row_start + num_x + 1, row_start + num_x + len(regBupdate[1:]), self.transverse_edge_1_tag
                         , eletagcounter])  # support skew
                 eletagcounter += 1
             # steps in transverse mesh, assign nodes of skew nodes
 
-            row_start = row_start + len(regBupdate[1:])  # update next step start node
-            regBupdate = regBupdate[:-1]  # remove last element for next step (skew boundary)
+            row_start = row_start + len(regBupdate[1:])  # update next self.noz start node
+            regBupdate = regBupdate[:-1]  # remove last element for next self.noz (skew boundary)
 
             if self.skew < 0:
-                reg_a_col = reg_a_col + len(regA[:-1])  # update next step node correspond with region A
+                reg_a_col = reg_a_col + len(regA[:-1])  # update next self.noz node correspond with region A
             else:
-                reg_a_col = reg_a_col - len(regA[:-1])  # update next step node correspond with region A
+                reg_a_col = reg_a_col - len(regA[:-1])  # update next self.noz node correspond with region A
         print('Elements automation complete for region B1 B2 and A')
 
     def compile_output(self, bridge_name):
