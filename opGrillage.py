@@ -202,6 +202,30 @@ class opGrillage:
         # with open(self.filename, 'a') as file_handle:
         #     file_handle.write("ops.recorder('Node', '-file', \'{}.txt\')\n".format(self.filename[:-3]))
 
+    def set_grillage_long_mem(self, op_member_prop_class, trans_tag, beam_ele_type, group=1):
+        with open(self.filename, 'a') as file_handle:
+            file_handle.write("# Element generation for section: {}\n".format(group))
+        # get output string - sorted according to convention of Openseespy
+        prop = op_member_prop_class.output_arguments()
+        for ele in self.long_mem:
+            if ele[2] == group:
+                with open(self.filename, 'a') as file_handle:
+                    file_handle.write("ops.element(\"{type}\", {tag}, *[{i},{j}], *{memberprop}, {transtag})\n"
+                                      .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
+                                              memberprop=prop, transtag=trans_tag))
+
+    def set_grillage_trans_mem(self, op_member_prop_class, trans_tag, beam_ele_type, group=1):
+        with open(self.filename, 'a') as file_handle:
+            file_handle.write("# Element generation for section: {}\n".format(group))
+        # get output string - sorted according to convention of Openseespy
+        prop = op_member_prop_class.output_arguments()
+        for ele in self.trans_mem:
+            if ele[2] == group:
+                with open(self.filename, 'a') as file_handle:
+                    file_handle.write("ops.element(\"{type}\", {tag}, *[{i},{j}], *{memberprop}, {transtag})\n"
+                                      .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
+                                              memberprop=prop, transtag=trans_tag))
+
     def set_grillage_members(self, op_member_prop_class, trans_tag, beam_ele_type, member='long_mem'):
         """
         Function to define element properties for element command arguments
@@ -267,12 +291,14 @@ class opGrillage:
     def get_trans_edge_nodes(self):
         # function to identify nodes at edges of the model along transverse direction (trans_edge_1 and trans_edge_2)
         # function then assigns pinned support and roller support to nodes in trans_edge_1 and trans_edge_2 respectively
-        for sup in self.trans_edge_1:
-            self.support_nodes.append([sup[0], self.fix_val_pin])
-        self.support_nodes.append([sup[1], self.fix_val_pin])  # at last loop, last node is support
-        for sup in self.trans_edge_2:
-            self.support_nodes.append([sup[0], self.fix_val_roller_x])
-        self.support_nodes.append([sup[1], self.fix_val_roller_x])  # at last loop, last node is is support
+        for sup in self.trans_mem:
+            edge_1 = min(self.section_group_nox)
+            edge_2 = max(self.section_group_nox)
+            if sup[2] == edge_1:
+                self.support_nodes.append([sup[0], self.fix_val_pin])
+            # self.support_nodes.append([sup[1], self.fix_val_pin])  # at last loop, last node is support
+            if sup[2] == edge_2:
+                self.support_nodes.append([sup[0], self.fix_val_roller_x])
 
     def get_region_b(self, reg_a_end, step):
 
@@ -315,22 +341,18 @@ class opGrillage:
         # identify element groups in grillage based on line mesh vectors self.nox and self.noz
         # identify groups in self.noz
         diff_noz = np.round(np.diff(self.noz), decimals=self.deci_tol)
-        d = {ni: indi for indi, ni in enumerate(set(diff_noz))}
-        self.list_group_noz = [d[ni] for ni in diff_noz]
-
         # identify groups in self.nox
         diff_nox = np.round(np.diff(self.nox), decimals=self.deci_tol)
-        d = {ni: indi for indi, ni in enumerate(set(diff_nox))}
-        self.list_group_nox = [d[ni] for ni in diff_nox]
+
         # assign to vectors
-        section_group_noz = self.characterize_node_diff(self.noz, diff_noz)
-        section_group_nox = self.characterize_node_diff(self.nox, diff_nox)
+        self.section_group_noz = self.characterize_node_diff(self.noz, diff_noz)
+        self.section_group_nox = self.characterize_node_diff(self.nox, diff_nox)
         # test line
-        vec = [1, 1.6, 2.6, 3.6, 4.6, 5.6, 7]
-        ddd = np.round(np.diff(vec),decimals=self.deci_tol)
+        vec = [1, 1.6, 2.2, 3.6, 4.6, 5.6, 6.6]
+        ddd = np.round(np.diff(vec), decimals=self.deci_tol)
         c = self.characterize_node_diff(vec, ddd)
-        print(section_group_nox)
-        print(section_group_noz)
+        print(self.section_group_nox)
+        print(self.section_group_noz)
 
     @staticmethod
     def characterize_node_diff(node_list, diff_list):
@@ -373,7 +395,9 @@ class opGrillage:
             self.nox = self.nox_special  # assign custom array to nox array
         self.breadth = self.trans_dim * math.sin(self.skew / 180 * math.pi)  # length of skew edge in x dir
         self.noz = self.get_long_grid_nodes()  # mesh points in z direction
-        self.identify_member_groups()
+        # identify member groups based on nox and noz
+        self.identify_member_groups()  # returns section_group_nox and section_group_noz
+        # initiate tag counters for node and elements
         nodetagcounter = 1  # counter for nodetag
         eletagcounter = 1  # counter for eletag
 
@@ -386,50 +410,52 @@ class opGrillage:
                     [nodetagcounter, pointx, self.y_elevation, pointz])  # NOTE here is where to change X Y plane
                 nodetagcounter += 1
         # print to terminal
-        print("Node generation completed. Number of nodes created = {}".format(nodetagcounter - 1))
+        print("Nodes created. Number of nodes = {}".format(nodetagcounter - 1))
 
         # procedure to link nodes to form Elements of grillage model
         # each element is then assigned a "standard element tag" e.g. self.longitudinal_tag = 1
         for node_row_z in range(0, len(self.noz)):  # loop for each line mesh in z direction
             for node_col_x in range(1, len(self.nox)):  # loop for each line mesh in x direction
-                cumulative_row_z = node_row_z * len(self.nox)  # get current row's (z axis) nodetagcounter
-                next_cumulative_row_z = (node_row_z + 1) * len(
-                    self.nox)  # get next row's (z axis) nodetagcounter
+                current_row_z = node_row_z * len(self.nox)  # get current row's (z axis) nodetagcounter
+                next_node_row_z = (node_row_z + 1) * len(self.nox)  # get next row's (z axis) nodetagcounter
                 # link nodes along current row (z axis), in the x direction
-                if node_row_z == 0:  # first row (z axis) of nodes
-                    self.long_edge_1.append([cumulative_row_z + node_col_x, cumulative_row_z + node_col_x + 1,
-                                             self.longitudinal_edge_1_tag, eletagcounter])
-                    # record as edge beam with tag 2
-                    eletagcounter += 1
-                elif node_row_z == len(self.noz) - 1:  # last row (z axis) of nodes
-                    self.long_edge_2.append([cumulative_row_z + node_col_x, cumulative_row_z + node_col_x + 1,
-                                             self.longitudinal_edge_2_tag,
-                                             eletagcounter])  # record as edge beam with section 3
-                    eletagcounter += 1
-                else:  # row of nodes in between edges of grillage ( 0 < z < z max)
-                    self.long_mem.append([cumulative_row_z + node_col_x, cumulative_row_z + node_col_x + 1,
-                                          self.longitudinal_tag, eletagcounter])
-                    # record as longitudinal beam with section tag 1
-                    eletagcounter += 1
+                self.long_mem.append([current_row_z + node_col_x, current_row_z + node_col_x + 1,
+                                      self.section_group_noz[node_row_z], eletagcounter])
+                eletagcounter += 1
+                # if node_row_z == 0:  # first row (z axis) of nodes
+                #     self.long_edge_1.append([cumulative_row_z + node_col_x, cumulative_row_z + node_col_x + 1,
+                #                              self.longitudinal_edge_1_tag, eletagcounter])
+                #     # record as edge beam with tag 2
+                #     eletagcounter += 1
+                # elif node_row_z == len(self.noz) - 1:  # last row (z axis) of nodes
+                #     self.long_edge_2.append([cumulative_row_z + node_col_x, cumulative_row_z + node_col_x + 1,
+                #                              self.longitudinal_edge_2_tag,
+                #                              eletagcounter])  # record as edge beam with section 3
+                #     eletagcounter += 1
+                # else:  # row of nodes in between edges of grillage ( 0 < z < z max)
+                #     self.long_mem.append([cumulative_row_z + node_col_x, cumulative_row_z + node_col_x + 1,
+                #                           self.longitudinal_tag, eletagcounter])
+                #     # record as longitudinal beam with section tag 1
+                #     eletagcounter += 1
 
                 # link nodes in the z direction (e.g. transverse members)
-                if next_cumulative_row_z == nodetagcounter - 1:  # if looping last row of line mesh z
+                if next_node_row_z == nodetagcounter - 1:  # if looping last row of line mesh z
                     pass  # do nothing (exceeded the z axis edge of the grillage)
-                elif cumulative_row_z + node_col_x - node_row_z * len(
-                        self.nox) == 1:  # check if coincide with edge of line mesh z
-                    self.trans_edge_1.append(
-                        [cumulative_row_z + node_col_x, next_cumulative_row_z + node_col_x,
-                         self.transverse_tag, eletagcounter])  # record as edge slab with section 4
+                # elif current_row_z + node_col_x - node_row_z * len(
+                #         self.nox) == 1:  # check if coincide with edge of line mesh z
+                #     self.trans_edge_1.append(
+                #         [current_row_z + node_col_x, next_node_row_z + node_col_x,
+                #          self.transverse_tag, eletagcounter])  # record as edge slab with section 4
+                #     eletagcounter += 1
+                else:  # assigning elements in transverse direction (z)
+                    self.trans_mem.append([current_row_z + node_col_x, next_node_row_z + node_col_x,
+                                           self.section_group_nox[node_col_x], eletagcounter])
                     eletagcounter += 1
-                else:
-                    self.trans_mem.append([cumulative_row_z + node_col_x, next_cumulative_row_z + node_col_x,
-                                           self.transverse_edge_1_tag, eletagcounter])  # record as slab with section 3
-                    eletagcounter += 1
-            if next_cumulative_row_z >= len(self.nox) * len(self.noz):  # if looping last node in x dir
+            if next_node_row_z >= len(self.nox) * len(self.noz):  # check if current z coord is last row
                 pass  # do nothing
-            else:
-                self.trans_edge_2.append([cumulative_row_z + node_col_x + 1, next_cumulative_row_z + node_col_x + 1,
-                                          self.transverse_edge_2_tag, eletagcounter])
+            else:  # assign last transverse member at last column (x = self.nox[-1])
+                self.trans_mem.append([current_row_z + node_col_x + 1, next_node_row_z + node_col_x + 1,
+                                       self.section_group_nox[node_col_x], eletagcounter])
                 # record opposite edge slab with section 4
                 eletagcounter += 1
         print("Element generation completed. Number of elements created = {}".format(eletagcounter - 1))
@@ -638,7 +664,8 @@ class opGrillage:
                         [1, row_start + len(regBupdate[1:]), self.transverse_edge_1_tag,
                          eletagcounter])  # ele of node 1 to last node skew
                     eletagcounter += 1
-            elif num_z != len(self.noz) - 1:  # num of nodes = num ele + 1, thus ignore last self.noz for implementing ele
+            elif num_z != len(
+                    self.noz) - 1:  # num of nodes = num ele + 1, thus ignore last self.noz for implementing ele
                 self.trans_edge_1.append(
                     [row_start + num_x + 1, row_start + num_x + len(regBupdate[1:]), self.transverse_edge_1_tag
                         , eletagcounter])  # support skew
@@ -701,6 +728,9 @@ class opGrillage:
             print("File error not executable")
 
     def run_gravity_analysis(self):
+        with open(self.filename, 'w') as file_handle:
+            # compile nodes
+            file_handle.write("NODES\n")  # Header
         pass
 
 

@@ -9,7 +9,7 @@ from PlotWizard import *
 
 # construct op grillage object
 test_bridge = opGrillage(bridge_name="Example_superT_10m", long_dim=10, width=5, skew=-11,
-                         num_long_grid=6, num_trans_grid=13, cantilever_edge=1, mesh_type="Ortho")
+                         num_long_grid=6, num_trans_grid=13, cantilever_edge=1, mesh_type="Orth")
 
 # define material
 test_bridge.set_uniaxial_material(mat_type="Concrete01", mat_vec=[-6.0, -0.004, -6.0, -0.014])
@@ -32,7 +32,12 @@ test_bridge.set_grillage_members(trans_prop, skew_tag, edge_prop.beam_ele_type, 
 test_bridge.set_grillage_members(transedge1_prop, skew_tag, edge_prop.beam_ele_type, member='trans_edge_1')
 test_bridge.set_grillage_members(transedge2_prop, skew_tag, edge_prop.beam_ele_type, member='trans_edge_2')
 
+test_bridge.set_grillage_long_mem(longmem_prop, long_tag, longmem_prop.beam_ele_type, group = 3)
+
+# check output python file if executable
 test_bridge.run_check()
+# run simple gravity analysis
+# add gravity analysis
 # --------------------------------------------------------------------------------------------------------------------
 # plotting commands
 
