@@ -21,7 +21,9 @@ The following example creates a `GrillageGenerator` class object for a bridge mo
     test_bridge = opGrillage(bridge_name="Example_superT_10m", long_dim=10, width=5, skew=-11,
                          num_long_grid=4, num_trans_grid=13, cantilever_edge=1, mesh_type="Ortho")
 
-
+Upon running this line, the output file writes model() and node() commands into the output file "Example_superT_10m".
+Running the output file at this stage will construct the model space (model command) and generate the nodes of the model
+(node command).
 
 
 Define members of grillage model
@@ -43,9 +45,12 @@ Table 1 shows the standard elements of a grillage model
    10                                   Transverse edge 2
  ===================================   ===========================================================================
 
+.. code-block:: python
+    test_bridge.set_grillage_long_mem(longmem_prop, longmem_prop.beam_ele_type, group=3)
 
 
-Setting material and section properties
+
+Setting material and section properties of grillage members
 ------------------------
 
 
@@ -57,7 +62,7 @@ Setting material and section properties
 
 
 
-Assign material and section to grillage model
+Creating grillage members
 ------------------------
 
 .. code-block:: python
@@ -68,10 +73,22 @@ Assign material and section to grillage model
 Using generated grillage for analysis
 ------------------------
 
-A simple
+The first step on using the grillage model for analysis is defining Openseespy analysis objects, namely using the
+pattern() and constraint() classess. Based on the desired analysis, users can add these lines of code manually to
+the output file.
+
+Alternatively, users can run the class function `perform_gravity_analysis()` to conduct a simple gravity load analysis.
+The class function is also a good way to test run the model.
 
 Viewing results
 ------------------------
+
+The following example displays the deflected shape for the example bridge.
+
+.. code-block:: python
+
+    import PlotWizard
+    plot_section(test_bridge, test_bridge.long_edge_1, 'b')
 
 Alternatively, result visualization can be achieved using the Openseespy module - ops_vis. The `ops_vis` module is one
 of the post-processing modules of Openseespy.

@@ -8,7 +8,7 @@ The wrapper constructs a Python .py file containing ```Openseespy``` commands fo
 model in Opensees domain. The wrapper allows quick generation of py file with few basic command lines in Python 
 interface. 
 
-## Setup
+## Installation
 
 To run the wrapper, download from github link() and import the following files
     
