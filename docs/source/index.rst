@@ -16,7 +16,6 @@ in Open System for Earthquake Engineering Simulation (OpenSees) software framewo
    :maxdepth: 1
    :caption: Contents:
 
-   README
    rst/Installation
    rst/Structure description
    rst/Bridgemodel
