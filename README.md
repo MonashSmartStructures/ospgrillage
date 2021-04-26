@@ -16,7 +16,7 @@ To run the wrapper, download from github link() and import the following files:
     
     import GrillageGenerator
     
-For detailed information on installation, refer to [documentation]
+For detailed information on installation, refer to [installation]
 
 
 
@@ -31,7 +31,7 @@ See :ref:Structure description page for more information of inputs.
 - [x] Orthogonal mesh
 - [x] Positive and negative skew angles
 - [x] Multiple member definition 
-
+- [] Multiple span
 
 
 

@@ -220,7 +220,7 @@ class opGrillage:
         for ele in self.long_mem:
             if ele[2] == group:
                 with open(self.filename, 'a') as file_handle:
-                    file_handle.write("ops.element(\"{type}\", {tag}, *[{i},{j}], *{memberprop}, {transtag})\n"
+                    file_handle.write("ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transtag})\n"
                                       .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
                                               memberprop=prop, transtag=1))
 
@@ -242,7 +242,7 @@ class opGrillage:
         for ele in self.trans_mem:
             if ele[2] == group:
                 with open(self.filename, 'a') as file_handle:
-                    file_handle.write("ops.element(\"{type}\", {tag}, *[{i},{j}], *{memberprop}, {transtag})\n"
+                    file_handle.write("ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transtag})\n"
                                       .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
                                               memberprop=prop, transtag=2))
 
@@ -269,7 +269,7 @@ class opGrillage:
             # ops.element(beam_ele_type, ele[3],
             #            *[ele[0], ele[1]], *op_member_prop_class, trans_tag)  ###
             with open(self.filename, 'a') as file_handle:
-                file_handle.write("ops.element(\"{type}\", {tag}, *[{i},{j}], *{memberprop}, {transtag})\n"
+                file_handle.write("ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transtag})\n"
                                   .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
                                           memberprop=prop, transtag=trans_tag))
 
@@ -292,7 +292,8 @@ class opGrillage:
         # ops.uniaxialMaterial(self.mat_type_op, 1, *self.mat_matrix)
         with open(self.filename, 'a') as file_handle:
             file_handle.write("# Material definition \n")
-            file_handle.write("ops.uniaxialMaterial(\"{}\", 1, *{})\n".format(self.mat_type_op, self.mat_matrix))
+            file_handle.write("ops.uniaxialMaterial(\"{}\", 1, *{})\n".format(self.global_mat_object.mat_type,
+                                                                              self.global_mat_object.mat_vec))
 
     # Functions related to mesh generation
     def get_vector_xz(self):
@@ -359,23 +360,31 @@ class opGrillage:
 
     def identify_member_groups(self):
         # identify element groups in grillage based on line mesh vectors self.nox and self.noz
-        # identify groups in self.noz
-        diff_noz = np.round(np.diff(self.noz), decimals=self.deci_tol)
-        # identify groups in self.nox
-        diff_nox = np.round(np.diff(self.nox), decimals=self.deci_tol)
 
-        # assign to vectors
-        self.section_group_noz = self.characterize_node_diff(self.noz, diff_noz)
-        self.section_group_nox = self.characterize_node_diff(self.nox, diff_nox)
-        # test line
-        vec = [1, 1.6, 2.2, 3.6, 4.6, 5.6, 6.6]
-        ddd = np.round(np.diff(vec), decimals=self.deci_tol)
-        c = self.characterize_node_diff(vec, ddd)
+        # get the groups of elements
+        self.section_group_noz = self.characterize_node_diff(self.noz, self.deci_tol)
+        self.section_group_nox = self.characterize_node_diff(self.nox, self.deci_tol)
+        # set groups dictionary
+        if not self.ortho_mesh:
+            if max(self.section_group_noz) <= 4:
+                group_x = {"edge_beam": 1, "exterior_beam_1": 2, "interior_beam": 3, "exterior_beam_2": 4}
+            if max(self.section_group_nox) <= 2:
+                group_z = {"edge_slab": 1, "transverse_slab": 2}
+        # print groups to terminal
+        print("Total groups of elements in longitudinal : {}".format(max(self.section_group_noz)))
+        print("Total groups of elements in transverse : {}".format(max(self.section_group_nox)))
 
     @staticmethod
-    def characterize_node_diff(node_list, diff_list):
+    def characterize_node_diff(node_list, tol):
+        """
+        Function to characterize the groups of elements based on spacings of node points in the node point list
+        :param tol: float of tolerance for checking spacings in np.diff() function
+        :param node_list: list containing node points along orthogonal axes (x and z)
+        :return ele_group: list containing integers representing the groups of elements
+        """
         ele_group = [1]  # edge, LR beam
         spacing_diff_set = {}
+        diff_list = np.round(np.diff(node_list), decimals=tol)  # spacing of the node list- checked with tolerance
         counter = 1
         for count in range(1, len(node_list)):
             # calculate the spacing diff between left and right node of current node
@@ -401,7 +410,7 @@ class opGrillage:
         #    new_list = ele_group[0:2]+new_group
         #    ele_group = new_list
 
-        ele_group.append(max(ele_group) + 1)  # add last element group
+        ele_group.append(1)  # add last element group (edge beam same as group 1)
         return ele_group
 
     # skew meshing function
@@ -725,7 +734,7 @@ class opGrillage:
             file_handle.write("trans_edge_2\n")  # Sub_Header
             file_handle.writelines("%s\n" % ele for ele in self.trans_edge_2)  #
 
-    def set_uniaxial_material(self, mat_vec, mat_type="Concrete01"):
+    def set_material(self, material_obj):
         """
         Function to define material for Openseespy material model. For example, uniaxialMaterial, nDMaterial.
 
@@ -733,8 +742,7 @@ class opGrillage:
         :param mat_type: str containing material type tag following available tags specified in Openseespy
         :return: Function populates object variables: (1) mat_matrix, and (2) mat_type_op.
         """
-        self.mat_matrix = mat_vec  # material matrix for
-        self.mat_type_op = mat_type  # material type based on Openseespy
+        self.global_mat_object = material_obj  # material matrix for
 
         self.op_uniaxial_material()
 
@@ -747,10 +755,24 @@ class opGrillage:
             print("File error not executable")
 
     def run_gravity_analysis(self):
-        with open(self.filename, 'w') as file_handle:
-            # compile nodes
-            file_handle.write("NODES\n")  # Header
-        pass
+        # function to update output py file with commands for simple gravity analysis
+        with open(self.filename, 'a') as file_handle:
+            # write standard command lines for static analysis
+
+            file_handle.write("ops.timeSeries('Linear', 1)\n")
+            file_handle.write("ops.pattern('Plain', 1, 1)\n")
+            file_handle.write("ops.load(20, 0.0, -1000, 0.0, 0, 0, 0)\n")
+
+            file_handle.write("ops.integrator('LoadControl', 1/10)\n")  # Header
+            file_handle.write("ops.numberer('Plain')\n")
+            file_handle.write("ops.system('BandGeneral')\n")
+            file_handle.write("ops.constraints('Plain')\n")
+            file_handle.write("ops.test('NormDispIncr', 1e-8,6)\n")
+            file_handle.write("ops.algorithm('Newton')\n")
+            file_handle.write("ops.analysis('Static')\n")
+            file_handle.write("ops.analyze(10)")
+
+        # import and execute updated py file
 
 
 # ----------------------------------------------------------------------------------------------------------------
@@ -785,13 +807,13 @@ class Member:
         # assignment input based on ele type
         if self.op_ele_type == "ElasticTimoshenkoBeam":
             section_input = [self.E, self.G, self.A, self.J, self.Iy, self.Iz, self.Ay, self.Az]
-            section_input = "[{:.3e},{:.3e},{:.3e},{:.3e},{:.3e},{:.3e},{:.3e},{:.3e}]".format(self.E, self.G, self.A,
+            section_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.E, self.G, self.A,
                                                                                                self.J,
                                                                                                self.Iy, self.Iz,
                                                                                                self.Ay, self.Az)
         elif self.op_ele_type == "elasticBeamColumn":  # eleColumn
             section_input = [self.E, self.G, self.A, self.J, self.Iy, self.Iz]
-            section_input = "[{:.3e},{:.3e},{:.3e},{:.3e},{:.3e},{:.3e}]".format(self.E, self.G, self.A,
+            section_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.E, self.G, self.A,
                                                                                  self.J, self.Iy, self.Iz)
         return section_input
 
@@ -805,11 +827,10 @@ class Material:
     Class for material properties definition
     """
 
-    def __init__(self, op_mat_type, Fy, E0, b, a1, a2, a3, a4):
-        self.op_mat_type = op_mat_type
-        self.Fy = Fy
-        self.E0 = E0
-        self.b = b
+    def __init__(self, mat_type, mat_vec=[]):
+        # super(UniAxialElasticMaterial, self).__init__(length, length)
+        self.mat_type = mat_type
+        self.mat_vec = mat_vec
 
         pass
 
@@ -819,8 +840,10 @@ class UniAxialElasticMaterial(Material):
     Class for uniaxial material prop
     """
 
-    def __init__(self, length):
-        super(UniAxialElasticMaterial, self).__init__(length, length)
+    def __init__(self, mat_type, mat_vec=[]):
+        # super(UniAxialElasticMaterial, self).__init__(length, length)
+        self.mat_type = mat_type
+        self.mat_vec = mat_vec
 
 
 class nDMaterial(Material):
@@ -829,9 +852,10 @@ class nDMaterial(Material):
     NOTE: Feature to be added after Uniaxial Material
     """
 
-    def __init__(self):
-        super(nDMaterial, self).__init__()
-        pass
+    def __init__(self, mat_type, mat_vec=[]):
+        # super(UniAxialElasticMaterial, self).__init__(length, length)
+        self.mat_type = mat_type
+        self.mat_vec = mat_vec
 
 
 # ----------------------------------------------------------------------------------------------------------------
@@ -850,6 +874,7 @@ class Section:
         # A, E, G, J, Iy, Iz, Ay, Az,
     # example
     # .section('Elastic', BeamSecTag,Ec,ABeam,IzBeam)
+
 
 # ----------------------------------------------------------------------------------------------------------------
 class GrillageMember:

@@ -18,13 +18,21 @@ The following example creates a `GrillageGenerator` class object for a bridge mo
 
 .. code-block:: python
 
-    test_bridge = opGrillage(bridge_name="Example_superT_10m", long_dim=10, width=5, skew=-11,
-                         num_long_grid=4, num_trans_grid=13, cantilever_edge=1, mesh_type="Ortho")
+    test_bridge = opGrillage(bridge_name="SuperT_10m", long_dim=10, width=5, skew=-21,
+                         num_long_grid=2, num_trans_grid=13, cantilever_edge=1, mesh_type="Ortho")
 
 Upon running this line, the output file writes model() and node() commands into the output file "Example_superT_10m".
 Running the output file at this stage will construct the model space (model command) and generate the nodes of the model
 (node command).
 
+
+Define material properties of model
+------------------------
+
+.. code-block:: python
+
+    # define material
+    test_bridge.set_uniaxial_material(mat_type="Concrete01", mat_vec=[-6.0, -0.004, -6.0, -0.014])
 
 Define members of grillage model
 ------------------------
@@ -50,15 +58,8 @@ Table 1 shows the standard elements of a grillage model
 
 
 
-Setting material and section properties of grillage members
+Define section properties of grillage members
 ------------------------
-
-
-.. code-block:: python
-
-    # define material
-    test_bridge.set_uniaxial_material(mat_type="Concrete01", mat_vec=[-6.0, -0.004, -6.0, -0.014])
-
 
 
 
@@ -83,7 +84,9 @@ The class function is also a good way to test run the model.
 Viewing results
 ------------------------
 
-The following example displays the deflected shape for the example bridge.
+A set of plotting functions are included as part of the `op-grillage` module - the `PlotWizard` command. To draw and
+plot components of the model, users run the following example. In the example, the plot_section() function draws and
+plots the longitudinal members of the grillage.
 
 .. code-block:: python
 
@@ -91,6 +94,15 @@ The following example displays the deflected shape for the example bridge.
     plot_section(test_bridge, test_bridge.long_edge_1, 'b')
 
 Alternatively, result visualization can be achieved using the Openseespy module - ops_vis. The `ops_vis` module is one
-of the post-processing modules of Openseespy.
+of the post-processing modules of Openseespy. The `ops-vis` module has gone through numerous updates and has reach
+maturity for many post-processing applications. This is the recommended plotting feature at the current version of
+`op-grillage`.
+
+For example users can view the model using the `model()` command. To do this, users add the following command and the
+end of the output py file.
+
+.. code-block:: python
+
+    ops.model()
 
 The main commands of ops_vis module can be found `here <https://openseespydoc.readthedocs.io/en/latest/src/ops_vis.html>`_
