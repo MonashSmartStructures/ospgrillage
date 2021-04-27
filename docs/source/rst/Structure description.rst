@@ -2,9 +2,9 @@
 Using the grillage wizard
 ========================
 
-The process of using the *opGrillage* module can be categorized into three steps:
+The process of using the *OpsGrillage* module can be categorized into three steps:
 
-#. Creating the grillage object using the :class:`~opGrillage` class.
+#. Creating the grillage object using the :class:`~opsGrillage` class.
 #. Defining elements of grillage model using the :class:`~member` class.
 #. Specifying section and material properties using :class:`~material` and :class:`~section` class
 

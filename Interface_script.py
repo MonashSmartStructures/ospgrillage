@@ -8,7 +8,7 @@ from PlotWizard import *
 concrete = UniAxialElasticMaterial(mat_type="Concrete01", mat_vec=[-6.0, -0.004, -6.0, -0.014])
 
 # define sections
-I_beam_section = Section(op_sec_tag='Elastic',A=0.896, E=3.47E+10, G=2.00E+10, J=0.133, Iy=0.213, Iz=0.259,
+I_beam_section = Section(op_sec_tag='Elastic', A=0.896, E=3.47E+10, G=2.00E+10, J=0.133, Iy=0.213, Iz=0.259,
                          Ay=0.233, Az=0.58)
 
 # define member
@@ -33,11 +33,15 @@ test_bridge = opGrillage(bridge_name="SuperT_10m", long_dim=10, width=5, skew=-2
 test_bridge.set_material(concrete)
 
 # set grillage member ( )
-test_bridge.set_grillage_long_mem(longmem_prop, longmem_prop.op_ele_type, group=3)
-test_bridge.set_grillage_trans_mem(trans_prop, longmem_prop.op_ele_type, group=2)
-# TODO
-# test_bridge.set_grillage_member(group = "edge_beam")
+test_bridge.set_grillage_members(longmem_prop, longmem_prop.op_ele_type, member="interior_main_beam")
+test_bridge.set_grillage_members(trans_prop, longmem_prop.op_ele_type, member="transverse_slab")
+test_bridge.set_grillage_members(longmem_prop, longmem_prop.op_ele_type, member="edge_beam")
+test_bridge.set_grillage_members(trans_prop, longmem_prop.op_ele_type, member="exterior_main_beam_1")
+test_bridge.set_grillage_members(longmem_prop, longmem_prop.op_ele_type, member="exterior_main_beam_2")
+test_bridge.set_grillage_members(longmem_prop, longmem_prop.op_ele_type, member="edge_slab")
 
+# TODO
+# run check if member has already been defined, return non or pass
 
 # check output python file if executable
 test_bridge.run_check()
@@ -54,12 +58,12 @@ model = plt.scatter(x, y)
 plt.axis('equal')
 
 # plot elements via assessing individual members (to be changed)
-plot_section(test_bridge, test_bridge.long_edge_1, 'b')
-plot_section(test_bridge, test_bridge.long_edge_2, 'k')
+#plot_section(test_bridge, test_bridge.long_edge_1, 'b')
+#plot_section(test_bridge, test_bridge.long_edge_2, 'k')
 plot_section(test_bridge, test_bridge.long_mem, 'r')
 plot_section(test_bridge, test_bridge.trans_mem,'g')
-plot_section(test_bridge, test_bridge.trans_edge_1,'b')
-plot_section(test_bridge, test_bridge.trans_edge_2,'b')
+#plot_section(test_bridge, test_bridge.trans_edge_1,'b')
+#plot_section(test_bridge, test_bridge.trans_edge_2,'b')
 plt.show()
 
 # # simple xls command to save bridge data

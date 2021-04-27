@@ -19,6 +19,8 @@ class opGrillage:
         self.section_type = None
         self.section_group_noz = []
         self.section_group_nox = []
+        self.group_ele_dict = None
+        self.global_element_list = None
         # model information
         self.mesh_type = mesh_type
         self.model_name = bridge_name
@@ -43,10 +45,6 @@ class opGrillage:
         # initiate list of various elements of grillage model, each entry of list is a sublist [node_i, node_j, eletag]
         self.long_mem = []  # longitudinal members
         self.trans_mem = []  # transverse members
-        self.long_edge_1 = []  # longitudinal edge beam 1
-        self.long_edge_2 = []  # longitudinal edge beam 2
-        self.trans_edge_1 = []  # transverse edge element 1 (typically skew)
-        self.trans_edge_2 = []  # transverse edge element 2 (typically skew)
         self.support_nodes = []  # list of nodes at support regions
         self.concrete_prop = []  # list of concrete properties arguments
         self.steel_prop = []  # list of steel properties arguments
@@ -246,32 +244,23 @@ class opGrillage:
                                       .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
                                               memberprop=prop, transtag=2))
 
-    def set_grillage_members(self, op_member_prop_class, trans_tag, beam_ele_type, member='long_mem'):
-        """
-        Function to define element properties for element command arguments
+    def set_grillage_members(self, op_member_prop_class, beam_ele_type, member='long_mem'):
 
-        :param op_member_prop_class: an OPmemberProp class object - see OPmemberProp class
-        :param trans_tag: tag argument of element
-        :param beam_ele_type: string of type argument of element - see Opensees for appropriate type
-        :param member: string name of member components according to GrillageGenerator Object -  see
-                            Grillagegenerator docs for more information
-        :return:
-        """
         # get list of elements for specified element member of grillage
-        grillage_section = eval("self.{}".format(member))
         with open(self.filename, 'a') as file_handle:
             file_handle.write("# Element generation for section: {}\n".format(member))
         #         element  tag   *[ndI ndJ]  A  E  G  Jx  Iy   Iz  transfOBJs
         # get output string - sorted according to convention of Openseespy
         prop = op_member_prop_class.output_arguments()
         # loop each element in list, assign and write element() command
-        for ele in grillage_section:
+        for ele in self.global_element_list:
             # ops.element(beam_ele_type, ele[3],
             #            *[ele[0], ele[1]], *op_member_prop_class, trans_tag)  ###
-            with open(self.filename, 'a') as file_handle:
-                file_handle.write("ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transtag})\n"
-                                  .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
-                                          memberprop=prop, transtag=trans_tag))
+            if ele[2] == self.group_ele_dict[member]:
+                with open(self.filename, 'a') as file_handle:
+                    file_handle.write("ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transtag})\n"
+                                      .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
+                                              memberprop=prop, transtag=ele[4]))
 
     def op_section_generate(self):
         with open(self.filename, 'a') as file_handle:
@@ -344,7 +333,7 @@ class opGrillage:
         else:
             self.ortho_mesh = False
 
-        # checks mesh type options are defined within the allowance threshold
+        # checks mesh type options are within the allowance threshold
         if np.abs(self.skew) <= self.skew_threshold[0] and self.ortho_mesh:
             # print
             raise Exception('Orthogonal mesh not allowed for angle less than {}'.format(self.skew_threshold[0]))
@@ -364,12 +353,15 @@ class opGrillage:
         # get the groups of elements
         self.section_group_noz = self.characterize_node_diff(self.noz, self.deci_tol)
         self.section_group_nox = self.characterize_node_diff(self.nox, self.deci_tol)
+        # update self.section_group_nox
+        self.section_group_nox = [x+max(self.section_group_noz) for x in self.section_group_nox]
         # set groups dictionary
-        if not self.ortho_mesh:
-            if max(self.section_group_noz) <= 4:
-                group_x = {"edge_beam": 1, "exterior_beam_1": 2, "interior_beam": 3, "exterior_beam_2": 4}
-            if max(self.section_group_nox) <= 2:
-                group_z = {"edge_slab": 1, "transverse_slab": 2}
+        if not self.ortho_mesh:  # if skew mesh
+            if max(self.section_group_nox) <= 6:  # if true set standard section for variable
+                self.group_ele_dict = {"edge_beam": 1, "exterior_main_beam_1": 2, "interior_main_beam": 3,
+                                  "exterior_main_beam_2": 4, "edge_slab": 5, "transverse_slab": 6}
+        else:  # orthogonal mesh, generate respective group dictionary
+            pass
         # print groups to terminal
         print("Total groups of elements in longitudinal : {}".format(max(self.section_group_noz)))
         print("Total groups of elements in transverse : {}".format(max(self.section_group_nox)))
@@ -382,8 +374,8 @@ class opGrillage:
         :param node_list: list containing node points along orthogonal axes (x and z)
         :return ele_group: list containing integers representing the groups of elements
         """
-        ele_group = [1]  # edge, LR beam
-        spacing_diff_set = {}
+        ele_group = [1]  # initiate element group list, first element is group 1 edge beam
+        spacing_diff_set = {} # initiate set recording the diff in spacings
         diff_list = np.round(np.diff(node_list), decimals=tol)  # spacing of the node list- checked with tolerance
         counter = 1
         for count in range(1, len(node_list)):
@@ -402,15 +394,7 @@ class opGrillage:
                 # set tag
                 ele_group.append(spacing_diff_set[repr(spacing_diff)])
                 counter += 1
-        # listed[-1] = max(listed)+1  # second last element
-        # for special case
-        # if np.all(diff_list == diff_list[0]): # case when all elements are equally spaced
-        #    ele_group[-1] = ele_group[-1]+1
-        #    new_group = [x + 1 for x in ele_group[2:]]
-        #    new_list = ele_group[0:2]+new_group
-        #    ele_group = new_list
-
-        ele_group.append(1)  # add last element group (edge beam same as group 1)
+        ele_group.append(1)  # add last element of list (edge beam group 1)
         return ele_group
 
     # skew meshing function
@@ -447,7 +431,7 @@ class opGrillage:
                 next_node_row_z = (node_row_z + 1) * len(self.nox)  # get next row's (z axis) nodetagcounter
                 # link nodes along current row (z axis), in the x direction
                 self.long_mem.append([current_row_z + node_col_x, current_row_z + node_col_x + 1,
-                                      self.section_group_noz[node_row_z], eletagcounter])
+                                      self.section_group_noz[node_row_z], eletagcounter, 1])
                 eletagcounter += 1
                 # if node_row_z == 0:  # first row (z axis) of nodes
                 #     self.long_edge_1.append([cumulative_row_z + node_col_x, cumulative_row_z + node_col_x + 1,
@@ -476,17 +460,20 @@ class opGrillage:
                 #     eletagcounter += 1
                 else:  # assigning elements in transverse direction (z)
                     self.trans_mem.append([current_row_z + node_col_x, next_node_row_z + node_col_x,
-                                           self.section_group_nox[node_col_x - 1], eletagcounter])
+                                           self.section_group_nox[node_col_x - 1], eletagcounter, 2])
                     # section_group_nox counts from 1 to 12, therefore -1 to start counter 0 to 11
                     eletagcounter += 1
             if next_node_row_z >= len(self.nox) * len(self.noz):  # check if current z coord is last row
                 pass  # last column (x = self.nox[-1]) achieved, no more assignment
             else:  # assign last transverse member at last column (x = self.nox[-1])
                 self.trans_mem.append([current_row_z + node_col_x + 1, next_node_row_z + node_col_x + 1,
-                                       self.section_group_nox[node_col_x], eletagcounter])
+                                       self.section_group_nox[node_col_x], eletagcounter, 2])
                 # after counting section_group_nox 0 to 11, this line adds the counter of 12
                 eletagcounter += 1
+        # combine long and trans member elements to global list
+        self.global_element_list = self.long_mem+self.trans_mem
         print("Element generation completed. Number of elements created = {}".format(eletagcounter - 1))
+
 
     # orthogonal meshing method
     def orthogonal_mesh(self):
@@ -505,7 +492,8 @@ class opGrillage:
         # RegB first element overlap with RegA last element
         regB = self.get_region_b(regA[-1], self.noz)  # nodes @ region B startswith last entry of region A up to
         self.nox = np.hstack((regA[:-1], regB))  # removed overlapping element
-        self.identify_member_groups()
+        # identify member groups based on nox and noz
+        self.identify_member_groups()  # returns section_group_nox and section_group_noz
         # mesh region A quadrilateral area
         nodetagcounter = 1  # counter for nodetag, updates after creating each nodes
         eletagcounter = 1  # counter for element, updates after creating each elements
