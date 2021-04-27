@@ -12,7 +12,7 @@ I_beam_section = Section(op_sec_tag='Elastic', A=0.896, E=3.47E+10, G=2.00E+10, 
                          Ay=0.233, Az=0.58)
 
 # define member
-I_beam = GrillageMember(name = "Intermediate I-beams", section_obj = I_beam_section, material_obj = concrete)
+I_beam = GrillageMember(name="Intermediate I-beams", section_obj=I_beam_section, material_obj=concrete)
 
 # define member (to be retired)
 longmem_prop = Member("I-grider", 0.896, 3.47E+10, 2.00E+10, 0.133, 0.213, 0.259, 0.233, 0.58)
@@ -20,7 +20,6 @@ edge_prop = Member("cantilever_edges", 0.044625, 3.47E+10, 2.00E+10, 2.6e-4, 1.1
 trans_prop = Member("slab", 0.04428, 3.47E+10, 2.00E+10, 2.28e-3, 2.23e-1, 1.2e-3, 3.69e-1, 3.69e-1)
 transedge1_prop = Member("leftedgeslab", 0.02214, 3.47E+10, 2.00E+10, 2.17e-3, 1.11e-1, 5.97e-4, 1.85e-1, 1.85e-1)
 transedge2_prop = Member("rightedgeslab", 0.02214, 3.47E+10, 2.00E+10, 2.17e-3, 1.11e-1, 5.97e-4, 1.85e-1, 1.85e-1)
-
 
 # construct op grillage object
 test_bridge = opGrillage(bridge_name="SuperT_10m", long_dim=10, width=5, skew=-21,
@@ -32,7 +31,7 @@ test_bridge = opGrillage(bridge_name="SuperT_10m", long_dim=10, width=5, skew=-2
 # set material to grillage - to do add feature to check if material object is defined globally onto all elements
 test_bridge.set_material(concrete)
 
-# set grillage member ( )
+# set grillage member
 test_bridge.set_grillage_members(longmem_prop, longmem_prop.op_ele_type, member="interior_main_beam")
 test_bridge.set_grillage_members(trans_prop, longmem_prop.op_ele_type, member="transverse_slab")
 test_bridge.set_grillage_members(longmem_prop, longmem_prop.op_ele_type, member="edge_beam")
@@ -58,12 +57,12 @@ model = plt.scatter(x, y)
 plt.axis('equal')
 
 # plot elements via assessing individual members (to be changed)
-#plot_section(test_bridge, test_bridge.long_edge_1, 'b')
-#plot_section(test_bridge, test_bridge.long_edge_2, 'k')
-plot_section(test_bridge, test_bridge.long_mem, 'r')
-plot_section(test_bridge, test_bridge.trans_mem,'g')
-#plot_section(test_bridge, test_bridge.trans_edge_1,'b')
-#plot_section(test_bridge, test_bridge.trans_edge_2,'b')
+plot_section(test_bridge, "interior_main_beam", 'r')
+plot_section(test_bridge, "transverse_slab", 'g')
+plot_section(test_bridge, "exterior_main_beam_1", 'b')
+plot_section(test_bridge, "exterior_main_beam_2", 'k')
+plot_section(test_bridge, "edge_beam", 'm')
+plot_section(test_bridge, "edge_slab", 'y')
 plt.show()
 
 # # simple xls command to save bridge data

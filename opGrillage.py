@@ -17,10 +17,11 @@ class opGrillage:
         self.section_arg = None
         self.section_tag = None
         self.section_type = None
-        self.section_group_noz = []
-        self.section_group_nox = []
-        self.group_ele_dict = None
-        self.global_element_list = None
+        self.section_group_noz = []     # list of tag representing ele groups of long mem
+        self.section_group_nox = []     # list of tag representing ele groups of trans mem
+        self.group_ele_dict = None      # dictionary of ele groups e.g. [ "name of group": tag ]
+        self.global_element_list = None   # list of all elements in grillage
+        self.ele_group_assigned_list = None # list recording assigned ele groups in grillage model
         # model information
         self.mesh_type = mesh_type
         self.model_name = bridge_name
@@ -52,8 +53,7 @@ class opGrillage:
 
         # initialize tags of grillage elements - default tags are for standard elements of grillage
         # tags are used to link set properties to appropriate elements for element() command
-        self.element_tag = {"longitudinal": 1, "longitudinal edge 1": 2, "longitudinal edge 2": 3,
-                            "transverse": 4, "transverse edge 1": 5, "transverse edge 2": 6}
+
         # later change these to match the transformation tag of either: (1) global orthogonal direction (x and z) or
         # (2) skew
         self.longitudinal_tag = 1
@@ -301,14 +301,20 @@ class opGrillage:
     def get_trans_edge_nodes(self):
         # function to identify nodes at edges of the model along transverse direction (trans_edge_1 and trans_edge_2)
         # function then assigns pinned support and roller support to nodes in trans_edge_1 and trans_edge_2 respectively
+        assign_list = [] # list recording assigned elements to check against double assignment
         for (count, ele) in enumerate(self.trans_mem):
-            edge_1 = min(self.section_group_nox)
-            edge_2 = max(self.section_group_nox)
-            if ele[2] == edge_1:
-                self.support_nodes.append([ele[0], self.fix_val_pin])
-            # self.support_nodes.append([sup[1], self.fix_val_pin])  # at last loop, last node is support
-            if ele[2] == edge_2:
-                self.support_nodes.append([ele[0], self.fix_val_roller_x])
+            if ele[2] == 5:  # if its a support node (tag = 5 default for skew)
+                if not ele[0] in assign_list: # check if ele is not in the assign list
+                    assign_list.append(ele[0])
+                    self.support_nodes.append([ele[0], self.fix_val_pin])
+                else: # node not in list, assign
+                    pass
+                # if true, assign ele as support
+                if not ele[1] in assign_list:  # check if ele is not in the assign list
+                    assign_list.append(ele[1])
+                    self.support_nodes.append([ele[1], self.fix_val_pin])
+                else:  # node not in list, assign
+                    pass
 
     def get_region_b(self, reg_a_end, step):
 
@@ -746,7 +752,7 @@ class opGrillage:
         # function to update output py file with commands for simple gravity analysis
         with open(self.filename, 'a') as file_handle:
             # write standard command lines for static analysis
-
+            file_handle.write("#===========================\n# run simply load analysis\n#==========================\n")
             file_handle.write("ops.timeSeries('Linear', 1)\n")
             file_handle.write("ops.pattern('Plain', 1, 1)\n")
             file_handle.write("ops.load(20, 0.0, -1000, 0.0, 0, 0, 0)\n")
