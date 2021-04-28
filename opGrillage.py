@@ -17,11 +17,11 @@ class opGrillage:
         self.section_arg = None
         self.section_tag = None
         self.section_type = None
-        self.section_group_noz = []     # list of tag representing ele groups of long mem
-        self.section_group_nox = []     # list of tag representing ele groups of trans mem
-        self.group_ele_dict = None      # dictionary of ele groups e.g. [ "name of group": tag ]
-        self.global_element_list = None   # list of all elements in grillage
-        self.ele_group_assigned_list = None # list recording assigned ele groups in grillage model
+        self.section_group_noz = []  # list of tag representing ele groups of long mem
+        self.section_group_nox = []  # list of tag representing ele groups of trans mem
+        self.group_ele_dict = None  # dictionary of ele groups e.g. [ "name of group": tag ]
+        self.global_element_list = None  # list of all elements in grillage
+        self.ele_group_assigned_list = None  # list recording assigned ele groups in grillage model
         # model information
         self.mesh_type = mesh_type
         self.model_name = bridge_name
@@ -301,13 +301,13 @@ class opGrillage:
     def get_trans_edge_nodes(self):
         # function to identify nodes at edges of the model along transverse direction (trans_edge_1 and trans_edge_2)
         # function then assigns pinned support and roller support to nodes in trans_edge_1 and trans_edge_2 respectively
-        assign_list = [] # list recording assigned elements to check against double assignment
+        assign_list = []  # list recording assigned elements to check against double assignment
         for (count, ele) in enumerate(self.trans_mem):
             if ele[2] == 5:  # if its a support node (tag = 5 default for skew)
-                if not ele[0] in assign_list: # check if ele is not in the assign list
+                if not ele[0] in assign_list:  # check if ele is not in the assign list
                     assign_list.append(ele[0])
                     self.support_nodes.append([ele[0], self.fix_val_pin])
-                else: # node not in list, assign
+                else:  # node not in list, assign
                     pass
                 # if true, assign ele as support
                 if not ele[1] in assign_list:  # check if ele is not in the assign list
@@ -360,12 +360,12 @@ class opGrillage:
         self.section_group_noz = self.characterize_node_diff(self.noz, self.deci_tol)
         self.section_group_nox = self.characterize_node_diff(self.nox, self.deci_tol)
         # update self.section_group_nox
-        self.section_group_nox = [x+max(self.section_group_noz) for x in self.section_group_nox]
+        self.section_group_nox = [x + max(self.section_group_noz) for x in self.section_group_nox]
         # set groups dictionary
         if not self.ortho_mesh:  # if skew mesh
             if max(self.section_group_nox) <= 6:  # if true set standard section for variable
                 self.group_ele_dict = {"edge_beam": 1, "exterior_main_beam_1": 2, "interior_main_beam": 3,
-                                  "exterior_main_beam_2": 4, "edge_slab": 5, "transverse_slab": 6}
+                                       "exterior_main_beam_2": 4, "edge_slab": 5, "transverse_slab": 6}
         else:  # orthogonal mesh, generate respective group dictionary
             pass
         # print groups to terminal
@@ -381,7 +381,7 @@ class opGrillage:
         :return ele_group: list containing integers representing the groups of elements
         """
         ele_group = [1]  # initiate element group list, first element is group 1 edge beam
-        spacing_diff_set = {} # initiate set recording the diff in spacings
+        spacing_diff_set = {}  # initiate set recording the diff in spacings
         diff_list = np.round(np.diff(node_list), decimals=tol)  # spacing of the node list- checked with tolerance
         counter = 1
         for count in range(1, len(node_list)):
@@ -434,52 +434,29 @@ class opGrillage:
         for node_row_z in range(0, len(self.noz)):  # loop for each line mesh in z direction
             for node_col_x in range(1, len(self.nox)):  # loop for each line mesh in x direction
                 current_row_z = node_row_z * len(self.nox)  # get current row's (z axis) nodetagcounter
-                next_node_row_z = (node_row_z + 1) * len(self.nox)  # get next row's (z axis) nodetagcounter
+                next_row_z = (node_row_z + 1) * len(self.nox)  # get next row's (z axis) nodetagcounter
                 # link nodes along current row (z axis), in the x direction
                 self.long_mem.append([current_row_z + node_col_x, current_row_z + node_col_x + 1,
                                       self.section_group_noz[node_row_z], eletagcounter, 1])
                 eletagcounter += 1
-                # if node_row_z == 0:  # first row (z axis) of nodes
-                #     self.long_edge_1.append([cumulative_row_z + node_col_x, cumulative_row_z + node_col_x + 1,
-                #                              self.longitudinal_edge_1_tag, eletagcounter])
-                #     # record as edge beam with tag 2
-                #     eletagcounter += 1
-                # elif node_row_z == len(self.noz) - 1:  # last row (z axis) of nodes
-                #     self.long_edge_2.append([cumulative_row_z + node_col_x, cumulative_row_z + node_col_x + 1,
-                #                              self.longitudinal_edge_2_tag,
-                #                              eletagcounter])  # record as edge beam with section 3
-                #     eletagcounter += 1
-                # else:  # row of nodes in between edges of grillage ( 0 < z < z max)
-                #     self.long_mem.append([cumulative_row_z + node_col_x, cumulative_row_z + node_col_x + 1,
-                #                           self.longitudinal_tag, eletagcounter])
-                #     # record as longitudinal beam with section tag 1
-                #     eletagcounter += 1
-
                 # link nodes in the z direction (e.g. transverse members)
-                if next_node_row_z == nodetagcounter - 1:  # if looping last row of line mesh z
+                if next_row_z == nodetagcounter - 1:  # if looping last row of line mesh z
                     pass  # do nothing (exceeded the z axis edge of the grillage)
-                # elif current_row_z + node_col_x - node_row_z * len(
-                #         self.nox) == 1:  # check if coincide with edge of line mesh z
-                #     self.trans_edge_1.append(
-                #         [current_row_z + node_col_x, next_node_row_z + node_col_x,
-                #          self.transverse_tag, eletagcounter])  # record as edge slab with section 4
-                #     eletagcounter += 1
                 else:  # assigning elements in transverse direction (z)
-                    self.trans_mem.append([current_row_z + node_col_x, next_node_row_z + node_col_x,
+                    self.trans_mem.append([current_row_z + node_col_x, next_row_z + node_col_x,
                                            self.section_group_nox[node_col_x - 1], eletagcounter, 2])
                     # section_group_nox counts from 1 to 12, therefore -1 to start counter 0 to 11
                     eletagcounter += 1
-            if next_node_row_z >= len(self.nox) * len(self.noz):  # check if current z coord is last row
+            if next_row_z >= len(self.nox) * len(self.noz):  # check if current z coord is last row
                 pass  # last column (x = self.nox[-1]) achieved, no more assignment
             else:  # assign last transverse member at last column (x = self.nox[-1])
-                self.trans_mem.append([current_row_z + node_col_x + 1, next_node_row_z + node_col_x + 1,
+                self.trans_mem.append([current_row_z + node_col_x + 1, next_row_z + node_col_x + 1,
                                        self.section_group_nox[node_col_x], eletagcounter, 2])
                 # after counting section_group_nox 0 to 11, this line adds the counter of 12
                 eletagcounter += 1
         # combine long and trans member elements to global list
-        self.global_element_list = self.long_mem+self.trans_mem
+        self.global_element_list = self.long_mem + self.trans_mem
         print("Element generation completed. Number of elements created = {}".format(eletagcounter - 1))
-
 
     # orthogonal meshing method
     def orthogonal_mesh(self):
@@ -497,7 +474,7 @@ class opGrillage:
         # RegA consist of overlapping last element
         # RegB first element overlap with RegA last element
         regB = self.get_region_b(regA[-1], self.noz)  # nodes @ region B startswith last entry of region A up to
-        self.nox = np.hstack((regA[:-1], regB))  # removed overlapping element
+        self.nox = np.hstack((regA[:-1], regB))  # combined to form nox, with last node of regA removed for repeated val
         # identify member groups based on nox and noz
         self.identify_member_groups()  # returns section_group_nox and section_group_noz
         # mesh region A quadrilateral area
@@ -513,40 +490,37 @@ class opGrillage:
         # create elements of region A
         for node_row_z in range(0, len(self.noz)):
             for node_col_x in range(1, len(regA[:-1])):
-                inc = node_row_z * len(regA[:-1])  # incremental nodes per self.noz (node grid along transverse)
-                next_inc = (node_row_z + 1) * len(
+                current_row_z = node_row_z * len(regA[:-1])  # current row's start node tag
+                next_row_z = (node_row_z + 1) * len(  # next row's start node tag
                     regA[:-1])  # increment nodes after next self.noz (node grid along transverse)
-                if node_row_z == 0:  # first and last row are edge beams
-                    self.long_edge_1.append(
-                        [inc + node_col_x, inc + node_col_x + 1, self.longitudinal_edge_1_tag, eletagcounter])
-                    # record as edge beam with section 2
-                    eletagcounter += 1
-                elif node_row_z == len(self.noz) - 1:
-                    self.long_edge_2.append(
-                        [inc + node_col_x, inc + node_col_x + 1, self.longitudinal_edge_2_tag, eletagcounter])
-                    # record as edge beam with section 2
-                    eletagcounter += 1
+                # link nodes along current row z
+                self.long_mem.append([current_row_z + node_col_x, current_row_z + node_col_x + 1,
+                                      self.section_group_noz[node_row_z], eletagcounter, 1])
+                eletagcounter += 1
+                # link nodes along current row in x dir (transverse)
+                if next_row_z == nodetagcounter - 1:  # check if current z coord is last row
+                    pass  # last column (x = self.nox[-1]) achieved, no more assigning transverse member
+
                 else:
-                    self.long_mem.append(
-                        [inc + node_col_x, inc + node_col_x + 1, self.longitudinal_tag, eletagcounter])
-                    # record as longitudinal beam with section 1
+                    self.trans_mem.append([current_row_z + node_col_x, next_row_z + node_col_x,
+                                           self.section_group_nox[node_col_x - 1], eletagcounter, 3])
                     eletagcounter += 1
-                if node_row_z != len(self.noz) - 1:  # last row
-                    self.trans_mem.append([inc + node_col_x, next_inc + node_col_x, self.transverse_tag, eletagcounter])
-                    # record as slab with section 3
-                    eletagcounter += 1
-            # last column of parallel
-            if node_row_z != len(self.noz) - 1:
-                self.trans_mem.append(
-                    [inc + node_col_x + 1, next_inc + node_col_x + 1, self.transverse_tag, eletagcounter])
-                # record as slab with section 3
+                # last
+            if next_row_z >= len(self.noz) * len(regA[:-1]):
+                pass
+            else:
+                self.trans_mem.append([current_row_z + node_col_x + 1, next_row_z + node_col_x + 1,
+                                       self.section_group_nox[node_col_x], eletagcounter, 3])
+                # e.g. after counting section_group_nox 0 to 10, this line adds the counter of 11
                 eletagcounter += 1
         print('Elements automation complete for region A: Number of elements = {}'.format(eletagcounter - 1))
 
-        # mesh region B triangular area
-        # B1 @ right support
+        # node generation for region B
+        # node generate B1 @ right support
         b1_node_tag_start = nodetagcounter - 1  # last node tag of region A
         regBupdate = regB  # initiate list for line mesh of region B1 - updated each loop by removing last element
+        # record the section gruop counter
+        reg_section_counter = node_col_x
         if self.skew < 0:  # check for angle sign
             line_mesh_z_b1 = reversed(self.noz)  # (0 to ascending for positive angle,descending for -ve)
         else:
@@ -567,51 +541,59 @@ class opGrillage:
         for num_z in range(0, len(self.noz)):
             # element that link nodes with those from region A
             if self.skew < 0:  # if negative skew, loop starts from the last row (@ row = width)
-                if num_z == 0:
-                    self.long_edge_2.append([reg_a_col, row_start + 1, self.longitudinal_edge_2_tag, eletagcounter])
-                    eletagcounter += 1
-                elif num_z == len(self.noz) - 1:
-                    self.long_edge_1.append([reg_a_col, row_start + 1, self.longitudinal_edge_1_tag, eletagcounter])
-                    eletagcounter += 1
-                else:
-                    self.long_mem.append([reg_a_col, row_start + 1, self.longitudinal_tag, eletagcounter])
-                    eletagcounter += 1
+                # if num_z == 0:
+                #     self.long_edge_2.append([reg_a_col, row_start + 1, self.longitudinal_edge_2_tag, eletagcounter])
+                #     eletagcounter += 1
+                # elif num_z == len(self.noz) - 1:
+                #     self.long_edge_1.append([reg_a_col, row_start + 1, self.longitudinal_edge_1_tag, eletagcounter])
+                #     eletagcounter += 1
+                # else:
+                self.long_mem.append([reg_a_col, row_start + 1,
+                                      self.section_group_noz[(-1-num_z)], eletagcounter, 1])
+                eletagcounter += 1
             else:  # skew is positive,
-                if num_z == 0:
-                    self.long_edge_1.append([reg_a_col, row_start + 1, self.longitudinal_edge_1_tag, eletagcounter])
-                    eletagcounter += 1
-                elif num_z == len(self.noz) - 1:
-                    self.long_edge_2.append([reg_a_col, row_start + 1, self.longitudinal_edge_2_tag, eletagcounter])
-                    eletagcounter += 1
-                else:
-                    self.long_mem.append([reg_a_col, row_start + 1, self.longitudinal_tag, eletagcounter])
-                    eletagcounter += 1
+                # if num_z == 0:
+                #     self.long_edge_1.append([reg_a_col, row_start + 1, self.longitudinal_edge_1_tag, eletagcounter])
+                #     eletagcounter += 1
+                # elif num_z == len(self.noz) - 1:
+                #     self.long_edge_2.append([reg_a_col, row_start + 1, self.longitudinal_edge_2_tag, eletagcounter])
+                #     eletagcounter += 1
+                # else:
+                self.long_mem.append([reg_a_col, row_start + 1,
+                                      self.section_group_noz[num_z], eletagcounter, 1])
+                eletagcounter += 1
             # loop for each column node in x dir
             # create elements for each nodes in current row (z axis) in the x direction (list regBupdate)
             for num_x in range(1, len(regBupdate)):
-                if num_z == 0:  # first and last row are edge beams
-                    if self.skew < 0:
-                        self.long_edge_2.append(
-                            [row_start + num_x, row_start + num_x + 1, self.longitudinal_edge_2_tag, eletagcounter])
-                        eletagcounter += 1
-                        # record as edge beam with section 2
-                    else:
-                        self.long_edge_1.append(
-                            [row_start + num_x, row_start + num_x + 1, self.longitudinal_edge_1_tag, eletagcounter])
-                        eletagcounter += 1
-                        # record as edge beam with section 2
-                elif num_z != len(self.noz) - 1:
-                    self.long_mem.append(
-                        [row_start + num_x, row_start + num_x + 1, 1, eletagcounter])
-                    # record as longitudinal beam with section 1
+                # if num_z == 0:  # first and last row are edge beams
+                #     if self.skew < 0:
+                #         self.long_edge_2.append(
+                #             [row_start + num_x, row_start + num_x + 1,
+                #              self.section_group_noz[num_z + reg_section_counter], eletagcounter, 1])
+                #         eletagcounter += 1
+                #         # record as edge beam with section 2
+                #     else:
+                #         self.long_edge_1.append(
+                #             [row_start + num_x, row_start + num_x + 1, self.longitudinal_edge_1_tag, eletagcounter])
+                #         eletagcounter += 1
+                #         # record as edge beam with section 2
+                # elif num_z != len(self.noz) - 1:
+                if self.skew < 0:
+                    self.long_mem.append([row_start + num_x, row_start + num_x + 1,
+                                          self.section_group_noz[(-1-num_z)], eletagcounter, 1])
                     eletagcounter += 1
+                else:
+                    self.long_mem.append([row_start + num_x, row_start + num_x + 1,
+                                          self.section_group_noz[num_z], eletagcounter, 1])
                 # transverse member
                 self.trans_mem.append([row_start + num_x, row_start + num_x + len(regBupdate),
-                                       self.transverse_tag, eletagcounter])
+                                       self.section_group_nox[num_x + reg_section_counter], eletagcounter, 3])
                 eletagcounter += 1
-            if num_z != len(self.noz) - 1:  # last node of skew is single node, no element, break self.noz
-                self.trans_edge_2.append([row_start + num_x + 1, row_start + num_x + len(regBupdate),
-                                          self.transverse_edge_2_tag, eletagcounter])  # support skew
+            if num_z != len(self.noz) - 1:  # check if current row (z) is the last row of the iteration;
+                # if yes,  last node of skew is single node, no element, break the loop for self.noz
+                # if no, run line below, to assign the skew edges
+                self.trans_mem.append([row_start + num_x + 1, row_start + num_x + len(regBupdate),
+                                       self.section_group_nox[-1], eletagcounter, 2])
                 eletagcounter += 1
 
             row_start = row_start + len(regBupdate)  # update next self.noz start node of region B
@@ -644,53 +626,58 @@ class opGrillage:
         regBupdate = -regB + regA[-1]  # reset placeholder
         for num_z in range(0, len(self.noz)):
             # link nodes from region A
-            if num_z == 0:
-                if self.skew < 0:
-                    self.long_edge_1.append([reg_a_col, row_start + 1, self.longitudinal_edge_1_tag, eletagcounter])
-                    eletagcounter += 1
-                else:
-                    self.long_edge_2.append([reg_a_col, row_start + 1, self.longitudinal_edge_2_tag, eletagcounter])
-                    eletagcounter += 1
-            elif num_z != len(self.noz) - 1:
-                self.long_mem.append([row_start + 1, reg_a_col, self.longitudinal_tag, eletagcounter])
+            if self.skew<0:
+                self.long_mem.append([row_start + 1, reg_a_col, self.section_group_noz[num_z], eletagcounter,1])
+                eletagcounter += 1
+            else:
+                self.long_mem.append([row_start + 1, reg_a_col, self.section_group_noz[(-1-num_z)], eletagcounter, 1])
                 eletagcounter += 1
             # loop for each column node in x dir
             for num_x in range(1, len(regBupdate[1:])):
-                if num_z == 0:  # first and last row are edge beams
-                    if self.skew < 0:
-                        self.long_edge_1.append([row_start + num_x + 1, row_start + num_x, self.longitudinal_edge_1_tag
-                                                    , eletagcounter])
-                        eletagcounter += 1
-                    else:
-                        self.long_edge_2.append([row_start + num_x + 1, row_start + num_x, self.longitudinal_edge_2_tag
-                                                    , eletagcounter])
-                        eletagcounter += 1
-                    # record as edge beam with section 2
-                elif num_z != len(self.noz) - 1:
+                # if num_z == 0:  # first and last row are edge beams
+                #     if self.skew < 0:
+                #         self.long_edge_1.append([row_start + num_x + 1, row_start + num_x, self.longitudinal_edge_1_tag
+                #                                     , eletagcounter])
+                #         eletagcounter += 1
+                #     else:
+                #         self.long_edge_2.append([row_start + num_x + 1, row_start + num_x, self.longitudinal_edge_2_tag
+                #                                     , eletagcounter])
+                #         eletagcounter += 1
+                #     # record as edge beam with section 2
+                # elif num_z != len(self.noz) - 1:
+                if self.skew<0:
                     self.long_mem.append(
-                        [row_start + num_x + 1, row_start + num_x, self.longitudinal_tag, eletagcounter])
-                    # record as longitudinal beam with section 1
+                        [row_start + num_x + 1, row_start + num_x, self.section_group_noz[num_z], eletagcounter, 1])
+                    eletagcounter += 1
+                else:
+                    self.long_mem.append(
+                        [row_start + num_x + 1, row_start + num_x, self.section_group_noz[(-1-num_z)], eletagcounter, 1])
                     eletagcounter += 1
                 # transverse member
                 self.trans_mem.append([row_start + num_x, row_start + num_x + len(regBupdate[1:]),
-                                       self.transverse_tag, eletagcounter])
+                                       self.section_group_nox[num_x + reg_section_counter + 1], eletagcounter, 3])
                 eletagcounter += 1
-            if num_z == len(self.noz) - 2:
+                # section_group +1 due to not counting the first column (x = 0) , also by default, the size of
+                # regB in B2 region is N - 1 of the size of regB in B1.
+                # Therefore assignment starts from 1, not 0 (hence+1 )
+
+            if num_z == len(self.noz) - 1:  # for z = 6
+                break    #
+            elif num_z == len(self.noz) - 2:  # if at the second last step z = 5
                 if self.skew < 0:  # if negative angle
-                    self.trans_edge_1.append(
-                        [reg_a_col + len(regA[:-1]), row_start + len(regBupdate[1:]), self.transverse_edge_1_tag,
-                         eletagcounter])  # ele of node 1 to last node skew
+                    self.trans_mem.append(
+                        [reg_a_col + len(regA[:-1]), row_start + len(regBupdate[1:]),
+                         self.section_group_nox[-1],eletagcounter,2])  # ele of node 1 to last node skew
                     eletagcounter += 1
                 else:
-                    self.trans_edge_1.append(
-                        [1, row_start + len(regBupdate[1:]), self.transverse_edge_1_tag,
-                         eletagcounter])  # ele of node 1 to last node skew
+                    self.trans_mem.append(
+                        [1, row_start + len(regBupdate[1:]), self.section_group_nox[-1],
+                         eletagcounter,2])  # ele of node 1 to last node skew
                     eletagcounter += 1
-            elif num_z != len(
-                    self.noz) - 1:  # num of nodes = num ele + 1, thus ignore last self.noz for implementing ele
-                self.trans_edge_1.append(
-                    [row_start + num_x + 1, row_start + num_x + len(regBupdate[1:]), self.transverse_edge_1_tag
-                        , eletagcounter])  # support skew
+            elif num_z != len(self.noz) - 1:  # check if its not the last step
+                self.trans_mem.append(
+                    [row_start + num_x + 1, row_start + num_x + len(regBupdate[1:]), self.section_group_nox[-1]
+                        , eletagcounter,2])  # support skew
                 eletagcounter += 1
             # steps in transverse mesh, assign nodes of skew nodes
 
@@ -702,6 +689,7 @@ class opGrillage:
             else:
                 reg_a_col = reg_a_col - len(regA[:-1])  # update next self.noz node correspond with region A
         print('Elements automation complete for region B1 B2 and A')
+        self.global_element_list = self.long_mem + self.trans_mem
 
     def compile_output(self, bridge_name):
         # function to output txt file containing model information:
@@ -801,14 +789,15 @@ class Member:
         # assignment input based on ele type
         if self.op_ele_type == "ElasticTimoshenkoBeam":
             section_input = [self.E, self.G, self.A, self.J, self.Iy, self.Iz, self.Ay, self.Az]
-            section_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.E, self.G, self.A,
-                                                                                               self.J,
-                                                                                               self.Iy, self.Iz,
-                                                                                               self.Ay, self.Az)
+            section_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.E, self.G,
+                                                                                                      self.A,
+                                                                                                      self.J,
+                                                                                                      self.Iy, self.Iz,
+                                                                                                      self.Ay, self.Az)
         elif self.op_ele_type == "elasticBeamColumn":  # eleColumn
             section_input = [self.E, self.G, self.A, self.J, self.Iy, self.Iz]
             section_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.E, self.G, self.A,
-                                                                                 self.J, self.Iy, self.Iz)
+                                                                                      self.J, self.Iy, self.Iz)
         return section_input
 
     def set_section(self):

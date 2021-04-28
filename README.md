@@ -19,7 +19,6 @@ To run the wrapper, download from github link() and import the following files:
 For detailed information on installation, refer to [installation]
 
 
-
 ## Documentation
 
 See :ref:Structure description page for more information of inputs. 
