@@ -11,7 +11,7 @@ class opGrillage:
     """
 
     def __init__(self, bridge_name, long_dim, width, skew, num_long_grid,
-                 num_trans_grid, cantilever_edge, mesh_type):
+                 num_trans_grid, edge_beam_dist, mesh_type):
         """Initialize the GrillageGenerator class"""
         # Section placeholders
         self.section_arg = None
@@ -19,9 +19,11 @@ class opGrillage:
         self.section_type = None
         self.section_group_noz = []  # list of tag representing ele groups of long mem
         self.section_group_nox = []  # list of tag representing ele groups of trans mem
+        self.spacing_diff_noz = []
+        self.spacing_diff_nox = []
         self.group_ele_dict = None  # dictionary of ele groups e.g. [ "name of group": tag ]
         self.global_element_list = None  # list of all elements in grillage
-        self.ele_group_assigned_list = None  # list recording assigned ele groups in grillage model
+        self.ele_group_assigned_list = []  # list recording assigned ele groups in grillage model
         # model information
         self.mesh_type = mesh_type
         self.model_name = bridge_name
@@ -32,7 +34,7 @@ class opGrillage:
         # Properties of grillage
         self.num_long_gird = num_long_grid  # number of longitudinal beams
         self.num_trans_grid = num_trans_grid  # number of grids for transverse members
-        self.edge_width = cantilever_edge  # width of cantilever edge beam
+        self.edge_width = edge_beam_dist  # width of cantilever edge beam
 
         # instantiate matrices for geometric dependent properties
         self.trans_dim = None  # to be calculated automatically based on skew
@@ -201,67 +203,96 @@ class opGrillage:
         # with open(self.filename, 'a') as file_handle:
         #     file_handle.write("ops.recorder('Node', '-file', \'{}.txt\')\n".format(self.filename[:-3]))
 
-    def set_grillage_long_mem(self, op_member_prop_class, beam_ele_type, group=1):
-        """
-        Function to set section properties to longitudinal element groups of grillage model
-        :param op_member_prop_class:
-        :param trans_tag:
-        :param beam_ele_type:
-        :param group:
-        :return:
-        Note: for longitudinal members, transform tag is 1 (preset) - see op_ele_transform_input
-        """
-        with open(self.filename, 'a') as file_handle:
-            file_handle.write("# Element generation for section: {}\n".format(group))
-        # get output string - sorted according to convention of Openseespy
-        prop = op_member_prop_class.output_arguments()
-        for ele in self.long_mem:
-            if ele[2] == group:
-                with open(self.filename, 'a') as file_handle:
-                    file_handle.write("ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transtag})\n"
-                                      .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
-                                              memberprop=prop, transtag=1))
-
-    def set_grillage_trans_mem(self, op_member_prop_class, beam_ele_type, group=1):
-        """
-        Function to set section properties to transverse element groups of grillage model
-        :param op_member_prop_class:
-        :param trans_tag:
-        :param beam_ele_type:
-        :param group:
-        :return:
-
-        Note: for transverse members, transform tag is 2 (preset) - see op_ele_transform_input
-        """
-        with open(self.filename, 'a') as file_handle:
-            file_handle.write("# Element generation for section: {}\n".format(group))
-        # get output string - sorted according to convention of Openseespy
-        prop = op_member_prop_class.output_arguments()
-        for ele in self.trans_mem:
-            if ele[2] == group:
-                with open(self.filename, 'a') as file_handle:
-                    file_handle.write("ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transtag})\n"
-                                      .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
-                                              memberprop=prop, transtag=2))
+    # def set_grillage_long_mem(self, op_member_prop_class, beam_ele_type, group=1):
+    #     """
+    #     Function to set section properties to longitudinal element groups of grillage model
+    #     :param op_member_prop_class:
+    #     :param trans_tag:
+    #     :param beam_ele_type:
+    #     :param group:
+    #     :return:
+    #     Note: for longitudinal members, transform tag is 1 (preset) - see op_ele_transform_input
+    #     """
+    #     with open(self.filename, 'a') as file_handle:
+    #         file_handle.write("# Element generation for section: {}\n".format(group))
+    #     # get output string - sorted according to convention of Openseespy
+    #     prop = op_member_prop_class.output_arguments()
+    #     for ele in self.long_mem:
+    #         if ele[2] == group:
+    #             with open(self.filename, 'a') as file_handle:
+    #                 file_handle.write("ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transtag})\n"
+    #                                   .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
+    #                                           memberprop=prop, transtag=1))
+    #
+    # def set_grillage_trans_mem(self, op_member_prop_class, beam_ele_type, group=1):
+    #     """
+    #     Function to set section properties to transverse element groups of grillage model
+    #     :param op_member_prop_class:
+    #     :param trans_tag:
+    #     :param beam_ele_type:
+    #     :param group:
+    #     :return:
+    #
+    #     Note: for transverse members, transform tag is 2 (preset) - see op_ele_transform_input
+    #     """
+    #     with open(self.filename, 'a') as file_handle:
+    #         file_handle.write("# Element generation for section: {}\n".format(group))
+    #     # get output string - sorted according to convention of Openseespy
+    #     prop = op_member_prop_class.output_arguments()
+    #     for ele in self.trans_mem:
+    #         if ele[2] == group:
+    #             with open(self.filename, 'a') as file_handle:
+    #                 file_handle.write("ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transtag})\n"
+    #                                   .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
+    #                                           memberprop=prop, transtag=2))
 
     def set_grillage_members(self, op_member_prop_class, beam_ele_type, member='long_mem'):
+        """
 
+        :param op_member_prop_class: Member object
+        :param beam_ele_type: str of member type - following Openseespy (Optional)
+        :param member: str of grillage element group to be assigned
+        :return:
+        assign member properties to all grillage element within specified group.
+
+        Note: assignment of elements differs between skew and orthogonal mesh type.
+        """
         # get list of elements for specified element member of grillage
         with open(self.filename, 'a') as file_handle:
             file_handle.write("# Element generation for section: {}\n".format(member))
         #         element  tag   *[ndI ndJ]  A  E  G  Jx  Iy   Iz  transfOBJs
         # get output string - sorted according to convention of Openseespy
         prop = op_member_prop_class.output_arguments()
+        # first check if ele
+        if member in self.ele_group_assigned_list:
+            raise Exception('Element Group {} has already been assigned'.format(member))
         # loop each element in list, assign and write element() command
-        for ele in self.global_element_list:
-            # ops.element(beam_ele_type, ele[3],
-            #            *[ele[0], ele[1]], *op_member_prop_class, trans_tag)  ###
-            if ele[2] == self.group_ele_dict[member]:
-                with open(self.filename, 'a') as file_handle:
-                    file_handle.write("ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transtag})\n"
-                                      .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
-                                              memberprop=prop, transtag=ele[4]))
+        if self.ortho_mesh:  # if orthogonal mesh is True
+            # direct assignment of members applies for longitudinal members
+            if member in self.group_ele_dict:
+                for ele in self.long_mem:
+                    # ops.element(beam_ele_type, ele[3],
+                    #            *[ele[0], ele[1]], *op_member_prop_class, trans_tag)  ###
+                    if ele[2] == self.group_ele_dict[member]:
+                        with open(self.filename, 'a') as file_handle:
+                            file_handle.write("ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transtag})\n"
+                                              .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
+                                                      memberprop=prop, transtag=ele[4]))
+            else:  # member assignment of transverse member
+                self.spacing_diff_nox
+            # assignment of transverse members based on per m width properties
 
+        else: # skew mesh
+            for ele in self.global_element_list:
+                # ops.element(beam_ele_type, ele[3],
+                #            *[ele[0], ele[1]], *op_member_prop_class, trans_tag)  ###
+                if ele[2] == self.group_ele_dict[member]:
+                    with open(self.filename, 'a') as file_handle:
+                        file_handle.write("ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transtag})\n"
+                                          .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
+                                                  memberprop=prop, transtag=ele[4]))
+            # add ele group to assigned list
+            self.ele_group_assigned_list.append(member)
     def op_section_generate(self):
         with open(self.filename, 'a') as file_handle:
             file_handle.write("# Create section: \n")
@@ -303,18 +334,21 @@ class opGrillage:
         # function then assigns pinned support and roller support to nodes in trans_edge_1 and trans_edge_2 respectively
         assign_list = []  # list recording assigned elements to check against double assignment
         for (count, ele) in enumerate(self.trans_mem):
-            if ele[2] == 5:  # if its a support node (tag = 5 default for skew)
-                if not ele[0] in assign_list:  # check if ele is not in the assign list
-                    assign_list.append(ele[0])
-                    self.support_nodes.append([ele[0], self.fix_val_pin])
-                else:  # node not in list, assign
-                    pass
-                # if true, assign ele as support
-                if not ele[1] in assign_list:  # check if ele is not in the assign list
-                    assign_list.append(ele[1])
-                    self.support_nodes.append([ele[1], self.fix_val_pin])
-                else:  # node not in list, assign
-                    pass
+            if self.ortho_mesh: # if orthogonal mesh
+                pass
+            else:  # skew mesh
+                if ele[2] == 5:  # if its a support node (tag = 5 default for skew)
+                    if not ele[0] in assign_list:  # check if ele is not in the assign list
+                        assign_list.append(ele[0])
+                        self.support_nodes.append([ele[0], self.fix_val_pin])
+                    else:  # node not in list, assign
+                        pass
+                    # if true, assign ele as support
+                    if not ele[1] in assign_list:  # check if ele is not in the assign list
+                        assign_list.append(ele[1])
+                        self.support_nodes.append([ele[1], self.fix_val_pin])
+                    else:  # node not in list, assign
+                        pass
 
     def get_region_b(self, reg_a_end, step):
 
@@ -357,8 +391,8 @@ class opGrillage:
         # identify element groups in grillage based on line mesh vectors self.nox and self.noz
 
         # get the groups of elements
-        self.section_group_noz = self.characterize_node_diff(self.noz, self.deci_tol)
-        self.section_group_nox = self.characterize_node_diff(self.nox, self.deci_tol)
+        self.section_group_noz, self.spacing_diff_noz = self.characterize_node_diff(self.noz, self.deci_tol)
+        self.section_group_nox, self.spacing_diff_nox = self.characterize_node_diff(self.nox, self.deci_tol)
         # update self.section_group_nox
         self.section_group_nox = [x + max(self.section_group_noz) for x in self.section_group_nox]
         # set groups dictionary
@@ -366,8 +400,18 @@ class opGrillage:
             if max(self.section_group_nox) <= 6:  # if true set standard section for variable
                 self.group_ele_dict = {"edge_beam": 1, "exterior_main_beam_1": 2, "interior_main_beam": 3,
                                        "exterior_main_beam_2": 4, "edge_slab": 5, "transverse_slab": 6}
+            else:
+                pass
+            # TODO : additional rules to be added for skew mesh group
         else:  # orthogonal mesh, generate respective group dictionary
-            pass
+            if max(self.section_group_noz) <= 4:
+                # dictionary applies to longitudinal members only
+                self.group_ele_dict = {"edge_beam": 1, "exterior_main_beam_1": 2, "interior_main_beam": 3,
+                                       "exterior_main_beam_2": 4}
+            else:
+                pass
+            # TODO : additional rules to be added for orthogonal mesh group
+            # orthogonal mesh rules
         # print groups to terminal
         print("Total groups of elements in longitudinal : {}".format(max(self.section_group_noz)))
         print("Total groups of elements in transverse : {}".format(max(self.section_group_nox)))
@@ -379,6 +423,8 @@ class opGrillage:
         :param tol: float of tolerance for checking spacings in np.diff() function
         :param node_list: list containing node points along orthogonal axes (x and z)
         :return ele_group: list containing integers representing the groups of elements
+        The function loops each element and characterize the element into groups based on the unique spacings between
+        the element.
         """
         ele_group = [1]  # initiate element group list, first element is group 1 edge beam
         spacing_diff_set = {}  # initiate set recording the diff in spacings
@@ -401,7 +447,7 @@ class opGrillage:
                 ele_group.append(spacing_diff_set[repr(spacing_diff)])
                 counter += 1
         ele_group.append(1)  # add last element of list (edge beam group 1)
-        return ele_group
+        return ele_group, diff_list
 
     # skew meshing function
     def skew_mesh(self):

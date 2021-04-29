@@ -6,7 +6,7 @@ The process of using the *ops-grillage* module can be categorized into three ste
 
 #. Creating the grillage object using the :class:`~opsGrillage` class.
 #. Defining elements of grillage model using the :class:`~member` class.
-#. Specifying section and material properties using :class:`~material` and :class:`~section` class
+#. Setting the elements of grillage model using :function: set_grillage_model
 
 
 Creating the grillage
@@ -20,6 +20,17 @@ The following example creates a `GrillageGenerator` class object for a bridge mo
 
     test_bridge = opGrillage(bridge_name="SuperT_10m", long_dim=10, width=5, skew=-21,
                          num_long_grid=2, num_trans_grid=13, cantilever_edge=1, mesh_type="Ortho")
+
+This generates a bridge model named "SuperT_10m", which has the following properties:
+
+#. Length = 10 m
+#. Width = 5 m
+#. skew angle of 21 degree clockwise (negative sign)
+#. 2 node grids along the transverse (z axis) direction corresponding to interior beams
+#. 13 nodes spaced evenly along the longitudinal (x axis)
+#. Edge beam distance of 1 m
+#. Orthogonal mesh
+
 
 Upon running this line, the output file writes model() and node() commands into the output file "Example_superT_10m".
 Running the output file at this stage will construct the model space (model command) and generate the nodes of the model

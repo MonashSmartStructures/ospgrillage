@@ -1,8 +1,8 @@
 # Overview
 
-The opsy-grillage module is a python wrapper for ```Openseespy``` module. ```Openseespy``` 
+The `ops-grillage` module is a python wrapper for ```Openseespy``` module. ```Openseespy``` 
 is a Python interpreter of Open System for Earthquake Engineering Simulation (OpenSees) software framework.
-`opsy-grillage` allow python users to create py file that generates a grillage model in Openseespy.
+`ops-grillage` allow python users to create py file that generates a grillage model in Openseespy.
 
 A typical output py file from the wizard contains relevant ```Openseespy``` commands for constructing a 
 model in Opensees domain. The commands are automatically generated based on user specified inputs 
@@ -25,12 +25,16 @@ See :ref:Structure description page for more information of inputs.
 
 ## Current Capabilities
 
-### Bridge types 
+### Bridge model feature
 - [x] Skew Mesh
 - [x] Orthogonal mesh
-- [x] Positive and negative skew angles
+- [x] Positive and negative skews
 - [x] Multiple member definition 
-- [ ] Multiple span
+- [ ] Allow multiple span
+- [ ] Customized nodes for skew mesh
+- [ ] Diaphargm definition
 
+### To do features
+- [ ] Grouping feature for skew mesh - accommodate for customized nodes 
 
 
