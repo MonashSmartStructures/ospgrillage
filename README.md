@@ -30,11 +30,12 @@ See :ref:Structure description page for more information of inputs.
 - [x] Orthogonal mesh
 - [x] Positive and negative skews
 - [x] Multiple member definition 
-- [ ] Allow multiple span
 - [ ] Customized nodes for skew mesh
-- [ ] Diaphargm definition
+- [ ] Transverse slab properties defined based on unit width properties
 
-### To do features
+### In the works
 - [ ] Grouping feature for skew mesh - accommodate for customized nodes 
-
+- [ ] Allow representation of diaphragm in model
+- [ ] Alow representation of transverse secondary beams in model
+- [ ] Enable multi-span definition 
 

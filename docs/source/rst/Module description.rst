@@ -40,46 +40,60 @@ Running the output file at this stage will construct the model space (model comm
 Define material properties of model
 ------------------------
 
+Material properties are defined using the class method `set_material()`. For most bridges made of steel and concrete,
+material properties of either concrete and steel can be defined using the set keyword "steel" or "concrete" passed
+as an argument to the function.
+
 .. code-block:: python
 
     # define material
-    test_bridge.set_uniaxial_material(mat_type="Concrete01", mat_vec=[-6.0, -0.004, -6.0, -0.014])
+    test_bridge.set_material(mat_type="Concrete01", mat_vec=[-6.0, -0.004, -6.0, -0.014])
 
 Define members of grillage model
 ------------------------
-The members of the grillage model is set using the `set_grillage_member()` function.
+The members of the grillage model is set using the `set_grillage_member()` function. The function takes a `member` class
+object,a beam element tag (Openseespy), and a member string tag as arguments. The function the assigns the `member`
+object to the element group in the grillage model.
 
-Table 1 shows the standard elements of a grillage model
-
- ===================================   ===========================================================================
-   1                                    longitudinal edge 1 (z = 0)
-   2                                    longitudinal LR 1
-   3                                    longitudinal
-   4                                    longitudinal LR 2
-   5                                    longitudinal edge 2 (z /= 0)
-   6                                    Transverse edge 1
-   7                                    Transverse LR 1
-   8                                    Transverse
-   9                                    Transverse LR 2
-   10                                   Transverse edge 2
- ===================================   ===========================================================================
+An example showing the assignment of interior main beams:
 
 .. code-block:: python
-    test_bridge.set_grillage_long_mem(longmem_prop, longmem_prop.beam_ele_type, group=3)
+    test_bridge.set_grillage_members(longmem_prop, longmem_prop.op_ele_type, member="interior_main_beam")
 
+For skew meshes, the elements are standardized. Table 1 shows the current standard elements of a grillage model along with the
+respective str tags for arguments.
 
+ ===================================   ===========================================================================
+   1                                    edge_beam
+   2                                    exterior_main_beam_1
+   3                                    interior_main_beam
+   4                                    exterior_main_beam_1
+   5                                    edge_slab
+   6                                    transverse_slab
+ ===================================   ===========================================================================
 
-Define section properties of grillage members
-------------------------
+For orthogonal meshes, nodes in the transverse direction may have varied spacing based on the skew edge region.
+The properties of transverse members based on unit metre width is required for its definition section properties.
+The module automatically implement the unit width properties based on the spacing of nodes in the skew edge regions.
 
+The module checks if all element groups in the grillages are defined by the user. If missing element groups are detected,
+a warning message is printed on the terminal.
 
+Creating a grillage member
+-----------------------------
 
-Creating grillage members
+.. code-block:: python
+    # define member
+    I_beam = GrillageMember(name="Intermediate I-beams", section_obj=I_beam_section, material_obj=concrete)
+
+Creating section object for grillage member
 ------------------------
 
 .. code-block:: python
 
-    longmem_prop = Member("I-grider", 0.896, 3.47E+10, 2.00E+10, 0.133, 0.213, 0.259, 0.233, 0.58)
+    # define sections
+    I_beam_section = Section(op_sec_tag='Elastic', A=0.896, E=3.47E+10, G=2.00E+10, J=0.133, Iy=0.213, Iz=0.259,
+                         Ay=0.233, Az=0.58)
 
 
 Using generated grillage for analysis
@@ -102,7 +116,9 @@ plots the longitudinal members of the grillage.
 .. code-block:: python
 
     import PlotWizard
-    plot_section(test_bridge, test_bridge.long_edge_1, 'b')
+    plot_section(test_bridge, "interior_main_beam", 'r')
+
+The `plot_section()` function is based on matplotlib plotting commands.
 
 Alternatively, result visualization can be achieved using the Openseespy module - ops_vis. The `ops_vis` module is one
 of the post-processing modules of Openseespy. The `ops-vis` module has gone through numerous updates and has reach

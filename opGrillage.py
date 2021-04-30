@@ -198,53 +198,6 @@ class opGrillage:
                                                                                         x=node_point[1],
                                                                                         y=node_point[2],
                                                                                         z=node_point[3]))
-            # print("Node number: {} created".format(node_point[0]))
-        # create node recorder line
-        # with open(self.filename, 'a') as file_handle:
-        #     file_handle.write("ops.recorder('Node', '-file', \'{}.txt\')\n".format(self.filename[:-3]))
-
-    # def set_grillage_long_mem(self, op_member_prop_class, beam_ele_type, group=1):
-    #     """
-    #     Function to set section properties to longitudinal element groups of grillage model
-    #     :param op_member_prop_class:
-    #     :param trans_tag:
-    #     :param beam_ele_type:
-    #     :param group:
-    #     :return:
-    #     Note: for longitudinal members, transform tag is 1 (preset) - see op_ele_transform_input
-    #     """
-    #     with open(self.filename, 'a') as file_handle:
-    #         file_handle.write("# Element generation for section: {}\n".format(group))
-    #     # get output string - sorted according to convention of Openseespy
-    #     prop = op_member_prop_class.output_arguments()
-    #     for ele in self.long_mem:
-    #         if ele[2] == group:
-    #             with open(self.filename, 'a') as file_handle:
-    #                 file_handle.write("ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transtag})\n"
-    #                                   .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
-    #                                           memberprop=prop, transtag=1))
-    #
-    # def set_grillage_trans_mem(self, op_member_prop_class, beam_ele_type, group=1):
-    #     """
-    #     Function to set section properties to transverse element groups of grillage model
-    #     :param op_member_prop_class:
-    #     :param trans_tag:
-    #     :param beam_ele_type:
-    #     :param group:
-    #     :return:
-    #
-    #     Note: for transverse members, transform tag is 2 (preset) - see op_ele_transform_input
-    #     """
-    #     with open(self.filename, 'a') as file_handle:
-    #         file_handle.write("# Element generation for section: {}\n".format(group))
-    #     # get output string - sorted according to convention of Openseespy
-    #     prop = op_member_prop_class.output_arguments()
-    #     for ele in self.trans_mem:
-    #         if ele[2] == group:
-    #             with open(self.filename, 'a') as file_handle:
-    #                 file_handle.write("ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transtag})\n"
-    #                                   .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
-    #                                           memberprop=prop, transtag=2))
 
     def set_grillage_members(self, op_member_prop_class, beam_ele_type, member='long_mem'):
         """

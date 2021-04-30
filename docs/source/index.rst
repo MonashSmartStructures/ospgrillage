@@ -20,7 +20,7 @@ Documentation
    :caption: Contents:
 
    rst/Installation
-   rst/Structure description
+   rst/Module description
    rst/Bridgemodel
    rst/ModuleDoc
    rst/Examples
