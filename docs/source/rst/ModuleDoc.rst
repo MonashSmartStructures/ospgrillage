@@ -96,6 +96,8 @@ translate and writes information into `Openseespy` commands.
 
 Opensees references
 
+`Grillage modelling<http://bridgedesign.org.uk/tutorial/bs-grillage.php>`
+
 #. :doc:`node command`
 #. :doc:`element command`
 #. :doc:`GeoTrans command`

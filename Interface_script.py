@@ -17,7 +17,8 @@ I_beam = GrillageMember(name="Intermediate I-beams", section_obj=I_beam_section,
 # define member (to be retired)
 longmem_prop = Member("I-grider", 0.896, 3.47E+10, 2.00E+10, 0.133, 0.213, 0.259, 0.233, 0.58)
 edge_prop = Member("cantilever_edges", 0.044625, 3.47E+10, 2.00E+10, 2.6e-4, 1.1e-4, 2.42e-4, 3.72e-2, 3.72e-2)
-trans_prop = Member("slab", 0.04428, 3.47E+10, 2.00E+10, 2.28e-3, 2.23e-1, 1.2e-3, 3.69e-1, 3.69e-1)
+trans_prop = Member("slab", 0.04428, 3.47E+10, 2.00E+10, 2.28e-3, 2.23e-1, 1.2e-3, 3.69e-1, 3.69e-1,
+                    unit_width_prop_flag=True)
 transedge1_prop = Member("leftedgeslab", 0.02214, 3.47E+10, 2.00E+10, 2.17e-3, 1.11e-1, 5.97e-4, 1.85e-1, 1.85e-1)
 transedge2_prop = Member("rightedgeslab", 0.02214, 3.47E+10, 2.00E+10, 2.17e-3, 1.11e-1, 5.97e-4, 1.85e-1, 1.85e-1)
 
@@ -34,7 +35,7 @@ test_bridge.set_material(concrete)
 # set grillage member
 if test_bridge.ortho_mesh: # if ortho mesh is true
     test_bridge.set_grillage_members(longmem_prop, longmem_prop.op_ele_type, member="interior_main_beam")
-    test_bridge.set_grillage_members(trans_prop, longmem_prop.op_ele_type, member="exterior_main_beam_1")
+    test_bridge.set_grillage_members(longmem_prop, longmem_prop.op_ele_type, member="exterior_main_beam_1")
     test_bridge.set_grillage_members(longmem_prop, longmem_prop.op_ele_type, member="exterior_main_beam_2")
     test_bridge.set_grillage_members(longmem_prop, longmem_prop.op_ele_type, member="edge_beam")
 # TODO : assign transverse members via unit length properties
@@ -42,7 +43,7 @@ else:  # skew mesh
     test_bridge.set_grillage_members(longmem_prop, longmem_prop.op_ele_type, member="interior_main_beam")
     test_bridge.set_grillage_members(trans_prop, longmem_prop.op_ele_type, member="transverse_slab")
     test_bridge.set_grillage_members(longmem_prop, longmem_prop.op_ele_type, member="edge_beam")
-    test_bridge.set_grillage_members(trans_prop, longmem_prop.op_ele_type, member="exterior_main_beam_1")
+    test_bridge.set_grillage_members(longmem_prop, longmem_prop.op_ele_type, member="exterior_main_beam_1")
     test_bridge.set_grillage_members(longmem_prop, longmem_prop.op_ele_type, member="exterior_main_beam_2")
     test_bridge.set_grillage_members(longmem_prop, longmem_prop.op_ele_type, member="edge_slab")
 
@@ -61,7 +62,7 @@ model = plt.scatter(x, y)
 plt.axis('equal')
 
 # plot elements via assessing individual members (to be changed)
-if test_bridge.mesh_type != "Ortho":
+if test_bridge.mesh_type != "Ortho": # skew
     plot_section(test_bridge, "interior_main_beam", 'r')
     plot_section(test_bridge, "transverse_slab", 'g')
     plot_section(test_bridge, "exterior_main_beam_1", 'b')
@@ -69,7 +70,7 @@ if test_bridge.mesh_type != "Ortho":
     plot_section(test_bridge, "edge_beam", 'm')
     plot_section(test_bridge, "edge_slab", 'y')
 
-else:
+else: # orthogonal
     plot_section(test_bridge, "exterior_main_beam_1", 'b')
     plot_section(test_bridge, "exterior_main_beam_2", 'k')
     plot_section(test_bridge, "interior_main_beam", 'r')

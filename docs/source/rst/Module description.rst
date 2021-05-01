@@ -133,3 +133,4 @@ end of the output py file.
     ops.model()
 
 The main commands of ops_vis module can be found `here <https://openseespydoc.readthedocs.io/en/latest/src/ops_vis.html>`_
+

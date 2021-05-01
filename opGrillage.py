@@ -52,7 +52,7 @@ class opGrillage:
         self.concrete_prop = []  # list of concrete properties arguments
         self.steel_prop = []  # list of steel properties arguments
         self.vxz_skew = []  # vector xz of skew elements - for section transformation
-
+        self.global_mat_object = [] # material matrix
         # initialize tags of grillage elements - default tags are for standard elements of grillage
         # tags are used to link set properties to appropriate elements for element() command
 
@@ -199,6 +199,70 @@ class opGrillage:
                                                                                         y=node_point[2],
                                                                                         z=node_point[3]))
 
+    def identify_member_groups(self):
+        # identify element groups in grillage based on line mesh vectors self.nox and self.noz
+
+        # get the groups of elements
+        self.section_group_noz, self.spacing_diff_noz, self.spacing_val_noz = self.characterize_node_diff(self.noz, self.deci_tol)
+        self.section_group_nox, self.spacing_diff_nox, self.spacing_val_nox = self.characterize_node_diff(self.nox, self.deci_tol)
+        # update self.section_group_nox
+        self.section_group_nox = [x + max(self.section_group_noz) for x in self.section_group_nox]
+        # set groups dictionary
+        if not self.ortho_mesh:  # if skew mesh
+            if max(self.section_group_nox) <= 6:  # if true set standard section for variable
+                self.group_ele_dict = {"edge_beam": 1, "exterior_main_beam_1": 2, "interior_main_beam": 3,
+                                       "exterior_main_beam_2": 4, "edge_slab": 5, "transverse_slab": 6}
+            else:
+                pass
+            # TODO : additional rules to be added for skew mesh group
+        else:  # orthogonal mesh, generate respective group dictionary
+            if max(self.section_group_noz) <= 4:
+                # dictionary applies to longitudinal members only
+                self.group_ele_dict = {"edge_beam": 1, "exterior_main_beam_1": 2, "interior_main_beam": 3,
+                                       "exterior_main_beam_2": 4}
+            else:
+                pass
+            # TODO : additional rules to be added for orthogonal mesh group
+            # orthogonal mesh rules
+        # print groups to terminal
+        print("Total groups of elements in longitudinal : {}".format(max(self.section_group_noz)))
+        print("Total groups of elements in transverse : {}".format(max(self.section_group_nox)))
+
+    @staticmethod
+    def characterize_node_diff(node_list, tol):
+        """
+        Function to characterize the groups of elements based on spacings of node points in the node point list
+        :param tol: float of tolerance for checking spacings in np.diff() function
+        :param node_list: list containing node points along orthogonal axes (x and z)
+        :return ele_group: list containing integers representing the groups of elements
+        The function loops each element and characterize the element into groups based on the unique spacings between
+        the element.
+        """
+        ele_group = [1]  # initiate element group list, first element is group 1 edge beam
+        spacing_diff_set = {}  # initiate set recording the diff in spacings
+        spacing_val_set = {}  # initiate set recoding spacing value
+        diff_list = np.round(np.diff(node_list), decimals=tol)  # spacing of the node list- checked with tolerance
+        counter = 1
+        for count in range(1, len(node_list)):
+            # calculate the spacing diff between left and right node of current node
+            if count >= len(diff_list):  # counter exceed the diff_list (size of diff list = size of node_list - 1)
+                break  # break from loop, return list
+            # spacing_diff = diff_list[count - 1] - diff_list[count]
+            spacing_diff = [diff_list[count - 1], diff_list[count]]
+            if repr(spacing_diff) in spacing_diff_set:
+                # spacing recorded in spacing_diff_set
+                # set the tag
+                ele_group.append(spacing_diff_set[repr(spacing_diff)])
+            else:
+                # record new spacing in spacing_diff_set
+                spacing_diff_set[repr(spacing_diff)] = counter + 1
+                spacing_val_set[counter+1] = sum(spacing_diff)
+                # set tag
+                ele_group.append(spacing_diff_set[repr(spacing_diff)])
+                counter += 1
+        ele_group.append(1)  # add last element of list (edge beam group 1)
+        return ele_group, spacing_diff_set, spacing_val_set
+
     def set_grillage_members(self, op_member_prop_class, beam_ele_type, member='long_mem'):
         """
 
@@ -222,7 +286,7 @@ class opGrillage:
         # loop each element in list, assign and write element() command
         if self.ortho_mesh:  # if orthogonal mesh is True
             # direct assignment of members applies for longitudinal members
-            if member in self.group_ele_dict:
+            if member in self.group_ele_dict: # true for longitudinal members
                 for ele in self.long_mem:
                     # ops.element(beam_ele_type, ele[3],
                     #            *[ele[0], ele[1]], *op_member_prop_class, trans_tag)  ###
@@ -231,21 +295,35 @@ class opGrillage:
                             file_handle.write("ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transtag})\n"
                                               .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
                                                       memberprop=prop, transtag=ele[4]))
-            else:  # member assignment of transverse member
+            else:
                 self.spacing_diff_nox
             # assignment of transverse members based on per m width properties
 
-        else: # skew mesh
+        else:  # skew mesh
             for ele in self.global_element_list:
                 # ops.element(beam_ele_type, ele[3],
                 #            *[ele[0], ele[1]], *op_member_prop_class, trans_tag)  ###
-                if ele[2] == self.group_ele_dict[member]:
-                    with open(self.filename, 'a') as file_handle:
-                        file_handle.write("ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transtag})\n"
-                                          .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
-                                                  memberprop=prop, transtag=ele[4]))
+                if ele[2] == self.group_ele_dict[member]:  # check if ele is a longitudinal member
+                    if op_member_prop_class.unit_width_prop_flag:  # check if unit width
+                        # if yes, convert properties to match width of element
+                        # get element width based on member tag
+
+                        node_width = self.spacing_val_nox[self.group_ele_dict[member] - max(self.section_group_noz)]
+                        prop = op_member_prop_class.output_arguments_unit_width(node_width/2)  # average width
+                        with open(self.filename, 'a') as file_handle:
+                            file_handle.write("ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transtag})\n"
+                                              .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
+                                                      memberprop=prop, transtag=ele[4]))
+                        # TODO allow unit width properties for longitudinal members
+                    else:
+                        with open(self.filename, 'a') as file_handle:
+                            file_handle.write("ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transtag})\n"
+                                              .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
+                                                      memberprop=prop, transtag=ele[4]))
+
             # add ele group to assigned list
             self.ele_group_assigned_list.append(member)
+
     def op_section_generate(self):
         with open(self.filename, 'a') as file_handle:
             file_handle.write("# Create section: \n")
@@ -340,67 +418,6 @@ class opGrillage:
         step = np.hstack((np.hstack((0, nox_girder)), self.width))  # array containing z coordinate
         return step
 
-    def identify_member_groups(self):
-        # identify element groups in grillage based on line mesh vectors self.nox and self.noz
-
-        # get the groups of elements
-        self.section_group_noz, self.spacing_diff_noz = self.characterize_node_diff(self.noz, self.deci_tol)
-        self.section_group_nox, self.spacing_diff_nox = self.characterize_node_diff(self.nox, self.deci_tol)
-        # update self.section_group_nox
-        self.section_group_nox = [x + max(self.section_group_noz) for x in self.section_group_nox]
-        # set groups dictionary
-        if not self.ortho_mesh:  # if skew mesh
-            if max(self.section_group_nox) <= 6:  # if true set standard section for variable
-                self.group_ele_dict = {"edge_beam": 1, "exterior_main_beam_1": 2, "interior_main_beam": 3,
-                                       "exterior_main_beam_2": 4, "edge_slab": 5, "transverse_slab": 6}
-            else:
-                pass
-            # TODO : additional rules to be added for skew mesh group
-        else:  # orthogonal mesh, generate respective group dictionary
-            if max(self.section_group_noz) <= 4:
-                # dictionary applies to longitudinal members only
-                self.group_ele_dict = {"edge_beam": 1, "exterior_main_beam_1": 2, "interior_main_beam": 3,
-                                       "exterior_main_beam_2": 4}
-            else:
-                pass
-            # TODO : additional rules to be added for orthogonal mesh group
-            # orthogonal mesh rules
-        # print groups to terminal
-        print("Total groups of elements in longitudinal : {}".format(max(self.section_group_noz)))
-        print("Total groups of elements in transverse : {}".format(max(self.section_group_nox)))
-
-    @staticmethod
-    def characterize_node_diff(node_list, tol):
-        """
-        Function to characterize the groups of elements based on spacings of node points in the node point list
-        :param tol: float of tolerance for checking spacings in np.diff() function
-        :param node_list: list containing node points along orthogonal axes (x and z)
-        :return ele_group: list containing integers representing the groups of elements
-        The function loops each element and characterize the element into groups based on the unique spacings between
-        the element.
-        """
-        ele_group = [1]  # initiate element group list, first element is group 1 edge beam
-        spacing_diff_set = {}  # initiate set recording the diff in spacings
-        diff_list = np.round(np.diff(node_list), decimals=tol)  # spacing of the node list- checked with tolerance
-        counter = 1
-        for count in range(1, len(node_list)):
-            # calculate the spacing diff between left and right node of current node
-            if count >= len(diff_list):  # counter exceed the diff_list (size of diff list = size of node_list - 1)
-                break  # break from loop, return list
-            # spacing_diff = diff_list[count - 1] - diff_list[count]
-            spacing_diff = [diff_list[count - 1], diff_list[count]]
-            if repr(spacing_diff) in spacing_diff_set:
-                # spacing recorded in spacing_diff_set
-                # set the tag
-                ele_group.append(spacing_diff_set[repr(spacing_diff)])
-            else:
-                # record new spacing in spacing_diff_set
-                spacing_diff_set[repr(spacing_diff)] = counter + 1
-                # set tag
-                ele_group.append(spacing_diff_set[repr(spacing_diff)])
-                counter += 1
-        ele_group.append(1)  # add last element of list (edge beam group 1)
-        return ele_group, diff_list
 
     # skew meshing function
     def skew_mesh(self):
@@ -763,7 +780,7 @@ class Member:
     Class for grillage members
     """
 
-    def __init__(self, name, A, E, G, J, Iy, Iz, Ay, Az, op_ele_type="elasticBeamColumn"):
+    def __init__(self, name, A, E, G, J, Iy, Iz, Ay, Az, unit_width_prop_flag = False, op_ele_type="elasticBeamColumn"):
         self.name = name
         self.op_ele_type = op_ele_type
         self.Az = Az
@@ -774,7 +791,7 @@ class Member:
         self.G = G
         self.E = E
         self.A = A
-
+        self.unit_width_prop_flag = unit_width_prop_flag
         # return argument list with convention following Openseespy - dependant on ele_type
         self.output_arguments()
 
@@ -799,9 +816,31 @@ class Member:
                                                                                       self.J, self.Iy, self.Iz)
         return section_input
 
-    def set_section(self):
-        pass
+    def output_arguments_unit_width(self, width):
+        """
+        Function to output list argument according to element() command of variety of element tags
+        in Opensees
+        :return: list containing member properties in accordance with Openseespy input convention
+        """
+        section_input = None
+        # assignment input based on ele type
+        if self.op_ele_type == "ElasticTimoshenkoBeam":
+            section_input = [self.E, self.G, self.A, self.J, self.Iy, self.Iz, self.Ay, self.Az]
+            section_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.E,
+                                                                                                      self.G,
+                                                                                                      self.A,
+                                                                                                      self.J,
+                                                                                                      self.Iy*width,
+                                                                                                      self.Iz*width,
+                                                                                                      self.Ay*width,
+                                                                                                      self.Az*width)
+        elif self.op_ele_type == "elasticBeamColumn":  # eleColumn
+            section_input = [self.E, self.G, self.A, self.J, self.Iy, self.Iz]
+            section_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.E, self.G, self.A*width,
+                                                                                      self.J, self.Iy*width,
+                                                                                      self.Iz*width)
 
+        return section_input
 
 # ----------------------------------------------------------------------------------------------------------------
 class Material:
