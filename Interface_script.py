@@ -24,7 +24,7 @@ transedge2_prop = Member("rightedgeslab", 0.02214, 3.47E+10, 2.00E+10, 2.17e-3, 
 
 # construct op grillage object
 test_bridge = opGrillage(bridge_name="SuperT_10m", long_dim=10, width=5, skew=21,
-                         num_long_grid=5, num_trans_grid=13, edge_beam_dist=1.5, mesh_type="Orth")
+                         num_long_grid=5, num_trans_grid=13, edge_beam_dist=1.5, mesh_type="Ortho")
 # print out names of members/groups
 # string of groups - standard elements
 #
@@ -38,6 +38,7 @@ if test_bridge.ortho_mesh: # if ortho mesh is true
     test_bridge.set_grillage_members(longmem_prop, longmem_prop.op_ele_type, member="exterior_main_beam_1")
     test_bridge.set_grillage_members(longmem_prop, longmem_prop.op_ele_type, member="exterior_main_beam_2")
     test_bridge.set_grillage_members(longmem_prop, longmem_prop.op_ele_type, member="edge_beam")
+    test_bridge.set_grillage_members(trans_prop, longmem_prop.op_ele_type, member="transverse_slab")
 # TODO : assign transverse members via unit length properties
 else:  # skew mesh
     test_bridge.set_grillage_members(longmem_prop, longmem_prop.op_ele_type, member="interior_main_beam")
@@ -75,6 +76,7 @@ else: # orthogonal
     plot_section(test_bridge, "exterior_main_beam_2", 'k')
     plot_section(test_bridge, "interior_main_beam", 'r')
     #plot_section(test_bridge, "edge_beam", 'm')
+    plot_section(test_bridge, "transverse_slab", 'g')
 
 plt.show()
 # # simple xls command to save bridge data
