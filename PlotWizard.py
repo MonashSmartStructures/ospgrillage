@@ -53,7 +53,17 @@ def plotDeformation(self):
 
 
 def plot_section(ma_object, list_input, char):
-    listed = ma_object.group_ele_dict[list_input] # get the tag number of group
+    """
+    Function to plot element groups of model.
+    :param ma_object: an OpsGrillage class object
+    :param list_input: str of element group following definitions in OpsGrillage
+    :param char: str commands for matplotlib
+    :return: plot all element groups with format according to str command parameter
+    """
+    if type(list_input) == int:
+        listed = list_input
+    else:  # list input is string
+        listed = ma_object.group_ele_dict[list_input] # get the tag number of group
     for num, ele in enumerate(ma_object.global_element_list):
         if ele[2] == listed:
             matches_i_x = [x[1] for x in ma_object.Nodedata if ele[0] == x[0]]
@@ -61,5 +71,17 @@ def plot_section(ma_object, list_input, char):
             matches_j_x = [x[1] for x in ma_object.Nodedata if ele[1] == x[0]]
             matches_j_z = [x[3] for x in ma_object.Nodedata if ele[1] == x[0]]
             plt.plot([matches_i_x, matches_j_x], [matches_i_z, matches_j_z], char)
+
         else:
             pass
+
+def plot_nodes(ma_object, list_input, char):
+    # plot by accessing Nodedata attribute
+    x = [sub[1] for sub in ma_object.Nodedata]
+    y = [sub[3] for sub in ma_object.Nodedata]
+    tag = [sub[0] for sub in ma_object.Nodedata]
+    model = plt.scatter(x, y)
+    for point in range(0, len(x)):
+        plt.text(x[point], y[point], tag[point], fontsize='xx-small')
+    plt.axis('equal')
+    return model

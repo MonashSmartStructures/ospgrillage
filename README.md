@@ -14,7 +14,7 @@ analysis purposes.
 
 To run the wrapper, download from github link() and import the following files:
     
-    import GrillageGenerator
+    import OpsGrillage as og
     
 For detailed information on installation, refer to [installation]
 
@@ -30,12 +30,14 @@ See :ref:Structure description page for more information of inputs.
 - [x] Orthogonal mesh
 - [x] Positive and negative skews
 - [x] Multiple member definition 
+- [x] Transverse slab properties defined based on unit width properties
 - [ ] Customized nodes for skew mesh
-- [ ] Transverse slab properties defined based on unit width properties
 
 ### In the works
 - [ ] Grouping feature for skew mesh - accommodate for customized nodes 
 - [ ] Allow representation of diaphragm in model
 - [ ] Alow representation of transverse secondary beams in model
 - [ ] Enable multi-span definition 
+- [ ] Capable to shift origin of mesh generation
+- [ ] Combine individual mesh generation to a single mesh 
 
