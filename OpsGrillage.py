@@ -35,7 +35,8 @@ class opGrillage:
         self.num_long_gird = num_long_grid  # number of longitudinal beams
         self.num_trans_grid = num_trans_grid  # number of grids for transverse members
         self.edge_width = edge_beam_dist  # width of cantilever edge beam
-
+        self.regA = []
+        self.regB = []
         # instantiate matrices for geometric dependent properties
         self.trans_dim = None  # to be calculated automatically based on skew
         self.breadth = None  # to be calculated automatically based on skew
@@ -206,9 +207,10 @@ class opGrillage:
                                                                                                           self.deci_tol)
         # update self.section_group_nox counter to continue after self.section_group_noz
         self.section_group_nox = [x + max(self.section_group_noz) for x in self.section_group_nox]
+
         if self.ortho_mesh:
-            # if orthogonal mesh, first ele group of
-            pass
+            # update self.section_group_nox first element to reflect element group of Region B
+            self.section_group_nox[0] = self.section_group_nox[len(self.regA)-1]
         else:  # else skew mesh do nothing
             pass
         # set groups dictionary
@@ -306,52 +308,56 @@ class opGrillage:
         # get beam type variable
         beam_ele_type = op_member_prop_class.section.op_ele_type
         # loop each element in list, assign and write element() command
-        if self.ortho_mesh:  # orthogonal mesh
 
-            # Check if assignment of all transverse members based on per m width properties
-            if self.group_ele_dict[member] > max(self.section_group_noz):
-                # check if assigning transverse member (when the tag is greater than the max tag in long group)
+        # Check if assignment of all transverse members based on per m width properties
+        if self.group_ele_dict[member] > max(self.section_group_noz):
+            # check if assigning transverse member (when the tag is greater than the max tag in long group)
 
-                for key, node_width in self.spacing_val_nox.items():
-                    # get unit width properties for the current node_width
-                    prop = op_member_prop_class.section.output_arguments_unit_width(node_width / 2)
-                    # loop each element- find matching
-                    for ele in self.global_element_list:
-                        if ele[2] == key + max(
-                                self.section_group_noz):  # if element match key for transverse memeber loop
-                            with open(self.filename, 'a') as file_handle:
-                                file_handle.write(
-                                    "ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transtag})\n"
-                                        .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
-                                                memberprop=prop, transtag=ele[4]))
-                    # add ele group to assigned list
-                    self.ele_group_assigned_list.append(key + max(self.section_group_noz))
-            else:
-                # direct assignment of members applies for longitudinal members
+            for key, node_width in self.spacing_val_nox.items():
+                # get unit width properties for the current node_width
+                prop = op_member_prop_class.section.output_arguments_unit_width(node_width / 2)
+                # loop each element- find matching
                 for ele in self.global_element_list:
-                    # ops.element(beam_ele_type, ele[3],
-                    #            *[ele[0], ele[1]], *op_member_prop_class, trans_tag)  ###
-                    if ele[2] == self.group_ele_dict[member]:
+                    if ele[2] == key + max(
+                            self.section_group_noz):  # if element match key for transverse memeber loop
                         with open(self.filename, 'a') as file_handle:
-                            file_handle.write("ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transtag})\n"
-                                              .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
-                                                      memberprop=prop, transtag=ele[4]))
-        else:  # skew mesh
+                            file_handle.write(
+                                "ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transtag})\n"
+                                    .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
+                                            memberprop=prop, transtag=ele[4]))
+                # add ele group to assigned list
+                self.ele_group_assigned_list.append(key + max(self.section_group_noz))
+        else:
+            # direct assignment of members applies for longitudinal members
             for ele in self.global_element_list:
                 # ops.element(beam_ele_type, ele[3],
                 #            *[ele[0], ele[1]], *op_member_prop_class, trans_tag)  ###
-                if ele[2] == self.group_ele_dict[member]:  # check if ele is a longitudinal member
-
+                if ele[2] == self.group_ele_dict[member]:
                     with open(self.filename, 'a') as file_handle:
                         file_handle.write("ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transtag})\n"
                                           .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
                                                   memberprop=prop, transtag=ele[4]))
-                    # TODO allow unit width properties for longitudinal members
+        # else:  # skew mesh
+        #     for ele in self.global_element_list:
+        #         # ops.element(beam_ele_type, ele[3],
+        #         #            *[ele[0], ele[1]], *op_member_prop_class, trans_tag)  ###
+        #         if ele[2] == self.group_ele_dict[member]:  # check if ele is a longitudinal member
+        #
+        #             with open(self.filename, 'a') as file_handle:
+        #                 file_handle.write("ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transtag})\n"
+        #                                   .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
+        #                                           memberprop=prop, transtag=ele[4]))
+        #
+        # TODO allow unit width properties for longitudinal members
 
         # add ele group to assigned list
-        self.ele_group_assigned_list.append(member)
+        self.ele_group_assigned_list.append(self.group_ele_dict[member])
         # print to terminal
         print("Members assigned {}".format(repr(self.ele_group_assigned_list)))
+        if max(self.ele_group_assigned_list) != max(self.section_group_noz):
+            print("Remaining members: {}".format( max(self.section_group_noz)-max(self.ele_group_assigned_list)))
+        else:
+            print("All members assigned")
 
     def op_section_generate(self):
         with open(self.filename, 'a') as file_handle:
@@ -395,20 +401,26 @@ class opGrillage:
         assign_list = []  # list recording assigned elements to check against double assignment
         for (count, ele) in enumerate(self.trans_mem):
             if self.ortho_mesh:  # if orthogonal mesh
-                pass
+                if ele[2] == 5:  # if its a support node (tag = 5 default for skew)
+                    if not ele[0] in assign_list:  # check if ele is not in the assign list
+                        assign_list.append(ele[0])
+                        self.support_nodes.append([ele[0], self.fix_val_pin])
+
+                    # if true, assign ele as support
+                    if not ele[1] in assign_list:  # check if ele is not in the assign list
+                        assign_list.append(ele[1])
+                        self.support_nodes.append([ele[1], self.fix_val_pin])
             else:  # skew mesh
                 if ele[2] == 5:  # if its a support node (tag = 5 default for skew)
                     if not ele[0] in assign_list:  # check if ele is not in the assign list
                         assign_list.append(ele[0])
                         self.support_nodes.append([ele[0], self.fix_val_pin])
-                    else:  # node not in list, assign
-                        pass
+
                     # if true, assign ele as support
                     if not ele[1] in assign_list:  # check if ele is not in the assign list
                         assign_list.append(ele[1])
                         self.support_nodes.append([ele[1], self.fix_val_pin])
-                    else:  # node in list, pass to next node
-                        pass
+
 
     def get_region_b(self, reg_a_end, step):
 
@@ -514,18 +526,18 @@ class opGrillage:
         self.noz = self.get_long_grid_nodes()  # mesh points in transverse direction
 
         # Generate nox based on two orthogonal region: (A)  quadrilateral area, and (B)  triangular area
-        regA = np.linspace(0, self.long_dim - self.breadth, self.num_trans_grid)
+        self.regA = np.linspace(0, self.long_dim - self.breadth, self.num_trans_grid)
         # RegA consist of overlapping last element
         # RegB first element overlap with RegA last element
-        regB = self.get_region_b(regA[-1], self.noz)  # nodes @ region B startswith last entry of region A up to
-        self.nox = np.hstack((regA[:-1], regB))  # combined to form nox, with last node of regA removed for repeated val
+        self.regB = self.get_region_b(self.regA[-1], self.noz)  # nodes @ region B startswith last entry of region A up to
+        self.nox = np.hstack((self.regA[:-1], self.regB))  # combined to form nox, with last node of regA removed for repeated val
         # identify member groups based on nox and noz
         self.identify_member_groups()  # returns section_group_nox and section_group_noz
         # mesh region A quadrilateral area
         nodetagcounter = 1  # counter for nodetag, updates after creating each nodes
         eletagcounter = 1  # counter for element, updates after creating each elements
         for pointz in self.noz:  # loop for each mesh point in z dir
-            for pointx in regA[:-1]:  # loop for each mesh point in x dir (nox)
+            for pointx in self.regA[:-1]:  # loop for each mesh point in x dir (nox)
                 # populate nodedata array - inputs [nodetag,x,y,z]
                 self.Nodedata.append([nodetagcounter, pointx, self.y_elevation, pointz])
                 nodetagcounter += 1
@@ -533,10 +545,10 @@ class opGrillage:
 
         # create elements of region A
         for node_row_z in range(0, len(self.noz)):
-            for node_col_x in range(1, len(regA[:-1])):
-                current_row_z = node_row_z * len(regA[:-1])  # current row's start node tag
+            for node_col_x in range(1, len(self.regA[:-1])):
+                current_row_z = node_row_z * len(self.regA[:-1])  # current row's start node tag
                 next_row_z = (node_row_z + 1) * len(  # next row's start node tag
-                    regA[:-1])  # increment nodes after next self.noz (node grid along transverse)
+                    self.regA[:-1])  # increment nodes after next self.noz (node grid along transverse)
                 # link nodes along current row z
                 self.long_mem.append([current_row_z + node_col_x, current_row_z + node_col_x + 1,
                                       self.section_group_noz[node_row_z], eletagcounter, 1])
@@ -550,7 +562,7 @@ class opGrillage:
                                            self.section_group_nox[node_col_x - 1], eletagcounter, 3])
                     eletagcounter += 1
                 # last
-            if next_row_z >= len(self.noz) * len(regA[:-1]):
+            if next_row_z >= len(self.noz) * len(self.regA[:-1]):
                 pass
             else:
                 self.trans_mem.append([current_row_z + node_col_x + 1, next_row_z + node_col_x + 1,
@@ -562,7 +574,7 @@ class opGrillage:
         # node generation for region B
         # node generate B1 @ right support
         b1_node_tag_start = nodetagcounter - 1  # last node tag of region A
-        regBupdate = regB  # initiate list for line mesh of region B1 - updated each loop by removing last element
+        regBupdate = self.regB  # initiate list for line mesh of region B1 - updated each loop by removing last element
         # record the section gruop counter
         reg_section_counter = node_col_x
         if self.skew < 0:  # check for angle sign
@@ -576,12 +588,12 @@ class opGrillage:
             regBupdate = regBupdate[:-1]  # remove last element for next self.noz (skew boundary)
 
         # Elements mesh for region B1
-        regBupdate = regB  # reset placeholder
+        regBupdate = self.regB  # reset placeholder
         row_start = b1_node_tag_start  # last nodetag of region A
         if self.skew < 0:
             reg_a_col = row_start  # nodetag of last node in last row of region A (last nodetag of region A)
         else:  # nodetag of last node in first row of region A
-            reg_a_col = len(regA[:-1])  # the last node of a single row + ignore last element of reg A (overlap regB)
+            reg_a_col = len(self.regA[:-1])  # the last node of a single row + ignore last element of reg A (overlap regB)
         for num_z in range(0, len(self.noz)):
             # element that link nodes with those from region A
             if self.skew < 0:  # if negative skew, loop starts from the last row (@ row = width)
@@ -618,13 +630,13 @@ class opGrillage:
             regBupdate = regBupdate[:-1]  # remove last element for next self.noz (skew boundary)
             # check for skew angle varients of region B1 loop (positive or negative)
             if self.skew < 0:
-                reg_a_col = reg_a_col - len(regA[:-1])  # update row node number correspond with region A (decreasing)
+                reg_a_col = reg_a_col - len(self.regA[:-1])  # update row node number correspond with region A (decreasing)
             else:
-                reg_a_col = reg_a_col + len(regA[:-1])  # update row node number correspond with region A (increasing)
+                reg_a_col = reg_a_col + len(self.regA[:-1])  # update row node number correspond with region A (increasing)
         print('Elements automation complete for region B1 and A')
 
         # B2 left support
-        regBupdate = -regB + regA[-1]  # left side of quadrilateral area, regB can lie in negative x axis
+        regBupdate = -self.regB + self.regA[-1]  # left side of quadrilateral area, regB can lie in negative x axis
         if self.skew < 0:  # check for angle sign
             line_mesh_z_b2 = self.noz  # (descending for positive angle,ascending for -ve)
         else:
@@ -640,8 +652,8 @@ class opGrillage:
         if self.skew < 0:
             reg_a_col = 1  # links to first node (region A)
         else:
-            reg_a_col = 1 + (len(self.noz) - 1) * len(regA[:-1])  # links to first node last row of region A
-        regBupdate = -regB + regA[-1]  # reset placeholder
+            reg_a_col = 1 + (len(self.noz) - 1) * len(self.regA[:-1])  # links to first node last row of region A
+        regBupdate = -self.regB + self.regA[-1]  # reset placeholder
         for num_z in range(0, len(self.noz)):
             # link nodes from region A
             if num_z == len(self.noz) - 1:  # for z = 6
@@ -683,7 +695,7 @@ class opGrillage:
                 # at this step, connect last element to node of region A to form skew edge
                 if self.skew < 0:  # if negative angle
                     self.trans_mem.append(
-                        [reg_a_col + len(regA[:-1]), row_start + len(regBupdate[1:]),
+                        [reg_a_col + len(self.regA[:-1]), row_start + len(regBupdate[1:]),
                          self.section_group_nox[-1], eletagcounter, 2])  # ele of node 1 to last node skew
                     eletagcounter += 1
                 else:  # else positive skew
@@ -703,9 +715,9 @@ class opGrillage:
             regBupdate = regBupdate[:-1]  # remove last element for next self.noz (skew boundary)
 
             if self.skew < 0:
-                reg_a_col = reg_a_col + len(regA[:-1])  # update next self.noz node correspond with region A
+                reg_a_col = reg_a_col + len(self.regA[:-1])  # update next self.noz node correspond with region A
             else:
-                reg_a_col = reg_a_col - len(regA[:-1])  # update next self.noz node correspond with region A
+                reg_a_col = reg_a_col - len(self.regA[:-1])  # update next self.noz node correspond with region A
         print('Elements automation complete for region B1 B2 and A')
         self.global_element_list = self.long_mem + self.trans_mem
 
@@ -755,7 +767,7 @@ class opGrillage:
         except:
             print("File error not executable")
 
-    def run_gravity_analysis(self,point):
+    def run_gravity_analysis(self, point):
         """
         Function to add a template code for a simple load analysis to output file.
         :return: at the end of output file, add lines to create timeSeries, pattern, load, integrator
@@ -765,13 +777,13 @@ class opGrillage:
             file_handle.write("#===========================\n# run simply load analysis\n#==========================\n")
             file_handle.write("ops.timeSeries('Linear', 1)\n")
             file_handle.write("ops.pattern('Plain', 1, 1)\n")
-            file_handle.write("ops.load({}, 0.0, -1000, 0.0, 0, 0, 0)\n".format(point if point is float else 20))
+            file_handle.write("ops.load({}, 0.0, -1000, 0.0, 0, 0, 0)\n".format(point if point is float or int else 20))
 
             file_handle.write("ops.integrator('LoadControl', 1)\n")  # Header
             file_handle.write("ops.numberer('Plain')\n")
             file_handle.write("ops.system('BandGeneral')\n")
             file_handle.write("ops.constraints('Plain')\n")
-            #file_handle.write("ops.test('NormDispIncr', 1e-8,6)\n")
+            # file_handle.write("ops.test('NormDispIncr', 1e-8,6)\n")
             file_handle.write("ops.algorithm('Linear')\n")
             file_handle.write("ops.analysis('Static')\n")
             file_handle.write("ops.analyze(1)")
@@ -780,75 +792,7 @@ class opGrillage:
 
 
 # ----------------------------------------------------------------------------------------------------------------
-# Member properties class
-class Member:
-    """
-    Class for grillage members
-    """
-
-    def __init__(self, name, A, E, G, J, Iy, Iz, Ay, Az, unit_width=False, op_ele_type="elasticBeamColumn"):
-        self.name = name
-        self.op_ele_type = op_ele_type
-        self.Az = Az
-        self.Ay = Ay
-        self.Iz = Iz
-        self.Iy = Iy
-        self.J = J
-        self.G = G
-        self.E = E
-        self.A = A
-        self.unit_width = unit_width
-        # return argument list with convention following Openseespy - dependant on ele_type
-        self.output_arguments()
-
-    def output_arguments(self):
-        """
-        Function to output list argument according to element() command of variety of element tags
-        in Opensees
-        :return: list containing member properties in accordance with Openseespy input convention
-        """
-        section_input = None
-        # assignment input based on ele type
-        if self.op_ele_type == "ElasticTimoshenkoBeam":
-            section_input = [self.E, self.G, self.A, self.J, self.Iy, self.Iz, self.Ay, self.Az]
-            section_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.E, self.G,
-                                                                                                      self.A,
-                                                                                                      self.J,
-                                                                                                      self.Iy, self.Iz,
-                                                                                                      self.Ay, self.Az)
-        elif self.op_ele_type == "elasticBeamColumn":  # eleColumn
-            section_input = [self.E, self.G, self.A, self.J, self.Iy, self.Iz]
-            section_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.E, self.G, self.A,
-                                                                                      self.J, self.Iy, self.Iz)
-        return section_input
-
-    def output_arguments_unit_width(self, width):
-        """
-        Function to output list argument according to element() command of variety of element tags
-        in Opensees - for unit width properties assignment
-        :return: list containing member properties in accordance with Openseespy input convention
-        """
-        section_input = None
-        # assignment input based on ele type
-        if self.op_ele_type == "ElasticTimoshenkoBeam":
-            section_input = [self.E, self.G, self.A, self.J, self.Iy, self.Iz, self.Ay, self.Az]
-            section_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.E,
-                                                                                                      self.G,
-                                                                                                      self.A,
-                                                                                                      self.J,
-                                                                                                      self.Iy * width,
-                                                                                                      self.Iz * width,
-                                                                                                      self.Ay * width,
-                                                                                                      self.Az * width)
-        elif self.op_ele_type == "elasticBeamColumn":  # eleColumn
-            section_input = [self.E, self.G, self.A, self.J, self.Iy, self.Iz]
-            section_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.E, self.G, self.A * width,
-                                                                                      self.J, self.Iy * width,
-                                                                                      self.Iz * width)
-
-        return section_input
-
-
+# Component classes
 # ----------------------------------------------------------------------------------------------------------------
 class Material:
     """

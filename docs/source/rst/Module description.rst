@@ -11,7 +11,7 @@ The process of using the *ops-grillage* module can be categorized into three ste
 
 Creating the grillage
 ------------------------
-The first process is carried out using the `opGrillage` class. Input arguments of the grillage model is pass to
+Firstly, users create the grillage model using the `opGrillage` class. Input arguments of the grillage model is pass to
 create the `GrillageGenerator` class object.
 
 The following example creates a `GrillageGenerator` class object for a bridge model.

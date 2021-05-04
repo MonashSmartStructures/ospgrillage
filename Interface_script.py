@@ -1,4 +1,4 @@
-from OpsGrillage import opGrillage, Member, Section, GrillageMember, UniAxialElasticMaterial
+from OpsGrillage import opGrillage, Section, GrillageMember, UniAxialElasticMaterial
 # import xlsxwriter
 from PlotWizard import *
 
@@ -21,7 +21,6 @@ exterior_I_beam_section = Section(op_sec_tag='Elastic', A=0.044625, E=3.47E+10, 
 I_beam = GrillageMember(name="Intermediate I-beams", section=I_beam_section, material=concrete)
 slab = GrillageMember(name="concrete slab", section=slab_section, material=concrete)
 exterior_I_beam = GrillageMember(name="exterior I beams", section=exterior_I_beam_section, material=concrete)
-# TODO
 
 # construct op grillage object
 test_bridge = opGrillage(bridge_name="SuperT_10m", long_dim=10, width=5, skew=-21,
@@ -31,20 +30,11 @@ test_bridge = opGrillage(bridge_name="SuperT_10m", long_dim=10, width=5, skew=-2
 test_bridge.set_material(concrete)
 
 # set grillage member
-# TODO: kwarg member mbr (to all)
-if test_bridge.ortho_mesh:  # if ortho mesh is true
-    test_bridge.set_member(I_beam, member="interior_main_beam")
-    test_bridge.set_member(exterior_I_beam, member="exterior_main_beam_1")
-    test_bridge.set_member(exterior_I_beam, member="exterior_main_beam_2")
-    test_bridge.set_member(exterior_I_beam, member="edge_beam")
-    test_bridge.set_member(slab, member="transverse_slab")
-
-else:  # skew mesh
-    test_bridge.set_member(I_beam, member="interior_main_beam")
-    test_bridge.set_member(exterior_I_beam, member="exterior_main_beam_1")
-    test_bridge.set_member(exterior_I_beam, member="exterior_main_beam_2")
-    test_bridge.set_member(exterior_I_beam, member="edge_beam")
-    test_bridge.set_member(slab, member="transverse_slab")
+test_bridge.set_member(I_beam, member="interior_main_beam")
+test_bridge.set_member(exterior_I_beam, member="exterior_main_beam_1")
+test_bridge.set_member(exterior_I_beam, member="exterior_main_beam_2")
+test_bridge.set_member(exterior_I_beam, member="edge_beam")
+test_bridge.set_member(slab, member="transverse_slab")
 
 # check output python file if executable
 test_bridge.run_check()
@@ -77,11 +67,11 @@ else:  # orthogonal
     plot_section(test_bridge, "interior_main_beam", 'r')
     plot_section(test_bridge, "edge_beam", 'm')
     plot_section(test_bridge, "transverse_slab", 'g')
-    # plot_section(test_bridge, 7, 'c')
+    plot_section(test_bridge, 7, 'c')
     plot_section(test_bridge, 8, 'm')
     plot_section(test_bridge, 9, 'b')
     plot_section(test_bridge, 10, 'k')
-    # plot_section(test_bridge, 5, 'r')
+    plot_section(test_bridge, 5, 'r')
 plt.show()
 # # simple xls command to save bridge data
 # workbook = xlsxwriter.Workbook('arrays.xlsx')
