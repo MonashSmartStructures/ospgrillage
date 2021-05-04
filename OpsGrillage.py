@@ -7,12 +7,36 @@ from datetime import datetime
 
 class opGrillage:
     """
-    Grillage Generator class
+    Main class of Openseespy grillage model wrapper. Outputs an executable py file which generates the prescribed
+    Opensees grillage model based on user input.
+
+    The class provides an interface for the user to specify the geometry of the grillage model. A keyword argument
+    allows for users to select between skew/oblique or orthogonal mesh. Methods in this class allows users to input
+    properties for various elements in the grillage model.
     """
 
     def __init__(self, bridge_name, long_dim, width, skew, num_long_grid,
-                 num_trans_grid, edge_beam_dist, mesh_type):
-        """Initialize the GrillageGenerator class"""
+                 num_trans_grid, edge_beam_dist, mesh_type="Ortho"):
+        """
+
+        :param bridge_name: Name of bridge model and output .py file
+        :type bridge_name: str
+        :param long_dim: Length of the model in the longitudinal direction (default: x axis)
+        :type long_dim: int or float
+        :param width: Width of the model in the transverse direction (default: z axis)
+        :type width: int or float
+        :param skew: Skew angle of model
+        :type skew: int or float
+        :param num_long_grid: Number of node points in the longitudinal direction
+        :type num_long_grid: int
+        :param num_trans_grid: Number of node points in the transverse direction
+        :type num_trans_grid: int
+        :param edge_beam_dist: Distance of edge beam node lines to exterior main beam node lines
+        :type edge_beam_dist: int or float
+        :param mesh_type: Type of mesh
+        :type mesh_type: string
+
+        """
         # Section placeholders
         self.section_arg = None
         self.section_tag = None
@@ -114,6 +138,7 @@ class opGrillage:
 
     # node procedure
     def create_nodes(self):
+
         # calculate edge length of grillage
         self.trans_dim = self.width / math.cos(self.skew / 180 * math.pi)
         # check for orthogonal mesh requirement
@@ -210,7 +235,7 @@ class opGrillage:
 
         if self.ortho_mesh:
             # update self.section_group_nox first element to reflect element group of Region B
-            self.section_group_nox[0] = self.section_group_nox[len(self.regA)-1]
+            self.section_group_nox[0] = self.section_group_nox[len(self.regA) - 1]
         else:  # else skew mesh do nothing
             pass
         # set groups dictionary
@@ -355,7 +380,7 @@ class opGrillage:
         # print to terminal
         print("Members assigned {}".format(repr(self.ele_group_assigned_list)))
         if max(self.ele_group_assigned_list) != max(self.section_group_noz):
-            print("Remaining members: {}".format( max(self.section_group_noz)-max(self.ele_group_assigned_list)))
+            print("Remaining members: {}".format(max(self.section_group_noz) - max(self.ele_group_assigned_list)))
         else:
             print("All members assigned")
 
@@ -420,7 +445,6 @@ class opGrillage:
                     if not ele[1] in assign_list:  # check if ele is not in the assign list
                         assign_list.append(ele[1])
                         self.support_nodes.append([ele[1], self.fix_val_pin])
-
 
     def get_region_b(self, reg_a_end, step):
 
@@ -529,8 +553,10 @@ class opGrillage:
         self.regA = np.linspace(0, self.long_dim - self.breadth, self.num_trans_grid)
         # RegA consist of overlapping last element
         # RegB first element overlap with RegA last element
-        self.regB = self.get_region_b(self.regA[-1], self.noz)  # nodes @ region B startswith last entry of region A up to
-        self.nox = np.hstack((self.regA[:-1], self.regB))  # combined to form nox, with last node of regA removed for repeated val
+        self.regB = self.get_region_b(self.regA[-1],
+                                      self.noz)  # nodes @ region B startswith last entry of region A up to
+        self.nox = np.hstack(
+            (self.regA[:-1], self.regB))  # combined to form nox, with last node of regA removed for repeated val
         # identify member groups based on nox and noz
         self.identify_member_groups()  # returns section_group_nox and section_group_noz
         # mesh region A quadrilateral area
@@ -593,7 +619,8 @@ class opGrillage:
         if self.skew < 0:
             reg_a_col = row_start  # nodetag of last node in last row of region A (last nodetag of region A)
         else:  # nodetag of last node in first row of region A
-            reg_a_col = len(self.regA[:-1])  # the last node of a single row + ignore last element of reg A (overlap regB)
+            reg_a_col = len(
+                self.regA[:-1])  # the last node of a single row + ignore last element of reg A (overlap regB)
         for num_z in range(0, len(self.noz)):
             # element that link nodes with those from region A
             if self.skew < 0:  # if negative skew, loop starts from the last row (@ row = width)
@@ -630,9 +657,11 @@ class opGrillage:
             regBupdate = regBupdate[:-1]  # remove last element for next self.noz (skew boundary)
             # check for skew angle varients of region B1 loop (positive or negative)
             if self.skew < 0:
-                reg_a_col = reg_a_col - len(self.regA[:-1])  # update row node number correspond with region A (decreasing)
+                reg_a_col = reg_a_col - len(
+                    self.regA[:-1])  # update row node number correspond with region A (decreasing)
             else:
-                reg_a_col = reg_a_col + len(self.regA[:-1])  # update row node number correspond with region A (increasing)
+                reg_a_col = reg_a_col + len(
+                    self.regA[:-1])  # update row node number correspond with region A (increasing)
         print('Elements automation complete for region B1 and A')
 
         # B2 left support
@@ -896,17 +925,22 @@ class Section:
             section_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.E, self.G, self.A * width,
                                                                                       self.J, self.Iy * width,
                                                                                       self.Iz * width)
-
         return section_input
 
 
 # ----------------------------------------------------------------------------------------------------------------
 class GrillageMember:
     """
-    Class for Grillage member
+    Class of grillage member. Class holds a section, material object for grillage member.
     """
 
     def __init__(self, section, material, name="Undefined"):
         self.name = name
         self.section = section
         self.material = material
+
+
+# ----------------------------------------------------------------------------------------------------------------
+class LoadCase:
+    def __init__(self):
+        pass

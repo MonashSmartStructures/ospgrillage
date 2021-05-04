@@ -15,7 +15,6 @@ slab_section = Section(op_sec_tag='Elastic', A=0.04428, E=3.47E+10, G=2.00E+10, 
 exterior_I_beam_section = Section(op_sec_tag='Elastic', A=0.044625, E=3.47E+10, G=2.00E+10, J=2.28e-3, Iy=2.23e-1,
                                   Iz=1.2e-3,
                                   Ay=3.72e-2, Az=3.72e-2)
-#
 
 # define member
 I_beam = GrillageMember(name="Intermediate I-beams", section=I_beam_section, material=concrete)
@@ -23,8 +22,8 @@ slab = GrillageMember(name="concrete slab", section=slab_section, material=concr
 exterior_I_beam = GrillageMember(name="exterior I beams", section=exterior_I_beam_section, material=concrete)
 
 # construct op grillage object
-test_bridge = opGrillage(bridge_name="SuperT_10m", long_dim=10, width=5, skew=-21,
-                         num_long_grid=5, num_trans_grid=13, edge_beam_dist=1, mesh_type="Ortho")
+test_bridge = opGrillage(bridge_name="SuperT_10m", long_dim=20, width=15, skew=-11,
+                         num_long_grid=6, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
 
 # set material to grillage - to do add feature to check if material object is defined globally onto all elements
 test_bridge.set_material(concrete)

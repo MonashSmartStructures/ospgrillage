@@ -6,7 +6,7 @@ Bridge model opensees
 
    Analysis
    Bridge_member
-   Bridgemodel
+   Functions
    PlotWizard
    Vehicle
 

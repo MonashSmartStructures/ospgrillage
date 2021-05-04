@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>PlotWizard module &mdash; Openseespy Grillage Wizard 0.0.1 documentation</title>
+  <title>ops-grillage plotting extension &mdash; Openseespy Grillage Wizard 0.0.1 documentation</title>
   
 
   
@@ -85,7 +85,7 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Structure%20description.html">Using the grillage wizard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module%20description.html">Using the grillage wizard</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Bridgemodel.html">API documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ModuleDoc.html">Module documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html">Examples</a></li>
@@ -138,7 +138,7 @@
     
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>PlotWizard module</li>
+      <li>ops-grillage plotting extension</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -157,9 +157,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-PlotWizard">
-<span id="plotwizard-module"></span><h1>PlotWizard module<a class="headerlink" href="#module-PlotWizard" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
+  <div class="section" id="ops-grillage-plotting-extension">
+<h1>ops-grillage plotting extension<a class="headerlink" href="#ops-grillage-plotting-extension" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-PlotWizard"></span><dl class="py function">
 <dt id="PlotWizard.plotOPmodel">
 <code class="sig-prename descclassname">PlotWizard.</code><code class="sig-name descname">plotOPmodel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#PlotWizard.plotOPmodel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to plot model - showing options for nodes,
@@ -201,6 +201,16 @@ test2</p>
 <dl class="py function">
 <dt id="PlotWizard.plot_section">
 <code class="sig-prename descclassname">PlotWizard.</code><code class="sig-name descname">plot_section</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ma_object</span></em>, <em class="sig-param"><span class="n">list_input</span></em>, <em class="sig-param"><span class="n">char</span></em><span class="sig-paren">)</span><a class="headerlink" href="#PlotWizard.plot_section" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to plot element groups of model.
+:param ma_object: an OpsGrillage class object
+:param list_input: str of element group following definitions in OpsGrillage
+:param char: str commands for matplotlib
+:return: plot all element groups with format according to str command parameter</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="PlotWizard.plot_nodes">
+<code class="sig-prename descclassname">PlotWizard.</code><code class="sig-name descname">plot_nodes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ma_object</span></em>, <em class="sig-param"><span class="n">list_input</span></em>, <em class="sig-param"><span class="n">char</span></em><span class="sig-paren">)</span><a class="headerlink" href="#PlotWizard.plot_nodes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>

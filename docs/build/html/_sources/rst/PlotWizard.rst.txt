@@ -1,4 +1,4 @@
-PlotWizard module
+ops-grillage plotting extension
 =================
 
 .. automodule:: PlotWizard

@@ -26,18 +26,28 @@ See :ref:Structure description page for more information of inputs.
 ## Current Capabilities
 
 ### Bridge model feature
-- [x] Skew Mesh
-- [x] Orthogonal mesh
-- [x] Positive and negative skews
-- [x] Multiple member definition 
-- [x] Transverse slab properties defined based on unit width properties
-- [ ] Customized nodes for skew mesh
+- [x] Skew meshing
+- [x] Orthogonal meshing
+- [x] Positive and negative skew angle
+- [x] Allowance for skew mesh to be set up to 30 degrees
+- [x] Allowance for orthogonal mesh to be set down to 11 degrees
+- [x] Grillage elements grouped allowing definition of element group properties with single line function 
+- [x] Autodetect edge of spans as supporting nodes
+- [x] Automatically set transverse slab properties to slab elements based on input unit width properties
+
+
+### Model utility feature
+- [x] Gravity Load analysis check
+- [x] Test/check output file functionality
+- [x] Alternative plotting feature available as an extension of the default Opensees plotting module
+
 
 ### In the works
 - [ ] Grouping feature for skew mesh - accommodate for customized nodes 
 - [ ] Allow representation of diaphragm in model
-- [ ] Alow representation of transverse secondary beams in model
+- [ ] Allow representation of transverse secondary beams in model
 - [ ] Enable multi-span definition 
 - [ ] Capable to shift origin of mesh generation
 - [ ] Combine individual mesh generation to a single mesh 
+- [ ] Allow customized nodes for meshes
 

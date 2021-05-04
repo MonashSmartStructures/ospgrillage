@@ -6,20 +6,27 @@ The process of using the *ops-grillage* module can be categorized into three ste
 
 #. Creating the grillage object using the :class:`~opsGrillage` class.
 #. Defining elements of grillage model using the :class:`~member` class.
-#. Setting the elements of grillage model using :function: set_grillage_model
+#. Setting the elements of grillage model using ``set_member()`` and ``set_material()`` functions for grillage `sections`
+   and `material` properties respectively.
+
+Note these processes have no definite order. For instances, users can define all elements of the grillage model prior to generating the
+:class:`~opGrillage` model object.
+
+Creating the grillage model
+---------------------------
+The grillage model is defined using the :class:`~opGrillage` class. Input arguments of the grillage model is pass to
+create the :class:`opGrillage` class object.
+
+..  autoclass:: OpsGrillage.opGrillage
+    :noindex:
 
 
-Creating the grillage
-------------------------
-Firstly, users create the grillage model using the `opGrillage` class. Input arguments of the grillage model is pass to
-create the `GrillageGenerator` class object.
-
-The following example creates a `GrillageGenerator` class object for a bridge model.
+The following example creates a `opGrillage` class object for a bridge model.
 
 .. code-block:: python
 
     test_bridge = opGrillage(bridge_name="SuperT_10m", long_dim=10, width=5, skew=-21,
-                         num_long_grid=2, num_trans_grid=13, cantilever_edge=1, mesh_type="Ortho")
+                         num_long_grid=2, num_trans_grid=17, cantilever_edge=1, mesh_type="Ortho")
 
 This generates a bridge model named "SuperT_10m", which has the following properties:
 
@@ -37,7 +44,7 @@ Running the output file at this stage will construct the model space (model comm
 (node command).
 
 
-Define material properties of model
+Define material properties
 ------------------------
 
 Material properties are defined using the class method `set_material()`. For most bridges made of steel and concrete,
@@ -49,16 +56,18 @@ as an argument to the function.
     # define material
     test_bridge.set_material(mat_type="Concrete01", mat_vec=[-6.0, -0.004, -6.0, -0.014])
 
-Define members of grillage model
-------------------------
-The members of the grillage model is set using the `set_grillage_member()` function. The function takes a `member` class
-object,a beam element tag (Openseespy), and a member string tag as arguments. The function the assigns the `member`
-object to the element group in the grillage model.
+Note for variable `mat_type`, users have the option to change the concrete type. The concrete model types are based on
+Opensees database.
 
-An example showing the assignment of interior main beams:
+Creating section object for grillage member
+------------------------
 
 .. code-block:: python
-    test_bridge.set_grillage_members(longmem_prop, longmem_prop.op_ele_type, member="interior_main_beam")
+
+    # define sections
+    I_beam_section = Section(op_sec_tag='Elastic', A=0.896, E=3.47E+10, G=2.00E+10, J=0.133, Iy=0.213, Iz=0.259,
+                         Ay=0.233, Az=0.58)
+
 
 For skew meshes, the elements are standardized. Table 1 shows the current standard elements of a grillage model along with the
 respective str tags for arguments.
@@ -82,21 +91,26 @@ a warning message is printed on the terminal.
 Creating a grillage member
 -----------------------------
 
+
 .. code-block:: python
     # define member
     I_beam = GrillageMember(name="Intermediate I-beams", section_obj=I_beam_section, material_obj=concrete)
 
-Creating section object for grillage member
-------------------------
+
+Setting grillage member to element group in model
+-------------------------------------------------
+
+The members of the grillage model is set using the `set_grillage_member()` function. The function takes a `member` class
+object,a beam element tag (Openseespy), and a member string tag as arguments. The function the assigns the `member`
+object to the element group in the grillage model.
+
+An example showing the assignment of interior main beams:
 
 .. code-block:: python
-
-    # define sections
-    I_beam_section = Section(op_sec_tag='Elastic', A=0.896, E=3.47E+10, G=2.00E+10, J=0.133, Iy=0.213, Iz=0.259,
-                         Ay=0.233, Az=0.58)
+    test_bridge.set_grillage_members(longmem_prop, longmem_prop.op_ele_type, member="interior_main_beam")
 
 
-Using generated grillage for analysis
+Run grillage for analysis
 ------------------------
 
 The first step on using the grillage model for analysis is defining Openseespy analysis objects, namely using the

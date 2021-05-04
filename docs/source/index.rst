@@ -31,4 +31,4 @@ Support
 =============
 For technical support, please email jun.ngan@monash.edu or raise an issue on the github page.
 
-If you wish to contribute a feature to *ops-grillage* module, 
+If you wish to contribute a feature to *ops-grillage* module, please do not hestitate to contact us.
