@@ -45,9 +45,12 @@ class opGrillage:
         self.section_group_nox = []  # list of tag representing ele groups of trans mem
         self.spacing_diff_noz = []
         self.spacing_diff_nox = []
+        # dict
         self.group_ele_dict = None  # dictionary of ele groups e.g. [ "name of group": tag ]
         self.global_element_list = None  # list of all elements in grillage
         self.ele_group_assigned_list = []  # list recording assigned ele groups in grillage model
+        self.section_dict = {}  # dictionary of section tags
+
         # model information
         self.mesh_type = mesh_type
         self.model_name = bridge_name
@@ -185,7 +188,7 @@ class opGrillage:
 
     def set_section(self, section_tag, section_type, section_arg):
         """
-        Function to define section variables for section command arguments.
+        Function called within set_member() function to write section() command for the prescribe section
 
         :param section_tag: tag argument of section
         :param section_type: type argument of section - see Opensees for appropriate types
@@ -197,7 +200,19 @@ class opGrillage:
         self.section_arg = section_arg
         # run and generate code line for section
         # TODO check line for type of section - to match section types in Openseespy
-        self.op_generate_section()
+        with open(self.filename, 'a') as file_handle:
+            file_handle.write("# Create section: \n")
+            file_handle.write(
+                "ops.section({}, {}, *{})\n".format(self.section_type, self.section_tag, self.section_arg))
+
+        if not bool(self.section_dict):
+            sectiontagcounter = 1
+        else:
+            # get last inserted element, its tag is set to sectiontagcounter
+            # TODO
+            pass
+        # record created section in dictionary
+        self.section_dict[self.section_type] = sectiontagcounter
 
     # abstraction to write ops commands to output py file
     def op_ele_transform_input(self, trans_tag, vector_xz, transform_type="Linear"):
@@ -226,15 +241,6 @@ class opGrillage:
                                                                                         x=node_point[1],
                                                                                         y=node_point[2],
                                                                                         z=node_point[3]))
-
-    def op_generate_section(self):
-
-        if flag == "Elastic":
-            with open(self.filename, 'a') as file_handle:
-                file_handle.write("# Create section: \n")
-                file_handle.write(
-                    "ops.section({}, {}, *{})\n".format(self.section_type, self.section_tag, self.section_arg))
-    # TODO add RC section
 
     def op_fix(self):
         with open(self.filename, 'a') as file_handle:
@@ -865,7 +871,7 @@ class nDMaterial(Material):
 # ----------------------------------------------------------------------------------------------------------------
 class Section:
     def __init__(self, E, A, Iz, J, Ay, Az, Iy=None, G=None, alpha_y=None, op_ele_type="elasticBeamColumn",
-                 unit_width=False, op_section=False):
+                 unit_width=False, op_section_type=None):
         """
 
         :param op_sec_tag:
@@ -884,7 +890,8 @@ class Section:
         # example
         # .section('Elastic', BeamSecTag,Ec,ABeam,IzBeam)
         """
-        self.op_section = op_section  # section tag based on Openseespy
+        self.op_section_type = op_section_type  # section tag based on Openseespy
+        self.section_command_flag = False
         # section geometry properties
         self.E = E
         self.A = A
@@ -923,12 +930,16 @@ class Section:
             section_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.E, self.G, self.A * width,
                                                                                       self.J, self.Iy * width,
                                                                                       self.Iz * width)
+        # check if section command is needed for the section object
+        if self.op_section_type is not None:
+            self.section_command_flag = True
 
         # procedure to check if element() command requires preceding section() command
-        if self.op_section == "Elastic":
-            # check if section is Elastic, return elastic
+        if self.op_section_type == "Elastic":
+            # check if section is Elastic, return argument list correspond to section Elastic
             pass
-        elif self.op_section == "RC Section":
+        elif self.op_section_type == "RC Section":
+            # if section is RC section, return argument list correspond to section RC section
             pass
 
         return section_input
