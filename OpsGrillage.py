@@ -174,14 +174,16 @@ class opGrillage:
         Function to define support boundary conditions for fix command arguments
 
         :param restraint_nodes: list of node tags to be restrained
+        :type restraint_nodes: list
         :param restraint_vector: list representing node restraint for Nx Ny Nz, Mx My Mz respectively.
                                     represented by 1 (fixed), and 0 (free)
+        :type restraint_vector: list
         :return:
         """
         for nodes in restraint_nodes:
             self.support_nodes.append([nodes, restraint_vector])
 
-    def section_property_input(self, section_tag, section_type, section_arg):
+    def set_section(self, section_tag, section_type, section_arg):
         """
         Function to define section variables for section command arguments.
 
@@ -195,10 +197,11 @@ class opGrillage:
         self.section_arg = section_arg
         # run and generate code line for section
         # TODO check line for type of section - to match section types in Openseespy
-        self.op_section_generate()
+        self.op_generate_section()
 
-    # functions to write ops commands to output py file
+    # abstraction to write ops commands to output py file
     def op_ele_transform_input(self, trans_tag, vector_xz, transform_type="Linear"):
+        # write geoTransf() command
         ops.geomTransf(transform_type, trans_tag, *vector_xz)
         with open(self.filename, 'a') as file_handle:
             file_handle.write("# create transformation {}\n".format(trans_tag))
@@ -206,12 +209,14 @@ class opGrillage:
                 type=transform_type, tag=trans_tag, vxz=vector_xz))
 
     def op_model_space(self):
+        # write model() command
         ops.model('basic', '-ndm', self.ndm, '-ndf', self.ndf)
         with open(self.filename, 'a') as file_handle:
             file_handle.write("ops.wipe()\n")
             file_handle.write("ops.model('basic', '-ndm', {ndm}, '-ndf', {ndf})\n".format(ndm=self.ndm, ndf=self.ndf))
 
     def op_create_nodes(self):
+        # write node() command
         with open(self.filename, 'a') as file_handle:
             file_handle.write("# Node generation procedure\n")
         for node_point in self.Nodedata:
@@ -222,6 +227,32 @@ class opGrillage:
                                                                                         y=node_point[2],
                                                                                         z=node_point[3]))
 
+    def op_generate_section(self):
+
+        if flag == "Elastic":
+            with open(self.filename, 'a') as file_handle:
+                file_handle.write("# Create section: \n")
+                file_handle.write(
+                    "ops.section({}, {}, *{})\n".format(self.section_type, self.section_tag, self.section_arg))
+    # TODO add RC section
+
+    def op_fix(self):
+        with open(self.filename, 'a') as file_handle:
+            file_handle.write("# Boundary condition implementation\n")
+        for boundary in self.support_nodes:
+            # ops.fix(boundary[0], *boundary[1])
+            with open(self.filename, 'a') as file_handle:
+                file_handle.write("ops.fix({}, *{})\n".format(boundary[0], boundary[1]))
+
+    def op_uniaxial_material(self):
+        # function to generate uniaxialMaterial() command in output py file
+        # ops.uniaxialMaterial(self.mat_type_op, 1, *self.mat_matrix)
+        with open(self.filename, 'a') as file_handle:
+            file_handle.write("# Material definition \n")
+            file_handle.write("ops.uniaxialMaterial(\"{}\", 1, *{})\n".format(self.global_mat_object.mat_type,
+                                                                              self.global_mat_object.mat_vec))
+
+    # Encapsulated functions pertaining to identifying element groups
     def identify_member_groups(self):
         # identify element groups in grillage based on line mesh vectors self.nox and self.noz
 
@@ -269,7 +300,7 @@ class opGrillage:
     @staticmethod
     def characterize_node_diff(node_list, tol):
         """
-        Function to characterize the groups of elements based on spacings of node points in the node point list
+        static method to characterize the groups of elements based on spacings of node points in the node point list
         :param tol: float of tolerance for checking spacings in np.diff() function
         :param node_list: list containing node points along orthogonal axes (x and z)
         :return ele_group: list containing integers representing the groups of elements
@@ -326,7 +357,7 @@ class opGrillage:
             #
             prop = op_member_prop_class.section.output_arguments_unit_width(node_width / 2)
         else:
-            prop = op_member_prop_class.section.output_arguments()
+            prop = op_member_prop_class.section.output_arguments_unit_width()
         # check if ele group has been assigned.
         if member in self.ele_group_assigned_list:
             raise Exception('Element Group {} has already been assigned'.format(member))
@@ -362,17 +393,7 @@ class opGrillage:
                         file_handle.write("ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transtag})\n"
                                           .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
                                                   memberprop=prop, transtag=ele[4]))
-        # else:  # skew mesh
-        #     for ele in self.global_element_list:
-        #         # ops.element(beam_ele_type, ele[3],
-        #         #            *[ele[0], ele[1]], *op_member_prop_class, trans_tag)  ###
-        #         if ele[2] == self.group_ele_dict[member]:  # check if ele is a longitudinal member
-        #
-        #             with open(self.filename, 'a') as file_handle:
-        #                 file_handle.write("ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transtag})\n"
-        #                                   .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
-        #                                           memberprop=prop, transtag=ele[4]))
-        #
+
         # TODO allow unit width properties for longitudinal members
 
         # add ele group to assigned list
@@ -384,29 +405,7 @@ class opGrillage:
         else:
             print("All members assigned")
 
-    def op_section_generate(self):
-        with open(self.filename, 'a') as file_handle:
-            file_handle.write("# Create section: \n")
-            file_handle.write(
-                "ops.section({}, {}, *{})\n".format(self.section_type, self.section_tag, self.section_arg))
-
-    def op_fix(self):
-        with open(self.filename, 'a') as file_handle:
-            file_handle.write("# Boundary condition implementation\n")
-        for boundary in self.support_nodes:
-            # ops.fix(boundary[0], *boundary[1])
-            with open(self.filename, 'a') as file_handle:
-                file_handle.write("ops.fix({}, *{})\n".format(boundary[0], boundary[1]))
-
-    def op_uniaxial_material(self):
-        # function to generate uniaxialMaterial() command in output py file
-        # ops.uniaxialMaterial(self.mat_type_op, 1, *self.mat_matrix)
-        with open(self.filename, 'a') as file_handle:
-            file_handle.write("# Material definition \n")
-            file_handle.write("ops.uniaxialMaterial(\"{}\", 1, *{})\n".format(self.global_mat_object.mat_type,
-                                                                              self.global_mat_object.mat_vec))
-
-    # Functions related to mesh generation
+    # Encapsulated functions related to mesh generation
     def get_vector_xz(self):
         # Function to calculate vector xz used for geometric transformation of local section properties
         # return: vector parallel to plane xz of member (see geotransform Opensees) for skew members (member tag 5)
@@ -483,7 +482,7 @@ class opGrillage:
         step = np.hstack((np.hstack((0, nox_girder)), self.width))  # array containing z coordinate
         return step
 
-    # skew meshing function
+    # encapsulated meshing procedure for skew and orthogonal meshing
     def skew_mesh(self):
         # automate skew meshing
         if self.nox_special is None:  # check  special rule for slab spacing, else proceed automation of node
@@ -790,6 +789,10 @@ class opGrillage:
 
     # test output file
     def run_check(self):
+        """
+        Unit test for code, invoke the output py file to check execution
+        :return:
+        """
         try:
             __import__(self.filename[:-3])  # run file
             print("File imported and run, OK")
@@ -821,7 +824,7 @@ class opGrillage:
 
 
 # ----------------------------------------------------------------------------------------------------------------
-# Component classes
+# Classes for components of opGrillage object
 # ----------------------------------------------------------------------------------------------------------------
 class Material:
     """
@@ -861,9 +864,27 @@ class nDMaterial(Material):
 
 # ----------------------------------------------------------------------------------------------------------------
 class Section:
-    def __init__(self, op_sec_tag, E, A, Iz, J, Ay, Az, Iy=None, G=None, alpha_y=None, op_ele_type="elasticBeamColumn",
-                 unit_width=False):
-        self.op_sec_tag = op_sec_tag  # section tag based on Openseespy
+    def __init__(self, E, A, Iz, J, Ay, Az, Iy=None, G=None, alpha_y=None, op_ele_type="elasticBeamColumn",
+                 unit_width=False, op_section=False):
+        """
+
+        :param op_sec_tag:
+        :param E:
+        :param A:
+        :param Iz:
+        :param J:
+        :param Ay:
+        :param Az:
+        :param Iy:
+        :param G:
+        :param alpha_y:
+        :param op_ele_type:
+        :param unit_width:
+
+        # example
+        # .section('Elastic', BeamSecTag,Ec,ABeam,IzBeam)
+        """
+        self.op_section = op_section  # section tag based on Openseespy
         # section geometry properties
         self.E = E
         self.A = A
@@ -879,30 +900,7 @@ class Section:
         self.unit_width = unit_width
         # A, E, G, J, Iy, Iz, Ay, Az,
 
-    # example
-    # .section('Elastic', BeamSecTag,Ec,ABeam,IzBeam)
-    def output_arguments(self):
-        """
-        Function to output list argument according to element() command of variety of element tags
-        in Opensees
-        :return: list containing member properties in accordance with Openseespy input convention
-        """
-        section_input = None
-        # assignment input based on ele type
-        if self.op_ele_type == "ElasticTimoshenkoBeam":
-            section_input = [self.E, self.G, self.A, self.J, self.Iy, self.Iz, self.Ay, self.Az]
-            section_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.E, self.G,
-                                                                                                      self.A,
-                                                                                                      self.J,
-                                                                                                      self.Iy, self.Iz,
-                                                                                                      self.Ay, self.Az)
-        elif self.op_ele_type == "elasticBeamColumn":  # eleColumn
-            section_input = [self.E, self.G, self.A, self.J, self.Iy, self.Iz]
-            section_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.E, self.G, self.A,
-                                                                                      self.J, self.Iy, self.Iz)
-        return section_input
-
-    def output_arguments_unit_width(self, width):
+    def output_arguments_unit_width(self, width=1):
         """
         Function to output list argument according to element() command of variety of element tags
         in Opensees - for unit width properties assignment
@@ -925,6 +923,14 @@ class Section:
             section_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.E, self.G, self.A * width,
                                                                                       self.J, self.Iy * width,
                                                                                       self.Iz * width)
+
+        # procedure to check if element() command requires preceding section() command
+        if self.op_section == "Elastic":
+            # check if section is Elastic, return elastic
+            pass
+        elif self.op_section == "RC Section":
+            pass
+
         return section_input
 
 
@@ -935,6 +941,12 @@ class GrillageMember:
     """
 
     def __init__(self, section, material, name="Undefined"):
+        """
+
+        :param section:
+        :param material:
+        :param name:
+        """
         self.name = name
         self.section = section
         self.material = material

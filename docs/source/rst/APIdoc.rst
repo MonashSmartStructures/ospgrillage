@@ -5,12 +5,12 @@ API documentation
 GrillageGenerator class
 ---------------------------
 
-.. automodule:: GrillageGenerator
-   :members:
+..  autoclass:: OpsGrillage.opGrillage
+    :noindex:
 
 
-For information on the ``GrillageGenerator`` class, see
-:doc:`ModuleDoc`
+For information regarding the procedures in ``opGrillage`` class, see
+:doc:`ModuleDoc`. For information of all functions and methods in ``opGrillage`` class, see :doc:`OpsGrillage`
 
 Input arguments for Bridge:
 
@@ -46,20 +46,16 @@ Users use ```GrillageGenerator``` class and input the arguments accordingly.
 
 .. code-block:: python
 
-    test_bridge = GrillageGenerator(bridge_name="Example_superT_10m", long_dim=10, width=5, skew=25,
-                                num_long_grid=4, num_trans_grid=13, cantilever_edge=1, mesh_type="ob")
+    test_bridge = opGrillage(bridge_name="SuperT_10m", long_dim=20, width=15, skew=-11,
+                         num_long_grid=6, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
 
 
 
 
-Defining concrete and steel properties
+Material class
 ------------------------------------------
 
-Defining element and section properties
+GrillageMember class
 ------------------------------------------
 
 
-Execute output py file
-------------------------------------------
-And output .py file named "Example_superT_10m_op.py" is created simultaneously in the current directory.
-The py file is and executable file which upon execution creates the required bridge model in Opensees software.

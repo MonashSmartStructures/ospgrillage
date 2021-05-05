@@ -17,9 +17,6 @@ Creating the grillage model
 The grillage model is defined using the :class:`~opGrillage` class. Input arguments of the grillage model is pass to
 create the :class:`opGrillage` class object.
 
-..  autoclass:: OpsGrillage.opGrillage
-    :noindex:
-
 
 The following example creates a `opGrillage` class object for a bridge model.
 
@@ -38,8 +35,7 @@ This generates a bridge model named "SuperT_10m", which has the following proper
 #. Edge beam distance of 1 m
 #. Orthogonal mesh
 
-
-Upon running this line, the output file writes model() and node() commands into the output file "Example_superT_10m".
+Running the object creation in the interaface creates a py file consisting of model() and node() commands named "Example_superT_10m".
 Running the output file at this stage will construct the model space (model command) and generate the nodes of the model
 (node command).
 
@@ -59,8 +55,8 @@ as an argument to the function.
 Note for variable `mat_type`, users have the option to change the concrete type. The concrete model types are based on
 Opensees database.
 
-Creating section object for grillage member
-------------------------
+Creating section of grillage members
+------------------------------------------------
 
 .. code-block:: python
 
@@ -69,8 +65,9 @@ Creating section object for grillage member
                          Ay=0.233, Az=0.58)
 
 
-For skew meshes, the elements are standardized. Table 1 shows the current standard elements of a grillage model along with the
-respective str tags for arguments.
+
+For skew meshes without customized node points, the grillage elements typically comprised of standardized element groups.
+Table 1 shows the standard elements of a grillage model along with the respective str arguments. Users
 
  ===================================   ===========================================================================
    1                                    edge_beam
@@ -81,7 +78,7 @@ respective str tags for arguments.
    6                                    transverse_slab
  ===================================   ===========================================================================
 
-For orthogonal meshes, nodes in the transverse direction may have varied spacing based on the skew edge region.
+For orthogonal meshes, nodes in the transverse direction have varied spacing based on the skew edge region.
 The properties of transverse members based on unit metre width is required for its definition section properties.
 The module automatically implement the unit width properties based on the spacing of nodes in the skew edge regions.
 

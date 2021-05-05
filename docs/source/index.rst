@@ -21,7 +21,7 @@ Documentation
 
    rst/Installation
    rst/Module description
-   rst/Bridgemodel
+   rst/APIdoc
    rst/ModuleDoc
    rst/Examples
    rst/ChangeLog
