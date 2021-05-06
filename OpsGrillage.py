@@ -186,8 +186,6 @@ class opGrillage:
         for nodes in restraint_nodes:
             self.support_nodes.append([nodes, restraint_vector])
 
-
-
     # abstraction to write ops commands to output py file
     def op_ele_transform_input(self, trans_tag, vector_xz, transform_type="Linear"):
         # write geoTransf() command
@@ -321,7 +319,7 @@ class opGrillage:
         section_type = op_section_obj.op_section_type  # str of section type - Openseespy convention
         section_arg = op_section_obj.output_arguments_unit_width()  # list of argument for section
         # - Openseespy convention
-        section_str = [section_type, section_arg]       # repr both variables as a list for keyword definition
+        section_str = [section_type, section_arg]  # repr both variables as a list for keyword definition
         # check if section
         if not bool(self.section_dict):
             sectiontagcounter = 0  # if dict empty, start counter at 1
@@ -333,19 +331,18 @@ class opGrillage:
             pass  # do nothing
             # print to terminal
             print("Attempted definition of {} with tag {} has been previously defined"
-                  .format(section_type,sectiontagcounter))
+                  .format(section_type, sectiontagcounter))
         else:  # dict not empty and section not found in section_dict, proceeed to create new keyword in dict
             # get last inserted element, set tag as sectiontagcounter
             # record section in dictionary
             self.section_dict[repr(section_str)] = sectiontagcounter + 1
             # run and generate code line for section
-            # TODO verify functionality of section command
             with open(self.filename, 'a') as file_handle:
                 file_handle.write("# Create section: \n")
                 file_handle.write(
                     "ops.section(\"{}\", {}, *{})\n".format(section_type, sectiontagcounter + 1, section_arg))
             # print to terminal
-            print("Section {}, of tag {} created".format(section_type,sectiontagcounter))
+            print("Section {}, of tag {} created".format(section_type, sectiontagcounter))
 
     def set_member(self, op_member_class, member=None):
         """
@@ -371,7 +368,7 @@ class opGrillage:
             node_width = self.spacing_val_nox[self.group_ele_dict[member] - max(self.section_group_noz)]
             #
             prop = op_member_class.section.output_arguments_unit_width(node_width / 2)
-        else:
+        else:  # get properties based on non-unit width
             prop = op_member_class.section.output_arguments_unit_width()
         # check if ele group has been assigned.
         if member in self.ele_group_assigned_list:
@@ -382,19 +379,19 @@ class opGrillage:
         if op_member_class.section.section_command_flag:
             # if true, write section() command prior to element definition
             self.set_section(op_member_class.section)  # set the section of the element member.
-            # TODO set element based on the defined section
+        # get beam type variable
+        beam_ele_type = op_member_class.section.op_ele_type
 
         # begin assign and write element() command
         # ----------------------------------------
-        # get beam type variable
-        beam_ele_type = op_member_class.section.op_ele_type
+
         # Check if assignment of all transverse members based on per m width properties
-        if self.group_ele_dict[member] > max(self.section_group_noz):
+        #if self.group_ele_dict[member] > max(self.section_group_noz):
+        if op_member_class.section.unit_width:
             # check if assigning transverse member (when the tag is greater than the max tag in long group)
 
             for key, node_width in self.spacing_val_nox.items():
-                # get unit width properties for the current node_width
-                prop = op_member_class.section.output_arguments_unit_width(node_width / 2)
+
                 # loop each element- find matching
                 for ele in self.global_element_list:
                     if ele[2] == key + max(
@@ -417,14 +414,16 @@ class opGrillage:
                                           .format(type=beam_ele_type, tag=ele[3], i=ele[0], j=ele[1],
                                                   memberprop=prop, transtag=ele[4]))
 
+            # add ele group to assigned list
+            self.ele_group_assigned_list.append(self.group_ele_dict[member])
         # TODO allow unit width properties for longitudinal members
+        # TODO element() command for ele type that takes section tag and material tag
 
-        # add ele group to assigned list
-        self.ele_group_assigned_list.append(self.group_ele_dict[member])
         # print to terminal
         print("Members assigned {}".format(repr(self.ele_group_assigned_list)))
-        if max(self.ele_group_assigned_list) != max(self.section_group_noz):
-            print("Remaining members: {}".format(max(self.section_group_noz) - max(self.ele_group_assigned_list)))
+        if len(self.ele_group_assigned_list) != max(self.section_group_nox):
+            print("Remaining members: {}".format(
+                self.Diff(range(1, max(self.section_group_nox)+1), self.ele_group_assigned_list)))
         else:
             print("All members assigned")
 
@@ -485,7 +484,13 @@ class opGrillage:
         return regB
 
     def check_skew(self):
-        # function: (1) controlling boolean for mesh type and (2) check mesh threshold
+        """
+        Function to set boolean to true if orthogonal mesh option. This function is automatically called during __init__
+        Function also checks if skew angle lies in allowable threshold
+        - between 10-30 degree (var self.skew_threshold) both types of mesh (skew and orthogonal) are allowed.
+        outside this bound, skew rules are strictly: (1) skew for angles less than 10 deg, and
+        (2) orthogonal for angles greater than 30 deg.
+        """
         if self.mesh_type == "Ortho":
             self.ortho_mesh = True
         else:
@@ -504,6 +509,10 @@ class opGrillage:
         nox_girder = np.linspace(start=self.edge_width, stop=last_girder, num=self.num_long_gird)
         step = np.hstack((np.hstack((0, nox_girder)), self.width))  # array containing z coordinate
         return step
+
+    @staticmethod
+    def Diff(li1, li2):
+        return list(list(set(li1) - set(li2)) + list(set(li2) - set(li1)))
 
     # encapsulated meshing procedure for skew and orthogonal meshing
     def skew_mesh(self):
@@ -807,7 +816,7 @@ class opGrillage:
         """
         self.global_mat_object = material_obj  # material matrix for
 
-        # assign material variable to model
+        # write Opensees material() command
         self.op_uniaxial_material()
 
     # test output file
@@ -827,6 +836,8 @@ class opGrillage:
         Function to add a template code for a simple load analysis to output file.
         :return: at the end of output file, add lines to create timeSeries, pattern, load, integrator
         """
+        if point > len(self.Nodedata):
+            Exception("Loading point for load analysis is not valid - out of bounds of node numbers")
         with open(self.filename, 'a') as file_handle:
             # write standard command lines for static analysis
             file_handle.write("#===========================\n# run simply load analysis\n#==========================\n")
@@ -952,7 +963,6 @@ class Section:
                                                                                       self.J, self.Iy * width,
                                                                                       self.Iz * width)
 
-
         # procedure to check if element() command requires preceding section() command
         if self.op_section_type == "Elastic":
             # check if section is Elastic, return argument list correspond to section Elastic
@@ -983,6 +993,8 @@ class GrillageMember:
 
 
 # ----------------------------------------------------------------------------------------------------------------
+# Loading classes and load cases
+# ---------------------------------------------------------------------------------------------------------------
 class LoadCase:
     def __init__(self):
         pass

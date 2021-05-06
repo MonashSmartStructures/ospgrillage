@@ -50,7 +50,9 @@ as an argument to the function.
 .. code-block:: python
 
     # define material
-    test_bridge.set_material(mat_type="Concrete01", mat_vec=[-6.0, -0.004, -6.0, -0.014])
+    concrete = UniAxialElasticMaterial(mat_type="Concrete01", mat_vec=[-6.0, -0.004, -6.0, -0.014])
+    # assign material object to grillage model class
+    test_bridge.set_material(concrete)
 
 Note for variable `mat_type`, users have the option to change the concrete type. The concrete model types are based on
 Opensees database.
@@ -87,24 +89,28 @@ a warning message is printed on the terminal.
 
 Creating a grillage member
 -----------------------------
-
+Grillage members are defined using the ``GrillageMember`` class. The class accepts three inputs: str name of the member,
+a Section class object, and a Material class object.
 
 .. code-block:: python
     # define member
-    I_beam = GrillageMember(name="Intermediate I-beams", section_obj=I_beam_section, material_obj=concrete)
+    I_beam = GrillageMember(name="Intermediate I-beams", section=I_beam_section, material=concrete)
+
 
 
 Setting grillage member to element group in model
 -------------------------------------------------
-
-The members of the grillage model is set using the `set_grillage_member()` function. The function takes a `member` class
-object,a beam element tag (Openseespy), and a member string tag as arguments. The function the assigns the `member`
+The members of the grillage model is set using the `set_member()` function of ``opGrillage`` class. The function takes a `member` class
+object, and a member string tag as arguments. The function the assigns the `member`
 object to the element group in the grillage model.
 
 An example showing the assignment of interior main beams:
 
 .. code-block:: python
     test_bridge.set_grillage_members(longmem_prop, longmem_prop.op_ele_type, member="interior_main_beam")
+
+The following is printed to the terminal
+
 
 
 Run grillage for analysis
