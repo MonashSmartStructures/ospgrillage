@@ -186,33 +186,7 @@ class opGrillage:
         for nodes in restraint_nodes:
             self.support_nodes.append([nodes, restraint_vector])
 
-    def set_section(self, section_tag, section_type, section_arg):
-        """
-        Function called within set_member() function to write section() command for the prescribe section
 
-        :param section_tag: tag argument of section
-        :param section_type: type argument of section - see Opensees for appropriate types
-        :param section_arg: list of arguments for section command - see Opensees for conventions of arguments
-        :return:
-        """
-        self.section_type = section_type
-        self.section_tag = section_tag
-        self.section_arg = section_arg
-        # run and generate code line for section
-        # TODO check line for type of section - to match section types in Openseespy
-        with open(self.filename, 'a') as file_handle:
-            file_handle.write("# Create section: \n")
-            file_handle.write(
-                "ops.section({}, {}, *{})\n".format(self.section_type, self.section_tag, self.section_arg))
-
-        if not bool(self.section_dict):
-            sectiontagcounter = 1
-        else:
-            # get last inserted element, its tag is set to sectiontagcounter
-            # TODO
-            pass
-        # record created section in dictionary
-        self.section_dict[self.section_type] = sectiontagcounter
 
     # abstraction to write ops commands to output py file
     def op_ele_transform_input(self, trans_tag, vector_xz, transform_type="Linear"):
@@ -338,11 +312,46 @@ class opGrillage:
         ele_group.append(1)  # add last element of list (edge beam group 1)
         return ele_group, spacing_diff_set, spacing_val_set
 
-    def set_member(self, op_member_prop_class, member='long_mem'):
+    def set_section(self, op_section_obj):
+        """
+        Function called within set_member() function to write section() command for the element
+
+        """
+        # extract section variables from Section class
+        section_type = op_section_obj.op_section_type  # str of section type - Openseespy convention
+        section_arg = op_section_obj.output_arguments_unit_width()  # list of argument for section
+        # - Openseespy convention
+        section_str = [section_type, section_arg]       # repr both variables as a list for keyword definition
+        # check if section
+        if not bool(self.section_dict):
+            sectiontagcounter = 0  # if dict empty, start counter at 1
+        else:
+            sectiontagcounter = self.section_dict[list(self.section_dict)[-1]]
+
+        if repr(section_str) in self.section_dict:
+            # similar section in dict, means section was defined and section() command has previously been written
+            pass  # do nothing
+            # print to terminal
+            print("Attempted definition of {} with tag {} has been previously defined"
+                  .format(section_type,sectiontagcounter))
+        else:  # dict not empty and section not found in section_dict, proceeed to create new keyword in dict
+            # get last inserted element, set tag as sectiontagcounter
+            # record section in dictionary
+            self.section_dict[repr(section_str)] = sectiontagcounter + 1
+            # run and generate code line for section
+            # TODO verify functionality of section command
+            with open(self.filename, 'a') as file_handle:
+                file_handle.write("# Create section: \n")
+                file_handle.write(
+                    "ops.section(\"{}\", {}, *{})\n".format(section_type, sectiontagcounter + 1, section_arg))
+            # print to terminal
+            print("Section {}, of tag {} created".format(section_type,sectiontagcounter))
+
+    def set_member(self, op_member_class, member=None):
         """
         Function to assign GrillageMember obj to element groups. Function then create ops.element() command for the
          prescribed element.
-        :param op_member_prop_class: Member object
+        :param op_member_class: Member object
         :param beam_ele_type: str of member type - following Openseespy (Optional)
         :param member: str of grillage element group to be assigned
         :return:
@@ -355,29 +364,37 @@ class opGrillage:
             file_handle.write("# Element generation for section: {}\n".format(member))
         #         element  tag   *[ndI ndJ]  A  E  G  Jx  Iy   Iz  transfOBJs
         # get output string - sorted according to convention of Openseespy
-        if op_member_prop_class.section.unit_width:  # check if unit width
+        if op_member_class.section.unit_width:  # check if unit width
             # if yes, convert properties to match width of element
             # get element width based on member tag
             # node_width float
             node_width = self.spacing_val_nox[self.group_ele_dict[member] - max(self.section_group_noz)]
             #
-            prop = op_member_prop_class.section.output_arguments_unit_width(node_width / 2)
+            prop = op_member_class.section.output_arguments_unit_width(node_width / 2)
         else:
-            prop = op_member_prop_class.section.output_arguments_unit_width()
+            prop = op_member_class.section.output_arguments_unit_width()
         # check if ele group has been assigned.
         if member in self.ele_group_assigned_list:
             raise Exception('Element Group {} has already been assigned'.format(member))
-        # get beam type variable
-        beam_ele_type = op_member_prop_class.section.op_ele_type
-        # loop each element in list, assign and write element() command
+        if member is None:
+            raise Exception('No member str variable specified')
+        # check for section()
+        if op_member_class.section.section_command_flag:
+            # if true, write section() command prior to element definition
+            self.set_section(op_member_class.section)  # set the section of the element member.
+            # TODO set element based on the defined section
 
+        # begin assign and write element() command
+        # ----------------------------------------
+        # get beam type variable
+        beam_ele_type = op_member_class.section.op_ele_type
         # Check if assignment of all transverse members based on per m width properties
         if self.group_ele_dict[member] > max(self.section_group_noz):
             # check if assigning transverse member (when the tag is greater than the max tag in long group)
 
             for key, node_width in self.spacing_val_nox.items():
                 # get unit width properties for the current node_width
-                prop = op_member_prop_class.section.output_arguments_unit_width(node_width / 2)
+                prop = op_member_class.section.output_arguments_unit_width(node_width / 2)
                 # loop each element- find matching
                 for ele in self.global_element_list:
                     if ele[2] == key + max(
@@ -870,7 +887,7 @@ class nDMaterial(Material):
 
 # ----------------------------------------------------------------------------------------------------------------
 class Section:
-    def __init__(self, E, A, Iz, J, Ay, Az, Iy=None, G=None, alpha_y=None, op_ele_type="elasticBeamColumn",
+    def __init__(self, E, A, Iz, J, Ay, Az, Iy=None, G=None, alpha_y=None, op_ele_type=None,
                  unit_width=False, op_section_type=None):
         """
 
@@ -890,9 +907,10 @@ class Section:
         # example
         # .section('Elastic', BeamSecTag,Ec,ABeam,IzBeam)
         """
+        # sections
         self.op_section_type = op_section_type  # section tag based on Openseespy
-        self.section_command_flag = False
-        # section geometry properties
+        self.section_command_flag = False  # default False
+        # section geometry properties variables
         self.E = E
         self.A = A
         self.Iz = Iz
@@ -902,10 +920,13 @@ class Section:
         self.Az = Az
         self.J = J
         self.alpha_y = alpha_y
-        # types for element definition
+        # types for element definition and unit width properties
         self.op_ele_type = op_ele_type
         self.unit_width = unit_width
-        # A, E, G, J, Iy, Iz, Ay, Az,
+
+        # check if section command is needed for the section object
+        if self.op_section_type is not None:
+            self.section_command_flag = True  # section_command_flag set to True.
 
     def output_arguments_unit_width(self, width=1):
         """
@@ -930,9 +951,7 @@ class Section:
             section_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.E, self.G, self.A * width,
                                                                                       self.J, self.Iy * width,
                                                                                       self.Iz * width)
-        # check if section command is needed for the section object
-        if self.op_section_type is not None:
-            self.section_command_flag = True
+
 
         # procedure to check if element() command requires preceding section() command
         if self.op_section_type == "Elastic":
