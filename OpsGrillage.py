@@ -142,7 +142,11 @@ class OpsGrillage:
 
     # node procedure
     def create_nodes(self):
-
+        """
+        Abstracted procedure to create nodes of grillage model. This procedure also handles sub-abstracted procedures
+        involved in writing Opensees command: model(), node(), and fix() commands to output py file.
+        :return: Output py file with model(), node() and fix() commands
+        """
         # calculate edge length of grillage
         self.trans_dim = self.width / math.cos(self.skew / 180 * math.pi)
         # check for orthogonal mesh requirement
@@ -176,20 +180,29 @@ class OpsGrillage:
     #
     def boundary_cond_input(self, restraint_nodes, restraint_vector):
         """
-        Function to define support boundary conditions for fix command arguments
+        User function to define support boundary conditions in addition to the model edges automatically detected
+        by create_nodes() procedure.
 
         :param restraint_nodes: list of node tags to be restrained
         :type restraint_nodes: list
         :param restraint_vector: list representing node restraint for Nx Ny Nz, Mx My Mz respectively.
                                     represented by 1 (fixed), and 0 (free)
         :type restraint_vector: list
-        :return:
+        :return: Append node fixity to the support_nodes class variable
         """
         for nodes in restraint_nodes:
             self.support_nodes.append([nodes, restraint_vector])
 
     # abstraction to write ops commands to output py file
     def op_ele_transform_input(self, trans_tag, vector_xz, transform_type="Linear"):
+        """
+        Abstracted procedure to write ops.geomTransf() to output py file.
+        :param trans_tag: tag of transformation - set according to default 1, 2 and 3
+        :param vector_xz: vector parallel to plane xz of the element. Automatically calculated by get_vector_xz()
+        :param transform_type: transformation type
+        :return: writes ops.geomTransf() line to output py file
+        """
+        # TODO assign transform_type
         # write geoTransf() command
         ops.geomTransf(transform_type, trans_tag, *vector_xz)
         with open(self.filename, 'a') as file_handle:
@@ -198,6 +211,14 @@ class OpsGrillage:
                 type=transform_type, tag=trans_tag, vxz=vector_xz))
 
     def op_model_space(self):
+        """
+        Sub-abstracted procedure handled by create_nodes() function. This method creates the model() command
+        in the output py file.
+        :return: Output py file with wipe() and model() commands
+
+        Note: For 3-D model, the default model dimension and node degree-of-freedoms are 3 and 6 respectively.
+        This method automatically sets the aforementioned parameters to 2 and 4 respectively, for a 2-D problem.
+        """
         # write model() command
         ops.model('basic', '-ndm', self.ndm, '-ndf', self.ndf)
         with open(self.filename, 'a') as file_handle:
@@ -205,6 +226,11 @@ class OpsGrillage:
             file_handle.write("ops.model('basic', '-ndm', {ndm}, '-ndf', {ndf})\n".format(ndm=self.ndm, ndf=self.ndf))
 
     def op_create_nodes(self):
+        """
+        Sub-abstracted procedure handled by create_nodes() function. This method create node() command for each node
+        point generated during meshing procedures.
+        :return: Output py file populated with node() commands to generated the prescribed grillage model.
+        """
         # write node() command
         with open(self.filename, 'a') as file_handle:
             file_handle.write("# Node generation procedure\n")
@@ -217,6 +243,11 @@ class OpsGrillage:
                                                                                         z=node_point[3]))
 
     def op_fix(self):
+        """
+        Sub-abstracted procedure handed by create_nodes() function. This method writes the fix() command for
+        boundary condition defintion in the grillage model.
+        :return: Output py file populated with fix() command for boundary condition definition.
+        """
         with open(self.filename, 'a') as file_handle:
             file_handle.write("# Boundary condition implementation\n")
         for boundary in self.support_nodes:
@@ -225,6 +256,10 @@ class OpsGrillage:
                 file_handle.write("ops.fix({}, *{})\n".format(boundary[0], boundary[1]))
 
     def op_uniaxial_material(self):
+        """
+
+        :return:
+        """
         # function to generate uniaxialMaterial() command in output py file
         # ops.uniaxialMaterial(self.mat_type_op, 1, *self.mat_matrix)
         with open(self.filename, 'a') as file_handle:
@@ -234,6 +269,10 @@ class OpsGrillage:
 
     # Encapsulated functions pertaining to identifying element groups
     def identify_member_groups(self):
+        """
+        Abstracted method to identify member groups based on node spacings in orthogonal directions.
+        :return:
+        """
         # identify element groups in grillage based on line mesh vectors self.nox and self.noz
 
         # get the groups of elements
@@ -280,7 +319,7 @@ class OpsGrillage:
     @staticmethod
     def characterize_node_diff(node_list, tol):
         """
-        static method to characterize the groups of elements based on spacings of node points in the node point list
+        Abstracted method to characterize the groups of elements based on spacings of node points in the node point list
         :param tol: float of tolerance for checking spacings in np.diff() function
         :param node_list: list containing node points along orthogonal axes (x and z)
         :return ele_group: list containing integers representing the groups of elements
@@ -314,7 +353,7 @@ class OpsGrillage:
 
     def set_section(self, op_section_obj):
         """
-        Function called within set_member() function to write section() command for the element
+        Abstracted procedure handled by set_member() function to write section() command for the elements
 
         """
         # extract section variables from Section class
