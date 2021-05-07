@@ -38,7 +38,7 @@ The following settings are defaulted for each ```GrillageGenerator``` class obje
 
 meshing rules
 ---------------------
-*
+
 
 ====================
 Meshing Procedure
@@ -91,12 +91,13 @@ translate and writes information into `Openseespy` commands.
    :maxdepth: 2
    :hidden:
 
-   Bridge model call
 
 
-Opensees references
+Grillage modelling references
 
-`Grillage modelling<http://bridgedesign.org.uk/tutorial/bs-grillage.php>`
+:ref:`Grillage modelling<http://bridgedesign.org.uk/tutorial/bs-grillage.php>`
+
+Opensees documentation
 
 #. :doc:`node command`
 #. :doc:`element command`

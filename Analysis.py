@@ -9,7 +9,6 @@ from Vehicle import *
 import PlotWizard
 from itertools import compress
 import openseespy as ops
-from BridgeModel import *
 
 
 class MovingLoadAnalysis:

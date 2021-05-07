@@ -1,11 +1,10 @@
-import pandas as pd
 import numpy as np
 import math
 import openseespy.opensees as ops
 from datetime import datetime
 
 
-class opGrillage:
+class OpsGrillage:
     """
     Main class of Openseespy grillage model wrapper. Outputs an executable py file which generates the prescribed
     Opensees grillage model based on user input.
@@ -50,6 +49,8 @@ class opGrillage:
         self.global_element_list = None  # list of all elements in grillage
         self.ele_group_assigned_list = []  # list recording assigned ele groups in grillage model
         self.section_dict = {}  # dictionary of section tags
+        # mesh object
+        self.mesh_group = None
 
         # model information
         self.mesh_type = mesh_type
@@ -152,10 +153,11 @@ class opGrillage:
         # check mesh type and run procedure accordingly
         if self.ortho_mesh:
             # perform orthogonal meshing
-            self.orthogonal_mesh()
+            self.mesh_group = self.orthogonal_mesh()
         else:  # perform skew mesh
-            self.skew_mesh()
+            self.mesh_group = self.skew_mesh()
         v = self.get_vector_xz()
+
         if self.ortho_mesh:
             # generate command lines for 3 ele transformation in orthogonal mesh
             self.op_ele_transform_input(1, [0, 0, 1])  # x dir members
@@ -349,17 +351,21 @@ class opGrillage:
         Function to assign GrillageMember obj to element groups. Function then create ops.element() command for the
          prescribed element.
         :param op_member_class: Member object
-        :param beam_ele_type: str of member type - following Openseespy (Optional)
         :param member: str of grillage element group to be assigned
         :return:
         assign member properties to all grillage element within specified group.
 
         Note: assignment of elements differs between skew and orthogonal mesh type.
         """
-        # get list of elements for specified element member of grillage
+        # check input GrillageMember class
+        if isinstance(op_member_class, GrillageMember):
+            pass  # proceed with setting members
+        else:  # raise exception
+            Exception("Input member {} not a GrillageMember class".format(op_member_class))
+
         with open(self.filename, 'a') as file_handle:
             file_handle.write("# Element generation for section: {}\n".format(member))
-        #         element  tag   *[ndI ndJ]  A  E  G  Jx  Iy   Iz  transfOBJs
+        #         element  tag   *[ndI ndJ]  A  E  G  Jx  Iy   Iz  transform obj
         # get output string - sorted according to convention of Openseespy
         if op_member_class.section.unit_width:  # check if unit width
             # if yes, convert properties to match width of element
@@ -386,10 +392,9 @@ class opGrillage:
         # ----------------------------------------
 
         # Check if assignment of all transverse members based on per m width properties
-        #if self.group_ele_dict[member] > max(self.section_group_noz):
         if op_member_class.section.unit_width:
-            # check if assigning transverse member (when the tag is greater than the max tag in long group)
-
+            # loop through the unique members based on spacings of nodes, assign all members (key-tag) in the transverse
+            # direction
             for key, node_width in self.spacing_val_nox.items():
 
                 # loop each element- find matching
@@ -416,14 +421,13 @@ class opGrillage:
 
             # add ele group to assigned list
             self.ele_group_assigned_list.append(self.group_ele_dict[member])
-        # TODO allow unit width properties for longitudinal members
         # TODO element() command for ele type that takes section tag and material tag
 
         # print to terminal
         print("Members assigned {}".format(repr(self.ele_group_assigned_list)))
         if len(self.ele_group_assigned_list) != max(self.section_group_nox):
             print("Remaining members: {}".format(
-                self.Diff(range(1, max(self.section_group_nox)+1), self.ele_group_assigned_list)))
+                self.Diff(range(1, max(self.section_group_nox) + 1), self.ele_group_assigned_list)))
         else:
             print("All members assigned")
 
@@ -568,6 +572,9 @@ class opGrillage:
         # combine long and trans member elements to global list
         self.global_element_list = self.long_mem + self.trans_mem
         print("Element generation completed. Number of elements created = {}".format(eletagcounter - 1))
+        # save elements and nodes to mesh object
+        mesh_group = Mesh(self.global_element_list, self.Nodedata)
+        return mesh_group
 
     # orthogonal meshing method
     def orthogonal_mesh(self):
@@ -780,38 +787,15 @@ class opGrillage:
                 reg_a_col = reg_a_col - len(self.regA[:-1])  # update next self.noz node correspond with region A
         print('Elements automation complete for region B1 B2 and A')
         self.global_element_list = self.long_mem + self.trans_mem
-
-    def compile_output(self, bridge_name):
-        # function to output txt file containing model information:
-        # Nodes and member elements.
-        filename = "{}_properties.txt".format(bridge_name)
-        with open(filename, 'w') as file_handle:
-            # compile nodes
-            file_handle.write("NODES\n")  # Header
-            # file_handle.write(str(self.Nodedata))
-            file_handle.writelines("%s\n" % nodes for nodes in self.Nodedata)  # Node data
-            # compile connectivity
-            file_handle.write("\nConnectivity\n")  # Header
-            # write for each sections
-            file_handle.write("long_mem \n")  # Sub_Header
-            file_handle.writelines("%s\n" % ele for ele in self.long_mem)  #
-            file_handle.write("long_edge_1\n")  # Sub_Header
-            file_handle.writelines("%s\n" % ele for ele in self.long_edge_1)  #
-            file_handle.write("long_edge_2\n")  # Sub_Header
-            file_handle.writelines("%s\n" % ele for ele in self.long_edge_2)  #
-            file_handle.write("trans_mem\n")  # Sub_Header
-            file_handle.writelines("%s\n" % ele for ele in self.trans_mem)  #
-            file_handle.write("trans_edge_1\n")  # Sub_Header
-            file_handle.writelines("%s\n" % ele for ele in self.trans_edge_1)  #
-            file_handle.write("trans_edge_2\n")  # Sub_Header
-            file_handle.writelines("%s\n" % ele for ele in self.trans_edge_2)  #
+        # save elements and nodes to mesh object
+        mesh_group = Mesh(self.global_element_list,self.Nodedata)
+        return mesh_group
 
     def set_material(self, material_obj):
         """
         Function to define material for Openseespy material model. For example, uniaxialMaterial, nDMaterial.
 
-        :param mat_vec: list containing material properties following convention specified in Openseespy
-        :param mat_type: str containing material type tag following available tags specified in Openseespy
+
         :return: Function populates object variables: (1) mat_matrix, and (2) mat_type_op.
         """
         self.global_mat_object = material_obj  # material matrix for
@@ -831,30 +815,41 @@ class opGrillage:
         except:
             print("File error not executable")
 
-    def run_gravity_analysis(self, point):
+    def add_nodal_load_analysis(self, point, load_value, direction="y"):
         """
-        Function to add a template code for a simple load analysis to output file.
+        Function to add point load analysis to output file.
         :return: at the end of output file, add lines to create timeSeries, pattern, load, integrator
         """
         if point > len(self.Nodedata):
             Exception("Loading point for load analysis is not valid - out of bounds of node numbers")
         with open(self.filename, 'a') as file_handle:
-            # write standard command lines for static analysis
+            # write header
             file_handle.write("#===========================\n# run simply load analysis\n#==========================\n")
+            # write generation of time series and pattern, set default as 1
             file_handle.write("ops.timeSeries('Linear', 1)\n")
             file_handle.write("ops.pattern('Plain', 1, 1)\n")
-            file_handle.write("ops.load({}, 0.0, -1000, 0.0, 0, 0, 0)\n".format(point if point is float or int else 20))
+            # add load() command
+            if direction == "y":
+                file_handle.write("ops.load({pt}, 0.0, {val}, 0.0, 0, 0, 0)\n"
+                                  .format(pt=point if point is float or int else 20, val=load_value))
+            elif direction == "x":
+                file_handle.write("ops.load({pt}, {val}, 0.0, 0.0, 0, 0, 0)\n"
+                                  .format(pt=point if point is float or int else 20, val=load_value))
+            elif direction == "z":
+                file_handle.write("ops.load({pt}, 0.0, 0.0, {val}, 0, 0, 0)\n"
+                                  .format(pt=point if point is float or int else 20, val=load_value))
+            else:  # For moments
+                file_handle.write("ops.load({pt}, 0.0, 0.0, 0.0, 0, 0, 0)\n"
+                                  .format(pt=point if point is float or int else 20, val=load_value))
 
+            # Add command for analaysis
             file_handle.write("ops.integrator('LoadControl', 1)\n")  # Header
             file_handle.write("ops.numberer('Plain')\n")
             file_handle.write("ops.system('BandGeneral')\n")
             file_handle.write("ops.constraints('Plain')\n")
-            # file_handle.write("ops.test('NormDispIncr', 1e-8,6)\n")
             file_handle.write("ops.algorithm('Linear')\n")
             file_handle.write("ops.analysis('Static')\n")
             file_handle.write("ops.analyze(1)")
-
-        # import and execute updated py file
 
 
 # ----------------------------------------------------------------------------------------------------------------
@@ -865,7 +860,7 @@ class Material:
     Class for material properties definition
     """
 
-    def __init__(self, mat_type, mat_vec=[]):
+    def __init__(self, mat_type, mat_vec):
         # super(UniAxialElasticMaterial, self).__init__(length, length)
         self.mat_type = mat_type
         self.mat_vec = mat_vec
@@ -878,22 +873,23 @@ class UniAxialElasticMaterial(Material):
     Class for uniaxial material prop
     """
 
-    def __init__(self, mat_type, mat_vec=[]):
+    def __init__(self, mat_type, mat_vec):
         # super(UniAxialElasticMaterial, self).__init__(length, length)
+        super().__init__(mat_type, mat_vec)
         self.mat_type = mat_type
         self.mat_vec = mat_vec
 
 
-class nDMaterial(Material):
+class Mesh:
     """
-    Class for nD Material
-    NOTE: Feature to be added after Uniaxial Material
-    """
+    Class for mesh groups. The class holds information pertaining the mesh group such as element connectivity and nodes
+    of the mesh object.
 
-    def __init__(self, mat_type, mat_vec=[]):
-        # super(UniAxialElasticMaterial, self).__init__(length, length)
-        self.mat_type = mat_type
-        self.mat_vec = mat_vec
+
+    """
+    def __init__(self, ele_group, node_list):
+        self.ele_group = ele_group
+        self.node_list = node_list
 
 
 # ----------------------------------------------------------------------------------------------------------------
@@ -902,15 +898,18 @@ class Section:
                  unit_width=False, op_section_type=None):
         """
 
-        :param op_sec_tag:
-        :param E:
-        :param A:
-        :param Iz:
-        :param J:
+        :param E: Elastic modulus
+        :type E: float or int
+        :param A: Cross sectional area
+        :type A: float or int
+        :param Iz: Moment of inertia about z axis
+        :type Iz: float or int
+        :param J: Torsional inertia
         :param Ay:
         :param Az:
-        :param Iy:
-        :param G:
+        :param Iy:Moment of inertia about z axis
+        :type Iy: float or int
+        :param G: Shear modulus
         :param alpha_y:
         :param op_ele_type:
         :param unit_width:
@@ -977,15 +976,15 @@ class Section:
 # ----------------------------------------------------------------------------------------------------------------
 class GrillageMember:
     """
-    Class of grillage member. Class holds a section, material object for grillage member.
+    Class of grillage member. A GrillageMember object has a section, material object.
     """
 
     def __init__(self, section, material, name="Undefined"):
         """
 
-        :param section:
-        :param material:
-        :param name:
+        :param section: Section class object assigned to GrillageMember
+        :param material: Material class object assigned to GrillageMember
+        :param name: Name of the grillage member (Optional)
         """
         self.name = name
         self.section = section
@@ -995,6 +994,21 @@ class GrillageMember:
 # ----------------------------------------------------------------------------------------------------------------
 # Loading classes and load cases
 # ---------------------------------------------------------------------------------------------------------------
-class LoadCase:
+class Loading:
+    def __init__(self, load_type, load_value, direction="y"):
+        pass
+
+
+class LineLoading(Loading):
     def __init__(self):
+        super().__init__()
+
+
+class PatchLoading(Loading):
+    def __init__(self):
+        super().__init__()
+
+
+class LoadCase:
+    def __init__(self, Load):
         pass

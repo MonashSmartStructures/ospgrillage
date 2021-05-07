@@ -6,7 +6,7 @@ The process of using the *ops-grillage* module can be categorized into three ste
 
 #. Creating the grillage object using the :class:`~opsGrillage` class.
 #. Defining elements of grillage model using the :class:`~member` class.
-#. Setting the elements of grillage model using ``set_member()`` and ``set_material()`` functions for grillage `sections`
+#. Setting the elements of grillage model using :function:``set_member()`` and ``set_material()`` functions for grillage `sections`
    and `material` properties respectively.
 
 Note these processes have no definite order. For instances, users can define all elements of the grillage model prior to generating the

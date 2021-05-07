@@ -2,10 +2,10 @@
 API documentation
 ====================
 
-GrillageGenerator class
+OpsGrillage class
 ---------------------------
 
-..  autoclass:: OpsGrillage.opGrillage
+..  autoclass:: OpsGrillage.OpsGrillage
     :noindex:
 
 
@@ -28,34 +28,16 @@ Input arguments for Bridge:
    ================================   ===========================================================================
 
 
-Using wrapper module
----------------------------
-
-The following shows the generation of an exemplar bridge model having the following properties:
-* long_dim = 10 m
-* width = 5
-* skew = 11 degrees
-* num_long_grid = 4
-* num_trans_grid = 13
-* cantilever_edge = 1 m
-* mesh_type = Orthogonal ("Ortho")
-
-Note: Units of inputs are newton (N), meter (m), and degrees ().
-
-Users use ```GrillageGenerator``` class and input the arguments accordingly.
-
-.. code-block:: python
-
-    test_bridge = opGrillage(bridge_name="SuperT_10m", long_dim=20, width=15, skew=-11,
-                         num_long_grid=6, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
-
-
-
 
 Material class
 ------------------------------------------
 
+..  autoclass:: OpsGrillage.Material
+    :noindex:
+
 GrillageMember class
 ------------------------------------------
 
+..  autoclass:: OpsGrillage.GrillageMember
+    :noindex:
 
