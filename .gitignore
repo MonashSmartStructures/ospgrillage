@@ -23,3 +23,5 @@ Bridge model opensees/~$SN3595 Node.xlsx
 /keymaps/
 /Bridge model opensees/Disp.txt
 /Bridge model opensees/ReactionPY.txt
+!/Vehicle.py
+!/Analysis.py
