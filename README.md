@@ -26,31 +26,38 @@ See :ref:Structure description page for more information of inputs.
 ## Current Capabilities
 
 ### Bridge model feature
-- [x] Single-span grillage model
-- [x] Mesh types: Skew and Orthogonal
+- [x] Single-span 
+- [x] Autodetect edge of spans as supporting nodes
+- [x] Allow representation of transverse secondary beams 
+- [x] Allow representation of diaphragm
+- [x] Automatically set transverse slab properties to slab elements based on input unit width properties
+
+### Mesh features
+- [x] Skewed and Orthogonal meshes
 - [x] Positive and negative skew angle
 - [x] Allowance for skew mesh to be set up to 30 degrees
 - [x] Allowance for orthogonal mesh to be set down to 11 degrees
-- [x] Grillage elements grouped allowing definition of element group properties with single line function 
-- [x] Autodetect edge of spans as supporting nodes
-- [x] Automatically set transverse slab properties to slab elements based on input unit width properties
-- [x] Available Opensees elements: "elasticBeamColumn", "TimoshenkoBeamColumn"
-- [x] Available Opensees sections: "Elastic", "RC Section"
-- [ ] Allow representation of transverse secondary beams 
-- [ ] Allow representation of diaphragm
+- [x] Easy definition of mesh elements based on standard grillage elements 
+
+### Element types
+- [x] "elasticBeamColumn"
+- [x] "TimoshenkoBeamColumn"  
+- [x] "Elastic" sections
+- [x] "RC Section" elements
 
 ### Model utility feature
-- [x] Add point load analysis
-- [ ] Add line load analysis
-- [ ] Add Patch load analysis
-- [x] Test function of output file
-- [x] Alternative plotting feature as extension to the default Opensees plotting module - e.g. ops_vis
+- [x] Nodal load analysis
+- [ ] Line load analysis
+- [ ] Patch load analysis
+
+### Other utilities
+- [ ] Unittests files
+- [x] Plotting features - alternative to default Opensees plotting module - i.e. ops_vis
 
 
 ### In the works
 - [ ] Curved bridges and meshes
 - [ ] Definition of mesh control points - e.g. ability to shift origin of mesh generation
-- [ ] Grouping feature for skew mesh - accommodate for customized nodes 
 - [ ] Enable multi-span definition 
 - [ ] Combine individual mesh generation to a single mesh 
 - [ ] Allow customized nodes for meshes
