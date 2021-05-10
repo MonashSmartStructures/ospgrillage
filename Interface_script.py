@@ -2,6 +2,7 @@
 # import modules
 from OpsGrillage import OpsGrillage, Section, GrillageMember, UniAxialElasticMaterial
 from PlotWizard import *
+import openseespy.opensees as ops
 
 # define material
 concrete = UniAxialElasticMaterial(mat_type="Concrete01", mat_vec=[-6.0, -0.004, -6.0, -0.014])
@@ -14,6 +15,11 @@ slab_section = Section(op_ele_type="elasticBeamColumn", A=0.04428, E=3.47E+10, G
                        J=2.6e-4, Iy=1.1e-4, Iz=2.42e-4,
                        Ay=3.69e-1, Az=3.69e-1, unit_width=True)
 exterior_I_beam_section = Section(op_ele_type="elasticBeamColumn", A=0.044625, E=3.47E+10,
+                                  G=2.00E+10, J=2.28e-3, Iy=2.23e-1,
+                                  Iz=1.2e-3,
+                                  Ay=3.72e-2, Az=3.72e-2)
+
+exterior_I_beam_elastic_section = Section(op_ele_type="elasticBeamColumn", A=0.044625, E=3.47E+10,
                                   G=2.00E+10, J=2.28e-3, Iy=2.23e-1,
                                   Iz=1.2e-3,
                                   Ay=3.72e-2, Az=3.72e-2)

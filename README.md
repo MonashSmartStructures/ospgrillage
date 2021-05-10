@@ -25,33 +25,33 @@ See :ref:Structure description page for more information of inputs.
 
 ## Current Capabilities
 
-### Bridge model feature
+### Bridge model features
 - [x] Single-span 
 - [x] Autodetect edge of spans as supporting nodes
-- [x] Allow representation of transverse secondary beams 
-- [x] Allow representation of diaphragm
-- [x] Automatically set transverse slab properties to slab elements based on input unit width properties
+- [x] Allow for transverse secondary beams 
+- [x] Allow for diaphragm
+- [x] Allow for unit width properties for transverse slab
 
 ### Mesh features
 - [x] Skewed and Orthogonal meshes
 - [x] Positive and negative skew angle
-- [x] Allowance for skew mesh to be set up to 30 degrees
-- [x] Allowance for orthogonal mesh to be set down to 11 degrees
-- [x] Easy definition of mesh elements based on standard grillage elements 
+- [x] Allow for skew mesh to be set up to 30 degrees
+- [x] Allow for orthogonal mesh to be set down to 11 degrees
+- [x] Grillage elements grouped automatically for easy definition
 
 ### Element types
+The following Opensees element types are supported by ops-grillage
 - [x] "elasticBeamColumn"
 - [x] "TimoshenkoBeamColumn"  
 - [x] "Elastic" sections
 - [x] "RC Section" elements
 
-### Model utility feature
+### Utilities
+#### Loading Utilities
 - [x] Nodal load analysis
 - [ ] Line load analysis
 - [ ] Patch load analysis
-
-### Other utilities
-- [ ] Unittests files
+#### Commands 
 - [x] Plotting features - alternative to default Opensees plotting module - i.e. ops_vis
 
 
