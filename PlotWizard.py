@@ -92,6 +92,6 @@ def plot_nodes(op_gril_ob, plot_args):
     tag = [sub[0] for sub in op_gril_ob.Nodedata]
     model = plt.scatter(x, y)
     for point in range(0, len(x)):
-        plt.text(x[point], y[point], tag[point], fontsize='xx-small')
+        plt.text(x[point], y[point], tag[point], fontsize='small')
     plt.axis('equal')
     return model

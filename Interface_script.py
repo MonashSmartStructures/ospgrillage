@@ -14,7 +14,7 @@ I_beam_section = Section(op_ele_type="elasticBeamColumn", A=0.896, E=3.47E+10, G
 slab_section = Section(op_ele_type="elasticBeamColumn", A=0.04428, E=3.47E+10, G=2.00E+10,
                        J=2.6e-4, Iy=1.1e-4, Iz=2.42e-4,
                        Ay=3.69e-1, Az=3.69e-1, unit_width=True)
-exterior_I_beam_section = Section(op_ele_type="elasticBeamColumn", A=0.044625, E=3.47E+10,
+exterior_I_beam_section = Section(op_section_type="Elastic", op_ele_type="elasticBeamColumn", A=0.044625, E=3.47E+10,
                                   G=2.00E+10, J=2.28e-3, Iy=2.23e-1,
                                   Iz=1.2e-3,
                                   Ay=3.72e-2, Az=3.72e-2)
@@ -31,7 +31,7 @@ exterior_I_beam = GrillageMember(name="exterior I beams", section=exterior_I_bea
 
 # construct grillage model
 example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=4, width=7, skew=-11,
-                             num_long_grid=5, num_trans_grid=5, edge_beam_dist=1, mesh_type="Orth")
+                             num_long_grid=5, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
 
 # set material to grillage - to do add feature to check if material object is defined globally onto all elements
 example_bridge.set_material(concrete)
@@ -47,7 +47,7 @@ example_bridge.set_member(exterior_I_beam, member="edge_slab")
 # test output python file
 example_bridge.run_check()
 # add/replace a point load analysis
-example_bridge.add_nodal_load_analysis(point=50, load_value=-2000)
+example_bridge.add_nodal_load_analysis(point=20, load_value=-2000)
 
 # add/replace analysis with a line load analysis
 # example_bridge.add_line_load_analysis(refpoint=[3,4],load_value=-200,direction="x")

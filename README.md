@@ -41,16 +41,11 @@ See :ref:Structure description page for more information of inputs.
 
 ### Element types
 The following Opensees element types are supported by ops-grillage
-- [x] elasticBeamColumn_
-- [x] TimoshenkoBeamColumn_  
-- [ ] nonlinearBeamColumn_
-- [x] Elements that utilize Elastic_ and RC_section_
+- [x] elasticBeamColumn
+- [x] TimoshenkoBeamColumn  
+- [ ] nonlinearBeamColumn
+- [x] Elements that utilize Elastic and RC_section
 
-.. _elasticBeamColumn: https://openseespydoc.readthedocs.io/en/latest/src/elasticBeamColumn.html
-.. _TimoshenkoBeamColumn:  https://openseespydoc.readthedocs.io/en/latest/src/ElasticTimoshenkoBeam.html
-.. _nonlinearBeamColumn: https://openseespydoc.readthedocs.io/en/latest/src/nonlinearBeamColumn.html
-.. _Elastic: https://openseespydoc.readthedocs.io/en/latest/src/elasticSection.html
-.. _RC_section: https://openseespydoc.readthedocs.io/en/latest/src/rcsection2d.html
 
 ### Utilities
 #### Loading Utilities
