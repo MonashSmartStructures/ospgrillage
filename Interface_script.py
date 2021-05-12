@@ -8,7 +8,7 @@ import openseespy.opensees as ops
 concrete = UniAxialElasticMaterial(mat_type="Concrete01", mat_vec=[-6.0, -0.004, -6.0, -0.014])
 
 # define sections
-I_beam_section = Section(op_ele_type="elasticBeamColumn", A=0.896, E=3.47E+10, G=2.00E+10,
+I_beam_section = Section(op_section_type="Elastic", op_ele_type="elasticBeamColumn", A=0.896, E=3.47E+10, G=2.00E+10,
                          J=0.133, Iy=0.213, Iz=0.259,
                          Ay=0.233, Az=0.58)
 slab_section = Section(op_ele_type="elasticBeamColumn", A=0.04428, E=3.47E+10, G=2.00E+10,
@@ -19,6 +19,7 @@ exterior_I_beam_section = Section(op_section_type="Elastic", op_ele_type="elasti
                                   Iz=1.2e-3,
                                   Ay=3.72e-2, Az=3.72e-2)
 
+
 # define grillage members
 I_beam = GrillageMember(member_name="Intermediate I-beams", section=I_beam_section, material=concrete)
 slab = GrillageMember(member_name="concrete slab", section=slab_section, material=concrete)
@@ -26,7 +27,7 @@ exterior_I_beam = GrillageMember(member_name="exterior I beams", section=exterio
 
 # construct grillage model
 example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=4, width=7, skew=-11,
-                             num_long_grid=5, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
+                             num_long_grid=5, num_trans_grid=5, edge_beam_dist=1, mesh_type="Orth")
 
 # set material to grillage -
 example_bridge.set_material(concrete)
@@ -78,3 +79,5 @@ else:  # orthogonal
     plot_section(example_bridge, 5, 'r')
 plt.show()
 
+opsplt.plot_model()
+print(ops.eleNodes(20))

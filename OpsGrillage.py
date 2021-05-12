@@ -126,11 +126,9 @@ class OpsGrillage:
         self.skew_threshold = [10, 30]  # threshold for grillage to allow option of mesh choices
         self.member_group_tol = 0.001
         self.deci_tol = 4  # tol of decimal places
-        # to be added
-        # - special rule for multiple skew
-        # - rule for multiple span + multi skew
-        # - rule for pier
 
+        # dict for load cases
+        self.load_caase_dict = {}
         # Initiate py file output
         self.filename = "{}_op.py".format(self.model_name)
         with open(self.filename, 'w') as file_handle:
@@ -296,28 +294,21 @@ class OpsGrillage:
         material_str = [material_type, op_mat_arg]  # repr both variables as a list for keyword definition
         # if section is specified, get the materialtagcounter for material() assignment
         if not bool(self.material_dict):
-            materialtagcounter = 0  # if dict empty, start counter at 1
+            lastmaterialtag = 0  # if dict empty, start counter at 1
         else:  # set materialtagcounter as the latest defined element - i.e. max of section_dict
-            materialtagcounter = self.material_dict[list(self.material_dict)[-1]]
-        # if material has been assigned, pass procedure and
-        if repr(material_str) in self.material_dict:
-            # similar section in dict, means section was defined and section() command has previously been written
-            # return
-            materialtagcounter = self.material_dict[repr(material_str)]
-            # print to terminal
-            print("Material {} with tag {} has been previously defined"
-                  .format(material_type, materialtagcounter))
-        else:  # dict not empty and section not found in section_dict, proceeed to create new keyword in dict
-            # get last inserted element, set tag as sectiontagcounter
-            # record section in dictionary
-            self.material_dict[repr(material_str)] = materialtagcounter + 1
-            # run and generate code line for section
+            lastmaterialtag = self.material_dict[list(self.material_dict)[-1]]
 
+        # if section has been assigned
+        material_tag = self.material_dict.setdefault(repr(material_str), lastmaterialtag + 1)
+        if material_tag != lastmaterialtag:
             with open(self.filename, 'a') as file_handle:
                 file_handle.write("# Material definition \n")
                 file_handle.write("ops.uniaxialMaterial(\"{type}\", {tag}, *{vec})\n".format(
-                    type=material_type, tag=materialtagcounter, vec=op_mat_arg))
-        return materialtagcounter
+                    type=material_type, tag=material_tag, vec=op_mat_arg))
+        else:
+            print("Material {} with tag {} has been previously defined"
+                  .format(material_type, material_tag))
+            return material_tag
 
     # Encapsulated functions pertaining to identifying element groups
     def __identify_member_groups(self):
@@ -417,34 +408,25 @@ class OpsGrillage:
         # extract section variables from Section class
         section_type = op_section_obj.op_section_type  # str of section type - Openseespy convention
         # section argument
-        section_arg = op_section_obj.get_asterisk_arguments()  # list of argument for section
-        # - Openseespy convention
+        section_arg = op_section_obj.get_asterisk_arguments()  # list of argument for section - Openseespy convention
         section_str = [section_type, section_arg]  # repr both variables as a list for keyword definition
-
         # if section is specified, get the sectiontagcounter for section assignment
         if not bool(self.section_dict):
-            sectiontagcounter = 0  # if dict empty, start counter at 1
-        else:  # set sectiontagcounter as the latest defined element - i.e. max of section_dict
-            sectiontagcounter = self.section_dict[list(self.section_dict)[-1]]
+            lastsectioncounter = 0  # if dict empty, start counter at 1
+        else:  # dict not empty, get default value as latest defined tag
+            lastsectioncounter = self.section_dict[list(self.section_dict)[-1]]
         # if section has been assigned
-        if repr(section_str) in self.section_dict:
-            # similar section in dict, means section was defined and section() command has previously been written
-            # return
-            sectiontagcounter = self.section_dict[repr(section_str)]
-            # print to terminal
-            print("Section {} with tag {} has been previously defined"
-                  .format(section_type, sectiontagcounter))
-        else:  # dict not empty and section not found in section_dict, proceeed to create new keyword in dict
-            # get last inserted element, set tag as sectiontagcounter
-            # record section in dictionary
-            self.section_dict[repr(section_str)] = sectiontagcounter + 1
-            # run and generate code line for section
+        sectiontagcounter = self.section_dict.setdefault(repr(section_str), lastsectioncounter + 1)
+        if sectiontagcounter != lastsectioncounter:
             with open(self.filename, 'a') as file_handle:
                 file_handle.write("# Create section: \n")
                 file_handle.write(
-                    "ops.section(\"{}\", {}, *{})\n".format(section_type, sectiontagcounter + 1, section_arg))
+                    "ops.section(\"{}\", {}, *{})\n".format(section_type, sectiontagcounter, section_arg))
             # print to terminal
-            print("Section {}, of tag {} created".format(section_type, sectiontagcounter + 1))
+            print("Section {}, of tag {} created".format(section_type, sectiontagcounter))
+        else:
+            print("Section {} with tag {} has been previously defined"
+                  .format(section_type, sectiontagcounter))
         return sectiontagcounter
 
     def set_member(self, grillage_member_class, member=None):
@@ -507,7 +489,7 @@ class OpsGrillage:
                         # write element() command to file
                         with open(self.filename, 'a') as file_handle:
                             file_handle.write(ele_str)
-
+                        eval(ele_str)
                 # add ele group to assigned list
                 self.ele_group_assigned_list.append(key + max(self.section_group_noz))
         else:
@@ -521,7 +503,7 @@ class OpsGrillage:
                     # write element() command to file
                     with open(self.filename, 'a') as file_handle:
                         file_handle.write(ele_str)
-
+                    eval(ele_str)
             # add ele group to assigned list
             self.ele_group_assigned_list.append(self.group_ele_dict[member])
 
@@ -1031,6 +1013,9 @@ class OpsGrillage:
 
             print("Load case {} added".format(load_obj.name))
 
+    def run_analysis(self):
+        pass
+
 
 # ----------------------------------------------------------------------------------------------------------------
 # Classes for components of opGrillage object
@@ -1076,10 +1061,13 @@ class Mesh:
 
 # ----------------------------------------------------------------------------------------------------------------
 class Section:
+    """
+    Section class to define various grillage sections. Class
+    """
+
     def __init__(self, E, A, Iz, J, Ay, Az, Iy=None, G=None, alpha_y=None, op_ele_type=None, mass=0, c_mass_flag=False,
                  unit_width=False, op_section_type=None, K11=None, K33=None, K44=None):
         """
-
         :param E: Elastic modulus
         :type E: float
         :param A: Cross sectional area
@@ -1167,7 +1155,7 @@ class Section:
 
     def get_element_command_str(self, ele, ele_width, sectiontag=None):
         """
-
+        Function called within OpsGrillage class `set_member()` function.
         """
         # format for ele
         # [node i, node j, ele group, ele tag, transtag]
@@ -1193,14 +1181,15 @@ class Section:
 # ----------------------------------------------------------------------------------------------------------------
 class GrillageMember:
     """
-    Class of grillage member. A GrillageMember object has a section, material object.
+    Grillage member class.
     """
 
     def __init__(self, section, material, member_name="Undefined"):
         """
-
         :param section: Section class object assigned to GrillageMember
+        :type section: :class:`Section`
         :param material: Material class object assigned to GrillageMember
+        :type material: :class:`uniaxialMaterial`
         :param name: Name of the grillage member (Optional)
         """
         self.member_name = member_name
@@ -1211,7 +1200,7 @@ class GrillageMember:
 # ----------------------------------------------------------------------------------------------------------------
 # Loading classes and load cases
 # ---------------------------------------------------------------------------------------------------------------
-class Loading:
+class Loads:
     """
     Main class of loading definition
     """
@@ -1227,30 +1216,40 @@ class Loading:
         # return
         pass
 
+    def search_lines(self):
+        pass
 
-class NodalLoad(Loading):
-    def __init__(self, name, load_value, point):
-        super(NodalLoad, self).__init__(name, load_value)
+    def search_4_object(self):
+        pass
 
 
-class LineLoading(Loading):
+class NodalLoad(Loads):
+    def __init__(self, name, load_value, node_num):
+        super().__init__(name, load_value)
+
+    def get_nodal_load_str(self):
+        new = {}
+        new.setdefault()
+
+
+class LineLoading(Loads):
     def __init__(self, name, load_value, ele_groups, direction="Global Y"):
         super().__init__(name, load_value, direction)
         print("Line Loading {} created".format(name))
 
 
-class TruckLoad(Loading):
+class TruckLoad(Loads):
     def __init__(self):
         super(TruckLoad, self).__init__()
 
 
-class RoadTrafficLoad(Loading):
+class RoadTrafficLoad(Loads):
     def __init__(self):
         super(RoadTrafficLoad, self).__init__()
 
 
 # ---------------------------------------------------------------------------------------------------------------
-class PatchLoading(Loading):
+class PatchLoading(Loads):
     def __init__(self, name, load_value, construct_lines, direction="Global Y", define_option="4 lines"):
         super().__init__(name, load_value, direction)
         print("Deck patch load {} created".format(name))
