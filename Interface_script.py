@@ -1,6 +1,6 @@
 # Example module interface for ops-grillage
 # import modules
-from OpsGrillage import OpsGrillage, Section, GrillageMember, UniAxialElasticMaterial
+from OpsGrillage import OpsGrillage, Section, GrillageMember, UniAxialElasticMaterial, LineLoading, PatchLoading
 from PlotWizard import *
 import openseespy.opensees as ops
 
@@ -19,21 +19,16 @@ exterior_I_beam_section = Section(op_section_type="Elastic", op_ele_type="elasti
                                   Iz=1.2e-3,
                                   Ay=3.72e-2, Az=3.72e-2)
 
-exterior_I_beam_elastic_section = Section(op_ele_type="elasticBeamColumn", A=0.044625, E=3.47E+10,
-                                  G=2.00E+10, J=2.28e-3, Iy=2.23e-1,
-                                  Iz=1.2e-3,
-                                  Ay=3.72e-2, Az=3.72e-2)
-
 # define grillage members
-I_beam = GrillageMember(name="Intermediate I-beams", section=I_beam_section, material=concrete)
-slab = GrillageMember(name="concrete slab", section=slab_section, material=concrete)
-exterior_I_beam = GrillageMember(name="exterior I beams", section=exterior_I_beam_section, material=concrete)
+I_beam = GrillageMember(member_name="Intermediate I-beams", section=I_beam_section, material=concrete)
+slab = GrillageMember(member_name="concrete slab", section=slab_section, material=concrete)
+exterior_I_beam = GrillageMember(member_name="exterior I beams", section=exterior_I_beam_section, material=concrete)
 
 # construct grillage model
 example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=4, width=7, skew=-11,
                              num_long_grid=5, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
 
-# set material to grillage - to do add feature to check if material object is defined globally onto all elements
+# set material to grillage -
 example_bridge.set_material(concrete)
 
 # set grillage member to element groups of grillage model
@@ -56,11 +51,12 @@ example_bridge.add_nodal_load_analysis(point=20, load_value=-2000)
 # example_bridge.add_line_load_analysis(refpoint=[3,4],load_value=-200,direction="x")
 # --------------------------------------------------------------------------------------------------------------------
 # simple plotting commands
-# plot by accessing Nodedata attribute
 model = plot_nodes(example_bridge, plot_args=None)
 
+LL = LineLoading("Concrete Dead load", 10,10)
+PP = PatchLoading("Concrete Dead load", 10,10)
 
-# plot elements via assessing individual members (to be changed)
+# plot mesh showing element connectivity
 if example_bridge.mesh_type != "Ortho":  # skew
     plot_section(example_bridge, "interior_main_beam", 'r')
     plot_section(example_bridge, "transverse_slab", 'g')
