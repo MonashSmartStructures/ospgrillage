@@ -2,6 +2,7 @@ import numpy as np
 import math
 import openseespy.opensees as ops
 from datetime import datetime
+from collections import defaultdict
 
 
 class OpsGrillage:
@@ -127,8 +128,11 @@ class OpsGrillage:
         self.member_group_tol = 0.001
         self.deci_tol = 4  # tol of decimal places
 
-        # dict for load cases
-        self.load_caase_dict = {}
+        # dict for load cases and load types
+        self.load_case_dict = defaultdict(lambda: 1)
+        self.nodal_load_dict = defaultdict(lambda: 1)
+        self.ele_load_dict = defaultdict(lambda: 1)
+
         # Initiate py file output
         self.filename = "{}_op.py".format(self.model_name)
         with open(self.filename, 'w') as file_handle:
@@ -1004,14 +1008,37 @@ class OpsGrillage:
             file_handle.write("ops.analysis('Static')\n")
             file_handle.write("ops.analyze(1)")
 
-    def add_load_case(self, load_obj, analysis_num=1, analysis_type='Static'):
-        if isinstance(load_obj, LineLoading):
-            load_obj.search_nodes(self.Nodedata)
-            # print to terminal
-            print("Load case {} added".format(load_obj.name))
-        elif isinstance(load_obj, PatchLoading):
+    def add_load_case(self, name, *load_obj, analysis_num=1, analysis_type='Static'):
 
-            print("Load case {} added".format(load_obj.name))
+        with open(self.filename, 'a') as file_handle:
+            # write header
+            file_handle.write("#===========================\n# create load case {}\n#==========================\n"
+                              .format(name))
+            # create timeseries obj
+            file_handle.write("ops.timeSeries('Linear', 1)\n")
+            file_handle.write("ops.pattern('Plain', 1, 1)\n")
+            for loads in load_obj:
+
+                if isinstance(loads, NodalLoad):
+                    load_str = loads.get_nodal_load_str()
+
+                    file_handle.write(load_str)
+                    # print to terminal
+                    print("Load case {} added".format(loads.name))
+                elif isinstance(loads, PatchLoading):
+
+                    print("Load case {} added".format(loads.name))
+                else:
+                    print("No Load case assigned for {}".format(loads))
+
+            # add analysis and analysis parts
+            file_handle.write("ops.integrator('LoadControl', 1)\n")  # Header
+            file_handle.write("ops.numberer('Plain')\n")
+            file_handle.write("ops.system('BandGeneral')\n")
+            file_handle.write("ops.constraints('Plain')\n")
+            file_handle.write("ops.algorithm('Linear')\n")
+            file_handle.write("ops.analysis('Static')\n")
+            file_handle.write("ops.analyze(1)")
 
     def run_analysis(self):
         pass
@@ -1212,24 +1239,29 @@ class Loads:
         self.direction = direction
         print("Base loading")
 
-    def search_nodes(self, node_data):
-        # return
+    def get_load_summary(self):
         pass
 
-    def search_lines(self):
-        pass
-
-    def search_4_object(self):
+    def visualize_load(self):
         pass
 
 
 class NodalLoad(Loads):
-    def __init__(self, name, load_value, node_num):
+    def __init__(self, name, load_value, node_tag, direction=None):
+        """
+
+        :param name:
+        :param load_value: list of load magnitude
+        :param direction:
+        :param node_tag:
+        """
         super().__init__(name, load_value)
+        self.node_tag = node_tag
 
     def get_nodal_load_str(self):
-        new = {}
-        new.setdefault()
+        # get str for ops.load() function.
+        load_str = "ops.load({pt}, *{val})\n".format(pt=self.node_tag, val=self.load_value)
+        return load_str
 
 
 class LineLoading(Loads):
@@ -1237,19 +1269,38 @@ class LineLoading(Loads):
         super().__init__(name, load_value, direction)
         print("Line Loading {} created".format(name))
 
+    def get_line_position(self):
+        pass
 
-class TruckLoad(Loads):
+    def get_line_loading_str(self):
+        pass
+
+class VehicleLoad(Loads):
     def __init__(self):
-        super(TruckLoad, self).__init__()
+        super(VehicleLoad, self).__init__()
+        # TODO populate class with vehicle models
 
+        self.position
+        self.offset
+        self.chainage
+        self.axles
+        self.carriage
+
+    def get_vehicle_load_str(self):
+        pass
 
 class RoadTrafficLoad(Loads):
     def __init__(self):
         super(RoadTrafficLoad, self).__init__()
 
+    def get_road_traffic_str(self):
+        pass
 
 # ---------------------------------------------------------------------------------------------------------------
 class PatchLoading(Loads):
     def __init__(self, name, load_value, construct_lines, direction="Global Y", define_option="4 lines"):
         super().__init__(name, load_value, direction)
         print("Deck patch load {} created".format(name))
+
+    def get_patch_loading_str(self):
+        pass
