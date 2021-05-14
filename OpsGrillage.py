@@ -678,13 +678,13 @@ class OpsGrillage:
         nodetagcounter = 1  # counter for nodetag
         eletagcounter = 1  # counter for eletag
 
-        for pointz in self.noz:  # loop for each mesh point in z dir
+        for zcount, pointz in enumerate(self.noz):  # loop for each mesh point in z dir
             noxupdate = self.nox - pointz * np.tan(
                 self.skew / 180 * math.pi)  # get nox for current step in transverse mesh
-            for pointx in noxupdate:  # loop for each mesh point in x dir (nox)
-                # populate nodedata array - inputs [nodetag,x,y,z]
+            for xcount, pointx in enumerate(noxupdate):  # loop for each mesh point in x dir (nox)
+                # populate nodedata array - inputs [nodetag,x,y,z, gridz tag, gridx tag]
                 self.Nodedata.append(
-                    [nodetagcounter, pointx, self.y_elevation, pointz])  # NOTE here is where to change X Y plane
+                    [nodetagcounter, pointx, self.y_elevation, pointz, zcount, xcount])  # NOTE here is where to change X Y plane
                 nodetagcounter += 1
         # print to terminal
         print("Nodes created. Number of nodes = {}".format(nodetagcounter - 1))
@@ -696,8 +696,9 @@ class OpsGrillage:
                 current_row_z = node_row_z * len(self.nox)  # get current row's (z axis) nodetagcounter
                 next_row_z = (node_row_z + 1) * len(self.nox)  # get next row's (z axis) nodetagcounter
                 # link nodes along current row (z axis), in the x direction
+                # elements in a element list: [node_i, node_j, element group, ele tag, geomTransf (1,2 or 3), grid tag]
                 self.long_mem.append([current_row_z + node_col_x, current_row_z + node_col_x + 1,
-                                      self.section_group_noz[node_row_z], eletagcounter, 1])
+                                      self.section_group_noz[node_row_z], eletagcounter, 1, node_row_z + 1])
                 eletagcounter += 1
 
                 # link nodes in the z direction (e.g. transverse members)
@@ -705,14 +706,14 @@ class OpsGrillage:
                     pass  # do nothing (exceeded the z axis edge of the grillage)
                 else:  # assigning elements in transverse direction (z)
                     self.trans_mem.append([current_row_z + node_col_x, next_row_z + node_col_x,
-                                           self.section_group_nox[node_col_x - 1], eletagcounter, 2])
+                                           self.section_group_nox[node_col_x - 1], eletagcounter, 2, node_col_x - 1])
                     # section_group_nox counts from 1 to 12, therefore -1 to start counter 0 to 11
                     eletagcounter += 1
             if next_row_z >= len(self.nox) * len(self.noz):  # check if current z coord is last row
                 pass  # last column (x = self.nox[-1]) achieved, no more assignment
             else:  # assign last transverse member at last column (x = self.nox[-1])
                 self.trans_mem.append([current_row_z + node_col_x + 1, next_row_z + node_col_x + 1,
-                                       self.section_group_nox[node_col_x], eletagcounter, 2])
+                                       self.section_group_nox[node_col_x], eletagcounter, 2, node_col_x])
                 # after counting section_group_nox 0 to 11, this line adds the counter of 12
                 eletagcounter += 1
         # combine long and trans member elements to global list
@@ -970,53 +971,25 @@ class OpsGrillage:
         except:
             print("File not executable")
 
-    def add_nodal_load_analysis(self, point, load_value, direction="y"):
-        """
-        Function to add point load analysis to output file.
-
-        :return: Add code lines for simple nodal load analysis after end of output py file.
-
-        """
-        if point > len(self.Nodedata):
-            Exception("Loading point for load analysis is not valid - out of bounds of node numbers")
-        with open(self.filename, 'a') as file_handle:
-            # write header
-            file_handle.write("#===========================\n# run simply load analysis\n#==========================\n")
-            # write generation of time series and pattern, set default as 1
-            file_handle.write("ops.timeSeries('Linear', 1)\n")
-            file_handle.write("ops.pattern('Plain', 1, 1)\n")
-            # add load() command
-            if direction == "y":
-                file_handle.write("ops.load({pt}, 0.0, {val}, 0.0, 0, 0, 0)\n"
-                                  .format(pt=point if point is float or int else 20, val=load_value))
-            elif direction == "x":
-                file_handle.write("ops.load({pt}, {val}, 0.0, 0.0, 0, 0, 0)\n"
-                                  .format(pt=point if point is float or int else 20, val=load_value))
-            elif direction == "z":
-                file_handle.write("ops.load({pt}, 0.0, 0.0, {val}, 0, 0, 0)\n"
-                                  .format(pt=point if point is float or int else 20, val=load_value))
-            else:  # For moments
-                file_handle.write("ops.load({pt}, 0.0, 0.0, 0.0, 0, 0, 0)\n"
-                                  .format(pt=point if point is float or int else 20, val=load_value))
-
-            # Add command for analaysis
-            file_handle.write("ops.integrator('LoadControl', 1)\n")  # Header
-            file_handle.write("ops.numberer('Plain')\n")
-            file_handle.write("ops.system('BandGeneral')\n")
-            file_handle.write("ops.constraints('Plain')\n")
-            file_handle.write("ops.algorithm('Linear')\n")
-            file_handle.write("ops.analysis('Static')\n")
-            file_handle.write("ops.analyze(1)")
-
     def add_load_case(self, name, *load_obj, analysis_num=1, analysis_type='Static'):
+        # setdefault
 
         with open(self.filename, 'a') as file_handle:
+            # create timeseries obj
+            if not bool(self.load_case_dict):
+                file_handle.write("ops.timeSeries('Constant', 1)\n")
+                lastloadcase = 0  # if dict empty, start counter at 1
+            else:  # set lastloadcase as the latest
+                lastloadcase = self.load_case_dict[list(self.load_case_dict)[-1]]
+                file_handle.write("ops.wipeAnalysi()\n")  # write wipeAnalysis for current load case
+            # set load case to load_case_dict
+            load_case_tag = self.load_case_dict.setdefault(name, lastloadcase + 1)
             # write header
             file_handle.write("#===========================\n# create load case {}\n#==========================\n"
                               .format(name))
-            # create timeseries obj
-            file_handle.write("ops.timeSeries('Linear', 1)\n")
-            file_handle.write("ops.pattern('Plain', 1, 1)\n")
+            # create pattern obj
+            file_handle.write("ops.pattern('Plain', {}, 1)\n".format(load_case_tag))
+            print("Load Case {} created".format(name))
             for loads in load_obj:
 
                 if isinstance(loads, NodalLoad):
@@ -1024,24 +997,25 @@ class OpsGrillage:
 
                     file_handle.write(load_str)
                     # print to terminal
-                    print("Load case {} added".format(loads.name))
+                    print("Added load {loadname} to load case {loadcase}".format(loadname=loads.name, loadcase=name))
                 elif isinstance(loads, PatchLoading):
 
                     print("Load case {} added".format(loads.name))
                 else:
                     print("No Load case assigned for {}".format(loads))
 
-            # add analysis and analysis parts
+            # Create instance and write command to output py file
             file_handle.write("ops.integrator('LoadControl', 1)\n")  # Header
             file_handle.write("ops.numberer('Plain')\n")
             file_handle.write("ops.system('BandGeneral')\n")
             file_handle.write("ops.constraints('Plain')\n")
             file_handle.write("ops.algorithm('Linear')\n")
             file_handle.write("ops.analysis('Static')\n")
-            file_handle.write("ops.analyze(1)")
+            file_handle.write("ops.analyze(1)\n")
 
-    def run_analysis(self):
-        pass
+    def copy_load_case(self,load_obj,position):
+        nod = load_obj.return_four_node_position(position=position,nox=self.nox,noz=self.noz,node_data=self.Nodedata)
+        print(nod)
 
 
 # ----------------------------------------------------------------------------------------------------------------
@@ -1225,7 +1199,7 @@ class GrillageMember:
 
 
 # ----------------------------------------------------------------------------------------------------------------
-# Loading classes and load cases
+# Loading classes
 # ---------------------------------------------------------------------------------------------------------------
 class Loads:
     """
@@ -1237,13 +1211,38 @@ class Loads:
         self.name = name
         self.load_value = load_value
         self.direction = direction
+
         print("Base loading")
 
-    def get_load_summary(self):
-        pass
+    def return_four_node_position(self, position, nox, noz, node_data, grid_a_z=[],grid_b_z=[]):
+        # position [x,z]
+        # find grid lines that bound position in x direction
+        for count, grid_z in enumerate(noz):
+            if grid_z <= position[1]:
+                grid_a_z.append(count)
+            elif grid_z >= position[1]:
+                grid_b_z.append(count)
+        grid_a_z = max(grid_a_z)
+        grid_b_z = min(grid_b_z)
 
-    def visualize_load(self):
-        pass
+        # return nodes in the bounded grid lines grid_a_z and grid_b_z
+        grid_b_z_nodes = [x for x in node_data if x[4] == grid_a_z]
+        grid_a_z_nodes = [x for x in node_data if x[4] == grid_b_z]
+        # loop each grid nodes to find the two closest nodes in the x direction
+        bool_list_2 = []
+        for node in grid_b_z_nodes:
+            dis = np.sqrt((node[1] - position[0]) ** 2 + 0 + (node[3] - position[1]) ** 2)
+            bool_list_2.append([node[0],dis])
+        for node in grid_a_z_nodes:
+            dis = np.sqrt((node[1] - position[0]) ** 2 + 0 + (node[3] - position[1]) ** 2)
+            bool_list_2.append([node[0],dis])
+        bool_list_2.sort(key=lambda x: x[1])
+        n1 = bool_list_2[0]
+        n2 = bool_list_2[1]
+        n3 = bool_list_2[2]
+        n4 = bool_list_2[3]
+        return [n1, n2, n3, n4]
+
 
 
 class NodalLoad(Loads):
@@ -1264,6 +1263,20 @@ class NodalLoad(Loads):
         return load_str
 
 
+class PointLoad(Loads):
+    def __init__(self, name, load_value, position, direction=None):
+        super().__init__(name, load_value)
+        self.position = position
+
+    def get_point_load_str(self):
+        # find the four nodes
+
+        #
+        pass
+
+
+# ---------------------------------------------------------------------------------------------------------------
+
 class LineLoading(Loads):
     def __init__(self, name, load_value, ele_groups, direction="Global Y"):
         super().__init__(name, load_value, direction)
@@ -1275,9 +1288,21 @@ class LineLoading(Loads):
     def get_line_loading_str(self):
         pass
 
+
+# ---------------------------------------------------------------------------------------------------------------
+class PatchLoading(Loads):
+    def __init__(self, name, load_value, construct_lines, direction="Global Y", define_option="4 lines"):
+        super().__init__(name, load_value, direction)
+        self.construct_lines = construct_lines
+        print("Deck patch load {} created".format(name))
+
+    def get_patch_loading_str(self):
+        pass
+
+
 class VehicleLoad(Loads):
-    def __init__(self):
-        super(VehicleLoad, self).__init__()
+    def __init__(self, name, load_value, position, direction=None):
+        super(VehicleLoad, self).__init__(name, load_value)
         # TODO populate class with vehicle models
 
         self.position
@@ -1287,20 +1312,4 @@ class VehicleLoad(Loads):
         self.carriage
 
     def get_vehicle_load_str(self):
-        pass
-
-class RoadTrafficLoad(Loads):
-    def __init__(self):
-        super(RoadTrafficLoad, self).__init__()
-
-    def get_road_traffic_str(self):
-        pass
-
-# ---------------------------------------------------------------------------------------------------------------
-class PatchLoading(Loads):
-    def __init__(self, name, load_value, construct_lines, direction="Global Y", define_option="4 lines"):
-        super().__init__(name, load_value, direction)
-        print("Deck patch load {} created".format(name))
-
-    def get_patch_loading_str(self):
         pass

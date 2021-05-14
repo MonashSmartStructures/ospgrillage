@@ -27,7 +27,7 @@ exterior_I_beam = GrillageMember(member_name="exterior I beams", section=exterio
 
 # construct grillage model
 example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=4, width=7, skew=-11,
-                             num_long_grid=5, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
+                             num_long_grid=5, num_trans_grid=5, edge_beam_dist=1, mesh_type="Orth")
 
 # set material to grillage -
 example_bridge.set_material(concrete)
@@ -43,10 +43,14 @@ example_bridge.set_member(exterior_I_beam, member="edge_slab")
 # test output python file
 example_bridge.run_check()
 # add/replace a point load analysis
-# example_bridge.add_nodal_load_analysis(point=20, load_value=-2000)
+# create a NodeLoad object
+NL = NodalLoad("node load", [0, -2000, 0, 0, 0, 0], node_tag=20)
+NL_b = NodalLoad("node load", [0, -1000, 0, 0, 0, 0], node_tag=20)
+# add NodeLoad object to load case
+example_bridge.add_load_case("First Load", NL)
+example_bridge.add_load_case("Second Load", NL_b)
+example_bridge.copy_load_case(NL,[2,2])
 
-NL = NodalLoad("node load",[0, -2000, 0, 0, 0, 0], node_tag=20)
-example_bridge.add_load_case("Nodal Load case", NL)
 # add/replace analysis with a line load analysis
 # example_bridge.add_line_load_analysis(refpoint=[3,4],load_value=-200,direction="x")
 
