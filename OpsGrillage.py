@@ -90,6 +90,8 @@ class OpsGrillage:
         self.steel_prop = []  # list of steel properties arguments
         self.vxz_skew = []  # vector xz of skew elements - for section transformation
         self.global_mat_object = []  # material matrix
+        self.noz_trib_width = []
+        self.nox_trib_width = []
         # initialize tags of grillage elements - default tags are for standard elements of grillage
         # tags are used to link set properties to appropriate elements for element() command
 
@@ -324,16 +326,18 @@ class OpsGrillage:
         """
         # identify element groups in grillage based on line mesh vectors self.nox and self.noz
 
-        # get the groups of elements
-        self.section_group_noz, self.spacing_diff_noz, self.spacing_val_noz = self.characterize_node_diff(self.noz,
-                                                                                                          self.deci_tol)
-        self.section_group_nox, self.spacing_diff_nox, self.spacing_val_nox = self.characterize_node_diff(self.nox,
-                                                                                                          self.deci_tol)
+        # get the grouping properties of nox
+        # grouping number, dictionary of unique groups, dict of spacing values for given group as key, list of trib
+        # area of nodes
+        self.section_group_noz, self.spacing_diff_noz, self.spacing_val_noz, self.noz_trib_width \
+            = self.characterize_node_diff(self.noz,self.deci_tol)
+        self.section_group_nox, self.spacing_diff_nox, self.spacing_val_nox, self.nox_trib_width \
+            = self.characterize_node_diff(self.nox,self.deci_tol)
         # update self.section_group_nox counter to continue after self.section_group_noz
         self.section_group_nox = [x + max(self.section_group_noz) for x in self.section_group_nox]
 
         if self.ortho_mesh:
-            # update self.section_group_nox first element to reflect element group of Region B
+            # update self.section_group_nox first element to match counting for element group of Region B
             self.section_group_nox[0] = self.section_group_nox[len(self.regA) - 1]
         else:  # else skew mesh do nothing
             pass
@@ -382,12 +386,17 @@ class OpsGrillage:
         spacing_diff_set = {}  # initiate set recording the diff in spacings
         spacing_val_set = {}  # initiate set recoding spacing value
         diff_list = np.round(np.diff(node_list), decimals=tol)  # spacing of the node list- checked with tolerance
+
         counter = 1
+        # first item of
+        node_tributary_width = [diff_list[0]/2]
         for count in range(1, len(node_list)):
+
             # calculate the spacing diff between left and right node of current node
             if count >= len(diff_list):  # counter exceed the diff_list (size of diff list = size of node_list - 1)
                 break  # break from loop, return list
-            # spacing_diff = diff_list[count - 1] - diff_list[count]
+            # procedure to get node tributary area
+            node_tributary_width.append(diff_list[count - 1] / 2 + diff_list[count] / 2)
             spacing_diff = [diff_list[count - 1], diff_list[count]]
             if repr(spacing_diff) in spacing_diff_set:
                 # spacing recorded in spacing_diff_set
@@ -401,7 +410,8 @@ class OpsGrillage:
                 ele_group.append(spacing_diff_set[repr(spacing_diff)])
                 counter += 1
         ele_group.append(1)  # add last element of list (edge beam group 1)
-        return ele_group, spacing_diff_set, spacing_val_set
+        node_tributary_width.append(diff_list[-1] / 2)  # add last element (last spacing divide by 2)
+        return ele_group, spacing_diff_set, spacing_val_set, node_tributary_width
 
     def __write_section(self, op_section_obj):
         """
@@ -993,11 +1003,15 @@ class OpsGrillage:
             for loads in load_obj:
 
                 if isinstance(loads, NodalLoad):
-                    load_str = loads.get_nodal_load_str()
+                    load_str = loads.get_nodal_load_str(loads.node_tag, loads.load_value)
 
                     file_handle.write(load_str)
                     # print to terminal
                     print("Added load {loadname} to load case {loadcase}".format(loadname=loads.name, loadcase=name))
+                elif isinstance(loads, PointLoad):
+                    nod = self.return_four_node_position(position=loads.position, nox=self.nox, noz=self.noz,
+                                                         node_data=self.Nodedata)
+                    print(nod)
                 elif isinstance(loads, PatchLoading):
 
                     print("Load case {} added".format(loads.name))
@@ -1014,9 +1028,69 @@ class OpsGrillage:
             file_handle.write("ops.analyze(1)\n")
 
     def copy_load_case(self,load_obj,position):
-        nod = load_obj.return_four_node_position(position=position,nox=self.nox,noz=self.noz,node_data=self.Nodedata)
-        print(nod)
+        nod = self.return_four_node_position(position=position)
+        nod2 = self.return_grid_lines(northing_lines=position, udl_value=load_obj.load_value)
 
+        print(nod2)
+
+    def return_four_node_position(self, position):
+        # function called by OpsGrillage to identify the position of point load/axle
+        # position [x,z]
+        # find grid lines that bound position in x direction
+        grid_a_z, grid_b_z = self.search_grid_lines(self.noz, position=position[1])
+        # return nodes in the bounded grid lines grid_a_z and grid_b_z
+        grid_b_z_nodes = [x for x in self.Nodedata if x[4] == grid_a_z]
+        grid_a_z_nodes = [x for x in self.Nodedata if x[4] == grid_b_z]
+        # loop each grid nodes to find the two closest nodes in the x direction (vector distance)
+        node_distance = []
+        for node in grid_b_z_nodes:
+            dis = np.sqrt((node[1] - position[0]) ** 2 + 0 + (node[3] - position[1]) ** 2)
+            node_distance.append([node[0], dis])
+        for node in grid_a_z_nodes:
+            dis = np.sqrt((node[1] - position[0]) ** 2 + 0 + (node[3] - position[1]) ** 2)
+            node_distance.append([node[0], dis])
+        node_distance.sort(key=lambda x: x[1])
+        n1 = node_distance[0]
+        n2 = node_distance[1]
+        n3 = node_distance[2]
+        n4 = node_distance[3]
+        return [x[0] for x in [n1, n2, n3, n4]]
+
+    @staticmethod
+    def search_grid_lines(node_line_list, position):
+        upper_grids = []
+        lower_grids = []
+        for count, node_position in enumerate(node_line_list):
+            if node_position <= position:
+                lower_grids.append(count)
+            elif node_position >= position:
+                upper_grids.append(count)
+        lower_line = max(lower_grids)
+        upper_line = min(upper_grids)
+        return upper_line, lower_line
+
+    def return_grid_lines(self, northing_lines, udl_value):
+        if northing_lines[0] > northing_lines[1]:
+            _ , upper_bound_nd_line = self.search_grid_lines(self.noz, position=northing_lines[0])
+            lower_bound_nd_line, _ = self.search_grid_lines(self.noz, position=northing_lines[1])
+        else:
+            lower_bound_nd_line, _ = self.search_grid_lines(self.noz, position=northing_lines[0])
+            _, upper_bound_nd_line = self.search_grid_lines(self.noz, position=northing_lines[1])
+        # if lower bound = upper bound, no in between lines, only assign to the single line identified by
+        # lower_bound_nd_line/upper_bound_nd_line
+        if lower_bound_nd_line == upper_bound_nd_line:
+            in_between_nd_line = []
+        else:
+            in_between_nd_line = [lower_bound_nd_line + 1]
+            while not in_between_nd_line[-1] + 1 >= upper_bound_nd_line:
+                in_between_nd_line.append(in_between_nd_line[-1] + 1)
+
+        # For in between node lines, assign udl using full width of node tributary area
+        for nd_line in in_between_nd_line:
+            nd_wid = self.noz_trib_width[nd_line]
+            # get udl line
+            udl_line = udl_value * nd_wid
+            # assign udl line to all longitudinal element in the nd_line category
 
 # ----------------------------------------------------------------------------------------------------------------
 # Classes for components of opGrillage object
@@ -1214,39 +1288,14 @@ class Loads:
 
         print("Base loading")
 
-    def return_four_node_position(self, position, nox, noz, node_data, grid_a_z=[],grid_b_z=[]):
-        # position [x,z]
-        # find grid lines that bound position in x direction
-        for count, grid_z in enumerate(noz):
-            if grid_z <= position[1]:
-                grid_a_z.append(count)
-            elif grid_z >= position[1]:
-                grid_b_z.append(count)
-        grid_a_z = max(grid_a_z)
-        grid_b_z = min(grid_b_z)
-
-        # return nodes in the bounded grid lines grid_a_z and grid_b_z
-        grid_b_z_nodes = [x for x in node_data if x[4] == grid_a_z]
-        grid_a_z_nodes = [x for x in node_data if x[4] == grid_b_z]
-        # loop each grid nodes to find the two closest nodes in the x direction
-        bool_list_2 = []
-        for node in grid_b_z_nodes:
-            dis = np.sqrt((node[1] - position[0]) ** 2 + 0 + (node[3] - position[1]) ** 2)
-            bool_list_2.append([node[0],dis])
-        for node in grid_a_z_nodes:
-            dis = np.sqrt((node[1] - position[0]) ** 2 + 0 + (node[3] - position[1]) ** 2)
-            bool_list_2.append([node[0],dis])
-        bool_list_2.sort(key=lambda x: x[1])
-        n1 = bool_list_2[0]
-        n2 = bool_list_2[1]
-        n3 = bool_list_2[2]
-        n4 = bool_list_2[3]
-        return [n1, n2, n3, n4]
-
+    def get_nodal_load_str(self, node_tag, load_value):
+        # get str for ops.load() function.
+        load_str = "ops.load({pt}, *{val})\n".format(pt=node_tag, val=load_value)
+        return load_str
 
 
 class NodalLoad(Loads):
-    def __init__(self, name, load_value, node_tag, direction=None):
+    def __init__(self, name, load_value, node_tag, direction="Global Y"):
         """
 
         :param name:
@@ -1257,22 +1306,12 @@ class NodalLoad(Loads):
         super().__init__(name, load_value)
         self.node_tag = node_tag
 
-    def get_nodal_load_str(self):
-        # get str for ops.load() function.
-        load_str = "ops.load({pt}, *{val})\n".format(pt=self.node_tag, val=self.load_value)
-        return load_str
-
 
 class PointLoad(Loads):
-    def __init__(self, name, load_value, position, direction=None):
+    def __init__(self, name, load_value, position, direction="Global Y"):
         super().__init__(name, load_value)
         self.position = position
 
-    def get_point_load_str(self):
-        # find the four nodes
-
-        #
-        pass
 
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -1291,16 +1330,24 @@ class LineLoading(Loads):
 
 # ---------------------------------------------------------------------------------------------------------------
 class PatchLoading(Loads):
-    def __init__(self, name, load_value, construct_lines, direction="Global Y", define_option="4 lines"):
+    def __init__(self, name, load_value, northing_lines=[], easting_lines=[], direction="Global Y"):
         super().__init__(name, load_value, direction)
-        self.construct_lines = construct_lines
+        self.northing_lines = northing_lines
+        self.easting_lines = easting_lines
         print("Deck patch load {} created".format(name))
+
+
+
+
+
+        #node_trib_width[grid_a_z]
+        # node_trib_width[grid_b_z]
 
     def get_patch_loading_str(self):
         pass
 
 
-class VehicleLoad(Loads):
+class VehicleLoad(PointLoad):
     def __init__(self, name, load_value, position, direction=None):
         super(VehicleLoad, self).__init__(name, load_value)
         # TODO populate class with vehicle models

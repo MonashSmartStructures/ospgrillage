@@ -46,16 +46,13 @@ example_bridge.run_check()
 # create a NodeLoad object
 NL = NodalLoad("node load", [0, -2000, 0, 0, 0, 0], node_tag=20)
 NL_b = NodalLoad("node load", [0, -1000, 0, 0, 0, 0], node_tag=20)
+LaneLoad = PatchLoading("Lane 1", load_value=-9, northing_lines=[3.8, 6.2])
+
 # add NodeLoad object to load case
 example_bridge.add_load_case("First Load", NL)
-example_bridge.add_load_case("Second Load", NL_b)
-example_bridge.copy_load_case(NL,[2,2])
+example_bridge.copy_load_case(NL, [2, 3])
 
-# add/replace analysis with a line load analysis
-# example_bridge.add_line_load_analysis(refpoint=[3,4],load_value=-200,direction="x")
 
-# add/replace analysis with patch load analysis
-# example_bridge.add_line_load_analysis(refpoint=[3,4],load_value=-200,direction="x")
 # --------------------------------------------------------------------------------------------------------------------
 # simple plotting commands
 model = plot_nodes(example_bridge, plot_args=None)
