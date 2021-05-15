@@ -1,7 +1,7 @@
 # Example module interface for ops-grillage
 # import modules
 from OpsGrillage import OpsGrillage, Section, GrillageMember, UniAxialElasticMaterial, LineLoading, PatchLoading, \
-    NodalLoad
+    NodalLoad, LoadCase
 from PlotWizard import *
 import openseespy.opensees as ops
 
@@ -42,19 +42,18 @@ example_bridge.set_member(exterior_I_beam, member="edge_slab")
 
 # test output python file
 example_bridge.run_check()
-# add/replace a point load analysis
+
 # create a NodeLoad object
-NL = NodalLoad("node load", [0, -2000, 0, 0, 0, 0], node_tag=20)
-NL_b = NodalLoad("node load", [0, -1000, 0, 0, 0, 0], node_tag=20)
-LaneLoad = PatchLoading("Lane 1", load_value=-9, northing_lines=[3.8, 6.2])
+# NL = LoadCase("SDL concrete")
+# NL.add_nodal_load(node_tag=20, Fy=-2000)
+# print(NL)
 
-# add NodeLoad object to load case
-example_bridge.add_load_case("First Load", NL)
-example_bridge.copy_load_case(NL, [2, 3])
-
-
+DL = NodalLoad("concrete", 20)
+Lane = PatchLoading("Lane 1", northing_lines=[2,3], load_value=9)
+example_bridge.add_load_case("Concrete dead load case", DL, DL)
+example_bridge.copy_load_case(Lane)
 # --------------------------------------------------------------------------------------------------------------------
-# simple plotting commands
+# plotting commands
 model = plot_nodes(example_bridge, plot_args=None)
 
 # plot mesh showing element connectivity

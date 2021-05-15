@@ -3,6 +3,8 @@ import math
 import openseespy.opensees as ops
 from datetime import datetime
 from collections import defaultdict
+from static import *
+from Load import *
 
 
 class OpsGrillage:
@@ -37,6 +39,43 @@ class OpsGrillage:
         :type mesh_type: string
 
         """
+
+        # model information
+        self.mesh_type = mesh_type
+        self.model_name = bridge_name
+        self.op_instance_flag = op_instance
+
+        # global dimensions of grillage
+        self.long_dim = long_dim  # span , also c/c between support bearings
+        self.width = width  # length of the bearing support - if skew  = 0 , this corresponds to width of bridge
+        self.skew = skew  # angle in degrees
+
+        # Variables for grillage grillage
+        self.num_long_gird = num_long_grid  # number of longitudinal beams
+        self.num_trans_grid = num_trans_grid  # number of grids for transverse members
+        self.edge_width = edge_beam_dist  # width of cantilever edge beam
+        self.regA = []
+        self.regB = []
+        self.edge_beam_nodes = []
+        # instantiate matrices for geometric dependent properties
+        self.trans_dim = None  # to be calculated automatically based on skew
+        self.breadth = None  # to be calculated automatically based on skew
+        self.spclonggirder = None  # to be automated
+        self.spctransslab = None  # to be automated
+
+        # initialize lists
+        self.Nodedata = []  # array like to be populated
+        self.nox = []  # line mesh in x direction
+        self.noz = []  # line mesh in z direction
+        # initiate list of various elements of grillage model, each entry of list is a sublist [node_i, node_j, eletag]
+        self.long_mem = []  # longitudinal members
+        self.trans_mem = []  # transverse members
+        self.support_nodes = []  # list of nodes at support regions
+        self.vxz_skew = []  # vector xz of skew elements - for section transformation
+        self.global_mat_object = []  # material matrix
+        self.noz_trib_width = []
+        self.nox_trib_width = []
+        # initialize tags of grillage elements - default tags are for standard elements of grillage
         # Section placeholders
         self.section_arg = None
         self.section_tag = None
@@ -57,43 +96,6 @@ class OpsGrillage:
         # return spacings to the easting and westing of node
         # mesh object
         self.mesh_group = None
-
-        # model information
-        self.mesh_type = mesh_type
-        self.model_name = bridge_name
-        self.op_instance_flag = op_instance
-        # global dimensions of grillage
-        self.long_dim = long_dim  # span , also c/c between support bearings
-        self.width = width  # length of the bearing support - if skew  = 0 , this corresponds to width of bridge
-        self.skew = skew  # angle in degrees
-        # Properties of grillage
-        self.num_long_gird = num_long_grid  # number of longitudinal beams
-        self.num_trans_grid = num_trans_grid  # number of grids for transverse members
-        self.edge_width = edge_beam_dist  # width of cantilever edge beam
-        self.regA = []
-        self.regB = []
-        self.edge_beam_nodes = []
-        # instantiate matrices for geometric dependent properties
-        self.trans_dim = None  # to be calculated automatically based on skew
-        self.breadth = None  # to be calculated automatically based on skew
-        self.spclonggirder = None  # to be automated
-        self.spctransslab = None  # to be automated
-        # initialize lists
-        self.Nodedata = []  # array like to be populated
-        self.nox = []  # line mesh in x direction
-        self.noz = []  # line mesh in z direction
-        # initiate list of various elements of grillage model, each entry of list is a sublist [node_i, node_j, eletag]
-        self.long_mem = []  # longitudinal members
-        self.trans_mem = []  # transverse members
-        self.support_nodes = []  # list of nodes at support regions
-        self.concrete_prop = []  # list of concrete properties arguments
-        self.steel_prop = []  # list of steel properties arguments
-        self.vxz_skew = []  # vector xz of skew elements - for section transformation
-        self.global_mat_object = []  # material matrix
-        self.noz_trib_width = []
-        self.nox_trib_width = []
-        # initialize tags of grillage elements - default tags are for standard elements of grillage
-        # tags are used to link set properties to appropriate elements for element() command
 
         # later change these to match the transformation tag of either: (1) global orthogonal direction (x and z) or
         # (2) skew
@@ -316,7 +318,6 @@ class OpsGrillage:
                   .format(material_type, material_tag))
             return material_tag
 
-    # Encapsulated functions pertaining to identifying element groups
     def __identify_member_groups(self):
         """
         Abstracted method handled by either orthogonal_mesh() or skew_mesh() function
@@ -330,9 +331,9 @@ class OpsGrillage:
         # grouping number, dictionary of unique groups, dict of spacing values for given group as key, list of trib
         # area of nodes
         self.section_group_noz, self.spacing_diff_noz, self.spacing_val_noz, self.noz_trib_width \
-            = self.characterize_node_diff(self.noz,self.deci_tol)
+            = characterize_node_diff(self.noz, self.deci_tol)
         self.section_group_nox, self.spacing_diff_nox, self.spacing_val_nox, self.nox_trib_width \
-            = self.characterize_node_diff(self.nox,self.deci_tol)
+            = characterize_node_diff(self.nox, self.deci_tol)
         # update self.section_group_nox counter to continue after self.section_group_noz
         self.section_group_nox = [x + max(self.section_group_noz) for x in self.section_group_nox]
 
@@ -367,52 +368,6 @@ class OpsGrillage:
         print("Total groups of elements in longitudinal : {}".format(max(self.section_group_noz)))
         print("Total groups of elements in transverse : {}".format(max(self.section_group_nox)))
 
-    @staticmethod
-    def characterize_node_diff(node_list, tol):
-        """
-        Abstracted method handled by identify_member_groups() to characterize the groups of elements based on spacings
-        of node points in node_list.
-
-        :param tol: float of tolerance for checking spacings in np.diff() function
-        :param node_list: list containing node points along orthogonal axes (x and z)
-
-        :return ele_group: list of int indicating the groups of the elements along the orthogonal axes (either x or z)
-        :return spacing_diff_set: dict with the unique spacings on easting and westing of node (e.g. [0.5,0.6]  \
-        as keyword, returns the int of ele group.
-        :return spacing_val_set: dict with int of ele group as keyword, returns sum of the spacings
-        of easting and westing with
-        """
-        ele_group = [1]  # initiate element group list, first default is group 1 edge beam
-        spacing_diff_set = {}  # initiate set recording the diff in spacings
-        spacing_val_set = {}  # initiate set recoding spacing value
-        diff_list = np.round(np.diff(node_list), decimals=tol)  # spacing of the node list- checked with tolerance
-
-        counter = 1
-        # first item of
-        node_tributary_width = [diff_list[0]/2]
-        for count in range(1, len(node_list)):
-
-            # calculate the spacing diff between left and right node of current node
-            if count >= len(diff_list):  # counter exceed the diff_list (size of diff list = size of node_list - 1)
-                break  # break from loop, return list
-            # procedure to get node tributary area
-            node_tributary_width.append(diff_list[count - 1] / 2 + diff_list[count] / 2)
-            spacing_diff = [diff_list[count - 1], diff_list[count]]
-            if repr(spacing_diff) in spacing_diff_set:
-                # spacing recorded in spacing_diff_set
-                # set the tag
-                ele_group.append(spacing_diff_set[repr(spacing_diff)])
-            else:
-                # record new spacing in spacing_diff_set
-                spacing_diff_set[repr(spacing_diff)] = counter + 1
-                spacing_val_set[counter + 1] = sum(spacing_diff)
-                # set tag
-                ele_group.append(spacing_diff_set[repr(spacing_diff)])
-                counter += 1
-        ele_group.append(1)  # add last element of list (edge beam group 1)
-        node_tributary_width.append(diff_list[-1] / 2)  # add last element (last spacing divide by 2)
-        return ele_group, spacing_diff_set, spacing_val_set, node_tributary_width
-
     def __write_section(self, op_section_obj):
         """
         Abstracted procedure handled by set_member() function to write section() command for the elements. This method
@@ -442,6 +397,69 @@ class OpsGrillage:
             print("Section {} with tag {} has been previously defined"
                   .format(section_type, sectiontagcounter))
         return sectiontagcounter
+
+    def __get_vector_xz(self):
+        """
+        Encapsulated function to identify a vector parallel to the plane of local x and z axis of the element. The
+        vector is required for geomTransf() command
+        - see geomTransf_.
+
+        .. _geomTransf: https://openseespydoc.readthedocs.io/en/latest/src/geomTransf.html
+
+        """
+        # Function to calculate vector xz used for geometric transformation of local section properties
+        # return: vector parallel to plane xz of member (see geotransform Opensees) for skew members (member tag 5)
+
+        # vector rotate 90 deg clockwise (x,y) -> (y,-x)
+        # [breadth width] is a vector parallel to skew
+        x = self.width
+        y = -(-self.breadth)
+        # normalize vector
+        length = math.sqrt(x ** 2 + y ** 2)
+        vec = [x / length, y / length]
+        return vec
+
+    def __get_region_b(self, reg_a_end, noz):
+        """
+        Abstracted procedure to define the varying spacing nodes in orthogonal mesh (near support edges). This
+        method is called within orthogonal_mesh() or skew_mesh.
+
+        :return: list of nodes within the skew edge regions
+
+        """
+        # Function to calculate the node coordinate for skew region B
+        # -> triangular breadth along the longitudinal direction
+        # :param step: list containing transverse nodes (along z dir)
+        # :param reg_a_end: last node from regA (quadrilateral region)
+        # :return: node coordinate for skew triangular area (region B1 or B2)
+
+        regB = [reg_a_end]  # initiate array regB
+        for node in range(2, len(noz)):  # minus 2 to ignore first and last element of step
+            regB.append(self.long_dim - noz[-node] * np.abs(np.tan(self.skew / 180 * math.pi)))
+        # after append, add last element - self.long_dim
+        regB.append(self.long_dim)
+        regB = np.array(regB)
+        return regB
+
+    def __check_skew(self):
+        """
+        Function to set boolean to true if orthogonal mesh option. This function is automatically called during __init__
+        Function also checks if skew angle lies in allowable threshold
+        - between 10-30 degree (var self.skew_threshold) both types of mesh (skew and orthogonal) are allowed.
+        outside this bound, skew rules are strictly: (1) skew for angles less than 10 deg, and
+        (2) orthogonal for angles greater than 30 deg.
+        """
+        if self.mesh_type == "Ortho":
+            self.ortho_mesh = True
+        else:
+            self.ortho_mesh = False
+
+        # checks mesh type options are within the allowance threshold
+        if np.abs(self.skew) <= self.skew_threshold[0] and self.ortho_mesh:
+            # print
+            raise Exception('Orthogonal mesh not allowed for angle less than {}'.format(self.skew_threshold[0]))
+        elif np.abs(self.skew) >= self.skew_threshold[1] and not self.ortho_mesh:
+            raise Exception('Oblique mesh not allowed for angle greater than {}'.format(self.skew_threshold[1]))
 
     def set_member(self, grillage_member_class, member=None):
         """
@@ -525,31 +543,9 @@ class OpsGrillage:
         print("Assigned member groups {}".format(repr(self.ele_group_assigned_list)))
         if len(self.ele_group_assigned_list) != max(self.section_group_nox):
             print("Unassigned member groups: {}".format(
-                self.__Diff(range(1, max(self.section_group_nox) + 1), self.ele_group_assigned_list)))
+                diff(range(1, max(self.section_group_nox) + 1), self.ele_group_assigned_list)))
         else:
             print("All member groups have been assigned")
-
-    # Encapsulated functions related to mesh generation
-    def __get_vector_xz(self):
-        """
-        Encapsulated function to identify a vector parallel to the plane of local x and z axis of the element. The
-        vector is required for geomTransf() command
-        - see geomTransf_.
-
-        .. _geomTransf: https://openseespydoc.readthedocs.io/en/latest/src/geomTransf.html
-
-        """
-        # Function to calculate vector xz used for geometric transformation of local section properties
-        # return: vector parallel to plane xz of member (see geotransform Opensees) for skew members (member tag 5)
-
-        # vector rotate 90 deg clockwise (x,y) -> (y,-x)
-        # [breadth width] is a vector parallel to skew
-        x = self.width
-        y = -(-self.breadth)
-        # normalize vector
-        length = math.sqrt(x ** 2 + y ** 2)
-        vec = [x / length, y / length]
-        return vec
 
     def get_trans_edge_nodes(self):
         """
@@ -605,48 +601,6 @@ class OpsGrillage:
         self.edge_beam_nodes = np.unique(self.edge_beam_nodes)
         return self.edge_beam_nodes
 
-    def __get_region_b(self, reg_a_end, noz):
-        """
-        Abstracted procedure to define the varying spacing nodes in orthogonal mesh (near support edges). This
-        method is called within orthogonal_mesh() or skew_mesh.
-
-        :return: list of nodes within the skew edge regions
-
-        """
-        # Function to calculate the node coordinate for skew region B
-        # -> triangular breadth along the longitudinal direction
-        # :param step: list containing transverse nodes (along z dir)
-        # :param reg_a_end: last node from regA (quadrilateral region)
-        # :return: node coordinate for skew triangular area (region B1 or B2)
-
-        regB = [reg_a_end]  # initiate array regB
-        for node in range(2, len(noz)):  # minus 2 to ignore first and last element of step
-            regB.append(self.long_dim - noz[-node] * np.abs(np.tan(self.skew / 180 * math.pi)))
-        # after append, add last element - self.long_dim
-        regB.append(self.long_dim)
-        regB = np.array(regB)
-        return regB
-
-    def __check_skew(self):
-        """
-        Function to set boolean to true if orthogonal mesh option. This function is automatically called during __init__
-        Function also checks if skew angle lies in allowable threshold
-        - between 10-30 degree (var self.skew_threshold) both types of mesh (skew and orthogonal) are allowed.
-        outside this bound, skew rules are strictly: (1) skew for angles less than 10 deg, and
-        (2) orthogonal for angles greater than 30 deg.
-        """
-        if self.mesh_type == "Ortho":
-            self.ortho_mesh = True
-        else:
-            self.ortho_mesh = False
-
-        # checks mesh type options are within the allowance threshold
-        if np.abs(self.skew) <= self.skew_threshold[0] and self.ortho_mesh:
-            # print
-            raise Exception('Orthogonal mesh not allowed for angle less than {}'.format(self.skew_threshold[0]))
-        elif np.abs(self.skew) >= self.skew_threshold[1] and not self.ortho_mesh:
-            raise Exception('Oblique mesh not allowed for angle greater than {}'.format(self.skew_threshold[1]))
-
     def get_long_grid_nodes(self):
         """
         Abstracted procedure to define the node lines along the transverse (z) direction. Nodes are calculated based on
@@ -660,15 +614,6 @@ class OpsGrillage:
         nox_girder = np.linspace(start=self.edge_width, stop=last_girder, num=self.num_long_gird)
         noz = np.hstack((np.hstack((0, nox_girder)), self.width))  # array containing z coordinate
         return noz
-
-    @staticmethod
-    def __Diff(li1, li2):
-        """
-        Static method to determine the difference between two list. Called in set_member() function to check member
-        assignment
-
-        """
-        return list(list(set(li1) - set(li2)) + list(set(li2) - set(li1)))
 
     # encapsulated meshing procedure for skew meshing
     def __skew_mesh(self):
@@ -694,7 +639,8 @@ class OpsGrillage:
             for xcount, pointx in enumerate(noxupdate):  # loop for each mesh point in x dir (nox)
                 # populate nodedata array - inputs [nodetag,x,y,z, gridz tag, gridx tag]
                 self.Nodedata.append(
-                    [nodetagcounter, pointx, self.y_elevation, pointz, zcount, xcount])  # NOTE here is where to change X Y plane
+                    [nodetagcounter, pointx, self.y_elevation, pointz, zcount,
+                     xcount])  # NOTE here is where to change X Y plane
                 nodetagcounter += 1
         # print to terminal
         print("Nodes created. Number of nodes = {}".format(nodetagcounter - 1))
@@ -969,54 +915,66 @@ class OpsGrillage:
         # write uniaxialMaterial() command to output file
         self.__write_uniaxial_material(material=material_obj)
 
-    # test output file
     def run_check(self):
         """
-        Unit test for code, invoke the output py file to check execution
+        Test output file
 
         """
         try:
             __import__(self.filename[:-3])  # run file
             print("File successfully imported and run")
         except:
-            print("File not executable")
+            print("File executed with error exceptions")
 
-    def add_load_case(self, name, *load_obj, analysis_num=1, analysis_type='Static'):
-        # setdefault
+    def add_load_case(self, name, *load_obj, analysis_type='Static'):
+        """
+        Functions to add loads or load cases
+        :param name:
+        :param load_obj:
+        :param analysis_type:
+        :return:
+        """
 
         with open(self.filename, 'a') as file_handle:
-            # create timeseries obj
+            # if no load cases have been defined previously, create time series object for the first time
             if not bool(self.load_case_dict):
-                file_handle.write("ops.timeSeries('Constant', 1)\n")
-                lastloadcase = 0  # if dict empty, start counter at 1
-            else:  # set lastloadcase as the latest
-                lastloadcase = self.load_case_dict[list(self.load_case_dict)[-1]]
-                file_handle.write("ops.wipeAnalysi()\n")  # write wipeAnalysis for current load case
+                time_series = "ops.timeSeries('Constant', 1)\n"
+                file_handle.write(time_series)
+                eval(time_series)
+                load_case_counter = 0  # if dict empty, start counter at 1
+            else:  # set load_case_counter variable as the latest
+                load_case_counter = self.load_case_dict[list(self.load_case_dict)[-1]]
+                wipe_command = "ops.wipeAnalysis()\n"
+                file_handle.write(wipe_command)  # write wipeAnalysis for current load case
+                eval(wipe_command)
+
             # set load case to load_case_dict
-            load_case_tag = self.load_case_dict.setdefault(name, lastloadcase + 1)
+            load_case_tag = self.load_case_dict.setdefault(name, load_case_counter + 1)
             # write header
             file_handle.write("#===========================\n# create load case {}\n#==========================\n"
                               .format(name))
-            # create pattern obj
-            file_handle.write("ops.pattern('Plain', {}, 1)\n".format(load_case_tag))
+            # create pattern obj for load case
+            pattern_command = "ops.pattern('Plain', {}, 1)\n".format(load_case_tag)
+            file_handle.write(pattern_command)
+            eval(pattern_command)
+            # print to terminal
             print("Load Case {} created".format(name))
+            # loop through each load object
             for loads in load_obj:
-
                 if isinstance(loads, NodalLoad):
-                    load_str = loads.get_nodal_load_str(loads.node_tag, loads.load_value)
-
-                    file_handle.write(load_str)
+                    load_str = loads.get_nodal_load_str()
+                    for lines in load_str:
+                        file_handle.write(lines)
                     # print to terminal
                     print("Added load {loadname} to load case {loadcase}".format(loadname=loads.name, loadcase=name))
                 elif isinstance(loads, PointLoad):
-                    nod = self.return_four_node_position(position=loads.position, nox=self.nox, noz=self.noz,
-                                                         node_data=self.Nodedata)
+                    nod = self.__return_four_node_position(position=loads.position)
                     print(nod)
                 elif isinstance(loads, PatchLoading):
 
                     print("Load case {} added".format(loads.name))
                 else:
-                    print("No Load case assigned for {}".format(loads))
+                    print("No loads assigned for {}".format(loads))
 
             # Create instance and write command to output py file
             file_handle.write("ops.integrator('LoadControl', 1)\n")  # Header
@@ -1024,16 +982,15 @@ class OpsGrillage:
             file_handle.write("ops.system('BandGeneral')\n")
             file_handle.write("ops.constraints('Plain')\n")
             file_handle.write("ops.algorithm('Linear')\n")
-            file_handle.write("ops.analysis('Static')\n")
+            file_handle.write("ops.analysis(\"{}\")\n".format(analysis_type))
             file_handle.write("ops.analyze(1)\n")
 
-    def copy_load_case(self,load_obj,position):
-        nod = self.return_four_node_position(position=position)
-        nod2 = self.return_grid_lines(northing_lines=position, udl_value=load_obj.load_value)
+    def copy_load_case(self, load_obj):
+        #nod = self.__return_four_node_position(position=position)
+        nod2 = self.__return_grid_lines(northing_lines=load_obj.northing_lines, udl_value=load_obj.wy)
 
-        print(nod2)
 
-    def return_four_node_position(self, position):
+    def __return_four_node_position(self, position):
         # function called by OpsGrillage to identify the position of point load/axle
         # position [x,z]
         # find grid lines that bound position in x direction
@@ -1056,41 +1013,48 @@ class OpsGrillage:
         n4 = node_distance[3]
         return [x[0] for x in [n1, n2, n3, n4]]
 
-    @staticmethod
-    def search_grid_lines(node_line_list, position):
-        upper_grids = []
-        lower_grids = []
-        for count, node_position in enumerate(node_line_list):
-            if node_position <= position:
-                lower_grids.append(count)
-            elif node_position >= position:
-                upper_grids.append(count)
-        lower_line = max(lower_grids)
-        upper_line = min(upper_grids)
-        return upper_line, lower_line
-
-    def return_grid_lines(self, northing_lines, udl_value):
+    def __return_grid_lines(self, northing_lines, udl_value):
         if northing_lines[0] > northing_lines[1]:
-            _ , upper_bound_nd_line = self.search_grid_lines(self.noz, position=northing_lines[0])
-            lower_bound_nd_line, _ = self.search_grid_lines(self.noz, position=northing_lines[1])
+            _, ub_nd_line = search_grid_lines(self.noz, position=northing_lines[0])
+            lb_nd_line, _ = search_grid_lines(self.noz, position=northing_lines[1])
         else:
-            lower_bound_nd_line, _ = self.search_grid_lines(self.noz, position=northing_lines[0])
-            _, upper_bound_nd_line = self.search_grid_lines(self.noz, position=northing_lines[1])
+            lb_nd_line, _ = search_grid_lines(self.noz, position=northing_lines[0])
+            _, ub_nd_line = search_grid_lines(self.noz, position=northing_lines[1])
         # if lower bound = upper bound, no in between lines, only assign to the single line identified by
         # lower_bound_nd_line/upper_bound_nd_line
-        if lower_bound_nd_line == upper_bound_nd_line:
+        if abs(lb_nd_line - ub_nd_line) <= 1 or lb_nd_line==ub_nd_line:
             in_between_nd_line = []
+            lb_nd_line
         else:
-            in_between_nd_line = [lower_bound_nd_line + 1]
-            while not in_between_nd_line[-1] + 1 >= upper_bound_nd_line:
+            in_between_nd_line = [lb_nd_line + 1]
+            while not in_between_nd_line[-1] + 1 >= ub_nd_line:
                 in_between_nd_line.append(in_between_nd_line[-1] + 1)
 
+        load_str = []
         # For in between node lines, assign udl using full width of node tributary area
         for nd_line in in_between_nd_line:
             nd_wid = self.noz_trib_width[nd_line]
-            # get udl line
             udl_line = udl_value * nd_wid
-            # assign udl line to all longitudinal element in the nd_line category
+            for ele in self.long_mem:
+                # if element is part of the grid line, assign UDl using eleLoad command
+                if ele[5] == nd_line:
+                    eleLoad_line = "ops.eleLoad('-ele', *[{eleTag}, '-type', '-beamUniform', Wy = {Wy}, Wz={Wz}, Wz={Wx}])"\
+                        .format(eleTag=ele[3], Wy=udl_line, Wx=0, Wz=0)
+                    load_str.append(eleLoad_line)
+        # For upper and lower bound lines, check width and assign UDL based on the width of the load on node
+        lb_nd_wid = self.noz_trib_width[lb_nd_line]
+        ub_nd_wid = self.noz_trib_width[ub_nd_line]
+        for ele in self.long_mem:
+            if ele[5] == lb_nd_line:
+                eleLoad_line = "ops.eleLoad('-ele', *[{eleTag}, '-type', '-beamUniform', Wy = {Wy}, Wz={Wz}, Wz={Wx}])" \
+                    .format(eleTag=ele[3], Wy=udl_value * lb_nd_wid, Wx=0, Wz=0)
+                load_str.append(eleLoad_line)
+            elif ele[5] == ub_nd_line:
+                eleLoad_line = "ops.eleLoad('-ele', *[{eleTag}, '-type', '-beamUniform', Wy = {Wy}, Wz={Wz}, Wz={Wx}])" \
+                    .format(eleTag=ele[3], Wy=udl_value * ub_nd_wid, Wx=0, Wz=0)
+                load_str.append(eleLoad_line)
+
+        return load_str
 
 # ----------------------------------------------------------------------------------------------------------------
 # Classes for components of opGrillage object
@@ -1272,91 +1236,4 @@ class GrillageMember:
         self.material = material
 
 
-# ----------------------------------------------------------------------------------------------------------------
-# Loading classes
-# ---------------------------------------------------------------------------------------------------------------
-class Loads:
-    """
-    Main class of loading definition
-    """
 
-    def __init__(self, name, load_value, direction="Global Y"):
-        #
-        self.name = name
-        self.load_value = load_value
-        self.direction = direction
-
-        print("Base loading")
-
-    def get_nodal_load_str(self, node_tag, load_value):
-        # get str for ops.load() function.
-        load_str = "ops.load({pt}, *{val})\n".format(pt=node_tag, val=load_value)
-        return load_str
-
-
-class NodalLoad(Loads):
-    def __init__(self, name, load_value, node_tag, direction="Global Y"):
-        """
-
-        :param name:
-        :param load_value: list of load magnitude
-        :param direction:
-        :param node_tag:
-        """
-        super().__init__(name, load_value)
-        self.node_tag = node_tag
-
-
-class PointLoad(Loads):
-    def __init__(self, name, load_value, position, direction="Global Y"):
-        super().__init__(name, load_value)
-        self.position = position
-
-
-
-# ---------------------------------------------------------------------------------------------------------------
-
-class LineLoading(Loads):
-    def __init__(self, name, load_value, ele_groups, direction="Global Y"):
-        super().__init__(name, load_value, direction)
-        print("Line Loading {} created".format(name))
-
-    def get_line_position(self):
-        pass
-
-    def get_line_loading_str(self):
-        pass
-
-
-# ---------------------------------------------------------------------------------------------------------------
-class PatchLoading(Loads):
-    def __init__(self, name, load_value, northing_lines=[], easting_lines=[], direction="Global Y"):
-        super().__init__(name, load_value, direction)
-        self.northing_lines = northing_lines
-        self.easting_lines = easting_lines
-        print("Deck patch load {} created".format(name))
-
-
-
-
-
-        #node_trib_width[grid_a_z]
-        # node_trib_width[grid_b_z]
-
-    def get_patch_loading_str(self):
-        pass
-
-
-class VehicleLoad(PointLoad):
-    def __init__(self, name, load_value, position, direction=None):
-        super(VehicleLoad, self).__init__(name, load_value)
-        # TODO populate class with vehicle models
-
-        self.position
-        self.offset
-        self.chainage
-        self.axles
-        self.carriage
-
-    def get_vehicle_load_str(self):
-        pass
