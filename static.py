@@ -56,7 +56,8 @@ def diff(li1, li2):
     return list(list(set(li1) - set(li2)) + list(set(li2) - set(li1)))
 
 
-def search_grid_lines(node_line_list, position):
+def search_grid_lines(node_line_list, position, position_bound="ub"):
+
     upper_grids = []
     lower_grids = []
     for count, node_position in enumerate(node_line_list):
@@ -64,6 +65,30 @@ def search_grid_lines(node_line_list, position):
             lower_grids.append(count)
         elif node_position >= position:
             upper_grids.append(count)
+
     lower_line = max(lower_grids)
     upper_line = min(upper_grids)
-    return upper_line, lower_line
+
+    lower_pos_diff = position - node_line_list[lower_line]
+    upper_pos_diff = node_line_list[upper_line] - position
+    spacing = (node_line_list[upper_line] - node_line_list[lower_line])/2
+    if position_bound == "ub":
+        if lower_pos_diff > spacing:
+            upper_line_width = lower_pos_diff - spacing
+            lower_line_width = spacing
+        else:
+            upper_line = []
+            upper_line_width = 0
+            lower_line_width = lower_pos_diff
+    elif position_bound == "lb":
+        if upper_pos_diff > spacing:
+            lower_line_width = upper_pos_diff - spacing
+            upper_line_width = spacing
+        else:
+            lower_line = []
+            lower_line_width = 0
+            upper_line_width = upper_pos_diff
+    else:
+        print('error calculating grid line position')
+    return [[upper_line, upper_line_width],[lower_line, lower_line_width]]
+

@@ -102,7 +102,7 @@ class LineLoading(Loads):
 
 # ---------------------------------------------------------------------------------------------------------------
 class PatchLoading(Loads):
-    def __init__(self, name, load_value, northing_lines=[], easting_lines=[]):
+    def __init__(self, name, load_value, northing_lines=[], easting_lines=None):
         super().__init__(name, wy=load_value)
         if len(northing_lines) == 1:
             self.northing_lines.append([0, northing_lines])  #

@@ -27,7 +27,6 @@ See :ref:Structure description page for more information of inputs.
 
 ### Bridge model features
 - [x] Single-span 
-- [x] Autodetect edge of spans as supporting nodes
 - [x] Allow for transverse secondary beams 
 - [x] Allow for diaphragm
 - [x] Allow for unit width properties for transverse slab
@@ -38,6 +37,7 @@ See :ref:Structure description page for more information of inputs.
 - [x] Allow for skew mesh to be set up to 30 degrees
 - [x] Allow for orthogonal mesh to be set down to 11 degrees
 - [x] Grillage elements grouped automatically for easy definition
+- [x] Autodetect edge of spans as supporting nodes
 
 ### Element types
 The following Opensees element types are supported by ops-grillage
@@ -51,7 +51,7 @@ The following Opensees element types are supported by ops-grillage
 #### Loading Utilities
 - [x] Nodal load analysis
 - [ ] Line load analysis
-- [ ] Patch load analysis
+- [x] Patch load analysis
 #### Commands 
 - [x] Plotting features - alternative to default Opensees plotting module - i.e. ops_vis
 

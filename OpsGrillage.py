@@ -971,7 +971,9 @@ class OpsGrillage:
                     nod = self.__return_four_node_position(position=loads.position)
                     print(nod)
                 elif isinstance(loads, PatchLoading):
-
+                    load_str = self.__return_grid_lines(northing_lines=loads.northing_lines,udl_value=loads.wy)
+                    for lines in load_str:
+                        file_handle.write(lines)
                     print("Load case {} added".format(loads.name))
                 else:
                     print("No loads assigned for {}".format(loads))
@@ -994,7 +996,7 @@ class OpsGrillage:
         # function called by OpsGrillage to identify the position of point load/axle
         # position [x,z]
         # find grid lines that bound position in x direction
-        grid_a_z, grid_b_z = self.search_grid_lines(self.noz, position=position[1])
+        grid_a_z, grid_b_z = search_grid_lines(self.noz, position=position[1])
         # return nodes in the bounded grid lines grid_a_z and grid_b_z
         grid_b_z_nodes = [x for x in self.Nodedata if x[4] == grid_a_z]
         grid_a_z_nodes = [x for x in self.Nodedata if x[4] == grid_b_z]
@@ -1015,46 +1017,61 @@ class OpsGrillage:
 
     def __return_grid_lines(self, northing_lines, udl_value):
         if northing_lines[0] > northing_lines[1]:
-            _, ub_nd_line = search_grid_lines(self.noz, position=northing_lines[0])
-            lb_nd_line, _ = search_grid_lines(self.noz, position=northing_lines[1])
+            ub_nd_line = search_grid_lines(self.noz, position=northing_lines[0], position_bound="ub")
+            lb_nd_line = search_grid_lines(self.noz, position=northing_lines[1], position_bound="lb")
         else:
-            lb_nd_line, _ = search_grid_lines(self.noz, position=northing_lines[0])
-            _, ub_nd_line = search_grid_lines(self.noz, position=northing_lines[1])
+            lb_nd_line = search_grid_lines(self.noz, position=northing_lines[0], position_bound="lb")
+            ub_nd_line = search_grid_lines(self.noz, position=northing_lines[1], position_bound="ub")
+        load_str = []
         # if lower bound = upper bound, no in between lines, only assign to the single line identified by
         # lower_bound_nd_line/upper_bound_nd_line
-        if abs(lb_nd_line - ub_nd_line) <= 1 or lb_nd_line==ub_nd_line:
-            in_between_nd_line = []
-            lb_nd_line
+        # if ub_nd_line and lb_nd_line are identical, patch load area too small for definition of patch load
+        if lb_nd_line[0][0] == ub_nd_line[0][0] and lb_nd_line[1][0] == ub_nd_line[1][0]:
+            # print warning to Terminal
+            print('Northing bounds too small for definition of patch loads - consider line load instead ')
+
+        # if bounded line is common, set load to
+        elif lb_nd_line[0] == ub_nd_line[1]:
+            in_between_nd_line = [lb_nd_line[0][0]]
+            lb_nd_line[0] = [[], 0]
+            ub_nd_line[1] = [[], 0]
         else:
-            in_between_nd_line = [lb_nd_line + 1]
-            while not in_between_nd_line[-1] + 1 >= ub_nd_line:
+            in_between_nd_line = [lb_nd_line[0][0] + 1]
+            while not in_between_nd_line[-1] + 1 > ub_nd_line[1][0]:
                 in_between_nd_line.append(in_between_nd_line[-1] + 1)
 
-        load_str = []
-        # For in between node lines, assign udl using full width of node tributary area
+        # loop all between node lines, assign udl using full width of node tributary area
         for nd_line in in_between_nd_line:
             nd_wid = self.noz_trib_width[nd_line]
             udl_line = udl_value * nd_wid
             for ele in self.long_mem:
                 # if element is part of the grid line, assign UDl using eleLoad command
                 if ele[5] == nd_line:
-                    eleLoad_line = "ops.eleLoad('-ele', *[{eleTag}, '-type', '-beamUniform', Wy = {Wy}, Wz={Wz}, Wz={Wx}])"\
+                    eleLoad_line = "ops.eleLoad('-ele', {eleTag}, '-type', '-beamUniform', {Wy}, {Wz}, {Wx})\n"\
                         .format(eleTag=ele[3], Wy=udl_line, Wx=0, Wz=0)
                     load_str.append(eleLoad_line)
-        # For upper and lower bound lines, check width and assign UDL based on the width of the load on node
-        lb_nd_wid = self.noz_trib_width[lb_nd_line]
-        ub_nd_wid = self.noz_trib_width[ub_nd_line]
+
         for ele in self.long_mem:
-            if ele[5] == lb_nd_line:
-                eleLoad_line = "ops.eleLoad('-ele', *[{eleTag}, '-type', '-beamUniform', Wy = {Wy}, Wz={Wz}, Wz={Wx}])" \
-                    .format(eleTag=ele[3], Wy=udl_value * lb_nd_wid, Wx=0, Wz=0)
+            if ele[5] == lb_nd_line[0][0]:
+                eleLoad_line = "ops.eleLoad('-ele', {eleTag}, '-type', '-beamUniform', {Wy}, {Wz}, {Wx})\n" \
+                    .format(eleTag=ele[3], Wy=udl_value * lb_nd_line[0][1], Wx=0, Wz=0)
                 load_str.append(eleLoad_line)
-            elif ele[5] == ub_nd_line:
-                eleLoad_line = "ops.eleLoad('-ele', *[{eleTag}, '-type', '-beamUniform', Wy = {Wy}, Wz={Wz}, Wz={Wx}])" \
-                    .format(eleTag=ele[3], Wy=udl_value * ub_nd_wid, Wx=0, Wz=0)
+            elif ele[5] == ub_nd_line[0][0]:
+                eleLoad_line = "ops.eleLoad('-ele', {eleTag}, '-type', '-beamUniform', {Wy}, {Wz}, {Wx})\n" \
+                    .format(eleTag=ele[3], Wy=udl_value * ub_nd_line[0][1], Wx=0, Wz=0)
                 load_str.append(eleLoad_line)
+            elif ele[5] == lb_nd_line[1][0]:
+                eleLoad_line = "ops.eleLoad('-ele', {eleTag}, '-type', '-beamUniform', {Wy}, {Wz}, {Wx})\n" \
+                    .format(eleTag=ele[3], Wy=udl_value * lb_nd_line[1][1], Wx=0, Wz=0)
+                load_str.append(eleLoad_line)
+            elif ele[5] == ub_nd_line[1][0]:
+                eleLoad_line = "ops.eleLoad('-ele', {eleTag}, '-type', '-beamUniform', {Wy}, {Wz}, {Wx})\n" \
+                    .format(eleTag=ele[3], Wy=udl_value * ub_nd_line[1][1], Wx=0, Wz=0)
+                load_str.append(eleLoad_line)
+        # TODO filter longitudinal members for easting lines
 
         return load_str
+
 
 # ----------------------------------------------------------------------------------------------------------------
 # Classes for components of opGrillage object

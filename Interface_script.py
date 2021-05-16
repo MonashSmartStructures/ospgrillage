@@ -49,9 +49,10 @@ example_bridge.run_check()
 # print(NL)
 
 DL = NodalLoad("concrete", 20)
-Lane = PatchLoading("Lane 1", northing_lines=[2,3], load_value=9)
+Lane = PatchLoading("Lane 1", northing_lines=[1.5,3.3], load_value=9)
 example_bridge.add_load_case("Concrete dead load case", DL, DL)
-example_bridge.copy_load_case(Lane)
+example_bridge.add_load_case("Lane 1", Lane)
+#example_bridge.copy_load_case(Lane)
 # --------------------------------------------------------------------------------------------------------------------
 # plotting commands
 model = plot_nodes(example_bridge, plot_args=None)
