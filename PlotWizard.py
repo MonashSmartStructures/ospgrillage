@@ -75,10 +75,10 @@ def plot_section(op_gril_obj, list_input, char):
         listed = op_gril_obj.group_ele_dict[list_input]  # get the tag number of group
     for num, ele in enumerate(op_gril_obj.global_element_list):
         if ele[2] == listed:
-            matches_i_x = [x[1] for x in op_gril_obj.Nodedata if ele[0] == x[0]]
-            matches_i_z = [x[3] for x in op_gril_obj.Nodedata if ele[0] == x[0]]
-            matches_j_x = [x[1] for x in op_gril_obj.Nodedata if ele[1] == x[0]]
-            matches_j_z = [x[3] for x in op_gril_obj.Nodedata if ele[1] == x[0]]
+            matches_i_x = [x[1] for x in op_gril_obj.node_map if ele[0] == x[0]]
+            matches_i_z = [x[3] for x in op_gril_obj.node_map if ele[0] == x[0]]
+            matches_j_x = [x[1] for x in op_gril_obj.node_map if ele[1] == x[0]]
+            matches_j_z = [x[3] for x in op_gril_obj.node_map if ele[1] == x[0]]
             plt.plot([matches_i_x, matches_j_x], [matches_i_z, matches_j_z], char)
 
         else:
@@ -87,9 +87,9 @@ def plot_section(op_gril_obj, list_input, char):
 
 def plot_nodes(op_gril_ob, plot_args):
     # plot by accessing Nodedata attribute
-    x = [sub[1] for sub in op_gril_ob.Nodedata]
-    y = [sub[3] for sub in op_gril_ob.Nodedata]
-    tag = [sub[0] for sub in op_gril_ob.Nodedata]
+    x = [sub[1] for sub in op_gril_ob.node_map]
+    y = [sub[3] for sub in op_gril_ob.node_map]
+    tag = [sub[0] for sub in op_gril_ob.node_map]
     model = plt.scatter(x, y)
     for point in range(0, len(x)):
         plt.text(x[point], y[point], tag[point], fontsize='small')

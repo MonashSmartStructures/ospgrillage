@@ -5,6 +5,8 @@ from datetime import datetime
 from collections import defaultdict
 from static import *
 from Load import *
+from Material import *
+from member_sections import *
 
 
 class OpsGrillage:
@@ -64,7 +66,7 @@ class OpsGrillage:
         self.spctransslab = None  # to be automated
 
         # initialize lists
-        self.Nodedata = []  # array like to be populated
+        self.node_map = []  # array like to be populated
         self.nox = []  # line mesh in x direction
         self.noz = []  # line mesh in z direction
         # initiate list of various elements of grillage model, each entry of list is a sublist [node_i, node_j, eletag]
@@ -90,21 +92,10 @@ class OpsGrillage:
         self.ele_group_assigned_list = []  # list recording assigned ele groups in grillage model
         self.section_dict = {}  # dictionary of section tags
         self.material_dict = {}  # dictionary of material tags
-        self.spacing_val_noz = []  # dictionary of group as keywords ,
-        # return spacings to the easting and westing of node
-        self.spacing_val_nox = []  # dictionary of group as keywords ,
-        # return spacings to the easting and westing of node
-        # mesh object
-        self.mesh_group = None
-
-        # later change these to match the transformation tag of either: (1) global orthogonal direction (x and z) or
-        # (2) skew
-        self.longitudinal_tag = 1
-        self.longitudinal_edge_1_tag = 2
-        self.longitudinal_edge_2_tag = 3
-        self.transverse_tag = 4
-        self.transverse_edge_1_tag = 5
-        self.transverse_edge_2_tag = 6
+        self.spacing_val_noz = []  # dict of group as keywords, val = spacing
+        self.spacing_val_nox = []  # dict of group as keywords, val = spacing
+        # collect mesh groups
+        self.mesh_group = []
 
         # rules for grillage automation - default values are in place, use keyword during class instantiation
         self.min_long_spacing = 1  # default 1m
@@ -150,6 +141,9 @@ class OpsGrillage:
             # write imports
             file_handle.write("import numpy as np\nimport math\nimport openseespy.opensees as ops"
                               "\nimport openseespy.postprocessing.Get_Rendering as opsplt\n")
+
+        # check skew threshold
+        self.__check_skew()
         # generate nodes and elements of model
         self.__run_mesh_generation()
 
@@ -162,17 +156,15 @@ class OpsGrillage:
         """
         # calculate edge length of grillage
         self.trans_dim = self.width / math.cos(self.skew / 180 * math.pi)
-        # check for orthogonal mesh requirement
-        self.__check_skew()
 
         # 1 create Opensees model space
         self.__write_op_model()
         # check mesh type and run procedure accordingly
         if self.ortho_mesh:
             # perform orthogonal meshing
-            self.mesh_group = self.__orthogonal_mesh()
+            self.mesh_group.append(self.__orthogonal_mesh())
         else:  # perform skew mesh
-            self.mesh_group = self.__skew_mesh()
+            self.mesh_group.append(self.__skew_mesh())
         v = self.__get_vector_xz()
 
         if self.ortho_mesh:
@@ -194,7 +186,7 @@ class OpsGrillage:
         self.__write_op_fix()  # write fix() command for support nodes
 
     #
-    def set_boundary_condition(self, restraint_nodes, restraint_vector, option="Add"):
+    def set_boundary_condition(self, restraint_nodes, restraint_vector):
         """
         User function to define support boundary conditions in addition to the model edges automatically detected
         by create_nodes() procedure.
@@ -257,7 +249,7 @@ class OpsGrillage:
         # write node() command
         with open(self.filename, 'a') as file_handle:
             file_handle.write("# Node generation procedure\n")
-        for node_point in self.Nodedata:
+        for node_point in self.node_map:
             ops.node(node_point[0], node_point[1], node_point[2], node_point[3])
             with open(self.filename, 'a') as file_handle:
                 file_handle.write("ops.node({tag}, {x:.4f}, {y:.4f}, {z:.4f})\n".format(tag=node_point[0],
@@ -461,24 +453,24 @@ class OpsGrillage:
         elif np.abs(self.skew) >= self.skew_threshold[1] and not self.ortho_mesh:
             raise Exception('Oblique mesh not allowed for angle greater than {}'.format(self.skew_threshold[1]))
 
-    def set_member(self, grillage_member_class, member=None):
+    def set_member(self, grillage_member_obj, member=None):
         """
         Function to assign GrillageMember obj to element groups. Function then create ops.element() command for the
         prescribed element.
 
-        :param grillage_member_class: Member object
+        :param grillage_member_obj: Member object
         :param member: str of grillage element group to be assigned
 
         :return: assign member properties to all grillage element within specified group.
 
         """
         # checks for GrillageMember object
-        if isinstance(grillage_member_class, GrillageMember):
+        if isinstance(grillage_member_obj, GrillageMember):
             pass  # proceed with setting members
         else:  # raise exception
-            Exception("Input member {} not a GrillageMember class".format(grillage_member_class))
+            Exception("Input member {} not a GrillageMember class".format(grillage_member_obj))
         # if member is defined with unit width properties
-        if grillage_member_class.section.unit_width:
+        if grillage_member_obj.section.unit_width:
             # get tributary area of node (node_width) defined as half of spacings left and right of element
             ele_width = self.spacing_val_nox[self.group_ele_dict[member] - max(self.section_group_noz)]
             # calculate properties based on tributary area
@@ -495,20 +487,20 @@ class OpsGrillage:
             raise Exception('Str of member group not specified')
 
         # if section is specified, get the section from GrillageMember class and write to
-        if grillage_member_class.section.section_command_flag:
+        if grillage_member_obj.section.section_command_flag:
             # abstracted procedure to write section command
-            section_tag = self.__write_section(grillage_member_class.section)
+            section_tag = self.__write_section(grillage_member_obj.section)
 
         # set material of member, if already set (either globally via set_material function or same material for a
         # previous set_member command, function automatically skips the writing of material command
-        material_tag = self.__write_uniaxial_material(member=grillage_member_class)
+        material_tag = self.__write_uniaxial_material(member=grillage_member_obj)
 
         # write header of set_member run
         with open(self.filename, 'a') as file_handle:
             file_handle.write("# Element generation for section: {}\n".format(member))
 
         # if assignment of all transverse members based on per m width properties
-        if grillage_member_class.section.unit_width:
+        if grillage_member_obj.section.unit_width:
             # loop through the unique members based on spacings of nodes, assign all members (key-tag) in the transverse
             # direction
             for key, ele_width in self.spacing_val_nox.items():
@@ -517,7 +509,7 @@ class OpsGrillage:
                     if ele[2] == key + max(
                             self.section_group_noz):  # if element match key for transverse memeber loop
                         # get element() command for element
-                        ele_str = grillage_member_class.section.get_element_command_str(ele, ele_width=ele_width)
+                        ele_str = grillage_member_obj.section.get_element_command_str(ele, ele_width=ele_width)
                         # write element() command to file
                         with open(self.filename, 'a') as file_handle:
                             file_handle.write(ele_str)
@@ -531,7 +523,7 @@ class OpsGrillage:
                 #            *[ele[0], ele[1]], *op_member_prop_class, trans_tag)  ###
                 if ele[2] == self.group_ele_dict[member]:
                     # get element() command for the element
-                    ele_str = grillage_member_class.section.get_element_command_str(ele, ele_width=ele_width)
+                    ele_str = grillage_member_obj.section.get_element_command_str(ele, ele_width=ele_width)
                     # write element() command to file
                     with open(self.filename, 'a') as file_handle:
                         file_handle.write(ele_str)
@@ -638,7 +630,7 @@ class OpsGrillage:
                 self.skew / 180 * math.pi)  # get nox for current step in transverse mesh
             for xcount, pointx in enumerate(noxupdate):  # loop for each mesh point in x dir (nox)
                 # populate nodedata array - inputs [nodetag,x,y,z, gridz tag, gridx tag]
-                self.Nodedata.append(
+                self.node_map.append(
                     [nodetagcounter, pointx, self.y_elevation, pointz, zcount,
                      xcount])  # NOTE here is where to change X Y plane
                 nodetagcounter += 1
@@ -654,7 +646,7 @@ class OpsGrillage:
                 # link nodes along current row (z axis), in the x direction
                 # elements in a element list: [node_i, node_j, element group, ele tag, geomTransf (1,2 or 3), grid tag]
                 self.long_mem.append([current_row_z + node_col_x, current_row_z + node_col_x + 1,
-                                      self.section_group_noz[node_row_z], eletagcounter, 1, node_row_z + 1])
+                                      self.section_group_noz[node_row_z], eletagcounter, 1, node_row_z])
                 eletagcounter += 1
 
                 # link nodes in the z direction (e.g. transverse members)
@@ -676,7 +668,7 @@ class OpsGrillage:
         self.global_element_list = self.long_mem + self.trans_mem
         print("Element generation completed. Number of elements created = {}".format(eletagcounter - 1))
         # save elements and nodes to mesh object
-        mesh_group = Mesh(self.global_element_list, self.Nodedata)
+        mesh_group = Mesh(self.global_element_list, self.node_map)
         return mesh_group
 
     # encapsulated meshing procedure for orthogonal meshing
@@ -709,7 +701,7 @@ class OpsGrillage:
         for pointz in self.noz:  # loop for each mesh point in z dir
             for pointx in self.regA[:-1]:  # loop for each mesh point in x dir (nox)
                 # populate nodedata array - inputs [nodetag,x,y,z]
-                self.Nodedata.append([nodetagcounter, pointx, self.y_elevation, pointz])
+                self.node_map.append([nodetagcounter, pointx, self.y_elevation, pointz])
                 nodetagcounter += 1
         print('Number of elements in Region A: {}'.format(nodetagcounter - 1))
 
@@ -754,7 +746,7 @@ class OpsGrillage:
             line_mesh_z_b1 = self.noz
         for pointz in line_mesh_z_b1:  # loop for each line mesh in z dir
             for pointx in regBupdate:  # loop for each line mesh in x dir (nox)
-                self.Nodedata.append([nodetagcounter, pointx, self.y_elevation, pointz])
+                self.node_map.append([nodetagcounter, pointx, self.y_elevation, pointz])
                 nodetagcounter += 1
             regBupdate = regBupdate[:-1]  # remove last element for next self.noz (skew boundary)
 
@@ -819,7 +811,7 @@ class OpsGrillage:
             line_mesh_z_b2 = reversed(self.noz)
         for pointz in line_mesh_z_b2:
             for pointx in regBupdate[1:]:  # remove counting first element overlap with region A
-                self.Nodedata.append([nodetagcounter, pointx, self.y_elevation, pointz])
+                self.node_map.append([nodetagcounter, pointx, self.y_elevation, pointz])
                 nodetagcounter += 1
             regBupdate = regBupdate[:-1]  # remove last element (skew boundary) for next self.noz
 
@@ -899,7 +891,7 @@ class OpsGrillage:
         print('Elements automation complete for region B1 B2 and A')
         self.global_element_list = self.long_mem + self.trans_mem
         # save elements and nodes to mesh object
-        mesh_group = Mesh(self.global_element_list, self.Nodedata)
+        mesh_group = Mesh(self.global_element_list, self.node_map)
         return mesh_group
 
     def set_material(self, material_obj):
@@ -966,15 +958,29 @@ class OpsGrillage:
                     for lines in load_str:
                         file_handle.write(lines)
                     # print to terminal
-                    print("Added load {loadname} to load case {loadcase}".format(loadname=loads.name, loadcase=name))
+                    print("Nodal load - {loadname} - added to load case: {loadcase}".format(loadname=loads.name,
+                                                                                            loadcase=name))
                 elif isinstance(loads, PointLoad):
                     nod = self.__return_four_node_position(position=loads.position)
                     print(nod)
-                elif isinstance(loads, PatchLoading):
-                    load_str = self.__return_grid_lines(northing_lines=loads.northing_lines,udl_value=loads.wy)
+
+                elif isinstance(loads, LineLoading):
+                    load_str = self.__assign_line_load(line_position_x=2, udl_value=2)
                     for lines in load_str:
                         file_handle.write(lines)
-                    print("Load case {} added".format(loads.name))
+                    print("Line load - {loadname} - added to load case: {name}".format(loadname=loads.name, name=name))
+
+                elif isinstance(loads, PatchLoading):
+                    if loads.patch_define_option == "two-lines":
+                        load_str = self.__assign_patch_load_bound_option(bound_lines=loads.northing_lines,
+                                                                         area_load=loads.qy)
+                    elif loads.patch_define_option == "four-points":
+                        # TODO
+                        pass
+
+                    for lines in load_str:
+                        file_handle.write(lines)
+                    print("Patch load - {loadname} - added to load case: {name}".format(loadname=loads.name, name=name))
                 else:
                     print("No loads assigned for {}".format(loads))
 
@@ -987,19 +993,15 @@ class OpsGrillage:
             file_handle.write("ops.analysis(\"{}\")\n".format(analysis_type))
             file_handle.write("ops.analyze(1)\n")
 
-    def copy_load_case(self, load_obj):
-        #nod = self.__return_four_node_position(position=position)
-        nod2 = self.__return_grid_lines(northing_lines=load_obj.northing_lines, udl_value=load_obj.wy)
-
-
+    # TO be retired
     def __return_four_node_position(self, position):
         # function called by OpsGrillage to identify the position of point load/axle
         # position [x,z]
         # find grid lines that bound position in x direction
         grid_a_z, grid_b_z = search_grid_lines(self.noz, position=position[1])
         # return nodes in the bounded grid lines grid_a_z and grid_b_z
-        grid_b_z_nodes = [x for x in self.Nodedata if x[4] == grid_a_z]
-        grid_a_z_nodes = [x for x in self.Nodedata if x[4] == grid_b_z]
+        grid_b_z_nodes = [x for x in self.node_map if x[4] == grid_a_z]
+        grid_a_z_nodes = [x for x in self.node_map if x[4] == grid_b_z]
         # loop each grid nodes to find the two closest nodes in the x direction (vector distance)
         node_distance = []
         for node in grid_b_z_nodes:
@@ -1015,13 +1017,31 @@ class OpsGrillage:
         n4 = node_distance[3]
         return [x[0] for x in [n1, n2, n3, n4]]
 
-    def __return_grid_lines(self, northing_lines, udl_value):
-        if northing_lines[0] > northing_lines[1]:
-            ub_nd_line = search_grid_lines(self.noz, position=northing_lines[0], position_bound="ub")
-            lb_nd_line = search_grid_lines(self.noz, position=northing_lines[1], position_bound="lb")
+    # TO be retired
+    def __assign_line_load(self, line_position_x, udl_value):
+        line = search_grid_lines(self.noz, position=line_position_x)
+        load_str = []
+        # TODO allow assignment for transverse members
+        for ele in self.long_mem:
+            if ele[5] == line[1][0]:
+                eleLoad_line = "ops.eleLoad('-ele', {eleTag}, '-type', '-beamUniform', {Wy}, {Wz}, {Wx})\n" \
+                    .format(eleTag=ele[3], Wy=0, Wx=0, Wz=0)
+            elif ele[5] == line[0][0]:
+                eleLoad_line = "ops.eleLoad('-ele', {eleTag}, '-type', '-beamUniform', {Wy}, {Wz}, {Wx})\n" \
+                    .format(eleTag=ele[3], Wy=0, Wx=0, Wz=0)
+            else:
+                eleLoad_line = ''
+            load_str.append(eleLoad_line)
+        return load_str
+
+    # TO be retired
+    def __assign_patch_load_bound_option(self, bound_lines, area_load):
+        if bound_lines[0] > bound_lines[1]:
+            ub_nd_line = search_grid_lines(self.noz, position=bound_lines[0], position_bound="ub")
+            lb_nd_line = search_grid_lines(self.noz, position=bound_lines[1], position_bound="lb")
         else:
-            lb_nd_line = search_grid_lines(self.noz, position=northing_lines[0], position_bound="lb")
-            ub_nd_line = search_grid_lines(self.noz, position=northing_lines[1], position_bound="ub")
+            lb_nd_line = search_grid_lines(self.noz, position=bound_lines[0], position_bound="lb")
+            ub_nd_line = search_grid_lines(self.noz, position=bound_lines[1], position_bound="ub")
         load_str = []
         # if lower bound = upper bound, no in between lines, only assign to the single line identified by
         # lower_bound_nd_line/upper_bound_nd_line
@@ -1035,6 +1055,8 @@ class OpsGrillage:
             in_between_nd_line = [lb_nd_line[0][0]]
             lb_nd_line[0] = [[], 0]
             ub_nd_line[1] = [[], 0]
+        elif lb_nd_line[0][0] + 1 == ub_nd_line[1][0]:
+            in_between_nd_line = []
         else:
             in_between_nd_line = [lb_nd_line[0][0] + 1]
             while not in_between_nd_line[-1] + 1 > ub_nd_line[1][0]:
@@ -1043,31 +1065,30 @@ class OpsGrillage:
         # loop all between node lines, assign udl using full width of node tributary area
         for nd_line in in_between_nd_line:
             nd_wid = self.noz_trib_width[nd_line]
-            udl_line = udl_value * nd_wid
+            udl_line = area_load * nd_wid
             for ele in self.long_mem:
                 # if element is part of the grid line, assign UDl using eleLoad command
                 if ele[5] == nd_line:
-                    eleLoad_line = "ops.eleLoad('-ele', {eleTag}, '-type', '-beamUniform', {Wy}, {Wz}, {Wx})\n"\
+                    eleLoad_line = "ops.eleLoad('-ele', {eleTag}, '-type', '-beamUniform', {Wy}, {Wz}, {Wx})\n" \
                         .format(eleTag=ele[3], Wy=udl_line, Wx=0, Wz=0)
                     load_str.append(eleLoad_line)
-
+        # assign ub and lb udl
         for ele in self.long_mem:
-            if ele[5] == lb_nd_line[0][0]:
+            if ele[5] == lb_nd_line[1][0]:
                 eleLoad_line = "ops.eleLoad('-ele', {eleTag}, '-type', '-beamUniform', {Wy}, {Wz}, {Wx})\n" \
-                    .format(eleTag=ele[3], Wy=udl_value * lb_nd_line[0][1], Wx=0, Wz=0)
-                load_str.append(eleLoad_line)
-            elif ele[5] == ub_nd_line[0][0]:
+                    .format(eleTag=ele[3], Wy=area_load * lb_nd_line[1][1], Wx=0, Wz=0)
+            elif ele[5] == lb_nd_line[0][0]:
                 eleLoad_line = "ops.eleLoad('-ele', {eleTag}, '-type', '-beamUniform', {Wy}, {Wz}, {Wx})\n" \
-                    .format(eleTag=ele[3], Wy=udl_value * ub_nd_line[0][1], Wx=0, Wz=0)
-                load_str.append(eleLoad_line)
-            elif ele[5] == lb_nd_line[1][0]:
-                eleLoad_line = "ops.eleLoad('-ele', {eleTag}, '-type', '-beamUniform', {Wy}, {Wz}, {Wx})\n" \
-                    .format(eleTag=ele[3], Wy=udl_value * lb_nd_line[1][1], Wx=0, Wz=0)
-                load_str.append(eleLoad_line)
+                    .format(eleTag=ele[3], Wy=area_load * lb_nd_line[0][1], Wx=0, Wz=0)
             elif ele[5] == ub_nd_line[1][0]:
                 eleLoad_line = "ops.eleLoad('-ele', {eleTag}, '-type', '-beamUniform', {Wy}, {Wz}, {Wx})\n" \
-                    .format(eleTag=ele[3], Wy=udl_value * ub_nd_line[1][1], Wx=0, Wz=0)
-                load_str.append(eleLoad_line)
+                    .format(eleTag=ele[3], Wy=area_load * ub_nd_line[1][1], Wx=0, Wz=0)
+            elif ele[5] == ub_nd_line[0][0]:
+                eleLoad_line = "ops.eleLoad('-ele', {eleTag}, '-type', '-beamUniform', {Wy}, {Wz}, {Wx})\n" \
+                    .format(eleTag=ele[3], Wy=area_load * ub_nd_line[0][1], Wx=0, Wz=0)
+            else:
+                eleLoad_line = ""
+            load_str.append(eleLoad_line)
         # TODO filter longitudinal members for easting lines
 
         return load_str
@@ -1076,31 +1097,6 @@ class OpsGrillage:
 # ----------------------------------------------------------------------------------------------------------------
 # Classes for components of opGrillage object
 # ----------------------------------------------------------------------------------------------------------------
-class Material:
-    """
-    Class for material properties definition
-    """
-
-    def __init__(self, mat_type, mat_vec):
-        # super(UniAxialElasticMaterial, self).__init__(length, length)
-        self.mat_type = mat_type
-        self.mat_vec = mat_vec
-
-
-class UniAxialElasticMaterial(Material):
-    """
-    Class for uniaxial material prop
-    """
-
-    def __init__(self, mat_type, mat_vec):
-        # super(UniAxialElasticMaterial, self).__init__(length, length)
-        super().__init__(mat_type, mat_vec)
-
-    def get_output_arguments(self):
-        # TODO add additional uniaxialMaterial types
-        # e.g. concrete01 or steel01
-        pass
-
 
 class Mesh:
     """
@@ -1113,144 +1109,3 @@ class Mesh:
     def __init__(self, ele_group, node_list):
         self.ele_group = ele_group
         self.node_list = node_list
-
-
-# ----------------------------------------------------------------------------------------------------------------
-class Section:
-    """
-    Section class to define various grillage sections. Class
-    """
-
-    def __init__(self, E, A, Iz, J, Ay, Az, Iy=None, G=None, alpha_y=None, op_ele_type=None, mass=0, c_mass_flag=False,
-                 unit_width=False, op_section_type=None, K11=None, K33=None, K44=None):
-        """
-        :param E: Elastic modulus
-        :type E: float
-        :param A: Cross sectional area
-        :type A: float
-        :param Iz: Moment of inertia about z axis
-        :type Iz: float
-        :param J: Torsional inertia
-        :type J: float
-        :param Ay: Cross sectional area in the y direction
-        :type Ay: float
-        :param Az: Cross sectional area in the z direction
-        :type Az: float
-        :param Iy: Moment of inertia about z axis
-        :type Iy: float
-        :param G: Shear modulus
-        :type G: float
-        :param alpha_y: shear shape factor along the local y-axis (optional)
-        :type alpha_y: float
-        :param op_ele_type: Opensees element type
-        :type op_ele_type: str
-        :param op_section_type: Opensees section type
-        :type op_section_type: str
-        :param unit_width: Flag for unit width properties
-        :type unit_width: bool
-
-        Example
-        section('Elastic', BeamSecTag,Ec,ABeam,IzBeam)
-        """
-        # sections
-        self.op_section_type = op_section_type  # section tag based on Openseespy
-        self.section_command_flag = False  # default False
-        # section geometry properties variables
-        self.E = E
-        self.A = A
-        self.Iz = Iz
-        self.Iy = Iy
-        self.G = G
-        self.Ay = Ay
-        self.Az = Az
-        self.J = J
-        self.alpha_y = alpha_y
-        self.K11 = K11
-        self.K33 = K33
-        self.K44 = K44
-        # types for element definition and unit width properties
-        self.op_ele_type = op_ele_type
-        self.unit_width = unit_width
-        self.mass = mass
-        self.c_mass_flag = c_mass_flag
-        # check if section command is needed for the section object
-        if self.op_section_type is not None:
-            self.section_command_flag = True  # section_command_flag set to True.
-
-    def get_asterisk_arguments(self, width=1):
-        """
-        Function to output list of arguments for element() command following Openseespy convention. Function also
-        output
-        :return: list containing member properties in accordance with  input convention
-        """
-        asterisk_input = None
-
-        # if elastic Beam column elements, return str of section input
-        if self.op_ele_type == "ElasticTimoshenkoBeam":
-            # section_input = [self.E, self.G, self.A, self.J, self.Iy, self.Iz, self.Ay, self.Az]
-            asterisk_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.E,
-                                                                                                       self.G,
-                                                                                                       self.A,
-                                                                                                       self.J,
-                                                                                                       self.Iy * width,
-                                                                                                       self.Iz * width,
-                                                                                                       self.Ay * width,
-                                                                                                       self.Az * width)
-        elif self.op_ele_type == "elasticBeamColumn":  # eleColumn
-            # section_input = [self.E, self.G, self.A, self.J, self.Iy, self.Iz]
-            asterisk_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.E, self.G, self.A * width,
-                                                                                       self.J, self.Iy * width,
-                                                                                       self.Iz * width)
-
-        elif self.op_ele_type == "ModElasticBeam2d":
-            asterisk_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(
-                self.A * width, self.E, self.Iz * width, self.K11, self.K33, self.K44)
-        # else, section tag required in element() input, OpsGrillage automatically assigns the section tag within
-        # set_member() function
-        return asterisk_input
-
-    def get_element_command_str(self, ele, ele_width, sectiontag=None):
-        """
-        Function called within OpsGrillage class `set_member()` function.
-        """
-        # format for ele
-        # [node i, node j, ele group, ele tag, transtag]
-
-        # TODO add more element types
-        if self.op_ele_type == "ElasticTimoshenkoBeam":
-            section_input = self.get_asterisk_arguments(ele_width)
-            ele_str = "ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transftag}, {mass})\n".format(
-                type=self.op_ele_type, tag=ele[3], i=ele[0], j=ele[1], memberprop=section_input, transftag=ele[4],
-                mass=self.mass)
-        if self.op_ele_type == "elasticBeamColumn":
-            section_input = self.get_asterisk_arguments(ele_width)
-            ele_str = "ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transftag}, {mass})\n".format(
-                type=self.op_ele_type, tag=ele[3], i=ele[0], j=ele[1], memberprop=section_input, transftag=ele[4],
-                mass=self.mass)
-        if self.op_ele_type == "nonlinearBeamColumn":
-            pass
-
-        # return string to OpsGrillage for writing command
-        return ele_str
-
-
-# ----------------------------------------------------------------------------------------------------------------
-class GrillageMember:
-    """
-    Grillage member class.
-    """
-
-    def __init__(self, section, material, member_name="Undefined"):
-        """
-        :param section: Section class object assigned to GrillageMember
-        :type section: :class:`Section`
-        :param material: Material class object assigned to GrillageMember
-        :type material: :class:`uniaxialMaterial`
-        :param name: Name of the grillage member (Optional)
-        """
-        self.member_name = member_name
-        self.section = section
-        self.material = material
-
-
-

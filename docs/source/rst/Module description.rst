@@ -14,17 +14,12 @@ Note these processes have no definite order. For instances, users can define all
 
 Creating the grillage model
 ---------------------------
-The grillage model is defined using the :class:`~opGrillage` class. Input arguments of the grillage model is pass to
-create the :class:`opGrillage` class object.
+The grillage model is defined using the :class:`~OpsGrillage` class. Upon creating the OpsGrillage class, the Opensees instance of the model is created and simultaneously an output file of
+the Openseespy commands responsible for creating the model in Opensees instance. From here, any Openseespy command written and run
+in the interface script (same script that generated OpsGrillage object) will interact with the constructed bridge model in
+the Opensees instance space.
 
-
-The following example creates a `opGrillage` class object for a bridge model.
-
-.. code-block:: python
-
-    test_bridge = opGrillage(bridge_name="SuperT_10m", long_dim=10, width=5, skew=-21,
-                         num_long_grid=2, num_trans_grid=17, cantilever_edge=1, mesh_type="Ortho")
-
+The following example creates a `OpsGrillage` class object for a bridge model.
 This generates a bridge model named "SuperT_10m", which has the following properties:
 
 #. Length = 10 m
@@ -35,7 +30,11 @@ This generates a bridge model named "SuperT_10m", which has the following proper
 #. Edge beam distance of 1 m
 #. Orthogonal mesh
 
-Running the object creation in the interaface creates a py file consisting of model() and node() commands named "Example_superT_10m".
+.. code-block:: python
+
+    test_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=10, width=5, skew=-21,
+                         num_long_grid=2, num_trans_grid=17, cantilever_edge=1, mesh_type="Ortho")
+
 Running the output file at this stage will construct the model space (model command) and generate the nodes of the model
 (node command).
 
