@@ -2,6 +2,7 @@ import pprint
 import numpy as np
 from collections.abc import Iterable
 
+
 # ----------------------------------------------------------------------------------------------------------------
 # Loading classes
 # ---------------------------------------------------------------------------------------------------------------
@@ -37,7 +38,7 @@ class Loads:
     Main class of loading definition
     """
 
-    def __init__(self, name, Fx=0, Fy=0, Fz=0, Mx=0, My=0, Mz=0, wx=0, wy=0, wz=0, qx=0, qy=0, qz=0):
+    def __init__(self, name, Fx=0, Fy=0, Fz=0, Mx=0, My=0, Mz=0, wx=0, wy=0, wz=0, qx=0, qy=0, qz=0, **kwargs):
         #
         self.name = name
         self.Fx = Fx
@@ -52,44 +53,34 @@ class Loads:
         self.qx = qx
         self.qy = qy
         self.qz = qz
-        # Initialise coordinate properties
-        self.x1 = []
-        self.x2 = []
-        self.x3 = []
-        self.x4 = []
-        self.x5 = []
-        self.x6 = []
-        self.x7 = []
-        self.x8 = []
-        #
-        self.y1 = []
-        self.y2 = []
-        self.y3 = []
-        self.y4 = []
-        self.y5 = []
-        self.y6 = []
-        self.y7 = []
-        self.y8 = []
-        #
-        self.z1 = []
-        self.z2 = []
-        self.z3 = []
-        self.z4 = []
-        self.z5 = []
-        self.z6 = []
-        self.z7 = []
-        self.z8 = []
-        #
-        self.p1 = []
-        self.p2 = []
-        self.p3 = []
-        self.p4 = []
-        self.p5 = []
-        self.p6 = []
-        self.p7 = []
-        self.p8 = []
-        self.spec = dict() # dict {node number: {Fx:val, Fy:val, Fz:val, Mx:val, My:val, Mz:val}}
+        # Initialise dict for key load points of line UDL and patch load definitions
+        self.load_point_data = dict()
+
+        self.load_point_data['x1'] = kwargs.get('x1', None)
+        self.load_point_data['y1'] = kwargs.get('y1', 0)
+        self.load_point_data['z1'] = kwargs.get('z1', None)
+        self.load_point_data['p1'] = kwargs.get('p1', None)
+
+        self.load_point_data['x2'] = kwargs.get('x2', None)
+        self.load_point_data['y2'] = kwargs.get('y2', 0)
+        self.load_point_data['z2'] = kwargs.get('z2', None)
+        self.load_point_data['p2'] = kwargs.get('p2', None)
+
+        self.load_point_data['x3'] = kwargs.get('x3', None)
+        self.load_point_data['y3'] = kwargs.get('y3', 0)
+        self.load_point_data['z3'] = kwargs.get('z3', None)
+        self.load_point_data['p3'] = kwargs.get('p3', None)
+
+        self.load_point_data['x4'] = kwargs.get('x4', None)
+        self.load_point_data['y4'] = kwargs.get('y4', 0)
+        self.load_point_data['z4'] = kwargs.get('z4', None)
+        self.load_point_data['p4'] = kwargs.get('p4', None)
+
+        # init dict
+        self.spec = dict()  # dict {node number: {Fx:val, Fy:val, Fz:val, Mx:val, My:val, Mz:val}}
         self.load_counter = 0
+
+    # function to parse incoming keyword
 
 
 class NodalLoad(Loads):
@@ -100,7 +91,8 @@ class NodalLoad(Loads):
         else:
             node_list = node_tag
         for nodes in node_list:
-            self.spec[nodes] = {"Fx":self.Fx, "Fy":self.Fy, "Fz":self.Fz, "Mx":self.Mx,"My":self.My,"Mz":self.Mz}
+            self.spec[nodes] = {"Fx": self.Fx, "Fy": self.Fy, "Fz": self.Fz, "Mx": self.Mx, "My": self.My,
+                                "Mz": self.Mz}
 
     @property
     def node_point(self):
@@ -108,7 +100,7 @@ class NodalLoad(Loads):
 
     @node_point.setter
     def node_point(self, new_node_tag, Fx=0, Fy=0, Fz=0, Mx=0, My=0, Mz=0):
-        self.spec.setdefault(new_node_tag, {"Fx":Fx, "Fy":Fy, "Fz":Fz, "Mx":Mx,"My":My,"Mz":Mz})
+        self.spec.setdefault(new_node_tag, {"Fx": Fx, "Fy": Fy, "Fz": Fz, "Mx": Mx, "My": My, "Mz": Mz})
 
     def remove_node_point(self, del_node_tag):
         self.spec.pop(del_node_tag, None)
@@ -129,11 +121,11 @@ class PointLoad(Loads):
 
 
 class LineLoading(Loads):
-    def __init__(self, name, const_magnitude=0, pt_list=[], pt_mag_list=[]):
-        super().__init__(name, wy=const_magnitude)
+    def __init__(self, name, **kwargs):
+        super().__init__(name, **kwargs)
         print("Line Loading {} created".format(name))
-        self.pt_list = pt_list
-        self.pt_mag_list = pt_mag_list
+
+        #
 
     def get_line_loading_str(self):
         load_str = []
@@ -151,9 +143,6 @@ class LineLoading(Loads):
 class PatchLoading(Loads):
     def __init__(self, name):
         super().__init__(name)
-
-
-
 
     def set_straight_side_patch_load(self, x1=0):
         pass

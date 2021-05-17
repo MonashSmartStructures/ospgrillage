@@ -27,7 +27,7 @@ exterior_I_beam = GrillageMember(member_name="exterior I beams", section=exterio
 
 # construct grillage model
 example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=4, width=7, skew=-11,
-                             num_long_grid=5, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
+                             num_long_grid=5, num_trans_grid=5, edge_beam_dist=1, mesh_type="Orth")
 
 # set material to grillage
 example_bridge.set_material(concrete)
@@ -47,12 +47,13 @@ example_bridge.run_check()
 # Create Load cases
 
 # Node load
-DL = NodalLoad("concrete", 20, Fy=20)
+#DL = NodalLoad("concrete", 20, Fy=20)
 
 # Patch load - lane loading
 #Lane = PatchLoading("Lane 1", northing_lines=[1, 3.3], load_value=9)
 # Line load
-#Barrier = LineLoading("Barrier curb load", const_magnitude=3, grid_line_x=3)
+Barrier = LineLoading("Barrier curb load", x1=2,x2=4,z1=2, z2=2,p1=9,p2=9)
+print(Barrier.load_point_data)
 # Directly add Load cases to Opensees model or, create LoadCase object and pass all loads
 #example_bridge.add_load_case("Concrete dead load case", DL, DL)
 #example_bridge.add_load_case("Lane 1", Lane)

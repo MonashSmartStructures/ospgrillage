@@ -7,6 +7,7 @@ from static import *
 from Load import *
 from Material import *
 from member_sections import *
+from Mesh import *
 
 
 class OpsGrillage:
@@ -20,7 +21,7 @@ class OpsGrillage:
     """
 
     def __init__(self, bridge_name, long_dim, width, skew, num_long_grid,
-                 num_trans_grid, edge_beam_dist, mesh_type="Ortho", op_instance=True):
+                 num_trans_grid, edge_beam_dist, mesh_type="Ortho", op_instance=True, model="3D"):
         """
 
         :param bridge_name: Name of bridge model and output .py file
@@ -96,7 +97,10 @@ class OpsGrillage:
         self.spacing_val_nox = []  # dict of group as keywords, val = spacing
         # collect mesh groups
         self.mesh_group = []
-
+        if self.mesh_type == "Ortho":
+            self.ortho_mesh = True
+        else:
+            self.ortho_mesh = False
         # rules for grillage automation - default values are in place, use keyword during class instantiation
         self.min_long_spacing = 1  # default 1m
         self.max_long_spacing = 2  # default 1m
@@ -105,14 +109,16 @@ class OpsGrillage:
         self.trans_to_long_spacing = 1  # default 1m
         self.min_grid_long = 9  # default 9 mesh odd number
         self.min_grid_trans = 5  # default 5 mesh odd number
-        self.ortho_mesh = True  # boolean for grillages with skew < 15-20 deg
         self.y_elevation = 0  # default elevation of grillage wrt OPmodel coordinate system
         self.min_grid_ortho = 3  # for orthogonal mesh (skew>skew_threshold) region of orthogonal area default 3
-        self.ndm = 3  # num model dimension - default 3
-        self.ndf = 6  # num degree of freedom - default 6
-        # rules for material definition
-        self.mat_type_op = "Concrete01"  # material tag of concrete (default uniaxial Concrete01)
-        self.mat_matrix = []  # list of argument for material - user define based on Openseespy convention
+
+        if model == "2D":
+            self.__ndm = 2  # num model dimension - default 3
+            self.__ndf = 3  # num degree of freedom - default 6
+        else:
+            self.__ndm = 3  # num model dimension - default 3
+            self.__ndf = 6  # num degree of freedom - default 6
+
         # default vector for support (for 2D grillage in x - z plane)
         self.fix_val_pin = [1, 1, 1, 0, 0, 0]  # pinned
         self.fix_val_roller_x = [0, 1, 1, 0, 0, 0]  # roller
@@ -145,21 +151,20 @@ class OpsGrillage:
         # check skew threshold
         self.__check_skew()
         # generate nodes and elements of model
+        # calculate edge length of grillage
+        self.trans_dim = self.width / math.cos(self.skew / 180 * math.pi)
+        # 1 create Opensees model space
+        self.__write_op_model()
         self.__run_mesh_generation()
 
-    # node procedure
+
     def __run_mesh_generation(self):
         """
         Abstracted procedure to create nodes of grillage model. This procedure also handles sub-abstracted procedures
         involved in writing Opensees command: model(), node(), and fix() commands to output py file.
         :return: Output py file with model(), node() and fix() commands
         """
-        # calculate edge length of grillage
-        self.trans_dim = self.width / math.cos(self.skew / 180 * math.pi)
 
-        # 1 create Opensees model space
-        self.__write_op_model()
-        # check mesh type and run procedure accordingly
         if self.ortho_mesh:
             # perform orthogonal meshing
             self.mesh_group.append(self.__orthogonal_mesh())
@@ -182,11 +187,11 @@ class OpsGrillage:
         # 3 identify boundary of mesh
         self.get_edge_beam_nodes()  # get edge beam nodes
         self.get_trans_edge_nodes()  # get support nodes
-
         self.__write_op_fix()  # write fix() command for support nodes
-
+        #new = Mesh(self.long_dim, self.width,self.trans_dim, self.edge_width, self.num_trans_grid,
+                   #self.skew, self.nox, self.noz, mesh_type="Skew")
     #
-    def set_boundary_condition(self, restraint_nodes, restraint_vector):
+    def set_boundary_condition(self, restraint_nodes=[], restraint_vector=[]):
         """
         User function to define support boundary conditions in addition to the model edges automatically detected
         by create_nodes() procedure.
@@ -199,10 +204,7 @@ class OpsGrillage:
         :return: Append node fixity to the support_nodes class variable
         """
         for nodes in restraint_nodes:
-            if option == "Add":
-                self.support_nodes.append([nodes, restraint_vector])
-            elif option == "Remove":
-                self.support_nodes.remove([nodes, restraint_vector])
+            self.support_nodes.append([nodes, restraint_vector])
 
     # abstraction to write ops commands to output py file
     def __write_geom_transf(self, trans_tag, vector_xz, transform_type="Linear"):
@@ -234,10 +236,11 @@ class OpsGrillage:
         This method automatically sets the aforementioned parameters to 2 and 4 respectively, for a 2-D problem.
         """
         # write model() command
-        ops.model('basic', '-ndm', self.ndm, '-ndf', self.ndf)
+        ops.model('basic', '-ndm', self.__ndm, '-ndf', self.__ndf)
         with open(self.filename, 'a') as file_handle:
             file_handle.write("ops.wipe()\n")
-            file_handle.write("ops.model('basic', '-ndm', {ndm}, '-ndf', {ndf})\n".format(ndm=self.ndm, ndf=self.ndf))
+            file_handle.write(
+                "ops.model('basic', '-ndm', {ndm}, '-ndf', {ndf})\n".format(ndm=self.__ndm, ndf=self.__ndf))
 
     def __write_op_node(self):
         """
@@ -373,7 +376,7 @@ class OpsGrillage:
         section_str = [section_type, section_arg]  # repr both variables as a list for keyword definition
         # if section is specified, get the sectiontagcounter for section assignment
         if not bool(self.section_dict):
-            lastsectioncounter = 0  # if dict empty, start counter at 1
+            lastsectioncounter = 0  # if dict empty, start counter at 0
         else:  # dict not empty, get default value as latest defined tag
             lastsectioncounter = self.section_dict[list(self.section_dict)[-1]]
         # if section has been assigned
@@ -441,12 +444,8 @@ class OpsGrillage:
         outside this bound, skew rules are strictly: (1) skew for angles less than 10 deg, and
         (2) orthogonal for angles greater than 30 deg.
         """
-        if self.mesh_type == "Ortho":
-            self.ortho_mesh = True
-        else:
-            self.ortho_mesh = False
 
-        # checks mesh type options are within the allowance threshold
+        # if mesh type is beyond default allowance threshold of 11 degree and 30 degree, return exception
         if np.abs(self.skew) <= self.skew_threshold[0] and self.ortho_mesh:
             # print
             raise Exception('Orthogonal mesh not allowed for angle less than {}'.format(self.skew_threshold[0]))
@@ -613,10 +612,7 @@ class OpsGrillage:
         Encapsulated meshing procedure for skew/oblique meshes.
         """
         # automate skew meshing
-        if self.nox_special is None:  # check  special rule for slab spacing, else proceed automation of node
-            self.nox = np.linspace(0, self.long_dim, self.num_trans_grid)  # array like containing node x coordinate
-        else:
-            self.nox = self.nox_special  # assign custom array to nox array
+        self.nox = np.linspace(0, self.long_dim, self.num_trans_grid)  # array like containing node x coordinate
         self.breadth = self.trans_dim * math.sin(self.skew / 180 * math.pi)  # length of skew edge in x dir
         self.noz = self.get_long_grid_nodes()  # mesh points in z direction
         # identify member groups based on nox and noz
@@ -668,8 +664,8 @@ class OpsGrillage:
         self.global_element_list = self.long_mem + self.trans_mem
         print("Element generation completed. Number of elements created = {}".format(eletagcounter - 1))
         # save elements and nodes to mesh object
-        mesh_group = Mesh(self.global_element_list, self.node_map)
-        return mesh_group
+        #mesh_group = Mesh(self.global_element_list, self.node_map)
+        #return mesh_group
 
     # encapsulated meshing procedure for orthogonal meshing
     def __orthogonal_mesh(self):
@@ -993,6 +989,8 @@ class OpsGrillage:
             file_handle.write("ops.analysis(\"{}\")\n".format(analysis_type))
             file_handle.write("ops.analyze(1)\n")
 
+    # ---------------------------------------------------------------
+    # assignment procedure
     # TO be retired
     def __return_four_node_position(self, position):
         # function called by OpsGrillage to identify the position of point load/axle
@@ -1092,20 +1090,3 @@ class OpsGrillage:
         # TODO filter longitudinal members for easting lines
 
         return load_str
-
-
-# ----------------------------------------------------------------------------------------------------------------
-# Classes for components of opGrillage object
-# ----------------------------------------------------------------------------------------------------------------
-
-class Mesh:
-    """
-    Class for mesh groups. The class holds information pertaining the mesh group such as element connectivity and nodes
-    of the mesh object.
-
-
-    """
-
-    def __init__(self, ele_group, node_list):
-        self.ele_group = ele_group
-        self.node_list = node_list
