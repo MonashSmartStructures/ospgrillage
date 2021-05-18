@@ -21,7 +21,7 @@ class OpsGrillage:
     """
 
     def __init__(self, bridge_name, long_dim, width, skew, num_long_grid,
-                 num_trans_grid, edge_beam_dist, mesh_type="Ortho", op_instance=True, model="3D"):
+                 num_trans_grid, edge_beam_dist, mesh_type="Ortho", op_instance=True, model="3D", **kwargs):
         """
 
         :param bridge_name: Name of bridge model and output .py file
@@ -102,13 +102,13 @@ class OpsGrillage:
         else:
             self.ortho_mesh = False
         # rules for grillage automation - default values are in place, use keyword during class instantiation
-        self.min_long_spacing = 1  # default 1m
-        self.max_long_spacing = 2  # default 1m
-        self.min_trans_spacing = 1  # default 1m
-        self.max_trans_spacing = 2  # default 2m
-        self.trans_to_long_spacing = 1  # default 1m
-        self.min_grid_long = 9  # default 9 mesh odd number
-        self.min_grid_trans = 5  # default 5 mesh odd number
+        self.grillage_rules_dict = dict()
+        self.grillage_rules_dict['min_long_spacing'] = kwargs.get('min_long_spacing', 1)
+        self.grillage_rules_dict['max_long_spacing'] = kwargs.get('max_long_spacing', 1)
+        self.grillage_rules_dict['min_trans_spacing'] = kwargs.get('min_trans_spacing', 1)
+        self.grillage_rules_dict['max_trans_spacing'] = kwargs.get('max_trans_spacing', 1)
+        self.grillage_rules_dict['aspect_ratio'] = kwargs.get('aspect_ratio', 1)
+
         self.y_elevation = 0  # default elevation of grillage wrt OPmodel coordinate system
         self.min_grid_ortho = 3  # for orthogonal mesh (skew>skew_threshold) region of orthogonal area default 3
 
@@ -126,13 +126,16 @@ class OpsGrillage:
         self.nox_special = None  # array specifying custom coordinate of longitudinal nodes
         self.noz_special = None  # array specifying custom coordinate of transverse nodes
         self.skew_threshold = [10, 30]  # threshold for grillage to allow option of mesh choices
-        self.member_group_tol = 0.001
         self.deci_tol = 4  # tol of decimal places
 
         # dict for load cases and load types
         self.load_case_dict = defaultdict(lambda: 1)
         self.nodal_load_dict = defaultdict(lambda: 1)
         self.ele_load_dict = defaultdict(lambda: 1)
+
+        # counters to keep track of objects
+        self.load_case_counter = 1
+        self.load_combination_counter = 1
 
         # Initiate py file output
         self.filename = "{}_op.py".format(self.model_name)
@@ -150,13 +153,12 @@ class OpsGrillage:
 
         # check skew threshold
         self.__check_skew()
-        # generate nodes and elements of model
+
         # calculate edge length of grillage
         self.trans_dim = self.width / math.cos(self.skew / 180 * math.pi)
         # 1 create Opensees model space
         self.__write_op_model()
         self.__run_mesh_generation()
-
 
     def __run_mesh_generation(self):
         """
@@ -167,9 +169,9 @@ class OpsGrillage:
 
         if self.ortho_mesh:
             # perform orthogonal meshing
-            self.mesh_group.append(self.__orthogonal_mesh())
+            self.__orthogonal_mesh()
         else:  # perform skew mesh
-            self.mesh_group.append(self.__skew_mesh())
+            self.__skew_mesh()
         v = self.__get_vector_xz()
 
         if self.ortho_mesh:
@@ -188,8 +190,9 @@ class OpsGrillage:
         self.get_edge_beam_nodes()  # get edge beam nodes
         self.get_trans_edge_nodes()  # get support nodes
         self.__write_op_fix()  # write fix() command for support nodes
-        #new = Mesh(self.long_dim, self.width,self.trans_dim, self.edge_width, self.num_trans_grid,
-                   #self.skew, self.nox, self.noz, mesh_type="Skew")
+        new = Mesh(self.long_dim, self.width, self.trans_dim, self.edge_width, self.num_trans_grid,self.num_long_gird,
+                   self.skew, self.nox, self.noz, orthogonal=self.ortho_mesh)
+
     #
     def set_boundary_condition(self, restraint_nodes=[], restraint_vector=[]):
         """
@@ -602,7 +605,7 @@ class OpsGrillage:
         """
         # Function to output array of grid nodes along longitudinal direction
         last_girder = (self.width - self.edge_width)  # coord of last girder
-        nox_girder = np.linspace(start=self.edge_width, stop=last_girder, num=self.num_long_gird)
+        nox_girder = np.linspace(start=self.edge_width, stop=last_girder, num=self.num_long_gird-2)
         noz = np.hstack((np.hstack((0, nox_girder)), self.width))  # array containing z coordinate
         return noz
 
@@ -664,8 +667,8 @@ class OpsGrillage:
         self.global_element_list = self.long_mem + self.trans_mem
         print("Element generation completed. Number of elements created = {}".format(eletagcounter - 1))
         # save elements and nodes to mesh object
-        #mesh_group = Mesh(self.global_element_list, self.node_map)
-        #return mesh_group
+        # mesh_group = Mesh(self.global_element_list, self.node_map)
+        # return mesh_group
 
     # encapsulated meshing procedure for orthogonal meshing
     def __orthogonal_mesh(self):
@@ -887,8 +890,7 @@ class OpsGrillage:
         print('Elements automation complete for region B1 B2 and A')
         self.global_element_list = self.long_mem + self.trans_mem
         # save elements and nodes to mesh object
-        mesh_group = Mesh(self.global_element_list, self.node_map)
-        return mesh_group
+
 
     def set_material(self, material_obj):
         """

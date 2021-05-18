@@ -26,8 +26,8 @@ slab = GrillageMember(member_name="concrete slab", section=slab_section, materia
 exterior_I_beam = GrillageMember(member_name="exterior I beams", section=exterior_I_beam_section, material=concrete)
 
 # construct grillage model
-example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=4, width=7, skew=-11,
-                             num_long_grid=5, num_trans_grid=5, edge_beam_dist=1, mesh_type="Orth")
+example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=4, width=7, skew=12,
+                             num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Orth")
 
 # set material to grillage
 example_bridge.set_material(concrete)
@@ -68,29 +68,29 @@ print(Barrier.load_point_data)
 
 # --------------------------------------------------------------------------------------------------------------------
 # plotting commands
-# model = plot_nodes(example_bridge, plot_args=None)
-#
-# # plot mesh showing element connectivity
-# if example_bridge.mesh_type != "Ortho":  # skew
-#     plot_section(example_bridge, "interior_main_beam", 'r')
-#     plot_section(example_bridge, "transverse_slab", 'g')
-#     plot_section(example_bridge, "exterior_main_beam_1", 'b')
-#     plot_section(example_bridge, "exterior_main_beam_2", 'k')
-#     plot_section(example_bridge, "edge_beam", 'm')
-#     plot_section(example_bridge, "edge_slab", 'y')
-#
-# else:  # orthogonal
-#     plot_section(example_bridge, "exterior_main_beam_1", 'b')
-#     plot_section(example_bridge, "exterior_main_beam_2", 'k')
-#     plot_section(example_bridge, "interior_main_beam", 'r')
-#     plot_section(example_bridge, "edge_beam", 'm')
-#     plot_section(example_bridge, "transverse_slab", 'g')
-#     plot_section(example_bridge, 7, 'c')
-#     plot_section(example_bridge, 8, 'm')
-#     plot_section(example_bridge, 9, 'b')
-#     plot_section(example_bridge, 10, 'k')
-#     plot_section(example_bridge, 5, 'r')
-# plt.show()
+model = plot_nodes(example_bridge, plot_args=None)
+
+# plot mesh showing element connectivity
+if example_bridge.mesh_type != "Ortho":  # skew
+    plot_section(example_bridge, "interior_main_beam", 'r')
+    plot_section(example_bridge, "transverse_slab", 'g')
+    plot_section(example_bridge, "exterior_main_beam_1", 'b')
+    plot_section(example_bridge, "exterior_main_beam_2", 'k')
+    plot_section(example_bridge, "edge_beam", 'm')
+    plot_section(example_bridge, "edge_slab", 'y')
+
+else:  # orthogonal
+    plot_section(example_bridge, "exterior_main_beam_1", 'b')
+    plot_section(example_bridge, "exterior_main_beam_2", 'k')
+    plot_section(example_bridge, "interior_main_beam", 'r')
+    plot_section(example_bridge, "edge_beam", 'm')
+    plot_section(example_bridge, "transverse_slab", 'g')
+    plot_section(example_bridge, 7, 'c')
+    plot_section(example_bridge, 8, 'm')
+    plot_section(example_bridge, 9, 'b')
+    plot_section(example_bridge, 10, 'k')
+    plot_section(example_bridge, 5, 'r')
+plt.show()
 
 opsplt.plot_model()
 print(ops.eleNodes(20))

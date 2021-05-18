@@ -143,4 +143,23 @@ def findCircle(x1, y1, x2, y2, x3, y3):
     print("Centre = (", h, ", ", k, ")")
     print("Radius = ", r)
 
-    return [[h,k],r]
+    return [[h, k], r]
+
+
+def line_func(m, c, x):
+    y = m * x + c
+    return y
+
+
+def arc_func(h, v, R, x, r=0):
+    # function to get y coordinate on an arc given the variables of the circle equation
+    # option to add radius to circle , lowercase r
+    y = np.sqrt((R + r) ** 2 - (x - h) ** 2) + v
+    return y
+
+
+def select_segment_function(curve_flag, d, x, r=0, m=0, c=0):
+    if curve_flag:
+        return arc_func(h=d[0][0], v=d[0][1], R=d[1], x=x, r=r)
+    else:
+        return line_func(m, c, x)
