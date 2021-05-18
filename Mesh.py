@@ -43,9 +43,12 @@ class Mesh:
         # variables for curve mesh
         self.curve_center = []
         self.curve_radius = []
+        # variables to remember counters for node tags
+        assigned_node_tag = []
+        previous_node_tag = []
 
-        # define starting line segment for the length of the mesh (@ z = 0)
-        pt3 = [long_dim, 0]
+        # define sweep line segment for the length of the mesh (@ z = 0)
+        pt3 = [long_dim, 0] # 3rd point for defining curve mesh
         try:
             d = findCircle(x1=0, y1=0, x2=pt2[0], y2=pt2[1], x3=pt3[0], y3=pt3[1])
             # arc_func()
@@ -71,26 +74,49 @@ class Mesh:
             self.ref_node_coor.append([xcor, self.y_elevation, self.noz[count]])
         self.nox = np.linspace(0, self.long_dim, self.num_trans_beam)
 
+        num_nodes_z = len(self.noz)
+        num_nodes_x = len(nox)
         # run section grouping for longitudinal and transverse members
         self.__identify_member_groups()
         # create elements
         if self.orthogonal:
+            # orthogonal can only be splayed onto a curve mesh, skew mesh does
             pass
-        else:
-            for x_count, x_inc in enumerate(self.nox):  #
+        elif not self.curve:
+            for x_count, x_inc in enumerate(self.nox):
                 for z_count, ref_point in enumerate(self.ref_node_coor):
                     # offset x and y in all points in ref points
                     z_inc = select_segment_function(curve_flag=self.curve, d=d, m=m, c=c, x=x_inc)
                     node_coordinate = [ref_point[0] + x_inc, ref_point[1], ref_point[2] + z_inc]
-                    node_tag = self.node_spec.setdefault(self.node_counter,
-                                                         {'coordinate': node_coordinate, 'x_group': x_count,
-                                                          'z_group': z_count})
+                    self.node_spec.setdefault(self.node_counter,
+                                                         {'tag':self.node_counter,'coordinate': node_coordinate,
+                                                          'x_group': x_count, 'z_group': z_count})
+                    assigned_node_tag.append(self.node_counter)
                     self.node_counter += 1
+                    # link transverse elements
+                    if z_count > 0:
+                        # element list [element tag, node i, node j, x/z group
+                        self.trans_ele.append([self.element_counter, assigned_node_tag[z_count-1],
+                                               assigned_node_tag[z_count], x_count])
+                        self.element_counter += 1
+
+                # link longitudinal elements
+                if x_count == 0:
+                    previous_node_tag = assigned_node_tag
+                elif x_count > 0:
+                    for pre_node in previous_node_tag:
+                        for cur_node in assigned_node_tag:
+                            cur_z_group = self.node_spec[cur_node]['z_group']
+                            prev_z_group = self.node_spec[pre_node]['z_group']
+                            if cur_z_group == prev_z_group:
+                                self.long_ele.append([self.element_counter,pre_node,cur_node,cur_z_group])
+                                self.element_counter += 1
+                                break  # break assign long ele loop (cur node)
+                    # update record for previous node tag step
+                    previous_node_tag = assigned_node_tag
+                # reset counter for next loop
+                assigned_node_tag = []
         print("t")
-
-
-
-
 
     def __skew_mesh(self):
         self.nox = np.linspace(0, self.long_dim, self.num_trans_beam)  # array like containing node x coordinate
