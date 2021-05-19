@@ -147,7 +147,11 @@ def findCircle(x1, y1, x2, y2, x3, y3):
 
 
 def line_func(m, c, x):
-    y = m * x + c
+    y = []
+    if type(x) is list:
+        y = m * x[0] + c
+    else:
+        y = m * x + c
     return y
 
 
@@ -164,10 +168,12 @@ def arc_func(h, v, R, x, r=0):
 
 
 def select_segment_function(curve_flag, d, x, r=0, m=0, c=0):
+    y = []
     if curve_flag:
-        return arc_func(h=d[0][0], v=d[0][1], R=d[1], x=x, r=r)
+        y = arc_func(h=d[0][0], v=d[0][1], R=d[1], x=x, r=r)
     else:
-        return line_func(m, c, x)
+        y = line_func(m, c, x)
+    return y
 
 
 def find_dict_key(my_dict, key):
@@ -180,5 +186,17 @@ def x_intcp_two_lines(m1, m2, c1, c2):
 
 
 def get_y_intcp(m, x, y):
-    c = y - x*m
+    c = y - x * m
     return c
+
+
+def get_line_func(skew_angle, sweeping_nodes):
+    start_point = []
+    if skew_angle < 0:
+        start_point = sweeping_nodes[0]
+        m = 1 / np.tan(-skew_angle / 180 * np.pi)
+    else:
+        start_point = sweeping_nodes[-1]
+        m = 1 / np.tan(-skew_angle / 180 * np.pi)
+    c = start_point[2]
+    return m, c

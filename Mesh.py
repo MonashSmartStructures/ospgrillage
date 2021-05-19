@@ -33,7 +33,6 @@ class Mesh:
         self.transform_counter = transform_counter
         # variables to remember counters for node tags
         assigned_node_tag = []
-        previous_node_tag = []
         self.decimal_lim = 4  # variable for floating point arithmetic error
         self.curve = False
         # initiate list for nodes and elements
@@ -41,6 +40,7 @@ class Mesh:
         self.long_ele = []
         self.trans_ele = []
         self.y_elevation = 0
+        self.mesh_design_line = []
         # dict to record mesh variables
         self.transform_dict = dict()
         self.node_spec = dict()
@@ -55,7 +55,7 @@ class Mesh:
 
         # ------------------------------------------------------------------------------------------
         # Procedure to define line segment for the length of the mesh (@ z = 0)
-        pt3 = [long_dim, 0.1]  # 3rd point for defining curve mesh
+        pt3 = [long_dim, 0.0]  # 3rd point for defining curve mesh
         # if defining an arc line segment, specify p2 such that pt2 is the point at the midpoint of the arc
         try:
             self.d = findCircle(x1=0, y1=0, x2=pt2[0], y2=pt2[1], x3=pt3[0], y3=pt3[1])
@@ -80,59 +80,67 @@ class Mesh:
         self.noz = np.hstack((np.hstack((0, nox_girder)), self.width))
 
         # define edge construction line - line to be swept along line/curve segment
-        self.edge_constr_line = []
-        edge_const_line_x = [z * np.tan(-self.skew / 180 * math.pi) for z in self.noz]
-        # define coordinates of ref nodes on construction line (end span line)
-        for (count, xcor) in enumerate(edge_const_line_x):
-            self.edge_constr_line.append([xcor, self.y_elevation, self.noz[count]])
 
         # identify *1 points of variable x spacing of transverse members
         # *2 list of points correspond to points orthogonal to line/curve segment.
-        variable_x_spacing = [] # initiate list
-        ortho_sweeping_points = [] # initiate list
-        if orthogonal:
-            mref = self.m  # see note on meshing
-            cref = self.c  # see note on meshing
-            for points in self.edge_constr_line:
-                if math.isinf(-1/self.m):
-                    # item 1
-                    variable_x_spacing.append([points[0]])
-                    # item 2
-                    ortho_sweeping_points.append([0, self.y_elevation, points[2]])
-                else:
-                    # item 1
-                    c_item_1 = get_y_intcp(m=-1/self.m, x=points[0], y=points[2])
-                    x_item_1 = x_intcp_two_lines(m1=mref, c1=cref, m2=-1 / self.m, c2=c_item_1)
-                    variable_x_spacing.append([x_item_1])
-                    # item 2
-                    c_item_2 = get_y_intcp(m=mref,x=points[0], y=points[2])
-                    x_item_2 = x_intcp_two_lines(m1=mref, c1=c_item_2, m2=-1 / self.m, c2=0)
-                    ortho_sweeping_points.append([x_item_2, self.y_elevation, line_func(m=-1/self.m,c=0,x=x_item_2)])
-
-            # finish
-
-        # NOTES
-        # combined with x variable transverse to define the sweep points
-        # input x coordinate of sweep points, return y coordinate, all points in orthogonal sweep construction lines
-        # offset by x and y , set point as node.
-
-        # IF angle is positive, sweep for first region is backward
-        # else, if skew angle is negative, all three region is forward
-
-        # if variable_spacings goes into the negative x, axis, set node points for uniform spacing grid to start
-        # from 0 and end at remaining length (long_dim - max variable_spacing magnitude).
-        if variable_x_spacing[np.argmax(np.abs(variable_x_spacing))][0] < 0:
-            remaining_length = self.long_dim - max([np.abs(x) for x in variable_x_spacing])
-            add_nodes_x = np.linspace(0, remaining_length, self.num_trans_beam)
-            variable_x_spacing.reverse()
-            sweep_line_seg_x = variable_x_spacing + add_nodes_x.tolist()[1:]
-        else:
-            add_nodes_x = np.linspace(max([np.abs(x) for x in variable_x_spacing])[0], self.long_dim, self.num_trans_beam)
-            sweep_line_seg_x = variable_x_spacing + add_nodes_x.tolist()[1:]
-
+        variable_x_spacing = []  # initiate list
+        ortho_sweeping_points = []  # initiate list
+        # if orthogonal:
+        #     mref = self.m  # see note on meshing
+        #     cref = self.c  # see note on meshing
+        #     for points in self.edge_constr_line:
+        #         if math.isinf(-1 / self.m):
+        #             # item 1
+        #             variable_x_spacing.append([points[0]])
+        #             # item 2
+        #             ortho_sweeping_points.append([0, self.y_elevation, points[2]])
+        #         else:
+        #             # item 1
+        #             c_item_1 = get_y_intcp(m=-1 / self.m, x=points[0], y=points[2])
+        #             x_item_1 = x_intcp_two_lines(m1=mref, c1=cref, m2=-1 / self.m, c2=c_item_1)
+        #             variable_x_spacing.append([x_item_1])
+        #             # item 2
+        #             c_item_2 = get_y_intcp(m=mref, x=points[0], y=points[2])
+        #             x_item_2 = x_intcp_two_lines(m1=mref, c1=c_item_2, m2=-1 / self.m, c2=0)
+        #             ortho_sweeping_points.append(
+        #                 [x_item_2, self.y_elevation, line_func(m=-1 / self.m, c=0, x=x_item_2)])
+        #     # finish
         #
-        self.nox = np.linspace(0, self.long_dim, self.num_trans_beam)
+        #     if variable_x_spacing[np.argmax(np.abs(variable_x_spacing))][0] < 0:
+        #         remaining_length = self.long_dim - max([np.abs(x) for x in variable_x_spacing])
+        #         add_nodes_x = np.linspace(0, remaining_length, self.num_trans_beam)
+        #         variable_x_spacing.reverse()
+        #         sweep_line_seg_x = variable_x_spacing + add_nodes_x.tolist()[1:]
+        #     else:
+        #         add_nodes_x = np.linspace(max([np.abs(x) for x in variable_x_spacing])[0], self.long_dim,
+        #                                   self.num_trans_beam)
+        #         sweep_line_seg_x = variable_x_spacing + add_nodes_x.tolist()[1:]
+        #     sweep_line_seg_y = []
+        #     for x in sweep_line_seg_x:
+        #         y = line_func(m=self.m, c=self.c, x=x)
+        #         sweep_line_seg_y.append(y)
+        #
 
+        # ------------------------------------------------------------------------------------------
+        self.sweeping_nodes = []
+        if orthogonal:
+            edge_const_line_x = [0] * len(self.noz)
+            for (count, xcor) in enumerate(edge_const_line_x):
+                self.sweeping_nodes.append([xcor, self.y_elevation, self.noz[count]])
+        else:  # skew
+            edge_const_line_x = [np.abs((z * np.tan(self.skew / 180 * np.pi))) for z in self.noz]
+            for (count, xcor) in enumerate(edge_const_line_x):
+                if self.skew < 0:
+                    self.sweeping_nodes.append([xcor, self.y_elevation, self.noz[count]])
+                else:
+                    self.sweeping_nodes.append([xcor, self.y_elevation, np.flip(self.noz)[count]])
+
+        self.edge_constr_line = []
+
+
+        # TODO: for curve mesh , allow values of nox to be generated from an equation of a transition curve for example
+        # TODO: Self.nox becomes the design line (any abritrary design line) for the meshing procedure
+        self.nox = np.linspace(0, self.long_dim, self.num_trans_beam)
 
         # run section grouping for longitudinal and transverse members
         self.__identify_member_groups()
@@ -142,39 +150,19 @@ class Mesh:
         # if orthogonal, orthogonal mesh only be splayed onto a curve mesh, if skew mesh curved/arc line segment must be
         # false
         if self.orthogonal:
-            # first loop sweep ortho_const_line across
-            if self.skew < 0:
-                loop_x = edge_const_line_x
-                # TODO
-
-                loop_z = np.flip(self.noz)
-            else:
-                loop_x = edge_const_line_x
-                loop_x.reverse()
-                loop_z = self.noz
-            for x_count, x_inc in enumerate(loop_x):
-                for z_count, z_point in enumerate(loop_z[0:x_count]):
-                    node_coordinate = [x_inc, self.y_elevation, z_point]
-                    self.node_spec.setdefault(self.node_counter,
-                                              {'tag': self.node_counter, 'coordinate': node_coordinate,
-                                               'x_group': x_count, 'z_group': z_count})
-                    assigned_node_tag.append(self.node_counter)
-                    self.node_counter += 1
-
-            # Second for loop ( across linear region of sweep line)
-
-            # third for loop ( across variable transverse spacing region - mirrors first for loop)
-
+            self.__orthogonal_meshing()
         elif not self.curve:  # Skew mesh + angle
             self.__skew_meshing()
 
     def __skew_meshing(self):
         assigned_node_tag = []
+        previous_node_tag = []
         for x_count, x_inc in enumerate(self.nox):
-            for z_count, ref_point in enumerate(self.edge_constr_line):
+            for z_count, ref_point in enumerate(self.sweeping_nodes):
                 # offset x and y in all points in ref points
-                z_inc = np.round(select_segment_function(curve_flag=self.curve, d=self.d, m=self.m, c=self.m, x=x_inc, r=self.r),
-                                 self.decimal_lim)
+                z_inc = np.round(
+                    select_segment_function(curve_flag=self.curve, d=self.d, m=self.m, c=self.m, x=x_inc, r=self.r),
+                    self.decimal_lim)
                 node_coordinate = [ref_point[0] + x_inc, ref_point[1], ref_point[2] + z_inc]
                 self.node_spec.setdefault(self.node_counter,
                                           {'tag': self.node_counter, 'coordinate': node_coordinate,
@@ -208,6 +196,31 @@ class Mesh:
             assigned_node_tag = []
         print("Meshing completed....")
 
+    def __orthogonal_meshing(self):
+        assigned_node_tag = []
+        previous_node_tag = []
+
+        # first edge line
+        # loop for each edge construction line
+        m,c = get_line_func(self.skew, self.sweeping_nodes)
+        intersect_counter = 0
+        intersect_x = []
+
+        x_count = 0
+
+        # for generalization - set to check for number of intersects
+        for z_count, sweep_point in enumerate(self.sweeping_nodes):
+            x = inv_line_func(m, c, y=sweep_point[2])
+            intersect_x.append([x,0,sweep_point[2]])
+            intersect_counter +=1
+            for z_count_int, int_point_x in enumerate(intersect_x):
+                node_coordinate = [int_point_x, self.y_elevation, sweep_point[2]]
+                self.node_spec.setdefault(self.node_counter,
+                                          {'tag': self.node_counter, 'coordinate': node_coordinate,
+                                           'x_group': x_count, 'z_group': z_count_int})
+
+                # transverse
+            #longitudinal
     def __identify_member_groups(self):
         """
         Abstracted method handled by either orthogonal_mesh() or skew_mesh() function
