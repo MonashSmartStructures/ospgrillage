@@ -151,6 +151,11 @@ def line_func(m, c, x):
     return y
 
 
+def inv_line_func(m, c, y):
+    x = (y - c) / m
+    return x
+
+
 def arc_func(h, v, R, x, r=0):
     # function to get y coordinate on an arc given the variables of the circle equation
     # option to add radius to circle , lowercase r
@@ -163,3 +168,17 @@ def select_segment_function(curve_flag, d, x, r=0, m=0, c=0):
         return arc_func(h=d[0][0], v=d[0][1], R=d[1], x=x, r=r)
     else:
         return line_func(m, c, x)
+
+
+def find_dict_key(my_dict, key):
+    return eval(list(my_dict.keys())[list(my_dict.values()).index(key)])
+
+
+def x_intcp_two_lines(m1, m2, c1, c2):
+    x = (c2 - c1) / (m1 - m2)
+    return x
+
+
+def get_y_intcp(m, x, y):
+    c = y - x*m
+    return c

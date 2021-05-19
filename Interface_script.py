@@ -27,7 +27,7 @@ exterior_I_beam = GrillageMember(member_name="exterior I beams", section=exterio
 
 # construct grillage model
 example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=4, width=7, skew=12,
-                             num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Orth")
+                             num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
 
 # set material to grillage
 example_bridge.set_material(concrete)
@@ -67,30 +67,30 @@ print(Barrier.load_point_data)
 # example_bridge.add_load_combination(loadcase=[ULS_DL, SLS_LL], load_factor=[1.2, 1.7])
 
 # --------------------------------------------------------------------------------------------------------------------
-# plotting commands
-model = plot_nodes(example_bridge, plot_args=None)
-
-# plot mesh showing element connectivity
-if example_bridge.mesh_type != "Ortho":  # skew
-    plot_section(example_bridge, "interior_main_beam", 'r')
-    plot_section(example_bridge, "transverse_slab", 'g')
-    plot_section(example_bridge, "exterior_main_beam_1", 'b')
-    plot_section(example_bridge, "exterior_main_beam_2", 'k')
-    plot_section(example_bridge, "edge_beam", 'm')
-    plot_section(example_bridge, "edge_slab", 'y')
-
-else:  # orthogonal
-    plot_section(example_bridge, "exterior_main_beam_1", 'b')
-    plot_section(example_bridge, "exterior_main_beam_2", 'k')
-    plot_section(example_bridge, "interior_main_beam", 'r')
-    plot_section(example_bridge, "edge_beam", 'm')
-    plot_section(example_bridge, "transverse_slab", 'g')
-    plot_section(example_bridge, 7, 'c')
-    plot_section(example_bridge, 8, 'm')
-    plot_section(example_bridge, 9, 'b')
-    plot_section(example_bridge, 10, 'k')
-    plot_section(example_bridge, 5, 'r')
-plt.show()
+# # plotting commands
+# model = plot_nodes(example_bridge, plot_args=None)
+#
+# # plot mesh showing element connectivity
+# if example_bridge.mesh_type != "Ortho":  # skew
+#     plot_section(example_bridge, "interior_main_beam", 'r')
+#     plot_section(example_bridge, "transverse_slab", 'g')
+#     plot_section(example_bridge, "exterior_main_beam_1", 'b')
+#     plot_section(example_bridge, "exterior_main_beam_2", 'k')
+#     plot_section(example_bridge, "edge_beam", 'm')
+#     plot_section(example_bridge, "edge_slab", 'y')
+#
+# else:  # orthogonal
+#     plot_section(example_bridge, "exterior_main_beam_1", 'b')
+#     plot_section(example_bridge, "exterior_main_beam_2", 'k')
+#     plot_section(example_bridge, "interior_main_beam", 'r')
+#     plot_section(example_bridge, "edge_beam", 'm')
+#     plot_section(example_bridge, "transverse_slab", 'g')
+#     plot_section(example_bridge, 7, 'c')
+#     plot_section(example_bridge, 8, 'm')
+#     plot_section(example_bridge, 9, 'b')
+#     plot_section(example_bridge, 10, 'k')
+#     plot_section(example_bridge, 5, 'r')
+# plt.show()
 
 opsplt.plot_model()
 print(ops.eleNodes(20))

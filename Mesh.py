@@ -15,7 +15,8 @@ class Mesh:
     """
 
     def __init__(self, long_dim, width, trans_dim, edge_width, num_trans_beam, num_long_beam, skew, nox, noz,
-                 orthogonal=False, pt1=[0, 0], pt2=[0, 0], pt3=[0, 0]):
+                 orthogonal=False, pt1=[0, 0], pt2=[0, 0], pt3=[0, 0], element_counter=1, node_counter=1,
+                 transform_counter=0):
         # inputs from OpsGrillage required to create mesh
         self.long_dim = long_dim
         self.trans_dim = trans_dim
@@ -27,10 +28,13 @@ class Mesh:
         self.skew = skew
         self.orthogonal = orthogonal
         # counter to keep track of variables
-        self.node_counter = 1
-        self.element_counter = 1
-        self.transform_counter = 0
-        self.decimal_lim = 4
+        self.node_counter = element_counter
+        self.element_counter = node_counter
+        self.transform_counter = transform_counter
+        # variables to remember counters for node tags
+        assigned_node_tag = []
+        previous_node_tag = []
+        self.decimal_lim = 4  # variable for floating point arithmetic error
         self.curve = False
         # initiate list for nodes and elements
         self.node_map = []
@@ -43,137 +47,166 @@ class Mesh:
         # variables for curve mesh
         self.curve_center = []
         self.curve_radius = []
-        # variables to remember counters for node tags
-        assigned_node_tag = []
-        previous_node_tag = []
+        # line / circle equation variables
+        self.m = 0
+        self.c = 0
+        self.r = 0
+        self.R = 0
 
-        # define sweep line segment for the length of the mesh (@ z = 0)
-        pt3 = [long_dim, 0] # 3rd point for defining curve mesh
+        # ------------------------------------------------------------------------------------------
+        # Procedure to define line segment for the length of the mesh (@ z = 0)
+        pt3 = [long_dim, 0.1]  # 3rd point for defining curve mesh
+        # if defining an arc line segment, specify p2 such that pt2 is the point at the midpoint of the arc
         try:
-            d = findCircle(x1=0, y1=0, x2=pt2[0], y2=pt2[1], x3=pt3[0], y3=pt3[1])
-            # arc_func()
+            self.d = findCircle(x1=0, y1=0, x2=pt2[0], y2=pt2[1], x3=pt3[0], y3=pt3[1])
             self.curve = True
         except ZeroDivisionError:
             print("3 points result in straight line - not a circle")
-            d = None
+            self.d = None
             # procedure to identify straight line segment pinpointing length of grillage
-            points = [(pt1[0], pt1[1]), (pt1[0], pt1[1])]
+            points = [(pt1[0], pt1[1]), (pt3[0], pt3[1])]
             x_coords, y_coords = zip(*points)
             A = np.vstack([x_coords, np.ones(len(x_coords))]).T
             m, c = np.linalg.lstsq(A, y_coords, rcond=None)[0]
+            self.m = round(m, self.decimal_lim)
+            # self.c = 0  # default 0  to avoid arithmetic error
+            zeta = np.arctan(m)  # angle of inclination of line segment
+        # ------------------------------------------------------------------------------------------
 
         # define the nodes of construction lines for end spans - left and right ends
         last_girder = (self.width - self.edge_width)  # coord of last girder
         nox_girder = np.linspace(start=self.edge_width, stop=last_girder, num=self.num_long_beam - 2)
-        self.noz = np.hstack((np.hstack((0, nox_girder)), self.width))  # array containing z coordinate
-        self.ref_node_coor = []
-        # x coordinates of ref_node lines
-        const_line_x = [z * np.tan(-self.skew / 180 * math.pi) for z in noz]
+        # array containing z coordinate
+        self.noz = np.hstack((np.hstack((0, nox_girder)), self.width))
+
+        # define edge construction line - line to be swept along line/curve segment
+        self.edge_constr_line = []
+        edge_const_line_x = [z * np.tan(-self.skew / 180 * math.pi) for z in self.noz]
         # define coordinates of ref nodes on construction line (end span line)
-        for (count, xcor) in enumerate(const_line_x):
-            self.ref_node_coor.append([xcor, self.y_elevation, self.noz[count]])
+        for (count, xcor) in enumerate(edge_const_line_x):
+            self.edge_constr_line.append([xcor, self.y_elevation, self.noz[count]])
+
+        # identify *1 points of variable x spacing of transverse members
+        # *2 list of points correspond to points orthogonal to line/curve segment.
+        variable_x_spacing = [] # initiate list
+        ortho_sweeping_points = [] # initiate list
+        if orthogonal:
+            mref = self.m  # see note on meshing
+            cref = self.c  # see note on meshing
+            for points in self.edge_constr_line:
+                if math.isinf(-1/self.m):
+                    # item 1
+                    variable_x_spacing.append([points[0]])
+                    # item 2
+                    ortho_sweeping_points.append([0, self.y_elevation, points[2]])
+                else:
+                    # item 1
+                    c_item_1 = get_y_intcp(m=-1/self.m, x=points[0], y=points[2])
+                    x_item_1 = x_intcp_two_lines(m1=mref, c1=cref, m2=-1 / self.m, c2=c_item_1)
+                    variable_x_spacing.append([x_item_1])
+                    # item 2
+                    c_item_2 = get_y_intcp(m=mref,x=points[0], y=points[2])
+                    x_item_2 = x_intcp_two_lines(m1=mref, c1=c_item_2, m2=-1 / self.m, c2=0)
+                    ortho_sweeping_points.append([x_item_2, self.y_elevation, line_func(m=-1/self.m,c=0,x=x_item_2)])
+
+            # finish
+
+        # NOTES
+        # combined with x variable transverse to define the sweep points
+        # input x coordinate of sweep points, return y coordinate, all points in orthogonal sweep construction lines
+        # offset by x and y , set point as node.
+
+        # IF angle is positive, sweep for first region is backward
+        # else, if skew angle is negative, all three region is forward
+
+        # if variable_spacings goes into the negative x, axis, set node points for uniform spacing grid to start
+        # from 0 and end at remaining length (long_dim - max variable_spacing magnitude).
+        if variable_x_spacing[np.argmax(np.abs(variable_x_spacing))][0] < 0:
+            remaining_length = self.long_dim - max([np.abs(x) for x in variable_x_spacing])
+            add_nodes_x = np.linspace(0, remaining_length, self.num_trans_beam)
+            variable_x_spacing.reverse()
+            sweep_line_seg_x = variable_x_spacing + add_nodes_x.tolist()[1:]
+        else:
+            add_nodes_x = np.linspace(max([np.abs(x) for x in variable_x_spacing])[0], self.long_dim, self.num_trans_beam)
+            sweep_line_seg_x = variable_x_spacing + add_nodes_x.tolist()[1:]
+
+        #
         self.nox = np.linspace(0, self.long_dim, self.num_trans_beam)
 
-        num_nodes_z = len(self.noz)
-        num_nodes_x = len(nox)
+
         # run section grouping for longitudinal and transverse members
         self.__identify_member_groups()
-        # create elements
+
+        # ------------------------------------------------------------------------------------------
+        # create nodes and elements
+        # if orthogonal, orthogonal mesh only be splayed onto a curve mesh, if skew mesh curved/arc line segment must be
+        # false
         if self.orthogonal:
-            # orthogonal can only be splayed onto a curve mesh, skew mesh does
-            pass
-        elif not self.curve:
-            for x_count, x_inc in enumerate(self.nox):
-                for z_count, ref_point in enumerate(self.ref_node_coor):
-                    # offset x and y in all points in ref points
-                    z_inc = select_segment_function(curve_flag=self.curve, d=d, m=m, c=c, x=x_inc)
-                    node_coordinate = [ref_point[0] + x_inc, ref_point[1], ref_point[2] + z_inc]
+            # first loop sweep ortho_const_line across
+            if self.skew < 0:
+                loop_x = edge_const_line_x
+                # TODO
+
+                loop_z = np.flip(self.noz)
+            else:
+                loop_x = edge_const_line_x
+                loop_x.reverse()
+                loop_z = self.noz
+            for x_count, x_inc in enumerate(loop_x):
+                for z_count, z_point in enumerate(loop_z[0:x_count]):
+                    node_coordinate = [x_inc, self.y_elevation, z_point]
                     self.node_spec.setdefault(self.node_counter,
-                                                         {'tag':self.node_counter,'coordinate': node_coordinate,
-                                                          'x_group': x_count, 'z_group': z_count})
+                                              {'tag': self.node_counter, 'coordinate': node_coordinate,
+                                               'x_group': x_count, 'z_group': z_count})
                     assigned_node_tag.append(self.node_counter)
                     self.node_counter += 1
-                    # link transverse elements
-                    if z_count > 0:
-                        # element list [element tag, node i, node j, x/z group
-                        self.trans_ele.append([self.element_counter, assigned_node_tag[z_count-1],
-                                               assigned_node_tag[z_count], x_count])
-                        self.element_counter += 1
 
-                # link longitudinal elements
-                if x_count == 0:
-                    previous_node_tag = assigned_node_tag
-                elif x_count > 0:
-                    for pre_node in previous_node_tag:
-                        for cur_node in assigned_node_tag:
-                            cur_z_group = self.node_spec[cur_node]['z_group']
-                            prev_z_group = self.node_spec[pre_node]['z_group']
-                            if cur_z_group == prev_z_group:
-                                self.long_ele.append([self.element_counter,pre_node,cur_node,cur_z_group])
-                                self.element_counter += 1
-                                break  # break assign long ele loop (cur node)
-                    # update record for previous node tag step
-                    previous_node_tag = assigned_node_tag
-                # reset counter for next loop
-                assigned_node_tag = []
-        print("t")
+            # Second for loop ( across linear region of sweep line)
 
-    def __skew_mesh(self):
-        self.nox = np.linspace(0, self.long_dim, self.num_trans_beam)  # array like containing node x coordinate
-        self.breadth = self.trans_dim * math.sin(self.skew / 180 * math.pi)  # length of skew edge in x dir
-        self.noz = self.get_long_grid_nodes()  # mesh points in z direction
-        # identify member groups based on nox and noz
-        self.__identify_member_groups()  # returns section_group_nox and section_group_noz
+            # third for loop ( across variable transverse spacing region - mirrors first for loop)
 
-        # create node map
-        for zcount, pointz in enumerate(self.noz):  # loop for each mesh point in z dir
-            noxupdate = self.nox - pointz * np.tan(
-                self.skew / 180 * math.pi)  # get nox for current step in transverse mesh
-            for xcount, pointx in enumerate(noxupdate):  # loop for each mesh point in x dir (nox)
-                # populate nodedata array - inputs [nodetag,x,y,z, gridz tag, gridx tag]
-                self.node_map.append(
-                    [self.node_counter, pointx, self.y_elevation, pointz, zcount,
-                     xcount])  # NOTE here is where to change X Y plane
+        elif not self.curve:  # Skew mesh + angle
+            self.__skew_meshing()
+
+    def __skew_meshing(self):
+        assigned_node_tag = []
+        for x_count, x_inc in enumerate(self.nox):
+            for z_count, ref_point in enumerate(self.edge_constr_line):
+                # offset x and y in all points in ref points
+                z_inc = np.round(select_segment_function(curve_flag=self.curve, d=self.d, m=self.m, c=self.m, x=x_inc, r=self.r),
+                                 self.decimal_lim)
+                node_coordinate = [ref_point[0] + x_inc, ref_point[1], ref_point[2] + z_inc]
+                self.node_spec.setdefault(self.node_counter,
+                                          {'tag': self.node_counter, 'coordinate': node_coordinate,
+                                           'x_group': x_count, 'z_group': z_count})
+                assigned_node_tag.append(self.node_counter)
                 self.node_counter += 1
-        # print to terminal
-        print("Nodes created. Number of nodes = {}".format(self.node_counter - 1))
-
-        # create grillage elements by linking nodes
-        for node_row_z in range(0, len(self.noz)):  # loop for each line mesh in z direction
-            for node_col_x in range(1, len(self.nox)):  # loop for each line mesh in x direction
-                current_row_z = node_row_z * len(self.nox)  # get current row's (z axis) node tag
-                next_row_z = (node_row_z + 1) * len(self.nox)  # get next row's (z axis) node tag
-                # link nodes along current row (z axis), in the x direction
-                # elements in a element list: [node_i, node_j, element group, ele tag, geomTransf (1,2 or 3), grid tag]
-                tag = self.__get_geo_transform_tag([current_row_z + node_col_x, current_row_z + node_col_x + 1])
-                self.long_ele.append([current_row_z + node_col_x, current_row_z + node_col_x + 1,
-                                      self.section_group_noz[node_row_z], self.element_counter, tag, node_row_z])
-                self.element_counter += 1
-
-                # if looping last row of line mesh z
-                if next_row_z == self.node_counter - 1:
-                    pass  # do nothing (exceeded the z axis edge of the grillage)
-                else:  # assigning elements in transverse direction (z)
-                    tag = self.__get_geo_transform_tag([current_row_z + node_col_x, next_row_z + node_col_x])
-                    self.trans_ele.append([current_row_z + node_col_x, next_row_z + node_col_x,
-                                           self.section_group_nox[node_col_x - 1], self.element_counter, tag,
-                                           node_col_x - 1])
+                # link transverse elements
+                if z_count > 0:
+                    # element list [element tag, node i, node j, x/z group]
+                    tag = self.__get_geo_transform_tag([assigned_node_tag[z_count - 1], assigned_node_tag[z_count]])
+                    self.trans_ele.append([self.element_counter, assigned_node_tag[z_count - 1],
+                                           assigned_node_tag[z_count], x_count, tag])
                     self.element_counter += 1
-            if next_row_z >= len(self.nox) * len(self.noz):  # check if current z coord is last row
-                pass  # last column (x = self.nox[-1]) achieved, no more assignment
-            else:  # assign last transverse member at last column (x = self.nox[-1])
-                tag = self.__get_geo_transform_tag([current_row_z + node_col_x + 1, next_row_z + node_col_x + 1])
-                self.trans_ele.append([current_row_z + node_col_x + 1, next_row_z + node_col_x + 1,
-                                       self.section_group_nox[node_col_x], self.element_counter, tag, node_col_x])
-                # after counting section_group_nox 0 to 11, this line adds the counter of 12
-                self.element_counter += 1
-        # combine long and trans member elements to global list
-        self.global_element_list = self.long_ele + self.trans_ele
-        print("Element generation completed. Number of elements created = {}".format(self.element_counter - 1))
-        # save elements and nodes to mesh object
-        # return
-        # element_dict
-        # node dict
+
+            # link longitudinal elements
+            if x_count == 0:
+                previous_node_tag = assigned_node_tag
+            elif x_count > 0:
+                for pre_node in previous_node_tag:
+                    for cur_node in assigned_node_tag:
+                        cur_z_group = self.node_spec[cur_node]['z_group']
+                        prev_z_group = self.node_spec[pre_node]['z_group']
+                        if cur_z_group == prev_z_group:
+                            tag = self.__get_geo_transform_tag([pre_node, cur_node])
+                            self.long_ele.append([self.element_counter, pre_node, cur_node, cur_z_group, tag])
+                            self.element_counter += 1
+                            break  # break assign long ele loop (cur node)
+                # update record for previous node tag step
+                previous_node_tag = assigned_node_tag
+            # reset counter for next loop
+            assigned_node_tag = []
+        print("Meshing completed....")
 
     def __identify_member_groups(self):
         """
@@ -196,10 +229,10 @@ class Mesh:
 
     def __get_geo_transform_tag(self, ele_nodes):
         # function called for each element, assign
-        node_i = [x for x in self.node_map if x[0] == ele_nodes[0]]
-        node_j = [x for x in self.node_map if x[0] == ele_nodes[1]]
-        vxz = self.__get_vector_xz(node_i[0], node_j[0])
-        vxz = np.round(vxz, decimals=self.decimal_lim)
+        node_i = self.node_spec[ele_nodes[0]]['coordinate']
+        node_j = self.node_spec[ele_nodes[1]]['coordinate']
+        vxz = self.__get_vector_xz(node_i, node_j)
+        vxz = [np.round(num, decimals=self.decimal_lim) for num in vxz]
         tag_value = self.transform_dict.setdefault(repr(vxz), self.transform_counter + 1)
         self.transform_counter = tag_value
         return tag_value
@@ -219,10 +252,10 @@ class Mesh:
 
         # vector rotate 90 deg clockwise (x,y) -> (y,-x)
         # [breadth width] is a vector parallel to skew
-        xi = node_j[1] - node_i[1]
-        zi = node_j[3] - node_i[3]
+        xi = node_j[0] - node_i[0]
+        zi = node_j[2] - node_i[2]
         x = zi
-        z = -(-xi)
+        z = -xi
         # normalize vector
         length = math.sqrt(x ** 2 + z ** 2)
         vec = [x / length, z / length]
