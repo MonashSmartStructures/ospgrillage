@@ -158,6 +158,7 @@ class OpsGrillage:
         self.trans_dim = self.width / math.cos(self.skew / 180 * math.pi)
         # 1 create Opensees model space
         self.__write_op_model()
+        self.Mesh_obj = None
         self.__run_mesh_generation()
 
     def __run_mesh_generation(self):
@@ -174,26 +175,19 @@ class OpsGrillage:
             self.__skew_mesh()
         v = self.__get_vector_xz()
 
-        if self.ortho_mesh:
-            # generate command lines for 3 ele transformation in orthogonal mesh
-            self.__write_geom_transf(1, [0, 0, 1])  # x dir members
-            self.__write_geom_transf(2, [v[0], 0, v[1]])  # z dir members (skew)
-            self.__write_geom_transf(3, [1, 0, 0])  # z dir members orthogonal
-        else:
-            # generate command lines for 2 ele transformation in skew mesh
-            self.__write_geom_transf(1, [0, 0, 1])  # x dir members
-            self.__write_geom_transf(2, [v[0], 0, v[1]])  # z dir members (skew)
+        self.Mesh_obj = Mesh(self.long_dim, self.width, self.trans_dim, self.edge_width, self.num_trans_grid,
+                             self.num_long_gird,
+                             self.skew, self.nox, self.noz, orthogonal=self.ortho_mesh)
+        print("new mesh")
+        self.__write_geom_transf(self.Mesh_obj)  # x dir members
 
         # 2 generate command lines in output py file
-        self.__write_op_node()  # write node() commands
+        self.__write_op_node(self.Mesh_obj)  # write node() commands
         # 3 identify boundary of mesh
         self.get_edge_beam_nodes()  # get edge beam nodes
         self.get_trans_edge_nodes()  # get support nodes
         self.__write_op_fix()  # write fix() command for support nodes
-        new = Mesh(self.long_dim, self.width, self.trans_dim, self.edge_width, self.num_trans_grid,self.num_long_gird,
-                   self.skew, self.nox, self.noz, orthogonal=self.ortho_mesh)
 
-    #
     def set_boundary_condition(self, restraint_nodes=[], restraint_vector=[]):
         """
         User function to define support boundary conditions in addition to the model edges automatically detected
@@ -210,7 +204,7 @@ class OpsGrillage:
             self.support_nodes.append([nodes, restraint_vector])
 
     # abstraction to write ops commands to output py file
-    def __write_geom_transf(self, trans_tag, vector_xz, transform_type="Linear"):
+    def __write_geom_transf(self, mesh_obj, transform_type="Linear"):
         """
         Abstracted procedure to write ops.geomTransf() to output py file.
         :param trans_tag: tag of transformation - set according to default 1, 2 and 3
@@ -222,11 +216,18 @@ class OpsGrillage:
         """
 
         # write geoTransf() command
-        ops.geomTransf(transform_type, trans_tag, *vector_xz)
-        with open(self.filename, 'a') as file_handle:
-            file_handle.write("# create transformation {}\n".format(trans_tag))
-            file_handle.write("ops.geomTransf(\"{type}\", {tag}, *{vxz})\n".format(
-                type=transform_type, tag=trans_tag, vxz=vector_xz))
+        # ops.geomTransf(transform_type, trans_tag, *vector_xz)
+        # with open(self.filename, 'a') as file_handle:
+        #     file_handle.write("# create transformation {}\n".format(trans_tag))
+        #     file_handle.write("ops.geomTransf(\"{type}\", {tag}, *{vxz})\n".format(
+        #         type=transform_type, tag=trans_tag, vxz=vector_xz))
+
+        for k,v in mesh_obj.transform_dict.items():
+            ops.geomTransf(transform_type, v, *eval(k))
+            with open(self.filename, 'a') as file_handle:
+                file_handle.write("# create transformation {}\n".format(v))
+                file_handle.write("ops.geomTransf(\"{type}\", {tag}, *{vxz})\n".format(
+                    type=transform_type, tag=v, vxz=eval(k)))
 
     def __write_op_model(self):
         """
@@ -245,7 +246,7 @@ class OpsGrillage:
             file_handle.write(
                 "ops.model('basic', '-ndm', {ndm}, '-ndf', {ndf})\n".format(ndm=self.__ndm, ndf=self.__ndf))
 
-    def __write_op_node(self):
+    def __write_op_node(self,mesh_obj):
         """
         Sub-abstracted procedure handled by create_nodes() function. This method create node() command for each node
         point generated during meshing procedures.
@@ -255,13 +256,22 @@ class OpsGrillage:
         # write node() command
         with open(self.filename, 'a') as file_handle:
             file_handle.write("# Node generation procedure\n")
-        for node_point in self.node_map:
-            ops.node(node_point[0], node_point[1], node_point[2], node_point[3])
+        # for node_point in self.node_map:
+        #     ops.node(node_point[0], node_point[1], node_point[2], node_point[3])
+        #     with open(self.filename, 'a') as file_handle:
+        #         file_handle.write("ops.node({tag}, {x:.4f}, {y:.4f}, {z:.4f})\n".format(tag=node_point[0],
+        #                                                                                 x=node_point[1],
+        #                                                                                 y=node_point[2],
+        #                                                                                 z=node_point[3]))
+        for k,nested_v, in mesh_obj.node_spec.items():
+            coordinate = nested_v['coordinate']
+            ops.node(nested_v['tag'], coordinate[0], coordinate[1], coordinate[2])
             with open(self.filename, 'a') as file_handle:
-                file_handle.write("ops.node({tag}, {x:.4f}, {y:.4f}, {z:.4f})\n".format(tag=node_point[0],
-                                                                                        x=node_point[1],
-                                                                                        y=node_point[2],
-                                                                                        z=node_point[3]))
+                file_handle.write("ops.node({tag}, {x:.4f}, {y:.4f}, {z:.4f})\n".format(tag=nested_v['tag'],
+                                                                                        x=coordinate[0],
+                                                                                        y=coordinate[1],
+                                                                                        z=coordinate[2]))
+
 
     def __write_op_fix(self):
         """
@@ -530,6 +540,7 @@ class OpsGrillage:
                     with open(self.filename, 'a') as file_handle:
                         file_handle.write(ele_str)
                     eval(ele_str)
+
             # add ele group to assigned list
             self.ele_group_assigned_list.append(self.group_ele_dict[member])
 

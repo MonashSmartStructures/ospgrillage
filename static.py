@@ -156,7 +156,7 @@ def line_func(m, c, x):
 
 
 def inv_line_func(m, c, y):
-    x = (y - c) / m
+    x = (y - c) / m if m != 0 else 0
     return x
 
 
@@ -190,13 +190,13 @@ def get_y_intcp(m, x, y):
     return c
 
 
-def get_line_func(skew_angle, sweeping_nodes):
-    start_point = []
-    if skew_angle < 0:
-        start_point = sweeping_nodes[0]
-        m = 1 / np.tan(-skew_angle / 180 * np.pi)
+def get_line_func(skew_angle, node_point):
+    m = 1 / np.tan(-skew_angle / 180 * np.pi)
+    if len(node_point)<3:
+        c = get_y_intcp(m=m,x=node_point[0],y=node_point[1])
     else:
-        start_point = sweeping_nodes[-1]
-        m = 1 / np.tan(-skew_angle / 180 * np.pi)
-    c = start_point[2]
+        c = get_y_intcp(m=m,x=node_point[0],y=node_point[2])
     return m, c
+
+def rotate_point_2D(x,y,angle,centre_of_rotation = [0,0]):
+    pass
