@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.spatial import distance
 
+
 def characterize_node_diff(node_list, tol):
     """
     Abstracted method handled by identify_member_groups() to characterize the groups of elements based on spacings
@@ -168,8 +169,10 @@ def arc_func(h, v, R, x, r=0):
     y = np.sqrt((R + r) ** 2 - (x - h) ** 2) + v
     return y
 
+
 def transition_curve_func():
     pass
+
 
 # -----------------------------------------------------------------------------------------------------------------------
 # -----------------------------------------------------------------------------------------------------------------------
@@ -208,19 +211,20 @@ def get_line_func(skew_angle, node_point):
 def find_min_x_dist(const_point, ref_point):
     # constant point is node point on construction line
     # ref_point is roving point on the arbitrary line
-    d = distance.cdist(const_point,ref_point)
+    d = distance.cdist(const_point, ref_point)
     return d
 
-def get_slope(pt1,pt2):
+
+def get_slope(pt1, pt2):
     # function claculates the slope for two points inthe 2-D plane, y= 0
     if (pt1[0] - pt2[0]) == 0:
         m = None
     else:
-        m = (pt1[2] - pt2[2])/(pt1[0] - pt2[0])
+        m = (pt1[2] - pt2[2]) / (pt1[0] - pt2[0])
 
     # find phi angle
     if m is None:
         phi = np.pi / 2
     else:
         phi = np.arctan(m)
-    return m,phi
+    return m, phi

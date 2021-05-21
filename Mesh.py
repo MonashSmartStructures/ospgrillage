@@ -1,8 +1,6 @@
 # ----------------------------------------------------------------------------------------------------------------
 # Mesh class
 # ----------------------------------------------------------------------------------------------------------------
-import numpy as np
-import math
 from static import *
 
 
@@ -35,9 +33,10 @@ class Mesh:
         # variables for identifying edge of mesh/model
         self.global_edge_count = global_edge_count
         self.edge_node_recorder = dict()  # key: node tag, val: unique tag for edge
-        # variables to remember counters for node tags
+        # Prefix variables here
         assigned_node_tag = []
         self.decimal_lim = 3  # variable for floating point arithmetic error
+        self.skew_threshold = [11, 30]
         self.curve = False
         # initiate list for nodes and elements
         self.long_ele = []
@@ -70,6 +69,8 @@ class Mesh:
             self.d = findCircle(x1=0, y1=0, x2=pt2[0], y2=pt2[1], x3=pt3[0], y3=pt3[1])
             self.curve = True
             # TODO find zeta for arbitrary function
+            # procedure
+            # get tangent at origin
             zeta = 0
         except ZeroDivisionError:
             print("3 points result in straight line - not a circle")
@@ -82,9 +83,8 @@ class Mesh:
             self.m = round(m, self.decimal_lim)
             # self.c = 0  # default 0  to avoid arithmetic error
             zeta = np.arctan(m)  # initial angle of inclination of sweep line about mesh origin
-            # if abs(zeta) > abs(self.skew/180 * np.pi):
-            # raise Exception("Initial inclination of sweep path at mesh origin ({}) too large - greater than skew of edge ({})".format(zeta,self.skew))
 
+        self.__check_skew(zeta)  # check condition for orthogonal mesh
         # ------------------------------------------------------------------------------------------
         # edge construction line 1
         edge_ref_point = self.mesh_origin
@@ -92,21 +92,23 @@ class Mesh:
         nox_girder = np.linspace(start=self.edge_width, stop=last_girder, num=self.num_long_beam - 2)
         # array containing z coordinate of edge construction line
         self.noz = np.hstack((np.hstack((0, nox_girder)), self.width))
-        edge_node_x = [np.abs((z * np.tan(self.skew / 180 * np.pi))) for z in self.noz]
+
         if self.skew <= 0:
+            edge_node_x = [(z * np.tan(self.skew / 180 * np.pi)) for z in self.noz]
             self.edge_construction_line = [[x + edge_ref_point[0], y + edge_ref_point[1], z + edge_ref_point[2]] for
                                            x, y, z in
                                            zip(edge_node_x, [self.y_elevation] * len(self.noz), self.noz)]
         else:
+            edge_node_x = [np.abs((z * np.tan(self.skew / 180 * np.pi))) for z in self.noz]
             self.edge_construction_line = [[x + edge_ref_point[0], y + edge_ref_point[1], z + edge_ref_point[2]] for
-                                           x, y, z in
-                                           zip(edge_node_x, [self.y_elevation] * len(self.noz), np.flip(self.noz))]
+                                           x, y, z in zip(edge_node_x, [self.y_elevation] * len(self.noz), self.noz)]
         # ------------------------------------------------------------------------------------------
         # edge construction line 2
 
         # ------------------------------------------------------------------------------------------
         # Sweep nodes
         self.sweeping_nodes = []
+
         if orthogonal:
             self.sweeping_nodes = self.__rotate_sweep_nodes(zeta)
 
@@ -120,9 +122,6 @@ class Mesh:
 
         # --------------------------------------------------------------------------------------------------
         # 2.1 check validity of construction line + sweep line
-        # for all combination, zeta must be less than self.skew
-        # if zeta >= self.skew
-        # then it works
         # run section grouping for longitudinal and transverse members
         self.__identify_member_groups()
 
@@ -197,6 +196,7 @@ class Mesh:
         self.edge_node_group = dict()
 
         # start at first construction line
+
         if self.skew < 0:
             m_edge, c_edge = get_line_func(self.skew, self.sweeping_nodes[0])
         else:
@@ -207,12 +207,14 @@ class Mesh:
             start_point_x = self.mesh_origin[0]
             ref_point_x, ref_point_z = self.__search_x_point(int_point, start_point_x)
             # find m' of line between intersect int_point and ref point on sweep path   #TODO here for straight line
-            m_primt,phi = get_slope([ref_point_x,self.y_elevation,ref_point_z], int_point)
+            m_prime, phi = get_slope([ref_point_x,self.y_elevation,ref_point_z], int_point)
             # rotate sweep line such that parallel to m' line
             current_sweep_nodes = self.__rotate_sweep_nodes(np.pi/2 - np.abs(phi))
             # loop for each z count, assign
+            # check
+            # TODO check if here should be effective skew (skew-zeta)
             if m_edge < 0:
-                sweep_nodes = current_sweep_nodes[(z_count+1):]
+                sweep_nodes = current_sweep_nodes[z_count:]
             else:
                 sweep_nodes = current_sweep_nodes[0:(z_count+1)]
             for (z_count_int, nodes) in enumerate(sweep_nodes):
@@ -225,16 +227,16 @@ class Mesh:
 
                 self.assigned_node_tag.append(self.node_counter)
                 self.node_counter += 1
-                # link transverse members
+                # if loop assigned more than two nodes, link nodes as a transverse member
                 if z_count_int > 0:
-                    # element list [element tag, node i, node j, x/z group]
-
+                    # run sub procedure to assign
                     self.__assign_transverse_members(pre_node=self.assigned_node_tag[z_count_int - 1],
                                                      cur_node=self.assigned_node_tag[z_count_int])
 
-            # link longitudinal elements and edge members
+            # if loop is in first step, there is only one column of nodes, skip longitudinal assignment
             if z_count == 0:
                 self.previous_node_tag = self.assigned_node_tag
+            # if loop assigned more than two columns of nodes, link nodes according to z-dir grouping as long members
             if z_count > 0:
                 for pre_node in self.previous_node_tag:
                     for cur_node in self.assigned_node_tag:
@@ -244,17 +246,17 @@ class Mesh:
                             self.__assign_longitudinal_members(pre_node=pre_node, cur_node=cur_node,
                                                                cur_z_group=cur_z_group)
                             break  # break assign long ele loop (cur node)
-                # link edge members
+                # link edge nodes from previous and current as skewed edge member
                 self.edge_node_recorder.setdefault(self.previous_node_tag[-1], self.global_edge_count)
                 self.edge_node_recorder.setdefault(self.assigned_node_tag[-1], self.global_edge_count)
-                # for edge node - linking depends on slope of edge construction line
+                # if angle is positive (slope negative), edge nodes located at the first element of list
                 if m_edge<0:
                     self.__assign_edge_trans_members(self.previous_node_tag[0], self.assigned_node_tag[0])
                 else:
                     self.__assign_edge_trans_members(self.previous_node_tag[-1], self.assigned_node_tag[-1])
                 # update recorder for previous node tag step
                 self.previous_node_tag = self.assigned_node_tag
-            # update and reset recorders for next sweep point x
+            # update and reset recorders for next column of sweep nodes
             self.global_x_grid_count += 1
             self.ortho_previous_node_column = self.assigned_node_tag
             self.assigned_node_tag = []
@@ -262,7 +264,11 @@ class Mesh:
 
         print("Orthogonal meshing completed....")
 
+    def __orthogonal_meshing_part(self):
+        pass
 
+    def __third_orthogonal_meshing(self):
+        pass
 
     # ------------------------------------------------------------------------------------------
     # ------------------------------------------------------------------------------------------
@@ -312,6 +318,14 @@ class Mesh:
         self.transform_counter = tag_value
         return tag_value
 
+    def __check_skew(self,zeta):
+        # if mesh type is beyond default allowance threshold of 11 degree and 30 degree, return exception
+        if np.abs(self.skew-zeta) <= self.skew_threshold[0] and self.ortho_mesh:
+            # set to
+            self.orthogonal = False
+        elif np.abs(self.skew-zeta) >= self.skew_threshold[1] and not self.ortho_mesh:
+            self.orthogonal = True
+            #raise Exception('Oblique mesh not allowed for angle greater than {}'.format(self.skew_threshold[1]))
     # ------------------------------------------------------------------------------------------
     @staticmethod
     def __get_vector_xz(node_i, node_j):
@@ -352,7 +366,7 @@ class Mesh:
             sweeping_nodes = [[x + self.mesh_origin[0], y + self.mesh_origin[1], z + self.mesh_origin[2]] for x, y, z
                                    in
                                    zip(np.abs(sweep_nodes_x), [self.y_elevation] * len(self.noz),
-                                       np.flip(sweep_nodes_z))]
+                                       (sweep_nodes_z))]
         return sweeping_nodes
 
     def __search_x_point(self, int_point, start_point_y=0, line_function=None):
@@ -360,7 +374,7 @@ class Mesh:
         min_found = False
         max_loop = 1000
         loop_counter = 0
-        min_d = None
+        z0 = None
         # TODO magic number here
         inc = 0.001
         convergence_check = []
