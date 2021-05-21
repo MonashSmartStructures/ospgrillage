@@ -1,5 +1,5 @@
 import numpy as np
-
+from scipy.spatial import distance
 
 def characterize_node_diff(node_list, tol):
     """
@@ -94,8 +94,6 @@ def search_grid_lines(node_line_list, position, position_bound="ub"):
     return [[upper_line, upper_line_width], [lower_line, lower_line_width]]
 
 
-# Function to find the circle on
-# which the given three points lie
 def findCircle(x1, y1, x2, y2, x3, y3):
     x12 = x1 - x2
     x13 = x1 - x3
@@ -146,6 +144,10 @@ def findCircle(x1, y1, x2, y2, x3, y3):
     return [[h, k], r]
 
 
+# -----------------------------------------------------------------------------------------------------------------------
+# Sweep path equations - Add future functions here
+# which the given three points lie
+
 def line_func(m, c, x):
     y = []
     if type(x) is list:
@@ -166,7 +168,11 @@ def arc_func(h, v, R, x, r=0):
     y = np.sqrt((R + r) ** 2 - (x - h) ** 2) + v
     return y
 
+def transition_curve_func():
+    pass
 
+# -----------------------------------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------------------------------
 def select_segment_function(curve_flag, d, x, r=0, m=0, c=0):
     y = []
     if curve_flag:
@@ -192,11 +198,29 @@ def get_y_intcp(m, x, y):
 
 def get_line_func(skew_angle, node_point):
     m = 1 / np.tan(-skew_angle / 180 * np.pi)
-    if len(node_point)<3:
-        c = get_y_intcp(m=m,x=node_point[0],y=node_point[1])
+    if len(node_point) < 3:
+        c = get_y_intcp(m=m, x=node_point[0], y=node_point[1])
     else:
-        c = get_y_intcp(m=m,x=node_point[0],y=node_point[2])
+        c = get_y_intcp(m=m, x=node_point[0], y=node_point[2])
     return m, c
 
-def rotate_point_2D(x,y,angle,centre_of_rotation = [0,0]):
-    pass
+
+def find_min_x_dist(const_point, ref_point):
+    # constant point is node point on construction line
+    # ref_point is roving point on the arbitrary line
+    d = distance.cdist(const_point,ref_point)
+    return d
+
+def get_slope(pt1,pt2):
+    # function claculates the slope for two points inthe 2-D plane, y= 0
+    if (pt1[0] - pt2[0]) == 0:
+        m = None
+    else:
+        m = (pt1[2] - pt2[2])/(pt1[0] - pt2[0])
+
+    # find phi angle
+    if m is None:
+        phi = np.pi / 2
+    else:
+        phi = np.arctan(m)
+    return m,phi

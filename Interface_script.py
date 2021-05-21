@@ -27,7 +27,7 @@ exterior_I_beam = GrillageMember(member_name="exterior I beams", section=exterio
 
 # construct grillage model
 example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=4, width=7, skew=-12,
-                             num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Orth")
+                             num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
 
 # set material to grillage
 example_bridge.set_material(concrete)

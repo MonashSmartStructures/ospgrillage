@@ -152,7 +152,8 @@ class OpsGrillage:
                               "\nimport openseespy.postprocessing.Get_Rendering as opsplt\n")
 
         # check skew threshold
-        self.__check_skew()
+        #TODO turn on later
+        #self.__check_skew()
 
         # calculate edge length of grillage
         self.trans_dim = self.width / math.cos(self.skew / 180 * math.pi)
@@ -179,10 +180,11 @@ class OpsGrillage:
                              self.num_long_gird,
                              self.skew, self.nox, self.noz, orthogonal=self.ortho_mesh)
         print("new mesh")
-        self.__write_geom_transf(self.Mesh_obj)  # x dir members
+
 
         # 2 generate command lines in output py file
         self.__write_op_node(self.Mesh_obj)  # write node() commands
+        self.__write_geom_transf(self.Mesh_obj)  # x dir members
         # 3 identify boundary of mesh
         self.get_edge_beam_nodes()  # get edge beam nodes
         self.get_trans_edge_nodes()  # get support nodes
