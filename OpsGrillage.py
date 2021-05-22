@@ -178,14 +178,14 @@ class OpsGrillage:
 
         self.Mesh_obj = Mesh(self.long_dim, self.width, self.trans_dim, self.edge_width, self.num_trans_grid,
                              self.num_long_gird,
-                             self.skew, self.nox, self.noz, orthogonal=self.ortho_mesh)
+                             self.skew, orthogonal=self.ortho_mesh)
         print("new mesh")
-
 
         # 2 generate command lines in output py file
         self.__write_op_node(self.Mesh_obj)  # write node() commands
         self.__write_geom_transf(self.Mesh_obj)  # x dir members
         # 3 identify boundary of mesh
+        # TODO hereafter modify to read properties from Mesh.obj
         self.get_edge_beam_nodes()  # get edge beam nodes
         self.get_trans_edge_nodes()  # get support nodes
         self.__write_op_fix()  # write fix() command for support nodes

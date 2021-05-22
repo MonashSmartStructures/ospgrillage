@@ -12,7 +12,7 @@ class Mesh:
 
     """
 
-    def __init__(self, long_dim, width, trans_dim, edge_width, num_trans_beam, num_long_beam, skew, nox, noz,
+    def __init__(self, long_dim, width, trans_dim, edge_width, num_trans_beam, num_long_beam, skew,
                  orthogonal=False, pt1=[0, 0], pt2=[0, 0], pt3=[0, 0], element_counter=1, node_counter=1,
                  transform_counter=0, global_x_grid_count=0, global_edge_count=0, mesh_origin=[0, 0, 0]):
         # inputs from OpsGrillage required to create mesh
@@ -30,7 +30,7 @@ class Mesh:
         self.element_counter = node_counter
         self.transform_counter = transform_counter
         self.global_x_grid_count = global_x_grid_count
-        # variables for identifying edge of mesh/model
+        # edge construction line variables
         self.global_edge_count = global_edge_count
         self.edge_node_recorder = dict()  # key: node tag, val: unique tag for edge
         # Prefix variables here
@@ -61,14 +61,14 @@ class Mesh:
         self.mesh_origin = mesh_origin  # default origin
 
         # ------------------------------------------------------------------------------------------
-        # Sweep path of mesh
+        # Sweep path properties
         pt3 = [long_dim, 0.0]  # 3rd point for defining curve mesh
 
         # if defining an arc line segment, specify p2 such that pt2 is the point at the midpoint of the arc
         try:
             self.d = findCircle(x1=0, y1=0, x2=pt2[0], y2=pt2[1], x3=pt3[0], y3=pt3[1])
             self.curve = True
-            # TODO find zeta for arbitrary function
+            # TODO allow for arbitrary sweep path
             # procedure
             # get tangent at origin
             zeta = 0
@@ -83,47 +83,43 @@ class Mesh:
             self.m = round(m, self.decimal_lim)
             # self.c = 0  # default 0  to avoid arithmetic error
             zeta = np.arctan(m)  # initial angle of inclination of sweep line about mesh origin
-
+            self.zeta = zeta / 180 * np.pi  # rad to degrees
         self.__check_skew(zeta)  # check condition for orthogonal mesh
         # ------------------------------------------------------------------------------------------
         # edge construction line 1
-        edge_ref_point = self.mesh_origin
-        last_girder = (self.width - self.edge_width)  # coord of last girder
-        nox_girder = np.linspace(start=self.edge_width, stop=last_girder, num=self.num_long_beam - 2)
-        # array containing z coordinate of edge construction line
-        self.noz = np.hstack((np.hstack((0, nox_girder)), self.width))
-
-        if self.skew <= 0:
-            edge_node_x = [(z * np.tan(self.skew / 180 * np.pi)) for z in self.noz]
-            self.edge_construction_line = [[x + edge_ref_point[0], y + edge_ref_point[1], z + edge_ref_point[2]] for
-                                           x, y, z in
-                                           zip(edge_node_x, [self.y_elevation] * len(self.noz), self.noz)]
-        else:
-            edge_node_x = [np.abs((z * np.tan(self.skew / 180 * np.pi))) for z in self.noz]
-            self.edge_construction_line = [[x + edge_ref_point[0], y + edge_ref_point[1], z + edge_ref_point[2]] for
-                                           x, y, z in zip(edge_node_x, [self.y_elevation] * len(self.noz), self.noz)]
+        self.start_edge_line = EdgeConstructionLine(edge_ref_point=self.mesh_origin, width_z=self.width,
+                                                    edge_width_z=self.edge_width, edge_angle=self.skew,
+                                                    num_long_beam=self.num_long_beam, model_plane_y=self.y_elevation)
+        # z coordinate of sweep nodes
+        self.noz = self.start_edge_line.noz
         # ------------------------------------------------------------------------------------------
         # edge construction line 2
-
+        self.end_edge_line = EdgeConstructionLine(edge_ref_point=[self.long_dim,0,0], width_z=self.width,
+                                                  edge_width_z=self.edge_width, edge_angle=self.skew,
+                                                  num_long_beam=self.num_long_beam, model_plane_y=self.y_elevation)
         # ------------------------------------------------------------------------------------------
         # Sweep nodes
+        # nodes to be swept across sweep path varies based
+        # sweeping_nodes variable is a list containing x,y,z coordinates which slope is dependant on slope at  ref point
+        # of sweep nodes. slope of sweep nodes is always ORTHOGONAL to tangent of sweep path at intersection with ref
+        # point
         self.sweeping_nodes = []
 
         if orthogonal:
             self.sweeping_nodes = self.__rotate_sweep_nodes(zeta)
-
         else:  # skew
             # sweep line of skew mesh == edge_construction line
-            self.sweeping_nodes = self.edge_construction_line
+            self.sweeping_nodes = self.start_edge_line.node_list
+            self.nox = np.linspace(0, self.long_dim, self.num_trans_beam)
         # ------------------------------------------------------------------------------------------
-        # Sweep path
+        # nodes on sweep path
         # TODO: Self.nox becomes the sweep path, self.nox holds x coordinate along the sweep path
         self.nox = np.linspace(0, self.long_dim, self.num_trans_beam)
 
         # --------------------------------------------------------------------------------------------------
-        # 2.1 check validity of construction line + sweep line
+
         # run section grouping for longitudinal and transverse members
-        self.__identify_member_groups()
+        # self.__identify_member_groups()
 
         # ------------------------------------------------------------------------------------------
         # create nodes and elements
@@ -137,9 +133,9 @@ class Mesh:
             # mesh end span construction line region
 
         elif not self.curve:  # Skew mesh + angle
-            self.__skew_meshing()
+            self.__fixed_sweep_node_meshing()
 
-    def __skew_meshing(self):
+    def __fixed_sweep_node_meshing(self):
         assigned_node_tag = []
         previous_node_tag = []
         for x_count, x_inc in enumerate(self.nox):
@@ -193,34 +189,40 @@ class Mesh:
     def __orthogonal_meshing(self):
         self.assigned_node_tag = []
         self.previous_node_tag = []
-        self.edge_node_group = dict()
 
         # start at first construction line
+        # if self.skew < 0:
+        #     m_edge, c_edge = get_line_func(self.skew, self.sweeping_nodes[0])
+        # else:
+        #     m_edge, c_edge = get_line_func(self.skew, self.sweeping_nodes[-1])
 
-        if self.skew < 0:
-            m_edge, c_edge = get_line_func(self.skew, self.sweeping_nodes[0])
-        else:
-            m_edge, c_edge = get_line_func(self.skew, self.sweeping_nodes[-1])
-
-        for z_count, int_point in enumerate(self.edge_construction_line):
+        # loop for each intersection point of edge line with sweep nodes
+        # TODO fix zgrouping for positive angle
+        for z_count, int_point in enumerate(self.start_edge_line.node_list):
             # search point on sweep path line whose normal intersects int_point.
             start_point_x = self.mesh_origin[0]
             ref_point_x, ref_point_z = self.__search_x_point(int_point, start_point_x)
-            # find m' of line between intersect int_point and ref point on sweep path   #TODO here for straight line
-            m_prime, phi = get_slope([ref_point_x,self.y_elevation,ref_point_z], int_point)
+            # find m' of line between intersect int_point and ref point on sweep path
+            # #TODO alow for arbitrary line
+            m_prime, phi = get_slope([ref_point_x, self.y_elevation, ref_point_z], int_point)
             # rotate sweep line such that parallel to m' line
-            current_sweep_nodes = self.__rotate_sweep_nodes(np.pi/2 - np.abs(phi))
+            current_sweep_nodes = self.__rotate_sweep_nodes(np.pi / 2 - np.abs(phi))
             # loop for each z count, assign
+
             # check
-            # TODO check if here should be effective skew (skew-zeta)
-            if m_edge < 0:
+            # TODO encapsulate the meshing so that they can be split and placed according to the effective angle
+            # condition
+            if 90 + self.skew + self.zeta > 90:
                 sweep_nodes = current_sweep_nodes[z_count:]
-            else:
-                sweep_nodes = current_sweep_nodes[0:(z_count+1)]
+            elif 90 + self.skew+self.zeta < 90:
+                sweep_nodes = current_sweep_nodes[0:(z_count + 1)]
+            elif self.skew+self.zeta <= min(self.skew_threshold):
+                sweep_nodes = current_sweep_nodes
+
             for (z_count_int, nodes) in enumerate(sweep_nodes):
                 x_inc = ref_point_x
                 z_inc = ref_point_z
-                node_coordinate = [nodes[0] + x_inc, nodes[1],nodes[2]+z_inc]
+                node_coordinate = [nodes[0] + x_inc, nodes[1], nodes[2] + z_inc]
                 self.node_spec.setdefault(self.node_counter, {'tag': self.node_counter, 'coordinate': node_coordinate,
                                                               'x_group': self.global_x_grid_count,
                                                               'z_group': z_count_int})
@@ -246,13 +248,15 @@ class Mesh:
                             self.__assign_longitudinal_members(pre_node=pre_node, cur_node=cur_node,
                                                                cur_z_group=cur_z_group)
                             break  # break assign long ele loop (cur node)
-                # link edge nodes from previous and current as skewed edge member
+                # get and link edge nodes from previous and current as skewed edge member
                 self.edge_node_recorder.setdefault(self.previous_node_tag[-1], self.global_edge_count)
                 self.edge_node_recorder.setdefault(self.assigned_node_tag[-1], self.global_edge_count)
+
                 # if angle is positive (slope negative), edge nodes located at the first element of list
-                if m_edge<0:
+                # TODO here should check for (relative skew) slope relative to angle of sweep path at current x step
+                if 90 + self.skew + self.zeta > 90:
                     self.__assign_edge_trans_members(self.previous_node_tag[0], self.assigned_node_tag[0])
-                else:
+                else:  # 90 + self.skew+self.zeta < 90
                     self.__assign_edge_trans_members(self.previous_node_tag[-1], self.assigned_node_tag[-1])
                 # update recorder for previous node tag step
                 self.previous_node_tag = self.assigned_node_tag
@@ -262,13 +266,20 @@ class Mesh:
             self.assigned_node_tag = []
         self.global_edge_count += 1
 
+        # uniform meshing
+        remaining_x_dist = self.long_dim - abs(ref_point_x)
+        self.nox = np.linspace(remaining_x_dist,self.long_dim,self.num_trans_beam)
+
+        # loop each point in self.nox
+
+        # same procedure as edges, except
+        # sweep nodes = rotated sweep nodes to normal at current step of sweep path
+        # x_inc = self.nox item
+        # z = return from position of x inc
+
+
         print("Orthogonal meshing completed....")
 
-    def __orthogonal_meshing_part(self):
-        pass
-
-    def __third_orthogonal_meshing(self):
-        pass
 
     # ------------------------------------------------------------------------------------------
     # ------------------------------------------------------------------------------------------
@@ -308,6 +319,17 @@ class Mesh:
         # update self.section_group_nox counter to continue after self.section_group_noz
         self.section_group_nox = [x + max(self.section_group_noz) for x in self.section_group_nox]
 
+        # dicts
+        # nodes - key: node tag value: subdict{coordinate, xgroup, z group}
+        # dict xgroup - key : group, val: node tag
+        # dict zgroup - key: group, val nodetag
+        # dict xgroup prop - key : group, val unique spacing,
+        # dict zgroup prop- key : group , val spacing
+
+        # dict long element key,
+        # dict trans element key,
+
+
     def __get_geo_transform_tag(self, ele_nodes):
         # function called for each element, assign
         node_i = self.node_spec[ele_nodes[0]]['coordinate']
@@ -318,14 +340,15 @@ class Mesh:
         self.transform_counter = tag_value
         return tag_value
 
-    def __check_skew(self,zeta):
+    def __check_skew(self, zeta):
         # if mesh type is beyond default allowance threshold of 11 degree and 30 degree, return exception
-        if np.abs(self.skew-zeta) <= self.skew_threshold[0] and self.ortho_mesh:
+        if np.abs(self.skew - zeta) <= self.skew_threshold[0] and self.ortho_mesh:
             # set to
             self.orthogonal = False
-        elif np.abs(self.skew-zeta) >= self.skew_threshold[1] and not self.ortho_mesh:
+        elif np.abs(self.skew - zeta) >= self.skew_threshold[1] and not self.ortho_mesh:
             self.orthogonal = True
-            #raise Exception('Oblique mesh not allowed for angle greater than {}'.format(self.skew_threshold[1]))
+            # raise Exception('Oblique mesh not allowed for angle greater than {}'.format(self.skew_threshold[1]))
+
     # ------------------------------------------------------------------------------------------
     @staticmethod
     def __get_vector_xz(node_i, node_j):
@@ -353,20 +376,16 @@ class Mesh:
         z1 = z / length
         return [x1, 0, z1]  # here y axis is normal to model plane
 
-    def __rotate_sweep_nodes(self,zeta):
+    def __rotate_sweep_nodes(self, zeta):
         sweep_nodes_x = [0] * len(self.noz)  # line is orthogonal at the start of sweeping path
         # rotate for inclination at origin
         sweep_nodes_x = [x * np.cos(zeta) - y * np.sin(zeta) for x, y in zip(sweep_nodes_x, self.noz)]
         sweep_nodes_z = [y * np.cos(zeta) + x * np.sin(zeta) for x, y in zip(sweep_nodes_x, self.noz)]
-        if self.skew <= 0:
-            sweeping_nodes = [[x + self.mesh_origin[0], y + self.mesh_origin[1], z + self.mesh_origin[2]] for x, y, z
-                                   in
-                                   zip((sweep_nodes_x), [self.y_elevation] * len(self.noz), sweep_nodes_z)]
-        else:
-            sweeping_nodes = [[x + self.mesh_origin[0], y + self.mesh_origin[1], z + self.mesh_origin[2]] for x, y, z
-                                   in
-                                   zip(np.abs(sweep_nodes_x), [self.y_elevation] * len(self.noz),
-                                       (sweep_nodes_z))]
+
+        sweeping_nodes = [[x + self.mesh_origin[0], y + self.mesh_origin[1], z + self.mesh_origin[2]] for x, y, z
+                              in
+                              zip((sweep_nodes_x), [self.y_elevation] * len(self.noz), sweep_nodes_z)]
+
         return sweeping_nodes
 
     def __search_x_point(self, int_point, start_point_y=0, line_function=None):
@@ -383,17 +402,17 @@ class Mesh:
             z0 = line_func(m=self.m, c=self.c, x=start_point_x)  # TODO HERE SET to allow search sweep line function
             d0 = find_min_x_dist([int_point], [[start_point_x, self.y_elevation, z0]]).tolist()
 
-            z_ub = line_func(m=self.m, c=self.c, x=start_point_x+inc)
-            d_ub = find_min_x_dist([int_point], [[start_point_x+inc, self.y_elevation, z_ub]]).tolist()
+            z_ub = line_func(m=self.m, c=self.c, x=start_point_x + inc)
+            d_ub = find_min_x_dist([int_point], [[start_point_x + inc, self.y_elevation, z_ub]]).tolist()
 
-            z_lb = line_func(m=self.m, c=self.c, x=start_point_x-inc)
+            z_lb = line_func(m=self.m, c=self.c, x=start_point_x - inc)
             d_lb = find_min_x_dist([int_point], [[start_point_x - inc, self.y_elevation, z_lb]]).tolist()
 
-            if d_lb>d0 and d_ub>d0:
+            if d_lb > d0 and d_ub > d0:
                 min_found = True
-            elif d_lb<d0 and d_ub>d0:
+            elif d_lb < d0 and d_ub > d0:
                 start_point_x = start_point_x - inc
-            elif d_lb>d0 and d_ub<d0:
+            elif d_lb > d0 and d_ub < d0:
                 start_point_x = start_point_x + inc
             # perform convergence test
             # convergence_check.append([d[0] / np.abs(z) if z != 0 else 0])
@@ -407,3 +426,62 @@ class Mesh:
                 break
 
         return start_point_x, z0
+
+    def get_node(self, option="all", **kwargs, ):
+        """
+        Function to search nodes given the input keyword arguments.
+        :param option:
+        :param kwargs: nodetag or coordinate
+        :return:
+        """
+        # preset input variables of node searching
+        nodetag = []
+        coordinate = []
+        node_list = list(self.node_spec.keys())
+        subdict_val_list = list(self.node_spec.values())
+        for key, value in kwargs.items():
+            if key == "tag":
+                nodetag.append(value)
+            elif key == "coordinate":
+                coordinate.append(value)
+
+        for tag in nodetag:
+            # get correct sublist
+            node_details = subdict_val_list[tag]  # get subdict
+
+        for coord in coordinate:
+            for pos, spec in enumerate(subdict_val_list):
+                if spec["coordinate"] == repr(coord):
+                    break
+            return node_list[pos]
+        if option == "all":
+            return node_details
+        elif option == "coordinate":
+            return node_details['coordinate']
+
+
+class EdgeConstructionLine:
+    """
+    edge node class
+    """
+
+    def __init__(self, edge_ref_point, width_z, edge_width_z, edge_angle, num_long_beam, model_plane_y):
+        self.edge_ref_point = edge_ref_point
+        self.width_z = width_z
+        self.edge_width_z = edge_width_z
+        self.num_long_beam = num_long_beam
+        self.edge_angle = edge_angle
+        last_girder = (self.width_z - self.edge_width_z)  # coord of last girder
+        nox_girder = np.linspace(start=self.edge_width_z, stop=last_girder, num=self.num_long_beam - 2)
+        # array containing z coordinate of edge construction line
+        self.noz = np.hstack((np.hstack((0, nox_girder)), self.width_z))
+
+        if self.edge_angle <= 0:
+            edge_node_x = [-(z * np.tan(self.edge_angle / 180 * np.pi)) for z in self.noz]
+            self.node_list = [[x + self.edge_ref_point[0], y + self.edge_ref_point[1], z + self.edge_ref_point[2]] for
+                              x, y, z in
+                              zip(edge_node_x, [model_plane_y] * len(self.noz), self.noz)]
+        else:
+            edge_node_x = [-(z * np.tan(self.edge_angle / 180 * np.pi)) for z in self.noz]
+            self.node_list = [[x + self.edge_ref_point[0], y + self.edge_ref_point[1], z + self.edge_ref_point[2]] for
+                              x, y, z in zip(edge_node_x, [model_plane_y] * len(self.noz), self.noz)]
