@@ -178,7 +178,7 @@ class OpsGrillage:
 
         self.Mesh_obj = Mesh(self.long_dim, self.width, self.trans_dim, self.edge_width, self.num_trans_grid,
                              self.num_long_gird,
-                             self.skew, orthogonal=self.ortho_mesh)
+                             self.skew, skew_2=self.skew, orthogonal=self.ortho_mesh)
         print("new mesh")
 
         # 2 generate command lines in output py file
