@@ -2,25 +2,29 @@
 Using the grillage wizard
 ========================
 
-The process of using the *ops-grillage* module can be categorized into three steps:
+The *ops-grillage* module contains the main :class:`~OpsGrillage` class that handles:
 
-#. Creating the grillage object using the :class:`~opsGrillage` class.
-#. Defining elements of grillage model using the :class:`~member` class.
-#. Setting the elements of grillage model using :function:``set_member()`` and ``set_material()`` functions for grillage `sections`
-   and `material` properties respectively.
-
-Note these processes have no definite order. For instances, users can define all elements of the grillage model prior to generating the
-:class:`~opGrillage` model object.
+#. model information inputs.
+#. creating the model instance in Opensees software space, and
+#. writes an executable py file with commands that can recreate the model.
 
 Creating the grillage model
 ---------------------------
-The grillage model is defined using the :class:`~OpsGrillage` class. Upon creating the OpsGrillage class, the Opensees instance of the model is created and simultaneously an output file of
-the Openseespy commands responsible for creating the model in Opensees instance. From here, any Openseespy command written and run
-in the interface script (same script that generated OpsGrillage object) will interact with the constructed bridge model in
-the Opensees instance space.
+The process of creating a grillage model can be categorized into three steps:
 
-The following example creates a `OpsGrillage` class object for a bridge model.
-This generates a bridge model named "SuperT_10m", which has the following properties:
+#. Creating the grillage object using the :class:`~OpsGrillage` class.
+#. Defining various elements of grillage model using the :class:`~Member` class, and :class:`~Material` class.
+#. Setting the elements of grillage model using :function:`~set_member()` and :function:`~set_material()` functions.
+
+
+An example usage of the :class:`~OpsGrillage` is shown as follows:
+
+.. code-block:: python
+
+    example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=10, width=5, skew=-21,
+                         num_long_grid=2, num_trans_grid=17, cantilever_edge=1, mesh_type="Ortho")
+
+The above example generates an Opensees model instance of a grillage model with the following properties
 
 #. Length = 10 m
 #. Width = 5 m
@@ -30,26 +34,50 @@ This generates a bridge model named "SuperT_10m", which has the following proper
 #. Edge beam distance of 1 m
 #. Orthogonal mesh
 
-.. code-block:: python
+..  figure:: ../images/Module_description_1.png
+    :align: center
+    :scale: 75 %
 
-    test_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=10, width=5, skew=-21,
-                         num_long_grid=2, num_trans_grid=17, cantilever_edge=1, mesh_type="Ortho")
+    Figure 1: Created nodes.
 
-Running the output file at this stage will construct the model space (model command) and generate the nodes of the model
-(node command).
+The code simultaneously generates an executable py file named "SuperT_10m", which upon executing, creates the prescribed
+model in Opensees space.
 
+Up to this point, the model in Opensees space and its corresponding executable py file only have the following
+commands defined:
+
+#. command to instantiate the model space in Opensees.
+#. node() commands
+#. Created the geometric transformation object of Opensees for the element definition later on.
+
+The :class:`~OpsGrillage` class contains information which require user input. These information include:
+
+#. Connectivity of nodes forming the elements of grillage model
+#.
+
+Information
 
 Define material properties
 ------------------------
 
-Material properties are defined using the class method `set_material()`. For most bridges made of steel and concrete,
-material properties of either concrete and steel can be defined using the set keyword "steel" or "concrete" passed
-as an argument to the function.
+Material properties are defined in two steps:
+
+#. Creating a :class:`~Material` class object of the bridge material.
+#. Setting the :class:`~Material` class object to a :class:`~GrillageMember` class object.
+
+For most bridges made of steel and concrete, material properties of either concrete and steel can be defined using
+keyword "steel" or "concrete" passed as an argument to :class:`~Material` class.
 
 .. code-block:: python
 
     # define material
     concrete = UniAxialElasticMaterial(mat_type="Concrete01", mat_vec=[-6.0, -0.004, -6.0, -0.014])
+
+The :class:`~OpsGrillage` class also allows for global material definition - e.g. an entire bridge made of the same
+material. To do this, users run the function ```set_material()``` passing the :class:`~Material` class object as the
+input.
+
+.. code-block:: python
     # assign material object to grillage model class
     test_bridge.set_material(concrete)
 

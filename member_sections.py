@@ -93,7 +93,7 @@ class Section:
         # set_member() function
         return asterisk_input
 
-    def get_element_command_str(self, ele, ele_width, sectiontag=None):
+    def get_element_command_str(self, ele, ele_width=1, sectiontag=None):
         """
         Function called within OpsGrillage class `set_member()` function.
         """

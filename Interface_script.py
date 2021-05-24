@@ -26,9 +26,9 @@ slab = GrillageMember(member_name="concrete slab", section=slab_section, materia
 exterior_I_beam = GrillageMember(member_name="exterior I beams", section=exterior_I_beam_section, material=concrete)
 
 # construct grillage model
-example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=4, width=7, skew=-12,
+example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=4, width=7, skew=12,
                              num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
-
+opsplt.plot_model("nodes")
 # set material to grillage
 example_bridge.set_material(concrete)
 
@@ -92,5 +92,5 @@ print(Barrier.load_point_data)
 #     plot_section(example_bridge, 5, 'r')
 # plt.show()
 
-opsplt.plot_model()
+#opsplt.plot_model()
 print(ops.eleNodes(20))

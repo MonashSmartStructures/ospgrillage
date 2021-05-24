@@ -49,17 +49,17 @@ The following Opensees element types are supported by ops-grillage
 
 ### Utilities
 #### Loading Utilities
-- [x] Nodal load analysis
-- [ ] Line load analysis
-- [x] Patch load analysis
-#### Commands 
-- [x] Plotting features - alternative to default Opensees plotting module - i.e. ops_vis
+- [x] Nodal loads
+- [ ] Line loads
+- [ ] Patch loads 
+#### Load cases
+- [ ] Multiple load utilities in single load case
+- [ ] Multiple load cases and load factors in load combination
 
 
 ### In the works
-- [ ] Curved bridges and meshes
-- [ ] Definition of mesh control points - e.g. ability to shift origin of mesh generation
-- [ ] Enable multi-span definition 
-- [ ] Combine individual mesh generation to a single mesh 
-- [ ] Allow customized nodes for meshes
+- [ ] Curved meshes
+- [x] Definition of mesh control points - e.g. ability to shift origin of mesh generation
+- [ ] Enable multi-span definition (50%)
+- [ ] Allow user input for custom node points
 

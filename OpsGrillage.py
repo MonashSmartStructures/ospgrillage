@@ -152,8 +152,6 @@ class OpsGrillage:
                               "\nimport openseespy.postprocessing.Get_Rendering as opsplt\n")
 
         # check skew threshold
-        #TODO turn on later
-        #self.__check_skew()
 
         # calculate edge length of grillage
         self.trans_dim = self.width / math.cos(self.skew / 180 * math.pi)
@@ -183,27 +181,19 @@ class OpsGrillage:
 
         # 2 generate command lines in output py file
         self.__write_op_node(self.Mesh_obj)  # write node() commands
+        self.__write_op_fix(self.Mesh_obj)  # write fix() command for support nodes
         self.__write_geom_transf(self.Mesh_obj)  # x dir members
         # 3 identify boundary of mesh
         # TODO hereafter modify to read properties from Mesh.obj
         self.get_edge_beam_nodes()  # get edge beam nodes
         self.get_trans_edge_nodes()  # get support nodes
-        self.__write_op_fix()  # write fix() command for support nodes
 
-    def set_boundary_condition(self, restraint_nodes=[], restraint_vector=[]):
-        """
-        User function to define support boundary conditions in addition to the model edges automatically detected
-        by create_nodes() procedure.
 
-        :param restraint_nodes: list of node tags to be restrained
-        :type restraint_nodes: list
-        :param restraint_vector: list representing node restraint for Nx Ny Nz, Mx My Mz respectively.
-                                    represented by 1 (fixed), and 0 (free)
-        :type restraint_vector: list
-        :return: Append node fixity to the support_nodes class variable
+    def set_boundary_condition(self, edge_group_counter=[1], restraint_vector=[0, 1, 0, 0, 0, 0], group_to_exclude=[0]):
         """
-        for nodes in restraint_nodes:
-            self.support_nodes.append([nodes, restraint_vector])
+
+        """
+        pass
 
     # abstraction to write ops commands to output py file
     def __write_geom_transf(self, mesh_obj, transform_type="Linear"):
@@ -224,7 +214,7 @@ class OpsGrillage:
         #     file_handle.write("ops.geomTransf(\"{type}\", {tag}, *{vxz})\n".format(
         #         type=transform_type, tag=trans_tag, vxz=vector_xz))
 
-        for k,v in mesh_obj.transform_dict.items():
+        for k, v in mesh_obj.transform_dict.items():
             ops.geomTransf(transform_type, v, *eval(k))
             with open(self.filename, 'a') as file_handle:
                 file_handle.write("# create transformation {}\n".format(v))
@@ -248,7 +238,7 @@ class OpsGrillage:
             file_handle.write(
                 "ops.model('basic', '-ndm', {ndm}, '-ndf', {ndf})\n".format(ndm=self.__ndm, ndf=self.__ndf))
 
-    def __write_op_node(self,mesh_obj):
+    def __write_op_node(self, mesh_obj):
         """
         Sub-abstracted procedure handled by create_nodes() function. This method create node() command for each node
         point generated during meshing procedures.
@@ -258,14 +248,8 @@ class OpsGrillage:
         # write node() command
         with open(self.filename, 'a') as file_handle:
             file_handle.write("# Node generation procedure\n")
-        # for node_point in self.node_map:
-        #     ops.node(node_point[0], node_point[1], node_point[2], node_point[3])
-        #     with open(self.filename, 'a') as file_handle:
-        #         file_handle.write("ops.node({tag}, {x:.4f}, {y:.4f}, {z:.4f})\n".format(tag=node_point[0],
-        #                                                                                 x=node_point[1],
-        #                                                                                 y=node_point[2],
-        #                                                                                 z=node_point[3]))
-        for k,nested_v, in mesh_obj.node_spec.items():
+
+        for k, nested_v, in mesh_obj.node_spec.items():
             coordinate = nested_v['coordinate']
             ops.node(nested_v['tag'], coordinate[0], coordinate[1], coordinate[2])
             with open(self.filename, 'a') as file_handle:
@@ -274,8 +258,7 @@ class OpsGrillage:
                                                                                         y=coordinate[1],
                                                                                         z=coordinate[2]))
 
-
-    def __write_op_fix(self):
+    def __write_op_fix(self, mesh_obj):
         """
         Abstracted procedure handed by create_nodes() function. This method writes the fix() command for
         boundary condition defintion in the grillage model.
@@ -284,10 +267,19 @@ class OpsGrillage:
         """
         with open(self.filename, 'a') as file_handle:
             file_handle.write("# Boundary condition implementation\n")
-        for boundary in self.support_nodes:
-            # ops.fix(boundary[0], *boundary[1])
-            with open(self.filename, 'a') as file_handle:
-                file_handle.write("ops.fix({}, *{})\n".format(boundary[0], boundary[1]))
+            # TODO generalize for user input of boundary condition
+            for k, v, in mesh_obj.edge_node_recorder.items():
+                if v == 0:
+                    file_handle.write("ops.fix({}, *{})\n".format(k, self.fix_val_pin))
+                    ops.fix(k,*self.fix_val_pin)
+                elif v == 1:
+                    file_handle.write("ops.fix({}, *{})\n".format(k, self.fix_val_roller_x))
+                    ops.fix(k, *self.fix_val_roller_x)
+
+        # for boundary in self.support_nodes:
+        #     # ops.fix(boundary[0], *boundary[1])
+        #     with open(self.filename, 'a') as file_handle:
+        #         file_handle.write("ops.fix({}, *{})\n".format(boundary[0], boundary[1]))
 
     def __write_uniaxial_material(self, member=None, material=None):
         """
@@ -360,7 +352,6 @@ class OpsGrillage:
             else:  # groups
                 self.group_ele_dict = {"edge_beam": 1, "exterior_main_beam_1": 2, "interior_main_beam": 3,
                                        "exterior_main_beam_2": 4, "edge_slab": 5, "transverse_slab": 6}
-            # TODO : add rules here
         else:  # skew mesh, run generate respective group dictionary
             if max(self.section_group_noz) <= 4:
                 # dictionary applies to longitudinal members only
@@ -618,7 +609,7 @@ class OpsGrillage:
         """
         # Function to output array of grid nodes along longitudinal direction
         last_girder = (self.width - self.edge_width)  # coord of last girder
-        nox_girder = np.linspace(start=self.edge_width, stop=last_girder, num=self.num_long_gird-2)
+        nox_girder = np.linspace(start=self.edge_width, stop=last_girder, num=self.num_long_gird - 2)
         noz = np.hstack((np.hstack((0, nox_girder)), self.width))  # array containing z coordinate
         return noz
 
@@ -904,7 +895,6 @@ class OpsGrillage:
         self.global_element_list = self.long_mem + self.trans_mem
         # save elements and nodes to mesh object
 
-
     def set_material(self, material_obj):
         """
         Function to define a global material model. This function proceeds to write write the material() command to
@@ -1034,7 +1024,6 @@ class OpsGrillage:
     def __assign_line_load(self, line_position_x, udl_value):
         line = search_grid_lines(self.noz, position=line_position_x)
         load_str = []
-        # TODO allow assignment for transverse members
         for ele in self.long_mem:
             if ele[5] == line[1][0]:
                 eleLoad_line = "ops.eleLoad('-ele', {eleTag}, '-type', '-beamUniform', {Wy}, {Wz}, {Wx})\n" \
@@ -1102,6 +1091,5 @@ class OpsGrillage:
             else:
                 eleLoad_line = ""
             load_str.append(eleLoad_line)
-        # TODO filter longitudinal members for easting lines
 
         return load_str

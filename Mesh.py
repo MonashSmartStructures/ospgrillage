@@ -34,11 +34,12 @@ class Mesh:
         # edge construction line variables
         self.global_edge_count = global_edge_count
         self.edge_node_recorder = dict()  # key: node tag, val: unique tag for edge
-        # Prefix variables here
+        # Prefix/ rules variables here
         assigned_node_tag = []
         self.decimal_lim = 3  # variable for floating point arithmetic error
         self.skew_threshold = [11, 30]
         self.curve = False
+        self.search_x_inc = 0.001
         # initiate list for nodes and elements
         self.long_ele = []
         self.trans_ele = []
@@ -114,9 +115,7 @@ class Mesh:
             self.sweeping_nodes = self.start_edge_line.node_list
             self.nox = np.linspace(0, self.long_dim, self.num_trans_beam)
         # ------------------------------------------------------------------------------------------
-        # nodes on sweep path
-        # TODO: Self.nox becomes the sweep path, self.nox holds x coordinate along the sweep path
-        self.nox = np.linspace(0, self.long_dim, self.num_trans_beam)
+
 
         # --------------------------------------------------------------------------------------------------
 
@@ -229,7 +228,6 @@ class Mesh:
                 # get z group of first node in current_sweep_nodes - for correct assignment in loop
                 z_group = self.start_edge_line.get_node_group_z(int_point)
                 # check
-                # TODO encapsulate the meshing so that they can be split and placed according to the effective angle
                 # condition
                 if 90 + self.skew_1 + self.zeta > 90:
                     sweep_nodes = current_sweep_nodes[z_count:]
@@ -266,16 +264,19 @@ class Mesh:
                                 self.__assign_longitudinal_members(pre_node=pre_node, cur_node=cur_node,
                                                                    cur_z_group=cur_z_group)
                                 break  # break assign long ele loop (cur node)
-                    # get and link edge nodes from previous and current as skewed edge member
-                    self.edge_node_recorder.setdefault(self.previous_node_tag[-1], self.global_edge_count)
-                    self.edge_node_recorder.setdefault(self.assigned_node_tag[-1], self.global_edge_count)
 
                     # if angle is positive (slope negative), edge nodes located at the first element of list
                     if len(self.assigned_node_tag) > 1:
                         if 90 + self.skew_1 + self.zeta > 90:
                             self.__assign_edge_trans_members(self.previous_node_tag[0], self.assigned_node_tag[0])
+                            # get and link edge nodes from previous and current as skewed edge member
+                            self.edge_node_recorder.setdefault(self.previous_node_tag[0], self.global_edge_count)
+                            self.edge_node_recorder.setdefault(self.assigned_node_tag[0], self.global_edge_count)
                         elif 90 + self.skew_1 + self.zeta < 90:
                             self.__assign_edge_trans_members(self.previous_node_tag[-1], self.assigned_node_tag[-1])
+                            # get and link edge nodes from previous and current as skewed edge member
+                            self.edge_node_recorder.setdefault(self.previous_node_tag[-1], self.global_edge_count)
+                            self.edge_node_recorder.setdefault(self.assigned_node_tag[-1], self.global_edge_count)
                     # update recorder for previous node tag step
                     self.previous_node_tag = self.assigned_node_tag
                 # update and reset recorders for next column of sweep nodes
@@ -289,10 +290,10 @@ class Mesh:
     # --------------------------------------------------------------------------------------------
         # second edge construction line
         end_point_x = self.long_dim
-        end_point_z = 0 #TODO
-        if np.abs(self.skew_1+self.zeta) < self.skew_threshold[0]:
+        end_point_z = 0  # TODO allow for arbitrary line
+        if np.abs(self.skew_2+self.zeta) < self.skew_threshold[0]:
             # if angle less than threshold, assign nodes of edge member as it is
-            current_sweep_nodes = self.start_edge_line.node_list
+            current_sweep_nodes = self.end_edge_line.node_list
             for (z_count_int, nodes) in enumerate(current_sweep_nodes):
                 x_inc = end_point_x
                 z_inc = end_point_z
@@ -308,7 +309,7 @@ class Mesh:
                     # run sub procedure to assign
                     self.__assign_transverse_members(pre_node=self.assigned_node_tag[z_count_int - 1],
                                                      cur_node=self.assigned_node_tag[z_count_int])
-            print("Edge mesh @ start span completed")
+            end_connecting_region_nodes = self.assigned_node_tag
         else:
             for z_count, int_point in enumerate(self.end_edge_line.node_list):
                 # search point on sweep path line whose normal intersects int_point.
@@ -325,7 +326,6 @@ class Mesh:
                 # check
                 # condition
                 if 90 + self.skew_2 + self.zeta > 90:
-
                     sweep_nodes = current_sweep_nodes[0:(z_count + 1)]
                     z_group_recorder = list(range(0, z_group+1)) if z_group !=0 else [0]
                 elif 90 + self.skew_2 + self.zeta < 90:
@@ -360,16 +360,17 @@ class Mesh:
                                 self.__assign_longitudinal_members(pre_node=pre_node, cur_node=cur_node,
                                                                    cur_z_group=cur_z_group)
                                 break  # break assign long ele loop (cur node)
-                    # get and link edge nodes from previous and current as skewed edge member
-                    self.edge_node_recorder.setdefault(self.previous_node_tag[-1], self.global_edge_count)
-                    self.edge_node_recorder.setdefault(self.assigned_node_tag[-1], self.global_edge_count)
 
                     # if angle is positive (slope negative), edge nodes located at the first element of list
                     if len(self.assigned_node_tag) > 1:
                         if 90 + self.skew_1 + self.zeta > 90:
-                            self.__assign_edge_trans_members(self.previous_node_tag[0], self.assigned_node_tag[0])
-                        elif 90 + self.skew_1 + self.zeta < 90:
                             self.__assign_edge_trans_members(self.previous_node_tag[-1], self.assigned_node_tag[-1])
+                            self.edge_node_recorder.setdefault(self.previous_node_tag[-1], self.global_edge_count)
+                            self.edge_node_recorder.setdefault(self.assigned_node_tag[-1], self.global_edge_count)
+                        elif 90 + self.skew_1 + self.zeta < 90:
+                            self.__assign_edge_trans_members(self.previous_node_tag[0], self.assigned_node_tag[0])
+                            self.edge_node_recorder.setdefault(self.previous_node_tag[0], self.global_edge_count)
+                            self.edge_node_recorder.setdefault(self.assigned_node_tag[0], self.global_edge_count)
                     # update recorder for previous node tag step
                     self.previous_node_tag = self.assigned_node_tag
                 # update and reset recorders for next column of sweep nodes
@@ -382,18 +383,15 @@ class Mesh:
             print("Edge mesh @ end span completed")
     # --------------------------------------------------------------------------------------------
         # remaining distance mesh with uniform spacing
-
-        #remaining_x_dist = self.long_dim - abs(ref_point_x)
-
-        first = first_connecting_region_nodes[0]
-        second = end_connecting_region_nodes[0]
+        x_first = first_connecting_region_nodes[0]
+        x_second = end_connecting_region_nodes[0]
         # loop each point in self.nox
-        cor_fir = self.node_spec[first]['coordinate']
-        cor_sec = self.node_spec[second]['coordinate']
+        cor_fir = self.node_spec[x_first]['coordinate']
+        cor_sec = self.node_spec[x_second]['coordinate']
         self.uniform_region_x = np.linspace(cor_fir[0],cor_sec[0],self.num_trans_beam)
-
+        current_sweep_nodes = self.__rotate_sweep_nodes(0)
         for z_count, x in enumerate(self.uniform_region_x[1:-1]):
-            z = 0 # TODO
+            z = 0 # TODO allow for arbitrary line
             # if angle less than threshold, assign nodes of edge member as it is
             for (z_count_int, nodes) in enumerate(current_sweep_nodes):
                 x_inc = x
@@ -455,7 +453,6 @@ class Mesh:
 
         :return: Set variable `group_ele_dict` according to
         """
-        # identify element groups in grillage based on line mesh vectors self.nox and self.noz
 
         # get the grouping properties of nox
         # grouping number, dictionary of unique groups, dict of spacing values for given group as key, list of trib
@@ -468,14 +465,22 @@ class Mesh:
         self.section_group_nox = [x + max(self.section_group_noz) for x in self.section_group_nox]
 
         # dicts
-        # nodes - key: node tag value: subdict{coordinate, xgroup, z group}
-        # dict xgroup - key : group, val: node tag
         # dict zgroup - key: group, val nodetag
+
+        # dict xgroup - key : group, val: node tag
+
         # dict xgroup prop - key : group, val unique spacing
         # dict zgroup prop- key : group , val spacing
+        # dict element_grouping - key:element group , val x group
 
-        # dict long element key,
-        # dict trans element key,
+        # dict z group - for grouping z group into common element groups
+        common_z_group_element = dict()
+        common_z_group_element[0] = [0,len(self.noz)-1] # edge beams top and bottom edge
+        common_z_group_element[1] = [1]
+        common_z_group_element[2] = list(range(2,len(self.noz) - 2))
+        common_z_group_element[3] = [len(self.noz) - 2]
+
+        # dict z group properties
 
     def __get_geo_transform_tag(self, ele_nodes):
         # function called for each element, assign
@@ -541,8 +546,7 @@ class Mesh:
         max_loop = 1000
         loop_counter = 0
         z0 = None
-        # TODO magic number here
-        inc = 0.001
+        inc = self.search_x_inc
         convergence_check = []
         bounds = []
         while not min_found:
