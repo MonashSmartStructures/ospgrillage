@@ -117,10 +117,6 @@ class Mesh:
         # ------------------------------------------------------------------------------------------
 
 
-        # --------------------------------------------------------------------------------------------------
-
-        # run section grouping for longitudinal and transverse members
-        # self.__identify_member_groups()
 
         # ------------------------------------------------------------------------------------------
         # create nodes and elements
@@ -132,6 +128,9 @@ class Mesh:
 
         elif not self.curve:  # Skew mesh + angle
             self.__fixed_sweep_node_meshing()
+
+        # run section grouping for longitudinal and transverse members
+        self.__identify_member_groups()
 
     def __fixed_sweep_node_meshing(self):
         assigned_node_tag = []
@@ -412,9 +411,6 @@ class Mesh:
                 self.previous_node_tag = first_connecting_region_nodes
             elif z_count > 0 and z_count != len(self.uniform_region_x[1:-1])-1:
                 pass
-            elif z_count == len(self.uniform_region_x[1:-1]-1):
-                self.previous_node_tag = self.assigned_node_tag
-                self.assigned_node_tag = end_connecting_region_nodes
             for pre_node in self.previous_node_tag:
                 for cur_node in self.assigned_node_tag:
                     cur_z_group = self.node_spec[cur_node]['z_group']
@@ -423,9 +419,25 @@ class Mesh:
                         self.__assign_longitudinal_members(pre_node=pre_node, cur_node=cur_node,
                                                            cur_z_group=cur_z_group)
                         break  # break assign long ele loop (cur node)
+            # update and reset recorders for next column of sweep nodes
+            self.global_x_grid_count += 1
             # update previous node tag recorder
-            self.previous_node_tag = self.assigned_node_tag
-            self.assigned_node_tag = []
+            if z_count != len(self.uniform_region_x[1:-1])-1:
+                self.previous_node_tag = self.assigned_node_tag
+                self.assigned_node_tag = []
+            else:
+                self.previous_node_tag = self.assigned_node_tag
+                self.assigned_node_tag = end_connecting_region_nodes
+        # connect uniform region with end span edge
+
+        for pre_node in self.previous_node_tag:
+            for cur_node in self.assigned_node_tag:
+                cur_z_group = self.node_spec[cur_node]['z_group']
+                prev_z_group = self.node_spec[pre_node]['z_group']
+                if cur_z_group == prev_z_group:
+                    self.__assign_longitudinal_members(pre_node=pre_node, cur_node=cur_node,
+                                                       cur_z_group=cur_z_group)
+                    break
         print("orthogonal meshing complete")
     # ------------------------------------------------------------------------------------------
     # ------------------------------------------------------------------------------------------
@@ -457,30 +469,74 @@ class Mesh:
         # get the grouping properties of nox
         # grouping number, dictionary of unique groups, dict of spacing values for given group as key, list of trib
         # area of nodes
-        self.section_group_noz, self.spacing_diff_noz, self.spacing_val_noz, self.noz_trib_width \
+        self.section_group_noz, self.spacing_diff_noz, self.spacing_val_noz, noz_trib_width \
             = characterize_node_diff(self.noz, self.decimal_lim)
-        self.section_group_nox, self.spacing_diff_nox, self.spacing_val_nox, self.nox_trib_width \
-            = characterize_node_diff(self.nox, self.decimal_lim)
-        # update self.section_group_nox counter to continue after self.section_group_noz
-        self.section_group_nox = [x + max(self.section_group_noz) for x in self.section_group_nox]
 
-        # dicts
-        # dict zgroup - key: group, val nodetag
+        # dict common element group to z group
+        self.common_z_group_element = dict()
+        self.common_z_group_element[0] = [0,len(self.noz)-1] # edge beams top and bottom edge
+        self.common_z_group_element[1] = [1]
+        self.common_z_group_element[2] = list(range(2,len(self.noz) - 2))
+        self.common_z_group_element[3] = [len(self.noz) - 2]
 
-        # dict xgroup - key : group, val: node tag
+        # dict node tag to width in z direction
+        self.node_width_z_dict = dict()
+        for ele in self.long_ele:
+            d1 = []
+            d2 = []
+            n1 = [trans_ele for trans_ele in self.trans_ele if trans_ele[1] == ele[1] or trans_ele[2] == ele[1]]
+            n2 = [trans_ele for trans_ele in self.trans_ele if trans_ele[1] == ele[2] or trans_ele[2] == ele[2]]
 
-        # dict xgroup prop - key : group, val unique spacing
-        # dict zgroup prop- key : group , val spacing
-        # dict element_grouping - key:element group , val x group
+            for item in n1:
+                d1.append([np.abs(a - b) for (a, b) in
+                           zip(self.node_spec[item[1]]['coordinate'], self.node_spec[item[2]]['coordinate'])])
 
-        # dict z group - for grouping z group into common element groups
-        common_z_group_element = dict()
-        common_z_group_element[0] = [0,len(self.noz)-1] # edge beams top and bottom edge
-        common_z_group_element[1] = [1]
-        common_z_group_element[2] = list(range(2,len(self.noz) - 2))
-        common_z_group_element[3] = [len(self.noz) - 2]
+            for item in n2:
+                d2.append([np.abs(a - b) for (a, b) in
+                           zip(self.node_spec[item[1]]['coordinate'], self.node_spec[item[2]]['coordinate'])])
 
-        # dict z group properties
+            # list, [ele tag, ele width (left and right)]
+            self.node_width_z_dict[ele[1]] = d1
+            self.node_width_z_dict[ele[2]] = d1
+
+        # dict z to long ele
+        self.z_group_to_ele = dict()
+        for count, node in enumerate(self.noz):
+            self.z_group_to_ele[count] = [ele for ele in self.long_ele if ele[3] == count]
+
+        # dict x to trans ele
+        self.x_group_to_ele = dict()
+        for count in range(0, self.global_x_grid_count):
+            self.x_group_to_ele[count] = [ele for ele in self.trans_ele if ele[3] == count]
+
+        # dict node tag to width in x direction
+        self.node_width_x_dict = dict()
+        for ele in self.trans_ele:
+            d1 = []
+            d2 = []
+
+            n1 = [long_ele for long_ele in self.long_ele if long_ele[1] == ele[1] or long_ele[2] == ele[1]]
+            n2 = [long_ele for long_ele in self.long_ele if long_ele[1] == ele[2] or long_ele[2] == ele[2]]
+
+            for item in n1:
+                d1.append([np.abs(a - b) for (a, b) in
+                           zip(self.node_spec[item[1]]['coordinate'], self.node_spec[item[2]]['coordinate'])])
+
+            for item in n2:
+                d2.append([np.abs(a - b) for (a, b) in
+                           zip(self.node_spec[item[1]]['coordinate'], self.node_spec[item[2]]['coordinate'])])
+
+            # list, [ele tag, ele width (left and right)]
+            self.node_width_x_dict[ele[1]] = d1
+            self.node_width_x_dict[ele[2]] = d1
+
+        print("t")
+
+
+
+
+
+        print("t")
 
     def __get_geo_transform_tag(self, ele_nodes):
         # function called for each element, assign
@@ -649,4 +705,9 @@ class EdgeConstructionLine:
         return group
 
     def __get_z_group_spacing(self):
+        pass
+
+# TODO
+class SweepPath:
+    def __init__(self):
         pass

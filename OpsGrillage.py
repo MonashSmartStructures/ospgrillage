@@ -188,10 +188,10 @@ class OpsGrillage:
         self.get_edge_beam_nodes()  # get edge beam nodes
         self.get_trans_edge_nodes()  # get support nodes
 
-
     def set_boundary_condition(self, edge_group_counter=[1], restraint_vector=[0, 1, 0, 0, 0, 0], group_to_exclude=[0]):
         """
-
+        Function for user to modify boundary conditions of the grillage model. Edge nodes are automatically detected
+        and recorded as having fixity in vertical y direction.
         """
         pass
 
@@ -269,17 +269,16 @@ class OpsGrillage:
             file_handle.write("# Boundary condition implementation\n")
             # TODO generalize for user input of boundary condition
             for k, v, in mesh_obj.edge_node_recorder.items():
-                if v == 0:
+                # if edge beam - common group z ==0 - do not assign
+                if mesh_obj.node_spec[k]["z_group"] in mesh_obj.common_z_group_element[0]:
+                    pass
+                elif v == 0:
                     file_handle.write("ops.fix({}, *{})\n".format(k, self.fix_val_pin))
-                    ops.fix(k,*self.fix_val_pin)
+                    ops.fix(k, *self.fix_val_pin)
                 elif v == 1:
                     file_handle.write("ops.fix({}, *{})\n".format(k, self.fix_val_roller_x))
                     ops.fix(k, *self.fix_val_roller_x)
 
-        # for boundary in self.support_nodes:
-        #     # ops.fix(boundary[0], *boundary[1])
-        #     with open(self.filename, 'a') as file_handle:
-        #         file_handle.write("ops.fix({}, *{})\n".format(boundary[0], boundary[1]))
 
     def __write_uniaxial_material(self, member=None, material=None):
         """
