@@ -279,7 +279,6 @@ class OpsGrillage:
                     file_handle.write("ops.fix({}, *{})\n".format(k, self.fix_val_roller_x))
                     ops.fix(k, *self.fix_val_roller_x)
 
-
     def __write_uniaxial_material(self, member=None, material=None):
         """
         Sub-abstracted procedure to write uniaxialMaterial command for the material properties of the grillage model.
@@ -496,7 +495,7 @@ class OpsGrillage:
             section_tag = self.__write_section(grillage_member_obj.section)
 
         # set material of member, if already set (either globally via set_material function or same material for a
-        # previous set_member command, function automatically skips the writing of material command
+        # previous set_member command) automatically skips the writing of material command
         material_tag = self.__write_uniaxial_material(member=grillage_member_obj)
 
         # write header of set_member run
@@ -507,6 +506,7 @@ class OpsGrillage:
         if grillage_member_obj.section.unit_width:
             # loop through the unique members based on spacings of nodes, assign all members (key-tag) in the transverse
             # direction
+
             for key, ele_width in self.spacing_val_nox.items():
                 # loop through each transverse group (spacings)
                 for ele in self.global_element_list:
@@ -543,6 +543,49 @@ class OpsGrillage:
                 diff(range(1, max(self.section_group_nox) + 1), self.ele_group_assigned_list)))
         else:
             print("All member groups have been assigned")
+
+    def setting_member(self, grillage_member_obj, member=None):
+        # write header of set_member run
+        with open(self.filename, 'a') as file_handle:
+            file_handle.write("# Element generation for section: {}\n".format(member))
+
+        if grillage_member_obj.section.unit_width:
+            pass
+        # check for common groups
+        common_member_tag = []
+        if member == "interior_main_beam":
+            common_member_tag = 2
+        elif member == "exterior_main_beam_1":
+            common_member_tag = 1
+        elif member == "exterior_main_beam_2":
+            common_member_tag = 3
+        elif member == "edge_beam":
+            common_member_tag = 0
+
+        ele_width = 1
+        for z_groups in self.Mesh_obj.common_z_group_element[common_member_tag]:
+            # assign propertie3
+            for ele in self.Mesh_obj.z_group_to_ele[z_groups]:
+                ele_str = grillage_member_obj.section.get_element_command_str(ele, ele_width=ele_width)
+                eval(ele_str)
+
+        for ele in self.Mesh_obj.trans_ele:
+            tag = ele[0]
+            ele_width = 1
+            # get node_i and node_j spacing
+            lis = self.Mesh_obj.node_width_x_dict[tag]
+            ele_width = 1
+            if len(lis) == 1:
+                ele_width = np.sqrt(lis[0][0] ** 2 + lis[0][1] ** 2 + lis[0][2] ** 2) / 2
+            elif len(lis) == 2:
+                ele_width = (np.sqrt(lis[0][0] ** 2 + lis[0][1] ** 2 + lis[0][2] ** 2) +
+                             np.sqrt(lis[1][0] ** 2 + lis[1][1] ** 2 + lis[1][2] ** 2)) / 2
+
+            ele_str = grillage_member_obj.section.get_element_command_str(ele, ele_width=ele_width)
+            eval(ele_str)
+            #
+
+            print(ele)
 
     def get_trans_edge_nodes(self):
         """

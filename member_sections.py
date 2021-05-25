@@ -100,16 +100,16 @@ class Section:
         # format for ele
         # [node i, node j, ele group, ele tag, transtag]
 
-        # TODO add more element types
+        # TODO add strs for more Opensees element types here
         if self.op_ele_type == "ElasticTimoshenkoBeam":
             section_input = self.get_asterisk_arguments(ele_width)
             ele_str = "ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transftag}, {mass})\n".format(
-                type=self.op_ele_type, tag=ele[3], i=ele[0], j=ele[1], memberprop=section_input, transftag=ele[4],
+                type=self.op_ele_type, tag=ele[0], i=ele[1], j=ele[2], memberprop=section_input, transftag=ele[4],
                 mass=self.mass)
         if self.op_ele_type == "elasticBeamColumn":
             section_input = self.get_asterisk_arguments(ele_width)
             ele_str = "ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transftag}, {mass})\n".format(
-                type=self.op_ele_type, tag=ele[3], i=ele[0], j=ele[1], memberprop=section_input, transftag=ele[4],
+                type=self.op_ele_type, tag=ele[0], i=ele[1], j=ele[2], memberprop=section_input, transftag=ele[4],
                 mass=self.mass)
         if self.op_ele_type == "nonlinearBeamColumn":
             pass

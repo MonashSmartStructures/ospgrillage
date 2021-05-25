@@ -33,12 +33,13 @@ opsplt.plot_model("nodes")
 example_bridge.set_material(concrete)
 
 # set grillage member to element groups of grillage model
-example_bridge.set_member(I_beam, member="interior_main_beam")
-example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_1")
-example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_2")
-example_bridge.set_member(exterior_I_beam, member="edge_beam")
-example_bridge.set_member(slab, member="transverse_slab")
-example_bridge.set_member(exterior_I_beam, member="edge_slab")
+example_bridge.setting_member(I_beam, member="interior_main_beam")
+
+# example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_1")
+# example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_2")
+# example_bridge.set_member(exterior_I_beam, member="edge_beam")
+# example_bridge.set_member(slab, member="transverse_slab")
+# example_bridge.set_member(exterior_I_beam, member="edge_slab")
 
 # test output python file
 example_bridge.run_check()

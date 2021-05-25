@@ -130,6 +130,21 @@ and (2) number of transverse beams.
 
 All nodes defined during an iteration step for an intersecting point is set to have the same x grid group.
 
+Mesh variables
+---------------------
+Nodes are specified into dictionary
+
+Elements are specified by list. A typical element list is like this [2, 2, 3, 0, 2]
+The entries are the element tag, node_i, node_j, grouping (based on list), and geometric transformation tag.
+
+Groups are sorted into dictionary
+
+Common element group as key: return z groups
+Z group as key, return longitudinal elements within the z group
+X group as key, return transverse elements within the x group
+node tag as key, return x spacings between vicinity nodes
+node tag as key, return the z spacings between vicinity nodes
+
 
 
 

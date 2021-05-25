@@ -428,8 +428,9 @@ class Mesh:
             else:
                 self.previous_node_tag = self.assigned_node_tag
                 self.assigned_node_tag = end_connecting_region_nodes
-        # connect uniform region with end span edge
 
+
+        # Extra step to connect uniform region with nodes along end span edge region
         for pre_node in self.previous_node_tag:
             for cur_node in self.assigned_node_tag:
                 cur_z_group = self.node_spec[cur_node]['z_group']
@@ -475,9 +476,9 @@ class Mesh:
         # dict common element group to z group
         self.common_z_group_element = dict()
         self.common_z_group_element[0] = [0,len(self.noz)-1] # edge beams top and bottom edge
-        self.common_z_group_element[1] = [1]
-        self.common_z_group_element[2] = list(range(2,len(self.noz) - 2))
-        self.common_z_group_element[3] = [len(self.noz) - 2]
+        self.common_z_group_element[1] = [1] # exterior
+        self.common_z_group_element[2] = list(range(2,len(self.noz) - 2))  # interior
+        self.common_z_group_element[3] = [len(self.noz) - 2] # exterior 2
 
         # dict node tag to width in z direction
         self.node_width_z_dict = dict()
@@ -497,7 +498,7 @@ class Mesh:
 
             # list, [ele tag, ele width (left and right)]
             self.node_width_z_dict[ele[1]] = d1
-            self.node_width_z_dict[ele[2]] = d1
+            self.node_width_z_dict[ele[2]] = d2
 
         # dict z to long ele
         self.z_group_to_ele = dict()
@@ -514,29 +515,18 @@ class Mesh:
         for ele in self.trans_ele:
             d1 = []
             d2 = []
-
             n1 = [long_ele for long_ele in self.long_ele if long_ele[1] == ele[1] or long_ele[2] == ele[1]]
             n2 = [long_ele for long_ele in self.long_ele if long_ele[1] == ele[2] or long_ele[2] == ele[2]]
-
             for item in n1:
                 d1.append([np.abs(a - b) for (a, b) in
                            zip(self.node_spec[item[1]]['coordinate'], self.node_spec[item[2]]['coordinate'])])
-
             for item in n2:
                 d2.append([np.abs(a - b) for (a, b) in
                            zip(self.node_spec[item[1]]['coordinate'], self.node_spec[item[2]]['coordinate'])])
 
             # list, [ele tag, ele width (left and right)]
-            self.node_width_x_dict[ele[1]] = d1
-            self.node_width_x_dict[ele[2]] = d1
-
-        print("t")
-
-
-
-
-
-        print("t")
+            self.node_width_x_dict.setdefault(ele[1],d1)
+            self.node_width_x_dict.setdefault(ele[2],d2)
 
     def __get_geo_transform_tag(self, ele_nodes):
         # function called for each element, assign
@@ -545,7 +535,8 @@ class Mesh:
         vxz = self.__get_vector_xz(node_i, node_j)
         vxz = [np.round(num, decimals=self.decimal_lim) for num in vxz]
         tag_value = self.transform_dict.setdefault(repr(vxz), self.transform_counter + 1)
-        self.transform_counter = tag_value
+        if tag_value > self.transform_counter:
+            self.transform_counter = tag_value
         return tag_value
 
     def __check_skew(self, zeta):
