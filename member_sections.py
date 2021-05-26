@@ -93,26 +93,29 @@ class Section:
         # set_member() function
         return asterisk_input
 
-    def get_element_command_str(self, ele, ele_width=1, sectiontag=None):
+    def get_element_command_str(self, ele_tag, n1, n2, transf_tag, n3=0,n4=0, ele_width=1, sectiontag=None):
         """
         Function called within OpsGrillage class `set_member()` function.
         """
         # format for ele
         # [node i, node j, ele group, ele tag, transtag]
-
+        section_input = self.get_asterisk_arguments(ele_width)
         # TODO add strs for more Opensees element types here
         if self.op_ele_type == "ElasticTimoshenkoBeam":
-            section_input = self.get_asterisk_arguments(ele_width)
+
             ele_str = "ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transftag}, {mass})\n".format(
-                type=self.op_ele_type, tag=ele[0], i=ele[1], j=ele[2], memberprop=section_input, transftag=ele[4],
+                type=self.op_ele_type, tag=ele_tag, i=n1, j=n2, memberprop=section_input, transftag=transf_tag,
                 mass=self.mass)
         if self.op_ele_type == "elasticBeamColumn":
-            section_input = self.get_asterisk_arguments(ele_width)
             ele_str = "ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transftag}, {mass})\n".format(
-                type=self.op_ele_type, tag=ele[0], i=ele[1], j=ele[2], memberprop=section_input, transftag=ele[4],
+                type=self.op_ele_type, tag=ele_tag, i=n1, j=n2, memberprop=section_input, transftag=transf_tag,
                 mass=self.mass)
         if self.op_ele_type == "nonlinearBeamColumn":
             pass
+        if self.op_ele_type == "ShellMITC4":
+            ele_str = "ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transftag}, {mass})\n".format(
+                type=self.op_ele_type, tag=ele_tag, i=n1, j=n2, memberprop=section_input, transftag=transf_tag,
+                mass=self.mass)
 
         # return string to OpsGrillage for writing command
         return ele_str

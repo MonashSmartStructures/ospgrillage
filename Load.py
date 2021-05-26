@@ -115,17 +115,15 @@ class NodalLoad(Loads):
 
 
 class PointLoad(Loads):
-    def __init__(self, name, position, magnitude=0):
+    def __init__(self, name, x, z, y=0, magnitude=0):
         super().__init__(name, wy=magnitude)
-        self.position = position
+
 
 
 class LineLoading(Loads):
     def __init__(self, name, **kwargs):
         super().__init__(name, **kwargs)
         print("Line Loading {} created".format(name))
-
-        #
 
     def get_line_loading_str(self):
         load_str = []

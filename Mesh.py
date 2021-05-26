@@ -49,8 +49,6 @@ class Mesh:
         # dict for node and ele transform
         self.transform_dict = dict()  # key: vector xz, val: transform tag
         self.node_spec = dict()  # key: node tag, val: dict of node details - see technical notes
-        self.x_group_dict = dict()
-        self.z_group_dict = dict()
         # variables for curve mesh
         self.curve_center = []
         self.curve_radius = []
@@ -114,10 +112,6 @@ class Mesh:
             # sweep line of skew mesh == edge_construction line
             self.sweeping_nodes = self.start_edge_line.node_list
             self.nox = np.linspace(0, self.long_dim, self.num_trans_beam)
-        # ------------------------------------------------------------------------------------------
-
-
-
         # ------------------------------------------------------------------------------------------
         # create nodes and elements
         # if orthogonal, orthogonal mesh only be splayed onto a curve mesh, if skew mesh curved/arc line segment must be
@@ -193,7 +187,7 @@ class Mesh:
         start_point_x = self.mesh_origin[0]
         start_point_z = self.mesh_origin[2]
         # if skew angle of edge line is below threshold for orthogonal,
-        if np.abs(self.skew_1+self.zeta) < self.skew_threshold[0]:
+        if np.abs(self.skew_1 + self.zeta) < self.skew_threshold[0]:
             # if angle less than threshold, assign nodes of edge member as it is
             current_sweep_nodes = self.start_edge_line.node_list
             for (z_count_int, nodes) in enumerate(current_sweep_nodes):
@@ -233,15 +227,16 @@ class Mesh:
                     z_group_recorder = list(range(z_group, len(current_sweep_nodes)))
                 elif 90 + self.skew_1 + self.zeta < 90:
                     sweep_nodes = current_sweep_nodes[0:(z_count + 1)]
-                    z_group_recorder = list(range(0, z_group+1)) if z_group != 0 else [0]
+                    z_group_recorder = list(range(0, z_group + 1)) if z_group != 0 else [0]
 
                 for (z_count_int, nodes) in enumerate(sweep_nodes):
                     x_inc = ref_point_x
                     z_inc = ref_point_z
                     node_coordinate = [nodes[0] + x_inc, nodes[1], nodes[2] + z_inc]
-                    self.node_spec.setdefault(self.node_counter, {'tag': self.node_counter, 'coordinate': node_coordinate,
-                                                                  'x_group': self.global_x_grid_count,
-                                                                  'z_group': z_group_recorder[z_count_int]})
+                    self.node_spec.setdefault(self.node_counter,
+                                              {'tag': self.node_counter, 'coordinate': node_coordinate,
+                                               'x_group': self.global_x_grid_count,
+                                               'z_group': z_group_recorder[z_count_int]})
 
                     self.assigned_node_tag.append(self.node_counter)
                     self.node_counter += 1
@@ -286,11 +281,11 @@ class Mesh:
                 self.assigned_node_tag = []
             self.global_edge_count += 1
             print("Edge mesh @ start span completed")
-    # --------------------------------------------------------------------------------------------
+        # --------------------------------------------------------------------------------------------
         # second edge construction line
         end_point_x = self.long_dim
         end_point_z = 0  # TODO allow for arbitrary line
-        if np.abs(self.skew_2+self.zeta) < self.skew_threshold[0]:
+        if np.abs(self.skew_2 + self.zeta) < self.skew_threshold[0]:
             # if angle less than threshold, assign nodes of edge member as it is
             current_sweep_nodes = self.end_edge_line.node_list
             for (z_count_int, nodes) in enumerate(current_sweep_nodes):
@@ -326,7 +321,7 @@ class Mesh:
                 # condition
                 if 90 + self.skew_2 + self.zeta > 90:
                     sweep_nodes = current_sweep_nodes[0:(z_count + 1)]
-                    z_group_recorder = list(range(0, z_group+1)) if z_group !=0 else [0]
+                    z_group_recorder = list(range(0, z_group + 1)) if z_group != 0 else [0]
                 elif 90 + self.skew_2 + self.zeta < 90:
                     sweep_nodes = current_sweep_nodes[z_count:]
                     z_group_recorder = list(range(z_group, len(current_sweep_nodes)))
@@ -380,17 +375,17 @@ class Mesh:
                 self.assigned_node_tag = []
             self.global_edge_count += 1
             print("Edge mesh @ end span completed")
-    # --------------------------------------------------------------------------------------------
+        # --------------------------------------------------------------------------------------------
         # remaining distance mesh with uniform spacing
         x_first = first_connecting_region_nodes[0]
         x_second = end_connecting_region_nodes[0]
         # loop each point in self.nox
         cor_fir = self.node_spec[x_first]['coordinate']
         cor_sec = self.node_spec[x_second]['coordinate']
-        self.uniform_region_x = np.linspace(cor_fir[0],cor_sec[0],self.num_trans_beam)
+        self.uniform_region_x = np.linspace(cor_fir[0], cor_sec[0], self.num_trans_beam)
         current_sweep_nodes = self.__rotate_sweep_nodes(0)
         for z_count, x in enumerate(self.uniform_region_x[1:-1]):
-            z = 0 # TODO allow for arbitrary line
+            z = 0  # TODO allow for arbitrary line
             # if angle less than threshold, assign nodes of edge member as it is
             for (z_count_int, nodes) in enumerate(current_sweep_nodes):
                 x_inc = x
@@ -409,7 +404,7 @@ class Mesh:
                                                      cur_node=self.assigned_node_tag[z_count_int])
             if z_count == 0:
                 self.previous_node_tag = first_connecting_region_nodes
-            elif z_count > 0 and z_count != len(self.uniform_region_x[1:-1])-1:
+            elif z_count > 0 and z_count != len(self.uniform_region_x[1:-1]) - 1:
                 pass
             for pre_node in self.previous_node_tag:
                 for cur_node in self.assigned_node_tag:
@@ -422,13 +417,12 @@ class Mesh:
             # update and reset recorders for next column of sweep nodes
             self.global_x_grid_count += 1
             # update previous node tag recorder
-            if z_count != len(self.uniform_region_x[1:-1])-1:
+            if z_count != len(self.uniform_region_x[1:-1]) - 1:
                 self.previous_node_tag = self.assigned_node_tag
                 self.assigned_node_tag = []
             else:
                 self.previous_node_tag = self.assigned_node_tag
                 self.assigned_node_tag = end_connecting_region_nodes
-
 
         # Extra step to connect uniform region with nodes along end span edge region
         for pre_node in self.previous_node_tag:
@@ -440,6 +434,7 @@ class Mesh:
                                                        cur_z_group=cur_z_group)
                     break
         print("orthogonal meshing complete")
+
     # ------------------------------------------------------------------------------------------
     # ------------------------------------------------------------------------------------------
     def __assign_transverse_members(self, pre_node, cur_node):
@@ -455,8 +450,12 @@ class Mesh:
     def __assign_edge_trans_members(self, previous_node_tag, assigned_node_tag):
         tag = self.__get_geo_transform_tag([previous_node_tag, assigned_node_tag])
         self.edge_span_ele.append([self.element_counter, previous_node_tag, assigned_node_tag
-                                      ,self.edge_node_recorder, tag])
+                                      , self.edge_node_recorder, tag])
         self.element_counter += 1
+
+    def __assign_shell_members(self, n1, n2, n3, n4):
+        self.shell_ele = 0
+        pass
 
     # ------------------------------------------------------------------------------------------
     def __identify_member_groups(self):
@@ -475,30 +474,41 @@ class Mesh:
 
         # dict common element group to z group
         self.common_z_group_element = dict()
-        self.common_z_group_element[0] = [0,len(self.noz)-1] # edge beams top and bottom edge
-        self.common_z_group_element[1] = [1] # exterior
-        self.common_z_group_element[2] = list(range(2,len(self.noz) - 2))  # interior
-        self.common_z_group_element[3] = [len(self.noz) - 2] # exterior 2
+        self.common_z_group_element[0] = [0, len(self.noz) - 1]  # edge beams top and bottom edge
+        self.common_z_group_element[1] = [1]  # exterior
+        self.common_z_group_element[2] = list(range(2, len(self.noz) - 2))  # interior
+        self.common_z_group_element[3] = [len(self.noz) - 2]  # exterior 2
 
-        # dict node tag to width in z direction
+        # dict node tag to width in z direction , and neighbouring node
         self.node_width_z_dict = dict()
+        self.node_connect_z_dict = dict()
         for ele in self.long_ele:
-            d1 = []
+            d1 = [] # d for distance
             d2 = []
+            p1 = []
+            p2 = []
             n1 = [trans_ele for trans_ele in self.trans_ele if trans_ele[1] == ele[1] or trans_ele[2] == ele[1]]
             n2 = [trans_ele for trans_ele in self.trans_ele if trans_ele[1] == ele[2] or trans_ele[2] == ele[2]]
-
             for item in n1:
                 d1.append([np.abs(a - b) for (a, b) in
                            zip(self.node_spec[item[1]]['coordinate'], self.node_spec[item[2]]['coordinate'])])
+                if item[1]!=ele[1] and item[1] != ele[2]:
+                    p1.append(item[1])
+                if item[2]!=ele[1] and item[2] != ele[2]:
+                    p1.append(item[2])
 
             for item in n2:
                 d2.append([np.abs(a - b) for (a, b) in
                            zip(self.node_spec[item[1]]['coordinate'], self.node_spec[item[2]]['coordinate'])])
-
+                if item[1]!=ele[1] and item[1] != ele[2]:
+                    p2.append(item[1])
+                if item[2]!=ele[1] and item[2] != ele[2]:
+                    p2.append(item[2])
             # list, [ele tag, ele width (left and right)]
             self.node_width_z_dict[ele[1]] = d1
             self.node_width_z_dict[ele[2]] = d2
+            self.node_connect_z_dict[ele[1]] = p1
+            self.node_connect_z_dict[ele[2]] = p2
 
         # dict z to long ele
         self.z_group_to_ele = dict()
@@ -512,21 +522,33 @@ class Mesh:
 
         # dict node tag to width in x direction
         self.node_width_x_dict = dict()
+        self.node_connect_x_dict = dict()
         for ele in self.trans_ele:
             d1 = []
             d2 = []
+            p1 = []
+            p2 = []
             n1 = [long_ele for long_ele in self.long_ele if long_ele[1] == ele[1] or long_ele[2] == ele[1]]
             n2 = [long_ele for long_ele in self.long_ele if long_ele[1] == ele[2] or long_ele[2] == ele[2]]
             for item in n1:
                 d1.append([np.abs(a - b) for (a, b) in
                            zip(self.node_spec[item[1]]['coordinate'], self.node_spec[item[2]]['coordinate'])])
+                if item[1]!=ele[1] and item[1] != ele[2]:
+                    p1.append(item[1])
+                if item[2]!=ele[1] and item[2] != ele[2]:
+                    p1.append(item[2])
             for item in n2:
                 d2.append([np.abs(a - b) for (a, b) in
                            zip(self.node_spec[item[1]]['coordinate'], self.node_spec[item[2]]['coordinate'])])
-
+                if item[1]!=ele[1] and item[1] != ele[2]:
+                    p2.append(item[1])
+                if item[2]!=ele[1] and item[2] != ele[2]:
+                    p2.append(item[2])
             # list, [ele tag, ele width (left and right)]
-            self.node_width_x_dict.setdefault(ele[1],d1)
-            self.node_width_x_dict.setdefault(ele[2],d2)
+            self.node_width_x_dict.setdefault(ele[1], d1)
+            self.node_width_x_dict.setdefault(ele[2], d2)
+            self.node_connect_x_dict[ele[1]] = p1
+            self.node_connect_x_dict[ele[2]] = p2
 
     def __get_geo_transform_tag(self, ele_nodes):
         # function called for each element, assign
@@ -698,7 +720,8 @@ class EdgeConstructionLine:
     def __get_z_group_spacing(self):
         pass
 
-# TODO
+
+# TODO transfer definition of sweep path into class here. Add functions for curve lines
 class SweepPath:
     def __init__(self):
         pass
