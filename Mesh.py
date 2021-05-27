@@ -505,11 +505,10 @@ class Mesh:
                 if item[2]!=ele[1] and item[2] != ele[2]:
                     p2.append(item[2])
             # list, [ele tag, ele width (left and right)]
-            self.node_width_z_dict[ele[1]] = d1
-            self.node_width_z_dict[ele[2]] = d2
-            self.node_connect_z_dict[ele[1]] = p1
-            self.node_connect_z_dict[ele[2]] = p2
-
+            self.node_width_z_dict.setdefault(ele[1], d1)
+            self.node_width_z_dict.setdefault(ele[2], d2)
+            self.node_connect_z_dict.setdefault(ele[1], p1)
+            self.node_connect_z_dict.setdefault(ele[2], p2)
         # dict z to long ele
         self.z_group_to_ele = dict()
         for count, node in enumerate(self.noz):
@@ -547,8 +546,32 @@ class Mesh:
             # list, [ele tag, ele width (left and right)]
             self.node_width_x_dict.setdefault(ele[1], d1)
             self.node_width_x_dict.setdefault(ele[2], d2)
-            self.node_connect_x_dict[ele[1]] = p1
-            self.node_connect_x_dict[ele[2]] = p2
+            self.node_connect_x_dict.setdefault(ele[1], p1)
+            self.node_connect_x_dict.setdefault(ele[2], p2)
+
+        # dict key = grid number val = long and trans ele in grid
+        self.grid_number_dict = dict()
+        counter = 0
+        for node_tag in self.node_spec.keys():
+            # get the surrounding nodes
+            x_vicinity_nodes = self.node_connect_x_dict.get(node_tag,[])
+            z_vicinity_nodes = self.node_connect_z_dict.get(node_tag,[])
+            for x_node in x_vicinity_nodes:
+                xg = self.node_spec[x_node]['x_group']
+                for z_node in z_vicinity_nodes:
+                    zg = self.node_spec[z_node]['z_group']
+                    # find the 3rd bounding node
+                    n3 = [n['tag'] for n in self.node_spec.values() if n['x_group'] == xg and n['z_group'] == zg]
+                    if n3:
+                        n3 = n3[0]
+                        if not any([node_tag in d and x_node in d and z_node in d and n3 in d for d in self.grid_number_dict.values()]):
+                            self.grid_number_dict.setdefault(counter,[node_tag,x_node,z_node,n3])
+                            counter+=1
+                    else:  # list is empty
+                        if not any([node_tag in d and x_node in d and z_node in d for d in self.grid_number_dict.values()]):
+                            self.grid_number_dict.setdefault(counter,[node_tag,x_node,z_node,n3])
+                            counter+=1
+
 
     def __get_geo_transform_tag(self, ele_nodes):
         # function called for each element, assign

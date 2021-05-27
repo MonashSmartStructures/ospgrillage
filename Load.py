@@ -1,7 +1,6 @@
 import pprint
-import numpy as np
 from collections.abc import Iterable
-from scipy import interpolate
+
 
 # ----------------------------------------------------------------------------------------------------------------
 # Loading classes
@@ -133,9 +132,9 @@ class LineLoading(Loads):
         super().__init__(name, **kwargs)
         print("Line Loading {} created".format(name))
 
-    def get_line_loading_str(self):
+    def get_line_loading_str(self, nodetag):
         load_str = []
-        for node in list(self.grid_line_x):
+        for node in nodetag:
             load_value = [self.Fx, self.Fy, self.Fz, self.Mx, self.My, self.Mz]
             load_str.append("ops.load({pt}, *{val})\n".format(pt=node, val=load_value))
         return load_str
@@ -150,33 +149,27 @@ class LineLoading(Loads):
 
             # x[0],z[0] and p[0] shall be reference point for interpolate
             xp = point_coordinate[0]
-            yp = point_coordinate[0]
+            yp = point_coordinate[0]  # not used but generated here
             zp = point_coordinate[0]
 
             # use parametric equation of line in 3D
-            v =[x[1]-x[0],p[1]-p[0],z[1]-z[0]]
-            pp = (xp-x[0])/v[0]*v[1]+p[0]
+            v = [x[1] - x[0], p[1] - p[0], z[1] - z[0]]
+            pp = (xp - x[0]) / v[0] * v[1] + p[0]
 
         elif self.load_point_data['x3'] is not None:
             # TODO
             pass
 
+
 # ---------------------------------------------------------------------------------------------------------------
 class PatchLoading(Loads):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def set_straight_side_patch_load(self, x1=0):
-        pass
+    def __init__(self, name, **kwargs):
+        super().__init__(name, **kwargs)
 
 
 class VehicleLoad(PointLoad):
     def __init__(self, name, load_value, position, direction=None):
         super(VehicleLoad, self).__init__(name, load_value)
-
-
-    def get_vehicle_load_str(self):
-        pass
 
 
 class LoadCase:

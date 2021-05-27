@@ -561,7 +561,7 @@ class OpsGrillage:
                         load_str = self.__assign_patch_load_bound_option(bound_lines=loads.northing_lines,
                                                                          area_load=loads.qy)
                     elif loads.patch_define_option == "four-points":
-                        # TODO
+
                         pass
 
                     for lines in load_str:
@@ -594,15 +594,17 @@ class OpsGrillage:
         node_distance.sort(key=lambda x: x[1])
         closest_node = node_distance[0]
         x_closest = self.Mesh_obj.node_spec[closest_node[0]]['coordinate'][0]
-        y_closest = self.Mesh_obj.node_spec[closest_node[0]]['coordinate'][1]
+        y_closest = self.Mesh_obj.node_spec[closest_node[0]]['coordinate'][1]  # defined herein for future consideration
         z_closest = self.Mesh_obj.node_spec[closest_node[0]]['coordinate'][2]
+
         # get vicinity nodes and sort ascending
         x_vicinity_nodes = self.Mesh_obj.node_connect_x_dict[closest_node[0]]
         x1 = self.Mesh_obj.node_spec[x_vicinity_nodes[0]]['coordinate'][0]
-        x2 = self.Mesh_obj.node_spec[x_vicinity_nodes[1]]['coordinate'][0]
+        x2 = self.Mesh_obj.node_spec[x_vicinity_nodes[1]]['coordinate'][0] if len(x_vicinity_nodes) > 1 else 0
+
         z_vicinity_nodes = self.Mesh_obj.node_connect_z_dict[closest_node[0]]
         z1 = self.Mesh_obj.node_spec[z_vicinity_nodes[0]]['coordinate'][2]
-        z2 = self.Mesh_obj.node_spec[z_vicinity_nodes[1]]['coordinate'][2]
+        z2 = self.Mesh_obj.node_spec[z_vicinity_nodes[1]]['coordinate'][2] if len(z_vicinity_nodes) > 1 else 0
         # arrange 4 points (n1 to n4) based on counter clockwise
         if x2 >= x > x_closest:
             if z2 >= z > z_closest:

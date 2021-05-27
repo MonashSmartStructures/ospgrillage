@@ -26,7 +26,7 @@ slab = GrillageMember(member_name="concrete slab", section=slab_section, materia
 exterior_I_beam = GrillageMember(member_name="exterior I beams", section=exterior_I_beam_section, material=concrete)
 
 # construct grillage model
-example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=4, width=7, skew=12,
+example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=4, width=7, skew=-12,
                              num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
 pyfile = False
 example_bridge.create_ops(pyfile=pyfile)
@@ -44,7 +44,8 @@ if not pyfile:
     opsplt.plot_model("nodes")
     pass
 
-example_bridge.get_nodes_given_point([2,0,2])
+a, n3_variant = example_bridge.get_nodes_given_point([2,0,2])
+print(a)
 # test output python file
 # example_bridge.run_check()
 
