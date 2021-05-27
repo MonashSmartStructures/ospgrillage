@@ -605,6 +605,9 @@ class OpsGrillage:
         z_vicinity_nodes = self.Mesh_obj.node_connect_z_dict[closest_node[0]]
         z1 = self.Mesh_obj.node_spec[z_vicinity_nodes[0]]['coordinate'][2]
         z2 = self.Mesh_obj.node_spec[z_vicinity_nodes[1]]['coordinate'][2] if len(z_vicinity_nodes) > 1 else 0
+
+        xg = []
+        zg = []
         # arrange 4 points (n1 to n4) based on counter clockwise
         if x2 >= x > x_closest:
             if z2 >= z > z_closest:

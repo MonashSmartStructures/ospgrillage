@@ -62,7 +62,7 @@ class Mesh:
 
         # ------------------------------------------------------------------------------------------
         # Sweep path properties
-        pt3 = [long_dim, 0.0]  # 3rd point for defining curve mesh
+        pt3 = [long_dim, 0.5]  # 3rd point for defining curve mesh
 
         # if defining an arc line segment, specify p2 such that pt2 is the point at the midpoint of the arc
         try:
@@ -316,7 +316,7 @@ class Mesh:
                 # rotate sweep line such that parallel to m' line
                 current_sweep_nodes = self.__rotate_sweep_nodes(np.pi / 2 - np.abs(phi))
                 # get z group of first node in current_sweep_nodes - for correct assignment in loop
-                z_group = self.end_edge_line.get_node_group_z(int_point)
+                z_group = self.end_edge_line.get_node_group_z(int_point) # extract from class EdgeConstructionLine
                 # check
                 # condition
                 if 90 + self.skew_2 + self.zeta > 90:
@@ -382,10 +382,16 @@ class Mesh:
         # loop each point in self.nox
         cor_fir = self.node_spec[x_first]['coordinate']
         cor_sec = self.node_spec[x_second]['coordinate']
+        # get x coordinate for uniform region
         self.uniform_region_x = np.linspace(cor_fir[0], cor_sec[0], self.num_trans_beam)
-        current_sweep_nodes = self.__rotate_sweep_nodes(0)
+
+        # TODO allow for arbitary line here
+
         for z_count, x in enumerate(self.uniform_region_x[1:-1]):
-            z = 0  # TODO allow for arbitrary line
+            # get slope, m at current point x
+            z = line_func(m=self.m, c=self.c, x=x)
+
+            current_sweep_nodes = self.__rotate_sweep_nodes(self.zeta)
             # if angle less than threshold, assign nodes of edge member as it is
             for (z_count_int, nodes) in enumerate(current_sweep_nodes):
                 x_inc = x
@@ -586,10 +592,10 @@ class Mesh:
 
     def __check_skew(self, zeta):
         # if mesh type is beyond default allowance threshold of 11 degree and 30 degree, return exception
-        if np.abs(self.skew_1 - zeta) <= self.skew_threshold[0] and self.ortho_mesh:
+        if np.abs(self.skew_1 - zeta) <= self.skew_threshold[0] and  self.orthogonal:
             # set to
             self.orthogonal = False
-        elif np.abs(self.skew_1 - zeta) >= self.skew_threshold[1] and not self.ortho_mesh:
+        elif np.abs(self.skew_1 - zeta) >= self.skew_threshold[1] and not self.orthogonal:
             self.orthogonal = True
             # raise Exception('Oblique mesh not allowed for angle greater than {}'.format(self.skew_threshold[1]))
 
@@ -657,13 +663,7 @@ class Mesh:
                 start_point_x = start_point_x - inc
             elif d_lb > d0 and d_ub < d0:
                 start_point_x = start_point_x + inc
-            # perform convergence test
-            # convergence_check.append([d[0] / np.abs(z) if z != 0 else 0])
-            # if len(convergence_check) > 2:
-            #     if convergence_check[loop_counter]< convergence_check[loop_counter-1]:
-            #         pass
-            #     else:
-            #         raise Exception("value diverges")
+
             loop_counter += 1
             if loop_counter > max_loop:
                 break
@@ -746,5 +746,7 @@ class EdgeConstructionLine:
 
 # TODO transfer definition of sweep path into class here. Add functions for curve lines
 class SweepPath:
-    def __init__(self):
+    def __init__(self,x1,y1,z1,x2,y2,z2,x3,y3,z3):
         pass
+
+
