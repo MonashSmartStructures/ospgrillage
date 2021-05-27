@@ -1,7 +1,7 @@
 import pprint
 import numpy as np
 from collections.abc import Iterable
-
+from scipy import interpolate
 
 # ----------------------------------------------------------------------------------------------------------------
 # Loading classes
@@ -116,8 +116,16 @@ class NodalLoad(Loads):
 
 class PointLoad(Loads):
     def __init__(self, name, x, z, y=0, magnitude=0):
-        super().__init__(name, wy=magnitude)
+        super().__init__(name, x1=x, y1=y, z1=z, Fy=magnitude)
 
+    @staticmethod
+    def get_nodal_load_str(node_list, node_val_list):
+        # node_list and node_val_list must be a list of same size
+
+        load_str = []
+        for count, node in enumerate(node_list):
+            load_str.append("ops.load({pt}, *{val})\n".format(pt=node, val=node_val_list[count]))
+        return load_str
 
 
 class LineLoading(Loads):
@@ -132,10 +140,26 @@ class LineLoading(Loads):
             load_str.append("ops.load({pt}, *{val})\n".format(pt=node, val=load_value))
         return load_str
 
-    def interpolate_udl_magnitude(self, node_coordinate):
-        # TODO
-        pass
+    def interpolate_udl_magnitude(self, point_coordinate):
+        # check if line is defined by either 2 point or 3 point
+        if self.load_point_data['x3'] is None:
+            x = [self.load_point_data['x1'], self.load_point_data['x2']]
+            y = [self.load_point_data['y1'], self.load_point_data['y2']]  # not used but generated here
+            z = [self.load_point_data['z1'], self.load_point_data['z2']]
+            p = [self.load_point_data['p1'], self.load_point_data['p2']]
 
+            # x[0],z[0] and p[0] shall be reference point for interpolate
+            xp = point_coordinate[0]
+            yp = point_coordinate[0]
+            zp = point_coordinate[0]
+
+            # use parametric equation of line in 3D
+            v =[x[1]-x[0],p[1]-p[0],z[1]-z[0]]
+            pp = (xp-x[0])/v[0]*v[1]+p[0]
+
+        elif self.load_point_data['x3'] is not None:
+            # TODO
+            pass
 
 # ---------------------------------------------------------------------------------------------------------------
 class PatchLoading(Loads):
@@ -149,13 +173,7 @@ class PatchLoading(Loads):
 class VehicleLoad(PointLoad):
     def __init__(self, name, load_value, position, direction=None):
         super(VehicleLoad, self).__init__(name, load_value)
-        # TODO populate class with vehicle models
 
-        self.position
-        self.offset
-        self.chainage
-        self.axles
-        self.carriage
 
     def get_vehicle_load_str(self):
         pass

@@ -90,8 +90,7 @@ class Mesh:
         self.start_edge_line = EdgeConstructionLine(edge_ref_point=self.mesh_origin, width_z=self.width,
                                                     edge_width_z=self.edge_width, edge_angle=self.skew_1,
                                                     num_long_beam=self.num_long_beam, model_plane_y=self.y_elevation)
-        # z coordinate of ref sweep nodes (relative to origin)
-        self.noz = self.start_edge_line.noz
+
         # ------------------------------------------------------------------------------------------
         # edge construction line 2
         # TODO z coordinate of edge ref point
@@ -105,7 +104,8 @@ class Mesh:
         # of sweep nodes. slope of sweep nodes is always ORTHOGONAL to tangent of sweep path at intersection with ref
         # point
         self.sweeping_nodes = []
-
+        # z coordinate of ref sweep nodes (relative to origin)
+        self.noz = self.start_edge_line.noz
         if orthogonal:
             self.sweeping_nodes = self.__rotate_sweep_nodes(zeta)
         else:  # skew

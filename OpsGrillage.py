@@ -179,7 +179,6 @@ class OpsGrillage:
         self.__write_op_fix(self.Mesh_obj)  # write fix() command for support nodes
         self.__write_geom_transf(self.Mesh_obj)  # x dir members
         # 3 identify boundary of mesh
-        # TODO hereafter modify to read properties from Mesh.obj
 
     def set_boundary_condition(self, edge_group_counter=[1], restraint_vector=[0, 1, 0, 0, 0, 0], group_to_exclude=[0]):
         """
@@ -261,7 +260,7 @@ class OpsGrillage:
     def __write_op_fix(self, mesh_obj):
         """
         Abstracted procedure handed by create_nodes() function. This method writes the fix() command for
-        boundary condition defintion in the grillage model.
+        boundary condition definition in the grillage model.
 
         :return: Output py file populated with fix() command for boundary condition definition.
         """
@@ -329,54 +328,6 @@ class OpsGrillage:
                   .format(material_type, material_tag))
             return material_tag
 
-    # def __identify_member_groups(self):
-    #     """
-    #     Abstracted method handled by either orthogonal_mesh() or skew_mesh() function
-    #     to identify member groups based on node spacings in orthogonal directions.
-    #
-    #     :return: Set variable `group_ele_dict` according to
-    #     """
-    #     # identify element groups in grillage based on line mesh vectors self.nox and self.noz
-    #
-    #     # get the grouping properties of nox
-    #     # grouping number, dictionary of unique groups, dict of spacing values for given group as key, list of trib
-    #     # area of nodes
-    #     self.section_group_noz, self.spacing_diff_noz, self.spacing_val_noz, self.noz_trib_width \
-    #         = characterize_node_diff(self.noz, self.deci_tol)
-    #     self.section_group_nox, self.spacing_diff_nox, self.spacing_val_nox, self.nox_trib_width \
-    #         = characterize_node_diff(self.nox, self.deci_tol)
-    #     # update self.section_group_nox counter to continue after self.section_group_noz
-    #     self.section_group_nox = [x + max(self.section_group_noz) for x in self.section_group_nox]
-    #
-    #     if self.ortho_mesh:
-    #         # update self.section_group_nox first element to match counting for element group of Region B
-    #         self.section_group_nox[0] = self.section_group_nox[len(self.regA) - 1]
-    #     else:  # else skew mesh do nothing
-    #         pass
-    #     # set groups dictionary
-    #     if self.ortho_mesh:  # if ortho mesh
-    #         if max(self.section_group_noz) <= 4:  # if true , standard sections set for longitudinal members
-    #             self.group_ele_dict = {"edge_beam": 1, "exterior_main_beam_1": 2, "interior_main_beam": 3,
-    #                                    "exterior_main_beam_2": 4, "edge_slab": 5, "transverse_slab": 6}
-    #         else:  # groups
-    #             self.group_ele_dict = {"edge_beam": 1, "exterior_main_beam_1": 2, "interior_main_beam": 3,
-    #                                    "exterior_main_beam_2": 4, "edge_slab": 5, "transverse_slab": 6}
-    #     else:  # skew mesh, run generate respective group dictionary
-    #         if max(self.section_group_noz) <= 4:
-    #             # dictionary applies to longitudinal members only
-    #             self.group_ele_dict = {"edge_beam": 1, "exterior_main_beam_1": 2, "interior_main_beam": 3,
-    #                                    "exterior_main_beam_2": 4, "edge_slab": 5, "transverse_slab": 6}
-    #         else:  # section grouping greater than 6
-    #
-    #             # set variable up to 4 group (longitudinal)
-    #             self.group_ele_dict = {"edge_beam": 1, "exterior_main_beam_1": 2, "interior_main_beam": 3,
-    #                                    "exterior_main_beam_2": 4}
-    #             # for transverse (group 5 and above) assign based on custom number
-    #
-    #         # orthogonal mesh rules
-    #     # print groups to terminal
-    #     print("Total groups of elements in longitudinal : {}".format(max(self.section_group_noz)))
-    #     print("Total groups of elements in transverse : {}".format(max(self.section_group_nox)))
 
     def __write_section(self, op_section_obj):
         """
@@ -632,7 +583,7 @@ class OpsGrillage:
     # assignment procedure
     def get_nodes_given_point(self, point):
         x = point[0]
-        y = point[1]
+        y = point[1]  # default y = self.y_elevation = 0
         z = point[2]
         node_distance = []
         # find node closest to point
@@ -641,35 +592,51 @@ class OpsGrillage:
             dis = np.sqrt((node[0] - x) ** 2 + 0 + (node[2] - z) ** 2)
             node_distance.append([tag, dis])
         node_distance.sort(key=lambda x: x[1])
-        closest = node_distance[0]
-        if closest[0] < x and closest[2] < z:
-            pass
+        closest_node = node_distance[0]
+        x_closest = self.Mesh_obj.node_spec[closest_node[0]]['coordinate'][0]
+        y_closest = self.Mesh_obj.node_spec[closest_node[0]]['coordinate'][1]
+        z_closest = self.Mesh_obj.node_spec[closest_node[0]]['coordinate'][2]
+        # get vicinity nodes and sort ascending
+        x_vicinity_nodes = self.Mesh_obj.node_connect_x_dict[closest_node[0]]
+        x1 = self.Mesh_obj.node_spec[x_vicinity_nodes[0]]['coordinate'][0]
+        x2 = self.Mesh_obj.node_spec[x_vicinity_nodes[1]]['coordinate'][0]
+        z_vicinity_nodes = self.Mesh_obj.node_connect_z_dict[closest_node[0]]
+        z1 = self.Mesh_obj.node_spec[z_vicinity_nodes[0]]['coordinate'][2]
+        z2 = self.Mesh_obj.node_spec[z_vicinity_nodes[1]]['coordinate'][2]
+        # arrange 4 points (n1 to n4) based on counter clockwise
+        if x2 >= x > x_closest:
+            if z2 >= z > z_closest:
+                n4 = z_vicinity_nodes[1]
+                n2 = x_vicinity_nodes[1]
+                xg = self.Mesh_obj.node_spec[n2]['x_group']
+                zg = self.Mesh_obj.node_spec[n4]['x_group']
+                n3_variant = [1, 1]
+            elif z_closest >= z > z1:
+                n4 = x_vicinity_nodes[1]
+                n2 = z_vicinity_nodes[0]
+                xg = self.Mesh_obj.node_spec[n4]['x_group']
+                zg = self.Mesh_obj.node_spec[n2]['z_group']
+                n3_variant = [1, -1]
+        elif x_closest >= x > x1:
+            if z2 >= z > z_closest:
+                n4 = x_vicinity_nodes[0]
+                n2 = z_vicinity_nodes[1]
+                xg = self.Mesh_obj.node_spec[n4]['x_group']
+                zg = self.Mesh_obj.node_spec[n2]['z_group']
+                n3_variant = [-1, 1]
+            elif z_closest >= z > z1:
+                n4 = z_vicinity_nodes[0]
+                n2 = x_vicinity_nodes[0]
+                xg = self.Mesh_obj.node_spec[n2]['x_group']
+                zg = self.Mesh_obj.node_spec[n4]['z_group']
+                n3_variant = [-1, -1]
+        n1 = closest_node[0]
+        n3 = [n['tag'] for n in self.Mesh_obj.node_spec.values() if n['x_group'] == xg and n['z_group'] == zg][0]
 
-        pass
+        return [n1, n2, n3, n4], n3_variant
 
-    # TO be retired
-    def __return_four_node_position(self, position):
-        # function to identify the position of point load/axle
-        # position [x,z]
-        # find grid lines that bound position in x direction
-        grid_a_z, grid_b_z = search_grid_lines(self.noz, position=position[1])
-        # return nodes in the bounded grid lines grid_a_z and grid_b_z
-        grid_b_z_nodes = [x for x in self.node_map if x[4] == grid_a_z]
-        grid_a_z_nodes = [x for x in self.node_map if x[4] == grid_b_z]
-        # loop each grid nodes to find the two closest nodes in the x direction (vector distance)
-        node_distance = []
-        for node in grid_b_z_nodes:
-            dis = np.sqrt((node[1] - position[0]) ** 2 + 0 + (node[3] - position[1]) ** 2)
-            node_distance.append([node[0], dis])
-        for node in grid_a_z_nodes:
-            dis = np.sqrt((node[1] - position[0]) ** 2 + 0 + (node[3] - position[1]) ** 2)
-            node_distance.append([node[0], dis])
-        node_distance.sort(key=lambda x: x[1])
-        n1 = node_distance[0]
-        n2 = node_distance[1]
-        n3 = node_distance[2]
-        n4 = node_distance[3]
-        return [x[0] for x in [n1, n2, n3, n4]]
+        # pass shape function to distribute load to 4 points
+
 
     # TO be retired
     def __assign_line_load(self, line_position_x, udl_value):

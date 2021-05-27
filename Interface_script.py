@@ -40,8 +40,9 @@ example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_1")
 example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_2")
 example_bridge.set_member(exterior_I_beam, member="edge_beam")
 # example_bridge.set_member(slab, member="transverse_slab")
-#if not pyfile:
-    #opsplt.plot_model("nodes")
+if not pyfile:
+    opsplt.plot_model("nodes")
+    pass
 
 example_bridge.get_nodes_given_point([2,0,2])
 # test output python file
@@ -56,8 +57,9 @@ example_bridge.get_nodes_given_point([2,0,2])
 # Patch load - lane loading
 #Lane = PatchLoading("Lane 1", northing_lines=[1, 3.3], load_value=9)
 # Line load
-Barrier = LineLoading("Barrier curb load", x1=2,x2=4,z1=2, z2=2,p1=9,p2=9)
+Barrier = LineLoading("Barrier curb load", x1=2,x2=4,z1=2, z2=2,p1=9,p2=2)
 print(Barrier.load_point_data)
+Barrier.interpolate_udl_magnitude([3,0,2])
 # Directly add Load cases to Opensees model or, create LoadCase object and pass all loads
 #example_bridge.add_load_case("Concrete dead load case", DL, DL)
 #example_bridge.add_load_case("Lane 1", Lane)
