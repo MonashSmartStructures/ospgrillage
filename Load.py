@@ -1,5 +1,6 @@
 import pprint
 from collections.abc import Iterable
+from static import *
 
 
 # ----------------------------------------------------------------------------------------------------------------
@@ -75,11 +76,29 @@ class Loads:
         self.load_point_data['z4'] = kwargs.get('z4', None)
         self.load_point_data['p4'] = kwargs.get('p4', None)
 
+        self.load_point_data['x5'] = kwargs.get('x5', None)
+        self.load_point_data['y5'] = kwargs.get('y5', 0)
+        self.load_point_data['z5'] = kwargs.get('z5', None)
+        self.load_point_data['p5'] = kwargs.get('p5', None)
+
+        self.load_point_data['x6'] = kwargs.get('x6', None)
+        self.load_point_data['y6'] = kwargs.get('y6', 0)
+        self.load_point_data['z6'] = kwargs.get('z6', None)
+        self.load_point_data['p6'] = kwargs.get('p6', None)
+
+        self.load_point_data['x7'] = kwargs.get('x7', None)
+        self.load_point_data['y7'] = kwargs.get('y7', 0)
+        self.load_point_data['z7'] = kwargs.get('z7', None)
+        self.load_point_data['p7'] = kwargs.get('p7', None)
+
+        self.load_point_data['x8'] = kwargs.get('x8', None)
+        self.load_point_data['y8'] = kwargs.get('y8', 0)
+        self.load_point_data['z8'] = kwargs.get('z8', None)
+        self.load_point_data['p8'] = kwargs.get('p8', None)
+
         # init dict
         self.spec = dict()  # dict {node number: {Fx:val, Fy:val, Fz:val, Mx:val, My:val, Mz:val}}
         self.load_counter = 0
-
-    # function to parse incoming keyword
 
 
 class NodalLoad(Loads):
@@ -165,7 +184,15 @@ class LineLoading(Loads):
 class PatchLoading(Loads):
     def __init__(self, name, **kwargs):
         super().__init__(name, **kwargs)
-
+        # if only four point is define , patch load is a four point straight line quadrilateral
+        if self.load_point_data['x5'] is None:
+            pass
+        # else , 8 point curve sided quadrilateral
+        elif self.load_point_data['x8'] is not None:
+            pass
+        else:
+            print("patch load points not valid")
+        print("Patch load object created: {} ".format(name))
 
 class VehicleLoad(PointLoad):
     def __init__(self, name, load_value, position, direction=None):

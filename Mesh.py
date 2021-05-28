@@ -83,7 +83,7 @@ class Mesh:
             self.m = round(m, self.decimal_lim)
             # self.c = 0  # default 0  to avoid arithmetic error
             zeta = np.arctan(m)  # initial angle of inclination of sweep line about mesh origin
-            self.zeta = zeta / 180 * np.pi  # rad to degrees
+            self.zeta = zeta/ np.pi *180 # rad to degrees
         self.__check_skew(zeta)  # check condition for orthogonal mesh
         # ------------------------------------------------------------------------------------------
         # edge construction line 1
@@ -178,7 +178,7 @@ class Mesh:
         print("Meshing completed....")
 
     def __orthogonal_meshing(self):
-        global first_connecting_region_nodes, end_connecting_region_nodes
+        global first_connecting_region_nodes, end_connecting_region_nodes, sweep_nodes, z_group_recorder
         self.assigned_node_tag = []
         self.previous_node_tag = []
         self.sweep_path_points = []
@@ -217,7 +217,13 @@ class Mesh:
                 # #TODO allow for arbitrary line
                 m_prime, phi = get_slope([ref_point_x, self.y_elevation, ref_point_z], int_point)
                 # rotate sweep line such that parallel to m' line
-                current_sweep_nodes = self.__rotate_sweep_nodes(np.pi / 2 - np.abs(phi))
+                # if skew is positive, algorithm may mistake first point as orthogonal 90 deg, specify initial m based
+                # on zeta
+                if self.skew_1>0:
+                    angle = np.arctan(self.zeta/180*np.pi)
+                else:
+                    angle = np.pi / 2 - np.abs(phi)
+                current_sweep_nodes = self.__rotate_sweep_nodes(angle)
                 # get z group of first node in current_sweep_nodes - for correct assignment in loop
                 z_group = self.start_edge_line.get_node_group_z(int_point)
                 # check
@@ -391,7 +397,7 @@ class Mesh:
             # get slope, m at current point x
             z = line_func(m=self.m, c=self.c, x=x)
 
-            current_sweep_nodes = self.__rotate_sweep_nodes(self.zeta)
+            current_sweep_nodes = self.__rotate_sweep_nodes(self.zeta/180*np.pi)
             # if angle less than threshold, assign nodes of edge member as it is
             for (z_count_int, nodes) in enumerate(current_sweep_nodes):
                 x_inc = x
@@ -577,7 +583,10 @@ class Mesh:
                         if not any([node_tag in d and x_node in d and z_node in d for d in self.grid_number_dict.values()]):
                             self.grid_number_dict.setdefault(counter,[node_tag,x_node,z_node,n3])
                             counter+=1
-
+        # EXAMPLE
+        # list comprehension to find ele
+        # [i for i,x in enumerate([2 in n[1:3] for n in self.long_ele]) if x]  # for Node tag 2 in long ele list
+        pass
 
     def __get_geo_transform_tag(self, ele_nodes):
         # function called for each element, assign

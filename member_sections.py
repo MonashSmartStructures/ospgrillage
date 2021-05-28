@@ -63,8 +63,7 @@ class Section:
 
     def get_asterisk_arguments(self, width=1):
         """
-        Function to output list of arguments for element() command following Openseespy convention. Function also
-        output
+        Function to output list of arguments for element type requiring an argument list (with preceding asterisk)
         :return: list containing member properties in accordance with  input convention
         """
         asterisk_input = None

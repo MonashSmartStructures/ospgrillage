@@ -444,18 +444,26 @@ class OpsGrillage:
         # if member is transverse, assign slab elements
         if grillage_member_obj.section.unit_width and common_member_tag is None:
             for ele in self.Mesh_obj.trans_ele:
-                tag = ele[0]
+                n1 = ele[1]
+                n2 = ele[2]
                 # get node_i and node_j spacing
-                lis = self.Mesh_obj.node_width_x_dict[tag]
+                lis_1 = self.Mesh_obj.node_width_x_dict[n1]
+                lis_2 = self.Mesh_obj.node_width_x_dict[n2]
                 ele_width = 1
-                if len(lis) == 1:
-                    ele_width = np.sqrt(lis[0][0] ** 2 + lis[0][1] ** 2 + lis[0][2] ** 2) / 2
-                elif len(lis) == 2:
-                    ele_width = (np.sqrt(lis[0][0] ** 2 + lis[0][1] ** 2 + lis[0][2] ** 2) +
-                                 np.sqrt(lis[1][0] ** 2 + lis[1][1] ** 2 + lis[1][2] ** 2)) / 2
+                ele_width_record = []
+                for lis in [lis_1,lis_2]:
+                    if len(lis) == 1:
+                        ele_width_record.append(np.sqrt(lis[0][0] ** 2 + lis[0][1] ** 2 + lis[0][2] ** 2) / 2)
+                    elif len(lis) == 2:
+                        ele_width_record.append((np.sqrt(lis[0][0] ** 2 + lis[0][1] ** 2 + lis[0][2] ** 2) +
+                                     np.sqrt(lis[1][0] ** 2 + lis[1][1] ** 2 + lis[1][2] ** 2)) / 2)
+                    else:
+                        break
+                ele_width = max(ele_width_record) #TODO Check here,
+                # currently here assumed the width of rectangular grid for entrie element width
 
                 ele_str = grillage_member_obj.section.get_element_command_str(
-                    ele_tag=ele[0], n1=ele[1], n2=ele[2], transf_tag=ele[4], ele_width=ele_width)
+                    ele_tag=ele[0], n1=n1, n2=n2, transf_tag=ele[4], ele_width=ele_width)
                 if self.pyfile:
                     with open(self.filename, 'a') as file_handle:
                         file_handle.write(ele_str)
@@ -599,10 +607,17 @@ class OpsGrillage:
 
         # get vicinity nodes and sort ascending
         x_vicinity_nodes = self.Mesh_obj.node_connect_x_dict[closest_node[0]]
+        if self.Mesh_obj.node_spec[x_vicinity_nodes[0]]['coordinate'][0]>self.Mesh_obj.node_spec[x_vicinity_nodes[1]]['coordinate'][0]:
+            # flip the x_vicinity nodes
+            x_vicinity_nodes.reverse()
+
         x1 = self.Mesh_obj.node_spec[x_vicinity_nodes[0]]['coordinate'][0]
         x2 = self.Mesh_obj.node_spec[x_vicinity_nodes[1]]['coordinate'][0] if len(x_vicinity_nodes) > 1 else 0
 
         z_vicinity_nodes = self.Mesh_obj.node_connect_z_dict[closest_node[0]]
+        if self.Mesh_obj.node_spec[z_vicinity_nodes[0]]['coordinate'][2]>self.Mesh_obj.node_spec[z_vicinity_nodes[1]]['coordinate'][2]:
+            # flip the z_vicinity nodes
+            z_vicinity_nodes.reverse()
         z1 = self.Mesh_obj.node_spec[z_vicinity_nodes[0]]['coordinate'][2]
         z2 = self.Mesh_obj.node_spec[z_vicinity_nodes[1]]['coordinate'][2] if len(z_vicinity_nodes) > 1 else 0
 
@@ -642,6 +657,8 @@ class OpsGrillage:
 
         # pass shape function to distribute load to 4 points
 
+    def get_patch_nodes(self,patch_load_obj):
+        pass
 
     # TO be retired
     def __assign_line_load(self, line_position_x, udl_value):
