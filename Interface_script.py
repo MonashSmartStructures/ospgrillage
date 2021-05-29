@@ -44,6 +44,7 @@ if not pyfile:
     opsplt.plot_model("nodes")
     pass
 
+# test node searching function
 a, n3_variant = example_bridge.get_nodes_given_point([5,0,2])
 print(a)
 # test output python file
@@ -53,15 +54,14 @@ print(a)
 # Create Load cases
 
 # Node load
-#DL = NodalLoad("concrete", 20, Fy=20)
-
 
 # Line load
-Barrier = LineLoading("Barrier curb load", x1=2,x2=4,z1=2, z2=2,p1=9,p2=2)
-print(Barrier.load_point_data)
+Barrier = LineLoading("Barrier curb load", x1=0,x2=8,z1=5, z2=5,p1=9,p2=2)
+#print(Barrier.load_point_data)
 Barrier.interpolate_udl_magnitude([3,0,2])
 # Patch load - lane loading
 Lane = PatchLoading("Lane 1", x1=1,x2=4,x3=4,x4=1,z1=1,z2=1,z3=4,z4=4)
+example_bridge.get_line_load_nodes(Barrier)
 # Directly add Load cases to Opensees model or, create LoadCase object and pass all loads
 #example_bridge.add_load_case("Concrete dead load case", DL, DL)
 #example_bridge.add_load_case("Lane 1", Lane)

@@ -8,7 +8,7 @@ from Load import *
 from Material import *
 from member_sections import *
 from Mesh import *
-
+from itertools import combinations
 
 class OpsGrillage:
     """
@@ -607,55 +607,112 @@ class OpsGrillage:
 
         # get vicinity nodes and sort ascending
         x_vicinity_nodes = self.Mesh_obj.node_connect_x_dict[closest_node[0]]
-        if self.Mesh_obj.node_spec[x_vicinity_nodes[0]]['coordinate'][0]>self.Mesh_obj.node_spec[x_vicinity_nodes[1]]['coordinate'][0]:
-            # flip the x_vicinity nodes
-            x_vicinity_nodes.reverse()
+        if len(x_vicinity_nodes) > 1:
+            if self.Mesh_obj.node_spec[x_vicinity_nodes[0]]['coordinate'][0]>self.Mesh_obj.node_spec[x_vicinity_nodes[1]]['coordinate'][0]:
+                # flip the x_vicinity nodes
+                x_vicinity_nodes.reverse()
 
         x1 = self.Mesh_obj.node_spec[x_vicinity_nodes[0]]['coordinate'][0]
         x2 = self.Mesh_obj.node_spec[x_vicinity_nodes[1]]['coordinate'][0] if len(x_vicinity_nodes) > 1 else 0
 
         z_vicinity_nodes = self.Mesh_obj.node_connect_z_dict[closest_node[0]]
-        if self.Mesh_obj.node_spec[z_vicinity_nodes[0]]['coordinate'][2]>self.Mesh_obj.node_spec[z_vicinity_nodes[1]]['coordinate'][2]:
-            # flip the z_vicinity nodes
-            z_vicinity_nodes.reverse()
+        if len(z_vicinity_nodes) > 1:
+            if self.Mesh_obj.node_spec[z_vicinity_nodes[0]]['coordinate'][2]>self.Mesh_obj.node_spec[z_vicinity_nodes[1]]['coordinate'][2]:
+                # flip the z_vicinity nodes
+                z_vicinity_nodes.reverse()
         z1 = self.Mesh_obj.node_spec[z_vicinity_nodes[0]]['coordinate'][2]
         z2 = self.Mesh_obj.node_spec[z_vicinity_nodes[1]]['coordinate'][2] if len(z_vicinity_nodes) > 1 else 0
 
         xg = []
         zg = []
-        # arrange 4 points (n1 to n4) based on counter clockwise
-        if x2 >= x > x_closest:
-            if z2 >= z > z_closest:
-                n4 = z_vicinity_nodes[1]
-                n2 = x_vicinity_nodes[1]
-                xg = self.Mesh_obj.node_spec[n2]['x_group']
-                zg = self.Mesh_obj.node_spec[n4]['x_group']
-                n3_variant = [1, 1]
-            elif z_closest >= z > z1:
-                n4 = x_vicinity_nodes[1]
-                n2 = z_vicinity_nodes[0]
-                xg = self.Mesh_obj.node_spec[n4]['x_group']
-                zg = self.Mesh_obj.node_spec[n2]['z_group']
-                n3_variant = [1, -1]
-        elif x_closest >= x > x1:
-            if z2 >= z > z_closest:
-                n4 = x_vicinity_nodes[0]
-                n2 = z_vicinity_nodes[1]
-                xg = self.Mesh_obj.node_spec[n4]['x_group']
-                zg = self.Mesh_obj.node_spec[n2]['z_group']
-                n3_variant = [-1, 1]
-            elif z_closest >= z > z1:
-                n4 = z_vicinity_nodes[0]
-                n2 = x_vicinity_nodes[0]
-                xg = self.Mesh_obj.node_spec[n2]['x_group']
-                zg = self.Mesh_obj.node_spec[n4]['z_group']
-                n3_variant = [-1, -1]
         n1 = closest_node[0]
-        n3 = [n['tag'] for n in self.Mesh_obj.node_spec.values() if n['x_group'] == xg and n['z_group'] == zg][0]
+        # arrange 4 points (n1 to n4) based on counter clockwise
+        if len(x_vicinity_nodes) > 1:
+            if x2 >= x > x_closest:
+                if z2 >= z > z_closest:
+                    n4 = z_vicinity_nodes[1]
+                    n2 = x_vicinity_nodes[1]
+                    xg = self.Mesh_obj.node_spec[n2]['x_group']
+                    zg = self.Mesh_obj.node_spec[n4]['x_group']
+                    n3_variant = [1, 1]
+                elif z_closest >= z > z1:
+                    n4 = x_vicinity_nodes[1]
+                    n2 = z_vicinity_nodes[0]
+                    xg = self.Mesh_obj.node_spec[n4]['x_group']
+                    zg = self.Mesh_obj.node_spec[n2]['z_group']
+                    n3_variant = [1, -1]
+            elif x_closest >= x > x1:
+                if z2 >= z > z_closest:
+                    n4 = x_vicinity_nodes[0]
+                    n2 = z_vicinity_nodes[1]
+                    xg = self.Mesh_obj.node_spec[n4]['x_group']
+                    zg = self.Mesh_obj.node_spec[n2]['z_group']
+                    n3_variant = [-1, 1]
+                elif z_closest >= z > z1:
+                    n4 = z_vicinity_nodes[0]
+                    n2 = x_vicinity_nodes[0]
+                    xg = self.Mesh_obj.node_spec[n2]['x_group']
+                    zg = self.Mesh_obj.node_spec[n4]['z_group']
+                    n3_variant = [-1, -1]
+            n3 = [n['tag'] for n in self.Mesh_obj.node_spec.values() if n['x_group'] == xg and n['z_group'] == zg][0]
+            node_list = [n1, n2, n3, n4]
+        elif len(x_vicinity_nodes) <= 1:
+            if len(z_vicinity_nodes) < 1:
+                # corner node
+                n2 = x_vicinity_nodes[0]
+                n3_variant = "corner 3 nodes"
+            else: # edge node
+                if z > z_closest:
+                    n2 = z_vicinity_nodes[0]
+                else:
+                    n2 = x_vicinity_nodes[0]
+                n3_variant = "edge 3 nodes"
+            potential_grids = [k for k,v in enumerate(self.Mesh_obj.grid_number_dict.values()) if n2 in v and n1 in v]
+            n3 = [grid for grid in potential_grids if len(self.Mesh_obj.grid_number_dict[grid]) == 3]
+            node_list = self.Mesh_obj.grid_number_dict[n3[0]]
 
-        return [n1, n2, n3, n4], n3_variant
+        return node_list , n3_variant
 
         # pass shape function to distribute load to 4 points
+
+    def get_line_load_nodes(self, line_load_obj):
+        # steps
+        # from starting point of line load
+        x = 0
+        z = 0
+        m = line_load_obj.m
+        c = line_load_obj.c
+        x_intcp = x_intcp_two_lines(self.Mesh_obj.start_edge_line.slope,self.Mesh_obj.start_edge_line.c,m,c)
+        z_intcp = line_func(m=m,c=c,x=x_intcp)
+
+        # get nearest point of starting
+        nd,_ = self.get_nodes_given_point([x_intcp,self.y_elevation,z_intcp])
+
+        # begin modified Bresenham's Line Algorithm
+
+        # find indices for long member and transverse member
+        node_tag_combo = combinations(nd,2)
+        record_a = []
+        record_b = []
+        for combi in node_tag_combo:
+            a = [i for i, x in enumerate([combi[0] in n[1:3] and combi[1] in n[1:3] for n in self.Mesh_obj.long_ele]) if x]
+            b = [i for i, x in enumerate([combi[0] in n[1:3] and combi[1] in n[1:3] for n in self.Mesh_obj.trans_ele]) if x]
+            record_a = record_a + a
+            record_b = record_b + b
+
+        # for each long and trans member, find intersection
+
+        # if intersect transverse, move to next grid, find next intercept with
+
+        # if line intersects transverse member, next
+        # next longitudinal node vs next longitudinal node + next transvese node
+        # calculate error and slope
+
+        # else slope is negative
+
+
+        pass
+
 
     def get_patch_nodes(self,patch_load_obj):
         pass

@@ -216,6 +216,7 @@ def find_min_x_dist(const_point, ref_point):
 
 
 def get_slope(pt1, pt2):
+    # pt must be [x y z]
     # function claculates the slope for two points inthe 2-D plane, y= 0
     if (pt1[0] - pt2[0]) == 0:
         m = None

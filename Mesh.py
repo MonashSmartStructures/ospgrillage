@@ -83,7 +83,7 @@ class Mesh:
             self.m = round(m, self.decimal_lim)
             # self.c = 0  # default 0  to avoid arithmetic error
             zeta = np.arctan(m)  # initial angle of inclination of sweep line about mesh origin
-            self.zeta = zeta/ np.pi *180 # rad to degrees
+            self.zeta = zeta / np.pi * 180  # rad to degrees
         self.__check_skew(zeta)  # check condition for orthogonal mesh
         # ------------------------------------------------------------------------------------------
         # edge construction line 1
@@ -219,8 +219,8 @@ class Mesh:
                 # rotate sweep line such that parallel to m' line
                 # if skew is positive, algorithm may mistake first point as orthogonal 90 deg, specify initial m based
                 # on zeta
-                if self.skew_1>0:
-                    angle = np.arctan(self.zeta/180*np.pi)
+                if self.skew_1 > 0:
+                    angle = np.arctan(self.zeta / 180 * np.pi)
                 else:
                     angle = np.pi / 2 - np.abs(phi)
                 current_sweep_nodes = self.__rotate_sweep_nodes(angle)
@@ -322,7 +322,7 @@ class Mesh:
                 # rotate sweep line such that parallel to m' line
                 current_sweep_nodes = self.__rotate_sweep_nodes(np.pi / 2 - np.abs(phi))
                 # get z group of first node in current_sweep_nodes - for correct assignment in loop
-                z_group = self.end_edge_line.get_node_group_z(int_point) # extract from class EdgeConstructionLine
+                z_group = self.end_edge_line.get_node_group_z(int_point)  # extract from class EdgeConstructionLine
                 # check
                 # condition
                 if 90 + self.skew_2 + self.zeta > 90:
@@ -397,7 +397,7 @@ class Mesh:
             # get slope, m at current point x
             z = line_func(m=self.m, c=self.c, x=x)
 
-            current_sweep_nodes = self.__rotate_sweep_nodes(self.zeta/180*np.pi)
+            current_sweep_nodes = self.__rotate_sweep_nodes(self.zeta / 180 * np.pi)
             # if angle less than threshold, assign nodes of edge member as it is
             for (z_count_int, nodes) in enumerate(current_sweep_nodes):
                 x_inc = x
@@ -495,7 +495,7 @@ class Mesh:
         self.node_width_z_dict = dict()
         self.node_connect_z_dict = dict()
         for ele in self.long_ele:
-            d1 = [] # d for distance
+            d1 = []  # d for distance
             d2 = []
             p1 = []
             p2 = []
@@ -504,17 +504,17 @@ class Mesh:
             for item in n1:
                 d1.append([np.abs(a - b) for (a, b) in
                            zip(self.node_spec[item[1]]['coordinate'], self.node_spec[item[2]]['coordinate'])])
-                if item[1]!=ele[1] and item[1] != ele[2]:
+                if item[1] != ele[1] and item[1] != ele[2]:
                     p1.append(item[1])
-                if item[2]!=ele[1] and item[2] != ele[2]:
+                if item[2] != ele[1] and item[2] != ele[2]:
                     p1.append(item[2])
 
             for item in n2:
                 d2.append([np.abs(a - b) for (a, b) in
                            zip(self.node_spec[item[1]]['coordinate'], self.node_spec[item[2]]['coordinate'])])
-                if item[1]!=ele[1] and item[1] != ele[2]:
+                if item[1] != ele[1] and item[1] != ele[2]:
                     p2.append(item[1])
-                if item[2]!=ele[1] and item[2] != ele[2]:
+                if item[2] != ele[1] and item[2] != ele[2]:
                     p2.append(item[2])
             # list, [ele tag, ele width (left and right)]
             self.node_width_z_dict.setdefault(ele[1], d1)
@@ -544,16 +544,16 @@ class Mesh:
             for item in n1:
                 d1.append([np.abs(a - b) for (a, b) in
                            zip(self.node_spec[item[1]]['coordinate'], self.node_spec[item[2]]['coordinate'])])
-                if item[1]!=ele[1] and item[1] != ele[2]:
+                if item[1] != ele[1] and item[1] != ele[2]:
                     p1.append(item[1])
-                if item[2]!=ele[1] and item[2] != ele[2]:
+                if item[2] != ele[1] and item[2] != ele[2]:
                     p1.append(item[2])
             for item in n2:
                 d2.append([np.abs(a - b) for (a, b) in
                            zip(self.node_spec[item[1]]['coordinate'], self.node_spec[item[2]]['coordinate'])])
-                if item[1]!=ele[1] and item[1] != ele[2]:
+                if item[1] != ele[1] and item[1] != ele[2]:
                     p2.append(item[1])
-                if item[2]!=ele[1] and item[2] != ele[2]:
+                if item[2] != ele[1] and item[2] != ele[2]:
                     p2.append(item[2])
             # list, [ele tag, ele width (left and right)]
             self.node_width_x_dict.setdefault(ele[1], d1)
@@ -566,8 +566,8 @@ class Mesh:
         counter = 0
         for node_tag in self.node_spec.keys():
             # get the surrounding nodes
-            x_vicinity_nodes = self.node_connect_x_dict.get(node_tag,[])
-            z_vicinity_nodes = self.node_connect_z_dict.get(node_tag,[])
+            x_vicinity_nodes = self.node_connect_x_dict.get(node_tag, [])
+            z_vicinity_nodes = self.node_connect_z_dict.get(node_tag, [])
             for x_node in x_vicinity_nodes:
                 xg = self.node_spec[x_node]['x_group']
                 for z_node in z_vicinity_nodes:
@@ -576,16 +576,72 @@ class Mesh:
                     n3 = [n['tag'] for n in self.node_spec.values() if n['x_group'] == xg and n['z_group'] == zg]
                     if n3:
                         n3 = n3[0]
-                        if not any([node_tag in d and x_node in d and z_node in d and n3 in d for d in self.grid_number_dict.values()]):
-                            self.grid_number_dict.setdefault(counter,[node_tag,x_node,z_node,n3])
-                            counter+=1
+                        if not any([node_tag in d and x_node in d and z_node in d and n3 in d for d in
+                                    self.grid_number_dict.values()]):
+                            self.grid_number_dict.setdefault(counter, [node_tag, x_node, z_node, n3])
+                            counter += 1
                     else:  # list is empty
-                        if not any([node_tag in d and x_node in d and z_node in d for d in self.grid_number_dict.values()]):
-                            self.grid_number_dict.setdefault(counter,[node_tag,x_node,z_node,n3])
-                            counter+=1
-        # EXAMPLE
-        # list comprehension to find ele
-        # [i for i,x in enumerate([2 in n[1:3] for n in self.long_ele]) if x]  # for Node tag 2 in long ele list
+                        if not any([node_tag in d and x_node in d and z_node in d for d in
+                                    self.grid_number_dict.values()]):
+                            self.grid_number_dict.setdefault(counter, [node_tag, x_node, z_node, n3])
+                            counter += 1
+
+        # dict of grid number return vicinity grid number in a subdict {'x-1': 'x+1', 'z-1' , 'z+1'}
+        self.grid_vicinity_dict = dict()
+        for k,grid in self.grid_number_dict.items():
+            current_x_group = []
+            current_z_group = []
+            current_x = []
+            current_z = []
+
+            grid_number_record = []
+            if [] in grid:
+                grid.remove([])
+            for node in grid:
+                grid_number_record += [i for i,x in enumerate([node in n for n in self.grid_number_dict.values()]) if x]
+                current_x_group.append(self.node_spec[node]['x_group'])
+                current_z_group.append(self.node_spec[node]['z_group'])
+                current_x.append(self.node_spec[node]['coordinate'][0])
+                current_z.append(self.node_spec[node]['coordinate'][2])
+            current_x_group = list(np.unique(current_x_group))
+            current_z_group = list(np.unique(current_z_group))
+            current_x = list(np.unique(current_x))
+            current_z = list(np.unique(current_z))
+            grid_number_record = np.unique(grid_number_record)
+            # loop to characterize the grid for current
+            subdict = {}
+            for neighbour in grid_number_record:
+                if neighbour == k: # identical , current grid
+                    continue
+                x_group = []
+                x_coor = []
+                z_group = []
+                z_coor = []
+                for nodes in self.grid_number_dict[neighbour]:
+                    if not nodes:
+                        continue
+                    x_group.append(self.node_spec[nodes]['x_group'])
+                    z_group.append(self.node_spec[nodes]['z_group'])
+                    x_coor.append(self.node_spec[nodes]['coordinate'][0])
+                    z_coor.append(self.node_spec[nodes]['coordinate'][2])
+                x_group = list(np.unique(x_group))
+                z_group = list(np.unique(z_group))
+                x_coor = list(np.unique(x_coor))
+                z_coor = list(np.unique(z_coor))
+                # if x groups are identical, neighbour grid is either top or bottom of the element
+                if all(a in current_x_group for a in x_group):
+                    # compare z max
+                    if max(z_coor) > max(current_z):
+                        subdict['top'] = neighbour
+                    else:
+                        subdict['bottom'] = neighbour
+                # if x groups are identical, neighbour grid is either left or right of the element
+                if all(a in current_z_group for a in z_group):
+                    if max(x_coor) > max(current_x):
+                        subdict['right'] = neighbour
+                    else:
+                        subdict['left'] = neighbour
+            self.grid_vicinity_dict.setdefault(k,subdict)
         pass
 
     def __get_geo_transform_tag(self, ele_nodes):
@@ -601,7 +657,7 @@ class Mesh:
 
     def __check_skew(self, zeta):
         # if mesh type is beyond default allowance threshold of 11 degree and 30 degree, return exception
-        if np.abs(self.skew_1 - zeta) <= self.skew_threshold[0] and  self.orthogonal:
+        if np.abs(self.skew_1 - zeta) <= self.skew_threshold[0] and self.orthogonal:
             # set to
             self.orthogonal = False
         elif np.abs(self.skew_1 - zeta) >= self.skew_threshold[1] and not self.orthogonal:
@@ -744,6 +800,9 @@ class EdgeConstructionLine:
 
         self.z_group = list(range(0, len(self.noz)))
 
+        self.slope = -1 / np.tan(self.edge_angle / 180 * np.pi)
+        self.c = get_y_intcp(self.slope, self.edge_ref_point[0], self.edge_ref_point[2])
+
     def get_node_group_z(self, coordinate):
         # return list of zgroup
         group = self.node_list.index(coordinate)
@@ -755,7 +814,5 @@ class EdgeConstructionLine:
 
 # TODO transfer definition of sweep path into class here. Add functions for curve lines
 class SweepPath:
-    def __init__(self,x1,y1,z1,x2,y2,z2,x3,y3,z3):
+    def __init__(self, x1, y1, z1, x2, y2, z2, x3, y3, z3):
         pass
-
-
