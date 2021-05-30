@@ -634,7 +634,7 @@ class OpsGrillage:
         if len(nd) == 4:
             current_grid = [i for i, x in
              enumerate([nd[3] in n and nd[2] in n and nd[1] in n and nd[0] in n for n in self.Mesh_obj.grid_number_dict.values()]) if x][0]
-        else: # len is 3
+        else:  # len is 3
             current_grid = [i for i, x in
                             enumerate([nd[2] in n and nd[1] in n and nd[0] in n for n in
                                        self.Mesh_obj.grid_number_dict.values()]) if x][0]
@@ -659,17 +659,21 @@ class OpsGrillage:
                 L2 = line([x_start,z_start], [pz2[0], proxy_z])
                 R = intersection(L1, L2)
                 # if R is not False, check if R is within bounds of pz1 and pz2
-                if not R:
+                if R is not False:
                     if all([R[0]<max(pz1[0],pz2[0]), R[0]>min(pz1[0],pz2[0]),R[1]<max(pz1[2],pz2[2]),R[1]>min(pz1[2],pz2[2])]):
                         # if true, line intersects, find next grid using the vicinity_dict of Mesh_obj
                         vicinity_grid = self.Mesh_obj.grid_vicinity_dict[44]
                         # check if nodes is in either "top" or bottom keyword
-                        if trans_ele[1] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("top",None),[]):
+                        if long_ele[1] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("top",None),[]):
                             next_grid = vicinity_grid.get("top",None)
-                        elif trans_ele[1] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("bottom",None),[]):
+                        elif long_ele[1] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("bottom",None),[]):
                             next_grid = vicinity_grid.get("bottom", None)
                         long_intersect = True
-                else:
+                        if next_grid in self.line_grid_intersect:
+                            pass
+                        else:
+                            break
+                elif current_grid in self.line_grid_intersect:
                     long_intersect = False
 
             # does not intersect, move to transverse
@@ -696,7 +700,10 @@ class OpsGrillage:
                             elif trans_ele[1] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("right", None),[]):
                                 next_grid = vicinity_grid.get("right", None)
                             trans_intersect = True
-                            break
+                            if next_grid in self.line_grid_intersect:
+                                pass
+                            else:
+                                break
                     else:
                         trans_intersect = False
 
@@ -708,7 +715,9 @@ class OpsGrillage:
             z_start = R[1]
             counter+=1
             # if line is off the model, end loop
-            if counter > 10:
+            if not any([trans_intersect,long_intersect]):
+                line_on = False
+            if counter > 100:
                 line_on = False
         return self.line_grid_intersect
 
@@ -725,7 +734,11 @@ class OpsGrillage:
             record_long = record_long + long_mem_index  # record
             record_trans = record_trans + trans_mem_index  # record
         return record_long,record_trans
+
+
+
     # TO be retired
+
     def __assign_patch_load_bound_option(self, bound_lines, area_load):
         if bound_lines[0] > bound_lines[1]:
             ub_nd_line = search_grid_lines(self.noz, position=bound_lines[0], position_bound="ub")
