@@ -26,7 +26,7 @@ slab = GrillageMember(member_name="concrete slab", section=slab_section, materia
 exterior_I_beam = GrillageMember(member_name="exterior I beams", section=exterior_I_beam_section, material=concrete)
 
 # construct grillage model
-example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=42,
+example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=-42,
                              num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
 pyfile = False
 example_bridge.create_ops(pyfile=pyfile)
@@ -40,6 +40,8 @@ example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_1")
 example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_2")
 example_bridge.set_member(exterior_I_beam, member="edge_beam")
 example_bridge.set_member(slab, member="transverse_slab")
+example_bridge.set_member(exterior_I_beam, member="start_edge")
+example_bridge.set_member(exterior_I_beam, member="end_edge")
 if not pyfile:
     opsplt.plot_model("nodes")
     pass
@@ -56,7 +58,7 @@ print(a)
 # Node load
 
 # Line load
-Barrier = LineLoading("Barrier curb load", x1=0,x2=8,z1=2, z2=2,p1=9,p2=2)
+Barrier = LineLoading("Barrier curb load", x1=0,x2=8,z1=4, z2=4,p1=9,p2=2)
 Barrier.interpolate_udl_magnitude([3,0,2])
 # Patch load - lane loading
 Lane = PatchLoading("Lane 1", x1=1,x2=4,x3=4,x4=1,z1=1,z2=1,z3=4,z4=4)
@@ -77,4 +79,4 @@ print(a)
 # --------------------------------------------------------------------------------------------------------------------
 # # plotting commands
 
-print(ops.eleNodes(20))
+#print(ops.eleNodes(20))

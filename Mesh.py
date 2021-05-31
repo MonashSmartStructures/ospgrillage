@@ -62,7 +62,7 @@ class Mesh:
 
         # ------------------------------------------------------------------------------------------
         # Sweep path properties
-        pt3 = [long_dim, 0.5]  # 3rd point for defining curve mesh
+        pt3 = [long_dim, 0.0]  # 3rd point for defining curve mesh
 
         # if defining an arc line segment, specify p2 such that pt2 is the point at the midpoint of the arc
         try:
@@ -266,14 +266,14 @@ class Mesh:
                                 break  # break assign long ele loop (cur node)
 
                     # if angle is positive (slope negative), edge nodes located at the first element of list
-                    if len(self.assigned_node_tag) > 1:
+                    if len(self.assigned_node_tag) >= 1:
                         if 90 + self.skew_1 + self.zeta > 90:
-                            self.__assign_edge_trans_members(self.previous_node_tag[0], self.assigned_node_tag[0])
+                            self.__assign_edge_trans_members(self.previous_node_tag[0], self.assigned_node_tag[0],self.global_edge_count)
                             # get and link edge nodes from previous and current as skewed edge member
                             self.edge_node_recorder.setdefault(self.previous_node_tag[0], self.global_edge_count)
                             self.edge_node_recorder.setdefault(self.assigned_node_tag[0], self.global_edge_count)
                         elif 90 + self.skew_1 + self.zeta < 90:
-                            self.__assign_edge_trans_members(self.previous_node_tag[-1], self.assigned_node_tag[-1])
+                            self.__assign_edge_trans_members(self.previous_node_tag[-1], self.assigned_node_tag[-1],self.global_edge_count)
                             # get and link edge nodes from previous and current as skewed edge member
                             self.edge_node_recorder.setdefault(self.previous_node_tag[-1], self.global_edge_count)
                             self.edge_node_recorder.setdefault(self.assigned_node_tag[-1], self.global_edge_count)
@@ -362,13 +362,13 @@ class Mesh:
                                 break  # break assign long ele loop (cur node)
 
                     # if angle is positive (slope negative), edge nodes located at the first element of list
-                    if len(self.assigned_node_tag) > 1:
+                    if len(self.assigned_node_tag) >= 1:
                         if 90 + self.skew_1 + self.zeta > 90:
-                            self.__assign_edge_trans_members(self.previous_node_tag[-1], self.assigned_node_tag[-1])
+                            self.__assign_edge_trans_members(self.previous_node_tag[-1], self.assigned_node_tag[-1],self.global_edge_count)
                             self.edge_node_recorder.setdefault(self.previous_node_tag[-1], self.global_edge_count)
                             self.edge_node_recorder.setdefault(self.assigned_node_tag[-1], self.global_edge_count)
                         elif 90 + self.skew_1 + self.zeta < 90:
-                            self.__assign_edge_trans_members(self.previous_node_tag[0], self.assigned_node_tag[0])
+                            self.__assign_edge_trans_members(self.previous_node_tag[0], self.assigned_node_tag[0],self.global_edge_count)
                             self.edge_node_recorder.setdefault(self.previous_node_tag[0], self.global_edge_count)
                             self.edge_node_recorder.setdefault(self.assigned_node_tag[0], self.global_edge_count)
                     # update recorder for previous node tag step
@@ -459,10 +459,10 @@ class Mesh:
         self.long_ele.append([self.element_counter, pre_node, cur_node, cur_z_group, tag])
         self.element_counter += 1
 
-    def __assign_edge_trans_members(self, previous_node_tag, assigned_node_tag):
+    def __assign_edge_trans_members(self, previous_node_tag, assigned_node_tag,edge_counter):
         tag = self.__get_geo_transform_tag([previous_node_tag, assigned_node_tag])
         self.edge_span_ele.append([self.element_counter, previous_node_tag, assigned_node_tag
-                                      , self.edge_node_recorder, tag])
+                                      , edge_counter, tag])
         self.element_counter += 1
 
     def __assign_shell_members(self, n1, n2, n3, n4):
@@ -477,12 +477,6 @@ class Mesh:
 
         :return: Set variable `group_ele_dict` according to
         """
-
-        # get the grouping properties of nox
-        # grouping number, dictionary of unique groups, dict of spacing values for given group as key, list of trib
-        # area of nodes
-        self.section_group_noz, self.spacing_diff_noz, self.spacing_val_noz, noz_trib_width \
-            = characterize_node_diff(self.noz, self.decimal_lim)
 
         # dict common element group to z group
         self.common_z_group_element = dict()

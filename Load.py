@@ -1,7 +1,7 @@
 import pprint
 from collections.abc import Iterable
 from static import *
-
+from collections import namedtuple
 
 # ----------------------------------------------------------------------------------------------------------------
 # Loading classes
@@ -212,3 +212,6 @@ class LoadCase:
     def add_load_groups(self, *args):
         for loads in args:
             self.load_groups.append(loads)
+
+
+Loadpoint = namedtuple("Point","x1 y1 z1")

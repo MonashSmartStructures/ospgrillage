@@ -17,14 +17,14 @@ The process of creating a grillage model can be categorized into three steps:
 #. Setting the elements of grillage model using :function:`~set_member()` and :function:`~set_material()` functions.
 
 
-An example usage of the :class:`~OpsGrillage` is shown as follows:
+An example of using the :class:`~OpsGrillage` to create a grillage model instance is shown as follows:
 
 .. code-block:: python
 
     example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=10, width=5, skew=-21,
                          num_long_grid=2, num_trans_grid=17, cantilever_edge=1, mesh_type="Ortho")
 
-The above example generates an Opensees model instance of a grillage model with the following properties
+The above example generates an Opensees model instance of a grillage model with the following properties:
 
 #. Length = 10 m
 #. Width = 5 m
