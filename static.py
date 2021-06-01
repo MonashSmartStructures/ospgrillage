@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.spatial import distance
+from sympy import symbols, Eq, solve
 
 
 def characterize_node_diff(node_list, tol):
@@ -169,6 +170,7 @@ def arc_func(h, v, R, x, r=0):
     y = np.sqrt((R + r) ** 2 - (x - h) ** 2) + v
     return y
 
+
 # TODO
 def transition_curve_func():
     pass
@@ -193,23 +195,24 @@ def x_intcp_two_lines(m1, m2, c1, c2):
     x = (c2 - c1) / (m1 - m2)
     return x
 
+
 def line(p1, p2):
     A = (p1[1] - p2[1])
     B = (p2[0] - p1[0])
-    C = (p1[0]*p2[1] - p2[0]*p1[1])
+    C = (p1[0] * p2[1] - p2[0] * p1[1])
     return A, B, -C
 
+
 def intersection(L1, L2):
-    D  = L1[0] * L2[1] - L1[1] * L2[0]
+    D = L1[0] * L2[1] - L1[1] * L2[0]
     Dx = L1[2] * L2[1] - L1[1] * L2[2]
     Dy = L1[0] * L2[2] - L1[2] * L2[0]
     if D != 0:
         x = Dx / D
         y = Dy / D
-        return x,y
+        return x, y
     else:
         return False
-
 
 
 def get_y_intcp(m, x, y):
@@ -247,3 +250,16 @@ def get_slope(pt1, pt2):
     else:
         phi = np.arctan(m)
     return m, phi
+
+
+def solve_zeta_eta(xp, zp, x1, z1, x2, z2, x3, z3, x4, z4):
+    x, z = symbols('x,z')
+    # eta
+    # eq1 = Eq((4 * zp - (z1 + z2 + z3 + z4) - z * (-z1 - z2 + z3 + z4)) / (
+    #              x * (z1 * (z - 1) + z2 * (1 - z) + z3 * (z + 1) + z4 * (-z - 1))))
+    # eq2 = Eq((4 * xp - (x1 + x2 + x3 + x4) - z * (-x1 - x2 + x3 + x4)) / (
+    #              x * (x1 * (z - 1) + x2 * (1 - z) + x3 * (z + 1) + x4 * (-z - 1))))
+    eq1 = Eq(4*zp-((1-x)*(1-z)*z1 + (1+x)*(1-z)*z2 + (1+x)*(1+z)*z3 + (1-x)*(1+z)*z4),0)
+    eq2 = Eq(4*xp-((1-x)*(1-z)*x1 + (1+x)*(1-z)*x2 + (1+x)*(1+z)*x3 + (1-x)*(1+z)*x4),0)
+    sol = solve((eq1,eq2),(x,z))
+    return sol[x], sol[z]

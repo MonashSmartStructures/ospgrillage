@@ -519,20 +519,20 @@ class OpsGrillage:
                     n2 = x_vicinity_nodes[1]
                     xg = self.Mesh_obj.node_spec[n2]['x_group']
                     zg = self.Mesh_obj.node_spec[n4]['x_group']
-                    n3_variant = [1, 1]
+                    n3_variant = [1,1]
                 elif z_closest >= z > z1:
                     n4 = x_vicinity_nodes[1]
                     n2 = z_vicinity_nodes[0]
                     xg = self.Mesh_obj.node_spec[n4]['x_group']
                     zg = self.Mesh_obj.node_spec[n2]['z_group']
-                    n3_variant = [1, -1]
+                    n3_variant = [1,-1]
             elif x_closest >= x > x1:
                 if z2 >= z > z_closest:
                     n4 = x_vicinity_nodes[0]
                     n2 = z_vicinity_nodes[1]
                     xg = self.Mesh_obj.node_spec[n4]['x_group']
                     zg = self.Mesh_obj.node_spec[n2]['z_group']
-                    n3_variant = [-1, 1]
+                    n3_variant = [-1,1]
                 elif z_closest >= z > z1:
                     n4 = z_vicinity_nodes[0]
                     n2 = x_vicinity_nodes[0]
@@ -578,7 +578,7 @@ class OpsGrillage:
         z = 0
         m = line_load_obj.m
         c = line_load_obj.c
-        x_start = x_intcp_two_lines(self.Mesh_obj.start_edge_line.slope, self.Mesh_obj.start_edge_line.c, m, c)
+        x_start = x_intcp_two_lines(m1=self.Mesh_obj.start_edge_line.slope, c1=self.Mesh_obj.start_edge_line.c, m2=m, c2=c)
         z_start = line_func(m=m, c=c, x=x_start)
 
         # recorder for grid
@@ -608,10 +608,8 @@ class OpsGrillage:
         while line_on:
             # find indices for long member and transverse member
             node_tag_combo = combinations(nd, 2)
-
             if counter > 1:
                 current_grid = next_grid
-
             record_long, record_trans = self.__get_elements(node_tag_combo)
 
             # for each long and trans member in record, find if intersect long or trans ele
@@ -633,8 +631,6 @@ class OpsGrillage:
                     pz1z_d = Decimal(pz1[2]).quantize(Decimal('1.000'))
                     pz2x_d = Decimal(pz2[0]).quantize(Decimal('1.000'))
                     pz2z_d = Decimal(pz2[2]).quantize(Decimal('1.000'))
-                    #if all([R[0] < max(pz1[0], pz2[0]), R[0] > min(pz1[0], pz2[0]), R[1] < max(pz1[2], pz2[2]),
-                            #R[1] > min(pz1[2], pz2[2])]):
                     if all([Rx <= max(pz1x_d, pz2x_d), Rx >= min(pz1x_d, pz2x_d), Rz <= max(pz1z_d, pz2z_d),
                             Rz >= min(pz1z_d, pz2z_d)]):
                         # if true, line intersects, find next grid using the vicinity_dict of Mesh_obj
@@ -652,49 +648,45 @@ class OpsGrillage:
                             break
                 elif current_grid in self.line_grid_intersect.keys():
                     long_intersect = False
+            # check if intersects trans member
+            for trans_ele in [self.Mesh_obj.trans_ele[i] for i in record_trans]:
+                px1 = self.Mesh_obj.node_spec[trans_ele[1]]['coordinate']  # point z 1
+                px2 = self.Mesh_obj.node_spec[trans_ele[2]]['coordinate']  # point z 2
+                # for current x_start, z_start, find second point within the bounds of
+                proxy_z = line_func(m=m, c=c, x=px2[0])
+                L1 = line([px1[0], px1[2]], [px2[0], px2[2]])
+                L2 = line([x_start, z_start], [px2[0], proxy_z])
+                R = intersection(L1, L2)
+                # if R is not False, check if R is within bounds of pz1 and pz2
+                if R is not False:
+                    # convert to decimal lib
+                    Rx = Decimal(R[0]).quantize(Decimal('1.000'))
+                    Rz = Decimal(R[1]).quantize(Decimal('1.000'))
+                    px1x_d = Decimal(px1[0]).quantize(Decimal('1.000'))
+                    px1z_d = Decimal(px1[2]).quantize(Decimal('1.000'))
+                    px2x_d = Decimal(px2[0]).quantize(Decimal('1.000'))
+                    px2z_d = Decimal(px2[2]).quantize(Decimal('1.000'))
 
-            # does not intersect, move to transverse
-            if long_intersect:
-                continue
-            else:  # perform transverse
-                for trans_ele in [self.Mesh_obj.trans_ele[i] for i in record_trans]:
-                    px1 = self.Mesh_obj.node_spec[trans_ele[1]]['coordinate']  # point z 1
-                    px2 = self.Mesh_obj.node_spec[trans_ele[2]]['coordinate']  # point z 2
-                    # for current x_start, z_start, find second point within the bounds of
-                    proxy_z = line_func(m=m, c=c, x=px2[0])
-                    L1 = line([px1[0], px1[2]], [px2[0], px2[2]])
-                    L2 = line([x_start, z_start], [px2[0], proxy_z])
-                    R = intersection(L1, L2)
-                    # if R is not False, check if R is within bounds of pz1 and pz2
-                    if R is not False:
-                        # convert to decimal lib
-                        Rx = Decimal(R[0]).quantize(Decimal('1.000'))
-                        Rz = Decimal(R[1]).quantize(Decimal('1.000'))
-                        px1x_d = Decimal(px1[0]).quantize(Decimal('1.000'))
-                        px1z_d = Decimal(px1[2]).quantize(Decimal('1.000'))
-                        px2x_d = Decimal(px2[0]).quantize(Decimal('1.000'))
-                        px2z_d = Decimal(px2[2]).quantize(Decimal('1.000'))
-
-                        # if all([R[0] < max(px1[0], px2[0]), R[0] > min(px1[0], px2[0]), R[1] < max(px1[2], px2[2]),
-                        #        R[1] > min(px1[2], px2[2])]):
-                        if all([Rx <= max(px1x_d,px2x_d), Rx >= min(px1x_d,px2x_d), Rz <= max(px1z_d,px2z_d),
-                                Rz >= min(px1z_d,px2z_d)]):
-                            # if true, line intersects, find next grid using the vicinity_dict of Mesh_obj
-                            vicinity_grid = self.Mesh_obj.grid_vicinity_dict[current_grid]
-                            # check if nodes is in either "top" or bottom keyword
-                            if trans_ele[1] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("left", None), []):
-                                next_grid = vicinity_grid.get("left", None)
-                            elif trans_ele[1] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("right", None),
-                                                                                    []):
-                                next_grid = vicinity_grid.get("right", None)
-                            trans_intersect = True
-                            subdict['Trans'] = R
-                            if next_grid in self.line_grid_intersect.keys():
-                                pass
-                            else:
-                                break
-                    else:
-                        trans_intersect = False
+                    # if all([R[0] < max(px1[0], px2[0]), R[0] > min(px1[0], px2[0]), R[1] < max(px1[2], px2[2]),
+                    #        R[1] > min(px1[2], px2[2])]):
+                    if all([Rx <= max(px1x_d,px2x_d), Rx >= min(px1x_d,px2x_d), Rz <= max(px1z_d,px2z_d),
+                            Rz >= min(px1z_d,px2z_d)]):
+                        # if true, line intersects, find next grid using the vicinity_dict of Mesh_obj
+                        vicinity_grid = self.Mesh_obj.grid_vicinity_dict[current_grid]
+                        # check if nodes is in either "top" or bottom keyword
+                        if trans_ele[1] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("left", None), []):
+                            next_grid = vicinity_grid.get("left", None)
+                        elif trans_ele[1] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("right", None),
+                                                                                []):
+                            next_grid = vicinity_grid.get("right", None)
+                        trans_intersect = True
+                        subdict['Trans'] = R
+                        if next_grid in self.line_grid_intersect.keys():
+                            pass
+                        else:
+                            break
+                else:
+                    trans_intersect = False
 
             # save intersection point as x_intcp and z_intcp, repeat loop
             self.line_grid_intersect.setdefault(next_grid, subdict)
@@ -727,65 +719,42 @@ class OpsGrillage:
             record_trans = record_trans + trans_mem_index  # record
         return record_long, record_trans
 
-    # TO be retired
+    def assign_point_to_four_node(self,point,mag,grid_nodes,variant):
+        # sort points counter clockwise with p1 = lower left corner of grid
+        if variant == [-1,-1]:
+            grid_nodes = [grid_nodes[2],grid_nodes[3],grid_nodes[0],grid_nodes[1]]
+        elif variant == [-1,1]:
+            grid_nodes = [grid_nodes[3], grid_nodes[0], grid_nodes[1], grid_nodes[2]]
+        elif variant == [1,-1]:
+            grid_nodes = [grid_nodes[1], grid_nodes[2], grid_nodes[3], grid_nodes[0]]
+        elif variant == [1,1]:
+            pass
 
-    def __assign_patch_load_bound_option(self, bound_lines, area_load):
-        if bound_lines[0] > bound_lines[1]:
-            ub_nd_line = search_grid_lines(self.noz, position=bound_lines[0], position_bound="ub")
-            lb_nd_line = search_grid_lines(self.noz, position=bound_lines[1], position_bound="lb")
-        else:
-            lb_nd_line = search_grid_lines(self.noz, position=bound_lines[0], position_bound="lb")
-            ub_nd_line = search_grid_lines(self.noz, position=bound_lines[1], position_bound="ub")
+        x1 = self.Mesh_obj.node_spec[grid_nodes[0]]['coordinate'][0]
+        x2 = self.Mesh_obj.node_spec[grid_nodes[1]]['coordinate'][0]
+        x3 = self.Mesh_obj.node_spec[grid_nodes[2]]['coordinate'][0]
+        x4 = self.Mesh_obj.node_spec[grid_nodes[3]]['coordinate'][0]
+        z1 = self.Mesh_obj.node_spec[grid_nodes[0]]['coordinate'][2]
+        z2 = self.Mesh_obj.node_spec[grid_nodes[1]]['coordinate'][2]
+        z3 = self.Mesh_obj.node_spec[grid_nodes[2]]['coordinate'][2]
+        z4 = self.Mesh_obj.node_spec[grid_nodes[3]]['coordinate'][2]
+        eta,zeta = solve_zeta_eta(xp=point[0], zp=point[2], x1=x1, z1=z1, x2=x2, z2=z2, x3=x3, z3=z3, x4=x4, z4=z4)
+
+        # shape function access here
+        N = ShapeFunction.linear_shape_function(eta,zeta)
+
+        # Fy
+        node_load = [mag * n for n in N]
+        # Mx
+
+        # Mz
+
         load_str = []
-        # if lower bound = upper bound, no in between lines, only assign to the single line identified by
-        # lower_bound_nd_line/upper_bound_nd_line
-        # if ub_nd_line and lb_nd_line are identical, patch load area too small for definition of patch load
-        if lb_nd_line[0][0] == ub_nd_line[0][0] and lb_nd_line[1][0] == ub_nd_line[1][0]:
-            # print warning to Terminal
-            print('Northing bounds too small for definition of patch loads - consider line load instead ')
+        for count,node in enumerate(grid_nodes):
+            load_str.append("ops.load({pt}, *{val})\n".format(pt=node, val=[0,node_load[count],0,0,0]))
 
-        # if bounded line is common, set load to
-        elif lb_nd_line[0] == ub_nd_line[1]:
-            in_between_nd_line = [lb_nd_line[0][0]]
-            lb_nd_line[0] = [[], 0]
-            ub_nd_line[1] = [[], 0]
-        elif lb_nd_line[0][0] + 1 == ub_nd_line[1][0]:
-            in_between_nd_line = []
-        else:
-            in_between_nd_line = [lb_nd_line[0][0] + 1]
-            while not in_between_nd_line[-1] + 1 > ub_nd_line[1][0]:
-                in_between_nd_line.append(in_between_nd_line[-1] + 1)
 
-        # loop all between node lines, assign udl using full width of node tributary area
-        for nd_line in in_between_nd_line:
-            nd_wid = self.noz_trib_width[nd_line]
-            udl_line = area_load * nd_wid
-            for ele in self.long_mem:
-                # if element is part of the grid line, assign UDl using eleLoad command
-                if ele[5] == nd_line:
-                    eleLoad_line = "ops.eleLoad('-ele', {eleTag}, '-type', '-beamUniform', {Wy}, {Wz}, {Wx})\n" \
-                        .format(eleTag=ele[3], Wy=udl_line, Wx=0, Wz=0)
-                    load_str.append(eleLoad_line)
-        # assign ub and lb udl
-        for ele in self.long_mem:
-            if ele[5] == lb_nd_line[1][0]:
-                eleLoad_line = "ops.eleLoad('-ele', {eleTag}, '-type', '-beamUniform', {Wy}, {Wz}, {Wx})\n" \
-                    .format(eleTag=ele[3], Wy=area_load * lb_nd_line[1][1], Wx=0, Wz=0)
-            elif ele[5] == lb_nd_line[0][0]:
-                eleLoad_line = "ops.eleLoad('-ele', {eleTag}, '-type', '-beamUniform', {Wy}, {Wz}, {Wx})\n" \
-                    .format(eleTag=ele[3], Wy=area_load * lb_nd_line[0][1], Wx=0, Wz=0)
-            elif ele[5] == ub_nd_line[1][0]:
-                eleLoad_line = "ops.eleLoad('-ele', {eleTag}, '-type', '-beamUniform', {Wy}, {Wz}, {Wx})\n" \
-                    .format(eleTag=ele[3], Wy=area_load * ub_nd_line[1][1], Wx=0, Wz=0)
-            elif ele[5] == ub_nd_line[0][0]:
-                eleLoad_line = "ops.eleLoad('-ele', {eleTag}, '-type', '-beamUniform', {Wy}, {Wz}, {Wx})\n" \
-                    .format(eleTag=ele[3], Wy=area_load * ub_nd_line[0][1], Wx=0, Wz=0)
-            else:
-                eleLoad_line = ""
-            load_str.append(eleLoad_line)
-
-        return load_str
-
+        pass
     # ----------------------------------------------------------------------------------------------------------
     #  functions to add load case and load combination
 

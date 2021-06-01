@@ -1,7 +1,6 @@
 # Example module interface for ops-grillage
 # import modules
-from OpsGrillage import OpsGrillage, Section, GrillageMember, UniAxialElasticMaterial, LineLoading, PatchLoading, \
-    NodalLoad, LoadCase
+from OpsGrillage import *
 from PlotWizard import *
 import openseespy.opensees as ops
 
@@ -48,7 +47,8 @@ if not pyfile:
 
 # test node searching function
 a, n3_variant = example_bridge.get_nodes_given_point([5,0,2])
-print(a)
+example_bridge.assign_point_to_four_node(point=[5,0,2],mag = -20,grid_nodes=a,variant=n3_variant)
+#print(a)
 # test output python file
 # example_bridge.run_check()
 
@@ -58,20 +58,20 @@ print(a)
 # Node load
 
 # Line load
-Barrier = LineLoading("Barrier curb load", x1=0,x2=8,z1=4, z2=4,p1=9,p2=2)
+Barrier = LineLoading("Barrier curb load", x1=0,x2=8,z1=1, z2=4,p1=9,p2=2)
 Barrier.interpolate_udl_magnitude([3,0,2])
 # Patch load - lane loading
 Lane = PatchLoading("Lane 1", x1=1,x2=4,x3=4,x4=1,z1=1,z2=1,z3=4,z4=4)
 a = example_bridge.get_line_load_nodes(Barrier)
 print(a)
 # Directly add Load cases to Opensees model or, create LoadCase object and pass all loads
-#example_bridge.add_load_case("Concrete dead load case", DL, DL)
-#example_bridge.add_load_case("Lane 1", Lane)
+# example_bridge.add_load_case("Concrete dead load case", DL, DL)
+# example_bridge.add_load_case("Lane 1", Lane)
 
 # --------------------------------------------------------------------------------------------------------------------
 # Load Case
-# ULS_DL = LoadCase(name="ULS-DL")
-# ULS_DL.add_load_groups(DL, Lane, Barrier)
+ULS_DL = LoadCase(name="ULS-DL")
+ULS_DL.add_load_groups(Lane, Barrier)
 
 # Load combination
 # example_bridge.add_load_combination(loadcase=[ULS_DL, SLS_LL], load_factor=[1.2, 1.7])

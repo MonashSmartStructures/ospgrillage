@@ -802,9 +802,6 @@ class EdgeConstructionLine:
         group = self.node_list.index(coordinate)
         return group
 
-    def __get_z_group_spacing(self):
-        pass
-
 
 # TODO transfer definition of sweep path into class here. Add functions for curve lines
 class SweepPath:

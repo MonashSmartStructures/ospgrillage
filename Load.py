@@ -3,6 +3,7 @@ from collections.abc import Iterable
 from static import *
 from collections import namedtuple
 
+
 # ----------------------------------------------------------------------------------------------------------------
 # Loading classes
 # ---------------------------------------------------------------------------------------------------------------
@@ -151,20 +152,21 @@ class LineLoading(Loads):
         super().__init__(name, **kwargs)
         print("Line Loading {} created".format(name))
         # if three points are defined, set line as curved circular line with point 2 (x2,y2,z2) in the centre of curve
-        if self.load_point_data['x3'] is not None: # curve
+        if self.load_point_data['x3'] is not None:  # curve
             self.d = findCircle(x1=self.load_point_data['x1'], y1=self.load_point_data['z1'],
                                 x2=self.load_point_data['x2'], y2=self.load_point_data['z2'],
                                 x3=self.load_point_data['x3'], y3=self.load_point_data['z3'])
             # return a function variable
 
-        else: # straight line
-            self.m, self.phi = get_slope([self.load_point_data['x1'],self.load_point_data['y1'],self.load_point_data['z1']],
-                      [self.load_point_data['x2'],self.load_point_data['y2'],self.load_point_data['z2']])
-            self.c = get_y_intcp(m=self.m, x=self.load_point_data['x1'],y=self.load_point_data['z1'])
+        else:  # straight line
+            self.m, self.phi = get_slope(
+                [self.load_point_data['x1'], self.load_point_data['y1'], self.load_point_data['z1']],
+                [self.load_point_data['x2'], self.load_point_data['y2'], self.load_point_data['z2']])
+            self.c = get_y_intcp(m=self.m, x=self.load_point_data['x1'], y=self.load_point_data['z1'])
 
     def interpolate_udl_magnitude(self, point_coordinate):
         # check if line is straight or curve
-        if self.load_point_data['x3'] is None: # straight
+        if self.load_point_data['x3'] is None:  # straight
             x = [self.load_point_data['x1'], self.load_point_data['x2']]
             y = [self.load_point_data['y1'], self.load_point_data['y2']]  # not used but generated here
             z = [self.load_point_data['z1'], self.load_point_data['z2']]
@@ -179,13 +181,12 @@ class LineLoading(Loads):
             v = [x[1] - x[0], p[1] - p[0], z[1] - z[0]]
             pp = (xp - x[0]) / v[0] * v[1] + p[0]
 
-        elif self.load_point_data['x3'] is not None: # curve
-
-
+        elif self.load_point_data['x3'] is not None:  # curve
+            # TODO for curved line load
             pass
         return pp
 
-# ---------------------------------------------------------------------------------------------------------------
+
 class PatchLoading(Loads):
     def __init__(self, name, **kwargs):
         super().__init__(name, **kwargs)
@@ -199,11 +200,8 @@ class PatchLoading(Loads):
             print("patch load points not valid")
         print("Patch load object created: {} ".format(name))
 
-class VehicleLoad(PointLoad):
-    def __init__(self, name, load_value, position, direction=None):
-        super(VehicleLoad, self).__init__(name, load_value)
 
-
+# ---------------------------------------------------------------------------------------------------------------
 class LoadCase:
     def __init__(self, name):
         self.name = name
@@ -214,4 +212,45 @@ class LoadCase:
             self.load_groups.append(loads)
 
 
-Loadpoint = namedtuple("Point","x1 y1 z1")
+# ---------------------------------------------------------------------------------------------------------------
+class ShapeFunction:
+    """
+    Class for shape functions. Shape functions are presented as class methods. More shape functions can be added herein
+    """
+    def __init__(self,option):
+        self.option = option
+
+    @staticmethod
+    def hermite_shape_function(zeta, a):  # using zeta and a as placeholders for normal coor + length of edge element
+        # hermite shape functions
+        """
+        :param zeta: absolute position in x direction
+        :param a: absolute position in x direction
+        :return: Four terms [N1, N2, N3, N4] of hermite shape function
+        .. note::
+
+        """
+        N1 = (1 - 3 * zeta ** 2 + 2 * zeta ** 3)
+        N2 = (zeta - 2 * zeta ** 2 + zeta ** 3) * a
+        N3 = (3 * zeta ** 2 - 2 * zeta ** 3)
+        N4 = (-zeta ** 2 + zeta ** 3) * a
+        return [N1, N2, N3, N4]
+
+    @staticmethod
+    def linear_shape_function(eta, zeta):
+        """
+        :param zeta: absolute position in x direction
+        :param eta: absolute position in z direction
+        :return: Four terms [N1, N2, N3, N4] of Linear shape function
+        .. note::
+            Further validation needed - trial on different bridge models
+        """
+        N1 = 0.25 * (1 - eta) * (1 - zeta)
+        N2 = 0.25 * (1 + eta) * (1 - zeta)
+        N3 = 0.25 * (1 + eta) * (1 + zeta)
+        N4 = 0.25 * (1 - eta) * (1 + zeta)
+        return [N1, N2, N3, N4]
+
+
+Loadpoint = namedtuple("Point", "x1 y1 z1")
+C = Loadpoint(1,2,3)
