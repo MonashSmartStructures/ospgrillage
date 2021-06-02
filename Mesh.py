@@ -807,3 +807,9 @@ class EdgeConstructionLine:
 class SweepPath:
     def __init__(self, x1, y1, z1, x2, y2, z2, x3, y3, z3):
         pass
+
+    def gradient(self):
+        pass
+
+    def y_intercept(self):
+        pass
