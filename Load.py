@@ -163,6 +163,7 @@ class LineLoading(Loads):
                 [self.load_point_data['x1'], self.load_point_data['y1'], self.load_point_data['z1']],
                 [self.load_point_data['x2'], self.load_point_data['y2'], self.load_point_data['z2']])
             self.c = get_y_intcp(m=self.m, x=self.load_point_data['x1'], y=self.load_point_data['z1'])
+            self.angle = np.arctan(self.m) # in radian
 
     def interpolate_udl_magnitude(self, point_coordinate):
         # check if line is straight or curve
@@ -185,6 +186,15 @@ class LineLoading(Loads):
             # TODO for curved line load
             pass
         return pp
+
+    def get_point_given_distance(self,xbar,point_coordinate):
+        # function to return centroid of line load given reference point coordinate (point2) and xbar calculated based
+        # on
+        z_dis = xbar * np.sin(self.angle)
+        x_dis = xbar * np.cos(self.angle)
+        # y dis = 0 due to model plane
+        new_point = [point_coordinate[0]-x_dis,point_coordinate[1],point_coordinate[2]-z_dis]
+        return new_point
 
 
 class PatchLoading(Loads):
@@ -220,6 +230,14 @@ class ShapeFunction:
     def __init__(self,option):
         self.option = option
 
+    def shape_function(self):
+        if self.option == "hermite":
+            return self.hermite_shape_function_2d
+        elif self.option == "linear":
+            return self.linear_shape_function
+        elif self.option == "triangle_linear":
+            return self.linear_triangular
+
     @staticmethod
     def hermite_shape_function_1d(zeta, a):  # using zeta and a as placeholders for normal coor + length of edge element
         # hermite shape functions
@@ -239,7 +257,8 @@ class ShapeFunction:
     @staticmethod
     def hermite_shape_function_2d(eta, zeta):
         # nodes must be counter clockwise such that n1 = left bottom of relative grid
-
+        # 4  3
+        # 1  2
         h1 = 0.25 * (2 - 3*eta + eta**3)
         h2 = 0.25 * (1 - eta - eta**2 + eta**3)
         h3 = 0.25 * (2 + 3*eta - eta**3)
@@ -251,10 +270,6 @@ class ShapeFunction:
         Nv = [h1*z1,h3*z1,h3*z3,h1*z3]
         Nmz = [h2*z1,h4*z1,h4*z3,h2*z3]
         Nmx = [h1*z2,h3*z2,h3*z4,h1*z4]
-
-        # 4  3
-        # 1  2
-
         return Nv, Nmx, Nmz
 
     @staticmethod
@@ -272,5 +287,24 @@ class ShapeFunction:
         N4 = 0.25 * (1 - eta) * (1 + zeta)
         return [N1, N2, N3, N4]
 
+    @staticmethod
+    def linear_triangular(x,z,x1,z1,x2,z2,x3,z3):
+        # modelling plane = y plane
+        ae = 0.5 * ((x2*z3-x3*z2)+(z2-z3)*x1+(x3-x2)*z1)
+        a1 = (x2*z3-x3*z2)/(2*ae)
+        b1 = (z2-z3)/(2*ae)
+        c1 = (x3-x2)/(2*ae)
+
+        a2 = (x3*z1-x1*z3)/(2*ae)
+        b2 = (z3-z1)/(2*ae)
+        c2 = (x1-x3)/(2*ae)
+
+        a3 = (x1*z2-x2*z1)/(2*ae)
+        b3 = (z1-z2)/(2*ae)
+        c3 = (x2-x1)/(2*ae)
+        N1 = a1 + b1*x + c1 * z
+        N2 = a2 + b2*x + c2 * z
+        N3 = a3 + b3*x + c3 * z
+        return [N1, N2, N3]
 
 Loadpoint = namedtuple("Point", "x1 y1 z1")

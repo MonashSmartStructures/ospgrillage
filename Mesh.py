@@ -555,7 +555,7 @@ class Mesh:
             self.node_connect_x_dict.setdefault(ele[1], p1)
             self.node_connect_x_dict.setdefault(ele[2], p2)
 
-        # dict key = grid number val = long and trans ele in grid
+        # dict key = grid number, val = long and trans ele in grid
         self.grid_number_dict = dict()
         counter = 0
         for node_tag in self.node_spec.keys():
@@ -607,10 +607,11 @@ class Mesh:
             for neighbour in grid_number_record:
                 if neighbour == k: # identical , current grid
                     continue
-                x_group = []
+                x_group = [] # initialize variables
                 x_coor = []
                 z_group = []
                 z_coor = []
+                # loop each node in the vicintiy grids
                 for nodes in self.grid_number_dict[neighbour]:
                     if not nodes:
                         continue
