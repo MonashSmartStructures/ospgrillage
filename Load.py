@@ -3,6 +3,10 @@ from collections.abc import Iterable
 from static import *
 from collections import namedtuple
 
+# named tuple definition
+LoadPoint = namedtuple("Point", ["x", "y", "z", "p"])
+NodeForces = namedtuple("node_forces", ["Fx", "Fy", "Fz", "Mx", "My", "Mz"])
+
 
 # ----------------------------------------------------------------------------------------------------------------
 # Loading classes
@@ -13,10 +17,11 @@ class LoadCase:
         self.spec = dict()
         self.load_counter = 0
 
-    def add_nodal_load(self, node_tag, Fx=0, Fy=0, Fz=0, Mx=0, My=0, Mz=0):
+    def add_nodal_load(self, node_tag, node_force):
         self.load_counter += 1
         self.spec["nodal_load-{}".format(self.load_counter)] = dict(
-            node_tag=node_tag, Fx=Fx, Fy=Fy, Fz=Fz, Mx=Mx, My=My, Mz=Mz)
+            node_tag=node_tag, Fx=node_force.Fx, Fy=node_force.Fy, Fz=node_force.Fz, Mx=node_force.Mx, My=node_force.My,
+            Mz=node_force.Mz)
 
     def add_point_load(self, position, Fy=0):
         self.load_counter += 1
@@ -103,8 +108,9 @@ class Loads:
 
 
 class NodalLoad(Loads):
-    def __init__(self, name, node_tag, Fx=0, Fy=0, Fz=0, Mx=0, My=0, Mz=0):
-        super().__init__(name, Fx=Fx, Fy=Fy, Fz=Fz, Mx=Mx, My=My, Mz=Mz)
+    def __init__(self, name, node_tag, node_force):
+        super().__init__(name, node_tag=node_tag, Fx=node_force.Fx, Fy=node_force.Fy, Fz=node_force.Fz, Mx=node_force.Mx
+                         , My=node_force.My, Mz=node_force.Mz)
         if not isinstance(node_tag, Iterable):
             node_list = [node_tag]
         else:
@@ -112,17 +118,6 @@ class NodalLoad(Loads):
         for nodes in node_list:
             self.spec[nodes] = {"Fx": self.Fx, "Fy": self.Fy, "Fz": self.Fz, "Mx": self.Mx, "My": self.My,
                                 "Mz": self.Mz}
-
-    @property
-    def node_point(self):
-        return self.spec
-
-    @node_point.setter
-    def node_point(self, new_node_tag, Fx=0, Fy=0, Fz=0, Mx=0, My=0, Mz=0):
-        self.spec.setdefault(new_node_tag, {"Fx": Fx, "Fy": Fy, "Fz": Fz, "Mx": Mx, "My": My, "Mz": Mz})
-
-    def remove_node_point(self, del_node_tag):
-        self.spec.pop(del_node_tag, None)
 
     def get_nodal_load_str(self):
         # get str for ops.load() function.
@@ -134,7 +129,7 @@ class NodalLoad(Loads):
 
 
 class PointLoad(Loads):
-    def __init__(self, name, x, z, y=0, magnitude=0):
+    def __init__(self, name, **kwargs):
         super().__init__(name, x1=x, y1=y, z1=z, Fy=magnitude)
 
     @staticmethod
@@ -163,7 +158,7 @@ class LineLoading(Loads):
                 [self.load_point_data['x1'], self.load_point_data['y1'], self.load_point_data['z1']],
                 [self.load_point_data['x2'], self.load_point_data['y2'], self.load_point_data['z2']])
             self.c = get_y_intcp(m=self.m, x=self.load_point_data['x1'], y=self.load_point_data['z1'])
-            self.angle = np.arctan(self.m) # in radian
+            self.angle = np.arctan(self.m)  # in radian
 
     def interpolate_udl_magnitude(self, point_coordinate):
         # check if line is straight or curve
@@ -187,13 +182,13 @@ class LineLoading(Loads):
             pass
         return pp
 
-    def get_point_given_distance(self,xbar,point_coordinate):
+    def get_point_given_distance(self, xbar, point_coordinate):
         # function to return centroid of line load given reference point coordinate (point2) and xbar calculated based
         # on
         z_dis = xbar * np.sin(self.angle)
         x_dis = xbar * np.cos(self.angle)
         # y dis = 0 due to model plane
-        new_point = [point_coordinate[0]-x_dis,point_coordinate[1],point_coordinate[2]-z_dis]
+        new_point = [point_coordinate[0] - x_dis, point_coordinate[1], point_coordinate[2] - z_dis]
         return new_point
 
 
@@ -227,7 +222,8 @@ class ShapeFunction:
     """
     Class for shape functions. Shape functions are presented as class methods. More shape functions can be added herein
     """
-    def __init__(self,option):
+
+    def __init__(self, option):
         self.option = option
 
     def shape_function(self):
@@ -259,17 +255,17 @@ class ShapeFunction:
         # nodes must be counter clockwise such that n1 = left bottom of relative grid
         # 4  3
         # 1  2
-        h1 = 0.25 * (2 - 3*eta + eta**3)
-        h2 = 0.25 * (1 - eta - eta**2 + eta**3)
-        h3 = 0.25 * (2 + 3*eta - eta**3)
-        h4 = 0.25 * (-1 - eta + eta**2 + eta**3)
+        h1 = 0.25 * (2 - 3 * eta + eta ** 3)
+        h2 = 0.25 * (1 - eta - eta ** 2 + eta ** 3)
+        h3 = 0.25 * (2 + 3 * eta - eta ** 3)
+        h4 = 0.25 * (-1 - eta + eta ** 2 + eta ** 3)
         z1 = 0.25 * (2 - 3 * zeta + zeta ** 3)
         z2 = 0.25 * (1 - zeta - zeta ** 2 + zeta ** 3)
         z3 = 0.25 * (2 + 3 * zeta - zeta ** 3)
         z4 = 0.25 * (-1 - zeta + zeta ** 2 + zeta ** 3)
-        Nv = [h1*z1,h3*z1,h3*z3,h1*z3]
-        Nmz = [h2*z1,h4*z1,h4*z3,h2*z3]
-        Nmx = [h1*z2,h3*z2,h3*z4,h1*z4]
+        Nv = [h1 * z1, h3 * z1, h3 * z3, h1 * z3]
+        Nmz = [h2 * z1, h4 * z1, h4 * z3, h2 * z3]
+        Nmx = [h1 * z2, h3 * z2, h3 * z4, h1 * z4]
         return Nv, Nmx, Nmz
 
     @staticmethod
@@ -288,23 +284,21 @@ class ShapeFunction:
         return [N1, N2, N3, N4]
 
     @staticmethod
-    def linear_triangular(x,z,x1,z1,x2,z2,x3,z3):
+    def linear_triangular(x, z, x1, z1, x2, z2, x3, z3):
         # modelling plane = y plane
-        ae = 0.5 * ((x2*z3-x3*z2)+(z2-z3)*x1+(x3-x2)*z1)
-        a1 = (x2*z3-x3*z2)/(2*ae)
-        b1 = (z2-z3)/(2*ae)
-        c1 = (x3-x2)/(2*ae)
+        ae = 0.5 * ((x2 * z3 - x3 * z2) + (z2 - z3) * x1 + (x3 - x2) * z1)
+        a1 = (x2 * z3 - x3 * z2) / (2 * ae)
+        b1 = (z2 - z3) / (2 * ae)
+        c1 = (x3 - x2) / (2 * ae)
 
-        a2 = (x3*z1-x1*z3)/(2*ae)
-        b2 = (z3-z1)/(2*ae)
-        c2 = (x1-x3)/(2*ae)
+        a2 = (x3 * z1 - x1 * z3) / (2 * ae)
+        b2 = (z3 - z1) / (2 * ae)
+        c2 = (x1 - x3) / (2 * ae)
 
-        a3 = (x1*z2-x2*z1)/(2*ae)
-        b3 = (z1-z2)/(2*ae)
-        c3 = (x2-x1)/(2*ae)
-        N1 = a1 + b1*x + c1 * z
-        N2 = a2 + b2*x + c2 * z
-        N3 = a3 + b3*x + c3 * z
+        a3 = (x1 * z2 - x2 * z1) / (2 * ae)
+        b3 = (z1 - z2) / (2 * ae)
+        c3 = (x2 - x1) / (2 * ae)
+        N1 = a1 + b1 * x + c1 * z
+        N2 = a2 + b2 * x + c2 * z
+        N3 = a3 + b3 * x + c3 * z
         return [N1, N2, N3]
-
-Loadpoint = namedtuple("Point", "x1 y1 z1")

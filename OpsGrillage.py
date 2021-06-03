@@ -7,8 +7,9 @@ from Material import *
 from member_sections import *
 from Mesh import *
 from itertools import combinations
-from Load import Loadpoint
+from Load import LoadPoint
 from decimal import *
+
 
 class OpsGrillage:
     """
@@ -136,6 +137,7 @@ class OpsGrillage:
         self.line_grid_intersect = dict()  # keep track of grids
         # Initiate py file output
         self.filename = "{}_op.py".format(self.model_name)
+        # create namedtuples
 
         # calculate edge length of grillage
         self.trans_dim = self.width / math.cos(self.skew_a / 180 * math.pi)
@@ -242,7 +244,7 @@ class OpsGrillage:
                                                                                             x=coordinate[0],
                                                                                             y=coordinate[1],
                                                                                             z=coordinate[2]))
-            else:
+            else:  # 0 - x , 1 - y, 2 - z
                 ops.node(nested_v['tag'], coordinate[0], coordinate[1], coordinate[2])
 
     def __write_op_fix(self, mesh_obj):
@@ -256,22 +258,22 @@ class OpsGrillage:
             with open(self.filename, 'a') as file_handle:
                 file_handle.write("# Boundary condition implementation\n")
             # TODO generalize for user input of boundary condition
-        for k, v, in mesh_obj.edge_node_recorder.items():
-            # if edge beam - common group z ==0 - do not assign
-            if mesh_obj.node_spec[k]["z_group"] in mesh_obj.common_z_group_element[0]:
-                pass
-            elif v == 0:
-                if self.pyfile:
+        for node_tag, edge_group_num in mesh_obj.edge_node_recorder.items():
+            # if node is an edge beam - is part of common group z ==0 ,do not assign any fixity
+            if mesh_obj.node_spec[node_tag]["z_group"] in mesh_obj.common_z_group_element[0]:  # here [0] is first group
+                pass  # move to next node in edge recorder
+            elif edge_group_num == 0:  # 0 is edge of start of span
+                if self.pyfile:  # if writing py file
                     with open(self.filename, 'a') as file_handle:
-                        file_handle.write("ops.fix({}, *{})\n".format(k, self.fix_val_pin))
-                else:
-                    ops.fix(k, *self.fix_val_pin)
-            elif v == 1:
-                if self.pyfile:
+                        file_handle.write("ops.fix({}, *{})\n".format(node_tag, self.fix_val_pin))
+                else:  # run instance
+                    ops.fix(node_tag, *self.fix_val_pin)
+            elif edge_group_num == 1:  # 1 is edge of end of span
+                if self.pyfile:  # if writing py file
                     with open(self.filename, 'a') as file_handle:
-                        file_handle.write("ops.fix({}, *{})\n".format(k, self.fix_val_roller_x))
-                else:
-                    ops.fix(k, *self.fix_val_roller_x)
+                        file_handle.write("ops.fix({}, *{})\n".format(node_tag, self.fix_val_roller_x))
+                else:  # run instance
+                    ops.fix(node_tag, *self.fix_val_roller_x)
 
     def __write_uniaxial_material(self, member=None, material=None):
         """
@@ -399,7 +401,8 @@ class OpsGrillage:
                                                  np.sqrt(lis[1][0] ** 2 + lis[1][1] ** 2 + lis[1][2] ** 2)) / 2)
                     else:
                         break
-                ele_width = max(ele_width_record)  # TODO Check here, if member lies between a triangular and quadrilateral grid
+                ele_width = max(
+                    ele_width_record)  # TODO Check here, if member lies between a triangular and quadrilateral grid
                 # currently here assumed the width of rectangular grid for entrie element width
 
                 ele_str = grillage_member_obj.section.get_element_command_str(
@@ -484,8 +487,8 @@ class OpsGrillage:
             record_trans = record_trans + trans_mem_index  # record
         return record_long, record_trans
 
-    # Getter for Points Loads and above
-    def get_nodes_given_point(self, point):
+    # Getter for Points Loads nodes and above
+    def get_point_load_nodes(self, point):
         x = point[0]
         y = point[1]  # default y = self.y_elevation = 0
         z = point[2]
@@ -532,20 +535,20 @@ class OpsGrillage:
                     n2 = x_vicinity_nodes[1]
                     xg = self.Mesh_obj.node_spec[n2]['x_group']
                     zg = self.Mesh_obj.node_spec[n4]['x_group']
-                    n3_variant = [1,1]
+                    n3_variant = [1, 1]
                 elif z_closest >= z > z1:
                     n4 = x_vicinity_nodes[1]
                     n2 = z_vicinity_nodes[0]
                     xg = self.Mesh_obj.node_spec[n4]['x_group']
                     zg = self.Mesh_obj.node_spec[n2]['z_group']
-                    n3_variant = [1,-1]
+                    n3_variant = [1, -1]
             elif x_closest >= x > x1:
                 if z2 >= z > z_closest:
                     n4 = x_vicinity_nodes[0]
                     n2 = z_vicinity_nodes[1]
                     xg = self.Mesh_obj.node_spec[n4]['x_group']
                     zg = self.Mesh_obj.node_spec[n2]['z_group']
-                    n3_variant = [-1,1]
+                    n3_variant = [-1, 1]
                 elif z_closest >= z > z1:
                     n4 = z_vicinity_nodes[0]
                     n2 = x_vicinity_nodes[0]
@@ -585,7 +588,7 @@ class OpsGrillage:
 
         # pass shape function to distribute load to 4 points
 
-    # Getter for Line loads and above
+    # Getter for Line loads nodes and above
     def get_line_load_nodes(self, line_load_obj):
         # steps
         # from starting point of line load
@@ -594,7 +597,8 @@ class OpsGrillage:
         m = line_load_obj.m
         c = line_load_obj.c
         # Intercept with start edge span
-        x_start = x_intcp_two_lines(m1=self.Mesh_obj.start_edge_line.slope, c1=self.Mesh_obj.start_edge_line.c, m2=m, c2=c)
+        x_start = x_intcp_two_lines(m1=self.Mesh_obj.start_edge_line.slope, c1=self.Mesh_obj.start_edge_line.c, m2=m,
+                                    c2=c)
         z_start = line_func(m=m, c=c, x=x_start)
 
         # recorder for grid
@@ -603,7 +607,7 @@ class OpsGrillage:
         long_intersect = False
         trans_intersect = False
         # get nearest point of line load
-        nd, _ = self.get_nodes_given_point([x_start, self.y_elevation, z_start])  # list of nodes on grid
+        nd, _ = self.get_point_load_nodes([x_start, self.y_elevation, z_start])  # list of nodes on grid
         line_on = True
         # initiate variables
         current_grid = []
@@ -625,10 +629,10 @@ class OpsGrillage:
             node_tag_combo = combinations(nd, 2)
             if counter > 1:
                 current_grid = next_grid
-            record_long, record_trans = self.__get_elements(node_tag_combo)
+            long_ele_tags, trans_ele_tags = self.__get_elements(node_tag_combo)
 
             # for each long and trans member in record, find if intersect long or trans ele
-            for long_ele in [self.Mesh_obj.long_ele[i] for i in record_long]:
+            for long_ele in [self.Mesh_obj.long_ele[i] for i in long_ele_tags]:
                 pz1 = self.Mesh_obj.node_spec[long_ele[1]]['coordinate']  # point z 1
                 pz2 = self.Mesh_obj.node_spec[long_ele[2]]['coordinate']  # point z 2
                 # for current x_start, z_start, find second point within the bounds of
@@ -652,11 +656,13 @@ class OpsGrillage:
                         # if true, line intersects, find next grid using the vicinity_dict of Mesh_obj
                         vicinity_grid = self.Mesh_obj.grid_vicinity_dict[current_grid]
                         # check if nodes is in either "top" or bottom keyword
-                        if long_ele[1] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("top", None), [])\
-                                and long_ele[2] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("top", None), []):
+                        if long_ele[1] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("top", None), []) \
+                                and long_ele[2] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("top", None),
+                                                                                      []):
                             next_grid_z = vicinity_grid.get("top", None)
-                        elif long_ele[1] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("bottom", None), [])\
-                                and long_ele[2] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("bottom", None), []):
+                        elif long_ele[1] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("bottom", None), []) \
+                                and long_ele[2] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("bottom", None),
+                                                                                      []):
                             next_grid_z = vicinity_grid.get("bottom", None)
                         long_intersect = True
 
@@ -670,7 +676,7 @@ class OpsGrillage:
                 elif current_grid in self.line_grid_intersect.keys():
                     long_intersect = False
             # check if intersects trans member
-            for trans_ele in [self.Mesh_obj.trans_ele[i] for i in record_trans]:
+            for trans_ele in [self.Mesh_obj.trans_ele[i] for i in trans_ele_tags]:
                 px1 = self.Mesh_obj.node_spec[trans_ele[1]]['coordinate']  # point z 1
                 px2 = self.Mesh_obj.node_spec[trans_ele[2]]['coordinate']  # point z 2
                 # for current x_start, z_start, find second point within the bounds of
@@ -690,17 +696,19 @@ class OpsGrillage:
 
                     # if all([R[0] < max(px1[0], px2[0]), R[0] > min(px1[0], px2[0]), R[1] < max(px1[2], px2[2]),
                     #        R[1] > min(px1[2], px2[2])]):
-                    if all([Rx <= max(px1x_d,px2x_d), Rx >= min(px1x_d,px2x_d), Rz <= max(px1z_d,px2z_d),
-                            Rz >= min(px1z_d,px2z_d)]):
+                    if all([Rx <= max(px1x_d, px2x_d), Rx >= min(px1x_d, px2x_d), Rz <= max(px1z_d, px2z_d),
+                            Rz >= min(px1z_d, px2z_d)]):
                         next_grid_x = []
                         # if true, line intersects, find next grid using the vicinity_dict of Mesh_obj
                         vicinity_grid = self.Mesh_obj.grid_vicinity_dict[current_grid]
                         # check if nodes is in either "top" or bottom keyword
-                        if trans_ele[1] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("left", None), [])\
-                                and trans_ele[2] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("left", None), []):
+                        if trans_ele[1] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("left", None), []) \
+                                and trans_ele[2] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("left", None),
+                                                                                       []):
                             next_grid_x = vicinity_grid.get("left", None)
-                        elif trans_ele[1] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("right", None),[])\
-                                and trans_ele[2] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("right", None),[]):
+                        elif trans_ele[1] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("right", None), []) \
+                                and trans_ele[2] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("right", None),
+                                                                                       []):
                             next_grid_x = vicinity_grid.get("right", None)
                         trans_intersect = True
                         # if next grid has already been recorded (line tracks the previous intersecting grid),
@@ -708,7 +716,7 @@ class OpsGrillage:
                         if next_grid_x in self.line_grid_intersect.keys():
                             trans_intersect = False
                         else:  # the new grid is not been crossed, record this grid as the intersecting
-                            subdict['points'] = [[x_start,z_start],list(R_x)]
+                            subdict['points'] = [[x_start, z_start], list(R_x)]
                             break
                     else:
                         trans_intersect = False
@@ -719,19 +727,20 @@ class OpsGrillage:
                 next_grid = next_grid_x
                 x_start = R_x[0]
                 z_start = R_x[1]
-            elif long_intersect: # if intersect long member, set respective intersection point R_z
+            elif long_intersect:  # if intersect long member, set respective intersection point R_z
                 next_grid = next_grid_z
                 x_start = R_z[0]
                 z_start = R_z[1]
             else:  # intersects neither - check if crosses edge
                 x_end = x_intcp_two_lines(m1=self.Mesh_obj.end_edge_line.slope, c1=self.Mesh_obj.end_edge_line.c,
-                                            m2=m, c2=c)
+                                          m2=m, c2=c)
                 z_end = line_func(m=m, c=c, x=x_end)
 
                 # quantize x_end and z_end to remove floating point error
                 x_end_d = Decimal(x_end).quantize(Decimal('1.000'))
                 z_end_d = Decimal(z_end).quantize(Decimal('1.000'))
-                if max(pz1x_d,pz2x_d) >= x_end_d >= min(pz1x_d,pz2x_d) and max(px1z_d,px2z_d) >= z_end_d >= min(px1z_d,px2z_d):
+                if max(pz1x_d, pz2x_d) >= x_end_d >= min(pz1x_d, pz2x_d) and max(px1z_d, px2z_d) >= z_end_d >= min(
+                        px1z_d, px2z_d):
                     # line intersects the edge at current grid
                     subdict['points'] = [[x_start, z_start], [x_end, z_end]]
                 next_grid = current_grid
@@ -753,7 +762,11 @@ class OpsGrillage:
             subdict = dict()  # reset subdict
         return self.line_grid_intersect
 
-    # Assignment for Point loads and above
+    # Getter for Patch loads nodes
+    def get_patch_load_nodes(self,path_load_obj):
+        pass
+
+    # Setter for Point loads and above
     def assign_point_to_four_node(self, point, mag):
         """
         Function to assign point load to nodes of grid where the point load lies in.
@@ -767,19 +780,19 @@ class OpsGrillage:
         """
 
         # search grid where the point lies in
-        grid_nodes, variant = self.get_nodes_given_point(point=point)
+        grid_nodes, variant = self.get_point_load_nodes(point=point)
         # if corner or edge grid with 3 nodes, run specific assignment for triangular grids
         if variant == "edge 3 nodes" or variant == "corner 3 nodes":
-            #TODO assignemnt to 3 nodes using triangular shape function
+            # TODO assignemnt to 3 nodes using triangular shape function
             pass
         else:  # else run assignment for quadrilateral grids
-            if variant == [-1,-1]:
-                grid_nodes = [grid_nodes[2],grid_nodes[3],grid_nodes[0],grid_nodes[1]]
-            elif variant == [-1,1]:
+            if variant == [-1, -1]:
+                grid_nodes = [grid_nodes[2], grid_nodes[3], grid_nodes[0], grid_nodes[1]]
+            elif variant == [-1, 1]:
                 grid_nodes = [grid_nodes[3], grid_nodes[0], grid_nodes[1], grid_nodes[2]]
-            elif variant == [1,-1]:
+            elif variant == [1, -1]:
                 grid_nodes = [grid_nodes[1], grid_nodes[2], grid_nodes[3], grid_nodes[0]]
-            elif variant == [1,1]:
+            elif variant == [1, 1]:
                 # nodes already sorted in order pass
                 pass
             # extract coordinates
@@ -792,11 +805,11 @@ class OpsGrillage:
             z3 = self.Mesh_obj.node_spec[grid_nodes[2]]['coordinate'][2]
             z4 = self.Mesh_obj.node_spec[grid_nodes[3]]['coordinate'][2]
             # mapping coordinates to natural coordinate, then finds eta (x) and zeta (z) of the point xp,zp
-            eta,zeta = solve_zeta_eta(xp=point[0], zp=point[2], x1=x1, z1=z1, x2=x2, z2=z2, x3=x3, z3=z3, x4=x4, z4=z4)
+            eta, zeta = solve_zeta_eta(xp=point[0], zp=point[2], x1=x1, z1=z1, x2=x2, z2=z2, x3=x3, z3=z3, x4=x4, z4=z4)
 
             # access shape function of line load
-            N = ShapeFunction.linear_shape_function(eta,zeta)
-            Nv,Nmx,Nmz = ShapeFunction.hermite_shape_function_2d(eta,zeta)
+            N = ShapeFunction.linear_shape_function(eta, zeta)
+            Nv, Nmx, Nmz = ShapeFunction.hermite_shape_function_2d(eta, zeta)
             # Fy
             node_load = [mag * n for n in N]
             # Mx
@@ -805,12 +818,12 @@ class OpsGrillage:
             node_mz = [mag * n for n in Nmz]
 
         load_str = []
-        for count,node in enumerate(grid_nodes):
-            load_str.append("ops.load({pt}, *{val})\n".format(pt=node, val=[0,node_load[count],0,0,0]))
+        for count, node in enumerate(grid_nodes):
+            load_str.append("ops.load({pt}, *{val})\n".format(pt=node, val=[0, node_load[count], 0, 0, 0]))
         return load_str
 
-    # Assignment for Line loads and above
-    def assign_line_to_four_node(self,line_load_obj):
+    # Setter for Line loads and above
+    def assign_line_to_four_node(self, line_load_obj):
         """
         Function to assign line load to mesh. Procedure to assign line load is as follows:
         #. get properties of line on the grid
@@ -819,7 +832,7 @@ class OpsGrillage:
         #. Runs assignment for point loads function (assign_point_to_four_node) using equivalent point load
          properties
 
-        :param line_load_obj:
+        :param line_load_obj: Lineloading class object containing the line load properties
         :type line_load_obj: LineLoading class
         :return load_str_line: list containing strings of ops commands to be handled either - write to file
                                 or eval()
@@ -827,27 +840,28 @@ class OpsGrillage:
 
         # loop each grid
         load_str_line = []
-        for grid,points in self.line_grid_intersect.items():
-            grid_nodes = self.Mesh_obj.grid_number_dict[grid]
+        for grid, points in self.line_grid_intersect.items():
+            # grid_nodes = self.Mesh_obj.grid_number_dict[grid]
 
             # extract points [x,z], default y = 0 plane
             p1 = points['points'][0]
             p2 = points['points'][1]
             # get length of line
-            L = np.sqrt((p1[0]-p2[0])**2+(p1[1]-p2[1])**2)
+            L = np.sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2)
 
             # get magnitudes at point 1 and point 2
-            w1 = line_load_obj.interpolate_udl_magnitude([p1[0],0,p1[1]])
-            w2 = line_load_obj.interpolate_udl_magnitude([p2[0],0,p2[1]])
-            W = (w1 + w2) * L /2
+            w1 = line_load_obj.interpolate_udl_magnitude([p1[0], 0, p1[1]])
+            w2 = line_load_obj.interpolate_udl_magnitude([p2[0], 0, p2[1]])
+            W = (w1 + w2) * L / 2
             # get mid point of line
-            x_bar = ((2*w1 + w2)/(w1+w2))*L/3 # from p2
-            load_point = line_load_obj.get_point_given_distance(xbar=x_bar,point_coordinate=[p2[0],self.y_elevation,p2[1]])
+            x_bar = ((2 * w1 + w2) / (w1 + w2)) * L / 3  # from p2
+            load_point = line_load_obj.get_point_given_distance(xbar=x_bar,
+                                                                point_coordinate=[p2[0], self.y_elevation, p2[1]])
 
-            node_list, n3_variant = self.get_nodes_given_point(load_point)
+            node_list, n3_variant = self.get_point_load_nodes(load_point)
             # uses point load assignment function to assign load point and mag to four nodes in grid
-            load_str = self.assign_point_to_four_node(point=load_point,mag=W)
-            load_str_line += load_str # append to major list for line load
+            load_str = self.assign_point_to_four_node(point=load_point, mag=W)
+            load_str_line += load_str  # append to major list for line load
         return load_str_line
 
     # ----------------------------------------------------------------------------------------------------------
@@ -896,13 +910,13 @@ class OpsGrillage:
                     print("Nodal load - {loadname} - added to load case: {loadcase}".format(loadname=loads.name,
                                                                                             loadcase=name))
                 elif isinstance(loads, PointLoad):
-                    #TODO
-                    nod = self.assign_point_to_four_node(point=[loads.x1,loads.y1,loads.z1],mag=loads.Fy)
-                    nod = self.get_nodes_given_point([loads.x1,loads.y1,loads.z1]) # access point
+                    # TODO
+                    nod = self.assign_point_to_four_node(point=[loads.x1, loads.y1, loads.z1], mag=loads.Fy)
+                    nod = self.get_point_load_nodes([loads.x1, loads.y1, loads.z1])  # access point
                     print(nod)
 
                 elif isinstance(loads, LineLoading):
-                    self.get_line_load_nodes(loads) # returns self.line_grid_intersect
+                    self.get_line_load_nodes(loads)  # returns self.line_grid_intersect
                     load_str = self.assign_line_to_four_node(loads)
                     for lines in load_str:
                         file_handle.write(lines)

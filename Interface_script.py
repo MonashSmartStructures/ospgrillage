@@ -45,10 +45,6 @@ if not pyfile:
     opsplt.plot_model("nodes")
     pass
 
-# test node searching function
-#a, n3_variant = example_bridge.get_nodes_given_point([5,0,2])
-#example_bridge.assign_point_to_four_node(point=[5,0,2],mag = -20,grid_nodes=a,variant=n3_variant)
-
 # test output python file
 # example_bridge.run_check()
 
@@ -67,7 +63,7 @@ Lane = PatchLoading("Lane 1", x1=1, x2=4, x3=4, x4=1, z1=1, z2=1, z3=4, z4=4)
 # Directly add Load cases to Opensees model or, create LoadCase object and pass all loads
 # example_bridge.add_load_case("Concrete dead load case", DL, DL)
 # example_bridge.add_load_case("Lane 1", Lane)
-C = Loadpoint(1, 2, 3)
+C = LoadPoint(1, 2, 3)
 
 # --------------------------------------------------------------------------------------------------------------------
 # Load Case

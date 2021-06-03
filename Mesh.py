@@ -2,6 +2,10 @@
 # Mesh class
 # ----------------------------------------------------------------------------------------------------------------
 from static import *
+from collections import namedtuple
+
+# named tuple definition
+Point = namedtuple("Point", ['x', 'y', 'z'])
 
 
 class Mesh:
@@ -9,11 +13,10 @@ class Mesh:
     Class for mesh groups. The class holds information pertaining the mesh group such as element connectivity and nodes
     of the mesh object.
 
-
     """
 
     def __init__(self, long_dim, width, trans_dim, edge_width, num_trans_beam, num_long_beam, skew_1, skew_2,
-                 orthogonal=False, pt1=[0, 0], pt2=[0, 0], pt3=[0, 0], element_counter=1, node_counter=1,
+                 orthogonal=False, pt1=Point(0,0,0), pt2=Point(0,0,0), pt3=Point(0,0,0), element_counter=1, node_counter=1,
                  transform_counter=0, global_x_grid_count=0, global_edge_count=0, mesh_origin=[0, 0, 0]):
         # inputs from OpsGrillage required to create mesh
         self.long_dim = long_dim
@@ -59,14 +62,15 @@ class Mesh:
         self.R = 0
         # meshing properties
         self.mesh_origin = mesh_origin  # default origin
+        # create namedtuples
 
         # ------------------------------------------------------------------------------------------
         # Sweep path properties
-        pt3 = [long_dim, 0.0]  # 3rd point for defining curve mesh
+        pt3 = Point(long_dim, 0, 0.0)  # 3rd point for defining curve mesh
 
         # if defining an arc line segment, specify p2 such that pt2 is the point at the midpoint of the arc
         try:
-            self.d = findCircle(x1=0, y1=0, x2=pt2[0], y2=pt2[1], x3=pt3[0], y3=pt3[1])
+            self.d = findCircle(x1=0, y1=0, x2=pt2.x, y2=pt2.z, x3=pt3.x, y3=pt3.z)
             self.curve = True
             # TODO allow for arbitrary sweep path
             # procedure
@@ -76,7 +80,7 @@ class Mesh:
             print("3 points result in straight line - not a circle")
             self.d = None
             # procedure to identify straight line segment pinpointing length of grillage
-            points = [(pt1[0], pt1[1]), (pt3[0], pt3[1])]
+            points = [(pt1.x, pt1.z), (pt3.x, pt3.z)]
             x_coords, y_coords = zip(*points)
             A = np.vstack([x_coords, np.ones(len(x_coords))]).T
             m, c = np.linalg.lstsq(A, y_coords, rcond=None)[0]
@@ -268,12 +272,14 @@ class Mesh:
                     # if angle is positive (slope negative), edge nodes located at the first element of list
                     if len(self.assigned_node_tag) >= 1:
                         if 90 + self.skew_1 + self.zeta > 90:
-                            self.__assign_edge_trans_members(self.previous_node_tag[0], self.assigned_node_tag[0],self.global_edge_count)
+                            self.__assign_edge_trans_members(self.previous_node_tag[0], self.assigned_node_tag[0],
+                                                             self.global_edge_count)
                             # get and link edge nodes from previous and current as skewed edge member
                             self.edge_node_recorder.setdefault(self.previous_node_tag[0], self.global_edge_count)
                             self.edge_node_recorder.setdefault(self.assigned_node_tag[0], self.global_edge_count)
                         elif 90 + self.skew_1 + self.zeta < 90:
-                            self.__assign_edge_trans_members(self.previous_node_tag[-1], self.assigned_node_tag[-1],self.global_edge_count)
+                            self.__assign_edge_trans_members(self.previous_node_tag[-1], self.assigned_node_tag[-1],
+                                                             self.global_edge_count)
                             # get and link edge nodes from previous and current as skewed edge member
                             self.edge_node_recorder.setdefault(self.previous_node_tag[-1], self.global_edge_count)
                             self.edge_node_recorder.setdefault(self.assigned_node_tag[-1], self.global_edge_count)
@@ -364,11 +370,13 @@ class Mesh:
                     # if angle is positive (slope negative), edge nodes located at the first element of list
                     if len(self.assigned_node_tag) >= 1:
                         if 90 + self.skew_1 + self.zeta > 90:
-                            self.__assign_edge_trans_members(self.previous_node_tag[-1], self.assigned_node_tag[-1],self.global_edge_count)
+                            self.__assign_edge_trans_members(self.previous_node_tag[-1], self.assigned_node_tag[-1],
+                                                             self.global_edge_count)
                             self.edge_node_recorder.setdefault(self.previous_node_tag[-1], self.global_edge_count)
                             self.edge_node_recorder.setdefault(self.assigned_node_tag[-1], self.global_edge_count)
                         elif 90 + self.skew_1 + self.zeta < 90:
-                            self.__assign_edge_trans_members(self.previous_node_tag[0], self.assigned_node_tag[0],self.global_edge_count)
+                            self.__assign_edge_trans_members(self.previous_node_tag[0], self.assigned_node_tag[0],
+                                                             self.global_edge_count)
                             self.edge_node_recorder.setdefault(self.previous_node_tag[0], self.global_edge_count)
                             self.edge_node_recorder.setdefault(self.assigned_node_tag[0], self.global_edge_count)
                     # update recorder for previous node tag step
@@ -459,7 +467,7 @@ class Mesh:
         self.long_ele.append([self.element_counter, pre_node, cur_node, cur_z_group, tag])
         self.element_counter += 1
 
-    def __assign_edge_trans_members(self, previous_node_tag, assigned_node_tag,edge_counter):
+    def __assign_edge_trans_members(self, previous_node_tag, assigned_node_tag, edge_counter):
         tag = self.__get_geo_transform_tag([previous_node_tag, assigned_node_tag])
         self.edge_span_ele.append([self.element_counter, previous_node_tag, assigned_node_tag
                                       , edge_counter, tag])
@@ -582,7 +590,7 @@ class Mesh:
 
         # dict of grid number return vicinity grid number in a subdict {'x-1': 'x+1', 'z-1' , 'z+1'}
         self.grid_vicinity_dict = dict()
-        for k,grid in self.grid_number_dict.items():
+        for k, grid in self.grid_number_dict.items():
             current_x_group = []
             current_z_group = []
             current_x = []
@@ -592,7 +600,8 @@ class Mesh:
             if [] in grid:
                 grid.remove([])
             for node in grid:
-                grid_number_record += [i for i,x in enumerate([node in n for n in self.grid_number_dict.values()]) if x]
+                grid_number_record += [i for i, x in enumerate([node in n for n in self.grid_number_dict.values()]) if
+                                       x]
                 current_x_group.append(self.node_spec[node]['x_group'])
                 current_z_group.append(self.node_spec[node]['z_group'])
                 current_x.append(self.node_spec[node]['coordinate'][0])
@@ -605,9 +614,9 @@ class Mesh:
             # loop to characterize the grid for current
             subdict = {}
             for neighbour in grid_number_record:
-                if neighbour == k: # identical , current grid
+                if neighbour == k:  # identical , current grid
                     continue
-                x_group = [] # initialize variables
+                x_group = []  # initialize variables
                 x_coor = []
                 z_group = []
                 z_coor = []
@@ -636,7 +645,7 @@ class Mesh:
                         subdict['right'] = neighbour
                     else:
                         subdict['left'] = neighbour
-            self.grid_vicinity_dict.setdefault(k,subdict)
+            self.grid_vicinity_dict.setdefault(k, subdict)
         pass
 
     def __get_geo_transform_tag(self, ele_nodes):
@@ -806,7 +815,7 @@ class EdgeConstructionLine:
 
 # TODO transfer definition of sweep path into class here. Add functions for curve lines
 class SweepPath:
-    def __init__(self, x1, y1, z1, x2, y2, z2, x3, y3, z3):
+    def __init__(self, x1, z1, x2, z2, x3, z3, y1=0, y2=0, y3=0):
         pass
 
     def gradient(self):
