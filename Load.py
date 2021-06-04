@@ -1,43 +1,40 @@
 import pprint
 from collections.abc import Iterable
+from typing import Type
+
 from static import *
 from collections import namedtuple
 
 # named tuple definition
 LoadPoint = namedtuple("Point", ["x", "y", "z", "p"])
 NodeForces = namedtuple("node_forces", ["Fx", "Fy", "Fz", "Mx", "My", "Mz"])
-
+Line = namedtuple("line", ["m", "c", "phi"])
 
 # ----------------------------------------------------------------------------------------------------------------
 # Loading classes
 # ---------------------------------------------------------------------------------------------------------------
-class LoadCase:
-    def __init__(self, name):
-        self.name = name
-        self.spec = dict()
-        self.load_counter = 0
-
-    def add_nodal_load(self, node_tag, node_force):
-        self.load_counter += 1
-        self.spec["nodal_load-{}".format(self.load_counter)] = dict(
-            node_tag=node_tag, Fx=node_force.Fx, Fy=node_force.Fy, Fz=node_force.Fz, Mx=node_force.Mx, My=node_force.My,
-            Mz=node_force.Mz)
-
-    def add_point_load(self, position, Fy=0):
-        self.load_counter += 1
-        self.spec["nodal_load-{}".format(self.load_counter)] = dict(
-            position=position, Fy=Fy)
-
-    def add_line_load(self):
-        pass
-
-    def add_patch_load(self):
-        pass
-
-    def __str__(self):
-        return "LoadCase {} \n".format(self.name) + pprint.pformat(self.spec)
-
-
+# class LoadCase:
+#     def __init__(self, name):
+#         self.name = name
+#         self.spec = dict()
+#         self.load_counter = 0
+#
+#     def add_nodal_load(self, node_tag, node_force):
+#         self.load_counter += 1
+#         self.spec["nodal_load-{}".format(self.load_counter)] = dict(
+#             node_tag=node_tag, Fx=node_force.Fx, Fy=node_force.Fy, Fz=node_force.Fz, Mx=node_force.Mx, My=node_force.
+#             My, Mz=node_force.Mz)
+#
+#     def add_point_load(self, position, Fy=0):
+#         self.load_counter += 1
+#         self.spec["nodal_load-{}".format(self.load_counter)] = dict(
+#             position=position, Fy=Fy)
+#
+#     def add_line_load(self):
+#         pass
+#
+#     def add_patch_load(self):
+#         pass
 # ---------------------------------------------------------------------------------------------------------------
 class Loads:
     """
@@ -61,50 +58,22 @@ class Loads:
         self.qz = qz
         # Initialise dict for key load points of line UDL and patch load definitions
         self.load_point_data = dict()
-
-        self.load_point_data['x1'] = kwargs.get('x1', None)
-        self.load_point_data['y1'] = kwargs.get('y1', 0)
-        self.load_point_data['z1'] = kwargs.get('z1', None)
-        self.load_point_data['p1'] = kwargs.get('p1', None)
-
-        self.load_point_data['x2'] = kwargs.get('x2', None)
-        self.load_point_data['y2'] = kwargs.get('y2', 0)
-        self.load_point_data['z2'] = kwargs.get('z2', None)
-        self.load_point_data['p2'] = kwargs.get('p2', None)
-
-        self.load_point_data['x3'] = kwargs.get('x3', None)
-        self.load_point_data['y3'] = kwargs.get('y3', 0)
-        self.load_point_data['z3'] = kwargs.get('z3', None)
-        self.load_point_data['p3'] = kwargs.get('p3', None)
-
-        self.load_point_data['x4'] = kwargs.get('x4', None)
-        self.load_point_data['y4'] = kwargs.get('y4', 0)
-        self.load_point_data['z4'] = kwargs.get('z4', None)
-        self.load_point_data['p4'] = kwargs.get('p4', None)
-
-        self.load_point_data['x5'] = kwargs.get('x5', None)
-        self.load_point_data['y5'] = kwargs.get('y5', 0)
-        self.load_point_data['z5'] = kwargs.get('z5', None)
-        self.load_point_data['p5'] = kwargs.get('p5', None)
-
-        self.load_point_data['x6'] = kwargs.get('x6', None)
-        self.load_point_data['y6'] = kwargs.get('y6', 0)
-        self.load_point_data['z6'] = kwargs.get('z6', None)
-        self.load_point_data['p6'] = kwargs.get('p6', None)
-
-        self.load_point_data['x7'] = kwargs.get('x7', None)
-        self.load_point_data['y7'] = kwargs.get('y7', 0)
-        self.load_point_data['z7'] = kwargs.get('z7', None)
-        self.load_point_data['p7'] = kwargs.get('p7', None)
-
-        self.load_point_data['x8'] = kwargs.get('x8', None)
-        self.load_point_data['y8'] = kwargs.get('y8', 0)
-        self.load_point_data['z8'] = kwargs.get('z8', None)
-        self.load_point_data['p8'] = kwargs.get('p8', None)
+        # parse namedtuple of points
+        self.load_point_1 = kwargs.get('point1', None)
+        self.load_point_2 = kwargs.get('point2', None)
+        self.load_point_3 = kwargs.get('point3', None)
+        self.load_point_4 = kwargs.get('point4', None)
+        self.load_point_5 = kwargs.get('point5', None)
+        self.load_point_6 = kwargs.get('point6', None)
+        self.load_point_7 = kwargs.get('point7', None)
+        self.load_point_8 = kwargs.get('point8', None)
 
         # init dict
         self.spec = dict()  # dict {node number: {Fx:val, Fy:val, Fz:val, Mx:val, My:val, Mz:val}}
         self.load_counter = 0
+
+    def __str__(self):
+        return "LoadCase {} \n".format(self.name) + pprint.pformat(self.spec)
 
 
 class NodalLoad(Loads):
@@ -130,7 +99,7 @@ class NodalLoad(Loads):
 
 class PointLoad(Loads):
     def __init__(self, name, **kwargs):
-        super().__init__(name, x1=x, y1=y, z1=z, Fy=magnitude)
+        super().__init__(name, **kwargs)
 
     @staticmethod
     def get_nodal_load_str(node_list, node_val_list):
@@ -145,28 +114,27 @@ class PointLoad(Loads):
 class LineLoading(Loads):
     def __init__(self, name, **kwargs):
         super().__init__(name, **kwargs)
+        # shape function object
+        self.shape_function = ShapeFunction()
         print("Line Loading {} created".format(name))
         # if three points are defined, set line as curved circular line with point 2 (x2,y2,z2) in the centre of curve
-        if self.load_point_data['x3'] is not None:  # curve
-            self.d = findCircle(x1=self.load_point_data['x1'], y1=self.load_point_data['z1'],
-                                x2=self.load_point_data['x2'], y2=self.load_point_data['z2'],
-                                x3=self.load_point_data['x3'], y3=self.load_point_data['z3'])
+        if self.load_point_3 is not None:  # curve
+            # findCircle assumes model plane is y = 0, ignores y input, y in this case is a 2D view of x z plane
+            self.d = findCircle(x1=self.load_point_1.x, y1=self.load_point_1.z,
+                                x2=self.load_point_2.x, y2=self.load_point_2.z,
+                                x3=self.load_point_3.x, y3=self.load_point_3.z)
             # return a function variable
 
-        else:  # straight line
+        else:  # straight line with 2 points
             self.m, self.phi = get_slope(
-                [self.load_point_data['x1'], self.load_point_data['y1'], self.load_point_data['z1']],
-                [self.load_point_data['x2'], self.load_point_data['y2'], self.load_point_data['z2']])
-            self.c = get_y_intcp(m=self.m, x=self.load_point_data['x1'], y=self.load_point_data['z1'])
+                [self.load_point_1.x, self.load_point_1.y, self.load_point_1.z],
+                [self.load_point_2.x, self.load_point_2.y, self.load_point_2.z])
+            self.c = get_y_intcp(m=self.m, x=self.load_point_1.x, y=self.load_point_1.z)
             self.angle = np.arctan(self.m)  # in radian
 
     def interpolate_udl_magnitude(self, point_coordinate):
         # check if line is straight or curve
-        if self.load_point_data['x3'] is None:  # straight
-            x = [self.load_point_data['x1'], self.load_point_data['x2']]
-            y = [self.load_point_data['y1'], self.load_point_data['y2']]  # not used but generated here
-            z = [self.load_point_data['z1'], self.load_point_data['z2']]
-            p = [self.load_point_data['p1'], self.load_point_data['p2']]
+        if self.load_point_3 is None:  # straight
 
             # x[0],z[0] and p[0] shall be reference point for interpolate
             xp = point_coordinate[0]
@@ -174,8 +142,9 @@ class LineLoading(Loads):
             zp = point_coordinate[0]
 
             # use parametric equation of line in 3D
-            v = [x[1] - x[0], p[1] - p[0], z[1] - z[0]]
-            pp = (xp - x[0]) / v[0] * v[1] + p[0]
+            v = [self.load_point_2.x - self.load_point_1.x, self.load_point_2.p - self.load_point_1.p,
+                 self.load_point_2.z - self.load_point_1.z]
+            pp = (xp - self.load_point_1.x) / v[0] * v[1] + self.load_point_1.p
 
         elif self.load_point_data['x3'] is not None:  # curve
             # TODO for curved line load
@@ -196,10 +165,31 @@ class PatchLoading(Loads):
     def __init__(self, name, **kwargs):
         super().__init__(name, **kwargs)
         # if only four point is define , patch load is a four point straight line quadrilateral
-        if self.load_point_data['x5'] is None:
-            pass
+        if self.load_point_5 is None:
+            # four straight lines between 4 points
+            # point1 point 2
+            m,phi = get_slope(list(self.load_point_1)[0:-1],list(self.load_point_2)[0:-1])
+            c = get_y_intcp(m,self.load_point_1.x,self.load_point_1.z) if m is not None else None
+            self.line_1 = Line(m, c, phi)
+            # point2 point 3
+            m,phi = get_slope(list(self.load_point_2)[0:-1],list(self.load_point_3)[0:-1])
+            c = get_y_intcp(m, self.load_point_2.x,self.load_point_2.z) if m is not None else None
+            self.line_2 = Line(m, c, phi)
+            # point 3 point 4
+            m,phi = get_slope(list(self.load_point_3)[0:-1],list(self.load_point_4)[0:-1])
+            c = get_y_intcp(m, self.load_point_3.x, self.load_point_3.z) if m is not None else None
+            self.line_3 = Line(m, c, phi)
+            # point 4 point 1
+            m,phi = get_slope(list(self.load_point_1)[0:-1],list(self.load_point_4)[0:-1])
+            c = get_y_intcp(m, self.load_point_4.x, self.load_point_4.z) if m is not None else None
+            self.line_4 = Line(m, c, phi)
+
         # else , 8 point curve sided quadrilateral
-        elif self.load_point_data['x8'] is not None:
+        elif self.load_point_8 is not None:
+            # point 1 2 3
+            # point 3 4 5
+            # point 5 6 7
+            # point 7 8 1
             pass
         else:
             print("patch load points not valid")
@@ -223,16 +213,17 @@ class ShapeFunction:
     Class for shape functions. Shape functions are presented as class methods. More shape functions can be added herein
     """
 
-    def __init__(self, option):
-        self.option = option
+    def __init__(self, option_three_node="triangle_linear", option_four_node="hermite"):
+        self.option_three_node = option_three_node
+        self.option_four_node = option_four_node
 
-    def shape_function(self):
-        if self.option == "hermite":
-            return self.hermite_shape_function_2d
-        elif self.option == "linear":
-            return self.linear_shape_function
-        elif self.option == "triangle_linear":
-            return self.linear_triangular
+    def get_shape_function(self, option, eta=0, zeta=0):
+        if option == "hermite":
+            return lambda: self.hermite_shape_function_2d(eta,zeta)
+        elif option == "linear":
+            return lambda: self.linear_shape_function(eta,zeta)
+        elif option == "triangle_linear":
+            return lambda: self.linear_triangular
 
     @staticmethod
     def hermite_shape_function_1d(zeta, a):  # using zeta and a as placeholders for normal coor + length of edge element

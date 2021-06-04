@@ -7,7 +7,6 @@ from Material import *
 from member_sections import *
 from Mesh import *
 from itertools import combinations
-from Load import LoadPoint
 from decimal import *
 
 
@@ -556,12 +555,13 @@ class OpsGrillage:
                     zg = self.Mesh_obj.node_spec[n4]['z_group']
                     n3_variant = [-1, -1]
             try:
-                n3 = [n['tag'] for n in self.Mesh_obj.node_spec.values() if n['x_group'] == xg and n['z_group'] == zg][
-                    0]
-                node_list = [n1, n2, n3, n4]
+                n3 = [k for k, v in enumerate(self.Mesh_obj.grid_number_dict.values()) if n2 in v and n1 in v and n4 in v]
+                node_list = self.Mesh_obj.grid_number_dict[n3[0]]
+                if len(node_list) <= 3:
+                    n3_variant = "edge 3 nodes"
             except:  # no n3 is found, node is a corner or edge node
                 potential_grids = [k for k, v in enumerate(self.Mesh_obj.grid_number_dict.values()) if
-                                   n2 in v and n1 in v]
+                                   n2 in v and n1 in v and n4 in v]
                 n3 = [grid for grid in potential_grids if len(self.Mesh_obj.grid_number_dict[grid]) == 3]
                 node_list = self.Mesh_obj.grid_number_dict[n3[0]]
                 n3_variant = "edge 3 nodes"
@@ -590,7 +590,7 @@ class OpsGrillage:
 
     # Getter for Line loads nodes and above
     def get_line_load_nodes(self, line_load_obj):
-        # steps
+        # uses a modified Bresenham's Line Algorithm to search for grids which lineload intersects
         # from starting point of line load
         x = 0
         z = 0
@@ -600,20 +600,21 @@ class OpsGrillage:
         x_start = x_intcp_two_lines(m1=self.Mesh_obj.start_edge_line.slope, c1=self.Mesh_obj.start_edge_line.c, m2=m,
                                     c2=c)
         z_start = line_func(m=m, c=c, x=x_start)
+        # get nearest point of line load
+        nd, _ = self.get_point_load_nodes([x_start, self.y_elevation, z_start])  # list of nodes on grid
 
-        # recorder for grid
+        # while loop counter
         counter = 1
         # initiate flags
         long_intersect = False
         trans_intersect = False
-        # get nearest point of line load
-        nd, _ = self.get_point_load_nodes([x_start, self.y_elevation, z_start])  # list of nodes on grid
         line_on = True
         # initiate variables
         current_grid = []
         next_grid = []
         subdict = {}
 
+        # checks if grid is a 3 node or 4 node grid, then gets grid's respective node tags
         if len(nd) == 4:
             current_grid = [i for i, x in
                             enumerate([nd[3] in n and nd[2] in n and nd[1] in n and nd[0] in n for n in
@@ -623,7 +624,7 @@ class OpsGrillage:
                             enumerate([nd[2] in n and nd[1] in n and nd[0] in n for n in
                                        self.Mesh_obj.grid_number_dict.values()]) if x][0]
 
-        # begin modified Bresenham's Line Algorithm
+        # begin loop
         while line_on:
             # find indices for long member and transverse member
             node_tag_combo = combinations(nd, 2)
@@ -643,7 +644,7 @@ class OpsGrillage:
 
                 # if R is not False, check if R is within bounds of pz1 and pz2
                 if R_z is not False:
-                    # use decimal lib to remove floating point errors
+                    # use decimal lib to remove floating point errors for logic comparison
                     Rx = Decimal(R_z[0]).quantize(Decimal('1.000'))
                     Rz = Decimal(R_z[1]).quantize(Decimal('1.000'))
                     pz1x_d = Decimal(pz1[0]).quantize(Decimal('1.000'))
@@ -722,6 +723,7 @@ class OpsGrillage:
                         trans_intersect = False
                 else:
                     trans_intersect = False
+            # setting properties of next loop
             # if intersects transverse member, set intersection point R_x as start point of next step
             if trans_intersect:
                 next_grid = next_grid_x
@@ -763,7 +765,10 @@ class OpsGrillage:
         return self.line_grid_intersect
 
     # Getter for Patch loads nodes
-    def get_patch_load_nodes(self,path_load_obj):
+    def get_patch_load_nodes(self,patch_load_obj):
+        # 1 loop through 4 lines of patchloadobj
+        # run getter for line nodes
+
         pass
 
     # Setter for Point loads and above
@@ -782,27 +787,28 @@ class OpsGrillage:
         # search grid where the point lies in
         grid_nodes, variant = self.get_point_load_nodes(point=point)
         # if corner or edge grid with 3 nodes, run specific assignment for triangular grids
+        # extract coordinates
+        x1 = self.Mesh_obj.node_spec[grid_nodes[0]]['coordinate'][0]
+        x2 = self.Mesh_obj.node_spec[grid_nodes[1]]['coordinate'][0]
+        x3 = self.Mesh_obj.node_spec[grid_nodes[2]]['coordinate'][0]
+        z1 = self.Mesh_obj.node_spec[grid_nodes[0]]['coordinate'][2]
+        z2 = self.Mesh_obj.node_spec[grid_nodes[1]]['coordinate'][2]
+        z3 = self.Mesh_obj.node_spec[grid_nodes[2]]['coordinate'][2]
         if variant == "edge 3 nodes" or variant == "corner 3 nodes":
-            # TODO assignemnt to 3 nodes using triangular shape function
-            pass
+            Nv = ShapeFunction.linear_triangular(x=point[0],z=point[2],x1=x1,z1=z1,x2=x2,z2=z2,x3=x3,z3=z3)
+            node_load = [mag * n for n in Nv]
         else:  # else run assignment for quadrilateral grids
-            if variant == [-1, -1]:
-                grid_nodes = [grid_nodes[2], grid_nodes[3], grid_nodes[0], grid_nodes[1]]
-            elif variant == [-1, 1]:
-                grid_nodes = [grid_nodes[3], grid_nodes[0], grid_nodes[1], grid_nodes[2]]
-            elif variant == [1, -1]:
-                grid_nodes = [grid_nodes[1], grid_nodes[2], grid_nodes[3], grid_nodes[0]]
-            elif variant == [1, 1]:
-                # nodes already sorted in order pass
-                pass
-            # extract coordinates
-            x1 = self.Mesh_obj.node_spec[grid_nodes[0]]['coordinate'][0]
-            x2 = self.Mesh_obj.node_spec[grid_nodes[1]]['coordinate'][0]
-            x3 = self.Mesh_obj.node_spec[grid_nodes[2]]['coordinate'][0]
+            # if variant == [-1, -1]:
+            #     grid_nodes = [grid_nodes[2], grid_nodes[3], grid_nodes[0], grid_nodes[1]]
+            # elif variant == [-1, 1]:
+            #     grid_nodes = [grid_nodes[3], grid_nodes[0], grid_nodes[1], grid_nodes[2]]
+            # elif variant == [1, -1]:
+            #     grid_nodes = [grid_nodes[1], grid_nodes[2], grid_nodes[3], grid_nodes[0]]
+            # elif variant == [1, 1]:
+            #     # nodes already sorted in order pass
+            #     pass
+            # extract coordinates of fourth point
             x4 = self.Mesh_obj.node_spec[grid_nodes[3]]['coordinate'][0]
-            z1 = self.Mesh_obj.node_spec[grid_nodes[0]]['coordinate'][2]
-            z2 = self.Mesh_obj.node_spec[grid_nodes[1]]['coordinate'][2]
-            z3 = self.Mesh_obj.node_spec[grid_nodes[2]]['coordinate'][2]
             z4 = self.Mesh_obj.node_spec[grid_nodes[3]]['coordinate'][2]
             # mapping coordinates to natural coordinate, then finds eta (x) and zeta (z) of the point xp,zp
             eta, zeta = solve_zeta_eta(xp=point[0], zp=point[2], x1=x1, z1=z1, x2=x2, z2=z2, x3=x3, z3=z3, x4=x4, z4=z4)
@@ -858,7 +864,6 @@ class OpsGrillage:
             load_point = line_load_obj.get_point_given_distance(xbar=x_bar,
                                                                 point_coordinate=[p2[0], self.y_elevation, p2[1]])
 
-            node_list, n3_variant = self.get_point_load_nodes(load_point)
             # uses point load assignment function to assign load point and mag to four nodes in grid
             load_str = self.assign_point_to_four_node(point=load_point, mag=W)
             load_str_line += load_str  # append to major list for line load
@@ -880,14 +885,19 @@ class OpsGrillage:
             # if no load cases have been defined previously, create time series object for the first time
             if not bool(self.load_case_dict):
                 time_series = "ops.timeSeries('Constant', 1)\n"
-                file_handle.write(time_series)
-                eval(time_series)
+                if self.pyfile:
+                    file_handle.write(time_series)
+                else:
+                    eval(time_series)
                 load_case_counter = 0  # if dict empty, start counter at 1
             else:  # set load_case_counter variable as the latest
                 load_case_counter = self.load_case_dict[list(self.load_case_dict)[-1]]
+
                 wipe_command = "ops.wipeAnalysis()\n"
-                file_handle.write(wipe_command)  # write wipeAnalysis for current load case
-                eval(wipe_command)
+                if self.pyfile:
+                    file_handle.write(wipe_command)  # write wipeAnalysis for current load case
+                else:
+                    eval(wipe_command)
 
             # set load case to load_case_dict
             load_case_tag = self.load_case_dict.setdefault(name, load_case_counter + 1)
@@ -896,8 +906,10 @@ class OpsGrillage:
                               .format(name))
             # create pattern obj for load case
             pattern_command = "ops.pattern('Plain', {}, 1)\n".format(load_case_tag)
-            file_handle.write(pattern_command)
-            eval(pattern_command)
+            if self.pyfile:
+                file_handle.write(pattern_command)
+            else:
+                eval(pattern_command)
             # print to terminal
             print("Load Case {} created".format(name))
             # loop through each load object
@@ -905,15 +917,16 @@ class OpsGrillage:
                 if isinstance(loads, NodalLoad):
                     load_str = loads.get_nodal_load_str()
                     for lines in load_str:
-                        file_handle.write(lines)
-                    # print to terminal
+                        if self.pyfile:
+                            file_handle.write(lines)
+                        else:
+                            eval(lines)
+                    # print to terminal com
                     print("Nodal load - {loadname} - added to load case: {loadcase}".format(loadname=loads.name,
                                                                                             loadcase=name))
                 elif isinstance(loads, PointLoad):
                     # TODO
-                    nod = self.assign_point_to_four_node(point=[loads.x1, loads.y1, loads.z1], mag=loads.Fy)
-                    nod = self.get_point_load_nodes([loads.x1, loads.y1, loads.z1])  # access point
-                    print(nod)
+                    load_str = self.assign_point_to_four_node(point=list(loads.load_point_1)[:-1], mag=loads.Fy)
 
                 elif isinstance(loads, LineLoading):
                     self.get_line_load_nodes(loads)  # returns self.line_grid_intersect
@@ -923,18 +936,8 @@ class OpsGrillage:
                     print("Line load - {loadname} - added to load case: {name}".format(loadname=loads.name, name=name))
 
                 elif isinstance(loads, PatchLoading):
-                    if loads.patch_define_option == "two-lines":
-                        load_str = self.__assign_patch_load_bound_option(bound_lines=loads.northing_lines,
-                                                                         area_load=loads.qy)
-                    elif loads.patch_define_option == "four-points":
-
-                        pass
-
-                    for lines in load_str:
-                        file_handle.write(lines)
-                    print("Patch load - {loadname} - added to load case: {name}".format(loadname=loads.name, name=name))
-                else:
-                    print("No loads assigned for {}".format(loads))
+                    # TODO
+                    pass
 
             # Create instance and write command to output py file
             file_handle.write("ops.integrator('LoadControl', 1)\n")  # Header

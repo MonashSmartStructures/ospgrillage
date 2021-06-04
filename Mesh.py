@@ -475,6 +475,7 @@ class Mesh:
 
     def __assign_shell_members(self, n1, n2, n3, n4):
         self.shell_ele = 0
+        # TODO
         pass
 
     # ------------------------------------------------------------------------------------------
@@ -563,7 +564,7 @@ class Mesh:
             self.node_connect_x_dict.setdefault(ele[1], p1)
             self.node_connect_x_dict.setdefault(ele[2], p2)
 
-        # dict key = grid number, val = long and trans ele in grid
+        # create self.grid_number_dict, dict key = grid number, val = long and trans ele in grid
         self.grid_number_dict = dict()
         counter = 0
         for node_tag in self.node_spec.keys():
@@ -580,12 +581,12 @@ class Mesh:
                         n3 = n3[0]
                         if not any([node_tag in d and x_node in d and z_node in d and n3 in d for d in
                                     self.grid_number_dict.values()]):
-                            self.grid_number_dict.setdefault(counter, [node_tag, x_node, z_node, n3])
+                            self.grid_number_dict.setdefault(counter, [node_tag, x_node, n3, z_node])
                             counter += 1
                     else:  # list is empty
                         if not any([node_tag in d and x_node in d and z_node in d for d in
                                     self.grid_number_dict.values()]):
-                            self.grid_number_dict.setdefault(counter, [node_tag, x_node, z_node, n3])
+                            self.grid_number_dict.setdefault(counter, [node_tag, x_node, n3, z_node])
                             counter += 1
 
         # dict of grid number return vicinity grid number in a subdict {'x-1': 'x+1', 'z-1' , 'z+1'}
