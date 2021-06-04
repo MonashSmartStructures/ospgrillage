@@ -488,9 +488,12 @@ class OpsGrillage:
 
     # Getter for Points Loads nodes and above
     def get_point_load_nodes(self, point):
+        # extract points
         x = point[0]
         y = point[1]  # default y = self.y_elevation = 0
         z = point[2]
+        # set point to tuple
+        loading_point = Point(x, y, z) # TODO change this next time when converting to use Point() tuple
         node_distance = []
         # find node closest to point
         for tag, subdict in self.Mesh_obj.node_spec.items():
@@ -526,65 +529,47 @@ class OpsGrillage:
         xg = []
         zg = []
         n1 = closest_node[0]
-        # arrange 4 points (n1 to n4) based on counter clockwise
-        if len(x_vicinity_nodes) > 1:
-            if x2 >= x > x_closest:
-                if z2 >= z > z_closest:
-                    n4 = z_vicinity_nodes[1]
-                    n2 = x_vicinity_nodes[1]
-                    xg = self.Mesh_obj.node_spec[n2]['x_group']
-                    zg = self.Mesh_obj.node_spec[n4]['x_group']
-                    n3_variant = [1, 1]
-                elif z_closest >= z > z1:
-                    n4 = x_vicinity_nodes[1]
-                    n2 = z_vicinity_nodes[0]
-                    xg = self.Mesh_obj.node_spec[n4]['x_group']
-                    zg = self.Mesh_obj.node_spec[n2]['z_group']
-                    n3_variant = [1, -1]
-            elif x_closest >= x > x1:
-                if z2 >= z > z_closest:
-                    n4 = x_vicinity_nodes[0]
-                    n2 = z_vicinity_nodes[1]
-                    xg = self.Mesh_obj.node_spec[n4]['x_group']
-                    zg = self.Mesh_obj.node_spec[n2]['z_group']
-                    n3_variant = [-1, 1]
-                elif z_closest >= z > z1:
-                    n4 = z_vicinity_nodes[0]
-                    n2 = x_vicinity_nodes[0]
-                    xg = self.Mesh_obj.node_spec[n2]['x_group']
-                    zg = self.Mesh_obj.node_spec[n4]['z_group']
-                    n3_variant = [-1, -1]
-            try:
-                n3 = [k for k, v in enumerate(self.Mesh_obj.grid_number_dict.values()) if n2 in v and n1 in v and n4 in v]
-                node_list = self.Mesh_obj.grid_number_dict[n3[0]]
-                if len(node_list) <= 3:
-                    n3_variant = "edge 3 nodes"
-            except:  # no n3 is found, node is a corner or edge node
-                potential_grids = [k for k, v in enumerate(self.Mesh_obj.grid_number_dict.values()) if
-                                   n2 in v and n1 in v and n4 in v]
-                n3 = [grid for grid in potential_grids if len(self.Mesh_obj.grid_number_dict[grid]) == 3]
-                node_list = self.Mesh_obj.grid_number_dict[n3[0]]
-                n3_variant = "edge 3 nodes"
-        elif len(x_vicinity_nodes) <= 1:
-            if len(z_vicinity_nodes) < 1:
-                # corner node
-                n2 = x_vicinity_nodes[0]
-                n3_variant = "corner 3 nodes"
-            else:  # edge node
-                if z >= z_closest and x >= x_closest:
-                    n2 = x_vicinity_nodes[0]
-                elif z >= z_closest and x <= x_closest:
-                    n2 = z_vicinity_nodes[0]
-                elif z <= z_closest and x >= x_closest:
-                    n2 = x_vicinity_nodes[0]
-                elif z <= z_closest and x <= x_closest:
-                    n2 = z_vicinity_nodes[0]
-                n3_variant = "edge 3 nodes"
-            potential_grids = [k for k, v in enumerate(self.Mesh_obj.grid_number_dict.values()) if n2 in v and n1 in v]
-            n3 = [grid for grid in potential_grids if len(self.Mesh_obj.grid_number_dict[grid]) == 3]
-            node_list = self.Mesh_obj.grid_number_dict[n3[0]]
+        n2 = []  # z vici node
+        n3 = []
+        n4 = []  # x vici node
 
-        return node_list, n3_variant
+        # set
+        # arrange 4 points (n1 to n4) based on counter clockwise
+
+        if x>= x_closest:
+            n4 = [x_node for x_node in x_vicinity_nodes if self.Mesh_obj.node_spec[x_node]['coordinate'][0] > x_closest]
+            if z>= z_closest:
+                n2 = [z_node for z_node in z_vicinity_nodes if self.Mesh_obj.node_spec[z_node]['coordinate'][2] > z_closest]
+            elif z<= z_closest:
+                n2 = [z_node for z_node in z_vicinity_nodes if self.Mesh_obj.node_spec[z_node]['coordinate'][2] <= z_closest]
+        elif x<= x_closest:
+            n4 = [x_node for x_node in x_vicinity_nodes if self.Mesh_obj.node_spec[x_node]['coordinate'][0]<=x_closest]
+            if z>= z_closest:
+                n2 = [z_node for z_node in z_vicinity_nodes if self.Mesh_obj.node_spec[z_node]['coordinate'][2] > z_closest]
+            elif z <= z_closest:
+                n2 = [z_node for z_node in z_vicinity_nodes if self.Mesh_obj.node_spec[z_node]['coordinate'][2] <= z_closest]
+        if not n2:  # if n2 is empty
+            n3 = [k for k, v in enumerate(self.Mesh_obj.grid_number_dict.values()) if n1 in v and n4[0] in v]
+            # if multiple elements of n3, check if point lies within
+        elif not n4:  # in mesh,  impossible for n4 == []
+            n3 = [k for k, v in enumerate(self.Mesh_obj.grid_number_dict.values()) if n1 in v and n2[0] in v]
+        else:
+            n3 = [k for k, v in enumerate(self.Mesh_obj.grid_number_dict.values()) if n2[0] in v and n1 in v and n4[0] in v]
+
+        if len(n3) > 1:
+            # get node coordinate
+            for grid_number in n3:
+                node_tags = self.Mesh_obj.grid_number_dict[grid_number]
+                coordinate = [self.Mesh_obj.node_spec[tag]["coordinate"] for tag in node_tags]
+                point_list = [Point(coord[0], coord[1], coord[2]) for coord in coordinate]
+                # check if point within
+                inside_flag = check_point_in_grid(loading_point, point_list)
+                if inside_flag:
+                    n3 = [grid_number]  # overwrite n3 as grid where node is situated inside
+                    continue
+        node_list = self.Mesh_obj.grid_number_dict[n3[0]]
+
+        return node_list
 
         # pass shape function to distribute load to 4 points
 
@@ -601,7 +586,7 @@ class OpsGrillage:
                                     c2=c)
         z_start = line_func(m=m, c=c, x=x_start)
         # get nearest point of line load
-        nd, _ = self.get_point_load_nodes([x_start, self.y_elevation, z_start])  # list of nodes on grid
+        nd = self.get_point_load_nodes([x_start, self.y_elevation, z_start])  # list of nodes on grid
 
         # while loop counter
         counter = 1
@@ -777,15 +762,11 @@ class OpsGrillage:
         Function to assign point load to nodes of grid where the point load lies in.
         :param point: [x,y=0,z] coordinates of point load
         :param mag: Vertical (y axis direction) magnitude of point load
-        :param grid_nodes: nodes within the grid where point load is situated (obtained previously via
-                        get nodes given point)
-        :param variant: variant of the grid_nodes ordering (obtained previously via
-                        get nodes given point
         :return:
         """
 
         # search grid where the point lies in
-        grid_nodes, variant = self.get_point_load_nodes(point=point)
+        grid_nodes= self.get_point_load_nodes(point=point)
         # if corner or edge grid with 3 nodes, run specific assignment for triangular grids
         # extract coordinates
         x1 = self.Mesh_obj.node_spec[grid_nodes[0]]['coordinate'][0]
@@ -794,19 +775,11 @@ class OpsGrillage:
         z1 = self.Mesh_obj.node_spec[grid_nodes[0]]['coordinate'][2]
         z2 = self.Mesh_obj.node_spec[grid_nodes[1]]['coordinate'][2]
         z3 = self.Mesh_obj.node_spec[grid_nodes[2]]['coordinate'][2]
-        if variant == "edge 3 nodes" or variant == "corner 3 nodes":
+        if len(grid_nodes) == 3:
             Nv = ShapeFunction.linear_triangular(x=point[0],z=point[2],x1=x1,z1=z1,x2=x2,z2=z2,x3=x3,z3=z3)
             node_load = [mag * n for n in Nv]
         else:  # else run assignment for quadrilateral grids
-            # if variant == [-1, -1]:
-            #     grid_nodes = [grid_nodes[2], grid_nodes[3], grid_nodes[0], grid_nodes[1]]
-            # elif variant == [-1, 1]:
-            #     grid_nodes = [grid_nodes[3], grid_nodes[0], grid_nodes[1], grid_nodes[2]]
-            # elif variant == [1, -1]:
-            #     grid_nodes = [grid_nodes[1], grid_nodes[2], grid_nodes[3], grid_nodes[0]]
-            # elif variant == [1, 1]:
-            #     # nodes already sorted in order pass
-            #     pass
+
             # extract coordinates of fourth point
             x4 = self.Mesh_obj.node_spec[grid_nodes[3]]['coordinate'][0]
             z4 = self.Mesh_obj.node_spec[grid_nodes[3]]['coordinate'][2]
@@ -950,6 +923,8 @@ class OpsGrillage:
 
     def __assign_patch_load(self):
         # searches grid that encompass the patch load
+        # use getter for line load, 4 times for each point
+        # between 4 dictionaries record the common grids as having the corners of the patch - to be evaluated different
 
         # for each grid, calculate
         # 1 area of patch in the grid

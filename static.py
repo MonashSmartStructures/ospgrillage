@@ -259,7 +259,79 @@ def solve_zeta_eta(xp, zp, x1, z1, x2, z2, x3, z3, x4, z4):
     #              x * (z1 * (z - 1) + z2 * (1 - z) + z3 * (z + 1) + z4 * (-z - 1))))
     # eq2 = Eq((4 * xp - (x1 + x2 + x3 + x4) - z * (-x1 - x2 + x3 + x4)) / (
     #              x * (x1 * (z - 1) + x2 * (1 - z) + x3 * (z + 1) + x4 * (-z - 1))))
-    eq1 = Eq(4*zp-((1-x)*(1-z)*z1 + (1+x)*(1-z)*z2 + (1+x)*(1+z)*z3 + (1-x)*(1+z)*z4),0)
-    eq2 = Eq(4*xp-((1-x)*(1-z)*x1 + (1+x)*(1-z)*x2 + (1+x)*(1+z)*x3 + (1-x)*(1+z)*x4),0)
-    sol = solve((eq1,eq2),(x,z))
+    eq1 = Eq(
+        4 * zp - ((1 - x) * (1 - z) * z1 + (1 + x) * (1 - z) * z2 + (1 + x) * (1 + z) * z3 + (1 - x) * (1 + z) * z4), 0)
+    eq2 = Eq(
+        4 * xp - ((1 - x) * (1 - z) * x1 + (1 + x) * (1 - z) * x2 + (1 + x) * (1 + z) * x3 + (1 - x) * (1 + z) * x4), 0)
+    sol = solve((eq1, eq2), (x, z))
     return sol[x], sol[z]
+
+
+def calculate_area_given_four_points(inside_point, point1, point2, point3, point4):
+    # inputs are namedtuple Point() of coordinates
+    # ref: <https://math.stackexchange.com/questions/190111/how-to-check-if-a-point-is-inside-a-rectangle>
+    # function typically assume plane of x and y. for usage in OpsGrillage, plane x z is taken instead, where y is z
+    a1 = np.sqrt((point1.x - point2.x) ** 2 + (point1.z - point2.z) ** 2)
+    a2 = np.sqrt((point2.x - point3.x) ** 2 + (point2.z - point3.z) ** 2)
+    a3 = np.sqrt((point3.x - point4.x) ** 2 + (point3.z - point4.z) ** 2)
+    a4 = np.sqrt((point4.x - point1.x) ** 2 + (point4.z - point1.z) ** 2)
+    b1 = np.sqrt((point1.x - inside_point.x) ** 2 + (point1.z - inside_point.z) ** 2)
+    b2 = np.sqrt((point2.x - inside_point.x) ** 2 + (point2.z - inside_point.z) ** 2)
+    b3 = np.sqrt((point3.x - inside_point.x) ** 2 + (point3.z - inside_point.z) ** 2)
+    b4 = np.sqrt((point4.x - inside_point.x) ** 2 + (point4.z - inside_point.z) ** 2)
+    # Herons formula
+    u1 = (a1 + b1 + b2) / 2
+    u2 = (a2 + b2 + b3) / 2
+    u3 = (a3 + b3 + b4) / 2
+    u4 = (a4 + b4 + b1) / 2
+    A1 = np.sqrt(u1 * (u1 - a1) * (u1 - b1) * (u1 - b2))
+    A2 = np.sqrt(u2 * (u2 - a2) * (u2 - b2) * (u2 - b3))
+    A3 = np.sqrt(u3 * (u3 - a3) * (u3 - b3) * (u3 - b4))
+    A4 = np.sqrt(u4 * (u4 - a4) * (u4 - b4) * (u4 - b1))
+    A = a1 * a2
+    return [A1, A2, A3, A4], A
+
+
+def check_point_in_grid(inside_point, point_list):
+    # ref: solution 3 https://www.eecs.umich.edu/courses/eecs380/HANDOUTS/PROJ2/InsidePoly.html
+    # check counter clockwise and to the left (greater than 0)
+    # put points in list
+    pt0 = point_list # list of point tuples
+    # rotate point
+    pt1 = pt0[1:] + [pt0[0]]
+    inside = True
+    # check if point is clockwise via sign of signed_area
+    signed_area = check_points_direction(point_list) # sign area < 0 means points are clockwise, and vice versa
+    for count, point0 in enumerate(pt0):
+        side = (inside_point.z - point0.z) * (pt1[count].x - point0.x) - (inside_point.x - point0.x) * (
+                    pt1[count].z - point0.z)
+        # check if point is outside
+        if any([side < 0 and signed_area>=0,side>0 and signed_area<0]): # nodes are counterclockwise and point to right (outside)
+            inside = False
+    return inside
+
+def check_points_direction(point_list):
+    # list of point tuples
+    # ref http://mathworld.wolfram.com/PolygonArea.html
+    signed_area = 0
+    last_point = None
+    first_point = None
+    x2 = None
+    z2 = None
+    for counter, point in enumerate(point_list):
+        x1 = point.x
+        z1 = point.z
+        if first_point is None:
+            # save point as first point
+            first_point = point
+
+        if counter == len(point_list)-1:
+            x2 = first_point.x
+            z2 = first_point.z
+        else:
+            x2 = point_list[counter+1].x
+            z2 = point_list[counter+1].z
+        signed_area += (x1 * z2 - x2 * z1)
+
+        last_point = point # set current point as last point
+    return signed_area

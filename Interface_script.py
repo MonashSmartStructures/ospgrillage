@@ -4,6 +4,14 @@ from OpsGrillage import *
 from PlotWizard import *
 import openseespy.opensees as ops
 
+inside = Point(0.5,0,0.1)
+p1 = Point(0,0,0)
+p2 = Point(1,0,0)
+p3 = Point(1,0,1)
+p4 = Point(0,0,1)
+#N,A= calculate_area_given_four_points(inside,p1,p2,p3,p4)
+#inside_flag = check_point_in_grid(inside,p1,p2,p3,p4)
+
 # define material
 concrete = UniAxialElasticMaterial(mat_type="Concrete01", mat_vec=[-6.0, -0.004, -6.0, -0.014])
 
