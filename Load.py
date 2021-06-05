@@ -124,17 +124,18 @@ class LineLoading(Loads):
                                 x2=self.load_point_2.x, y2=self.load_point_2.z,
                                 x3=self.load_point_3.x, y3=self.load_point_3.z)
             # return a function variable
-
+            self.line_end_point = self.load_point_3
         else:  # straight line with 2 points
             self.m, self.phi = get_slope(
                 [self.load_point_1.x, self.load_point_1.y, self.load_point_1.z],
                 [self.load_point_2.x, self.load_point_2.y, self.load_point_2.z])
             self.c = get_y_intcp(m=self.m, x=self.load_point_1.x, y=self.load_point_1.z)
             self.angle = np.arctan(self.m)  # in radian
+            self.line_end_point = self.load_point_2
 
     def interpolate_udl_magnitude(self, point_coordinate):
         # check if line is straight or curve
-        if self.load_point_3 is None:  # straight
+        if self.load_point_3 is None:  # straight line
 
             # x[0],z[0] and p[0] shall be reference point for interpolate
             xp = point_coordinate[0]
@@ -146,7 +147,7 @@ class LineLoading(Loads):
                  self.load_point_2.z - self.load_point_1.z]
             pp = (xp - self.load_point_1.x) / v[0] * v[1] + self.load_point_1.p
 
-        elif self.load_point_data['x3'] is not None:  # curve
+        elif self.load_point_3 is not None:  # curve
             # TODO for curved line load
             pass
         return pp
@@ -193,6 +194,8 @@ class PatchLoading(Loads):
             pass
         else:
             print("patch load points not valid")
+        # create line load object for each line
+
         print("Patch load object created: {} ".format(name))
 
 

@@ -33,8 +33,8 @@ slab = GrillageMember(member_name="concrete slab", section=slab_section, materia
 exterior_I_beam = GrillageMember(member_name="exterior I beams", section=exterior_I_beam_section, material=concrete)
 
 # construct grillage model
-example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=-42,
-                             num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
+example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=-12,
+                             num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Orth")
 pyfile = False
 example_bridge.create_ops(pyfile=pyfile)
 
@@ -63,8 +63,8 @@ if not pyfile:
 location = LoadPoint(5, 0, 2, 20)  # create load point
 Single = PointLoad(name="single point", point1=location)
 # Line load
-barrierpoint_1 = LoadPoint(0, 0, 5, 9)
-barrierpoint_2 = LoadPoint(8, 0, 5, 2)
+barrierpoint_1 = LoadPoint(0, 0, 5, 2)
+barrierpoint_2 = LoadPoint(5, 0, 5, 2)
 Barrier = LineLoading("Barrier curb load", point1=barrierpoint_1, point2=barrierpoint_2)
 
 # Patch load - lane loading

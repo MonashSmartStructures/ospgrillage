@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.spatial import distance
 from sympy import symbols, Eq, solve
+from decimal import *
 
 
 def characterize_node_diff(node_list, tol):
@@ -296,19 +297,21 @@ def check_point_in_grid(inside_point, point_list):
     # ref: solution 3 https://www.eecs.umich.edu/courses/eecs380/HANDOUTS/PROJ2/InsidePoly.html
     # check counter clockwise and to the left (greater than 0)
     # put points in list
-    pt0 = point_list # list of point tuples
+    pt0 = point_list  # list of point tuples
     # rotate point
     pt1 = pt0[1:] + [pt0[0]]
     inside = True
     # check if point is clockwise via sign of signed_area
-    signed_area = check_points_direction(point_list) # sign area < 0 means points are clockwise, and vice versa
+    signed_area = check_points_direction(point_list)  # sign area < 0 means points are clockwise, and vice versa
     for count, point0 in enumerate(pt0):
         side = (inside_point.z - point0.z) * (pt1[count].x - point0.x) - (inside_point.x - point0.x) * (
-                    pt1[count].z - point0.z)
+                pt1[count].z - point0.z)
         # check if point is outside
-        if any([side < 0 and signed_area>=0,side>0 and signed_area<0]): # nodes are counterclockwise and point to right (outside)
-            inside = False
-    return inside
+        if any([side < 0 <= signed_area, # side > 0 means left, side < 0 means right, side = 0 means on the line path
+                side > 0 > signed_area]):  # nodes are counterclockwise and point to right (outside)
+            inside = False                  # nodes are clockwise and point to the left (outside) these condition
+    return inside                           # return line = outside
+
 
 def check_points_direction(point_list):
     # list of point tuples
@@ -325,13 +328,17 @@ def check_points_direction(point_list):
             # save point as first point
             first_point = point
 
-        if counter == len(point_list)-1:
+        if counter == len(point_list) - 1:
             x2 = first_point.x
             z2 = first_point.z
         else:
-            x2 = point_list[counter+1].x
-            z2 = point_list[counter+1].z
+            x2 = point_list[counter + 1].x
+            z2 = point_list[counter + 1].z
         signed_area += (x1 * z2 - x2 * z1)
 
-        last_point = point # set current point as last point
+        last_point = point  # set current point as last point
     return signed_area
+
+
+def change_to_decimal(number):
+    return Decimal(number).quantize(Decimal('1.000'))

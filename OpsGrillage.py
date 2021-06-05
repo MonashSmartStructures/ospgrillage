@@ -7,7 +7,6 @@ from Material import *
 from member_sections import *
 from Mesh import *
 from itertools import combinations
-from decimal import *
 
 
 class OpsGrillage:
@@ -488,17 +487,23 @@ class OpsGrillage:
 
     # Getter for Points Loads nodes and above
     def get_point_load_nodes(self, point):
+        # procedure
+        # 1 find the closest node 2 find the respective grid within the closest node
         # extract points
-        x = point[0]
-        y = point[1]  # default y = self.y_elevation = 0
-        z = point[2]
-        # set point to tuple
-        loading_point = Point(x, y, z) # TODO change this next time when converting to use Point() tuple
+        loading_point = None
+        if type(point) is float or type(point) is list:
+            x = point[0]
+            y = point[1]  # default y = self.y_elevation = 0
+            z = point[2]
+            # set point to tuple
+            loading_point = Point(x, y, z) # TODO change this next time when converting to use Point() tuple
+        elif isinstance(point,LoadPoint):
+            loading_point = point
         node_distance = []
         # find node closest to point
         for tag, subdict in self.Mesh_obj.node_spec.items():
             node = subdict['coordinate']
-            dis = np.sqrt((node[0] - x) ** 2 + 0 + (node[2] - z) ** 2)
+            dis = np.sqrt((node[0] - loading_point.x) ** 2 + 0 + (node[2] - loading_point.z) ** 2)
             node_distance.append([tag, dis])
         node_distance.sort(key=lambda x: x[1])
         closest_node = node_distance[0]
@@ -508,23 +513,23 @@ class OpsGrillage:
 
         # get vicinity nodes and sort ascending
         x_vicinity_nodes = self.Mesh_obj.node_connect_x_dict[closest_node[0]]
-        if len(x_vicinity_nodes) > 1:
-            if self.Mesh_obj.node_spec[x_vicinity_nodes[0]]['coordinate'][0] > \
-                    self.Mesh_obj.node_spec[x_vicinity_nodes[1]]['coordinate'][0]:
-                # flip the x_vicinity nodes
-                x_vicinity_nodes.reverse()
-
-        x1 = self.Mesh_obj.node_spec[x_vicinity_nodes[0]]['coordinate'][0]
-        x2 = self.Mesh_obj.node_spec[x_vicinity_nodes[1]]['coordinate'][0] if len(x_vicinity_nodes) > 1 else 0
+        # if len(x_vicinity_nodes) > 1:
+        #     if self.Mesh_obj.node_spec[x_vicinity_nodes[0]]['coordinate'][0] > \
+        #             self.Mesh_obj.node_spec[x_vicinity_nodes[1]]['coordinate'][0]:
+        #         # flip the x_vicinity nodes
+        #         x_vicinity_nodes.reverse()
+        #
+        # x1 = self.Mesh_obj.node_spec[x_vicinity_nodes[0]]['coordinate'][0]
+        # x2 = self.Mesh_obj.node_spec[x_vicinity_nodes[1]]['coordinate'][0] if len(x_vicinity_nodes) > 1 else 0
 
         z_vicinity_nodes = self.Mesh_obj.node_connect_z_dict[closest_node[0]]
-        if len(z_vicinity_nodes) > 1:
-            if self.Mesh_obj.node_spec[z_vicinity_nodes[0]]['coordinate'][2] > \
-                    self.Mesh_obj.node_spec[z_vicinity_nodes[1]]['coordinate'][2]:
-                # flip the z_vicinity nodes
-                z_vicinity_nodes.reverse()
-        z1 = self.Mesh_obj.node_spec[z_vicinity_nodes[0]]['coordinate'][2]
-        z2 = self.Mesh_obj.node_spec[z_vicinity_nodes[1]]['coordinate'][2] if len(z_vicinity_nodes) > 1 else 0
+        # if len(z_vicinity_nodes) > 1:
+        #     if self.Mesh_obj.node_spec[z_vicinity_nodes[0]]['coordinate'][2] > \
+        #             self.Mesh_obj.node_spec[z_vicinity_nodes[1]]['coordinate'][2]:
+        #         # flip the z_vicinity nodes
+        #         z_vicinity_nodes.reverse()
+        # z1 = self.Mesh_obj.node_spec[z_vicinity_nodes[0]]['coordinate'][2]
+        # z2 = self.Mesh_obj.node_spec[z_vicinity_nodes[1]]['coordinate'][2] if len(z_vicinity_nodes) > 1 else 0
 
         xg = []
         zg = []
@@ -533,41 +538,42 @@ class OpsGrillage:
         n3 = []
         n4 = []  # x vici node
 
-        # set
-        # arrange 4 points (n1 to n4) based on counter clockwise
-
-        if x>= x_closest:
+        if loading_point.x>= x_closest:
             n4 = [x_node for x_node in x_vicinity_nodes if self.Mesh_obj.node_spec[x_node]['coordinate'][0] > x_closest]
-            if z>= z_closest:
+            if loading_point.z>= z_closest:
                 n2 = [z_node for z_node in z_vicinity_nodes if self.Mesh_obj.node_spec[z_node]['coordinate'][2] > z_closest]
-            elif z<= z_closest:
+            elif loading_point.z<= z_closest:
                 n2 = [z_node for z_node in z_vicinity_nodes if self.Mesh_obj.node_spec[z_node]['coordinate'][2] <= z_closest]
-        elif x<= x_closest:
+        elif loading_point.x<= x_closest:
             n4 = [x_node for x_node in x_vicinity_nodes if self.Mesh_obj.node_spec[x_node]['coordinate'][0]<=x_closest]
-            if z>= z_closest:
+            if loading_point.z>= z_closest:
                 n2 = [z_node for z_node in z_vicinity_nodes if self.Mesh_obj.node_spec[z_node]['coordinate'][2] > z_closest]
-            elif z <= z_closest:
+            elif loading_point.z <= z_closest:
                 n2 = [z_node for z_node in z_vicinity_nodes if self.Mesh_obj.node_spec[z_node]['coordinate'][2] <= z_closest]
-        if not n2:  # if n2 is empty
-            n3 = [k for k, v in enumerate(self.Mesh_obj.grid_number_dict.values()) if n1 in v and n4[0] in v]
-            # if multiple elements of n3, check if point lies within
-        elif not n4:  # in mesh,  impossible for n4 == []
-            n3 = [k for k, v in enumerate(self.Mesh_obj.grid_number_dict.values()) if n1 in v and n2[0] in v]
-        else:
-            n3 = [k for k, v in enumerate(self.Mesh_obj.grid_number_dict.values()) if n2[0] in v and n1 in v and n4[0] in v]
+        # if point is not within the grid
+        if not n2 and not n4: # point is not in the grid ,
+            return None
+        else: # run check
+            if not n2:  # if n2 is empty - search using n1 and n4
+                n3 = [k for k, v in enumerate(self.Mesh_obj.grid_number_dict.values()) if n1 in v and n4[0] in v]
+                # if multiple elements of n3, check if point lies within
+            elif not n4:  # in mesh,  impossible for n4 == [] - search using n1 and n2
+                n3 = [k for k, v in enumerate(self.Mesh_obj.grid_number_dict.values()) if n1 in v and n2[0] in v]
+            else:
+                n3 = [k for k, v in enumerate(self.Mesh_obj.grid_number_dict.values()) if n2[0] in v and n1 in v and n4[0] in v]
 
-        if len(n3) > 1:
-            # get node coordinate
-            for grid_number in n3:
-                node_tags = self.Mesh_obj.grid_number_dict[grid_number]
-                coordinate = [self.Mesh_obj.node_spec[tag]["coordinate"] for tag in node_tags]
-                point_list = [Point(coord[0], coord[1], coord[2]) for coord in coordinate]
-                # check if point within
-                inside_flag = check_point_in_grid(loading_point, point_list)
-                if inside_flag:
-                    n3 = [grid_number]  # overwrite n3 as grid where node is situated inside
-                    continue
-        node_list = self.Mesh_obj.grid_number_dict[n3[0]]
+            if len(n3) > 1:
+                # get node coordinate
+                for grid_number in n3:
+                    node_tags = self.Mesh_obj.grid_number_dict[grid_number]
+                    coordinate = [self.Mesh_obj.node_spec[tag]["coordinate"] for tag in node_tags]
+                    point_list = [Point(coord[0], coord[1], coord[2]) for coord in coordinate]
+                    # check if point within
+                    inside_flag = check_point_in_grid(loading_point, point_list)
+                    if inside_flag:
+                        n3 = [grid_number]  # overwrite n3 as grid where node is situated inside
+                        continue
+            node_list = self.Mesh_obj.grid_number_dict[n3[0]]
 
         return node_list
 
@@ -579,15 +585,28 @@ class OpsGrillage:
         # from starting point of line load
         x = 0
         z = 0
+        x_end = []
+        z_end = []
+        x_start = []
+        z_start = []
         m = line_load_obj.m
         c = line_load_obj.c
-        # Intercept with start edge span
-        x_start = x_intcp_two_lines(m1=self.Mesh_obj.start_edge_line.slope, c1=self.Mesh_obj.start_edge_line.c, m2=m,
-                                    c2=c)
-        z_start = line_func(m=m, c=c, x=x_start)
-        # get nearest point of line load
-        nd = self.get_point_load_nodes([x_start, self.y_elevation, z_start])  # list of nodes on grid
 
+        # find grids where start point of line load lies in
+        start_nd = self.get_point_load_nodes(line_load_obj.load_point_1)
+        if start_nd is None:  # if point is not present (returned None), point lies outside of mesh, set
+            # x_start and z_start be the point which line intersects the start span edge node line
+            x_start = x_intcp_two_lines(m1=self.Mesh_obj.start_edge_line.slope, c1=self.Mesh_obj.start_edge_line.c, m2=m,
+                                        c2=c)
+            z_start = line_func(m=m, c=c, x=x_start)
+            nd = self.get_point_load_nodes([x_start, self.y_elevation, z_start])  # list of nodes on grid
+        else:
+            x_start = line_load_obj.load_point_1.x
+            z_start = line_load_obj.load_point_1.z
+            nd = start_nd
+
+        # find last grid where the line load ends
+        last_nd = self.get_point_load_nodes(line_load_obj.line_end_point)
         # while loop counter
         counter = 1
         # initiate flags
@@ -630,12 +649,12 @@ class OpsGrillage:
                 # if R is not False, check if R is within bounds of pz1 and pz2
                 if R_z is not False:
                     # use decimal lib to remove floating point errors for logic comparison
-                    Rx = Decimal(R_z[0]).quantize(Decimal('1.000'))
-                    Rz = Decimal(R_z[1]).quantize(Decimal('1.000'))
-                    pz1x_d = Decimal(pz1[0]).quantize(Decimal('1.000'))
-                    pz1z_d = Decimal(pz1[2]).quantize(Decimal('1.000'))
-                    pz2x_d = Decimal(pz2[0]).quantize(Decimal('1.000'))
-                    pz2z_d = Decimal(pz2[2]).quantize(Decimal('1.000'))
+                    Rx = change_to_decimal(R_z[0])
+                    Rz = change_to_decimal(R_z[1])
+                    pz1x_d = change_to_decimal(pz1[0])
+                    pz1z_d = change_to_decimal(pz1[2])
+                    pz2x_d = change_to_decimal(pz2[0])
+                    pz2z_d = change_to_decimal(pz2[2])
                     if all([Rx <= max(pz1x_d, pz2x_d), Rx >= min(pz1x_d, pz2x_d), Rz <= max(pz1z_d, pz2z_d),
                             Rz >= min(pz1z_d, pz2z_d)]):
                         next_grid_z = []
@@ -673,15 +692,13 @@ class OpsGrillage:
                 # if R is not False, check if R is within bounds of pz1 and pz2
                 if R_x is not False:
                     # convert to decimal lib
-                    Rx = Decimal(R_x[0]).quantize(Decimal('1.000'))
-                    Rz = Decimal(R_x[1]).quantize(Decimal('1.000'))
-                    px1x_d = Decimal(px1[0]).quantize(Decimal('1.000'))
-                    px1z_d = Decimal(px1[2]).quantize(Decimal('1.000'))
-                    px2x_d = Decimal(px2[0]).quantize(Decimal('1.000'))
-                    px2z_d = Decimal(px2[2]).quantize(Decimal('1.000'))
+                    Rx = change_to_decimal(R_x[0])
+                    Rz = change_to_decimal(R_x[1])
+                    px1x_d = change_to_decimal(px1[0])
+                    px1z_d = change_to_decimal(px1[2])
+                    px2x_d = change_to_decimal(px2[0])
+                    px2z_d = change_to_decimal(px2[2])
 
-                    # if all([R[0] < max(px1[0], px2[0]), R[0] > min(px1[0], px2[0]), R[1] < max(px1[2], px2[2]),
-                    #        R[1] > min(px1[2], px2[2])]):
                     if all([Rx <= max(px1x_d, px2x_d), Rx >= min(px1x_d, px2x_d), Rz <= max(px1z_d, px2z_d),
                             Rz >= min(px1z_d, px2z_d)]):
                         next_grid_x = []
@@ -724,8 +741,8 @@ class OpsGrillage:
                 z_end = line_func(m=m, c=c, x=x_end)
 
                 # quantize x_end and z_end to remove floating point error
-                x_end_d = Decimal(x_end).quantize(Decimal('1.000'))
-                z_end_d = Decimal(z_end).quantize(Decimal('1.000'))
+                x_end_d = change_to_decimal(x_end)
+                z_end_d = change_to_decimal(z_end)
                 if max(pz1x_d, pz2x_d) >= x_end_d >= min(pz1x_d, pz2x_d) and max(px1z_d, px2z_d) >= z_end_d >= min(
                         px1z_d, px2z_d):
                     # line intersects the edge at current grid
@@ -737,12 +754,21 @@ class OpsGrillage:
                 line_on = False
             if counter > self.while_loop_max:  # measure to prevent infinite loop - default 100 steps
                 line_on = False
+
             if len(self.Mesh_obj.grid_number_dict[current_grid]) < 4 and counter > 2:
                 # intersect with end edge span
                 line_on = False
 
             # save intersection point as x_intcp and z_intcp, repeat loop
             self.line_grid_intersect.setdefault(current_grid, subdict)
+
+            # check if next grid is the final grid
+            if set(nd) == set(last_nd):
+                line_on = False
+                # last grid achieved
+                subdict = dict()
+                subdict['points'] = [[x_start, z_start], [line_load_obj.line_end_point.x,line_load_obj.line_end_point.z]]
+                self.line_grid_intersect.setdefault(next_grid, subdict)
             # update nd, x_start, z_start for next loop
             nd = self.Mesh_obj.grid_number_dict[next_grid]
             counter += 1
@@ -921,7 +947,8 @@ class OpsGrillage:
             file_handle.write("ops.analysis(\"{}\")\n".format(analysis_type))
             file_handle.write("ops.analyze(1)\n")
 
-    def __assign_patch_load(self):
+    # setter for patch loads
+    def assign_patch_load(self):
         # searches grid that encompass the patch load
         # use getter for line load, 4 times for each point
         # between 4 dictionaries record the common grids as having the corners of the patch - to be evaluated different
