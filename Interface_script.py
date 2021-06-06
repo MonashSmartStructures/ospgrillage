@@ -33,8 +33,8 @@ slab = GrillageMember(member_name="concrete slab", section=slab_section, materia
 exterior_I_beam = GrillageMember(member_name="exterior I beams", section=exterior_I_beam_section, material=concrete)
 
 # construct grillage model
-example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=-12,
-                             num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Orth")
+example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=-42,
+                             num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
 pyfile = False
 example_bridge.create_ops(pyfile=pyfile)
 
@@ -68,10 +68,10 @@ barrierpoint_2 = LoadPoint(5, 0, 5, 2)
 Barrier = LineLoading("Barrier curb load", point1=barrierpoint_1, point2=barrierpoint_2)
 
 # Patch load - lane loading
-lane_point_1 = LoadPoint(1, 0, 1, 5)
-lane_point_2 = LoadPoint(4, 0, 1, 5)
-lane_point_3 = LoadPoint(4, 0, 4, 5)
-lane_point_4 = LoadPoint(1, 0, 4, 5)
+lane_point_1 = LoadPoint(5, 0, 3, 5)
+lane_point_2 = LoadPoint(8, 0, 3, 5)
+lane_point_3 = LoadPoint(8, 0, 5, 5)
+lane_point_4 = LoadPoint(5, 0, 5, 5)
 Lane = PatchLoading("Lane 1", point1=lane_point_1, point2=lane_point_2, point3=lane_point_3, point4=lane_point_4)
 # a = example_bridge.get_line_load_nodes(Barrier)
 # print(a)
@@ -82,7 +82,7 @@ Lane = PatchLoading("Lane 1", point1=lane_point_1, point2=lane_point_2, point3=l
 # --------------------------------------------------------------------------------------------------------------------
 # Load Case
 ULS_DL = LoadCase(name="ULS-DL")
-ULS_DL.add_load_groups(Barrier)
+ULS_DL.add_load_groups(Lane)  # change here
 example_bridge.add_load_case(ULS_DL.name, ULS_DL)
 
 # Load combination

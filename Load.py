@@ -72,6 +72,8 @@ class Loads:
         self.spec = dict()  # dict {node number: {Fx:val, Fy:val, Fz:val, Mx:val, My:val, Mz:val}}
         self.load_counter = 0
 
+        # function to sort points in counter clockwise
+
     def __str__(self):
         return "LoadCase {} \n".format(self.name) + pprint.pformat(self.spec)
 
@@ -130,8 +132,10 @@ class LineLoading(Loads):
                 [self.load_point_1.x, self.load_point_1.y, self.load_point_1.z],
                 [self.load_point_2.x, self.load_point_2.y, self.load_point_2.z])
             self.c = get_y_intcp(m=self.m, x=self.load_point_1.x, y=self.load_point_1.z)
-            self.angle = np.arctan(self.m)  # in radian
+            self.angle = np.arctan(self.m) if self.m is not None else np.pi/2  # in radian
             self.line_end_point = self.load_point_2
+            # namedTuple Line
+            self.line_equation = Line(self.m, self.c, self.phi)
 
     def interpolate_udl_magnitude(self, point_coordinate):
         # check if line is straight or curve
@@ -167,25 +171,12 @@ class PatchLoading(Loads):
         super().__init__(name, **kwargs)
         # if only four point is define , patch load is a four point straight line quadrilateral
         if self.load_point_5 is None:
-            # four straight lines between 4 points
-            # point1 point 2
-            m,phi = get_slope(list(self.load_point_1)[0:-1],list(self.load_point_2)[0:-1])
-            c = get_y_intcp(m,self.load_point_1.x,self.load_point_1.z) if m is not None else None
-            self.line_1 = Line(m, c, phi)
-            # point2 point 3
-            m,phi = get_slope(list(self.load_point_2)[0:-1],list(self.load_point_3)[0:-1])
-            c = get_y_intcp(m, self.load_point_2.x,self.load_point_2.z) if m is not None else None
-            self.line_2 = Line(m, c, phi)
-            # point 3 point 4
-            m,phi = get_slope(list(self.load_point_3)[0:-1],list(self.load_point_4)[0:-1])
-            c = get_y_intcp(m, self.load_point_3.x, self.load_point_3.z) if m is not None else None
-            self.line_3 = Line(m, c, phi)
-            # point 4 point 1
-            m,phi = get_slope(list(self.load_point_1)[0:-1],list(self.load_point_4)[0:-1])
-            c = get_y_intcp(m, self.load_point_4.x, self.load_point_4.z) if m is not None else None
-            self.line_4 = Line(m, c, phi)
+            # create each line
+            self.line_1 = LineLoading("Patch load line 1", point1=self.load_point_1, point2=self.load_point_2)
+            self.line_2 = LineLoading("Patch load line 2", point1=self.load_point_2, point2=self.load_point_3)
+            self.line_3 = LineLoading("Patch load line 3", point1=self.load_point_3, point2=self.load_point_4)
+            self.line_4 = LineLoading("Patch load line 4", point1=self.load_point_4, point2=self.load_point_1)
 
-        # else , 8 point curve sided quadrilateral
         elif self.load_point_8 is not None:
             # point 1 2 3
             # point 3 4 5

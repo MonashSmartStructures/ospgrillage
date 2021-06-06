@@ -496,8 +496,8 @@ class OpsGrillage:
             y = point[1]  # default y = self.y_elevation = 0
             z = point[2]
             # set point to tuple
-            loading_point = Point(x, y, z) # TODO change this next time when converting to use Point() tuple
-        elif isinstance(point,LoadPoint):
+            loading_point = Point(x, y, z)  # TODO change this next time when converting to use Point() tuple
+        elif isinstance(point, LoadPoint):
             loading_point = point
         node_distance = []
         # find node closest to point
@@ -538,29 +538,35 @@ class OpsGrillage:
         n3 = []
         n4 = []  # x vici node
 
-        if loading_point.x>= x_closest:
+        if loading_point.x >= x_closest:
             n4 = [x_node for x_node in x_vicinity_nodes if self.Mesh_obj.node_spec[x_node]['coordinate'][0] > x_closest]
-            if loading_point.z>= z_closest:
-                n2 = [z_node for z_node in z_vicinity_nodes if self.Mesh_obj.node_spec[z_node]['coordinate'][2] > z_closest]
-            elif loading_point.z<= z_closest:
-                n2 = [z_node for z_node in z_vicinity_nodes if self.Mesh_obj.node_spec[z_node]['coordinate'][2] <= z_closest]
-        elif loading_point.x<= x_closest:
-            n4 = [x_node for x_node in x_vicinity_nodes if self.Mesh_obj.node_spec[x_node]['coordinate'][0]<=x_closest]
-            if loading_point.z>= z_closest:
-                n2 = [z_node for z_node in z_vicinity_nodes if self.Mesh_obj.node_spec[z_node]['coordinate'][2] > z_closest]
+            if loading_point.z >= z_closest:
+                n2 = [z_node for z_node in z_vicinity_nodes if
+                      self.Mesh_obj.node_spec[z_node]['coordinate'][2] > z_closest]
             elif loading_point.z <= z_closest:
-                n2 = [z_node for z_node in z_vicinity_nodes if self.Mesh_obj.node_spec[z_node]['coordinate'][2] <= z_closest]
+                n2 = [z_node for z_node in z_vicinity_nodes if
+                      self.Mesh_obj.node_spec[z_node]['coordinate'][2] <= z_closest]
+        elif loading_point.x <= x_closest:
+            n4 = [x_node for x_node in x_vicinity_nodes if
+                  self.Mesh_obj.node_spec[x_node]['coordinate'][0] <= x_closest]
+            if loading_point.z >= z_closest:
+                n2 = [z_node for z_node in z_vicinity_nodes if
+                      self.Mesh_obj.node_spec[z_node]['coordinate'][2] > z_closest]
+            elif loading_point.z <= z_closest:
+                n2 = [z_node for z_node in z_vicinity_nodes if
+                      self.Mesh_obj.node_spec[z_node]['coordinate'][2] <= z_closest]
         # if point is not within the grid
-        if not n2 and not n4: # point is not in the grid ,
+        if not n2 and not n4:  # point is not in the grid ,
             return None
-        else: # run check
+        else:  # run check
             if not n2:  # if n2 is empty - search using n1 and n4
                 n3 = [k for k, v in enumerate(self.Mesh_obj.grid_number_dict.values()) if n1 in v and n4[0] in v]
                 # if multiple elements of n3, check if point lies within
             elif not n4:  # in mesh,  impossible for n4 == [] - search using n1 and n2
                 n3 = [k for k, v in enumerate(self.Mesh_obj.grid_number_dict.values()) if n1 in v and n2[0] in v]
             else:
-                n3 = [k for k, v in enumerate(self.Mesh_obj.grid_number_dict.values()) if n2[0] in v and n1 in v and n4[0] in v]
+                n3 = [k for k, v in enumerate(self.Mesh_obj.grid_number_dict.values()) if
+                      n2[0] in v and n1 in v and n4[0] in v]
 
             if len(n3) > 1:
                 # get node coordinate
@@ -575,7 +581,7 @@ class OpsGrillage:
                         continue
             node_list = self.Mesh_obj.grid_number_dict[n3[0]]
 
-        return node_list
+        return node_list, n3[0] # n3 = grid number
 
         # pass shape function to distribute load to 4 points
 
@@ -583,50 +589,41 @@ class OpsGrillage:
     def get_line_load_nodes(self, line_load_obj):
         # uses a modified Bresenham's Line Algorithm to search for grids which lineload intersects
         # from starting point of line load
+        # initiate variables
+        current_grid = []
+        next_grid = []
         x = 0
         z = 0
-        x_end = []
-        z_end = []
         x_start = []
         z_start = []
         m = line_load_obj.m
         c = line_load_obj.c
 
         # find grids where start point of line load lies in
-        start_nd = self.get_point_load_nodes(line_load_obj.load_point_1)
+        start_nd,current_grid = self.get_point_load_nodes(line_load_obj.load_point_1)
         if start_nd is None:  # if point is not present (returned None), point lies outside of mesh, set
             # x_start and z_start be the point which line intersects the start span edge node line
-            x_start = x_intcp_two_lines(m1=self.Mesh_obj.start_edge_line.slope, c1=self.Mesh_obj.start_edge_line.c, m2=m,
+            x_start = x_intcp_two_lines(m1=self.Mesh_obj.start_edge_line.slope, c1=self.Mesh_obj.start_edge_line.c,
+                                        m2=m,
                                         c2=c)
             z_start = line_func(m=m, c=c, x=x_start)
-            nd = self.get_point_load_nodes([x_start, self.y_elevation, z_start])  # list of nodes on grid
+            nd,current_grid = self.get_point_load_nodes([x_start, self.y_elevation, z_start])  # list of nodes on grid
         else:
             x_start = line_load_obj.load_point_1.x
             z_start = line_load_obj.load_point_1.z
             nd = start_nd
 
         # find last grid where the line load ends
-        last_nd = self.get_point_load_nodes(line_load_obj.line_end_point)
+        last_nd,last_grid = self.get_point_load_nodes(line_load_obj.line_end_point)
+        x_end = line_load_obj.line_end_point.x
+        z_end = line_load_obj.line_end_point.z
         # while loop counter
         counter = 1
         # initiate flags
         long_intersect = False
         trans_intersect = False
         line_on = True
-        # initiate variables
-        current_grid = []
-        next_grid = []
         subdict = {}
-
-        # checks if grid is a 3 node or 4 node grid, then gets grid's respective node tags
-        if len(nd) == 4:
-            current_grid = [i for i, x in
-                            enumerate([nd[3] in n and nd[2] in n and nd[1] in n and nd[0] in n for n in
-                                       self.Mesh_obj.grid_number_dict.values()]) if x][0]
-        else:  # len is 3
-            current_grid = [i for i, x in
-                            enumerate([nd[2] in n and nd[1] in n and nd[0] in n for n in
-                                       self.Mesh_obj.grid_number_dict.values()]) if x][0]
 
         # begin loop
         while line_on:
@@ -640,89 +637,73 @@ class OpsGrillage:
             for long_ele in [self.Mesh_obj.long_ele[i] for i in long_ele_tags]:
                 pz1 = self.Mesh_obj.node_spec[long_ele[1]]['coordinate']  # point z 1
                 pz2 = self.Mesh_obj.node_spec[long_ele[2]]['coordinate']  # point z 2
-                # for current x_start, z_start, find second point within the bounds of
-                proxy_z = line_func(m=m, c=c, x=pz2[0])
-                L1 = line([pz1[0], pz1[2]], [pz2[0], pz2[2]])
-                L2 = line([x_start, z_start], [pz2[0], proxy_z])
-                R_z = intersection(L1, L2)
+                pz1 = Point(pz1[0],pz1[1],pz1[2]) # convert to point namedtuple
+                pz2 = Point(pz2[0],pz2[1],pz2[2]) # convert to point namedtuple
+                intersect_z = check_intersect(pz1,pz2,line_load_obj.load_point_1,line_load_obj.line_end_point)
 
-                # if R is not False, check if R is within bounds of pz1 and pz2
-                if R_z is not False:
+                if intersect_z:
                     # use decimal lib to remove floating point errors for logic comparison
-                    Rx = change_to_decimal(R_z[0])
-                    Rz = change_to_decimal(R_z[1])
-                    pz1x_d = change_to_decimal(pz1[0])
-                    pz1z_d = change_to_decimal(pz1[2])
-                    pz2x_d = change_to_decimal(pz2[0])
-                    pz2z_d = change_to_decimal(pz2[2])
-                    if all([Rx <= max(pz1x_d, pz2x_d), Rx >= min(pz1x_d, pz2x_d), Rz <= max(pz1z_d, pz2z_d),
-                            Rz >= min(pz1z_d, pz2z_d)]):
-                        next_grid_z = []
-                        # if true, line intersects, find next grid using the vicinity_dict of Mesh_obj
-                        vicinity_grid = self.Mesh_obj.grid_vicinity_dict[current_grid]
-                        # check if nodes is in either "top" or bottom keyword
-                        if long_ele[1] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("top", None), []) \
-                                and long_ele[2] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("top", None),
-                                                                                      []):
-                            next_grid_z = vicinity_grid.get("top", None)
-                        elif long_ele[1] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("bottom", None), []) \
-                                and long_ele[2] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("bottom", None),
-                                                                                      []):
-                            next_grid_z = vicinity_grid.get("bottom", None)
-                        long_intersect = True
+                    L1 = line([pz1.x, pz1.z], [pz2.x, pz2.z])
+                    L2 = line([x_start, z_start], [x_end, z_end])
+                    R_z = intersection(L1, L2)
+                    # if all([Rx <= max(pz1x_d, pz2x_d), Rx >= min(pz1x_d, pz2x_d), Rz <= max(pz1z_d, pz2z_d),
+                    #         Rz >= min(pz1z_d, pz2z_d)]):
+                    next_grid_z = []
+                    # if true, line intersects, find next grid using the vicinity_dict of Mesh_obj
+                    vicinity_grid = self.Mesh_obj.grid_vicinity_dict[current_grid]
+                    # check if nodes is in either "top" or bottom keyword
+                    if long_ele[1] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("top", None), []) \
+                            and long_ele[2] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("top", None),
+                                                                                  []):
+                        next_grid_z = vicinity_grid.get("top", None)
+                    elif long_ele[1] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("bottom", None), []) \
+                            and long_ele[2] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("bottom", None),
+                                                                                  []):
+                        next_grid_z = vicinity_grid.get("bottom", None)
+                    long_intersect = True
 
-                        if next_grid_z in self.line_grid_intersect.keys():
-                            long_intersect = False
-                        else:
-                            subdict['points'] = [[x_start, z_start], list(R_z)]
-                            break
-                    else:
+                    if next_grid_z in self.line_grid_intersect.keys():
                         long_intersect = False
+                    else:
+                        subdict['points'] = [[x_start, z_start], list(R_z)]
+                        break
+                    # else:
+                    #     long_intersect = False
                 elif current_grid in self.line_grid_intersect.keys():
                     long_intersect = False
             # check if intersects trans member
             for trans_ele in [self.Mesh_obj.trans_ele[i] for i in trans_ele_tags]:
                 px1 = self.Mesh_obj.node_spec[trans_ele[1]]['coordinate']  # point z 1
                 px2 = self.Mesh_obj.node_spec[trans_ele[2]]['coordinate']  # point z 2
-                # for current x_start, z_start, find second point within the bounds of
-                proxy_z = line_func(m=m, c=c, x=px2[0])
-                L1 = line([px1[0], px1[2]], [px2[0], px2[2]])
-                L2 = line([x_start, z_start], [px2[0], proxy_z])
-                R_x = intersection(L1, L2)
-                # if R is not False, check if R is within bounds of pz1 and pz2
-                if R_x is not False:
-                    # convert to decimal lib
-                    Rx = change_to_decimal(R_x[0])
-                    Rz = change_to_decimal(R_x[1])
-                    px1x_d = change_to_decimal(px1[0])
-                    px1z_d = change_to_decimal(px1[2])
-                    px2x_d = change_to_decimal(px2[0])
-                    px2z_d = change_to_decimal(px2[2])
+                px1 = Point(px1[0],px1[1],px1[2]) # convert to point namedtuple
+                px2 = Point(px2[0],px2[1],px2[2]) # convert to point namedtuple
+                intersect_x = check_intersect(px1,px2,line_load_obj.load_point_1,line_load_obj.line_end_point)
 
-                    if all([Rx <= max(px1x_d, px2x_d), Rx >= min(px1x_d, px2x_d), Rz <= max(px1z_d, px2z_d),
-                            Rz >= min(px1z_d, px2z_d)]):
-                        next_grid_x = []
-                        # if true, line intersects, find next grid using the vicinity_dict of Mesh_obj
-                        vicinity_grid = self.Mesh_obj.grid_vicinity_dict[current_grid]
-                        # check if nodes is in either "top" or bottom keyword
-                        if trans_ele[1] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("left", None), []) \
-                                and trans_ele[2] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("left", None),
-                                                                                       []):
-                            next_grid_x = vicinity_grid.get("left", None)
-                        elif trans_ele[1] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("right", None), []) \
-                                and trans_ele[2] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("right", None),
-                                                                                       []):
-                            next_grid_x = vicinity_grid.get("right", None)
-                        trans_intersect = True
-                        # if next grid has already been recorded (line tracks the previous intersecting grid),
-                        # exclude this intersection and move to next
-                        if next_grid_x in self.line_grid_intersect.keys():
-                            trans_intersect = False
-                        else:  # the new grid is not been crossed, record this grid as the intersecting
-                            subdict['points'] = [[x_start, z_start], list(R_x)]
-                            break
-                    else:
+                if intersect_x:
+                    L1 = line([px1.x, px1.z], [px2.x, px2.z])
+                    L2 = line([x_start, z_start], [x_end, z_end])
+                    R_x = intersection(L1, L2)
+
+                    next_grid_x = []
+                    # if true, line intersects, find next grid using the vicinity_dict of Mesh_obj
+                    vicinity_grid = self.Mesh_obj.grid_vicinity_dict[current_grid]
+                    # check if nodes is in either "top" or bottom keyword
+                    if trans_ele[1] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("left", None), []) \
+                            and trans_ele[2] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("left", None),
+                                                                                   []):
+                        next_grid_x = vicinity_grid.get("left", None)
+                    elif trans_ele[1] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("right", None), []) \
+                            and trans_ele[2] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("right", None),
+                                                                                   []):
+                        next_grid_x = vicinity_grid.get("right", None)
+                    trans_intersect = True
+                    # if next grid has already been recorded (line tracks the previous intersecting grid),
+                    # exclude this intersection and move to next
+                    if next_grid_x in self.line_grid_intersect.keys():
                         trans_intersect = False
+                    else:  # the new grid is not been crossed, record this grid as the intersecting
+                        subdict['points'] = [[x_start, z_start], list(R_x)]
+                        break
                 else:
                     trans_intersect = False
             # setting properties of next loop
@@ -736,17 +717,7 @@ class OpsGrillage:
                 x_start = R_z[0]
                 z_start = R_z[1]
             else:  # intersects neither - check if crosses edge
-                x_end = x_intcp_two_lines(m1=self.Mesh_obj.end_edge_line.slope, c1=self.Mesh_obj.end_edge_line.c,
-                                          m2=m, c2=c)
-                z_end = line_func(m=m, c=c, x=x_end)
-
-                # quantize x_end and z_end to remove floating point error
-                x_end_d = change_to_decimal(x_end)
-                z_end_d = change_to_decimal(z_end)
-                if max(pz1x_d, pz2x_d) >= x_end_d >= min(pz1x_d, pz2x_d) and max(px1z_d, px2z_d) >= z_end_d >= min(
-                        px1z_d, px2z_d):
-                    # line intersects the edge at current grid
-                    subdict['points'] = [[x_start, z_start], [x_end, z_end]]
+                subdict['points'] = [[x_start, z_start], [x_end, z_end]]
                 next_grid = current_grid
 
             # if no longer intersects any edges, set loop to false
@@ -761,26 +732,19 @@ class OpsGrillage:
 
             # save intersection point as x_intcp and z_intcp, repeat loop
             self.line_grid_intersect.setdefault(current_grid, subdict)
-
             # check if next grid is the final grid
             if set(nd) == set(last_nd):
                 line_on = False
                 # last grid achieved
                 subdict = dict()
-                subdict['points'] = [[x_start, z_start], [line_load_obj.line_end_point.x,line_load_obj.line_end_point.z]]
+                subdict['points'] = [[x_start, z_start],
+                                     [line_load_obj.line_end_point.x, line_load_obj.line_end_point.z]]
                 self.line_grid_intersect.setdefault(next_grid, subdict)
             # update nd, x_start, z_start for next loop
             nd = self.Mesh_obj.grid_number_dict[next_grid]
             counter += 1
             subdict = dict()  # reset subdict
         return self.line_grid_intersect
-
-    # Getter for Patch loads nodes
-    def get_patch_load_nodes(self,patch_load_obj):
-        # 1 loop through 4 lines of patchloadobj
-        # run getter for line nodes
-
-        pass
 
     # Setter for Point loads and above
     def assign_point_to_four_node(self, point, mag):
@@ -792,7 +756,7 @@ class OpsGrillage:
         """
 
         # search grid where the point lies in
-        grid_nodes= self.get_point_load_nodes(point=point)
+        grid_nodes = self.get_point_load_nodes(point=point)
         # if corner or edge grid with 3 nodes, run specific assignment for triangular grids
         # extract coordinates
         x1 = self.Mesh_obj.node_spec[grid_nodes[0]]['coordinate'][0]
@@ -802,7 +766,7 @@ class OpsGrillage:
         z2 = self.Mesh_obj.node_spec[grid_nodes[1]]['coordinate'][2]
         z3 = self.Mesh_obj.node_spec[grid_nodes[2]]['coordinate'][2]
         if len(grid_nodes) == 3:
-            Nv = ShapeFunction.linear_triangular(x=point[0],z=point[2],x1=x1,z1=z1,x2=x2,z2=z2,x3=x3,z3=z3)
+            Nv = ShapeFunction.linear_triangular(x=point[0], z=point[2], x1=x1, z1=z1, x2=x2, z2=z2, x3=x3, z3=z3)
             node_load = [mag * n for n in Nv]
         else:  # else run assignment for quadrilateral grids
 
@@ -891,7 +855,6 @@ class OpsGrillage:
                 load_case_counter = 0  # if dict empty, start counter at 1
             else:  # set load_case_counter variable as the latest
                 load_case_counter = self.load_case_dict[list(self.load_case_dict)[-1]]
-
                 wipe_command = "ops.wipeAnalysis()\n"
                 if self.pyfile:
                     file_handle.write(wipe_command)  # write wipeAnalysis for current load case
@@ -909,8 +872,7 @@ class OpsGrillage:
                 file_handle.write(pattern_command)
             else:
                 eval(pattern_command)
-            # print to terminal
-            print("Load Case {} created".format(name))
+
             # loop through each load object
             for loads in load_case_obj.load_groups:
                 if isinstance(loads, NodalLoad):
@@ -935,9 +897,9 @@ class OpsGrillage:
                     print("Line load - {loadname} - added to load case: {name}".format(loadname=loads.name, name=name))
 
                 elif isinstance(loads, PatchLoading):
-                    # TODO
-                    pass
 
+                    load_str = self.assign_patch_load(loads)
+                    pass
             # Create instance and write command to output py file
             file_handle.write("ops.integrator('LoadControl', 1)\n")  # Header
             file_handle.write("ops.numberer('Plain')\n")
@@ -947,13 +909,26 @@ class OpsGrillage:
             file_handle.write("ops.analysis(\"{}\")\n".format(analysis_type))
             file_handle.write("ops.analyze(1)\n")
 
+            # print to terminal
+            print("Load Case {} created".format(name))
+
     # setter for patch loads
-    def assign_patch_load(self):
+    def assign_patch_load(self, patch_load_obj: object) -> PatchLoading:
         # searches grid that encompass the patch load
         # use getter for line load, 4 times for each point
         # between 4 dictionaries record the common grids as having the corners of the patch - to be evaluated different
 
+        intersect_grid_1 = self.get_line_load_nodes(patch_load_obj.line_1)
+        # all lines are ordered in path counter clockwise (sort in PatchLoading)
+        # get nodes in grid that are left (check inside variable greater than 0)
         # for each grid, calculate
+        for grid, int_points in intersect_grid_1.items():
+            # get grid nodes
+            grid_nodes = self.Mesh_obj.grid_number_dict[grid]
+            # get two grid nodes
+
+            pass
+
         # 1 area of patch in the grid
 
         # 2. find midpoint of area
