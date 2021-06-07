@@ -7,7 +7,7 @@ from Material import *
 from member_sections import *
 from Mesh import *
 from itertools import combinations
-
+from scipy import integrate
 
 class OpsGrillage:
     """
@@ -69,15 +69,8 @@ class OpsGrillage:
         self.breadth = None  # to be calculated automatically based on skew
 
         # initialize lists
-        self.nox = []  # line mesh in x direction
-        self.noz = []  # line mesh in z direction
-        # initiate list of various elements of grillage model, each entry of list is a sublist [node_i, node_j, eletag]
-        self.long_mem = []  # longitudinal members
-        self.trans_mem = []  # transverse members
-        self.support_nodes = []  # list of nodes at support regions
         self.global_mat_object = []  # material matrix
-        self.noz_trib_width = []
-        self.nox_trib_width = []
+
         # initialize tags of grillage elements - default tags are for standard elements of grillage
         # Section placeholders
         self.section_arg = None
@@ -119,8 +112,6 @@ class OpsGrillage:
         self.fix_val_pin = [1, 1, 1, 0, 0, 0]  # pinned
         self.fix_val_roller_x = [0, 1, 1, 0, 0, 0]  # roller
         # special rules for grillage - alternative to Properties of grillage definition - use for special dimensions
-        self.nox_special = None  # array specifying custom coordinate of longitudinal nodes
-        self.noz_special = None  # array specifying custom coordinate of transverse nodes
         self.skew_threshold = [10, 30]  # threshold for grillage to allow option of mesh choices
         self.deci_tol = 4  # tol of decimal places
 
@@ -511,25 +502,9 @@ class OpsGrillage:
         y_closest = self.Mesh_obj.node_spec[closest_node[0]]['coordinate'][1]  # defined herein for future consideration
         z_closest = self.Mesh_obj.node_spec[closest_node[0]]['coordinate'][2]
 
-        # get vicinity nodes and sort ascending
+        # get vicinity nodes
         x_vicinity_nodes = self.Mesh_obj.node_connect_x_dict[closest_node[0]]
-        # if len(x_vicinity_nodes) > 1:
-        #     if self.Mesh_obj.node_spec[x_vicinity_nodes[0]]['coordinate'][0] > \
-        #             self.Mesh_obj.node_spec[x_vicinity_nodes[1]]['coordinate'][0]:
-        #         # flip the x_vicinity nodes
-        #         x_vicinity_nodes.reverse()
-        #
-        # x1 = self.Mesh_obj.node_spec[x_vicinity_nodes[0]]['coordinate'][0]
-        # x2 = self.Mesh_obj.node_spec[x_vicinity_nodes[1]]['coordinate'][0] if len(x_vicinity_nodes) > 1 else 0
-
         z_vicinity_nodes = self.Mesh_obj.node_connect_z_dict[closest_node[0]]
-        # if len(z_vicinity_nodes) > 1:
-        #     if self.Mesh_obj.node_spec[z_vicinity_nodes[0]]['coordinate'][2] > \
-        #             self.Mesh_obj.node_spec[z_vicinity_nodes[1]]['coordinate'][2]:
-        #         # flip the z_vicinity nodes
-        #         z_vicinity_nodes.reverse()
-        # z1 = self.Mesh_obj.node_spec[z_vicinity_nodes[0]]['coordinate'][2]
-        # z2 = self.Mesh_obj.node_spec[z_vicinity_nodes[1]]['coordinate'][2] if len(z_vicinity_nodes) > 1 else 0
 
         xg = []
         zg = []
@@ -581,7 +556,7 @@ class OpsGrillage:
                         continue
             node_list = self.Mesh_obj.grid_number_dict[n3[0]]
 
-        return node_list, n3[0] # n3 = grid number
+        return node_list, n3[0]  # n3 = grid number
 
         # pass shape function to distribute load to 4 points
 
@@ -746,6 +721,26 @@ class OpsGrillage:
             subdict = dict()  # reset subdict
         return self.line_grid_intersect
 
+    # Getter for Patch loads
+    def get_bounded_nodes(self, patch_load_obj):
+        point_list = [patch_load_obj.load_point_1, patch_load_obj.load_point_2, patch_load_obj.load_point_3, patch_load_obj.load_point_4]
+        bounded_node = []
+        bounded_grids = []
+        for node_tag, node_spec in self.Mesh_obj.node_spec.items():
+            coordinate = node_spec['coordinate']
+            node = Point(coordinate[0], coordinate[1], coordinate[2])
+            flag = check_point_in_grid(node, point_list)
+            if flag:
+                # node is inside
+                bounded_node.append(node_tag)
+        # check if nodes form grid
+        for grid_number, grid_nodes in self.Mesh_obj.grid_number_dict.items():
+            check = all([nodes in bounded_node for nodes in grid_nodes])
+            if check:
+                bounded_grids.append(grid_number)
+
+        return bounded_node, bounded_grids
+
     # Setter for Point loads and above
     def assign_point_to_four_node(self, point, mag):
         """
@@ -835,7 +830,7 @@ class OpsGrillage:
     # ----------------------------------------------------------------------------------------------------------
     #  functions to add load case and load combination
 
-    def add_load_case(self, name, load_case_obj, analysis_type='Static'):
+    def add_load_case(self, load_case_obj, analysis_type='Static'):
         """
         Functions to add loads or load cases
         :param name:
@@ -862,10 +857,10 @@ class OpsGrillage:
                     eval(wipe_command)
 
             # set load case to load_case_dict
-            load_case_tag = self.load_case_dict.setdefault(name, load_case_counter + 1)
+            load_case_tag = self.load_case_dict.setdefault(load_case_obj.name, load_case_counter + 1)
             # write header
             file_handle.write("#===========================\n# create load case {}\n#==========================\n"
-                              .format(name))
+                              .format(load_case_obj.name))
             # create pattern obj for load case
             pattern_command = "ops.pattern('Plain', {}, 1)\n".format(load_case_tag)
             if self.pyfile:
@@ -884,7 +879,7 @@ class OpsGrillage:
                             eval(lines)
                     # print to terminal com
                     print("Nodal load - {loadname} - added to load case: {loadcase}".format(loadname=loads.name,
-                                                                                            loadcase=name))
+                                                                                            loadcase=load_case_obj.name))
                 elif isinstance(loads, PointLoad):
                     # TODO
                     load_str = self.assign_point_to_four_node(point=list(loads.load_point_1)[:-1], mag=loads.Fy)
@@ -894,7 +889,7 @@ class OpsGrillage:
                     load_str = self.assign_line_to_four_node(loads)
                     for lines in load_str:
                         file_handle.write(lines)
-                    print("Line load - {loadname} - added to load case: {name}".format(loadname=loads.name, name=name))
+                    print("Line load - {loadname} - added to load case: {name}".format(loadname=loads.name, name=load_case_obj.name))
 
                 elif isinstance(loads, PatchLoading):
 
@@ -910,13 +905,19 @@ class OpsGrillage:
             file_handle.write("ops.analyze(1)\n")
 
             # print to terminal
-            print("Load Case {} created".format(name))
+            print("Load Case {} created".format(load_case_obj.name))
 
     # setter for patch loads
     def assign_patch_load(self, patch_load_obj: object) -> PatchLoading:
         # searches grid that encompass the patch load
         # use getter for line load, 4 times for each point
         # between 4 dictionaries record the common grids as having the corners of the patch - to be evaluated different
+        bound_node, bound_grid = self.get_bounded_nodes(patch_load_obj)
+        # assign patch for grids fully bounded by patch
+        for grid in bound_grid:
+            nodes = self.Mesh_obj.grid_number_dict[grid]
+            # get p value of each node
+
 
         intersect_grid_1 = self.get_line_load_nodes(patch_load_obj.line_1)
         # all lines are ordered in path counter clockwise (sort in PatchLoading)
@@ -926,7 +927,8 @@ class OpsGrillage:
             # get grid nodes
             grid_nodes = self.Mesh_obj.grid_number_dict[grid]
             # get two grid nodes
-
+            node_in_grid = [node in bound_node for node in grid_nodes]
+            [x for x, y in zip(grid_nodes, node_in_grid) if y]
             pass
 
         # 1 area of patch in the grid

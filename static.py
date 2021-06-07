@@ -254,12 +254,10 @@ def get_slope(pt1, pt2):
 
 
 def solve_zeta_eta(xp, zp, x1, z1, x2, z2, x3, z3, x4, z4):
+    # function to solve for eta and zeta of point in grid after mapping grid nodes (4) to four coordinate in
+    # a reference quadrilateral
     x, z = symbols('x,z')
-    # eta
-    # eq1 = Eq((4 * zp - (z1 + z2 + z3 + z4) - z * (-z1 - z2 + z3 + z4)) / (
-    #              x * (z1 * (z - 1) + z2 * (1 - z) + z3 * (z + 1) + z4 * (-z - 1))))
-    # eq2 = Eq((4 * xp - (x1 + x2 + x3 + x4) - z * (-x1 - x2 + x3 + x4)) / (
-    #              x * (x1 * (z - 1) + x2 * (1 - z) + x3 * (z + 1) + x4 * (-z - 1))))
+
     eq1 = Eq(
         4 * zp - ((1 - x) * (1 - z) * z1 + (1 + x) * (1 - z) * z2 + (1 + x) * (1 + z) * z3 + (1 - x) * (1 + z) * z4), 0)
     eq2 = Eq(
@@ -404,8 +402,35 @@ def check_intersect(p1, q1, p2, q2):
 
     # If none of the cases
     return False
-# --------------------------------------------------------------------------------------------
 
+
+# --------------------------------------------------------------------------------------------
+def find_centroid(point_list):
+    """
+    Function to find centroid given a set of vertices (for patch load). function calculates 2D plane x z - y plane is
+    the model plane.
+    :param point_list: list of Point() namedtuples
+    :type point_list: list
+    """
+    x = 0
+    z = 0
+    for point in point_list:
+        x += point.x
+        z += point.z
+    x_c = x / len(point_list)
+    z_c = z / len(point_list)
+    return [x_c, z_c]
+
+
+def sort_vertices(point_list):
+    center_x_z = find_centroid(point_list)
+    angle_list = []
+    for point in point_list:
+        # calculate angle
+        angle_list.append(np.arctan((point.z - center_x_z[1])/(point.x - center_x_z[0])))
+    # sort for counter clockwise
+    sorted_points = [x for _, x in sorted(zip(angle_list, point_list))]
+    return sorted_points
 
 # def change_to_decimal(number):
 # return Decimal(number).quantize(Decimal('1.000'))

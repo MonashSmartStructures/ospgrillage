@@ -73,17 +73,12 @@ lane_point_2 = LoadPoint(8, 0, 3, 5)
 lane_point_3 = LoadPoint(8, 0, 5, 5)
 lane_point_4 = LoadPoint(5, 0, 5, 5)
 Lane = PatchLoading("Lane 1", point1=lane_point_1, point2=lane_point_2, point3=lane_point_3, point4=lane_point_4)
-# a = example_bridge.get_line_load_nodes(Barrier)
-# print(a)
-# Directly add Load cases to Opensees model or, create LoadCase object and pass all loads
-# example_bridge.add_load_case("Concrete dead load case", DL, DL)
-# example_bridge.add_load_case("Lane 1", Lane)
 
 # --------------------------------------------------------------------------------------------------------------------
 # Load Case
 ULS_DL = LoadCase(name="ULS-DL")
 ULS_DL.add_load_groups(Lane)  # change here
-example_bridge.add_load_case(ULS_DL.name, ULS_DL)
+example_bridge.add_load_case(ULS_DL)
 
 # Load combination
 # example_bridge.add_load_combination(loadcase=[ULS_DL, SLS_LL], load_factor=[1.2, 1.7])

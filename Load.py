@@ -10,31 +10,9 @@ LoadPoint = namedtuple("Point", ["x", "y", "z", "p"])
 NodeForces = namedtuple("node_forces", ["Fx", "Fy", "Fz", "Mx", "My", "Mz"])
 Line = namedtuple("line", ["m", "c", "phi"])
 
+
 # ----------------------------------------------------------------------------------------------------------------
 # Loading classes
-# ---------------------------------------------------------------------------------------------------------------
-# class LoadCase:
-#     def __init__(self, name):
-#         self.name = name
-#         self.spec = dict()
-#         self.load_counter = 0
-#
-#     def add_nodal_load(self, node_tag, node_force):
-#         self.load_counter += 1
-#         self.spec["nodal_load-{}".format(self.load_counter)] = dict(
-#             node_tag=node_tag, Fx=node_force.Fx, Fy=node_force.Fy, Fz=node_force.Fz, Mx=node_force.Mx, My=node_force.
-#             My, Mz=node_force.Mz)
-#
-#     def add_point_load(self, position, Fy=0):
-#         self.load_counter += 1
-#         self.spec["nodal_load-{}".format(self.load_counter)] = dict(
-#             position=position, Fy=Fy)
-#
-#     def add_line_load(self):
-#         pass
-#
-#     def add_patch_load(self):
-#         pass
 # ---------------------------------------------------------------------------------------------------------------
 class Loads:
     """
@@ -132,7 +110,7 @@ class LineLoading(Loads):
                 [self.load_point_1.x, self.load_point_1.y, self.load_point_1.z],
                 [self.load_point_2.x, self.load_point_2.y, self.load_point_2.z])
             self.c = get_y_intcp(m=self.m, x=self.load_point_1.x, y=self.load_point_1.z)
-            self.angle = np.arctan(self.m) if self.m is not None else np.pi/2  # in radian
+            self.angle = np.arctan(self.m) if self.m is not None else np.pi / 2  # in radian
             self.line_end_point = self.load_point_2
             # namedTuple Line
             self.line_equation = Line(self.m, self.c, self.phi)
@@ -169,6 +147,7 @@ class LineLoading(Loads):
 class PatchLoading(Loads):
     def __init__(self, name, **kwargs):
         super().__init__(name, **kwargs)
+        a = sort_vertices([self.load_point_2,self.load_point_3,self.load_point_1,self.load_point_4])
         # if only four point is define , patch load is a four point straight line quadrilateral
         if self.load_point_5 is None:
             # create each line
@@ -176,6 +155,12 @@ class PatchLoading(Loads):
             self.line_2 = LineLoading("Patch load line 2", point1=self.load_point_2, point2=self.load_point_3)
             self.line_3 = LineLoading("Patch load line 3", point1=self.load_point_3, point2=self.load_point_4)
             self.line_4 = LineLoading("Patch load line 4", point1=self.load_point_4, point2=self.load_point_1)
+
+            # create equation of plane from four straight lines
+            v_12 = [self.load_point_2.x-self.load_point_1.x,self.load_point_2.z-self.load_point_1.z,self.load_point_2.p-self.load_point_1.p]
+            v_34 = [self.load_point_4.x-self.load_point_3.x,self.load_point_4.z-self.load_point_3.z,self.load_point_4.p-self.load_point_3.p]
+            # cross product
+            self.normal_vec = np.cross(v_12, v_34)
 
         elif self.load_point_8 is not None:
             # point 1 2 3
@@ -185,10 +170,14 @@ class PatchLoading(Loads):
             pass
         else:
             print("patch load points not valid")
-        # create line load object for each line
+
 
         print("Patch load object created: {} ".format(name))
 
+    def get_patch_magnitude(self):
+
+
+        pass
 
 # ---------------------------------------------------------------------------------------------------------------
 class LoadCase:
@@ -213,9 +202,9 @@ class ShapeFunction:
 
     def get_shape_function(self, option, eta=0, zeta=0):
         if option == "hermite":
-            return lambda: self.hermite_shape_function_2d(eta,zeta)
+            return lambda: self.hermite_shape_function_2d(eta, zeta)
         elif option == "linear":
-            return lambda: self.linear_shape_function(eta,zeta)
+            return lambda: self.linear_shape_function(eta, zeta)
         elif option == "triangle_linear":
             return lambda: self.linear_triangular
 
