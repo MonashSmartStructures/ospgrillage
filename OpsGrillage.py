@@ -9,6 +9,7 @@ from Mesh import *
 from itertools import combinations
 from scipy import integrate
 
+
 class OpsGrillage:
     """
     Main class of Openseespy grillage model wrapper. Outputs an executable py file which generates the prescribed
@@ -575,21 +576,21 @@ class OpsGrillage:
         c = line_load_obj.c
 
         # find grids where start point of line load lies in
-        start_nd,current_grid = self.get_point_load_nodes(line_load_obj.load_point_1)
+        start_nd, current_grid = self.get_point_load_nodes(line_load_obj.load_point_1)
         if start_nd is None:  # if point is not present (returned None), point lies outside of mesh, set
             # x_start and z_start be the point which line intersects the start span edge node line
             x_start = x_intcp_two_lines(m1=self.Mesh_obj.start_edge_line.slope, c1=self.Mesh_obj.start_edge_line.c,
                                         m2=m,
                                         c2=c)
             z_start = line_func(m=m, c=c, x=x_start)
-            nd,current_grid = self.get_point_load_nodes([x_start, self.y_elevation, z_start])  # list of nodes on grid
+            nd, current_grid = self.get_point_load_nodes([x_start, self.y_elevation, z_start])  # list of nodes on grid
         else:
             x_start = line_load_obj.load_point_1.x
             z_start = line_load_obj.load_point_1.z
             nd = start_nd
 
         # find last grid where the line load ends
-        last_nd,last_grid = self.get_point_load_nodes(line_load_obj.line_end_point)
+        last_nd, last_grid = self.get_point_load_nodes(line_load_obj.line_end_point)
         x_end = line_load_obj.line_end_point.x
         z_end = line_load_obj.line_end_point.z
         # while loop counter
@@ -612,9 +613,9 @@ class OpsGrillage:
             for long_ele in [self.Mesh_obj.long_ele[i] for i in long_ele_tags]:
                 pz1 = self.Mesh_obj.node_spec[long_ele[1]]['coordinate']  # point z 1
                 pz2 = self.Mesh_obj.node_spec[long_ele[2]]['coordinate']  # point z 2
-                pz1 = Point(pz1[0],pz1[1],pz1[2]) # convert to point namedtuple
-                pz2 = Point(pz2[0],pz2[1],pz2[2]) # convert to point namedtuple
-                intersect_z = check_intersect(pz1,pz2,line_load_obj.load_point_1,line_load_obj.line_end_point)
+                pz1 = Point(pz1[0], pz1[1], pz1[2])  # convert to point namedtuple
+                pz2 = Point(pz2[0], pz2[1], pz2[2])  # convert to point namedtuple
+                intersect_z = check_intersect(pz1, pz2, line_load_obj.load_point_1, line_load_obj.line_end_point)
 
                 if intersect_z:
                     # use decimal lib to remove floating point errors for logic comparison
@@ -650,9 +651,9 @@ class OpsGrillage:
             for trans_ele in [self.Mesh_obj.trans_ele[i] for i in trans_ele_tags]:
                 px1 = self.Mesh_obj.node_spec[trans_ele[1]]['coordinate']  # point z 1
                 px2 = self.Mesh_obj.node_spec[trans_ele[2]]['coordinate']  # point z 2
-                px1 = Point(px1[0],px1[1],px1[2]) # convert to point namedtuple
-                px2 = Point(px2[0],px2[1],px2[2]) # convert to point namedtuple
-                intersect_x = check_intersect(px1,px2,line_load_obj.load_point_1,line_load_obj.line_end_point)
+                px1 = Point(px1[0], px1[1], px1[2])  # convert to point namedtuple
+                px2 = Point(px2[0], px2[1], px2[2])  # convert to point namedtuple
+                intersect_x = check_intersect(px1, px2, line_load_obj.load_point_1, line_load_obj.line_end_point)
 
                 if intersect_x:
                     L1 = line([px1.x, px1.z], [px2.x, px2.z])
@@ -723,7 +724,8 @@ class OpsGrillage:
 
     # Getter for Patch loads
     def get_bounded_nodes(self, patch_load_obj):
-        point_list = [patch_load_obj.load_point_1, patch_load_obj.load_point_2, patch_load_obj.load_point_3, patch_load_obj.load_point_4]
+        point_list = [patch_load_obj.load_point_1, patch_load_obj.load_point_2, patch_load_obj.load_point_3,
+                      patch_load_obj.load_point_4]
         bounded_node = []
         bounded_grids = []
         for node_tag, node_spec in self.Mesh_obj.node_spec.items():
@@ -751,7 +753,7 @@ class OpsGrillage:
         """
 
         # search grid where the point lies in
-        grid_nodes = self.get_point_load_nodes(point=point)
+        grid_nodes,_ = self.get_point_load_nodes(point=point)
         # if corner or edge grid with 3 nodes, run specific assignment for triangular grids
         # extract coordinates
         x1 = self.Mesh_obj.node_spec[grid_nodes[0]]['coordinate'][0]
@@ -889,7 +891,8 @@ class OpsGrillage:
                     load_str = self.assign_line_to_four_node(loads)
                     for lines in load_str:
                         file_handle.write(lines)
-                    print("Line load - {loadname} - added to load case: {name}".format(loadname=loads.name, name=load_case_obj.name))
+                    print("Line load - {loadname} - added to load case: {name}".format(loadname=loads.name,
+                                                                                       name=load_case_obj.name))
 
                 elif isinstance(loads, PatchLoading):
 
@@ -915,18 +918,30 @@ class OpsGrillage:
         bound_node, bound_grid = self.get_bounded_nodes(patch_load_obj)
         # assign patch for grids fully bounded by patch
         for grid in bound_grid:
-            nodes = self.Mesh_obj.grid_number_dict[grid]
+            nodes = self.Mesh_obj.grid_number_dict[grid]  # read grid nodes
             # get p value of each node
+            p_list = []
+            for tag in nodes:
+                coord = self.Mesh_obj.node_spec[tag]["coordinate"]
+                p = patch_load_obj.patch_mag_interpolate(coord[0], coord[2])[0] # object function returns array like
+                p_list.append(LoadPoint(coord[0], coord[1], coord[2], p))
+            # get centroid of patch on grid
+            xc,yc,zc = get_patch_centroid(p_list)
+            inside_point = LoadPoint(xc,yc,zc,0)
+            # volume = area of base x average height
+            _, A = calculate_area_given_four_points(inside_point, p_list[0], p_list[1], p_list[2], p_list[3])
+            mag = A*sum([point.p for point in p_list])/len(p_list)
+            # assign point and mag to 4 nodes of grid
+            self.assign_point_to_four_node(point = [xc,yc,zc],mag=mag)
 
-
+        # assign patch load to intersecting grids
         intersect_grid_1 = self.get_line_load_nodes(patch_load_obj.line_1)
         # all lines are ordered in path counter clockwise (sort in PatchLoading)
         # get nodes in grid that are left (check inside variable greater than 0)
         # for each grid, calculate
         for grid, int_points in intersect_grid_1.items():
-            # get grid nodes
-            grid_nodes = self.Mesh_obj.grid_number_dict[grid]
-            # get two grid nodes
+            grid_nodes = self.Mesh_obj.grid_number_dict[grid]  # read grid nodes
+            # get two grid nodes bounded by patch
             node_in_grid = [node in bound_node for node in grid_nodes]
             [x for x, y in zip(grid_nodes, node_in_grid) if y]
             pass
@@ -935,9 +950,4 @@ class OpsGrillage:
 
         # 2. find midpoint of area
 
-        # 3 get magnitude of patch based on plane equation
-
-        # 4 integrate area with magnitude to get equivalent point load mag
-
-        # assign point and mag to 4 nodes of grid
         pass

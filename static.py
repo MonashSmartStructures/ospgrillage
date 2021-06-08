@@ -405,7 +405,7 @@ def check_intersect(p1, q1, p2, q2):
 
 
 # --------------------------------------------------------------------------------------------
-def find_centroid(point_list):
+def find_plane_centroid(point_list):
     """
     Function to find centroid given a set of vertices (for patch load). function calculates 2D plane x z - y plane is
     the model plane.
@@ -423,7 +423,7 @@ def find_centroid(point_list):
 
 
 def sort_vertices(point_list):
-    center_x_z = find_centroid(point_list)
+    center_x_z = find_plane_centroid(point_list)
     angle_list = []
     for point in point_list:
         # calculate angle
@@ -434,3 +434,19 @@ def sort_vertices(point_list):
 
 # def change_to_decimal(number):
 # return Decimal(number).quantize(Decimal('1.000'))
+
+
+def get_patch_centroid(point_list):
+    m_total = []
+    mx = 0
+    my = 0
+    mz = 0
+    for point in point_list:
+        m_total.append(point.p)
+        mx += point.x*point.p
+        mz += point.z*point.p
+        my += point.y*point.p
+    xc = mx/sum(m_total)
+    zc = mz/sum(m_total)
+    yc = my/sum(m_total)
+    return xc,yc,zc

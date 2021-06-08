@@ -1,7 +1,7 @@
 import pprint
 from collections.abc import Iterable
 from typing import Type
-
+from scipy import interpolate
 from static import *
 from collections import namedtuple
 
@@ -49,8 +49,6 @@ class Loads:
         # init dict
         self.spec = dict()  # dict {node number: {Fx:val, Fy:val, Fz:val, Mx:val, My:val, Mz:val}}
         self.load_counter = 0
-
-        # function to sort points in counter clockwise
 
     def __str__(self):
         return "LoadCase {} \n".format(self.name) + pprint.pformat(self.spec)
@@ -157,10 +155,15 @@ class PatchLoading(Loads):
             self.line_4 = LineLoading("Patch load line 4", point1=self.load_point_4, point2=self.load_point_1)
 
             # create equation of plane from four straight lines
-            v_12 = [self.load_point_2.x-self.load_point_1.x,self.load_point_2.z-self.load_point_1.z,self.load_point_2.p-self.load_point_1.p]
-            v_34 = [self.load_point_4.x-self.load_point_3.x,self.load_point_4.z-self.load_point_3.z,self.load_point_4.p-self.load_point_3.p]
-            # cross product
-            self.normal_vec = np.cross(v_12, v_34)
+
+            # create interpolate object f
+            x = [self.load_point_1.x,self.load_point_2.x,self.load_point_3.x,self.load_point_4.x]
+            z = [self.load_point_1.z,self.load_point_2.z,self.load_point_3.z,self.load_point_4.z]
+            p = np.array([[self.load_point_1.p,self.load_point_2.p],[self.load_point_3.p,self.load_point_4.p]])
+            x = np.array([[self.load_point_1.x,self.load_point_2.x],[self.load_point_3.x,self.load_point_4.x]])
+            z = np.array([[self.load_point_1.z,self.load_point_2.z],[self.load_point_3.z,self.load_point_4.z]])
+
+            self.patch_mag_interpolate = interpolate.interp2d(x,z,p)
 
         elif self.load_point_8 is not None:
             # point 1 2 3
@@ -170,6 +173,7 @@ class PatchLoading(Loads):
             pass
         else:
             print("patch load points not valid")
+
 
 
         print("Patch load object created: {} ".format(name))
