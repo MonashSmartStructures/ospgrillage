@@ -63,8 +63,8 @@ if not pyfile:
 location = LoadPoint(5, 0, 2, 20)  # create load point
 Single = PointLoad(name="single point", point1=location)
 # Line load
-barrierpoint_1 = LoadPoint(0, 0, 5, 2)
-barrierpoint_2 = LoadPoint(5, 0, 5, 2)
+barrierpoint_1 = LoadPoint(3, 0, 3, 2)
+barrierpoint_2 = LoadPoint(10, 0, 3, 2)
 Barrier = LineLoading("Barrier curb load", point1=barrierpoint_1, point2=barrierpoint_2)
 
 # Patch load - lane loading
@@ -84,6 +84,4 @@ example_bridge.add_load_case(ULS_DL)
 # example_bridge.add_load_combination(loadcase=[ULS_DL, SLS_LL], load_factor=[1.2, 1.7])
 
 # --------------------------------------------------------------------------------------------------------------------
-# # plotting commands
 
-# print(ops.eleNodes(20))

@@ -427,10 +427,11 @@ def sort_vertices(point_list):
     angle_list = []
     for point in point_list:
         # calculate angle
-        angle_list.append(np.arctan((point.z - center_x_z[1])/(point.x - center_x_z[0])))
+        angle_list.append(np.arctan((point.z - center_x_z[1]) / (point.x - center_x_z[0])))
     # sort for counter clockwise
     sorted_points = [x for _, x in sorted(zip(angle_list, point_list))]
     return sorted_points
+
 
 # def change_to_decimal(number):
 # return Decimal(number).quantize(Decimal('1.000'))
@@ -443,10 +444,28 @@ def get_patch_centroid(point_list):
     mz = 0
     for point in point_list:
         m_total.append(point.p)
-        mx += point.x*point.p
-        mz += point.z*point.p
-        my += point.y*point.p
-    xc = mx/sum(m_total)
-    zc = mz/sum(m_total)
-    yc = my/sum(m_total)
-    return xc,yc,zc
+        mx += point.x * point.p
+        mz += point.z * point.p
+        my += point.y * point.p
+    xc = mx / sum(m_total)
+    zc = mz / sum(m_total)
+    yc = my / sum(m_total)
+    return xc, yc, zc
+
+
+# abstracted function for assigning patch loading
+def check_dict_same_keys(d_1, d_2):
+    merged = {**d_1,**d_2}
+    # function to check if two dicts have same key
+    same_key = [k in d_2 for k in d_1.keys()]
+    if any(same_key):
+        common_key = [k for (k, v) in zip(d_1, same_key) if v]
+        # get val from d_1 and d_2
+        for grid in common_key: # key is grid number
+            first_list = d_1[grid]
+            second_list = d_2[grid]
+            updated_list = first_list
+            updated_list.extend(point for point in second_list if point not in updated_list)
+            merged.update({grid:updated_list})
+    return merged
+

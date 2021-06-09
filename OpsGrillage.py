@@ -7,7 +7,6 @@ from Material import *
 from member_sections import *
 from Mesh import *
 from itertools import combinations
-from scipy import integrate
 
 
 class OpsGrillage:
@@ -71,7 +70,7 @@ class OpsGrillage:
 
         # initialize lists
         self.global_mat_object = []  # material matrix
-
+        self.global_line_int_dict = []
         # initialize tags of grillage elements - default tags are for standard elements of grillage
         # Section placeholders
         self.section_arg = None
@@ -124,7 +123,7 @@ class OpsGrillage:
         # counters to keep track of objects for loading
         self.load_case_counter = 1
         self.load_combination_counter = 1
-        self.line_grid_intersect = dict()  # keep track of grids
+
         # Initiate py file output
         self.filename = "{}_op.py".format(self.model_name)
         # create namedtuples
@@ -599,8 +598,10 @@ class OpsGrillage:
         long_intersect = False
         trans_intersect = False
         line_on = True
-        subdict = {}
-
+        subdict_long = []
+        subdict_trans = []
+        subdict = []
+        line_grid_intersect = {} # main dict to populate
         # begin loop
         while line_on:
             # find indices for long member and transverse member
@@ -638,14 +639,13 @@ class OpsGrillage:
                         next_grid_z = vicinity_grid.get("bottom", None)
                     long_intersect = True
 
-                    if next_grid_z in self.line_grid_intersect.keys():
+                    if next_grid_z in line_grid_intersect.keys():
                         long_intersect = False
                     else:
-                        subdict['points'] = [[x_start, z_start], list(R_z)]
+                        subdict_long = [[x_start, z_start], list(R_z)]
                         break
-                    # else:
-                    #     long_intersect = False
-                elif current_grid in self.line_grid_intersect.keys():
+
+                elif current_grid in line_grid_intersect.keys():
                     long_intersect = False
             # check if intersects trans member
             for trans_ele in [self.Mesh_obj.trans_ele[i] for i in trans_ele_tags]:
@@ -675,10 +675,10 @@ class OpsGrillage:
                     trans_intersect = True
                     # if next grid has already been recorded (line tracks the previous intersecting grid),
                     # exclude this intersection and move to next
-                    if next_grid_x in self.line_grid_intersect.keys():
+                    if next_grid_x in line_grid_intersect.keys():
                         trans_intersect = False
                     else:  # the new grid is not been crossed, record this grid as the intersecting
-                        subdict['points'] = [[x_start, z_start], list(R_x)]
+                        subdict_trans = [[x_start, z_start], list(R_x)]
                         break
                 else:
                     trans_intersect = False
@@ -688,14 +688,16 @@ class OpsGrillage:
                 next_grid = next_grid_x
                 x_start = R_x[0]
                 z_start = R_x[1]
+                line_grid_intersect.setdefault(current_grid, subdict_trans)
             elif long_intersect:  # if intersect long member, set respective intersection point R_z
                 next_grid = next_grid_z
                 x_start = R_z[0]
                 z_start = R_z[1]
+                line_grid_intersect.setdefault(current_grid, subdict_long)
             else:  # intersects neither - check if crosses edge
-                subdict['points'] = [[x_start, z_start], [x_end, z_end]]
+                subdict = [[x_start, z_start], [x_end, z_end]]
                 next_grid = current_grid
-
+                line_grid_intersect.setdefault(current_grid, subdict)
             # if no longer intersects any edges, set loop to false
             if not any([trans_intersect, long_intersect]):
                 line_on = False
@@ -706,21 +708,20 @@ class OpsGrillage:
                 # intersect with end edge span
                 line_on = False
 
-            # save intersection point as x_intcp and z_intcp, repeat loop
-            self.line_grid_intersect.setdefault(current_grid, subdict)
             # check if next grid is the final grid
             if set(nd) == set(last_nd):
                 line_on = False
                 # last grid achieved
-                subdict = dict()
-                subdict['points'] = [[x_start, z_start],
+                subdict = []
+                subdict = [[x_start, z_start],
                                      [line_load_obj.line_end_point.x, line_load_obj.line_end_point.z]]
-                self.line_grid_intersect.setdefault(next_grid, subdict)
+                line_grid_intersect.setdefault(next_grid, subdict)
             # update nd, x_start, z_start for next loop
             nd = self.Mesh_obj.grid_number_dict[next_grid]
             counter += 1
-            subdict = dict()  # reset subdict
-        return self.line_grid_intersect
+            subdict_long = []  # reset subdict
+            subdict_trans = []
+        return line_grid_intersect
 
     # Getter for Patch loads
     def get_bounded_nodes(self, patch_load_obj):
@@ -789,7 +790,7 @@ class OpsGrillage:
         return load_str
 
     # Setter for Line loads and above
-    def assign_line_to_four_node(self, line_load_obj):
+    def assign_line_to_four_node(self, line_load_obj, line_grid_intersect):
         """
         Function to assign line load to mesh. Procedure to assign line load is as follows:
         #. get properties of line on the grid
@@ -799,6 +800,7 @@ class OpsGrillage:
          properties
 
         :param line_load_obj: Lineloading class object containing the line load properties
+        :param line_grid_intersect: dict containing intersecting grid as key and intersecting points as values (list)
         :type line_load_obj: LineLoading class
         :return load_str_line: list containing strings of ops commands to be handled either - write to file
                                 or eval()
@@ -806,12 +808,12 @@ class OpsGrillage:
 
         # loop each grid
         load_str_line = []
-        for grid, points in self.line_grid_intersect.items():
+        for grid, points in line_grid_intersect.items():
             # grid_nodes = self.Mesh_obj.grid_number_dict[grid]
 
             # extract points [x,z], default y = 0 plane
-            p1 = points['points'][0]
-            p2 = points['points'][1]
+            p1 = points[0]
+            p2 = points[1]
             # get length of line
             L = np.sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2)
 
@@ -840,7 +842,7 @@ class OpsGrillage:
         :param analysis_type:
         :return:
         """
-
+        self.global_load_str = []
         with open(self.filename, 'a') as file_handle:
             # if no load cases have been defined previously, create time series object for the first time
             if not bool(self.load_case_dict):
@@ -884,18 +886,18 @@ class OpsGrillage:
                                                                                             loadcase=load_case_obj.name))
                 elif isinstance(loads, PointLoad):
                     # TODO
-                    load_str = self.assign_point_to_four_node(point=list(loads.load_point_1)[:-1], mag=loads.Fy)
-
+                    load_str = self.assign_point_to_four_node(point=list(loads.load_point_1)[:-1], mag=loads.load_point_1.p)
+                    self.global_load_str.append(load_str)
                 elif isinstance(loads, LineLoading):
-                    self.get_line_load_nodes(loads)  # returns self.line_grid_intersect
-                    load_str = self.assign_line_to_four_node(loads)
+                    line_grid_intersect = self.get_line_load_nodes(loads)  # returns self.line_grid_intersect
+                    self.global_line_int_dict.append(line_grid_intersect)
+                    load_str = self.assign_line_to_four_node(loads, line_grid_intersect)
                     for lines in load_str:
                         file_handle.write(lines)
                     print("Line load - {loadname} - added to load case: {name}".format(loadname=loads.name,
                                                                                        name=load_case_obj.name))
 
                 elif isinstance(loads, PatchLoading):
-
                     load_str = self.assign_patch_load(loads)
                     pass
             # Create instance and write command to output py file
@@ -914,6 +916,7 @@ class OpsGrillage:
     def assign_patch_load(self, patch_load_obj: object) -> PatchLoading:
         # searches grid that encompass the patch load
         # use getter for line load, 4 times for each point
+        self.global_patch_int_dict = dict()
         # between 4 dictionaries record the common grids as having the corners of the patch - to be evaluated different
         bound_node, bound_grid = self.get_bounded_nodes(patch_load_obj)
         # assign patch for grids fully bounded by patch
@@ -934,12 +937,21 @@ class OpsGrillage:
             # assign point and mag to 4 nodes of grid
             self.assign_point_to_four_node(point = [xc,yc,zc],mag=mag)
 
-        # assign patch load to intersecting grids
+        # search the intersecting grids using line load function
         intersect_grid_1 = self.get_line_load_nodes(patch_load_obj.line_1)
+        intersect_grid_2 = self.get_line_load_nodes(patch_load_obj.line_2)
+        intersect_grid_3 = self.get_line_load_nodes(patch_load_obj.line_3)
+        intersect_grid_4 = self.get_line_load_nodes(patch_load_obj.line_4)
+        #
+        merged = check_dict_same_keys(intersect_grid_1,intersect_grid_2)
+        merged = check_dict_same_keys(merged,intersect_grid_3)
+        merged = check_dict_same_keys(merged,intersect_grid_4)
+        self.global_patch_int_dict.update(merged)  # save intersect grid dict to global dict
+
         # all lines are ordered in path counter clockwise (sort in PatchLoading)
         # get nodes in grid that are left (check inside variable greater than 0)
         # for each grid, calculate
-        for grid, int_points in intersect_grid_1.items():
+        for grid, int_points in merged.items():
             grid_nodes = self.Mesh_obj.grid_number_dict[grid]  # read grid nodes
             # get two grid nodes bounded by patch
             node_in_grid = [node in bound_node for node in grid_nodes]
