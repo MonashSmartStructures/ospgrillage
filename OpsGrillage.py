@@ -579,6 +579,8 @@ class OpsGrillage:
 
         # find grids where start point of line load lies in
         start_nd, current_grid = self.get_point_load_nodes(line_load_obj.load_point_1)
+        last_nd, last_grid = self.get_point_load_nodes(line_load_obj.line_end_point)
+
         if start_nd is None:  # if point is not present (returned None), point lies outside of mesh, set
             # x_start and z_start be the point which line intersects the start span edge node line
             # TODO change to check intersection of line segment instead
@@ -592,8 +594,6 @@ class OpsGrillage:
             z_start = line_load_obj.load_point_1.z
             nd = start_nd
 
-        # find last grid where the line load ends
-        last_nd, last_grid = self.get_point_load_nodes(line_load_obj.line_end_point)
         if last_nd is None:
             # TODO change to check intersection of line segment instead
             x_end = x_intcp_two_lines(m1=self.Mesh_obj.end_edge_line.slope, c1=self.Mesh_obj.end_edge_line.c,
@@ -614,7 +614,7 @@ class OpsGrillage:
         subdict_long = []
         subdict_trans = []
         subdict = []
-        line_grid_intersect = {} # main dict to populate
+        line_grid_intersect = {}  # main dict to populate
         # begin loop
         while line_on:
             # find indices for long member and transverse member
@@ -629,9 +629,14 @@ class OpsGrillage:
                 pz2 = self.Mesh_obj.node_spec[long_ele[2]]['coordinate']  # point z 2
                 pz1 = Point(pz1[0], pz1[1], pz1[2])  # convert to point namedtuple
                 pz2 = Point(pz2[0], pz2[1], pz2[2])  # convert to point namedtuple
-                intersect_z = check_intersect(pz1, pz2, line_load_obj.load_point_1, line_load_obj.line_end_point)
-
-                if intersect_z:
+                intersect_z, colinear_z = check_intersect(pz1, pz2, line_load_obj.load_point_1, line_load_obj.line_end_point)
+                if colinear_z:
+                    # line is colinear to long ele, start and end points are
+                    if pz1.x < x_start:
+                        subdict_long = [[x_start, z_start], [pz2.x,pz2.z]]
+                    else:
+                        subdict_long = [[x_start, z_start], [pz1.x, pz1.z]]
+                elif intersect_z:
                     # use decimal lib to remove floating point errors for logic comparison
                     L1 = line([pz1.x, pz1.z], [pz2.x, pz2.z])
                     L2 = line([x_start, z_start], [x_end, z_end])
@@ -666,9 +671,14 @@ class OpsGrillage:
                 px2 = self.Mesh_obj.node_spec[trans_ele[2]]['coordinate']  # point z 2
                 px1 = Point(px1[0], px1[1], px1[2])  # convert to point namedtuple
                 px2 = Point(px2[0], px2[1], px2[2])  # convert to point namedtuple
-                intersect_x = check_intersect(px1, px2, line_load_obj.load_point_1, line_load_obj.line_end_point)
-
-                if intersect_x:
+                intersect_x,colinear_x = check_intersect(px1, px2, line_load_obj.load_point_1, line_load_obj.line_end_point)
+                if colinear_x:
+                    # line is colinear to long ele, start and end points are
+                    if px1.x < x_start:
+                        subdict_trans = [[x_start, z_start], [px2.x, px2.z]]
+                    else:
+                        subdict_trans = [[x_start, z_start], [px1.x, px1.z]]
+                elif intersect_x:
                     L1 = line([px1.x, px1.z], [px2.x, px2.z])
                     L2 = line([x_start, z_start], [x_end, z_end])
                     R_x = intersection(L1, L2)

@@ -766,37 +766,37 @@ class Mesh:
 
         return start_point_x, z0
 
-    def get_node(self, option="all", **kwargs, ):
-        """
-        Function to search nodes given the input keyword arguments.
-        :param option:
-        :param kwargs: nodetag or coordinate
-        :return:
-        """
-        # preset input variables of node searching
-        nodetag = []
-        coordinate = []
-        node_list = list(self.node_spec.keys())
-        subdict_val_list = list(self.node_spec.values())
-        for key, value in kwargs.items():
-            if key == "tag":
-                nodetag.append(value)
-            elif key == "coordinate":
-                coordinate.append(value)
-
-        for tag in nodetag:
-            # get correct sublist
-            node_details = subdict_val_list[tag]  # get subdict
-
-        for coord in coordinate:
-            for pos, spec in enumerate(subdict_val_list):
-                if spec["coordinate"] == repr(coord):
-                    break
-            return node_list[pos]
-        if option == "all":
-            return node_details
-        elif option == "coordinate":
-            return node_details['coordinate']
+    # def get_node(self, option="all", **kwargs, ):
+    #     """
+    #     Function to search nodes given the input keyword arguments.
+    #     :param option:
+    #     :param kwargs: nodetag or coordinate
+    #     :return:
+    #     """
+    #     # preset input variables of node searching
+    #     nodetag = []
+    #     coordinate = []
+    #     node_list = list(self.node_spec.keys())
+    #     subdict_val_list = list(self.node_spec.values())
+    #     for key, value in kwargs.items():
+    #         if key == "tag":
+    #             nodetag.append(value)
+    #         elif key == "coordinate":
+    #             coordinate.append(value)
+    #
+    #     for tag in nodetag:
+    #         # get correct sublist
+    #         node_details = subdict_val_list[tag]  # get subdict
+    #
+    #     for coord in coordinate:
+    #         for pos, spec in enumerate(subdict_val_list):
+    #             if spec["coordinate"] == repr(coord):
+    #                 break
+    #         return node_list[pos]
+    #     if option == "all":
+    #         return node_details
+    #     elif option == "coordinate":
+    #         return node_details['coordinate']
 
 
 class EdgeConstructionLine:
@@ -842,11 +842,25 @@ class EdgeConstructionLine:
 
 # TODO transfer definition of sweep path into class here. Add functions for curve lines
 class SweepPath:
-    def __init__(self, x1, z1, x2, z2, x3, z3, y1=0, y2=0, y3=0):
-        pass
+    def __init__(self, pt1,pt2,pt3):
+        self.decimal_lim = 4
+        try:
+            self.d = findCircle(x1=0, y1=0, x2=pt2.x, y2=pt2.z, x3=pt3.x, y3=pt3.z)
+            self.curve = True
+            # TODO allow for arbitrary sweep path
+            # procedure
+            # get tangent at origin
+            zeta = 0
+        except ZeroDivisionError:
+            print("3 points result in straight line - not a circle")
+            self.d = None
+            # procedure to identify straight line segment pinpointing length of grillage
+            points = [(pt1.x, pt1.z), (pt3.x, pt3.z)]
+            x_coords, y_coords = zip(*points)
+            A = np.vstack([x_coords, np.ones(len(x_coords))]).T
+            m, c = np.linalg.lstsq(A, y_coords, rcond=None)[0]
+            self.m = round(m, self.decimal_lim)
+            # self.c = 0  # default 0  to avoid arithmetic error
+            zeta = np.arctan(m)  # initial angle of inclination of sweep line about mesh origin
+            self.zeta = zeta / np.pi * 180  # rad to degrees
 
-    def gradient(self):
-        pass
-
-    def y_intercept(self):
-        pass

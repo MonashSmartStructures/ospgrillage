@@ -378,6 +378,9 @@ def orientation(p, q, r):
 
 # Function returns true if the line segment 'p1q1' and 'p2q2' intersect.
 def check_intersect(p1, q1, p2, q2):
+    # ref https://www.geeksforgeeks.org/check-if-two-given-line-segments-intersect/
+    general_intersect = False
+    colinear = False
     # Find the 4 orientations required for
     # the general and special cases
     o1 = orientation(p1, q1, p2)
@@ -387,27 +390,37 @@ def check_intersect(p1, q1, p2, q2):
 
     # General case
     if (o1 != o2) and (o3 != o4):
-        return True
+        general_intersect = True
+        colinear = False
+        return general_intersect,colinear
 
     # Special Cases
     # p1 , q1 and p2 are colinear and p2 lies on segment p1q1
     if (o1 == 0) and onSegment(p1, p2, q1):
-        return True
+        general_intersect = True
+        colinear = True
+        return general_intersect,colinear
 
     # p1 , q1 and q2 are colinear and q2 lies on segment p1q1
     if (o2 == 0) and onSegment(p1, q2, q1):
-        return True
+        general_intersect = True
+        colinear = True
+        return general_intersect,colinear
 
     # p2 , q2 and p1 are colinear and p1 lies on segment p2q2
     if (o3 == 0) and onSegment(p2, p1, q2):
-        return True
+        general_intersect = True
+        colinear = True
+        return general_intersect,colinear
 
     # p2 , q2 and q1 are colinear and q1 lies on segment p2q2
     if (o4 == 0) and onSegment(p2, q1, q2):
-        return True
+        general_intersect = True
+        colinear = True
+        return general_intersect,colinear
 
     # If none of the cases
-    return False
+    return general_intersect,colinear
 
 
 # --------------------------------------------------------------------------------------------

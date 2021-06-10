@@ -117,6 +117,28 @@ def test_line_load(create_reference_bridge):
                                                       31: [[10.0, 3.0000000000000013], [10, 3]]}
 
 
+def test_line_load_coincide(create_reference_bridge):
+    # when set line load z coordinate to z = 0 , test if line returns correct coincide node lines
+    ops.wipe()
+    example_bridge = create_reference_bridge
+    # create reference line load
+    barrierpoint_1 = LoadPoint(3, 0, 0, 2)
+    barrierpoint_2 = LoadPoint(10, 0, 0, 2)
+    Barrier = LineLoading("Barrier curb load", point1=barrierpoint_1, point2=barrierpoint_2)
+    ULS_DL = LoadCase(name="Barrier")
+    ULS_DL.add_load_groups(Barrier)  # ch
+    example_bridge.add_load_case(ULS_DL)
+
+    assert example_bridge.global_line_int_dict == [
+        {2: [[3, 0], [3.1514141550424397, -0.0]], 5: [[3.1514141550424397, -0.0], [4.276919210414739, -0.0]],
+         9: [[4.276919210414739, -0.0], [5.402424265787039, -0.0]],
+         14: [[5.402424265787039, -0.0], [6.302828310084879, -0.0]],
+         20: [[6.302828310084879, -0.0], [7.227121232563659, -0.0]],
+         54: [[7.227121232563659, -0.0], [8.15141415504244, -0.0]],
+         60: [[8.15141415504244, -0.0], [9.07570707752122, -0.0]], 27: [[9.07570707752122, -0.0], [10.0, -0.0]],
+         28: [[10.0, -0.0], [10, 0]]}]
+
+
 def test_patch_load(create_reference_bridge):
     ops.wipe()
     pass
@@ -128,5 +150,7 @@ def test_patch_load(create_reference_bridge):
 
 def test_sort_vertices():
     # test if sort vertice function returns a clockwise
-    point_list = [LoadPoint(x=8, y=0, z=3, p=5), LoadPoint(x=8, y=0, z=5, p=5), LoadPoint(x=5, y=0, z=3, p=5), LoadPoint(x=5, y=0, z=5, p=5)]
-    assert sort_vertices(point_list) == [LoadPoint(x=5, y=0, z=3, p=5),LoadPoint(x=8, y=0, z=3, p=5), LoadPoint(x=8, y=0, z=5, p=5), LoadPoint(x=5, y=0, z=5, p=5)]
+    point_list = [LoadPoint(x=8, y=0, z=3, p=5), LoadPoint(x=8, y=0, z=5, p=5), LoadPoint(x=5, y=0, z=3, p=5),
+                  LoadPoint(x=5, y=0, z=5, p=5)]
+    assert sort_vertices(point_list) == [LoadPoint(x=5, y=0, z=3, p=5), LoadPoint(x=8, y=0, z=3, p=5),
+                                         LoadPoint(x=8, y=0, z=5, p=5), LoadPoint(x=5, y=0, z=5, p=5)]
