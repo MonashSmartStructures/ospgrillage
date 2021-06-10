@@ -157,12 +157,11 @@ class PatchLoading(Loads):
             # create equation of plane from four straight lines
 
             # create interpolate object f
-            x = [self.load_point_1.x,self.load_point_2.x,self.load_point_3.x,self.load_point_4.x]
-            z = [self.load_point_1.z,self.load_point_2.z,self.load_point_3.z,self.load_point_4.z]
             p = np.array([[self.load_point_1.p,self.load_point_2.p],[self.load_point_3.p,self.load_point_4.p]])
             x = np.array([[self.load_point_1.x,self.load_point_2.x],[self.load_point_3.x,self.load_point_4.x]])
             z = np.array([[self.load_point_1.z,self.load_point_2.z],[self.load_point_3.z,self.load_point_4.z]])
 
+            # create function to get interpolation of p
             self.patch_mag_interpolate = interpolate.interp2d(x,z,p)
 
         elif self.load_point_8 is not None:
@@ -178,10 +177,6 @@ class PatchLoading(Loads):
 
         print("Patch load object created: {} ".format(name))
 
-    def get_patch_magnitude(self):
-
-
-        pass
 
 # ---------------------------------------------------------------------------------------------------------------
 class LoadCase:
@@ -193,7 +188,13 @@ class LoadCase:
         for loads in args:
             self.load_groups.append(loads)
 
+    def add_compound_load_group(self,*args):
+        for loads in args:
+            pass
 
+    def add_moving_load(self,*args):
+
+        pass
 # ---------------------------------------------------------------------------------------------------------------
 class ShapeFunction:
     """

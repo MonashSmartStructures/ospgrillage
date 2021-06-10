@@ -487,7 +487,7 @@ class OpsGrillage:
             y = point[1]  # default y = self.y_elevation = 0
             z = point[2]
             # set point to tuple
-            loading_point = Point(x, y, z)  # TODO change this next time when converting to use Point() tuple
+            loading_point = Point(x, y, z)
         elif isinstance(point, LoadPoint):
             loading_point = point
         node_distance = []
@@ -532,7 +532,9 @@ class OpsGrillage:
                       self.Mesh_obj.node_spec[z_node]['coordinate'][2] <= z_closest]
         # if point is not within the grid
         if not n2 and not n4:  # point is not in the grid ,
-            return None
+            node_list = None
+            n3 = None
+            return node_list, n3
         else:  # run check
             if not n2:  # if n2 is empty - search using n1 and n4
                 n3 = [k for k, v in enumerate(self.Mesh_obj.grid_number_dict.values()) if n1 in v and n4[0] in v]
@@ -554,6 +556,7 @@ class OpsGrillage:
                     if inside_flag:
                         n3 = [grid_number]  # overwrite n3 as grid where node is situated inside
                         continue
+
             node_list = self.Mesh_obj.grid_number_dict[n3[0]]
 
         return node_list, n3[0]  # n3 = grid number
@@ -578,6 +581,7 @@ class OpsGrillage:
         start_nd, current_grid = self.get_point_load_nodes(line_load_obj.load_point_1)
         if start_nd is None:  # if point is not present (returned None), point lies outside of mesh, set
             # x_start and z_start be the point which line intersects the start span edge node line
+            # TODO change to check intersection of line segment instead
             x_start = x_intcp_two_lines(m1=self.Mesh_obj.start_edge_line.slope, c1=self.Mesh_obj.start_edge_line.c,
                                         m2=m,
                                         c2=c)
@@ -590,8 +594,17 @@ class OpsGrillage:
 
         # find last grid where the line load ends
         last_nd, last_grid = self.get_point_load_nodes(line_load_obj.line_end_point)
-        x_end = line_load_obj.line_end_point.x
-        z_end = line_load_obj.line_end_point.z
+        if last_nd is None:
+            # TODO change to check intersection of line segment instead
+            x_end = x_intcp_two_lines(m1=self.Mesh_obj.end_edge_line.slope, c1=self.Mesh_obj.end_edge_line.c,
+                                        m2=m,
+                                        c2=c)
+            z_end = line_func(m=m, c=c, x=x_end)
+            # overwrite last nd and last grid
+            last_nd, last_grid = self.get_point_load_nodes(LoadPoint(x_end,line_load_obj.line_end_point.y,z_end,line_load_obj.line_end_point.p))
+        else:
+            x_end = line_load_obj.line_end_point.x
+            z_end = line_load_obj.line_end_point.z
         # while loop counter
         counter = 1
         # initiate flags
@@ -837,7 +850,6 @@ class OpsGrillage:
     def add_load_case(self, load_case_obj, analysis_type='Static'):
         """
         Functions to add loads or load cases
-        :param name:
         :param load_case_obj:
         :param analysis_type:
         :return:
@@ -912,6 +924,14 @@ class OpsGrillage:
             # print to terminal
             print("Load Case {} created".format(load_case_obj.name))
 
+    def get_node_area(self,inside_point,p_list):
+        A = []
+        if len(p_list) == 3:
+            A = calculate_area_given_three_points(p_list[0], p_list[1], p_list[2])
+        elif len(p_list) == 4:
+            _,A = calculate_area_given_four_points(inside_point, p_list[0], p_list[1], p_list[2], p_list[3])
+        return A
+
     # setter for patch loads
     def assign_patch_load(self, patch_load_obj: object) -> PatchLoading:
         # searches grid that encompass the patch load
@@ -932,10 +952,13 @@ class OpsGrillage:
             xc,yc,zc = get_patch_centroid(p_list)
             inside_point = LoadPoint(xc,yc,zc,0)
             # volume = area of base x average height
-            _, A = calculate_area_given_four_points(inside_point, p_list[0], p_list[1], p_list[2], p_list[3])
+            A = self.get_node_area(inside_point=inside_point,p_list=p_list)
+            #_, A = calculate_area_given_four_points(inside_point, p_list[0], p_list[1], p_list[2], p_list[3])
             mag = A*sum([point.p for point in p_list])/len(p_list)
             # assign point and mag to 4 nodes of grid
-            self.assign_point_to_four_node(point = [xc,yc,zc],mag=mag)
+            load_str = self.assign_point_to_four_node(point = [xc,yc,zc],mag=mag)
+            self.global_load_str += load_str
+        # apply patch for full bound grids completed
 
         # search the intersecting grids using line load function
         intersect_grid_1 = self.get_line_load_nodes(patch_load_obj.line_1)
@@ -943,23 +966,37 @@ class OpsGrillage:
         intersect_grid_3 = self.get_line_load_nodes(patch_load_obj.line_3)
         intersect_grid_4 = self.get_line_load_nodes(patch_load_obj.line_4)
         #
-        merged = check_dict_same_keys(intersect_grid_1,intersect_grid_2)
-        merged = check_dict_same_keys(merged,intersect_grid_3)
-        merged = check_dict_same_keys(merged,intersect_grid_4)
+        merged = check_dict_same_keys(intersect_grid_1, intersect_grid_2)
+        merged = check_dict_same_keys(merged, intersect_grid_3)
+        merged = check_dict_same_keys(merged, intersect_grid_4)
         self.global_patch_int_dict.update(merged)  # save intersect grid dict to global dict
 
         # all lines are ordered in path counter clockwise (sort in PatchLoading)
         # get nodes in grid that are left (check inside variable greater than 0)
-        # for each grid, calculate
         for grid, int_points in merged.items():
             grid_nodes = self.Mesh_obj.grid_number_dict[grid]  # read grid nodes
             # get two grid nodes bounded by patch
-            node_in_grid = [node in bound_node for node in grid_nodes]
-            [x for x, y in zip(grid_nodes, node_in_grid) if y]
-            pass
-
-        # 1 area of patch in the grid
-
-        # 2. find midpoint of area
-
+            node_in_grid = [x for x, y in zip(grid_nodes, [node in bound_node for node in grid_nodes]) if y]
+            node_list = int_points # sort
+            p_list = []
+            # loop each int points
+            for int_point in int_points:
+                p = patch_load_obj.patch_mag_interpolate(int_point[0], int_point[1])[0]  # object function returns array like
+                p_list.append(LoadPoint(int_point[0], coord[1], int_point[1], p))
+            # loop each node in grid points
+            for items in node_in_grid:
+                coord = self.Mesh_obj.node_spec[items]['coordinate']
+                p = patch_load_obj.patch_mag_interpolate(coord[0], coord[2])[0]  # object function returns array like
+                p_list.append(LoadPoint(coord[0], coord[1], coord[2], p))
+            # sort points in counterclockwise
+            p_list = sort_vertices(p_list)
+            # get centroid of patch on grid
+            xc, yc, zc = get_patch_centroid(p_list)
+            inside_point = LoadPoint(xc, yc, zc, 0)
+            # volume = area of base x average height
+            _, A = calculate_area_given_four_points(inside_point, p_list[0], p_list[1], p_list[2], p_list[3])
+            mag = A * sum([point.p for point in p_list]) / len(p_list)
+            # assign point and mag to 4 nodes of grid
+            load_str = self.assign_point_to_four_node(point=[xc, yc, zc], mag=mag)
+            self.global_load_str += load_str
         pass

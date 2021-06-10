@@ -291,6 +291,12 @@ def calculate_area_given_four_points(inside_point, point1, point2, point3, point
     return [A1, A2, A3, A4], A
 
 
+def calculate_area_given_three_points(point1, point2, point3):
+    # ref: https://ncalculators.com/geometry/triangle-area-by-3-points.htm
+    A = 0.5 * (point1.x * (point2.z - point3.z) + point2.x * (point3.z - point1.z) + point3.x * (point1.z - point2.z))
+    return A
+
+
 def check_point_in_grid(inside_point, point_list):
     # ref: solution 3 https://www.eecs.umich.edu/courses/eecs380/HANDOUTS/PROJ2/InsidePoly.html
     # check counter clockwise and to the left (greater than 0)
@@ -427,14 +433,15 @@ def sort_vertices(point_list):
     angle_list = []
     for point in point_list:
         # calculate angle
-        angle_list.append(np.arctan((point.z - center_x_z[1]) / (point.x - center_x_z[0])))
+        x = np.array(point.x - center_x_z[0])
+        z = np.array(point.z - center_x_z[1])
+        angle_list.append(np.arctan2(z, x))
+        # angle_list.append(np.arctan((point.z - center_x_z[1]) / (point.x - center_x_z[0])))
+    # angle_list[angle_list<0] = angle_list[angle_list<0] + 2*np.pi
+    [i + 2 * np.pi for i in angle_list if i < 0]
     # sort for counter clockwise
     sorted_points = [x for _, x in sorted(zip(angle_list, point_list))]
     return sorted_points
-
-
-# def change_to_decimal(number):
-# return Decimal(number).quantize(Decimal('1.000'))
 
 
 def get_patch_centroid(point_list):
@@ -455,17 +462,16 @@ def get_patch_centroid(point_list):
 
 # abstracted function for assigning patch loading
 def check_dict_same_keys(d_1, d_2):
-    merged = {**d_1,**d_2}
+    merged = {**d_1, **d_2}
     # function to check if two dicts have same key
     same_key = [k in d_2 for k in d_1.keys()]
     if any(same_key):
         common_key = [k for (k, v) in zip(d_1, same_key) if v]
         # get val from d_1 and d_2
-        for grid in common_key: # key is grid number
+        for grid in common_key:  # key is grid number
             first_list = d_1[grid]
             second_list = d_2[grid]
             updated_list = first_list
             updated_list.extend(point for point in second_list if point not in updated_list)
-            merged.update({grid:updated_list})
+            merged.update({grid: updated_list})
     return merged
-

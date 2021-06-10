@@ -564,6 +564,32 @@ class Mesh:
             self.node_connect_x_dict.setdefault(ele[1], p1)
             self.node_connect_x_dict.setdefault(ele[2], p2)
 
+        for ele in self.edge_span_ele:
+            d1 = []
+            d2 = []
+            p1 = []
+            p2 = []
+            n1 = [long_ele for long_ele in self.long_ele if long_ele[1] == ele[1] or long_ele[2] == ele[1]]
+            n2 = [long_ele for long_ele in self.long_ele if long_ele[1] == ele[2] or long_ele[2] == ele[2]]
+            for item in n1:
+                d1.append([np.abs(a - b) for (a, b) in
+                           zip(self.node_spec[item[1]]['coordinate'], self.node_spec[item[2]]['coordinate'])])
+                if item[1] != ele[1] and item[1] != ele[2]:
+                    p1.append(item[1])
+                if item[2] != ele[1] and item[2] != ele[2]:
+                    p1.append(item[2])
+            for item in n2:
+                d2.append([np.abs(a - b) for (a, b) in
+                           zip(self.node_spec[item[1]]['coordinate'], self.node_spec[item[2]]['coordinate'])])
+                if item[1] != ele[1] and item[1] != ele[2]:
+                    p2.append(item[1])
+                if item[2] != ele[1] and item[2] != ele[2]:
+                    p2.append(item[2])
+            # list, [ele tag, ele width (left and right)]
+            self.node_width_x_dict.setdefault(ele[1], d1)
+            self.node_width_x_dict.setdefault(ele[2], d2)
+            self.node_connect_x_dict.setdefault(ele[1], p1)
+            self.node_connect_x_dict.setdefault(ele[2], p2)
         # create self.grid_number_dict, dict key = grid number, val = long and trans ele in grid
         self.grid_number_dict = dict()
         counter = 0

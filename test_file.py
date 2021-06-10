@@ -120,3 +120,13 @@ def test_line_load(create_reference_bridge):
 def test_patch_load(create_reference_bridge):
     ops.wipe()
     pass
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+# test sub functions
+# ----------------------------------------------------------------------------------------------------------------------
+
+def test_sort_vertices():
+    # test if sort vertice function returns a clockwise
+    point_list = [LoadPoint(x=8, y=0, z=3, p=5), LoadPoint(x=8, y=0, z=5, p=5), LoadPoint(x=5, y=0, z=3, p=5), LoadPoint(x=5, y=0, z=5, p=5)]
+    assert sort_vertices(point_list) == [LoadPoint(x=5, y=0, z=3, p=5),LoadPoint(x=8, y=0, z=3, p=5), LoadPoint(x=8, y=0, z=5, p=5), LoadPoint(x=5, y=0, z=5, p=5)]
