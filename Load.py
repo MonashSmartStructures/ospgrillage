@@ -141,6 +141,9 @@ class LineLoading(Loads):
         new_point = [point_coordinate[0] - x_dis, point_coordinate[1], point_coordinate[2] - z_dis]
         return new_point
 
+    def get_line_segment_given_x(self, x):
+        if self.load_point_1.x<=x<self.line_end_point.x:
+            return line_func(self.line_equation.m,self.line_equation.c,x)
 
 class PatchLoading(Loads):
     def __init__(self, name, **kwargs):

@@ -113,19 +113,14 @@ def test_line_load(bridge_model_42_negative):
     ULS_DL = LoadCase(name="Barrier")
     ULS_DL.add_load_groups(Barrier)  # ch
     example_bridge.add_load_case(ULS_DL)
-    ref_answer = {7: [[3, 3], [3.1514141550424406, 3.0]],
-                  8: [[3.1514141550424406, 3.0],
-                      [4.276919210414739, 2.9999999999999996]],
-                  11: [[4.276919210414739, 2.9999999999999996],
-                       [5.402424265787039, 2.9999999999999996]],
-                  16: [[5.402424265787039, 2.9999999999999996],
-                       [6.302828310084881, 3.0]], 22: [[6.302828310084881, 3.0], [7.2271212325636585,2.9999999999999996]],
-                  56: [[7.2271212325636585, 2.9999999999999996],
-                       [8.151414155042438, 2.9999999999999996]],
-                  62: [[8.151414155042438, 2.9999999999999996],
-                       [9.075707077521221, 3.0000000000000004]],
-                  32: [[9.075707077521221, 3.0000000000000004],
-                       [10.0, 3.0000000000000013]]}
+    ref_answer = {7: [[3.1514141550424397, 0, 3.0], [3, 0, 3]],
+                 8: [[3.1514141550424397, 0, 3.0], [4.276919210414739, 0, 3.0]],
+                 11: [[4.276919210414739, 0, 3.0], [5.402424265787039, 0, 3.0]],
+                 16: [[5.402424265787039, 0, 3.0], [6.302828310084879, 0, 3.0]],
+                 22: [[6.302828310084879, 0, 3.0], [7.227121232563659, 0, 3.0]],
+                 32: [[9.07570707752122, 0, 3.0], [10, 0, 3]],
+                 56: [[7.227121232563659, 0, 3.0], [8.15141415504244, 0, 3.0]],
+                 62: [[8.15141415504244, 0, 3.0], [9.07570707752122, 0, 3.0]]}
     assert example_bridge.global_line_int_dict[0] == ref_answer
 
 
@@ -149,6 +144,19 @@ def test_line_load_coincide(bridge_model_42_negative):
          54: [[7.227121232563659, -0.0], [8.15141415504244, -0.0]],
          60: [[8.15141415504244, -0.0], [9.07570707752122, -0.0]], 27: [[9.07570707752122, -0.0], [10.0, -0.0]],
          28: [[10.0, -0.0], [10, 0]]}]
+
+def test_line_load_outside_of_mesh(bridge_model_42_negative):
+    # when set line load z coordinate to z = 0 , test if line returns correct coincide node lines
+    ops.wipe()
+    example_bridge = bridge_model_42_negative
+    # create reference line load
+    barrierpoint_1 = LoadPoint(3, 0, -1, 2)
+    barrierpoint_2 = LoadPoint(10, 0, -1, 2)
+    Barrier = LineLoading("Barrier curb load", point1=barrierpoint_1, point2=barrierpoint_2)
+    ULS_DL = LoadCase(name="Barrier")
+    ULS_DL.add_load_groups(Barrier)  # ch
+    example_bridge.add_load_case(ULS_DL)
+
 
 
 def test_patch_load(bridge_model_42_negative):
