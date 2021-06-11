@@ -420,7 +420,7 @@ def check_intersect(p1, q1, p2, q2):
         return general_intersect,colinear
 
     # If none of the cases
-    return general_intersect,colinear
+    return general_intersect, colinear
 
 
 # --------------------------------------------------------------------------------------------
@@ -458,6 +458,7 @@ def sort_vertices(point_list):
 
 
 def get_patch_centroid(point_list):
+    # function to find centriod on a plane (x-z) accounting for separate value of area load on each node point
     m_total = []
     mx = 0
     my = 0
