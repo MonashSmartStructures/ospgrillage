@@ -560,196 +560,44 @@ class OpsGrillage:
                     # check if point is not double assigned
                     if grid_tag not in line_grid_intersect.keys():
                         line_grid_intersect.setdefault(grid_tag, grid_inter_points)
-            pass
-        pass
-        # update line_grid_intersect adding start and end points into the lists
+
+        # update line_grid_intersect by removing grids if line conincide with elements and multiple grids of vicinity
+        # grids are returned with same values
+        removed_key = []
+        edited_dict = line_grid_intersect.copy()
         for grid_key, int_list in line_grid_intersect.items():
+            if grid_key not in removed_key:
+                check_dup_list = [int_list == val for val in line_grid_intersect.values()]
+                if sum(check_dup_list)>1:
+                    # check if grid key is a vicinity grid of current grid_key
+                    for dup_key in [key for (count,key) in enumerate(line_grid_intersect.keys()) if check_dup_list[count] and key is not grid_key]:
+                        if dup_key in [current_grid,last_grid]:
+                            continue
+                        elif dup_key in self.Mesh_obj.grid_vicinity_dict[grid_key].values():
+                            removed_key.append(dup_key)
+                            del edited_dict[dup_key]
+
+        # update line_grid_intersect adding start and end points into the lists
+        for grid_key, int_list in edited_dict.items():
             if grid_key == current_grid:
-                line_grid_intersect[grid_key] += [
-                    [line_load_obj.load_point_1.x, line_load_obj.load_point_1.y, line_load_obj.load_point_1.z]]
+                edited_dict[grid_key] += [
+                    [line_load_obj.load_point_1.x, line_load_obj.load_point_1.y,
+                     line_load_obj.load_point_1.z]]
             elif grid_key == last_grid:
-                line_grid_intersect[grid_key] += [
-                    [line_load_obj.line_end_point.x, line_load_obj.line_end_point.y, line_load_obj.line_end_point.z]]
-        return line_grid_intersect
-        #
-        # # -------------------------------------------------------------------
-        # # if either start_nd or last_nd is not None, get its respective
-        # if start_nd is None:  # if point is not present (returned None), point lies outside of mesh, set
-        #     # x_start and z_start be the point which line intersects the start span edge node line
-        #
-        #
-        #     x_start = x_intcp_two_lines(m1=self.Mesh_obj.start_edge_line.slope, c1=self.Mesh_obj.start_edge_line.c,
-        #                                 m2=m,
-        #                                 c2=c)
-        #     z_start = line_func(m=m, c=c, x=x_start)
-        #     nd, current_grid = self.get_point_load_nodes([x_start, self.y_elevation, z_start])  # list of nodes on grid
-        # else:
-        #     x_start = line_load_obj.load_point_1.x
-        #     z_start = line_load_obj.load_point_1.z
-        #     nd = start_nd
-        #
-        # if last_nd is None:
-        #
-        #     x_end = x_intcp_two_lines(m1=self.Mesh_obj.end_edge_line.slope, c1=self.Mesh_obj.end_edge_line.c,
-        #                               m2=m,
-        #                               c2=c)
-        #     z_end = line_func(m=m, c=c, x=x_end)
-        #     # overwrite last nd and last grid
-        #     last_nd, last_grid = self.get_point_load_nodes(
-        #         LoadPoint(x_end, line_load_obj.line_end_point.y, z_end, line_load_obj.line_end_point.p))
-        # else:
-        #     x_end = line_load_obj.line_end_point.x
-        #     z_end = line_load_obj.line_end_point.z
-        # # while loop counter
-        # counter = 1
-        # # initiate flags
-        # long_intersect = False
-        # trans_intersect = False
-        # line_on = True
-        # subdict_long = []
-        # subdict_trans = []
-        # subdict = []
-        # line_grid_intersect = {}  # main dict to populate
-        # # begin loop
-        # while line_on:
-        #     # find indices for long member and transverse member
-        #     node_tag_combo = combinations(nd, 2)
-        #     if counter > 1:
-        #         current_grid = next_grid
-        #     long_ele_tags, trans_ele_tags,edge_ele_tags = self.__get_elements(node_tag_combo)
-        #
-        #     # for each long and trans member in record, find if intersect long or trans ele
-        #     for long_ele in [self.Mesh_obj.long_ele[i] for i in long_ele_tags]:
-        #         pz1 = self.Mesh_obj.node_spec[long_ele[1]]['coordinate']  # point z 1
-        #         pz2 = self.Mesh_obj.node_spec[long_ele[2]]['coordinate']  # point z 2
-        #         pz1 = Point(pz1[0], pz1[1], pz1[2])  # convert to point namedtuple
-        #         pz2 = Point(pz2[0], pz2[1], pz2[2])  # convert to point namedtuple
-        #         intersect_z, colinear_z = check_intersect(pz1, pz2, line_load_obj.load_point_1,
-        #                                                   line_load_obj.line_end_point)
-        #         if colinear_z:
-        #             # line is colinear to long ele, start and end points are
-        #             if pz1.x < x_start:
-        #                 subdict_long = [[x_start, z_start], [pz2.x, pz2.z]]
-        #             else:
-        #                 subdict_long = [[x_start, z_start], [pz1.x, pz1.z]]
-        #         elif intersect_z:
-        #             # use decimal lib to remove floating point errors for logic comparison
-        #             L1 = line([pz1.x, pz1.z], [pz2.x, pz2.z])
-        #             L2 = line([x_start, z_start], [x_end, z_end])
-        #             R_z = intersection(L1, L2)
-        #             # if all([Rx <= max(pz1x_d, pz2x_d), Rx >= min(pz1x_d, pz2x_d), Rz <= max(pz1z_d, pz2z_d),
-        #             #         Rz >= min(pz1z_d, pz2z_d)]):
-        #             next_grid_z = None
-        #             # if true, line intersects, find next grid using the vicinity_dict of Mesh_obj
-        #             vicinity_grid = self.Mesh_obj.grid_vicinity_dict[current_grid]
-        #             # check if nodes is in either "top" or bottom keyword
-        #             if long_ele[1] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("top", None), []) \
-        #                     and long_ele[2] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("top", None),
-        #                                                                           None):
-        #                 next_grid_z = vicinity_grid.get("top", None)
-        #             elif long_ele[1] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("bottom", None), []) \
-        #                     and long_ele[2] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("bottom", None),
-        #                                                                           None):
-        #                 next_grid_z = vicinity_grid.get("bottom", None)
-        #             long_intersect = True
-        #
-        #             if next_grid_z in line_grid_intersect.keys():
-        #                 long_intersect = False
-        #             else:
-        #                 subdict_long = [[x_start, z_start], list(R_z)]
-        #                 break
-        #
-        #         elif current_grid in line_grid_intersect.keys():
-        #             long_intersect = False
-        #     # check if intersects trans member
-        #     for trans_ele in [self.Mesh_obj.trans_ele[i] for i in trans_ele_tags]:
-        #         px1 = self.Mesh_obj.node_spec[trans_ele[1]]['coordinate']  # point z 1
-        #         px2 = self.Mesh_obj.node_spec[trans_ele[2]]['coordinate']  # point z 2
-        #         px1 = Point(px1[0], px1[1], px1[2])  # convert to point namedtuple
-        #         px2 = Point(px2[0], px2[1], px2[2])  # convert to point namedtuple
-        #         intersect_x, colinear_x = check_intersect(px1, px2, line_load_obj.load_point_1,
-        #                                                   line_load_obj.line_end_point)
-        #         if colinear_x:
-        #             # line is colinear to trans ele, start and end points are
-        #             if px1.x < x_start:
-        #                 subdict_trans = [[x_start, z_start], [px2.x, px2.z]]
-        #             else:
-        #                 subdict_trans = [[x_start, z_start], [px1.x, px1.z]]
-        #         elif intersect_x:
-        #             L1 = line([px1.x, px1.z], [px2.x, px2.z])
-        #             L2 = line([x_start, z_start], [x_end, z_end])
-        #             R_x = intersection(L1, L2)
-        #
-        #             next_grid_x = None
-        #             # if true, line intersects, find next grid using the vicinity_dict of Mesh_obj
-        #             vicinity_grid = self.Mesh_obj.grid_vicinity_dict[current_grid]
-        #             # check if nodes is in either "top" or bottom keyword
-        #             if trans_ele[1] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("left", None), []) \
-        #                     and trans_ele[2] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("left", None),
-        #                                                                            None):
-        #                 next_grid_x = vicinity_grid.get("left", None)
-        #             elif trans_ele[1] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("right", None), []) \
-        #                     and trans_ele[2] in self.Mesh_obj.grid_number_dict.get(vicinity_grid.get("right", None),
-        #                                                                            None):
-        #                 next_grid_x = vicinity_grid.get("right", None)
-        #             trans_intersect = True
-        #             # if next grid has already been recorded (line tracks the previous intersecting grid),
-        #             # exclude this intersection and move to next
-        #             if next_grid_x in line_grid_intersect.keys():
-        #                 trans_intersect = False
-        #             else:  # the new grid is not been crossed, record this grid as the intersecting
-        #                 subdict_trans = [[x_start, z_start], list(R_x)]
-        #                 break
-        #         else:
-        #             trans_intersect = False
-        #     # setting properties of next loop
-        #     # if intersects transverse member, set intersection point R_x as start point of next step
-        #     if trans_intersect:
-        #         next_grid = next_grid_x
-        #         x_start = R_x[0]
-        #         z_start = R_x[1]
-        #         line_grid_intersect.setdefault(current_grid, subdict_trans)
-        #     elif long_intersect:  # if intersect long member, set respective intersection point R_z
-        #         next_grid = next_grid_z
-        #         x_start = R_z[0]
-        #         z_start = R_z[1]
-        #         line_grid_intersect.setdefault(current_grid, subdict_long)
-        #     else:  # intersects neither - check if crosses edge
-        #         subdict = [[x_start, z_start], [x_end, z_end]]
-        #         next_grid = current_grid
-        #         line_grid_intersect.setdefault(current_grid, subdict)
-        #     # if no longer intersects any edges, set loop to false
-        #     if not any([trans_intersect, long_intersect]):
-        #         line_on = False
-        #     if counter > self.while_loop_max:  # measure to prevent infinite loop - default 100 steps
-        #         line_on = False
-        #
-        #     if len(self.Mesh_obj.grid_number_dict[current_grid]) < 4 and counter > 2:
-        #         # intersect with end edge span
-        #         line_on = False
-        #
-        #     # check if next grid is the final grid
-        #     if set(nd) == set(last_nd):
-        #         line_on = False
-        #         # last grid achieved
-        #         subdict = []
-        #         subdict = [[x_start, z_start],
-        #                    [line_load_obj.line_end_point.x, line_load_obj.line_end_point.z]]
-        #         line_grid_intersect.setdefault(current_grid, subdict)
-        #         return line_grid_intersect
-        #     # update nd, x_start, z_start for next loop
-        #     nd = self.Mesh_obj.grid_number_dict[next_grid]
-        #     counter += 1
-        #     subdict_long = []  # reset subdict
-        #     subdict_trans = []
-        # return line_grid_intersect
+                edited_dict[grid_key] += [
+                    [line_load_obj.line_end_point.x, line_load_obj.line_end_point.y,
+                     line_load_obj.line_end_point.z]]
+        return edited_dict
 
     # abstracted procedure for finding intersection points of line/patch edge within grid
     def __get_intersecting_elements(self, current_grid, line_start_grid, line_end_grid, line_load_obj, long_ele_index,
                                     trans_ele_index, edge_ele_index):
         R_z = []
+        Rz = []
         R_x = []
+        Rx = []
         R_edge = []
+        Redge = []
         for long_ele in [self.Mesh_obj.long_ele[i] for i in long_ele_index]:
             pz1 = self.Mesh_obj.node_spec[long_ele[1]]['coordinate']  # point z 1
             pz2 = self.Mesh_obj.node_spec[long_ele[2]]['coordinate']  # point z 2
@@ -763,7 +611,7 @@ class OpsGrillage:
             if any([x_1 is None, x_2 is None, z_1 is None, z_2 is None]):
                 continue
             if p_1 == p_2:  # (2) if both points of line are the exact point, point equates to an intersection point
-                R_z.append([p_1.x, p_1.y, p_1.z])
+                Rz.append([p_1.x, p_1.y, p_1.z])
                 continue
             # if neither special case, check intersection
             intersect_z, colinear_z = check_intersect(pz1, pz2, p_1, p_2)
@@ -777,7 +625,7 @@ class OpsGrillage:
                 L1 = line([pz1.x, pz1.z], [pz2.x, pz2.z])
                 L2 = line([x_1, z_1], [x_2, z_2])
                 R_z = intersection(L1, L2)
-
+                Rz.append([R_z[0],pz1.y,R_z[1]])
         for trans_ele in [self.Mesh_obj.trans_ele[i] for i in trans_ele_index]:
             px1 = self.Mesh_obj.node_spec[trans_ele[1]]['coordinate']  # point z 1
             px2 = self.Mesh_obj.node_spec[trans_ele[2]]['coordinate']  # point z 2
@@ -791,7 +639,7 @@ class OpsGrillage:
             if any([x_1 is None, x_2 is None, z_1 is None, z_2 is None]):
                 continue
             if p_1 == p_2:  # (2) if both points of line are the exact point, point equates to an intersection point
-                R_x.append([p_1.x, p_1.y, p_1.z])
+                Rx.append([p_1.x, p_1.y, p_1.z])
                 continue
             intersect_x, colinear_x = check_intersect(px1, px2, p_1, p_2)
             if colinear_x:
@@ -806,7 +654,7 @@ class OpsGrillage:
                 L1 = line([px1.x, px1.z], [px2.x, px2.z])
                 L2 = line([x_1, z_1], [x_2, z_2])
                 R_x = intersection(L1, L2)
-
+                Rx.append([R_x[0],px1.y,R_x[1]])
         # for edge ele
         for edge_ele in [self.Mesh_obj.edge_span_ele[i] for i in edge_ele_index]:
             p_edge_1 = self.Mesh_obj.node_spec[edge_ele[1]]['coordinate']  # point z 1
@@ -821,25 +669,30 @@ class OpsGrillage:
             if any([x_1 is None, x_2 is None, z_1 is None, z_2 is None]):
                 continue
             if p_1 == p_2:  # (2) if both points of line are the exact point, point equates to an intersection point
-                R_x.append([p_1.x, p_1.y, p_1.z])
+                R_edge.append([p_1.x, p_1.y, p_1.z])
                 continue
-            intersect_x, colinear_x = check_intersect(p_edge_1, p_edge_2, p_1, p_2)
-            if colinear_x:
+            intersect_x, colinear_edge = check_intersect(p_edge_1, p_edge_2, p_1, p_2)
+            if colinear_edge:
                 # line is colinear to long ele, start and end points are
                 if p_1.z == p_2.z:  # colinear and two points are identical points
                     subdict_trans = [[p_edge_1.x, p_edge_1.z], [p_edge_2.x, p_edge_2.z]]
-                elif px1.x < p_1.x:
+                elif p_edge_1.x < p_1.x:
                     subdict_trans = [[p_1.x, p_1.z], [p_edge_2.x, p_edge_2.z]]
                 else:  # px1.x > p_1.x
                     subdict_trans = [[p_1.x, p_1.z], [p_edge_1.x, p_edge_1.z]]
             elif intersect_x:
                 L1 = line([p_edge_1.x, p_edge_1.z], [p_edge_2.x, p_edge_2.z])
                 L2 = line([x_1, z_1], [x_2, z_2])
-                R_edge = intersection(L1, L2)
+                R_edge= intersection(L1, L2)
+                Redge.append([R_edge[0],p_edge_1.y,R_edge[1]])
+        return Rz, Rx, Redge
 
-        return R_z, R_x, R_edge
-
-    def __check_line_ends_in_grid(self, p1, p2, current_grid, line_start_grid, line_end_grid, line_load_obj):
+    @staticmethod
+    def __check_line_ends_in_grid(p1, p2, current_grid, line_start_grid, line_end_grid, line_load_obj):
+        # function to check if line load segment starts/ends within the bounds of the mesh. To do this, check if
+        # coordinate range of element points, p1 p2, is within bounds of line load segment. If true, proceed return p1
+        # p2 as points in the grid. If False (line segment does not exist for p1 p2), overwrite p1 p2 as the start/end
+        # point where line segment exist.
         x_1 = p1.x
         z_1 = line_load_obj.get_line_segment_given_x(x_1)
         x_2 = p2.x

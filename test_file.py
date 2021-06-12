@@ -5,6 +5,7 @@ from OpsGrillage import *
 # create reference bridge model
 @pytest.fixture
 def bridge_model_42_negative():
+    # reference bridge 10m long, 7m wide with common skew angle at both ends
     # define material
     concrete = UniAxialElasticMaterial(mat_type="Concrete01", mat_vec=[-6.0, -0.004, -6.0, -0.014])
 
@@ -129,8 +130,8 @@ def test_line_load_coincide(bridge_model_42_negative):
     ops.wipe()
     example_bridge = bridge_model_42_negative
     # create reference line load
-    barrierpoint_1 = LoadPoint(3, 0, 0, 2)
-    barrierpoint_2 = LoadPoint(10, 0, 0, 2)
+    barrierpoint_1 = LoadPoint(4, 0, 1, 2)
+    barrierpoint_2 = LoadPoint(10, 0, 1, 2)
     Barrier = LineLoading("Barrier curb load", point1=barrierpoint_1, point2=barrierpoint_2)
     ULS_DL = LoadCase(name="Barrier")
     ULS_DL.add_load_groups(Barrier)  # ch
