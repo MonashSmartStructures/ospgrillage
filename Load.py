@@ -142,13 +142,22 @@ class LineLoading(Loads):
         return new_point
 
     def get_line_segment_given_x(self, x):
-        if self.load_point_1.x<=x<self.line_end_point.x:
-            return line_func(self.line_equation.m,self.line_equation.c,x)
+        if self.load_point_1.x <= x < self.line_end_point.x or self.load_point_1.x > x >= self.line_end_point.x:
+            return line_func(self.line_equation.m, self.line_equation.c, x)
+
+    def get_line_segment_given_z(self, z):
+        if self.line_equation.m is None:  # if vertical line
+            if self.load_point_1.z <= z < self.line_end_point.z or self.load_point_1.z > z >= self.line_end_point.z:
+                return self.load_point_1.x
+        else:
+            if self.load_point_1.z <= z < self.line_end_point.z or self.load_point_1.z > z >= self.line_end_point.z:
+                return inv_line_func(self.line_equation.m, self.line_equation.c, z)
+
 
 class PatchLoading(Loads):
     def __init__(self, name, **kwargs):
         super().__init__(name, **kwargs)
-        a = sort_vertices([self.load_point_2,self.load_point_3,self.load_point_1,self.load_point_4])
+        a = sort_vertices([self.load_point_2, self.load_point_3, self.load_point_1, self.load_point_4])
         # if only four point is define , patch load is a four point straight line quadrilateral
         if self.load_point_5 is None:
             # create each line
@@ -160,12 +169,12 @@ class PatchLoading(Loads):
             # create equation of plane from four straight lines
 
             # create interpolate object f
-            p = np.array([[self.load_point_1.p,self.load_point_2.p],[self.load_point_3.p,self.load_point_4.p]])
-            x = np.array([[self.load_point_1.x,self.load_point_2.x],[self.load_point_3.x,self.load_point_4.x]])
-            z = np.array([[self.load_point_1.z,self.load_point_2.z],[self.load_point_3.z,self.load_point_4.z]])
+            p = np.array([[self.load_point_1.p, self.load_point_2.p], [self.load_point_3.p, self.load_point_4.p]])
+            x = np.array([[self.load_point_1.x, self.load_point_2.x], [self.load_point_3.x, self.load_point_4.x]])
+            z = np.array([[self.load_point_1.z, self.load_point_2.z], [self.load_point_3.z, self.load_point_4.z]])
 
             # create function to get interpolation of p
-            self.patch_mag_interpolate = interpolate.interp2d(x,z,p)
+            self.patch_mag_interpolate = interpolate.interp2d(x, z, p)
 
         elif self.load_point_8 is not None:
             # point 1 2 3
@@ -175,8 +184,6 @@ class PatchLoading(Loads):
             pass
         else:
             print("patch load points not valid")
-
-
 
         print("Patch load object created: {} ".format(name))
 
@@ -191,13 +198,15 @@ class LoadCase:
         for loads in args:
             self.load_groups.append(loads)
 
-    def add_compound_load_group(self,*args):
+    def add_compound_load_group(self, *args):
         for loads in args:
             pass
 
-    def add_moving_load(self,*args):
+    def add_moving_load(self, *args):
 
         pass
+
+
 # ---------------------------------------------------------------------------------------------------------------
 class ShapeFunction:
     """

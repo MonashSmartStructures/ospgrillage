@@ -5,6 +5,7 @@ from OpsGrillage import *
 # create reference bridge model
 @pytest.fixture
 def bridge_model_42_negative():
+    # reference bridge 10m long, 7m wide with common skew angle at both ends
     # define material
     concrete = UniAxialElasticMaterial(mat_type="Concrete01", mat_vec=[-6.0, -0.004, -6.0, -0.014])
 
@@ -124,13 +125,13 @@ def test_line_load(bridge_model_42_negative):
     assert example_bridge.global_line_int_dict[0] == ref_answer
 
 
-def test_line_load_coincide(bridge_model_42_negative):
+def test_line_load_coincide_long_edge(bridge_model_42_negative):
     # when set line load z coordinate to z = 0 , test if line returns correct coincide node lines
     ops.wipe()
     example_bridge = bridge_model_42_negative
     # create reference line load
-    barrierpoint_1 = LoadPoint(3, 0, 0, 2)
-    barrierpoint_2 = LoadPoint(10, 0, 0, 2)
+    barrierpoint_1 = LoadPoint(4, 0, 1, 2)
+    barrierpoint_2 = LoadPoint(10, 0, 1, 2)
     Barrier = LineLoading("Barrier curb load", point1=barrierpoint_1, point2=barrierpoint_2)
     ULS_DL = LoadCase(name="Barrier")
     ULS_DL.add_load_groups(Barrier)  # ch
@@ -145,6 +146,7 @@ def test_line_load_coincide(bridge_model_42_negative):
          60: [[8.15141415504244, -0.0], [9.07570707752122, -0.0]], 27: [[9.07570707752122, -0.0], [10.0, -0.0]],
          28: [[10.0, -0.0], [10, 0]]}]
 
+
 def test_line_load_outside_of_mesh(bridge_model_42_negative):
     # when set line load z coordinate to z = 0 , test if line returns correct coincide node lines
     ops.wipe()
@@ -156,7 +158,7 @@ def test_line_load_outside_of_mesh(bridge_model_42_negative):
     ULS_DL = LoadCase(name="Barrier")
     ULS_DL.add_load_groups(Barrier)  # ch
     example_bridge.add_load_case(ULS_DL)
-
+    assert example_bridge.global_line_int_dict == [{}]
 
 
 def test_patch_load(bridge_model_42_negative):

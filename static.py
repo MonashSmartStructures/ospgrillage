@@ -161,7 +161,7 @@ def line_func(m, c, x):
 
 
 def inv_line_func(m, c, y):
-    x = (y - c) / m if m != 0 else 0
+    x = (y - c) / m if all([m != 0, m is not None, c is not None]) else 0
     return x
 
 
@@ -305,6 +305,9 @@ def check_point_in_grid(inside_point, point_list):
     # rotate point
     pt1 = pt0[1:] + [pt0[0]]
     inside = True
+    if inside_point.z is None:
+        inside = False
+        return inside
     # check if point is clockwise via sign of signed_area
     signed_area = check_points_direction(point_list)  # sign area < 0 means points are clockwise, and vice versa
     for count, point0 in enumerate(pt0):
@@ -346,8 +349,8 @@ def check_points_direction(point_list):
 
 # ----------------------------------------------------------------------------------------------------------
 # function to check intersection of line segments
-# TODO refractor
 def onSegment(p, q, r):
+    # point nameTuple p, q and r
     if ((q.x <= max(p.x, r.x)) and (q.x >= min(p.x, r.x)) and
             (q.y <= max(p.z, r.z)) and (q.z >= min(p.z, r.z))):
         return True
