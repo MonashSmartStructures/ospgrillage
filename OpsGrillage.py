@@ -554,9 +554,6 @@ class OpsGrillage:
 
                 grid_inter_points = []
                 line_point = Point(x_start, points.y, z_start)
-                # case where z_start is none, there is no portion of line segment at x and z of current point,
-
-                # here coord[1] is zero
 
                 if check_point_in_grid(inside_point=line_point, point_list=point_list):
                     print("Found intersect:{} at grid {}".format((x_start, z_start), grid_tag))
