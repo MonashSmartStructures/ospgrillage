@@ -559,7 +559,7 @@ class OpsGrillage:
                     print("Found intersect:{} at grid {}".format((x_start, z_start), grid_tag))
                     # find intersecting points within grid
                     Rz, Rx, Redge = self.__get_intersecting_elements(grid_tag, current_grid, last_grid, line_load_obj,
-                                                                     long_ele_index,trans_ele_index, edge_ele_index)
+                                                                     long_ele_index, trans_ele_index, edge_ele_index)
 
                     grid_inter_points += Rz + Rx + Redge
                     # check if point is not double assigned
@@ -573,10 +573,11 @@ class OpsGrillage:
         for grid_key, int_list in line_grid_intersect.items():
             if grid_key not in removed_key:
                 check_dup_list = [int_list == val for val in line_grid_intersect.values()]
-                if sum(check_dup_list)>1:
+                if sum(check_dup_list) > 1:
                     # check if grid key is a vicinity grid of current grid_key
-                    for dup_key in [key for (count,key) in enumerate(line_grid_intersect.keys()) if check_dup_list[count] and key is not grid_key]:
-                        if dup_key in [current_grid,last_grid]:
+                    for dup_key in [key for (count, key) in enumerate(line_grid_intersect.keys()) if
+                                    check_dup_list[count] and key is not grid_key]:
+                        if dup_key in [current_grid, last_grid]:
                             continue
                         elif dup_key in self.Mesh_obj.grid_vicinity_dict[grid_key].values():
                             removed_key.append(dup_key)
@@ -630,7 +631,7 @@ class OpsGrillage:
                 L1 = line([pz1.x, pz1.z], [pz2.x, pz2.z])
                 L2 = line([x_1, z_1], [x_2, z_2])
                 R_z = intersection(L1, L2)
-                Rz.append([R_z[0],pz1.y,R_z[1]])
+                Rz.append([R_z[0], pz1.y, R_z[1]])
         for trans_ele in [self.Mesh_obj.trans_ele[i] for i in trans_ele_index]:
             px1 = self.Mesh_obj.node_spec[trans_ele[1]]['coordinate']  # point z 1
             px2 = self.Mesh_obj.node_spec[trans_ele[2]]['coordinate']  # point z 2
@@ -659,7 +660,7 @@ class OpsGrillage:
                 L1 = line([px1.x, px1.z], [px2.x, px2.z])
                 L2 = line([x_1, z_1], [x_2, z_2])
                 R_x = intersection(L1, L2)
-                Rx.append([R_x[0],px1.y,R_x[1]])
+                Rx.append([R_x[0], px1.y, R_x[1]])
         # for edge ele
         for edge_ele in [self.Mesh_obj.edge_span_ele[i] for i in edge_ele_index]:
             p_edge_1 = self.Mesh_obj.node_spec[edge_ele[1]]['coordinate']  # point z 1
@@ -688,8 +689,8 @@ class OpsGrillage:
             elif intersect_x:
                 L1 = line([p_edge_1.x, p_edge_1.z], [p_edge_2.x, p_edge_2.z])
                 L2 = line([x_1, z_1], [x_2, z_2])
-                R_edge= intersection(L1, L2)
-                Redge.append([R_edge[0],p_edge_1.y,R_edge[1]])
+                R_edge = intersection(L1, L2)
+                Redge.append([R_edge[0], p_edge_1.y, R_edge[1]])
         return Rz, Rx, Redge
 
     @staticmethod
@@ -783,25 +784,30 @@ class OpsGrillage:
             return load_str
         # if corner or edge grid with 3 nodes, run specific assignment for triangular grids
         # extract coordinates
-        x1 = self.Mesh_obj.node_spec[grid_nodes[0]]['coordinate'][0]
-        x2 = self.Mesh_obj.node_spec[grid_nodes[1]]['coordinate'][0]
-        x3 = self.Mesh_obj.node_spec[grid_nodes[2]]['coordinate'][0]
-        z1 = self.Mesh_obj.node_spec[grid_nodes[0]]['coordinate'][2]
-        z2 = self.Mesh_obj.node_spec[grid_nodes[1]]['coordinate'][2]
-        z3 = self.Mesh_obj.node_spec[grid_nodes[2]]['coordinate'][2]
+        p1 = self.Mesh_obj.node_spec[grid_nodes[0]]['coordinate']
+        p2 = self.Mesh_obj.node_spec[grid_nodes[1]]['coordinate']
+        p3 = self.Mesh_obj.node_spec[grid_nodes[2]]['coordinate']
+
         # TODO sanity check to sort points in clockwise again using sort_vertices()
+        point_list = [Point(p1[0],p1[1],p1[2]),Point(p2[0],p2[1],p2[2]),Point(p3[0],p3[1],p3[2])]
         if len(grid_nodes) == 3:
-            Nv = ShapeFunction.linear_triangular(x=point[0], z=point[2], x1=x1, z1=z1, x2=x2, z2=z2, x3=x3, z3=z3)
+            sorted_list = sort_vertices(point_list)
+            Nv = ShapeFunction.linear_triangular(x=point[0], z=point[2], x1=sorted_list[0].x, z1=sorted_list[0].z,
+                                                 x2=sorted_list[1].x, z2=sorted_list[1].z, x3=sorted_list[2].x,
+                                                 z3=sorted_list[2].z)
             node_load = [mag * n for n in Nv]
             node_mx = np.zeros(len(node_load))
             node_mz = np.zeros(len(node_load))
         else:  # else run assignment for quadrilateral grids
 
             # extract coordinates of fourth point
-            x4 = self.Mesh_obj.node_spec[grid_nodes[3]]['coordinate'][0]
-            z4 = self.Mesh_obj.node_spec[grid_nodes[3]]['coordinate'][2]
+            p4 = self.Mesh_obj.node_spec[grid_nodes[3]]['coordinate']
+            point_list.append(Point(p4[0],p4[1],p4[2]))
+            sorted_list = sort_vertices(point_list)
             # mapping coordinates to natural coordinate, then finds eta (x) and zeta (z) of the point xp,zp
-            eta, zeta = solve_zeta_eta(xp=point[0], zp=point[2], x1=x1, z1=z1, x2=x2, z2=z2, x3=x3, z3=z3, x4=x4, z4=z4)
+            eta, zeta = solve_zeta_eta(xp=point[0], zp=point[2], x1=sorted_list[0].x, z1=sorted_list[0].z,
+                                                 x2=sorted_list[1].x, z2=sorted_list[1].z, x3=sorted_list[2].x,
+                                                 z3=sorted_list[2].z,x4=sorted_list[3].x,z4=sorted_list[3].z)
 
             # access shape function of line load
             N = ShapeFunction.linear_shape_function(eta, zeta)
@@ -991,17 +997,17 @@ class OpsGrillage:
 
         # all lines are ordered in path counter clockwise (sort in PatchLoading)
         # get nodes in grid that are left (check inside variable greater than 0)
-        for grid, int_points in merged.items():
+        for grid, int_point_list in merged.items():  # [x y z]
             grid_nodes = self.Mesh_obj.grid_number_dict[grid]  # read grid nodes
             # get two grid nodes bounded by patch
             node_in_grid = [x for x, y in zip(grid_nodes, [node in bound_node for node in grid_nodes]) if y]
-            node_list = int_points  # sort
+            node_list = int_point_list  # sort
             p_list = []
             # loop each int points
-            for int_point in int_points:
-                p = patch_load_obj.patch_mag_interpolate(int_point[0], int_point[1])[
+            for int_point in int_point_list:  # [x y z]
+                p = patch_load_obj.patch_mag_interpolate(int_point[0], int_point[2])[
                     0]  # object function returns array like
-                p_list.append(LoadPoint(int_point[0], coord[1], int_point[1], p))
+                p_list.append(LoadPoint(int_point[0], int_point[1], int_point[2], p))
             # loop each node in grid points
             for items in node_in_grid:
                 coord = self.Mesh_obj.node_spec[items]['coordinate']

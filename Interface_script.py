@@ -63,15 +63,15 @@ if not pyfile:
 location = LoadPoint(5, 0, -2, 20)  # create load point
 Single = PointLoad(name="single point", point1=location)
 # Line load
-barrierpoint_1 = LoadPoint(8, 0, 3, 2)
-barrierpoint_2 = LoadPoint(8, 0, 5, 2)
+barrierpoint_1 = LoadPoint(-1, 0, 0, 2)
+barrierpoint_2 = LoadPoint(11, 0, 0, 2)
 Barrier = LineLoading("Barrier curb load", point1=barrierpoint_1, point2=barrierpoint_2)
 
 # Patch load - lane loading
-lane_point_1 = LoadPoint(5, 0, 3, 5)
+lane_point_1 = LoadPoint(0, 0, 3, 5)
 lane_point_2 = LoadPoint(8, 0, 3, 5)
 lane_point_3 = LoadPoint(8, 0, 5, 5)
-lane_point_4 = LoadPoint(5, 0, 5, 5)
+lane_point_4 = LoadPoint(0, 0, 5, 5)
 Lane = PatchLoading("Lane 1", point1=lane_point_1, point2=lane_point_2, point3=lane_point_3, point4=lane_point_4)
 
 # --------------------------------------------------------------------------------------------------------------------
