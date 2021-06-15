@@ -3,13 +3,13 @@ from collections.abc import Iterable
 from typing import Type
 from scipy import interpolate
 from static import *
+from Mesh import *
 from collections import namedtuple
 
 # named tuple definition
 LoadPoint = namedtuple("Point", ["x", "y", "z", "p"])
 NodeForces = namedtuple("node_forces", ["Fx", "Fy", "Fz", "Mx", "My", "Mz"])
 Line = namedtuple("line", ["m", "c", "phi"])
-
 
 # ----------------------------------------------------------------------------------------------------------------
 # Loading classes
@@ -66,7 +66,7 @@ class Loads:
         self.load_counter = 0
 
     # modify load points if compound load option is present i.e. compound_x_list
-    def create_compound_load(self, **kwargs):
+    def form_compound_load(self, **kwargs):
         # find centroid of load_points
         point_list = [i for i in self.point_list if i is not None]
         centroid = find_plane_centroid(point_list)
@@ -74,7 +74,6 @@ class Loads:
         self.ref_point = kwargs.get('ref_point', LoadPoint(centroid[0],self.load_point_1.y,centroid[1]))
         self.compound_dist_x = kwargs.get('compound_dist_x', 0)
         self.compound_dist_z = kwargs.get('compound_dist_z', 0)
-        self.compound_group = kwargs.get('compound_group', None)
 
         # translate points with respect to centroid to origin
         self.load_point_1 = self.load_point_1._replace(x=self.load_point_1.x-centroid[0]+self.compound_dist_x + self.ref_point.x,z=self.load_point_1.z-centroid[1]+self.compound_dist_z + self.ref_point.z) if self.load_point_1 is not None else self.load_point_1
@@ -87,7 +86,7 @@ class Loads:
         self.load_point_8 = self.load_point_8._replace(x=self.load_point_8.x-centroid[0]+self.compound_dist_x + self.ref_point.x,z=self.load_point_8.z-centroid[1]+self.compound_dist_z + self.ref_point.z) if self.load_point_8 is not None else self.load_point_8
 
     # function called by Moving load module to move the load group
-    def move_load(self, ref_point):
+    def move_load(self, ref_point:Point):
         self.load_point_1 = self.load_point_1._replace(x=self.load_point_1.x + ref_point.x,
                                                        z=self.load_point_1.z + ref_point.z) if self.load_point_1 is\
                                                                                                     not None else self.load_point_1
@@ -111,6 +110,24 @@ class Loads:
                                                                                                     not None else self.load_point_7
         self.load_point_8 = self.load_point_8._replace(x=self.load_point_8.x + ref_point.x,
                                                        z=self.load_point_8.z + ref_point.z) if self.load_point_8 is \
+                                                                                                    not None else self.load_point_8
+
+    def apply_load_factor(self, factor=1):
+        self.load_point_1 = self.load_point_1._replace(p=factor * self.load_point_1.p) if self.load_point_1 is \
+                                                                                                    not None else self.load_point_1
+        self.load_point_2 = self.load_point_2._replace(p=factor * self.load_point_2.p) if self.load_point_2 is \
+                                                                                                    not None else self.load_point_2
+        self.load_point_3 = self.load_point_3._replace(p=factor * self.load_point_3.p) if self.load_point_3 is \
+                                                                                                    not None else self.load_point_3
+        self.load_point_4 = self.load_point_4._replace(p=factor * self.load_point_4.p) if self.load_point_4 is \
+                                                                                                    not None else self.load_point_4
+        self.load_point_5 = self.load_point_5._replace(p=factor * self.load_point_5.p) if self.load_point_5 is \
+                                                                                                    not None else self.load_point_5
+        self.load_point_6 = self.load_point_6._replace(p=factor * self.load_point_6.p) if self.load_point_6 is \
+                                                                                                    not None else self.load_point_6
+        self.load_point_7 = self.load_point_7._replace(p=factor * self.load_point_7.p) if self.load_point_7 is \
+                                                                                                    not None else self.load_point_7
+        self.load_point_8 = self.load_point_8._replace(p=factor * self.load_point_8.p) if self.load_point_8 is \
                                                                                                     not None else self.load_point_8
 
     def __str__(self):
@@ -260,31 +277,50 @@ class LoadCase:
         self.name = name
         self.load_groups = []
         self.path = None
-        self.compound_dist_list= None
-        self.compound_ref_point = None
-        self.compound_group_record = 0
-        self.moving_group_record = []
+        # preset load factor for
+        self.load_factor_list = []
 
-    def add_load_groups(self, *args, **kwargs):
-        # list of shift based on local coordinate
-        self.compound_dist_list = kwargs.get('compound_dist_list', None)
-        # single list of ref point
-        self.compound_ref_point = kwargs.get('compound_ref_point', None)      # global coordinate
-        for loads in args:
-            # if compound load dist list exist, add load groups as a compound group based on the distance list
-            if self.compound_dist_list is not None:
-                for compound_dist in self.compound_dist_list:
-                        self.load_groups.append(loads.create_compound_load(compound_dist_x=compound_dist.x,compound_dist_z=compound_dist.z,
-                                                                           compound_group=self.compound_group_record))  # assume modelling plane y = 0
-                self.compound_group_record += 1
-            else: # add load groups as it is
-                self.load_groups.append(loads)
+    def add_load_groups(self, load_obj, **kwargs):
+        self.load_groups.append(load_obj)
 
+        load_factor = kwargs.get('load_factor', 1)
+        self.load_factor_list.append(load_factor)
 
-    def add_moving_load(self, **kwargs):
+    def move_load_group(self, **kwargs):
         self.path = kwargs.get('path', None)
-        self.moving_group_record.append(kwargs.get('group', None))
 
+
+class CompoundLoad:
+
+    def __init__(self, name):
+        self.name = name
+        self.compound_load_obj_list = []
+        self.local_coord_list = []
+        self.centroid = Point(0,0,0)  # named tuple Point
+        self.global_coord = self.centroid
+
+    def add_load(self, load_obj: Loads, local_coord: Point = None):
+        # update the load obj to be part of compound load by first
+        # shifting all load points relative to centroid of defined load class
+        # then shifting centroid and load_points relative to A Local Coordinate system
+        load_obj.form_compound_load(compound_dist_x=local_coord.x, compound_dist_z=local_coord.z)
+        # then shift load obj relative to global coord (this is the coord of the model) default is 0,0,0 if not set
+        # by user
+        load_obj.move_load(self.global_coord)
+        self.compound_load_obj_list.append(load_obj)  # after update, append to list
+        self.local_coord_list.append(local_coord)
+
+    def set_global_coord(self, global_coord: Point):
+        # overwrite global coordinate
+        if global_coord != self.global_coord:
+            self.global_coord = global_coord
+            # loop each load type in compound load and shift by global_coord
+            append_load_list = []
+            if not self.compound_load_obj_list:
+                for loads in self.compound_load_obj_list:
+                    loads.move_load(global_coord)  # shift load objs relavtive to new global coord
+                    append_load_list.append(loads)  # appending shifted loads to new list and
+                self.compound_load_obj_list = append_load_list # overwrite it to class variable
 
 
 # ---------------------------------------------------------------------------------------------------------------

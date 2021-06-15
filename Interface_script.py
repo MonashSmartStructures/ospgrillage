@@ -74,14 +74,24 @@ lane_point_3 = LoadPoint(8, 0, 5, 5)
 lane_point_4 = LoadPoint(0, 0, 5, 5)
 Lane = PatchLoading("Lane 1", point1=lane_point_1, point2=lane_point_2, point3=lane_point_3, point4=lane_point_4)
 
+# compound load
+M1600 = CompoundLoad("Lane and Barrier")
+M1600.add_load(load_obj=Single, local_coord=Point(5,0,5))
+M1600.add_load(load_obj=Single, local_coord=Point(3,0,5))
+M1600.set_global_coord(Point(4,0,3))
+
 # --------------------------------------------------------------------------------------------------------------------
 # Load Case
+
 ULS_DL = LoadCase(name="ULS-DL")
 ULS_DL.add_load_groups(Barrier)  # change here
+
+SLS_LL = LoadCase(name="Live traffic")
+SLS_LL.add_load_groups(M1600)
 example_bridge.add_load_case(ULS_DL)
 
 # Load combination
-# example_bridge.add_load_combination(loadcase=[ULS_DL, SLS_LL], load_factor=[1.2, 1.7])
+# example_bridge.add_load_combination({ULS_DL:1.2, SLS_LL:1.7})
 
 # --------------------------------------------------------------------------------------------------------------------
 

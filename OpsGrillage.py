@@ -17,12 +17,16 @@ class OpsGrillage:
     The class provides an interface for the user to specify the geometry of the grillage model. A keyword argument
     allows for users to select between skew/oblique or orthogonal mesh. Methods in this class allows users to input
     properties for various elements in the grillage model.
+
+    Example usage:
+    example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=-42,
+                             num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
     """
 
     def __init__(self, bridge_name, long_dim, width, skew, num_long_grid,
                  num_trans_grid, edge_beam_dist, mesh_type="Ortho", op_instance=True, model="3D", **kwargs):
         """
-
+        Variables pertaining model information
         :param bridge_name: Name of bridge model and output .py file
         :type bridge_name: str
         :param long_dim: Length of the model in the longitudinal direction (default: x axis)
@@ -42,50 +46,41 @@ class OpsGrillage:
 
         """
 
-        # model information
+        self.global_load_str = []
+        self.global_patch_int_dict = dict()
         self.mesh_type = mesh_type
         self.model_name = bridge_name
         self.op_instance_flag = op_instance
-
-        # global dimensions of grillage
         self.long_dim = long_dim  # span , also c/c between support bearings
         self.width = width  # length of the bearing support - if skew  = 0 , this corresponds to width of bridge
-
+        # if skew is a list containing 2 skew angles, set start and end edge of span to have respective angles
         if isinstance(skew, list):
             self.skew_a = skew[0]
             if len(skew) >= 2:
                 self.skew_b = skew[1]
-        else:
+        else:  # set skew_a and skew_b variables to equal
             self.skew_a = skew  # angle in degrees
             self.skew_b = skew  # angle in degrees
 
-        # Variables for grillage grillage
         self.num_long_gird = num_long_grid  # number of longitudinal beams
         self.num_trans_grid = num_trans_grid  # number of grids for transverse members
         self.edge_width = edge_beam_dist  # width of cantilever edge beam
-        self.edge_beam_nodes = []
         # instantiate matrices for geometric dependent properties
         self.trans_dim = None  # to be calculated automatically based on skew
-        self.breadth = None  # to be calculated automatically based on skew
-
-        # initialize lists
         self.global_mat_object = []  # material matrix
         self.global_line_int_dict = []
-        # initialize tags of grillage elements - default tags are for standard elements of grillage
         # Section placeholders
         self.section_arg = None
         self.section_tag = None
         self.section_type = None
 
         # dict
-        self.group_ele_dict = None  # dictionary of ele groups e.g. [ "name of group": tag ]
-        self.global_element_list = None  # list of all elements in grillage
         self.ele_group_assigned_list = []  # list recording assigned ele groups in grillage model
         self.section_dict = {}  # dictionary of section tags
         self.material_dict = {}  # dictionary of material tags
 
         # collect mesh groups
-        self.mesh_group = []
+        self.mesh_group = []         # for future release
         if self.mesh_type == "Ortho":
             self.ortho_mesh = True
         else:
@@ -98,9 +93,9 @@ class OpsGrillage:
         self.grillage_rules_dict['max_trans_spacing'] = kwargs.get('max_trans_spacing', 1)
         self.grillage_rules_dict['aspect_ratio'] = kwargs.get('aspect_ratio', 1)
 
-        self.y_elevation = 0  # default elevation of grillage wrt OPmodel coordinate system
+        self.y_elevation = 0  # default model plane is orthogonal plane of y = 0
         self.min_grid_ortho = 3  # for orthogonal mesh (skew>skew_threshold) region of orthogonal area default 3
-        self.while_loop_max = 100
+
         if model == "2D":
             self.__ndm = 2  # num model dimension - default 3
             self.__ndf = 3  # num degree of freedom - default 6
@@ -108,12 +103,13 @@ class OpsGrillage:
             self.__ndm = 3  # num model dimension - default 3
             self.__ndf = 6  # num degree of freedom - default 6
 
-        # default vector for support (for 2D grillage in x - z plane)
+        # default vector for standard (for 2D grillage in x - z plane) - 1 represent fix for [Vx,Vy,Vz, Mx, My, Mz]
         self.fix_val_pin = [1, 1, 1, 0, 0, 0]  # pinned
         self.fix_val_roller_x = [0, 1, 1, 0, 0, 0]  # roller
         # special rules for grillage - alternative to Properties of grillage definition - use for special dimensions
         self.skew_threshold = [10, 30]  # threshold for grillage to allow option of mesh choices
         self.deci_tol = 4  # tol of decimal places
+        self.while_loop_max = 100
 
         # dict for load cases and load types
         self.load_case_dict = defaultdict(lambda: 1)
@@ -136,7 +132,11 @@ class OpsGrillage:
         self.pyfile = None
 
     def create_ops(self, pyfile=False):
-        # function to handle Opensees
+        """
+        Main function to create ops model instance or output pyfile for model instance
+        :param pyfile: Boolean to flag either ops instance or pyfile output
+
+        """
         self.pyfile = pyfile
 
         if self.pyfile:
@@ -156,8 +156,9 @@ class OpsGrillage:
         # create grillage mesh object
         self.__run_mesh_generation()
 
+    # function to run mesh generation
     def __run_mesh_generation(self):
-        # function to run mesh generation
+
         self.Mesh_obj = Mesh(self.long_dim, self.width, self.trans_dim, self.edge_width, self.num_trans_grid,
                              self.num_long_gird,
                              self.skew_a, skew_2=self.skew_b, orthogonal=self.ortho_mesh)
@@ -175,7 +176,7 @@ class OpsGrillage:
         """
         pass
 
-    # abstraction to write ops commands to output py file
+    # abstracted procedures to write ops commands to output py file. All functions are private and named with "__write"
     def __write_geom_transf(self, mesh_obj, transform_type="Linear"):
         """
         Abstracted procedure to write ops.geomTransf() to output py file.
@@ -211,6 +212,7 @@ class OpsGrillage:
                 file_handle.write(
                     "ops.model('basic', '-ndm', {ndm}, '-ndf', {ndf})\n".format(ndm=self.__ndm, ndf=self.__ndf))
         else:
+            ops.wipe()
             ops.model('basic', '-ndm', self.__ndm, '-ndf', self.__ndf)
 
     def __write_op_node(self, mesh_obj):
@@ -341,7 +343,19 @@ class OpsGrillage:
                   .format(section_type, sectiontagcounter))
         return sectiontagcounter
 
+    # Function to set grillage elements
     def set_member(self, grillage_member_obj, member=None):
+        """
+        Function to set grillage member class object to elements of grillage members.
+        :param grillage_member_obj: Grillage_member class object
+        :param member: str of member category - select from standard grillage elements
+                        - interior beam
+                        - exterior beam
+                        - edge beam
+                        - slab
+                        - diaphragm
+        :return: sets member object to element of grillage in OpsGrillage instance
+        """
         # if write flag, write header of element assignment
         if self.pyfile:
             with open(self.filename, 'a') as file_handle:
@@ -433,10 +447,12 @@ class OpsGrillage:
         # write member's material command
         material_tag = self.__write_uniaxial_material(member=grillage_member_obj)
 
+    # function to set material obj of grillage model. When called by user,
     def set_material(self, material_obj):
         """
         Function to define a global material model. This function proceeds to write write the material() command to
-        output file.
+        output file. By default, function is only called and handled within set_member function. When called by user,
+        function creates a material object instance to be set for the ops-grillage instance.
 
         :return: Function populates object variables: (1) mat_matrix, and (2) mat_type_op.
         """
@@ -446,22 +462,11 @@ class OpsGrillage:
         # write uniaxialMaterial() command to output file
         self.__write_uniaxial_material(material=material_obj)
 
-    def run_check(self):
-        """
-        Test output file
-
-        """
-        try:
-            __import__(self.filename[:-3])  # run file
-            print("File successfully imported and run")
-        except:
-            print("File executed with error exceptions")
-
     # ---------------------------------------------------------------
     # Function to find nodes or grids correspond to a point or line - called within OpsGrillage for distributing
     # loads to grillage nodes
 
-    # Getter for elements within a grid
+    # private procedure to find elements within a grid
     def __get_elements(self, node_tag_combo):
         # abstracted procedure to find and return the long and trans elements within a grid of 4 or 3 nodes
         record_long = []
@@ -480,7 +485,7 @@ class OpsGrillage:
             record_edge = record_edge + edge_mem_index
         return record_long, record_trans, record_edge
 
-    # Getter for Points Loads nodes and above
+    # Getter for Points Loads nodes
     def get_point_load_nodes(self, point):
         # procedure
         # 1 find the closest node 2 find the respective grid within the closest node
@@ -509,7 +514,7 @@ class OpsGrillage:
         node_list = self.Mesh_obj.grid_number_dict.get(grid, None)
         return node_list, grid  # n3 = grid number
 
-    # Getter for Line loads nodes and above
+    # Getter for Line loads nodes
     def get_line_load_nodes(self, line_load_obj) -> object:
         # uses a modified Bresenham's Line Algorithm to search for grids which lineload intersects
         # from starting point of line load
@@ -556,7 +561,7 @@ class OpsGrillage:
                 line_point = Point(x_start, points.y, z_start)
 
                 if check_point_in_grid(inside_point=line_point, point_list=point_list):
-                    print("Found intersect:{} at grid {}".format((x_start, z_start), grid_tag))
+
                     # find intersecting points within grid
                     Rz, Rx, Redge = self.__get_intersecting_elements(grid_tag, current_grid, last_grid, line_load_obj,
                                                                      long_ele_index, trans_ele_index, edge_ele_index)
@@ -595,7 +600,7 @@ class OpsGrillage:
                      line_load_obj.line_end_point.z]]
         return edited_dict
 
-    # abstracted procedure for finding intersection points of line/patch edge within grid
+    # private function to find intersection points of line/patch edge within grid
     def __get_intersecting_elements(self, current_grid, line_start_grid, line_end_grid, line_load_obj, long_ele_index,
                                     trans_ele_index, edge_ele_index):
         R_z = []
@@ -693,6 +698,7 @@ class OpsGrillage:
                 Redge.append([R_edge[0], p_edge_1.y, R_edge[1]])
         return Rz, Rx, Redge
 
+    # private function to check if the ends of a line load obj lies within the mesh bounds
     @staticmethod
     def __check_line_ends_in_grid(p1, p2, current_grid, line_start_grid, line_end_grid, line_load_obj):
         # function to check if line load segment starts/ends within the bounds of the mesh. To do this, check if
@@ -767,7 +773,7 @@ class OpsGrillage:
 
         return bounded_node, bounded_grids
 
-    # Setter for Point loads and above
+    # Setter for Point loads
     def assign_point_to_four_node(self, point, mag):
         """
         Function to assign point load to nodes of grid where the point load lies in.
@@ -788,7 +794,6 @@ class OpsGrillage:
         p2 = self.Mesh_obj.node_spec[grid_nodes[1]]['coordinate']
         p3 = self.Mesh_obj.node_spec[grid_nodes[2]]['coordinate']
 
-        # TODO sanity check to sort points in clockwise again using sort_vertices()
         point_list = [Point(p1[0],p1[1],p1[2]),Point(p2[0],p2[1],p2[2]),Point(p3[0],p3[1],p3[2])]
         if len(grid_nodes) == 3:
             sorted_list = sort_vertices(point_list)
@@ -821,7 +826,7 @@ class OpsGrillage:
 
         load_str = []
         for count, node in enumerate(grid_nodes):
-            load_str.append("ops.load({pt}, *{val})\n".format(pt=node, val=[0, node_load[count], node_mx[count], 0,
+            load_str.append("ops.load({pt}, *{val})\n".format(pt=node, val=[0, node_load[count], 0, node_mx[count], 0,
                                                                             node_mz[count]]))
         return load_str
 
@@ -872,12 +877,11 @@ class OpsGrillage:
 
     def add_load_case(self, load_case_obj, analysis_type='Static'):
         """
-        Functions to add loads or load cases
+        Functions to loadcase to ops-grillage instance
         :param load_case_obj:
         :param analysis_type:
         :return:
         """
-        self.global_load_str = []
         with open(self.filename, 'a') as file_handle:
             # if no load cases have been defined previously, create time series object for the first time
             if not bool(self.load_case_dict):
@@ -928,21 +932,33 @@ class OpsGrillage:
                     self.global_line_int_dict.append(line_grid_intersect)
                     load_str = self.assign_line_to_four_node(loads, line_grid_intersect)
                     for lines in load_str:
-                        file_handle.write(lines)
+                        if self.pyfile:
+                            file_handle.write(lines)
+                        else:
+                            eval(lines)
                     print("Line load - {loadname} - added to load case: {name}".format(loadname=loads.name,
                                                                                        name=load_case_obj.name))
 
                 elif isinstance(loads, PatchLoading):
                     load_str = self.assign_patch_load(loads)
+
+                    print("Patch load - {loadname} - added to load case: {name}".format(loadname=loads.name,
+                                                                                       name=load_case_obj.name))
+                elif isinstance(loads, CompoundLoad):
+                    # assign compound load
                     pass
-            # Create instance and write command to output py file
-            file_handle.write("ops.integrator('LoadControl', 1)\n")  # Header
-            file_handle.write("ops.numberer('Plain')\n")
-            file_handle.write("ops.system('BandGeneral')\n")
-            file_handle.write("ops.constraints('Plain')\n")
-            file_handle.write("ops.algorithm('Linear')\n")
-            file_handle.write("ops.analysis(\"{}\")\n".format(analysis_type))
-            file_handle.write("ops.analyze(1)\n")
+
+            # run command to create and run analysis
+            if self.pyfile:
+                file_handle.write("ops.integrator('LoadControl', 1)\n")  # Header
+                file_handle.write("ops.numberer('Plain')\n")
+                file_handle.write("ops.system('BandGeneral')\n")
+                file_handle.write("ops.constraints('Plain')\n")
+                file_handle.write("ops.algorithm('Linear')\n")
+                file_handle.write("ops.analysis(\"{}\")\n".format(analysis_type))
+                file_handle.write("ops.analyze(1)\n")
+            else:
+                pass
 
             # print to terminal
             print("Load Case {} created".format(load_case_obj.name))
@@ -957,10 +973,9 @@ class OpsGrillage:
         return A
 
     # setter for patch loads
-    def assign_patch_load(self, patch_load_obj: object) -> PatchLoading:
+    def assign_patch_load(self, patch_load_obj: PatchLoading) -> PatchLoading:
         # searches grid that encompass the patch load
         # use getter for line load, 4 times for each point
-        self.global_patch_int_dict = dict()
         # between 4 dictionaries record the common grids as having the corners of the patch - to be evaluated different
         bound_node, bound_grid = self.get_bounded_nodes(patch_load_obj)
         # assign patch for grids fully bounded by patch
@@ -1024,4 +1039,8 @@ class OpsGrillage:
             # assign point and mag to 4 nodes of grid
             load_str = self.assign_point_to_four_node(point=[xc, yc, zc], mag=mag)
             self.global_load_str += load_str
+        pass
+
+    # moving load analysis run
+    def run_analyses(self):
         pass
