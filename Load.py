@@ -5,11 +5,13 @@ from scipy import interpolate
 from static import *
 from Mesh import *
 from collections import namedtuple
+from typing import Union
 
 # named tuple definition
 LoadPoint = namedtuple("Point", ["x", "y", "z", "p"])
 NodeForces = namedtuple("node_forces", ["Fx", "Fy", "Fz", "Mx", "My", "Mz"])
 Line = namedtuple("line", ["m", "c", "phi"])
+
 
 # ----------------------------------------------------------------------------------------------------------------
 # Loading classes
@@ -54,12 +56,13 @@ class Loads:
         self.load_point_7 = kwargs.get('point7', None)
         self.load_point_8 = kwargs.get('point8', None)
         # list of load points tuple
-        self.point_list = [self.load_point_1,self.load_point_2,self.load_point_3,self.load_point_4,self.load_point_5,
-                           self.load_point_6,self.load_point_7,self.load_point_8]
+        self.point_list = [self.load_point_1, self.load_point_2, self.load_point_3, self.load_point_4,
+                           self.load_point_5,
+                           self.load_point_6, self.load_point_7, self.load_point_8]
         # var for compound load group (handled by LoadCase class when creating compound groups)
-        self.compound_dist_x = 0
-        self.compound_dist_z = 0
-        self.ref_point = None
+        self.compound_dist_x = 0  # local coordinate system
+        self.compound_dist_z = 0  # local coordinate system
+        self.ref_point = None  # local coordinate system
         self.compound_group = None  # group number access by LoadCase class to move load group if any path is defined
         # init dict
         self.spec = dict()  # dict {node number: {Fx:val, Fy:val, Fz:val, Mx:val, My:val, Mz:val}}
@@ -71,9 +74,9 @@ class Loads:
         point_list = [i for i in self.point_list if i is not None]
         centroid = find_plane_centroid(point_list)
         # get kwargs
-        self.ref_point = kwargs.get('ref_point', LoadPoint(centroid[0],self.load_point_1.y,centroid[1]))
-        self.compound_dist_x = kwargs.get('compound_dist_x', 0)
-        self.compound_dist_z = kwargs.get('compound_dist_z', 0)
+        self.ref_point = kwargs.get('ref_point', Point(0, self.load_point_1.y, 0))  # ref_point of load_point groups with respect to local coord default = origin of local coord
+        self.compound_dist_x = kwargs.get('compound_dist_x', 0)  # shift of ref point (and all poinst) in x direction with respect to local coord
+        self.compound_dist_z = kwargs.get('compound_dist_z', 0)  # shift of ref point (and all points) in z direction with respect to local coord
 
         # translate points with respect to centroid to origin
         self.load_point_1 = self.load_point_1._replace(x=self.load_point_1.x-centroid[0]+self.compound_dist_x + self.ref_point.x,z=self.load_point_1.z-centroid[1]+self.compound_dist_z + self.ref_point.z) if self.load_point_1 is not None else self.load_point_1
@@ -86,49 +89,49 @@ class Loads:
         self.load_point_8 = self.load_point_8._replace(x=self.load_point_8.x-centroid[0]+self.compound_dist_x + self.ref_point.x,z=self.load_point_8.z-centroid[1]+self.compound_dist_z + self.ref_point.z) if self.load_point_8 is not None else self.load_point_8
 
     # function called by Moving load module to move the load group
-    def move_load(self, ref_point:Point):
+    def move_load(self, ref_point: Point):
         self.load_point_1 = self.load_point_1._replace(x=self.load_point_1.x + ref_point.x,
-                                                       z=self.load_point_1.z + ref_point.z) if self.load_point_1 is\
-                                                                                                    not None else self.load_point_1
+                                                       z=self.load_point_1.z + ref_point.z) if self.load_point_1 is \
+                                                                                               not None else self.load_point_1
         self.load_point_2 = self.load_point_2._replace(x=self.load_point_2.x + ref_point.x,
                                                        z=self.load_point_2.z + ref_point.z) if self.load_point_2 is \
-                                                                                                    not None else self.load_point_2
+                                                                                               not None else self.load_point_2
         self.load_point_3 = self.load_point_3._replace(x=self.load_point_3.x + ref_point.x,
                                                        z=self.load_point_3.z + ref_point.z) if self.load_point_3 is \
-                                                                                                    not None else self.load_point_3
+                                                                                               not None else self.load_point_3
         self.load_point_4 = self.load_point_4._replace(x=self.load_point_4.x + ref_point.x,
                                                        z=self.load_point_4.z + ref_point.z) if self.load_point_4 is \
-                                                                                                    not None else self.load_point_4
+                                                                                               not None else self.load_point_4
         self.load_point_5 = self.load_point_5._replace(x=self.load_point_5.x + ref_point.x,
                                                        z=self.load_point_5.z + ref_point.z) if self.load_point_5 is \
-                                                                                                    not None else self.load_point_5
+                                                                                               not None else self.load_point_5
         self.load_point_6 = self.load_point_6._replace(x=self.load_point_6.x + ref_point.x,
                                                        z=self.load_point_6.z + ref_point.z) if self.load_point_6 is \
-                                                                                                    not None else self.load_point_6
+                                                                                               not None else self.load_point_6
         self.load_point_7 = self.load_point_7._replace(x=self.load_point_7.x + ref_point.x,
                                                        z=self.load_point_7.z + ref_point.z) if self.load_point_7 is \
-                                                                                                    not None else self.load_point_7
+                                                                                               not None else self.load_point_7
         self.load_point_8 = self.load_point_8._replace(x=self.load_point_8.x + ref_point.x,
                                                        z=self.load_point_8.z + ref_point.z) if self.load_point_8 is \
-                                                                                                    not None else self.load_point_8
+                                                                                               not None else self.load_point_8
 
     def apply_load_factor(self, factor=1):
         self.load_point_1 = self.load_point_1._replace(p=factor * self.load_point_1.p) if self.load_point_1 is \
-                                                                                                    not None else self.load_point_1
+                                                                                          not None else self.load_point_1
         self.load_point_2 = self.load_point_2._replace(p=factor * self.load_point_2.p) if self.load_point_2 is \
-                                                                                                    not None else self.load_point_2
+                                                                                          not None else self.load_point_2
         self.load_point_3 = self.load_point_3._replace(p=factor * self.load_point_3.p) if self.load_point_3 is \
-                                                                                                    not None else self.load_point_3
+                                                                                          not None else self.load_point_3
         self.load_point_4 = self.load_point_4._replace(p=factor * self.load_point_4.p) if self.load_point_4 is \
-                                                                                                    not None else self.load_point_4
+                                                                                          not None else self.load_point_4
         self.load_point_5 = self.load_point_5._replace(p=factor * self.load_point_5.p) if self.load_point_5 is \
-                                                                                                    not None else self.load_point_5
+                                                                                          not None else self.load_point_5
         self.load_point_6 = self.load_point_6._replace(p=factor * self.load_point_6.p) if self.load_point_6 is \
-                                                                                                    not None else self.load_point_6
+                                                                                          not None else self.load_point_6
         self.load_point_7 = self.load_point_7._replace(p=factor * self.load_point_7.p) if self.load_point_7 is \
-                                                                                                    not None else self.load_point_7
+                                                                                          not None else self.load_point_7
         self.load_point_8 = self.load_point_8._replace(p=factor * self.load_point_8.p) if self.load_point_8 is \
-                                                                                                    not None else self.load_point_8
+                                                                                          not None else self.load_point_8
 
     def __str__(self):
         return "LoadCase {} \n".format(self.name) + pprint.pformat(self.spec)
@@ -174,7 +177,7 @@ class LineLoading(Loads):
         super().__init__(name, **kwargs)
         # shape function object
         self.shape_function = ShapeFunction()
-        print("Line Loading {} created".format(name))
+
         # if three points are defined, set line as curved circular line with point 2 (x2,y2,z2) in the centre of curve
         if self.load_point_3 is not None:  # curve
             # findCircle assumes model plane is y = 0, ignores y input, y in this case is a 2D view of x z plane
@@ -276,7 +279,7 @@ class LoadCase:
     def __init__(self, name):
         self.name = name
         self.load_groups = []
-        self.path = None
+        self.position = None
         # preset load factor for
         self.load_factor_list = []
 
@@ -286,9 +289,11 @@ class LoadCase:
         load_factor = kwargs.get('load_factor', 1)
         self.load_factor_list.append(load_factor)
 
-    def move_load_group(self, **kwargs):
-        self.path = kwargs.get('path', None)
-
+    # function for live load that traverse the grillage structure
+    def move_load_group(self, ref_point: Point):
+        self.position = ref_point
+        for loads in self.load_groups:
+            loads.move_load(self.position)
 
 class CompoundLoad:
 
@@ -296,7 +301,7 @@ class CompoundLoad:
         self.name = name
         self.compound_load_obj_list = []
         self.local_coord_list = []
-        self.centroid = Point(0,0,0)  # named tuple Point
+        self.centroid = Point(0, 0, 0)  # named tuple Point
         self.global_coord = self.centroid
 
     def add_load(self, load_obj: Loads, local_coord: Point = None):
@@ -316,11 +321,53 @@ class CompoundLoad:
             self.global_coord = global_coord
             # loop each load type in compound load and shift by global_coord
             append_load_list = []
-            if not self.compound_load_obj_list:
-                for loads in self.compound_load_obj_list:
-                    loads.move_load(global_coord)  # shift load objs relavtive to new global coord
-                    append_load_list.append(loads)  # appending shifted loads to new list and
-                self.compound_load_obj_list = append_load_list # overwrite it to class variable
+            # once overwritten, update loadpoints in each load obj of compound load by global_coord
+            for loads in self.compound_load_obj_list:
+                loads.move_load(global_coord)  # shift load objs relavtive to new global coord
+                append_load_list.append(loads)  # appending shifted loads to new list and
+            self.compound_load_obj_list = append_load_list  # overwrite it to class variable
+
+
+class MovingLoad:
+
+    def __init__(self, name):
+        self.name = name
+        self.load_list = []
+        self.path_list = []
+        self.load_case_list = []
+
+    def add_loads(self, load_obj: Union[Loads, CompoundLoad], path_obj=None):
+        if path_obj is None:
+            path_obj = []
+        self.load_list.append(load_obj)
+        self.path_list.append(path_obj)
+
+    # function to sort loads into multiple load cases - automatically called by Ops-grillage
+    def parse_load_case(self):
+        # create load case obj for each step in the move
+        for count,path_list in enumerate(self.path_list):
+            for steps in path_list:  # step is a list [x,y,z]
+                load_step = LoadCase(name="step")
+                load_step.add_load_groups(self.load_list[count])
+                # convert steps into Point tuple
+                step_point = Point(steps[0],steps[1],steps[2])
+                load_step.move_load_group(step_point)
+                self.load_case_list.append(load_step)
+
+
+class Path:
+    def __init__(self, start_point: Point, end_point: Point, increments=50) -> list:
+        self.start_point = start_point
+        self.end_point = end_point
+        # here create a straight path
+        self.path_points_x = np.linspace(start_point.x, end_point.x, increments)
+        self.path_points_y = np.linspace(start_point.y, end_point.y, increments)
+        self.path_points_z = np.linspace(start_point.z, end_point.z, increments)
+        self.path_points_list = []
+
+    def get_path_points(self):
+        self.path_points_list = [[x,y,z] for (x,y,z) in zip(self.path_points_x,self.path_points_y,self.path_points_z)]
+        return self.path_points_list
 
 
 # ---------------------------------------------------------------------------------------------------------------

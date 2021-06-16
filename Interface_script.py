@@ -62,6 +62,7 @@ if not pyfile:
 # Point load
 location = LoadPoint(5, 0, -2, 20)  # create load point
 Single = PointLoad(name="single point", point1=location)
+front_wheel = PointLoad(name="front wheel", point1 = LoadPoint(2,0,2,50))
 # Line load
 barrierpoint_1 = LoadPoint(-1, 0, 0, 2)
 barrierpoint_2 = LoadPoint(11, 0, 0, 2)
@@ -77,7 +78,7 @@ Lane = PatchLoading("Lane 1", point1=lane_point_1, point2=lane_point_2, point3=l
 # compound load
 M1600 = CompoundLoad("Lane and Barrier")
 M1600.add_load(load_obj=Single, local_coord=Point(5,0,5))
-M1600.add_load(load_obj=Single, local_coord=Point(3,0,5))
+M1600.add_load(load_obj=Barrier, local_coord=Point(3,0,5))
 M1600.set_global_coord(Point(4,0,3))
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -85,10 +86,11 @@ M1600.set_global_coord(Point(4,0,3))
 
 ULS_DL = LoadCase(name="ULS-DL")
 ULS_DL.add_load_groups(Barrier)  # change here
+example_bridge.add_load_case(ULS_DL)
 
 SLS_LL = LoadCase(name="Live traffic")
 SLS_LL.add_load_groups(M1600)
-example_bridge.add_load_case(ULS_DL)
+
 
 # Load combination
 # example_bridge.add_load_combination({ULS_DL:1.2, SLS_LL:1.7})

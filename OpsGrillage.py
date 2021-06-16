@@ -901,12 +901,13 @@ class OpsGrillage:
 
             # set load case to load_case_dict
             load_case_tag = self.load_case_dict.setdefault(load_case_obj.name, load_case_counter + 1)
-            # write header
-            file_handle.write("#===========================\n# create load case {}\n#==========================\n"
-                              .format(load_case_obj.name))
-            # create pattern obj for load case
+
             pattern_command = "ops.pattern('Plain', {}, 1)\n".format(load_case_tag)
             if self.pyfile:
+                # write header
+                file_handle.write("#===========================\n# create load case {}\n#==========================\n"
+                                  .format(load_case_obj.name))
+                # create pattern obj for load case
                 file_handle.write(pattern_command)
             else:
                 eval(pattern_command)
@@ -1041,6 +1042,6 @@ class OpsGrillage:
             self.global_load_str += load_str
         pass
 
-    # moving load analysis run
+    # Function to run all defined load cases
     def run_analyses(self):
         pass

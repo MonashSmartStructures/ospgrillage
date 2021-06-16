@@ -93,6 +93,7 @@ def test_model_instance(bridge_model_42_negative):
 
 
 # ------------------------------------------------------------------------------------------------------------------
+# tests for load assignments
 # tests point load return correct nodes
 def test_point_load_getter(bridge_model_42_negative):  # test get_point_load_nodes() function
     # test if setter and getter is correct              # and assign_point_to_node() function
@@ -246,3 +247,21 @@ def test_sort_vertices():
                   LoadPoint(x=5, y=0, z=5, p=5)]
     assert sort_vertices(point_list) == [LoadPoint(x=5, y=0, z=3, p=5), LoadPoint(x=8, y=0, z=3, p=5),
                                          LoadPoint(x=8, y=0, z=5, p=5), LoadPoint(x=5, y=0, z=5, p=5)]
+
+# ----------------------------------------------------------------------------------------------------------------------
+# test Loadcase, compound load, and moving load objects
+# test to check global coordinates of the loadpoints within compound loads
+def test_compound_load():
+    location = LoadPoint(5, 0, -2, 20)  # create load point
+    Single = PointLoad(name="single point", point1=location)
+    front_wheel = PointLoad(name="front wheel", point1=LoadPoint(2, 0, 2, 50))
+    # Line load
+    barrierpoint_1 = LoadPoint(-1, 0, 0, 2)
+    barrierpoint_2 = LoadPoint(11, 0, 0, 2)
+    Barrier = LineLoading("Barrier curb load", point1=barrierpoint_1, point2=barrierpoint_2)
+
+    M1600 = CompoundLoad("Lane and Barrier")
+    M1600.add_load(load_obj=Single, local_coord=Point(5, 0, 5))
+    M1600.add_load(load_obj=Barrier, local_coord=Point(3, 0, 5))
+    M1600.set_global_coord(Point(4, 0, 3))
+    assert M1600.compound_load_obj_list[1].load_point_2 == LoadPoint(x=13.0, y=0, z=8.0, p=2)

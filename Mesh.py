@@ -115,7 +115,7 @@ class Mesh:
         else:  # skew
             # sweep line of skew mesh == edge_construction line
             self.sweeping_nodes = self.start_edge_line.node_list
-            self.nox = np.linspace(0, self.long_dim, self.num_trans_beam)
+        self.nox = np.linspace(0, self.long_dim, self.num_trans_beam)
         # ------------------------------------------------------------------------------------------
         # create nodes and elements
         # if orthogonal, orthogonal mesh only be splayed onto a curve mesh, if skew mesh curved/arc line segment must be
@@ -831,8 +831,8 @@ class EdgeConstructionLine:
 
         self.z_group = list(range(0, len(self.noz)))
 
-        self.slope = -1 / np.tan(self.edge_angle / 180 * np.pi)
-        self.c = get_y_intcp(self.slope, self.edge_ref_point[0], self.edge_ref_point[2])
+        self.slope = -1 / np.tan(self.edge_angle / 180 * np.pi) if self.edge_angle != 0 else None
+        self.c = get_y_intcp(self.slope, self.edge_ref_point[0], self.edge_ref_point[2]) if self.edge_angle != 0 else None
 
     def get_node_group_z(self, coordinate):
         # return list of zgroup
