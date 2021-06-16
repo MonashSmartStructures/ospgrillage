@@ -1045,3 +1045,68 @@ class OpsGrillage:
     # Function to run all defined load cases
     def run_analyses(self):
         pass
+
+
+class Analysis:
+    """
+
+    """
+    def __init__(self, analysis_name:str, ops_grillage_name:str, pyfile:bool):
+        self.analysis_name = analysis_name
+        self.ops_grillage_name = ops_grillage_name
+        self.time_series_tag = None
+        self.pattern_tag = None
+        self.static_load_command_list = []
+        self.moving_load_command_list = []
+        self.analysis_type = None
+        self.pyfile = pyfile
+        # variables to store results of analysis
+
+        # if true for pyfile, create pyfile for analysis command
+        if self.pyfile:
+            with open(self.analysis_name, 'w') as file_handle:
+                # create py file or overwrite existing
+                # writing headers and description at top of file
+                file_handle.write("# Grillage generator wizard\n# Model name: {}\n".format(self.analysis_name))
+                # time
+                now = datetime.now()
+                dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+                file_handle.write("# Constructed on:{}\n".format(dt_string))
+                # write imports
+                file_handle.write("import numpy as np\nimport math\nimport openseespy.opensees as ops"
+                                  "\nimport openseespy.postprocessing.Get_Rendering as opsplt\n")
+
+    def time_series_command(self):
+        time_series = "ops.timeSeries('Constant', {})\n".format(self.time_series_tag)
+        return time_series
+
+    def pattern_command(self,load_case_tag):
+        pattern_command = "ops.pattern('Plain', {}, 1)\n".format(load_case_tag)
+        return pattern_command
+
+    def add_static_load_command(self, load_str:list):
+        self.static_load_command_list += load_str
+
+    def add_moving_load_command(self,load_str:list, step):
+        self.moving_load_command_list.append(load_str)
+    # ops grillage create analysis object and stores into list
+
+    # each analysis object contains load, time, series, etc , moving etc
+
+    # when evaluated, user run ops-grillage.run_analysis. runs all analysis object in the list
+
+    # analysis object stores the ops.load command to assign the load to the respective elements
+
+    # at the end of each analysis object, stores the recorded object
+
+    # if moving load, analysis object runs each load case created for the move load object
+
+    def evaluate_analysis(self):
+        for static_load_command in self.static_load_command_list:
+            if self.pyfile:
+                with open(self.analysis_name, 'a') as file_handle:
+                    file_handle.write(static_load_command)
+            else:
+                eval(static_load_command)
+
+
