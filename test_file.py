@@ -250,11 +250,11 @@ def test_sort_vertices():
 
 # ----------------------------------------------------------------------------------------------------------------------
 # test Loadcase, compound load, and moving load objects
-# test to check global coordinates of the loadpoints within compound loads
+# test to check if compound load gives correct coordinates for encompassed load objects
 def test_compound_load():
     location = LoadPoint(5, 0, -2, 20)  # create load point
     Single = PointLoad(name="single point", point1=location)
-    front_wheel = PointLoad(name="front wheel", point1=LoadPoint(2, 0, 2, 50))
+    front_wheel = PointLoad(name="front wheel", localpoint1=LoadPoint(2, 0, 2, 50))
     # Line load
     barrierpoint_1 = LoadPoint(-1, 0, 0, 2)
     barrierpoint_2 = LoadPoint(11, 0, 0, 2)
@@ -264,4 +264,20 @@ def test_compound_load():
     M1600.add_load(load_obj=Single, local_coord=Point(5, 0, 5))
     M1600.add_load(load_obj=Barrier, local_coord=Point(3, 0, 5))
     M1600.set_global_coord(Point(4, 0, 3))
-    assert M1600.compound_load_obj_list[1].load_point_2 == LoadPoint(x=13.0, y=0, z=8.0, p=2)
+    assert M1600.compound_load_obj_list[1].load_point_2 == LoadPoint(x=13.0, y=0, z=8.0, p=2) # test if last point
+    # of line load obj within compounded load moves to correct position
+
+
+# test when compound load does not received a local_coord input as self parameter, if returned coordinates are correct
+# given the load points of the load object itself are treated as the current local coordinates
+def test_local_vs_global_coord_settings():
+    location = LoadPoint(5, 0, -2, 20)  # create load point
+    local_point = PointLoad(name="single point", localpoint1=location)   # defined for local coordinate
+    global_point = PointLoad(name="single point", point1=location)   # defined for local coordinate
+
+    M1600 = CompoundLoad("Lane and Barrier")
+    M1600.add_load(load_obj=local_point)  # if local_coord is set, append the local coordinate of the point load
+    assert M1600.compound_load_obj_list[0].load_point_1 == LoadPoint(x=5, y=0, z=-2, p=20)
+
+def test_multiple_moving_load_definition():
+    pass

@@ -80,7 +80,7 @@ class OpsGrillage:
         self.material_dict = {}  # dictionary of material tags
 
         # collect mesh groups
-        self.mesh_group = []         # for future release
+        self.mesh_group = []  # for future release
         if self.mesh_type == "Ortho":
             self.ortho_mesh = True
         else:
@@ -515,7 +515,7 @@ class OpsGrillage:
         return node_list, grid  # n3 = grid number
 
     # Getter for Line loads nodes
-    def get_line_load_nodes(self, line_load_obj) -> object:
+    def get_line_load_nodes(self, line_load_obj) -> dict:
         # uses a modified Bresenham's Line Algorithm to search for grids which lineload intersects
         # from starting point of line load
         # initiate variables
@@ -794,7 +794,7 @@ class OpsGrillage:
         p2 = self.Mesh_obj.node_spec[grid_nodes[1]]['coordinate']
         p3 = self.Mesh_obj.node_spec[grid_nodes[2]]['coordinate']
 
-        point_list = [Point(p1[0],p1[1],p1[2]),Point(p2[0],p2[1],p2[2]),Point(p3[0],p3[1],p3[2])]
+        point_list = [Point(p1[0], p1[1], p1[2]), Point(p2[0], p2[1], p2[2]), Point(p3[0], p3[1], p3[2])]
         if len(grid_nodes) == 3:
             sorted_list = sort_vertices(point_list)
             Nv = ShapeFunction.linear_triangular(x=point[0], z=point[2], x1=sorted_list[0].x, z1=sorted_list[0].z,
@@ -807,12 +807,12 @@ class OpsGrillage:
 
             # extract coordinates of fourth point
             p4 = self.Mesh_obj.node_spec[grid_nodes[3]]['coordinate']
-            point_list.append(Point(p4[0],p4[1],p4[2]))
+            point_list.append(Point(p4[0], p4[1], p4[2]))
             sorted_list = sort_vertices(point_list)
             # mapping coordinates to natural coordinate, then finds eta (x) and zeta (z) of the point xp,zp
             eta, zeta = solve_zeta_eta(xp=point[0], zp=point[2], x1=sorted_list[0].x, z1=sorted_list[0].z,
-                                                 x2=sorted_list[1].x, z2=sorted_list[1].z, x3=sorted_list[2].x,
-                                                 z3=sorted_list[2].z,x4=sorted_list[3].x,z4=sorted_list[3].z)
+                                       x2=sorted_list[1].x, z2=sorted_list[1].z, x3=sorted_list[2].x,
+                                       z3=sorted_list[2].z, x4=sorted_list[3].x, z4=sorted_list[3].z)
 
             # access shape function of line load
             N = ShapeFunction.linear_shape_function(eta, zeta)
@@ -852,7 +852,7 @@ class OpsGrillage:
         for grid, points in line_grid_intersect.items():
             # grid_nodes = self.Mesh_obj.grid_number_dict[grid]
 
-            # extract points [x,z], default y = 0 plane
+            # extract two point of intersections within the grid
             p1 = points[0]
             p2 = points[1]
             # get length of line
@@ -872,107 +872,6 @@ class OpsGrillage:
             load_str_line += load_str  # append to major list for line load
         return load_str_line
 
-    # ----------------------------------------------------------------------------------------------------------
-    #  functions to add load case and load combination
-
-    def add_load_case(self, load_case_obj, analysis_type='Static'):
-        """
-        Functions to loadcase to ops-grillage instance
-        :param load_case_obj:
-        :param analysis_type:
-        :return:
-        """
-        with open(self.filename, 'a') as file_handle:
-            # if no load cases have been defined previously, create time series object for the first time
-            if not bool(self.load_case_dict):
-                time_series = "ops.timeSeries('Constant', 1)\n"
-                if self.pyfile:
-                    file_handle.write(time_series)
-                else:
-                    eval(time_series)
-                load_case_counter = 0  # if dict empty, start counter at 1
-            else:  # set load_case_counter variable as the latest
-                load_case_counter = self.load_case_dict[list(self.load_case_dict)[-1]]
-                wipe_command = "ops.wipeAnalysis()\n"
-                if self.pyfile:
-                    file_handle.write(wipe_command)  # write wipeAnalysis for current load case
-                else:
-                    eval(wipe_command)
-
-            # set load case to load_case_dict
-            load_case_tag = self.load_case_dict.setdefault(load_case_obj.name, load_case_counter + 1)
-
-            pattern_command = "ops.pattern('Plain', {}, 1)\n".format(load_case_tag)
-            if self.pyfile:
-                # write header
-                file_handle.write("#===========================\n# create load case {}\n#==========================\n"
-                                  .format(load_case_obj.name))
-                # create pattern obj for load case
-                file_handle.write(pattern_command)
-            else:
-                eval(pattern_command)
-
-            # loop through each load object
-            for loads in load_case_obj.load_groups:
-                if isinstance(loads, NodalLoad):
-                    load_str = loads.get_nodal_load_str()
-                    for lines in load_str:
-                        if self.pyfile:
-                            file_handle.write(lines)
-                        else:
-                            eval(lines)
-                    # print to terminal com
-                    print("Nodal load - {loadname} - added to load case: {loadcase}".format(loadname=loads.name,
-                                                                                            loadcase=load_case_obj.name))
-                elif isinstance(loads, PointLoad):
-                    load_str = self.assign_point_to_four_node(point=list(loads.load_point_1)[:-1],
-                                                              mag=loads.load_point_1.p)
-                    self.global_load_str.append(load_str)
-                elif isinstance(loads, LineLoading):
-                    line_grid_intersect = self.get_line_load_nodes(loads)  # returns self.line_grid_intersect
-                    self.global_line_int_dict.append(line_grid_intersect)
-                    load_str = self.assign_line_to_four_node(loads, line_grid_intersect)
-                    for lines in load_str:
-                        if self.pyfile:
-                            file_handle.write(lines)
-                        else:
-                            eval(lines)
-                    print("Line load - {loadname} - added to load case: {name}".format(loadname=loads.name,
-                                                                                       name=load_case_obj.name))
-
-                elif isinstance(loads, PatchLoading):
-                    load_str = self.assign_patch_load(loads)
-
-                    print("Patch load - {loadname} - added to load case: {name}".format(loadname=loads.name,
-                                                                                       name=load_case_obj.name))
-                elif isinstance(loads, CompoundLoad):
-                    # assign compound load
-                    pass
-
-            # run command to create and run analysis
-            if self.pyfile:
-                file_handle.write("ops.integrator('LoadControl', 1)\n")  # Header
-                file_handle.write("ops.numberer('Plain')\n")
-                file_handle.write("ops.system('BandGeneral')\n")
-                file_handle.write("ops.constraints('Plain')\n")
-                file_handle.write("ops.algorithm('Linear')\n")
-                file_handle.write("ops.analysis(\"{}\")\n".format(analysis_type))
-                file_handle.write("ops.analyze(1)\n")
-            else:
-                pass
-
-            # print to terminal
-            print("Load Case {} created".format(load_case_obj.name))
-
-    @staticmethod
-    def get_node_area(inside_point, p_list):
-        A = []
-        if len(p_list) == 3:
-            A = calculate_area_given_three_points(p_list[0], p_list[1], p_list[2])
-        elif len(p_list) == 4:
-            _, A = calculate_area_given_four_points(inside_point, p_list[0], p_list[1], p_list[2], p_list[3])
-        return A
-
     # setter for patch loads
     def assign_patch_load(self, patch_load_obj: PatchLoading) -> PatchLoading:
         # searches grid that encompass the patch load
@@ -990,7 +889,7 @@ class OpsGrillage:
                 p_list.append(LoadPoint(coord[0], coord[1], coord[2], p))
             # get centroid of patch on grid
             xc, yc, zc = get_patch_centroid(p_list)
-            inside_point = LoadPoint(xc, yc, zc, 0)
+            inside_point = Point(xc, yc, zc)
             # volume = area of base x average height
             A = self.get_node_area(inside_point=inside_point, p_list=p_list)
             # _, A = calculate_area_given_four_points(inside_point, p_list[0], p_list[1], p_list[2], p_list[3])
@@ -1005,7 +904,7 @@ class OpsGrillage:
         intersect_grid_2 = self.get_line_load_nodes(patch_load_obj.line_2)
         intersect_grid_3 = self.get_line_load_nodes(patch_load_obj.line_3)
         intersect_grid_4 = self.get_line_load_nodes(patch_load_obj.line_4)
-        #
+        # merging process of the interesct grid dicts
         merged = check_dict_same_keys(intersect_grid_1, intersect_grid_2)
         merged = check_dict_same_keys(merged, intersect_grid_3)
         merged = check_dict_same_keys(merged, intersect_grid_4)
@@ -1033,7 +932,7 @@ class OpsGrillage:
             p_list = sort_vertices(p_list)
             # get centroid of patch on grid
             xc, yc, zc = get_patch_centroid(p_list)
-            inside_point = LoadPoint(xc, yc, zc, 0)
+            inside_point = Point(xc, yc, zc)
             # volume = area of base x average height
             _, A = calculate_area_given_four_points(inside_point, p_list[0], p_list[1], p_list[2], p_list[3])
             mag = A * sum([point.p for point in p_list]) / len(p_list)
@@ -1042,29 +941,98 @@ class OpsGrillage:
             self.global_load_str += load_str
         pass
 
-    # Function to run all defined load cases
-    def run_analyses(self):
+    @staticmethod
+    def get_node_area(inside_point, p_list):
+        A = []
+        if len(p_list) == 3:
+            A = calculate_area_given_three_points(p_list[0], p_list[1], p_list[2])
+        elif len(p_list) == 4:
+            _, A = calculate_area_given_four_points(inside_point, p_list[0], p_list[1], p_list[2], p_list[3])
+        return A
+
+    # ----------------------------------------------------------------------------------------------------------
+    #  functions to add load case and load combination
+    def add_moving_load_case(self, moving_load_obj: MovingLoad):
+        # steps
+        # get the list of individual load cases
+        # set the individual load case - get the corresponding load_str for each load cases using add load case function
+        # set the load str to the individual loadcase via loadcase.set_load_case_load_command
         pass
+
+    def add_load_case(self, load_case_obj: Union[LoadCase, CompoundLoad]):
+        """
+        Functions to add loadcase to ops-grillage instance
+        :param load_case_obj:
+        :return:
+        """
+        if isinstance(load_case_obj, LoadCase):
+            load_groups = load_case_obj.load_groups
+        elif isinstance(load_case_obj, CompoundLoad):
+            load_groups = load_case_obj.compound_load_obj_list
+        # loop through each load object
+        for loads in load_groups:
+            if isinstance(loads, NodalLoad):
+                load_str = loads.get_nodal_load_str()
+                self.global_load_str.append(load_str)
+                # print to terminal com
+                print("Nodal load - {loadname} - added to load case: {loadcase}".format(loadname=loads.name,
+                                                                                        loadcase=load_case_obj.name))
+            elif isinstance(loads, PointLoad):
+                load_str = self.assign_point_to_four_node(point=list(loads.load_point_1)[:-1],
+                                                          mag=loads.load_point_1.p)
+                self.global_load_str.append(load_str)
+            elif isinstance(loads, LineLoading):
+                line_grid_intersect = self.get_line_load_nodes(loads)  # returns self.line_grid_intersect
+                self.global_line_int_dict.append(line_grid_intersect)
+                load_str = self.assign_line_to_four_node(loads, line_grid_intersect)
+                self.global_load_str.append(load_str)
+
+                print("Line load - {loadname} - added to load case: {name}".format(loadname=loads.name,
+                                                                                   name=load_case_obj.name))
+
+            elif isinstance(loads, PatchLoading):
+                load_str = self.assign_patch_load(loads)
+                print("Patch load - {loadname} - added to load case: {name}".format(loadname=loads.name,
+                                                                                    name=load_case_obj.name))
+            elif isinstance(loads, CompoundLoad):
+                # assign compound load
+                pass
+        # print to terminal
+        print("Load Case {} created".format(load_case_obj.name))
 
 
 class Analysis:
     """
-
+    Analysis class objected to handle the run/execution of load case + load combination + moving load analysis
     """
-    def __init__(self, analysis_name:str, ops_grillage_name:str, pyfile:bool):
+
+    def __init__(self, analysis_name: str, ops_grillage_name: str, pyfile: bool, analysis_type='Static'):
         self.analysis_name = analysis_name
         self.ops_grillage_name = ops_grillage_name
         self.time_series_tag = None
         self.pattern_tag = None
+        self.analysis_type = analysis_type
+        self.pyfile = pyfile
+        self.analysis_file_name = self.analysis_name + "for" + self.ops_grillage_name + ".py"  # py file name
+        # list recording load cases and load commands
         self.static_load_command_list = []
         self.moving_load_command_list = []
-        self.analysis_type = None
-        self.pyfile = pyfile
-        # variables to store results of analysis
+
+        # recorder variables to store results of analysis
+
+        # preset ops analysis commands
+        self.wipe_command = "ops.wipeAnalysis()\n"
+        self.numberer_command = "ops.numberer('Plain')\n"  # default plain
+        self.system_command = "ops.system('BandGeneral')\n"  # default band general
+        self.constraint_command = "ops.constraints('Plain')\n"  # default plain
+        self.algorithm_command = "ops.algorithm('Linear')\n"  # default linear
+        self.analyze_command = "ops.analyze(1)\n"  # default 1 step
+        #     file_handle.write("ops.integrator('LoadControl', 1)\n")  # Header
+        #     file_handle.write("ops.analysis(\"{}\")\n".format(analysis_type))
 
         # if true for pyfile, create pyfile for analysis command
         if self.pyfile:
-            with open(self.analysis_name, 'w') as file_handle:
+            with open(self.analysis_file_name, 'w') as file_handle:
                 # create py file or overwrite existing
                 # writing headers and description at top of file
                 file_handle.write("# Grillage generator wizard\n# Model name: {}\n".format(self.analysis_name))
@@ -1080,28 +1048,20 @@ class Analysis:
         time_series = "ops.timeSeries('Constant', {})\n".format(self.time_series_tag)
         return time_series
 
-    def pattern_command(self,load_case_tag):
+    def pattern_command(self, load_case_tag):
         pattern_command = "ops.pattern('Plain', {}, 1)\n".format(load_case_tag)
         return pattern_command
 
-    def add_static_load_command(self, load_str:list):
+    def add_static_load_command(self, load_str: list):
         self.static_load_command_list += load_str
 
-    def add_moving_load_command(self,load_str:list, step):
+    def add_moving_load_command(self, load_str: list, step):
         self.moving_load_command_list.append(load_str)
-    # ops grillage create analysis object and stores into list
-
-    # each analysis object contains load, time, series, etc , moving etc
-
-    # when evaluated, user run ops-grillage.run_analysis. runs all analysis object in the list
-
-    # analysis object stores the ops.load command to assign the load to the respective elements
-
-    # at the end of each analysis object, stores the recorded object
-
-    # if moving load, analysis object runs each load case created for the move load object
 
     def evaluate_analysis(self):
+        # write/execute ops.load commands for all static loads of each loadcases
+        eval(self.time_series_command())
+        eval(self.pattern_command())
         for static_load_command in self.static_load_command_list:
             if self.pyfile:
                 with open(self.analysis_name, 'a') as file_handle:
@@ -1109,4 +1069,4 @@ class Analysis:
             else:
                 eval(static_load_command)
 
-
+        # for moving load, evaluate

@@ -57,15 +57,15 @@ if not pyfile:
 # example_bridge.run_check()
 
 # ------------------------------------------------------------------------------------------------------------------
-# Create Load cases
+# Create loads, compound loads, moving loads
 
 # Point load
 location = LoadPoint(5, 0, -2, 20)  # create load point
 Single = PointLoad(name="single point", point1=location)
 front_wheel = PointLoad(name="front wheel", point1 = LoadPoint(2,0,2,50))
 # Line load
-barrierpoint_1 = LoadPoint(-1, 0, 0, 2)
-barrierpoint_2 = LoadPoint(11, 0, 0, 2)
+barrierpoint_1 = LoadPoint(-1, 0, 3, 2)
+barrierpoint_2 = LoadPoint(11, 0, 3, 2)
 Barrier = LineLoading("Barrier curb load", point1=barrierpoint_1, point2=barrierpoint_2)
 
 # Patch load - lane loading
@@ -81,9 +81,15 @@ M1600.add_load(load_obj=Single, local_coord=Point(5,0,5))
 M1600.add_load(load_obj=Barrier, local_coord=Point(3,0,5))
 M1600.set_global_coord(Point(4,0,3))
 
+# moving load
+single_path = Path(start_point=Point(2,0,2), end_point= Point(4,0,3))  # create path object
+move_point = MovingLoad(name="single_moving_point")
+move_point.add_loads(load_obj=front_wheel,path_obj=single_path.get_path_points())
+move_point.parse_moving_load_cases()
 # --------------------------------------------------------------------------------------------------------------------
 # Load Case
-
+# if load added directly into load case - treat the coordinates as global
+# if load is added to a compound load - the coordinates is treated as a local coordinate
 ULS_DL = LoadCase(name="ULS-DL")
 ULS_DL.add_load_groups(Barrier)  # change here
 example_bridge.add_load_case(ULS_DL)
