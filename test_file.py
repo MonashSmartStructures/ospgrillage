@@ -106,7 +106,8 @@ def test_point_load_getter(bridge_model_42_negative):  # test get_point_load_nod
     ULS_DL.add_load_groups(Single)  # ch
     example_bridge.add_load_case(ULS_DL)
     ops.wipe()
-    assert example_bridge.global_load_str == [['ops.load(12, *[0, 1.43019976273292, 0, 0.373895820491562, 0, '
+
+    assert example_bridge.load_case_list[0]['load_command'] == ['ops.load(12, *[0, 1.43019976273292, 0, 0.373895820491562, 0, '
                                                '0.341669431327021])\n', 'ops.load(17, *[0, 2.56980023726709, 0, '
                                                                         '0.906104179508438, 0, '
                                                                         '-0.613915767971677])\n', 'ops.load(18, *[0, '
@@ -117,7 +118,7 @@ def test_point_load_getter(bridge_model_42_negative):  # test get_point_load_nod
                                                                                                   '-5.28912046252521'
                                                                                                   '])\n',
                                                'ops.load(13, *[0, 5.72079905093166, 0, -1.49558328196625, 0, '
-                                               '2.94361356220202])\n']]
+                                               '2.94361356220202])\n']
 
 
 # test point load returning None when point (loadpoint) is outside of mesh
@@ -280,4 +281,8 @@ def test_local_vs_global_coord_settings():
     assert M1600.compound_load_obj_list[0].load_point_1 == LoadPoint(x=5, y=0, z=-2, p=20)
 
 def test_multiple_moving_load_definition():
+    pass
+
+
+def test_add_a_loadcase_with_local_coordinate():
     pass

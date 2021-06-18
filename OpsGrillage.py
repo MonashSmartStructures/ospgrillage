@@ -112,9 +112,12 @@ class OpsGrillage:
         self.while_loop_max = 100
 
         # dict for load cases and load types
-        self.load_case_dict = defaultdict(lambda: 1)
-        self.nodal_load_dict = defaultdict(lambda: 1)
-        self.ele_load_dict = defaultdict(lambda: 1)
+        self.load_case_list = []  # list of dict, example [{'loadcase':LoadCase object, 'load_command': list of str}..]
+        self.moving_load_case_list = []  # list of dict  # example [ list of load_case_dict]
+
+        self.load_combination_dict = dict()  # example {0:[{'loadcase':LoadCase object, 'load_command': list of str},
+        # {'loadcase':LoadCase object, 'load_command': list of str}....]}
+        self.moving_load_case_dict = dict()  # example [ list of load_case_dict]
 
         # counters to keep track of objects for loading
         self.load_case_counter = 1
@@ -831,7 +834,7 @@ class OpsGrillage:
         return load_str
 
     # Setter for Line loads and above
-    def assign_line_to_four_node(self, line_load_obj, line_grid_intersect):
+    def assign_line_to_four_node(self, line_load_obj, line_grid_intersect) -> list:
         """
         Function to assign line load to mesh. Procedure to assign line load is as follows:
         #. get properties of line on the grid
@@ -873,7 +876,7 @@ class OpsGrillage:
         return load_str_line
 
     # setter for patch loads
-    def assign_patch_load(self, patch_load_obj: PatchLoading) -> PatchLoading:
+    def assign_patch_load(self, patch_load_obj: PatchLoading) -> list:
         # searches grid that encompass the patch load
         # use getter for line load, 4 times for each point
         # between 4 dictionaries record the common grids as having the corners of the patch - to be evaluated different
@@ -939,10 +942,10 @@ class OpsGrillage:
             # assign point and mag to 4 nodes of grid
             load_str = self.assign_point_to_four_node(point=[xc, yc, zc], mag=mag)
             self.global_load_str += load_str
-        pass
+        return self.global_load_str
 
     @staticmethod
-    def get_node_area(inside_point, p_list):
+    def get_node_area(inside_point, p_list) -> float:
         A = []
         if len(p_list) == 3:
             A = calculate_area_given_three_points(p_list[0], p_list[1], p_list[2])
@@ -952,6 +955,130 @@ class OpsGrillage:
 
     # ----------------------------------------------------------------------------------------------------------
     #  functions to add load case and load combination
+    def distribute_load_types_to_model(self, load_case_obj: Union[LoadCase, CompoundLoad]) -> list:
+        """
+        Functions to distribute load types to OpsGrillage model.
+        :param load_case_obj:
+        :return: list of str containing ops.load() command for distributing the load object parameter to nodes of model.
+        """
+        global load_groups
+        load_str = []
+        # check the input parameter type, set load_groups parameter according to its type
+        if isinstance(load_case_obj, LoadCase):
+            load_groups = load_case_obj.load_groups
+        elif isinstance(load_case_obj, CompoundLoad):
+            load_groups = load_case_obj.compound_load_obj_list
+        # loop through each load object
+        for load_dict in load_groups:
+            load_obj = load_dict['load']
+            if isinstance(load_obj, NodalLoad):
+                load_str = load_dict.get_nodal_load_str()
+                self.global_load_str.append(load_str)
+
+            elif isinstance(load_obj, PointLoad):
+                load_str = self.assign_point_to_four_node(point=list(load_obj.load_point_1)[:-1],
+                                                          mag=load_obj.load_point_1.p)
+                self.global_load_str.append(load_str)
+            elif isinstance(load_obj, LineLoading):
+                line_grid_intersect = self.get_line_load_nodes(load_obj)  # returns self.line_grid_intersect
+                self.global_line_int_dict.append(line_grid_intersect)
+                load_str = self.assign_line_to_four_node(load_obj, line_grid_intersect)
+                self.global_load_str.append(load_str)
+
+            elif isinstance(load_obj, PatchLoading):
+                load_str = self.assign_patch_load(load_obj)
+
+        return load_str
+
+    def add_load_case(self, load_case_obj: Union[LoadCase, CompoundLoad], load_factor=1):
+        """
+        Function to add individual load cases to OpsGrillage instance.
+        :param load_factor:
+        :param load_case_obj:
+        :return: Populate self.load_case_list with input load case object. Distributes loads/groups within load case
+                 to grillage model. This returns a list of ops.load() commands and assigns to its respective load case
+                 object
+
+        A typical load_case_dict within load_case_dict list has the following format
+        .. code:
+            load_case_dict = {'name':load_case_obj.name, 'loadcase': load_case_obj, 'load_command': load_str,
+                          'load_factor': load_factor}
+        """
+        # update the load command list of load case object
+        load_str = self.distribute_load_types_to_model(load_case_obj=load_case_obj)
+        # load_case_obj.set_load_case_load_command(load_str=load_str)
+        # store load case + load command in dict and add to load_case_list
+        load_case_dict = {'name':load_case_obj.name, 'loadcase': load_case_obj, 'load_command': load_str,
+                          'load_factor': load_factor}  # FORMATTING HERE
+        self.load_case_list.append(load_case_dict)
+        print("Load Case {} added".format(load_case_obj.name))
+
+    def analyse_load_case(self):
+        # analyse all load case defined in self.load_case_dict for OpsGrillage instance
+        # loop each load case dict
+        for load_case_dict in self.load_case_list:
+            # create analysis object, run and get results
+            load_case_obj = load_case_dict['loadcase']
+            load_command = load_case_dict['load_command']
+            load_factor = load_case_dict['load_factor']
+            load_case_analysis = Analysis(analysis_name=load_case_obj.name, ops_grillage_name=self.model_name,
+                                          pyfile=self.pyfile)
+            load_case_analysis.add_load_command(load_command, load_factor=load_factor)
+            # run the Analysis object, collect results, and store Analysis object in the list for Analysis load case
+            load_case_analysis.evaluate_analysis()
+
+    def add_load_combination(self, load_combination_name: str, load_case_name_dict: dict):
+        """
+        Function to create load combinations out of the defined load cases.
+        :param load_combination_name: name of load combination
+        :param load_case_name_dict: dict with load case name as key, and load factor as value
+                                    Format example:
+                                        {"DL":1.2, "LL":1.7}
+        .. note:
+            Load cases in load_case_name_dict must be added to OpsGrillage instance through add_load_case() function.
+            If load case name not found in defined load cases, return
+        :return: populate self.load_combination_dict , with key being the load_combination name parameter and value
+                    being a list of dict for load cases
+
+            A typical load_case_dict within load_case_dict list has the following format
+        .. code:
+            load_case_dict = {'name':load_case_obj.name, 'loadcase': load_case_obj, 'load_command': load_str,
+                          'load_factor': load_factor}
+        """
+        key = load_combination_name
+        load_case_dict_list = [] # list of dict: structure of dict See line
+        # create dict with key (combination name) and val (list of dict of load cases)
+        for load_case_name, load_factor in load_case_name_dict.items():
+            # lookup the defined load cases for load_case_name
+            a = [index for (index,val) in enumerate(self.load_case_list) if val['name']==load_case_name]
+            if a:
+                ind = a[0]
+            else:
+                ind = None
+                continue
+            # get
+            load_case_dict = self.load_case_list[ind]
+            # update load factor of load_case
+            load_case_dict['load_factor'] = load_factor
+            # add load case dict to new list for load combination
+            load_case_dict_list.append(load_case_dict)
+
+        self.load_combination_dict.setdefault(load_combination_name,load_case_dict_list)
+        print("Load Combination: {} created".format(load_combination_name))
+
+    def analyse_load_combination(self, selected_load_combination: str=None):
+        # create analysis object, add each factored load case to analysis object
+        for load_combination_name,load_case_dict_list in self.load_combination_dict.items():
+            load_combination_analysis = Analysis(analysis_name=load_combination_name, ops_grillage_name=self.model_name,
+                                          pyfile=self.pyfile)
+            for load_case_dict in load_case_dict_list:
+                load_case_obj = load_case_dict['loadcase']    # maybe unused
+                load_command = load_case_dict['load_command']
+                load_factor = load_case_dict['load_factor']
+                load_combination_analysis.add_load_command(load_command, load_factor=load_factor)
+            load_combination_analysis.evaluate_analysis()
+
+
     def add_moving_load_case(self, moving_load_obj: MovingLoad):
         # steps
         # get the list of individual load cases
@@ -959,51 +1086,18 @@ class OpsGrillage:
         # set the load str to the individual loadcase via loadcase.set_load_case_load_command
         pass
 
-    def add_load_case(self, load_case_obj: Union[LoadCase, CompoundLoad]):
-        """
-        Functions to add loadcase to ops-grillage instance
-        :param load_case_obj:
-        :return:
-        """
-        if isinstance(load_case_obj, LoadCase):
-            load_groups = load_case_obj.load_groups
-        elif isinstance(load_case_obj, CompoundLoad):
-            load_groups = load_case_obj.compound_load_obj_list
-        # loop through each load object
-        for loads in load_groups:
-            if isinstance(loads, NodalLoad):
-                load_str = loads.get_nodal_load_str()
-                self.global_load_str.append(load_str)
-                # print to terminal com
-                print("Nodal load - {loadname} - added to load case: {loadcase}".format(loadname=loads.name,
-                                                                                        loadcase=load_case_obj.name))
-            elif isinstance(loads, PointLoad):
-                load_str = self.assign_point_to_four_node(point=list(loads.load_point_1)[:-1],
-                                                          mag=loads.load_point_1.p)
-                self.global_load_str.append(load_str)
-            elif isinstance(loads, LineLoading):
-                line_grid_intersect = self.get_line_load_nodes(loads)  # returns self.line_grid_intersect
-                self.global_line_int_dict.append(line_grid_intersect)
-                load_str = self.assign_line_to_four_node(loads, line_grid_intersect)
-                self.global_load_str.append(load_str)
-
-                print("Line load - {loadname} - added to load case: {name}".format(loadname=loads.name,
-                                                                                   name=load_case_obj.name))
-
-            elif isinstance(loads, PatchLoading):
-                load_str = self.assign_patch_load(loads)
-                print("Patch load - {loadname} - added to load case: {name}".format(loadname=loads.name,
-                                                                                    name=load_case_obj.name))
-            elif isinstance(loads, CompoundLoad):
-                # assign compound load
-                pass
-        # print to terminal
-        print("Load Case {} created".format(load_case_obj.name))
+    def analyse_moving_load_case(self, moving_load_case_name: str):
+        # create analysis object, add moving load case (comprise of multiple load case)
+        # run each and record
+        pass
 
 
+# ---------------------------------------------------------------------------------------------------------------------
 class Analysis:
     """
     Analysis class objected to handle the run/execution of load case + load combination + moving load analysis
+
+
     """
 
     def __init__(self, analysis_name: str, ops_grillage_name: str, pyfile: bool, analysis_type='Static'):
@@ -1013,13 +1107,15 @@ class Analysis:
         self.pattern_tag = None
         self.analysis_type = analysis_type
         self.pyfile = pyfile
-        self.analysis_file_name = self.analysis_name + "for" + self.ops_grillage_name + ".py"  # py file name
-        # list recording load cases and load commands
-        self.static_load_command_list = []
-        self.moving_load_command_list = []
+        self.analysis_file_name = self.analysis_name + "of" + self.ops_grillage_name + ".py"  # py file name
+        # list recording load commands, time series and pattern for the input load case
+        self.load_cases_dict_list = []  # keys # [{time_series,pattern,load_command},... ]
+        # counters
+        self.time_series_counter = 1
+        self.plain_counter = 1
 
         # recorder variables to store results of analysis
-
+        # TODO
         # preset ops analysis commands
         self.wipe_command = "ops.wipeAnalysis()\n"
         self.numberer_command = "ops.numberer('Plain')\n"  # default plain
@@ -1027,8 +1123,8 @@ class Analysis:
         self.constraint_command = "ops.constraints('Plain')\n"  # default plain
         self.algorithm_command = "ops.algorithm('Linear')\n"  # default linear
         self.analyze_command = "ops.analyze(1)\n"  # default 1 step
-        #     file_handle.write("ops.integrator('LoadControl', 1)\n")  # Header
-        #     file_handle.write("ops.analysis(\"{}\")\n".format(analysis_type))
+        self.analysis_command = "ops.analysis(\"{}\")\n".format(analysis_type)
+        self.intergrator_command = "ops.integrator('LoadControl', 1)\n"
 
         # if true for pyfile, create pyfile for analysis command
         if self.pyfile:
@@ -1044,29 +1140,54 @@ class Analysis:
                 file_handle.write("import numpy as np\nimport math\nimport openseespy.opensees as ops"
                                   "\nimport openseespy.postprocessing.Get_Rendering as opsplt\n")
 
-    def time_series_command(self):
-        time_series = "ops.timeSeries('Constant', {})\n".format(self.time_series_tag)
+    def time_series_command(self, load_factor):
+        time_series = "ops.timeSeries('Constant', {}, '-factor',{})\n".format(self.time_series_counter, load_factor)
+        self.time_series_counter += 1  # update counter by 1
         return time_series
 
-    def pattern_command(self, load_case_tag):
-        pattern_command = "ops.pattern('Plain', {}, 1)\n".format(load_case_tag)
+    def pattern_command(self):
+        pattern_command = "ops.pattern('Plain', {}, {})\n".format(self.plain_counter, self.time_series_counter - 1)
+        # minus 1 to time series counter for time_series_command() precedes pattern_command() and incremented the time
+        # series counter
+        self.plain_counter += 1
         return pattern_command
 
-    def add_static_load_command(self, load_str: list):
-        self.static_load_command_list += load_str
-
-    def add_moving_load_command(self, load_str: list, step):
-        self.moving_load_command_list.append(load_str)
+    def add_load_command(self, load_str: list, load_factor):
+        # create time series for added load case
+        time_series = self.time_series_command(load_factor)  # get time series command
+        pattern_command = self.pattern_command()  # get pattern command
+        time_series_dict = {'time_series': time_series, 'pattern': pattern_command, 'load_command': load_str}
+        self.load_cases_dict_list.append(time_series_dict)  # add dict to list
 
     def evaluate_analysis(self):
         # write/execute ops.load commands for all static loads of each loadcases
-        eval(self.time_series_command())
-        eval(self.pattern_command())
-        for static_load_command in self.static_load_command_list:
-            if self.pyfile:
-                with open(self.analysis_name, 'a') as file_handle:
-                    file_handle.write(static_load_command)
-            else:
-                eval(static_load_command)
+        if self.pyfile:
+            with open(self.analysis_file_name, 'a') as file_handle:
+                for load_dict in self.load_cases_dict_list:
+                    file_handle.write(load_dict['time_series'])
+                    file_handle.write(load_dict['pattern'])
+                    for load_command in load_dict['load_command']:
+                        file_handle.write(load_command)
+                file_handle.write(self.intergrator_command)
+                file_handle.write(self.numberer_command)
+                file_handle.write(self.system_command)
+                file_handle.write(self.constraint_command)
+                file_handle.write(self.algorithm_command)
+                file_handle.write(self.analysis_command)
+                file_handle.write(self.analyze_command)
+        else:
+            for load_dict in self.load_cases_dict_list:
+                eval(load_dict['time_series'])
+                eval(load_dict['pattern'])
+                for load_command in load_dict['load_command']:
+                    eval(load_command)
+            eval(self.intergrator_command)
+            eval(self.numberer_command)
+            eval(self.system_command)
+            eval(self.constraint_command)
+            eval(self.algorithm_command)
+            eval(self.analysis_command)
+            eval(self.analyze_command)
 
-        # for moving load, evaluate
+        print("Analysis: {} completed".format(self.analysis_name))
+        # record analyzed results

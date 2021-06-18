@@ -85,6 +85,7 @@ M1600.set_global_coord(Point(4,0,3))
 single_path = Path(start_point=Point(2,0,2), end_point= Point(4,0,3))  # create path object
 move_point = MovingLoad(name="single_moving_point")
 move_point.add_loads(load_obj=front_wheel,path_obj=single_path.get_path_points())
+move_point.add_loads(load_obj=Lane)
 move_point.parse_moving_load_cases()
 # --------------------------------------------------------------------------------------------------------------------
 # Load Case
@@ -93,10 +94,12 @@ move_point.parse_moving_load_cases()
 ULS_DL = LoadCase(name="ULS-DL")
 ULS_DL.add_load_groups(Barrier)  # change here
 example_bridge.add_load_case(ULS_DL)
+example_bridge.analyse_load_case()
 
 SLS_LL = LoadCase(name="Live traffic")
-SLS_LL.add_load_groups(M1600)
+SLS_LL.add_load_groups(Single)
 
+example_bridge.add_load_combination("ULS", {'ULS-DL':1.2,'SLS_LL':1.7})
 
 # Load combination
 # example_bridge.add_load_combination({ULS_DL:1.2, SLS_LL:1.7})

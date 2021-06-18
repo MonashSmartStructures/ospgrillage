@@ -451,9 +451,9 @@ class LoadCase:
             load_obj = load_dict.get('load')
             load_obj.move_load(self.position)
 
-    # function handled by ops_grillage to set load commands (ops.load())
-    def set_load_case_load_command(self, load_str: list):
-        self.load_command_list += load_str
+    # # function handled by ops_grillage to set load commands (ops.load()) of current load case
+    # def set_load_case_load_command(self, load_str: list):
+    #     self.load_command_list += load_str
 
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -491,8 +491,8 @@ class MovingLoad:
 
 
         """
-        # if no path object is added, set empty list to path_obj. The load group will not be treated as a moving load
-        # rather, it will be a static load present during the movement of other load groups (a loadcase by itself)
+        # if no path object is added, set empty list to path_obj. The load group will be treated as a static load
+        # present throughout the movement of other load groups (added to the series of moving load case)
         if path_obj is None:
             path_obj = []
         load_pair_path = dict()
@@ -502,16 +502,25 @@ class MovingLoad:
 
     # function to sort moving loads into multiple load cases - automatically called by Ops-grillage
     def parse_moving_load_cases(self):
+        # loop through all load-path pairs and identify static loads
+        for load_pair_dict in self.load_case_dict_list:
+            if not load_pair_dict["path"]: # empty path, load is static
+                self.static_load_case.append(load_pair_dict["load"])
+
         # create load case obj for each step in the move
         for load_pair_dict in self.load_case_dict_list:
-            path_list = load_pair_dict["path"]  # get path list
-            for steps in path_list:  # step is a list [x,y,z]
+            path_list = load_pair_dict["path"]  # extract path_list of load object
+            # loop to create a load case for each increment of the path obj
+            for steps in path_list:
                 load_step_lc = LoadCase(name="step")   # _lc in name stands for load case
                 load_obj_copy = deepcopy(load_pair_dict["load"])  # Use deepcopy module to copy instance of load
-                load_step_lc.add_load_groups(load_obj_copy)
-                # convert steps into Point tuple
-                step_point = Point(steps[0],steps[1],steps[2])
-                load_step_lc.move_load_group(step_point)
+                load_step_lc.add_load_groups(load_obj_copy)    # and add load to newly created load case
+                # add entries of static load to load groups
+                step_point = Point(steps[0],steps[1],steps[2])  # convert increment position into Point tuple
+                load_step_lc.move_load_group(step_point)        # increment the load groups by step point
+                for static_load in self.static_load_case:
+                    static_load_copy = deepcopy(static_load)
+                    load_step_lc.add_load_groups(static_load_copy)
                 self.moving_load_case.append(load_step_lc)
         return self.moving_load_case
 
