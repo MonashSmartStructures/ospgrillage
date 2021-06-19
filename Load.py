@@ -478,8 +478,9 @@ class MovingLoad:
         load (Compound load class) as a load input, which in turn sets the path object to all loads within the compound
         load group.
         :param load_obj: Loads class object , or Compound load object
-        :param path_obj: Path class object - default None. If no path object is added, path is set to empty and load is
-                        treated as a stationary load existing throughout all loadcase of other moving load objects
+        :param path_obj: Path class object - A path object must be defined for the Load class object. If none is
+                        defined, Load is treated as a static load and is added to each incremental analysis of the moving
+                        load
 
         Structure of lists (example)
 
@@ -496,8 +497,8 @@ class MovingLoad:
         if path_obj is None:
             path_obj = []
         load_pair_path = dict()
-        load_pair_path.setdefault("load",load_obj)
-        load_pair_path.setdefault("path",path_obj)
+        load_pair_path.setdefault("load", load_obj)
+        load_pair_path.setdefault("path", path_obj)
         self.load_case_dict_list.append(load_pair_path)
 
     # function to sort moving loads into multiple load cases - automatically called by Ops-grillage
@@ -510,18 +511,21 @@ class MovingLoad:
         # create load case obj for each step in the move
         for load_pair_dict in self.load_case_dict_list:
             path_list = load_pair_dict["path"]  # extract path_list of load object
+            load_obj = load_pair_dict["load"]
             # loop to create a load case for each increment of the path obj
+            load_case_list = []
             for steps in path_list:
-                load_step_lc = LoadCase(name="step")   # _lc in name stands for load case
-                load_obj_copy = deepcopy(load_pair_dict["load"])  # Use deepcopy module to copy instance of load
+                load_step_lc = LoadCase(name="load {} at {}".format(load_obj.name,repr(steps)))  # _lc in name stands for load case
+                load_obj_copy = deepcopy(load_obj)  # Use deepcopy module to copy instance of load
                 load_step_lc.add_load_groups(load_obj_copy)    # and add load to newly created load case
                 # add entries of static load to load groups
                 step_point = Point(steps[0],steps[1],steps[2])  # convert increment position into Point tuple
                 load_step_lc.move_load_group(step_point)        # increment the load groups by step point
-                for static_load in self.static_load_case:
+                for static_load in self.static_load_case:       # add static load portions to each incremental load case
                     static_load_copy = deepcopy(static_load)
                     load_step_lc.add_load_groups(static_load_copy)
-                self.moving_load_case.append(load_step_lc)
+                load_case_list .append(load_step_lc)
+            self.moving_load_case.append(load_case_list)
         return self.moving_load_case
 
 

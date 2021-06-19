@@ -113,15 +113,14 @@ class OpsGrillage:
 
         # dict for load cases and load types
         self.load_case_list = []  # list of dict, example [{'loadcase':LoadCase object, 'load_command': list of str}..]
-        self.moving_load_case_list = []  # list of dict  # example [ list of load_case_dict]
-
         self.load_combination_dict = dict()  # example {0:[{'loadcase':LoadCase object, 'load_command': list of str},
         # {'loadcase':LoadCase object, 'load_command': list of str}....]}
         self.moving_load_case_dict = dict()  # example [ list of load_case_dict]
-
+        self.moving_load_case_list = []  # list of dict  # example [ list of load_case_dict]
         # counters to keep track of objects for loading
         self.load_case_counter = 1
         self.load_combination_counter = 1
+        self.moving_load_case_counter = 1
 
         # Initiate py file output
         self.filename = "{}_op.py".format(self.model_name)
@@ -1045,7 +1044,7 @@ class OpsGrillage:
             load_case_dict = {'name':load_case_obj.name, 'loadcase': load_case_obj, 'load_command': load_str,
                           'load_factor': load_factor}
         """
-        key = load_combination_name
+
         load_case_dict_list = [] # list of dict: structure of dict See line
         # create dict with key (combination name) and val (list of dict of load cases)
         for load_case_name, load_factor in load_case_name_dict.items():
@@ -1078,18 +1077,41 @@ class OpsGrillage:
                 load_combination_analysis.add_load_command(load_command, load_factor=load_factor)
             load_combination_analysis.evaluate_analysis()
 
-
-    def add_moving_load_case(self, moving_load_obj: MovingLoad):
-        # steps
+    def add_moving_load_case(self, moving_load_obj: MovingLoad, load_factor=1):
+        """
+        Function to add Moving load case to OpsGrillage instance.
+        :param moving_load_obj:
+        :return:
+        """
         # get the list of individual load cases
+        list_of_incr_load_case_dict = []
+        # for each load case, find the load commands of load distribution
+        for moving_load_case_list in moving_load_obj.moving_load_case:
+            for increment_load_case in moving_load_case_list:
+                load_str = self.distribute_load_types_to_model(load_case_obj=increment_load_case)
+                increment_load_case_dict = {'name': increment_load_case.name, 'loadcase': increment_load_case, 'load_command': load_str,
+                                    'load_factor': load_factor}
+                list_of_incr_load_case_dict.append(increment_load_case_dict)
+            self.moving_load_case_dict[moving_load_obj.name] = list_of_incr_load_case_dict
+
         # set the individual load case - get the corresponding load_str for each load cases using add load case function
         # set the load str to the individual loadcase via loadcase.set_load_case_load_command
-        pass
+
 
     def analyse_moving_load_case(self, moving_load_case_name: str):
-        # create analysis object, add moving load case (comprise of multiple load case)
-        # run each and record
-        pass
+        # functino to analyse individual moving load case
+        # create analysis object for each load case correspond to increment of moving paths
+
+        for moving_load_obj, load_case_dict_list in self.moving_load_case_dict.items():
+            for load_case_dict in load_case_dict_list:
+                load_case_obj = load_case_dict['loadcase']  # maybe unused
+                load_command = load_case_dict['load_command']
+                load_factor = load_case_dict['load_factor']
+                incremental_analysis = Analysis(analysis_name=load_case_obj.name,
+                                                     ops_grillage_name=self.model_name,
+                                                     pyfile=self.pyfile)
+                incremental_analysis.add_load_command(load_command)
+                incremental_analysis.evaluate_analysis()
 
 
 # ---------------------------------------------------------------------------------------------------------------------

@@ -98,8 +98,9 @@ example_bridge.analyse_load_case()
 
 SLS_LL = LoadCase(name="Live traffic")
 SLS_LL.add_load_groups(Single)
-
+example_bridge.add_load_case(SLS_LL)
 example_bridge.add_load_combination("ULS", {'ULS-DL':1.2,'SLS_LL':1.7})
+
 
 # Load combination
 # example_bridge.add_load_combination({ULS_DL:1.2, SLS_LL:1.7})
