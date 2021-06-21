@@ -1,5 +1,5 @@
 ========================
-Using the grillage wizard
+Creating a grillage model
 ========================
 
 The *ops-grillage* module contains the main :class:`~OpsGrillage` class that handles:
@@ -40,8 +40,9 @@ The above example generates an Opensees model instance of a grillage model with 
 
     Figure 1: Created nodes.
 
-The code simultaneously generates an executable py file named "SuperT_10m", which upon executing, creates the prescribed
-model in Opensees space.
+Alternatively, users have the option to create an executable py file (output by OpsGrillage) by flagging the variable
+pyfile= as True. This way, an Opensees software instance of the grillage model is not created - only the executable
+py file which has the necessary commands to create the Opensees model instance is created instead.
 
 Up to this point, the model in Opensees space and its corresponding executable py file only have the following
 commands defined:
@@ -137,44 +138,6 @@ An example showing the assignment of interior main beams:
     test_bridge.set_grillage_members(longmem_prop, longmem_prop.op_ele_type, member="interior_main_beam")
 
 The following is printed to the terminal
-
-
-
-Run grillage for analysis
-------------------------
-
-The first step on using the grillage model for analysis is defining Openseespy analysis objects, namely using the
-pattern() and constraint() classess. Based on the desired analysis, users can add these lines of code manually to
-the output file.
-
-Alternatively, users can run the class function `perform_gravity_analysis()` to conduct a simple gravity load analysis.
-The class function is also a good way to test run the model.
-
-Viewing results
-------------------------
-
-A set of plotting functions are included as part of the `op-grillage` module - the `PlotWizard` command. To draw and
-plot components of the model, users run the following example. In the example, the plot_section() function draws and
-plots the longitudinal members of the grillage.
-
-.. code-block:: python
-
-    import PlotWizard
-    plot_section(test_bridge, "interior_main_beam", 'r')
-
-The `plot_section()` function is based on matplotlib plotting commands.
-
-Alternatively, result visualization can be achieved using the Openseespy module - ops_vis. The `ops_vis` module is one
-of the post-processing modules of Openseespy. The `ops-vis` module has gone through numerous updates and has reach
-maturity for many post-processing applications. This is the recommended plotting feature at the current version of
-`op-grillage`.
-
-For example users can view the model using the `model()` command. To do this, users add the following command and the
-end of the output py file.
-
-.. code-block:: python
-
-    ops.model()
 
 The main commands of ops_vis module can be found `here <https://openseespydoc.readthedocs.io/en/latest/src/ops_vis.html>`_
 

@@ -9,6 +9,7 @@ p1 = Point(0,0,0)
 p2 = Point(1,0,0)
 p3 = Point(1,0,1)
 p4 = Point(0,0,1)
+a = np.array([[(2,3),(2,3,4),(2,3,4),(2,3,4,5,6,6,7)],[(2,3,4),(2,3,4),(2,3,4),(2,3,4)],[(0,1)]],dtype=object)
 #N,A= calculate_area_given_four_points(inside,p1,p2,p3,p4)
 #inside_flag = check_point_in_grid(inside,p1,p2,p3,p4)
 
@@ -60,7 +61,7 @@ if not pyfile:
 # Create loads, compound loads, moving loads
 
 # Point load
-location = LoadPoint(5, 0, -2, 20)  # create load point
+location = LoadPoint(5, 0, 2, 20)  # create load point
 Single = PointLoad(name="single point", point1=location)
 front_wheel = PointLoad(name="front wheel", point1 = LoadPoint(2,0,2,50))
 # Line load
@@ -99,11 +100,10 @@ example_bridge.analyse_load_case()
 SLS_LL = LoadCase(name="Live traffic")
 SLS_LL.add_load_groups(Single)
 example_bridge.add_load_case(SLS_LL)
-example_bridge.add_load_combination("ULS", {'ULS-DL':1.2,'SLS_LL':1.7})
+example_bridge.add_load_combination("ULS", {'ULS-DL':1.2,'Live traffic':1.7})
+example_bridge.analyse_load_combination()
 
-
-# Load combination
-# example_bridge.add_load_combination({ULS_DL:1.2, SLS_LL:1.7})
-
+# example_bridge.add_moving_load_case(move_point)
+#example_bridge.analyse_moving_load_case()
 # --------------------------------------------------------------------------------------------------------------------
 

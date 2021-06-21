@@ -1,5 +1,5 @@
 ====================
-API documentation
+API reference
 ====================
 
 This page includes the technical content deliverables of the documentation. Instructions on variables and function

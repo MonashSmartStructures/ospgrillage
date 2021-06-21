@@ -390,11 +390,12 @@ class CompoundLoad:
         # then shifting centroid and load_points relative to A Local Coordinate system
         if local_coord is None:
             local_coord = Point(0,0,0)
-        load_obj.form_compound_load(compound_dist_x=local_coord.x, compound_dist_z=local_coord.z)
+        load_obj_copy = deepcopy(load_obj)
+        load_obj_copy.form_compound_load(compound_dist_x=local_coord.x, compound_dist_z=local_coord.z)
         # then shift load obj relative to global coord (this is the coord of the model) default is 0,0,0 if not set
         # by user
-        load_obj.move_load(self.global_coord)
-        self.compound_load_obj_list.append(load_obj)  # after update, append to list
+        load_obj_copy.move_load(self.global_coord)
+        self.compound_load_obj_list.append(load_obj_copy)  # after update, append to list
         self.local_coord_list.append(local_coord)
 
     def set_global_coord(self, global_coord: Point):
@@ -438,7 +439,7 @@ class LoadCase:
 
     def add_load_groups(self, load_obj, **kwargs):
         load_dict = dict()
-        load_dict.setdefault('load',load_obj)
+        load_dict.setdefault('load',deepcopy(load_obj))  # create copy of object instance
         load_factor = kwargs.get('load_factor', 1)
         load_dict.setdefault('factor', load_factor)
         self.load_groups.append(load_dict)

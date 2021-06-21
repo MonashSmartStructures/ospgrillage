@@ -7,6 +7,7 @@ from Material import *
 from member_sections import *
 from Mesh import *
 from itertools import combinations
+import xarray as xr
 
 
 class OpsGrillage:
@@ -115,21 +116,19 @@ class OpsGrillage:
         self.load_case_list = []  # list of dict, example [{'loadcase':LoadCase object, 'load_command': list of str}..]
         self.load_combination_dict = dict()  # example {0:[{'loadcase':LoadCase object, 'load_command': list of str},
         # {'loadcase':LoadCase object, 'load_command': list of str}....]}
-        self.moving_load_case_dict = dict()  # example [ list of load_case_dict]
-        self.moving_load_case_list = []  # list of dict  # example [ list of load_case_dict]
-        # counters to keep track of objects for loading
-        self.load_case_counter = 1
-        self.load_combination_counter = 1
-        self.moving_load_case_counter = 1
+        self.moving_load_case_dict = dict()  # example [ list of load_case_dict]\
+        # counters to keep track of ops time series and ops pattern objects for loading
+        self.global_time_series_counter = 1
+        self.global_pattern_counter = 1
 
-        # Initiate py file output
+        # set pyfile name
         self.filename = "{}_op.py".format(self.model_name)
         # create namedtuples
 
         # calculate edge length of grillage
         self.trans_dim = self.width / math.cos(self.skew_a / 180 * math.pi)
 
-        # objects and pyfile flag
+        # Mesh objects and pyfile flag
         self.Mesh_obj = None
         self.pyfile = None
 
@@ -936,7 +935,8 @@ class OpsGrillage:
             xc, yc, zc = get_patch_centroid(p_list)
             inside_point = Point(xc, yc, zc)
             # volume = area of base x average height
-            _, A = calculate_area_given_four_points(inside_point, p_list[0], p_list[1], p_list[2], p_list[3])
+            # _, A = calculate_area_given_four_points(inside_point, p_list[0], p_list[1], p_list[2], p_list[3])
+            A = self.get_node_area(inside_point=inside_point, p_list=p_list)
             mag = A * sum([point.p for point in p_list]) / len(p_list)
             # assign point and mag to 4 nodes of grid
             load_str = self.assign_point_to_four_node(point=[xc, yc, zc], mag=mag)
@@ -1007,7 +1007,7 @@ class OpsGrillage:
         load_str = self.distribute_load_types_to_model(load_case_obj=load_case_obj)
         # load_case_obj.set_load_case_load_command(load_str=load_str)
         # store load case + load command in dict and add to load_case_list
-        load_case_dict = {'name':load_case_obj.name, 'loadcase': load_case_obj, 'load_command': load_str,
+        load_case_dict = {'name': load_case_obj.name, 'loadcase': load_case_obj, 'load_command': load_str,
                           'load_factor': load_factor}  # FORMATTING HERE
         self.load_case_list.append(load_case_dict)
         print("Load Case {} added".format(load_case_obj.name))
@@ -1021,10 +1021,12 @@ class OpsGrillage:
             load_command = load_case_dict['load_command']
             load_factor = load_case_dict['load_factor']
             load_case_analysis = Analysis(analysis_name=load_case_obj.name, ops_grillage_name=self.model_name,
-                                          pyfile=self.pyfile)
+                                          pyfile=self.pyfile,
+                                          time_series_counter=self.global_time_series_counter,
+                                          pattern_counter=self.global_pattern_counter)
             load_case_analysis.add_load_command(load_command, load_factor=load_factor)
             # run the Analysis object, collect results, and store Analysis object in the list for Analysis load case
-            load_case_analysis.evaluate_analysis()
+            self.global_time_series_counter, self.global_pattern_counter = load_case_analysis.evaluate_analysis()
 
     def add_load_combination(self, load_combination_name: str, load_case_name_dict: dict):
         """
@@ -1045,11 +1047,11 @@ class OpsGrillage:
                           'load_factor': load_factor}
         """
 
-        load_case_dict_list = [] # list of dict: structure of dict See line
+        load_case_dict_list = []  # list of dict: structure of dict See line
         # create dict with key (combination name) and val (list of dict of load cases)
         for load_case_name, load_factor in load_case_name_dict.items():
             # lookup the defined load cases for load_case_name
-            a = [index for (index,val) in enumerate(self.load_case_list) if val['name']==load_case_name]
+            a = [index for (index, val) in enumerate(self.load_case_list) if val['name'] == load_case_name]
             if a:
                 ind = a[0]
             else:
@@ -1062,26 +1064,31 @@ class OpsGrillage:
             # add load case dict to new list for load combination
             load_case_dict_list.append(load_case_dict)
 
-        self.load_combination_dict.setdefault(load_combination_name,load_case_dict_list)
+        self.load_combination_dict.setdefault(load_combination_name, load_case_dict_list)
         print("Load Combination: {} created".format(load_combination_name))
 
-    def analyse_load_combination(self, selected_load_combination: str=None):
+    def analyse_load_combination(self, selected_load_combination: str = None):
         # create analysis object, add each factored load case to analysis object
-        for load_combination_name,load_case_dict_list in self.load_combination_dict.items():
+        for load_combination_name, load_case_dict_list in self.load_combination_dict.items():
             load_combination_analysis = Analysis(analysis_name=load_combination_name, ops_grillage_name=self.model_name,
-                                          pyfile=self.pyfile)
+                                                 pyfile=self.pyfile,
+                                                 time_series_counter=self.global_time_series_counter,
+                                                 pattern_counter=self.global_pattern_counter)
             for load_case_dict in load_case_dict_list:
-                load_case_obj = load_case_dict['loadcase']    # maybe unused
+                load_case_obj = load_case_dict['loadcase']  # maybe unused
                 load_command = load_case_dict['load_command']
                 load_factor = load_case_dict['load_factor']
                 load_combination_analysis.add_load_command(load_command, load_factor=load_factor)
-            load_combination_analysis.evaluate_analysis()
+            self.global_time_series_counter, self.global_pattern_counter = load_combination_analysis.evaluate_analysis()
 
     def add_moving_load_case(self, moving_load_obj: MovingLoad, load_factor=1):
         """
         Function to add Moving load case to OpsGrillage instance.
-        :param moving_load_obj:
-        :return:
+        :param load_factor: load factor for load case. Default is 1. Load factor defined during definition of load case
+                            i.e. creating load case object is superseded by this load factor variable
+        :param moving_load_obj: Moving load class object instance
+        :return: Populates self.moving_load_case_dict with individual dict of load cases - each representing an
+                incremental position load case of the moving load.
         """
         # get the list of individual load cases
         list_of_incr_load_case_dict = []
@@ -1089,40 +1096,49 @@ class OpsGrillage:
         for moving_load_case_list in moving_load_obj.moving_load_case:
             for increment_load_case in moving_load_case_list:
                 load_str = self.distribute_load_types_to_model(load_case_obj=increment_load_case)
-                increment_load_case_dict = {'name': increment_load_case.name, 'loadcase': increment_load_case, 'load_command': load_str,
-                                    'load_factor': load_factor}
+                increment_load_case_dict = {'name': increment_load_case.name, 'loadcase': increment_load_case,
+                                            'load_command': load_str,
+                                            'load_factor': load_factor}
                 list_of_incr_load_case_dict.append(increment_load_case_dict)
             self.moving_load_case_dict[moving_load_obj.name] = list_of_incr_load_case_dict
 
-        # set the individual load case - get the corresponding load_str for each load cases using add load case function
-        # set the load str to the individual loadcase via loadcase.set_load_case_load_command
+        print("Moving load case: {} created".format(moving_load_obj.name))
 
-
-    def analyse_moving_load_case(self, moving_load_case_name: str):
-        # functino to analyse individual moving load case
+    def analyse_moving_load_case(self, moving_load_case_name: str = None):
+        # function to analyse individual moving load case
         # create analysis object for each load case correspond to increment of moving paths
-
+        # loop through all moving load objects
         for moving_load_obj, load_case_dict_list in self.moving_load_case_dict.items():
             for load_case_dict in load_case_dict_list:
                 load_case_obj = load_case_dict['loadcase']  # maybe unused
                 load_command = load_case_dict['load_command']
                 load_factor = load_case_dict['load_factor']
                 incremental_analysis = Analysis(analysis_name=load_case_obj.name,
-                                                     ops_grillage_name=self.model_name,
-                                                     pyfile=self.pyfile)
-                incremental_analysis.add_load_command(load_command)
-                incremental_analysis.evaluate_analysis()
+                                                ops_grillage_name=self.model_name,
+                                                pyfile=self.pyfile,
+                                                time_series_counter=self.global_time_series_counter,
+                                                pattern_counter=self.global_pattern_counter)
+                incremental_analysis.add_load_command(load_command, load_factor=load_factor)
+                self.global_time_series_counter, self.global_pattern_counter = incremental_analysis.evaluate_analysis()
 
 
 # ---------------------------------------------------------------------------------------------------------------------
 class Analysis:
     """
-    Analysis class objected to handle the run/execution of load case + load combination + moving load analysis
-
-
+    Main class to handle the run/execution of load case + load combination + moving load analysis. Analysis class is
+    created and used within OpsGrillage class after "adding load case", "adding load combination" and "adding moving
+    load" procedures.
+    Analysis class have the following role in OpsGrillage analysis:
+    *. store information of ops commands for performing static (default) analysis of single/multiple load case(s).
+    *. execute the required ops commands to perform analysis using the OpsGrillage model instance.
+    *. if flagged, writes an executable py file instead which performs the exact analysis as it would for an
+        OpsGrillage instance instead.
+    *. manages multiple load case's ops.load() commands, applying the specified load factors to the load cases for
+        load combinations
     """
 
-    def __init__(self, analysis_name: str, ops_grillage_name: str, pyfile: bool, analysis_type='Static'):
+    def __init__(self, analysis_name: str, ops_grillage_name: str, pyfile: bool, analysis_type='Static',
+                 time_series_counter=1, pattern_counter=1):
         self.analysis_name = analysis_name
         self.ops_grillage_name = ops_grillage_name
         self.time_series_tag = None
@@ -1133,11 +1149,11 @@ class Analysis:
         # list recording load commands, time series and pattern for the input load case
         self.load_cases_dict_list = []  # keys # [{time_series,pattern,load_command},... ]
         # counters
-        self.time_series_counter = 1
-        self.plain_counter = 1
-
-        # recorder variables to store results of analysis
-        # TODO
+        self.time_series_counter = time_series_counter
+        self.plain_counter = pattern_counter
+        # Variables recording results of analysis
+        self.node_disp = dict()  # key node tag, val list of dof
+        self.ele_force = dict()  # key ele tag, val list of forces on nodes of ele[ order according to ele tag]
         # preset ops analysis commands
         self.wipe_command = "ops.wipeAnalysis()\n"
         self.numberer_command = "ops.numberer('Plain')\n"  # default plain
@@ -1153,7 +1169,9 @@ class Analysis:
             with open(self.analysis_file_name, 'w') as file_handle:
                 # create py file or overwrite existing
                 # writing headers and description at top of file
-                file_handle.write("# Grillage generator wizard\n# Model name: {}\n".format(self.analysis_name))
+                file_handle.write(
+                    "# Executable py file for Analysis of \n# Model name: {}\n".format(self.ops_grillage_name))
+                file_handle.write("# Load case: {}\n".format(self.analysis_name))
                 # time
                 now = datetime.now()
                 dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
@@ -1182,9 +1200,10 @@ class Analysis:
         self.load_cases_dict_list.append(time_series_dict)  # add dict to list
 
     def evaluate_analysis(self):
-        # write/execute ops.load commands for all static loads of each loadcases
+        # write/execute ops.load commands for load groups
         if self.pyfile:
             with open(self.analysis_file_name, 'a') as file_handle:
+                file_handle.write(self.wipe_command)
                 for load_dict in self.load_cases_dict_list:
                     file_handle.write(load_dict['time_series'])
                     file_handle.write(load_dict['pattern'])
@@ -1198,6 +1217,7 @@ class Analysis:
                 file_handle.write(self.analysis_command)
                 file_handle.write(self.analyze_command)
         else:
+            eval(self.wipe_command)
             for load_dict in self.load_cases_dict_list:
                 eval(load_dict['time_series'])
                 eval(load_dict['pattern'])
@@ -1213,3 +1233,64 @@ class Analysis:
 
         print("Analysis: {} completed".format(self.analysis_name))
         # record analyzed results
+        self.extract_grillage_responses()
+        # return updated global time series and
+        return self.time_series_counter, self.plain_counter
+
+    def extract_grillage_responses(self):
+        if not self.pyfile:
+            # first loop extract node displacements
+            loop = True
+            counter = 0
+            while loop:
+                try:
+                    counter += 1
+                    disp_list = ops.nodeDisp(counter)
+                    self.node_disp.setdefault(counter, disp_list)
+                except:  # finished extracting all nodes
+                    loop = False
+            print("Node displacement extraction finished at node counter {}".format(counter))
+            # second loop extract ele forces
+            loop = True  # reset loop parameters
+            counter = 0  # reset loop parameters
+            while loop:
+                try:
+                    counter += 1
+                    ele_force = ops.eleForce(counter)
+                    self.ele_force.setdefault(counter, ele_force)
+                    if ops.eleForce(counter) is None:
+                        loop = False
+                except:
+                    loop = False
+            print("Ele force extraction finished at ele counter {}".format(counter))
+        print("Extract completed")
+
+
+class Recorder:
+    """
+    Main class to store results of each analysis and process into data array output for post processing/plotting.
+    Class object is accessed within OpsGrillage class object.
+    """
+
+    def __init__(self):
+        # static single analysis load cases
+        self.static_dr = []
+        self.moving_dr = []
+        # dynamic moving load (incremental) load cases
+
+    def insert_analysis_results(self, analysis_obj, moving_flag=False):
+        if moving_flag:
+            self.moving_dr.append(analysis_obj)
+        else:
+            self.static_dr.append()
+        pass
+
+    def compile_data_array(self):
+        # Final function called to compile all inserted analysis into xarray dataArray format
+
+        # idea
+
+        # 2 data arrays
+        # one for nodeDisp
+        # one for eleForces (parsed into BMD, SFD)
+        pass
