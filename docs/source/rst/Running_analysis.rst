@@ -14,23 +14,32 @@ p is the magnitude of the vertical loading.
 Depending on the load type, each load type takes in variety of Load points. Point load takes in a single LoadPoint.
 Line load takes in at least two points. Patch load takes it at least four points.
 
-Defining Point loads
+Defining point loads
+
 .. code-block:: python
+
     location = LoadPoint(5, 0, 2, 20)  # create load point
     Single = PointLoad(name="single point", point1=location)
 
-Defining Line loads
-.. code-block:: python
-    location = LoadPoint(5, 0, 2, 20)  # create load point
-    Single = PointLoad(name="single point", point1=location)
 
+Defining Line Loads
+
+.. code-block:: python
+
+    barrierpoint_1 = LoadPoint(-1, 0, 3, 2)
+    barrierpoint_2 = LoadPoint(11, 0, 3, 2)
+    Barrier = LineLoading("Barrier curb load", point1=barrierpoint_1, point2=barrierpoint_2)
 
 Defining Patch loads
-.. code-block:: python
-    location = LoadPoint(5, 0, 2, 20)  # create load point
-    Single = PointLoad(name="single point", point1=location)
 
-class function `add_load_case`
+.. code-block:: python
+
+    lane_point_1 = LoadPoint(0, 0, 3, 5)
+    lane_point_2 = LoadPoint(8, 0, 3, 5)
+    lane_point_3 = LoadPoint(8, 0, 5, 5)
+    lane_point_4 = LoadPoint(0, 0, 5, 5)
+    Lane = PatchLoading("Lane 1", point1=lane_point_1, point2=lane_point_2, point3=lane_point_3, point4=lane_point_4)
+
 
 Defining load combination
 ------------------------

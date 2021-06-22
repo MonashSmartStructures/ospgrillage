@@ -1027,6 +1027,7 @@ class OpsGrillage:
             load_case_analysis.add_load_command(load_command, load_factor=load_factor)
             # run the Analysis object, collect results, and store Analysis object in the list for Analysis load case
             self.global_time_series_counter, self.global_pattern_counter = load_case_analysis.evaluate_analysis()
+            # store result in Recorder object
 
     def add_load_combination(self, load_combination_name: str, load_case_name_dict: dict):
         """
@@ -1067,19 +1068,25 @@ class OpsGrillage:
         self.load_combination_dict.setdefault(load_combination_name, load_case_dict_list)
         print("Load Combination: {} created".format(load_combination_name))
 
-    def analyse_load_combination(self, selected_load_combination: str = None):
-        # create analysis object, add each factored load case to analysis object
-        for load_combination_name, load_case_dict_list in self.load_combination_dict.items():
-            load_combination_analysis = Analysis(analysis_name=load_combination_name, ops_grillage_name=self.model_name,
-                                                 pyfile=self.pyfile,
-                                                 time_series_counter=self.global_time_series_counter,
-                                                 pattern_counter=self.global_pattern_counter)
-            for load_case_dict in load_case_dict_list:
-                load_case_obj = load_case_dict['loadcase']  # maybe unused
-                load_command = load_case_dict['load_command']
-                load_factor = load_case_dict['load_factor']
-                load_combination_analysis.add_load_command(load_command, load_factor=load_factor)
-            self.global_time_series_counter, self.global_pattern_counter = load_combination_analysis.evaluate_analysis()
+    # def analyse_load_combination(self, selected_load_combination: str = None):
+    #     # create analysis object, add each factored load case to analysis object
+    #     for load_combination_name, load_case_dict_list in self.load_combination_dict.items():
+    #         load_combination_analysis = Analysis(analysis_name=load_combination_name, ops_grillage_name=self.model_name,
+    #                                              pyfile=self.pyfile,
+    #                                              time_series_counter=self.global_time_series_counter,
+    #                                              pattern_counter=self.global_pattern_counter)
+    #         for load_case_dict in load_case_dict_list:
+    #             load_case_obj = load_case_dict['loadcase']  # maybe unused
+    #             load_command = load_case_dict['load_command']
+    #             load_factor = load_case_dict['load_factor']
+    #             load_combination_analysis.add_load_command(load_command, load_factor=load_factor)
+    #         self.global_time_series_counter, self.global_pattern_counter = load_combination_analysis.evaluate_analysis()
+
+    def analyse_load_combination(self,selected_load_combination:str = None):
+        # Access load cases in Recorder object
+
+        #
+        pass
 
     def add_moving_load_case(self, moving_load_obj: MovingLoad, load_factor=1):
         """
@@ -1120,7 +1127,7 @@ class OpsGrillage:
                                                 pattern_counter=self.global_pattern_counter)
                 incremental_analysis.add_load_command(load_command, load_factor=load_factor)
                 self.global_time_series_counter, self.global_pattern_counter = incremental_analysis.evaluate_analysis()
-
+                # store result in Recorder object
 
 # ---------------------------------------------------------------------------------------------------------------------
 class Analysis:
@@ -1249,7 +1256,7 @@ class Analysis:
                     self.node_disp.setdefault(counter, disp_list)
                 except:  # finished extracting all nodes
                     loop = False
-            print("Node displacement extraction finished at node counter {}".format(counter))
+            print("Node displacement extraction finished at node counter {}".format(counter-1))
             # second loop extract ele forces
             loop = True  # reset loop parameters
             counter = 0  # reset loop parameters
@@ -1257,12 +1264,14 @@ class Analysis:
                 try:
                     counter += 1
                     ele_force = ops.eleForce(counter)
-                    self.ele_force.setdefault(counter, ele_force)
+
                     if ops.eleForce(counter) is None:
                         loop = False
+                        break
+                    self.ele_force.setdefault(counter, ele_force)
                 except:
                     loop = False
-            print("Ele force extraction finished at ele counter {}".format(counter))
+            print("Ele force extraction finished at ele counter {}".format(counter-1))
         print("Extract completed")
 
 
@@ -1274,21 +1283,26 @@ class Recorder:
 
     def __init__(self):
         # static single analysis load cases
-        self.static_dr = []
-        self.moving_dr = []
+        self.basic_load_case_record = []
+        self.moving_load_case_record = []
         # dynamic moving load (incremental) load cases
 
-    def insert_analysis_results(self, analysis_obj, moving_flag=False):
-        if moving_flag:
-            self.moving_dr.append(analysis_obj)
-        else:
-            self.static_dr.append()
+    def insert_analysis_results(self, analysis_obj:Analysis, moving_flag=False):
+        # Idea
+        # extract result dict from analysis
+        # self.node_disp
+        # self.ele_force
         pass
 
     def compile_data_array(self):
         # Final function called to compile all inserted analysis into xarray dataArray format
+        # two data arrays of
+        # nodeDisp
+        # eleForce
 
         # idea
+        # A B C are individual load cases
+
 
         # 2 data arrays
         # one for nodeDisp

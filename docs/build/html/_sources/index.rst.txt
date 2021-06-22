@@ -21,6 +21,7 @@ Documentation
 
    rst/Installation
    rst/Module description
+   rst/Running_analysis
    rst/APIdoc
    rst/ModuleDoc
    rst/Examples

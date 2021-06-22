@@ -54,9 +54,6 @@ if not pyfile:
     opsplt.plot_model("nodes")
     pass
 
-# test output python file
-# example_bridge.run_check()
-
 # ------------------------------------------------------------------------------------------------------------------
 # Create loads, compound loads, moving loads
 
@@ -86,7 +83,6 @@ M1600.set_global_coord(Point(4,0,3))
 single_path = Path(start_point=Point(2,0,2), end_point= Point(4,0,3))  # create path object
 move_point = MovingLoad(name="single_moving_point")
 move_point.add_loads(load_obj=front_wheel,path_obj=single_path.get_path_points())
-move_point.add_loads(load_obj=Lane)
 move_point.parse_moving_load_cases()
 # --------------------------------------------------------------------------------------------------------------------
 # Load Case
@@ -101,7 +97,7 @@ SLS_LL = LoadCase(name="Live traffic")
 SLS_LL.add_load_groups(Single)
 example_bridge.add_load_case(SLS_LL)
 example_bridge.add_load_combination("ULS", {'ULS-DL':1.2,'Live traffic':1.7})
-example_bridge.analyse_load_combination()
+#example_bridge.analyse_load_combination()
 
 # example_bridge.add_moving_load_case(move_point)
 #example_bridge.analyse_moving_load_case()

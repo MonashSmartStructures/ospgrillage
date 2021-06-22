@@ -285,4 +285,18 @@ def test_multiple_moving_load_definition():
 
 
 def test_add_a_loadcase_with_local_coordinate():
-    pass
+    A = np.array([[7, 11, 56, 45], [20, 21, 74, 12]]).T
+    B = np.array([[42], [52]]).T
+    C = np.array([[90, 213, 9], [101, 34, 45]]).T
+    output_as_dataarray = xr.concat(
+        [
+            xr.DataArray(
+                X,
+                dims=["record", "edge"],
+                coords={"record": range(X.shape[0]), "edge": ["start", "end"]},
+            )
+            for X in (A, B, C)
+        ],
+        dim="descriptor",
+    ).assign_coords(descriptor=["A", "B", "C"])
+    print("Done")

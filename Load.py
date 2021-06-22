@@ -437,7 +437,7 @@ class LoadCase:
         # preset load factor for
         self.load_command_list = []
 
-    def add_load_groups(self, load_obj, **kwargs):
+    def add_load_groups(self, load_obj:Loads, **kwargs):
         load_dict = dict()
         load_dict.setdefault('load',deepcopy(load_obj))  # create copy of object instance
         load_factor = kwargs.get('load_factor', 1)
@@ -496,7 +496,8 @@ class MovingLoad:
         # if no path object is added, set empty list to path_obj. The load group will be treated as a static load
         # present throughout the movement of other load groups (added to the series of moving load case)
         if path_obj is None:
-            path_obj = []
+            # path_obj = [] version
+            raise Exception("Path object not defined")
         load_pair_path = dict()
         load_pair_path.setdefault("load", load_obj)
         load_pair_path.setdefault("path", path_obj)
