@@ -387,12 +387,12 @@ class OpsGrillage:
             common_member_tag = None
 
         ele_width = 1
-        # if member is transverse, assign slab elements
+        # if member properties is based on unit width (e.g. slab elements), get width of element and assign properties
         if grillage_member_obj.section.unit_width and common_member_tag is None:
             for ele in self.Mesh_obj.trans_ele:
-                n1 = ele[1]
-                n2 = ele[2]
-                # get node_i and node_j spacing
+                n1 = ele[1]  # node i
+                n2 = ele[2]  # node j
+                # get node width of node_i and node_j
                 lis_1 = self.Mesh_obj.node_width_x_dict[n1]
                 lis_2 = self.Mesh_obj.node_width_x_dict[n2]
                 ele_width = 1
@@ -405,9 +405,9 @@ class OpsGrillage:
                                                  np.sqrt(lis[1][0] ** 2 + lis[1][1] ** 2 + lis[1][2] ** 2)) / 2)
                     else:
                         break
-                ele_width = max(
+                ele_width = np.mean(
                     ele_width_record)  # TODO Check here, if member lies between a triangular and quadrilateral grid
-                # currently here assumed the width of rectangular grid for entrie element width
+                # here take the average width in x directions
 
                 ele_str = grillage_member_obj.section.get_element_command_str(
                     ele_tag=ele[0], n1=n1, n2=n2, transf_tag=ele[4], ele_width=ele_width)

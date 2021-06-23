@@ -16,7 +16,7 @@ class Mesh:
     """
 
     def __init__(self, long_dim, width, trans_dim, edge_width, num_trans_beam, num_long_beam, skew_1, skew_2,
-                 orthogonal=False, pt1=Point(0,0,0), pt2=Point(0,0,0), pt3=Point(0,0,0), element_counter=1, node_counter=1,
+                 orthogonal=False, pt1=Point(0,0,0), pt2=Point(0,0,0), pt3=None, element_counter=1, node_counter=1,
                  transform_counter=0, global_x_grid_count=0, global_edge_count=0, mesh_origin=[0, 0, 0]):
         # inputs from OpsGrillage required to create mesh
         self.long_dim = long_dim
@@ -29,6 +29,11 @@ class Mesh:
         self.skew_1 = skew_1
         self.skew_2 = skew_2
         self.orthogonal = orthogonal
+        # sweep path properties
+        self.pt1 = pt1
+        self.pt2 = pt2
+        self.pt3 = pt3
+
         # counters to keep track of variables
         self.node_counter = element_counter
         self.element_counter = node_counter
@@ -60,35 +65,44 @@ class Mesh:
         self.c = 0
         self.r = 0
         self.R = 0
+        self.d = None # list of circle centre and circle radius [ c, r]
         # meshing properties
         self.mesh_origin = mesh_origin  # default origin
-        # create namedtuples
+        # meshing variables
+        self.first_connecting_region_nodes = []
+        self.end_connecting_region_nodes = []
+        self.sweep_nodes = []
+        self.z_group_recorder = []
 
         # ------------------------------------------------------------------------------------------
-        # Sweep path properties
-        pt3 = Point(long_dim, 0, 0.0)  # 3rd point for defining curve mesh
+        # Sweep path
+        # pt3 = Point(long_dim, 0, 0.0)  # 3rd point for defining curve mesh
 
-        # if defining an arc line segment, specify p2 such that pt2 is the point at the midpoint of the arc
-        try:
-            self.d = findCircle(x1=0, y1=0, x2=pt2.x, y2=pt2.z, x3=pt3.x, y3=pt3.z)
-            self.curve = True
-            # TODO allow for arbitrary sweep path
-            # procedure
-            # get tangent at origin
-            zeta = 0
-        except ZeroDivisionError:
-            print("3 points result in straight line - not a circle")
-            self.d = None
-            # procedure to identify straight line segment pinpointing length of grillage
-            points = [(pt1.x, pt1.z), (pt3.x, pt3.z)]
-            x_coords, y_coords = zip(*points)
-            A = np.vstack([x_coords, np.ones(len(x_coords))]).T
-            m, c = np.linalg.lstsq(A, y_coords, rcond=None)[0]
-            self.m = round(m, self.decimal_lim)
-            # self.c = 0  # default 0  to avoid arithmetic error
-            zeta = np.arctan(m)  # initial angle of inclination of sweep line about mesh origin
-            self.zeta = zeta / np.pi * 180  # rad to degrees
-        self.__check_skew(zeta)  # check condition for orthogonal mesh
+        # # if defining an arc line segment, specify p2 such that pt2 is the point at the midpoint of the arc
+        # try:
+        #     self.d = findCircle(x1=0, y1=0, x2=pt2.x, y2=pt2.z, x3=pt3.x, y3=pt3.z)
+        #     self.curve = True
+        #     # procedure
+        #     # get tangent at origin
+        #     zeta = 0
+        # except ZeroDivisionError:
+        #     print("3 points result in straight line - not a circle")
+        #     self.d = None
+        #     # procedure to identify straight line segment pinpointing length of grillage
+        #     points = [(pt1.x, pt1.z), (pt2.x, pt2.z)]
+        #     x_coords, y_coords = zip(*points)
+        #     A = np.vstack([x_coords, np.ones(len(x_coords))]).T
+        #     m, c = np.linalg.lstsq(A, y_coords, rcond=None)[0]
+        #     self.m = round(m, self.decimal_lim)
+        #     # self.c = 0  # default 0  to avoid arithmetic error
+        #     zeta = np.arctan(m)  # initial angle of inclination of sweep line about mesh origin
+        #     self.zeta = zeta / np.pi * 180  # rad to degrees
+        #    check condition for orthogonal mesh
+        # Create sweep path obj
+        sweep_path = SweepPath(self.pt1, self.pt2, self.pt3)
+        self.zeta, self.m, self.c = sweep_path.get_sweep_line_properties()
+        # check condition for orthogonal mesh
+        # self.__check_skew(self.zeta)  #TODO
         # ------------------------------------------------------------------------------------------
         # edge construction line 1
         self.start_edge_line = EdgeConstructionLine(edge_ref_point=self.mesh_origin, width_z=self.width,
@@ -111,7 +125,7 @@ class Mesh:
         # z coordinate of ref sweep nodes (relative to origin)
         self.noz = self.start_edge_line.noz
         if orthogonal:
-            self.sweeping_nodes = self.__rotate_sweep_nodes(zeta)
+            self.sweeping_nodes = self.__rotate_sweep_nodes(self.zeta / 180 * np.pi) # zeta in rad
         else:  # skew
             # sweep line of skew mesh == edge_construction line
             self.sweeping_nodes = self.start_edge_line.node_list
@@ -182,12 +196,13 @@ class Mesh:
         print("Meshing completed....")
 
     def __orthogonal_meshing(self):
-        global first_connecting_region_nodes, end_connecting_region_nodes, sweep_nodes, z_group_recorder
+        global sweep_nodes, z_group_recorder
         self.assigned_node_tag = []
         self.previous_node_tag = []
         self.sweep_path_points = []
-
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         # first edge construction line
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         start_point_x = self.mesh_origin[0]
         start_point_z = self.mesh_origin[2]
         # if skew angle of edge line is below threshold for orthogonal,
@@ -209,6 +224,9 @@ class Mesh:
                     # run sub procedure to assign
                     self.__assign_transverse_members(pre_node=self.assigned_node_tag[z_count_int - 1],
                                                      cur_node=self.assigned_node_tag[z_count_int])
+                if len(self.assigned_node_tag) == len(self.noz):
+                    self.first_connecting_region_nodes = self.assigned_node_tag
+            self.assigned_node_tag = [] # reset variable
             print("Edge mesh @ start span completed")
         else:
             # loop for each intersection point of edge line with sweep nodes
@@ -288,13 +306,16 @@ class Mesh:
                 # update and reset recorders for next column of sweep nodes
                 self.global_x_grid_count += 1
                 if len(self.assigned_node_tag) == len(self.noz):
-                    first_connecting_region_nodes = self.assigned_node_tag
+                    self.first_connecting_region_nodes = self.assigned_node_tag
                 self.ortho_previous_node_column = self.assigned_node_tag
                 self.assigned_node_tag = []
             self.global_edge_count += 1
             print("Edge mesh @ start span completed")
         # --------------------------------------------------------------------------------------------
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         # second edge construction line
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
         end_point_x = self.long_dim
         end_point_z = 0  # TODO allow for arbitrary line
         if np.abs(self.skew_2 + self.zeta) < self.skew_threshold[0]:
@@ -315,7 +336,9 @@ class Mesh:
                     # run sub procedure to assign
                     self.__assign_transverse_members(pre_node=self.assigned_node_tag[z_count_int - 1],
                                                      cur_node=self.assigned_node_tag[z_count_int])
-            end_connecting_region_nodes = self.assigned_node_tag
+            # self.end_connecting_region_nodes = self.assigned_node_tag
+                if len(self.assigned_node_tag) == len(self.noz):
+                    self.end_connecting_region_nodes = self.assigned_node_tag
         else:
             for z_count, int_point in enumerate(self.end_edge_line.node_list):
                 # search point on sweep path line whose normal intersects int_point.
@@ -369,12 +392,12 @@ class Mesh:
 
                     # if angle is positive (slope negative), edge nodes located at the first element of list
                     if len(self.assigned_node_tag) >= 1:
-                        if 90 + self.skew_1 + self.zeta > 90:
+                        if 90 + self.skew_2 + self.zeta > 90:
                             self.__assign_edge_trans_members(self.previous_node_tag[-1], self.assigned_node_tag[-1],
                                                              self.global_edge_count)
                             self.edge_node_recorder.setdefault(self.previous_node_tag[-1], self.global_edge_count)
                             self.edge_node_recorder.setdefault(self.assigned_node_tag[-1], self.global_edge_count)
-                        elif 90 + self.skew_1 + self.zeta < 90:
+                        elif 90 + self.skew_2 + self.zeta < 90:
                             self.__assign_edge_trans_members(self.previous_node_tag[0], self.assigned_node_tag[0],
                                                              self.global_edge_count)
                             self.edge_node_recorder.setdefault(self.previous_node_tag[0], self.global_edge_count)
@@ -384,15 +407,15 @@ class Mesh:
                 # update and reset recorders for next column of sweep nodes
                 self.global_x_grid_count += 1
                 if len(self.assigned_node_tag) == len(self.noz):
-                    end_connecting_region_nodes = self.assigned_node_tag
+                    self.end_connecting_region_nodes = self.assigned_node_tag
                 self.ortho_previous_node_column = self.assigned_node_tag
                 self.assigned_node_tag = []
             self.global_edge_count += 1
             print("Edge mesh @ end span completed")
         # --------------------------------------------------------------------------------------------
         # remaining distance mesh with uniform spacing
-        x_first = first_connecting_region_nodes[0]
-        x_second = end_connecting_region_nodes[0]
+        x_first = self.first_connecting_region_nodes[0]
+        x_second = self.end_connecting_region_nodes[0]
         # loop each point in self.nox
         cor_fir = self.node_spec[x_first]['coordinate']
         cor_sec = self.node_spec[x_second]['coordinate']
@@ -423,7 +446,7 @@ class Mesh:
                     self.__assign_transverse_members(pre_node=self.assigned_node_tag[z_count_int - 1],
                                                      cur_node=self.assigned_node_tag[z_count_int])
             if z_count == 0:
-                self.previous_node_tag = first_connecting_region_nodes
+                self.previous_node_tag = self.first_connecting_region_nodes
             elif z_count > 0 and z_count != len(self.uniform_region_x[1:-1]) - 1:
                 pass
             for pre_node in self.previous_node_tag:
@@ -442,7 +465,7 @@ class Mesh:
                 self.assigned_node_tag = []
             else:
                 self.previous_node_tag = self.assigned_node_tag
-                self.assigned_node_tag = end_connecting_region_nodes
+                self.assigned_node_tag = self.end_connecting_region_nodes
 
         # Extra step to connect uniform region with nodes along end span edge region
         for pre_node in self.previous_node_tag:
@@ -687,12 +710,15 @@ class Mesh:
         return tag_value
 
     def __check_skew(self, zeta):
+        # zeta in DEGREES
         # if mesh type is beyond default allowance threshold of 11 degree and 30 degree, return exception
         if np.abs(self.skew_1 - zeta) <= self.skew_threshold[0] and self.orthogonal:
-            # set to
+            # return error
+            raise Exception("Skew angle too small for orthogonal")
             self.orthogonal = False
         elif np.abs(self.skew_1 - zeta) >= self.skew_threshold[1] and not self.orthogonal:
             self.orthogonal = True
+            raise Exception("Skew angle too large for skewed")
             # raise Exception('Oblique mesh not allowed for angle greater than {}'.format(self.skew_threshold[1]))
 
     # ------------------------------------------------------------------------------------------
@@ -842,20 +868,38 @@ class EdgeConstructionLine:
 
 # TODO transfer definition of sweep path into class here. Add functions for curve lines
 class SweepPath:
-    def __init__(self, pt1,pt2,pt3):
+    def __init__(self, pt1:Point,pt2:Point,pt3:Point=None):
+        """
+
+        :param pt1: Namedtuple Point of first coordinate
+        :param pt2: Namedtuple Point of second coordinate
+        :param pt3: Namedtuple Point of third coordinate
+        """
+        self.pt1 = pt1
+        self.pt2 = pt2
+        self.pt3 = pt3
         self.decimal_lim = 4
-        try:
-            self.d = findCircle(x1=0, y1=0, x2=pt2.x, y2=pt2.z, x3=pt3.x, y3=pt3.z)
-            self.curve = True
-            # TODO allow for arbitrary sweep path
+        self.curve_path = False
+        # return variables
+        self.zeta = None
+        self.m = None
+        self.c = 0 # Default:0 , sweep path intersects origin
+
+    def get_sweep_line_properties(self):
+        if self.pt3 is not None:
+            try:
+                self.d = findCircle(x1=0, y1=0, x2=self.pt2.x, y2=self.pt2.z, x3=self.pt3.x, y3=self.pt3.z)
+                self.curve_path = True
+            except ZeroDivisionError:
+                return Exception("Zero div error. Point 3 not valid to construct curve line")
             # procedure
             # get tangent at origin
-            zeta = 0
-        except ZeroDivisionError:
-            print("3 points result in straight line - not a circle")
+            self.zeta = 0
+        else:
+            # construct straight line sweep path instead
             self.d = None
             # procedure to identify straight line segment pinpointing length of grillage
-            points = [(pt1.x, pt1.z), (pt3.x, pt3.z)]
+            points = [(self.pt1.x, self.pt1.z), (self.pt2.x, self.pt2.z)]
             x_coords, y_coords = zip(*points)
             A = np.vstack([x_coords, np.ones(len(x_coords))]).T
             m, c = np.linalg.lstsq(A, y_coords, rcond=None)[0]
@@ -864,3 +908,4 @@ class SweepPath:
             zeta = np.arctan(m)  # initial angle of inclination of sweep line about mesh origin
             self.zeta = zeta / np.pi * 180  # rad to degrees
 
+        return self.zeta, self.m, self.c

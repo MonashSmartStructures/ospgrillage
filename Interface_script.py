@@ -10,6 +10,7 @@ p2 = Point(1,0,0)
 p3 = Point(1,0,1)
 p4 = Point(0,0,1)
 a = np.array([[(2,3),(2,3,4),(2,3,4),(2,3,4,5,6,6,7)],[(2,3,4),(2,3,4),(2,3,4),(2,3,4)],[(0,1)]],dtype=object)
+
 #N,A= calculate_area_given_four_points(inside,p1,p2,p3,p4)
 #inside_flag = check_point_in_grid(inside,p1,p2,p3,p4)
 
@@ -34,7 +35,7 @@ slab = GrillageMember(member_name="concrete slab", section=slab_section, materia
 exterior_I_beam = GrillageMember(member_name="exterior I beams", section=exterior_I_beam_section, material=concrete)
 
 # construct grillage model
-example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=-42,
+example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=[0,-42],
                              num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
 pyfile = False
 example_bridge.create_ops(pyfile=pyfile)
