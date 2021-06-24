@@ -76,7 +76,7 @@ class Mesh:
 
         # ------------------------------------------------------------------------------------------
         # Sweep path
-        # pt3 = Point(long_dim, 0, 0.0)  # 3rd point for defining curve mesh
+        #self.pt2 = Point(long_dim, 0, 0.5)  # 3rd point for defining curve mesh
 
         # # if defining an arc line segment, specify p2 such that pt2 is the point at the midpoint of the arc
         # try:
@@ -99,8 +99,8 @@ class Mesh:
         #     self.zeta = zeta / np.pi * 180  # rad to degrees
         #    check condition for orthogonal mesh
         # Create sweep path obj
-        sweep_path = SweepPath(self.pt1, self.pt2, self.pt3)
-        self.zeta, self.m, self.c = sweep_path.get_sweep_line_properties()
+        self.sweep_path = SweepPath(self.pt1, self.pt2, self.pt3)
+        self.zeta, self.m, self.c = self.sweep_path.get_sweep_line_properties()
         # check condition for orthogonal mesh
         # self.__check_skew(self.zeta)  #TODO
         # ------------------------------------------------------------------------------------------
@@ -111,8 +111,9 @@ class Mesh:
 
         # ------------------------------------------------------------------------------------------
         # edge construction line 2
-        # TODO z coordinate of edge ref point
-        self.end_edge_line = EdgeConstructionLine(edge_ref_point=[self.long_dim, 0, 0], width_z=self.width,
+        end_point_z = self.sweep_path.get_line_function(self.long_dim)
+
+        self.end_edge_line = EdgeConstructionLine(edge_ref_point=[self.long_dim, 0, end_point_z], width_z=self.width,
                                                   edge_width_z=self.edge_width, edge_angle=self.skew_2,
                                                   num_long_beam=self.num_long_beam, model_plane_y=self.y_elevation)
         # ------------------------------------------------------------------------------------------
@@ -222,8 +223,18 @@ class Mesh:
                 # if loop assigned more than two nodes, link nodes as a transverse member
                 if z_count_int > 0:
                     # run sub procedure to assign
-                    self.__assign_transverse_members(pre_node=self.assigned_node_tag[z_count_int - 1],
-                                                     cur_node=self.assigned_node_tag[z_count_int])
+                    # self.__assign_transverse_members(pre_node=self.assigned_node_tag[z_count_int - 1],
+                    #                                  cur_node=self.assigned_node_tag[z_count_int])
+
+                    if len(self.assigned_node_tag) >= 1:
+
+                        self.__assign_edge_trans_members(self.assigned_node_tag[z_count_int - 1], self.assigned_node_tag[z_count_int],
+                                                         self.global_edge_count)
+                        # get and link edge nodes from previous and current as skewed edge member
+                        self.edge_node_recorder.setdefault(self.assigned_node_tag[z_count_int - 1], self.global_edge_count)
+                        self.edge_node_recorder.setdefault(self.assigned_node_tag[z_count_int], self.global_edge_count)
+
+
                 if len(self.assigned_node_tag) == len(self.noz):
                     self.first_connecting_region_nodes = self.assigned_node_tag
             self.assigned_node_tag = [] # reset variable
@@ -315,15 +326,16 @@ class Mesh:
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         # second edge construction line
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
+        # get end point of sweep line = point which sweep path intersects end span construction line
         end_point_x = self.long_dim
-        end_point_z = 0  # TODO allow for arbitrary line
+        # end_point_z = line_func(self.sweep_path.m,self.sweep_path.c,end_point_x)
+        end_point_z = self.sweep_path.get_line_function(end_point_x)
         if np.abs(self.skew_2 + self.zeta) < self.skew_threshold[0]:
             # if angle less than threshold, assign nodes of edge member as it is
             current_sweep_nodes = self.end_edge_line.node_list
             for (z_count_int, nodes) in enumerate(current_sweep_nodes):
-                x_inc = end_point_x
-                z_inc = end_point_z
+                x_inc = 0#end_point_x
+                z_inc = 0 #end_point_z
                 node_coordinate = [nodes[0] + x_inc, nodes[1], nodes[2] + z_inc]
                 self.node_spec.setdefault(self.node_counter, {'tag': self.node_counter, 'coordinate': node_coordinate,
                                                               'x_group': self.global_x_grid_count,
@@ -334,11 +346,20 @@ class Mesh:
                 # if loop assigned more than two nodes, link nodes as a transverse member
                 if z_count_int > 0:
                     # run sub procedure to assign
-                    self.__assign_transverse_members(pre_node=self.assigned_node_tag[z_count_int - 1],
-                                                     cur_node=self.assigned_node_tag[z_count_int])
+                    # self.__assign_transverse_members(pre_node=self.assigned_node_tag[z_count_int - 1],
+                    #                                  cur_node=self.assigned_node_tag[z_count_int])
+                    if len(self.assigned_node_tag) >= 1:
+                        self.__assign_edge_trans_members(self.assigned_node_tag[z_count_int - 1],
+                                                         self.assigned_node_tag[z_count_int],
+                                                         self.global_edge_count)
+                        # get and link edge nodes from previous and current as skewed edge member
+                        self.edge_node_recorder.setdefault(self.assigned_node_tag[z_count_int - 1],
+                                                           self.global_edge_count)
+                        self.edge_node_recorder.setdefault(self.assigned_node_tag[z_count_int], self.global_edge_count)
             # self.end_connecting_region_nodes = self.assigned_node_tag
                 if len(self.assigned_node_tag) == len(self.noz):
                     self.end_connecting_region_nodes = self.assigned_node_tag
+            self.global_x_grid_count +=1
         else:
             for z_count, int_point in enumerate(self.end_edge_line.node_list):
                 # search point on sweep path line whose normal intersects int_point.
@@ -413,7 +434,10 @@ class Mesh:
             self.global_edge_count += 1
             print("Edge mesh @ end span completed")
         # --------------------------------------------------------------------------------------------
+        self.assigned_node_tag = [] # reset
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         # remaining distance mesh with uniform spacing
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         x_first = self.first_connecting_region_nodes[0]
         x_second = self.end_connecting_region_nodes[0]
         # loop each point in self.nox
@@ -422,13 +446,12 @@ class Mesh:
         # get x coordinate for uniform region
         self.uniform_region_x = np.linspace(cor_fir[0], cor_sec[0], self.num_trans_beam)
 
-        # TODO allow for arbitary line here
-
         for z_count, x in enumerate(self.uniform_region_x[1:-1]):
             # get slope, m at current point x
-            z = line_func(m=self.m, c=self.c, x=x)
-
-            current_sweep_nodes = self.__rotate_sweep_nodes(self.zeta / 180 * np.pi)
+            # z = line_func(m=self.m, c=self.c, x=x)
+            z = self.sweep_path.get_line_function(x)
+            # z = line_func(self.sweep_path.m, self.sweep_path.c, x)
+            current_sweep_nodes = self.__rotate_sweep_nodes(self.zeta / 180 * np.pi)  # rotating sweep nodes @ origin
             # if angle less than threshold, assign nodes of edge member as it is
             for (z_count_int, nodes) in enumerate(current_sweep_nodes):
                 x_inc = x
@@ -547,6 +570,7 @@ class Mesh:
             self.node_width_z_dict.setdefault(ele[2], d2)
             self.node_connect_z_dict.setdefault(ele[1], p1)
             self.node_connect_z_dict.setdefault(ele[2], p2)
+
         # dict z to long ele
         self.z_group_to_ele = dict()
         for count, node in enumerate(self.noz):
@@ -770,13 +794,16 @@ class Mesh:
         convergence_check = []
         bounds = []
         while not min_found:
-            z0 = line_func(m=self.m, c=self.c, x=start_point_x)  # TODO HERE SET to allow search sweep line function
+            z0 = self.sweep_path.get_line_function(start_point_x)
+            z_ub = self.sweep_path.get_line_function(start_point_x + inc)
+            z_lb = self.sweep_path.get_line_function(start_point_x - inc)
+            #z0 = line_func(m=self.m, c=self.c, x=start_point_x)
             d0 = find_min_x_dist([int_point], [[start_point_x, self.y_elevation, z0]]).tolist()
 
-            z_ub = line_func(m=self.m, c=self.c, x=start_point_x + inc)
+            #z_ub = line_func(m=self.m, c=self.c, x=start_point_x + inc)
             d_ub = find_min_x_dist([int_point], [[start_point_x + inc, self.y_elevation, z_ub]]).tolist()
 
-            z_lb = line_func(m=self.m, c=self.c, x=start_point_x - inc)
+            #z_lb = line_func(m=self.m, c=self.c, x=start_point_x - inc)
             d_lb = find_min_x_dist([int_point], [[start_point_x - inc, self.y_elevation, z_lb]]).tolist()
 
             if d_lb > d0 and d_ub > d0:
@@ -866,7 +893,7 @@ class EdgeConstructionLine:
         return group
 
 
-# TODO transfer definition of sweep path into class here. Add functions for curve lines
+
 class SweepPath:
     def __init__(self, pt1:Point,pt2:Point,pt3:Point=None):
         """
@@ -909,3 +936,10 @@ class SweepPath:
             self.zeta = zeta / np.pi * 180  # rad to degrees
 
         return self.zeta, self.m, self.c
+
+    def get_line_function(self,x):
+        if not self.curve_path:
+            # straight line
+            return line_func(self.m,self.c,x)
+        else:
+            pass

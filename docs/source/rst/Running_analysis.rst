@@ -43,12 +43,21 @@ Defining Patch loads
 
 Defining load combination
 ------------------------
+Load combinations analysis are performed by using the OpsGrillage function `add_load_combination()` function.
+Load combinations are defined by passing an input dictionary of basic load case name as keys with load factors as
+values. An example dictionary is shown as follows:
+
+.. code-block:: python
+
+    load_combinations = {'ULS-DL':1.2,'Live traffic':1.7}
+    example_bridge.add_load_combination(name = "ULS", input_dict = load_combinations )
 
 
 
 Defining moving loads
 ------------------------
-
+Moving load analysis is defined using the Moving Load class. The moving load class takes a Load object and Path object
+pair as inputs. The moving load class parses the load object to traverse the defined path object.
 
 Running the analysis
 ------------------------

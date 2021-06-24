@@ -563,7 +563,8 @@ class OpsGrillage:
 
                 if check_point_in_grid(inside_point=line_point, point_list=point_list):
 
-                    # find intersecting points within grid
+                    # find intersecting points within grid- R annotates for intersection, z,x,edge stands for
+                    # respective element type (long, trans, edge)
                     Rz, Rx, Redge = self.__get_intersecting_elements(grid_tag, current_grid, last_grid, line_load_obj,
                                                                      long_ele_index, trans_ele_index, edge_ele_index)
 
@@ -675,13 +676,13 @@ class OpsGrillage:
             p_edge_2 = Point(p_edge_2[0], p_edge_2[1], p_edge_2[2])  # convert to point namedtuple
             x_1, x_2, z_1, z_2 = self.__check_line_ends_in_grid(p_edge_1, p_edge_2, current_grid, line_start_grid,
                                                                 line_end_grid, line_load_obj)
-            p_1 = Point(x_1, p_edge_1.y, z_1)  # Assume same plane
-            p_2 = Point(x_2, p_edge_2.y, z_2)  # Assume same plane
+            p_1 = Point(x_1, p_edge_1.y, z_1)  # Assume same model plane y = 0
+            p_2 = Point(x_2, p_edge_2.y, z_2)  # Assume same model plane y = 0
             # if any x or z value is null, line segment does not exist for the range, continue to next trans ele
             if any([x_1 is None, x_2 is None, z_1 is None, z_2 is None]):
                 continue
             if p_1 == p_2:  # (2) if both points of line are the exact point, point equates to an intersection point
-                R_edge.append([p_1.x, p_1.y, p_1.z])
+                Redge.append([p_1.x, p_1.y, p_1.z])  # Redge variable to be returned - as list
                 continue
             intersect_x, colinear_edge = check_intersect(p_edge_1, p_edge_2, p_1, p_2)
             if colinear_edge:
@@ -695,8 +696,8 @@ class OpsGrillage:
             elif intersect_x:
                 L1 = line([p_edge_1.x, p_edge_1.z], [p_edge_2.x, p_edge_2.z])
                 L2 = line([x_1, z_1], [x_2, z_2])
-                R_edge = intersection(L1, L2)
-                Redge.append([R_edge[0], p_edge_1.y, R_edge[1]])
+                R_edge = intersection(L1, L2) # temporary R_edge variable
+                Redge.append([R_edge[0], p_edge_1.y, R_edge[1]])  # Redge variable to be returned - as list
         return Rz, Rx, Redge
 
     # private function to check if the ends of a line load obj lies within the mesh bounds
@@ -866,7 +867,7 @@ class OpsGrillage:
             # get mid point of line
             x_bar = ((2 * w1 + w2) / (w1 + w2)) * L / 3  # from p2
             load_point = line_load_obj.get_point_given_distance(xbar=x_bar,
-                                                                point_coordinate=[p2[0], self.y_elevation, p2[1]])
+                                                                point_coordinate=[p2[0], self.y_elevation, p2[2]])
 
             # uses point load assignment function to assign load point and mag to four nodes in grid
             load_str = self.assign_point_to_four_node(point=load_point, mag=W)

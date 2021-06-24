@@ -182,14 +182,13 @@ def test_line_load_coincide_long_edge(bridge_model_42_negative):
     ULS_DL.add_load_groups(Barrier)  # ch
     example_bridge.add_load_case(ULS_DL)
 
-    assert example_bridge.global_line_int_dict == [
-        {2: [[3, 0], [3.1514141550424397, -0.0]], 5: [[3.1514141550424397, -0.0], [4.276919210414739, -0.0]],
-         9: [[4.276919210414739, -0.0], [5.402424265787039, -0.0]],
-         14: [[5.402424265787039, -0.0], [6.302828310084879, -0.0]],
-         20: [[6.302828310084879, -0.0], [7.227121232563659, -0.0]],
-         54: [[7.227121232563659, -0.0], [8.15141415504244, -0.0]],
-         60: [[8.15141415504244, -0.0], [9.07570707752122, -0.0]], 27: [[9.07570707752122, -0.0], [10.0, -0.0]],
-         28: [[10.0, -0.0], [10, 0]]}]
+    assert example_bridge.global_line_int_dict == [{6: [[4.276919210414739, 0, 1.0], [4, 0, 1]],
+  9: [[4.276919210414739, 0, 1.0], [5.402424265787039, 0, 1.0]],
+  14: [[5.402424265787039, 0, 1.0], [6.302828310084879, 0, 1.0]],
+  20: [[6.302828310084879, 0, 1.0], [7.227121232563659, 0, 1.0]],
+  30: [[9.07570707752122, 0, 1.0], [10, 0, 1]],
+  54: [[7.227121232563659, 0, 1.0], [8.15141415504244, 0, 1.0]],
+  60: [[8.15141415504244, 0, 1.0], [9.07570707752122, 0, 1.0]]}]
 
 
 def test_line_load_outside_of_mesh(bridge_model_42_negative):
@@ -279,6 +278,7 @@ def test_local_vs_global_coord_settings():
     M1600 = CompoundLoad("Lane and Barrier")
     M1600.add_load(load_obj=local_point)  # if local_coord is set, append the local coordinate of the point load
     assert M1600.compound_load_obj_list[0].load_point_1 == LoadPoint(x=5, y=0, z=-2, p=20)
+
 
 def test_multiple_moving_load_definition():
     pass
