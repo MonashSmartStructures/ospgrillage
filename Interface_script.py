@@ -63,8 +63,8 @@ location = LoadPoint(5, 0, 2, 20)  # create load point
 Single = PointLoad(name="single point", point1=location)
 front_wheel = PointLoad(name="front wheel", point1 = LoadPoint(2,0,2,50))
 # Line load
-barrierpoint_1 = LoadPoint(-1, 0, 3, 2)
-barrierpoint_2 = LoadPoint(11, 0, 3, 2)
+barrierpoint_1 = LoadPoint(-1, 0, 0, 2)
+barrierpoint_2 = LoadPoint(11, 0, 0, 2)
 Barrier = LineLoading("Barrier curb load", point1=barrierpoint_1, point2=barrierpoint_2)
 
 # Patch load - lane loading
@@ -100,7 +100,7 @@ example_bridge.add_load_case(SLS_LL)
 example_bridge.add_load_combination("ULS", {'ULS-DL':1.2,'Live traffic':1.7})
 #example_bridge.analyse_load_combination()
 
-# example_bridge.add_moving_load_case(move_point)
+example_bridge.add_moving_load_case(move_point)
 #example_bridge.analyse_moving_load_case()
 # --------------------------------------------------------------------------------------------------------------------
 

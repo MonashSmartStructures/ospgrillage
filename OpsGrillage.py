@@ -25,7 +25,7 @@ class OpsGrillage:
     """
 
     def __init__(self, bridge_name, long_dim, width, skew, num_long_grid,
-                 num_trans_grid, edge_beam_dist, mesh_type="Ortho", op_instance=True, model="3D", **kwargs):
+                 num_trans_grid:float, edge_beam_dist, mesh_type="Ortho", op_instance=True, model="3D", **kwargs):
         """
         Variables pertaining model information
         :param bridge_name: Name of bridge model and output .py file
@@ -406,7 +406,8 @@ class OpsGrillage:
                     else:
                         break
                 ele_width = np.mean(
-                    ele_width_record)  # TODO Check here, if member lies between a triangular and quadrilateral grid
+                    ele_width_record)  # if member lies between a triangular and quadrilateral grid, get mean between
+                # both width
                 # here take the average width in x directions
 
                 ele_str = grillage_member_obj.section.get_element_command_str(
@@ -600,6 +601,18 @@ class OpsGrillage:
                 edited_dict[grid_key] += [
                     [line_load_obj.line_end_point.x, line_load_obj.line_end_point.y,
                      line_load_obj.line_end_point.z]]
+        # last check on edicted_dict list if there is intersection that has less than 2 elements
+        for grid_key,int_point in edited_dict.items():
+            if len(int_point) < 2:
+                if last_grid in self.Mesh_obj.grid_vicinity_dict[grid_key].values():
+                    edited_dict[grid_key] += [
+                        [line_load_obj.line_end_point.x, line_load_obj.line_end_point.y,
+                         line_load_obj.line_end_point.z]]
+                elif current_grid in self.Mesh_obj.grid_vicinity_dict[grid_key].values():
+                    edited_dict[grid_key] += [
+                        [line_load_obj.load_point_1.x, line_load_obj.load_point_1.y,
+                         line_load_obj.load_point_1.z]]
+            # else continue next grid
         return edited_dict
 
     # private function to find intersection points of line/patch edge within grid

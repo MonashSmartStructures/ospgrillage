@@ -67,7 +67,12 @@ class Loads:
         self.local_load_point_7 = kwargs.get('localpoint7', None)
         self.local_load_point_8 = kwargs.get('localpoint8', None)
 
-        #TODO check if user skipped point 1 and defined point1 as point 2 instead
+        # check if user skipped point 1 and defined point1 as point 2 instead
+        if all([self.load_point_1 is None,self.load_point_2 is not None]):
+            raise Exception("Load point 1 is not defined")
+
+        if all([self.local_load_point_1 is None,self.local_load_point_2 is not None]):
+            raise Exception("Local load point 1 is not defined")
 
         # check if load object has both a local and global coordinate
         if all([self.load_point_1 is not None,self.local_load_point_1 is not None]):
@@ -261,7 +266,7 @@ class LineLoading(Loads):
         super().__init__(name, **kwargs)
         # shape function object
         self.shape_function = ShapeFunction()
-
+        # TODO check for local
         # if three points are defined, set line as curved circular line with point 2 (x2,y2,z2) in the centre of curve
         if self.load_point_3 is not None:  # curve
             # findCircle assumes model plane is y = 0, ignores y input, y in this case is a 2D view of x z plane
@@ -327,7 +332,8 @@ class LineLoading(Loads):
 class PatchLoading(Loads):
     def __init__(self, name, **kwargs):
         super().__init__(name, **kwargs)
-        a = sort_vertices([self.load_point_2, self.load_point_3, self.load_point_1, self.load_point_4])
+
+        # a = sort_vertices([self.load_point_2, self.load_point_3, self.load_point_1, self.load_point_4])
         # if only four point is define , patch load is a four point straight line quadrilateral
         if self.load_point_5 is None:
             # create each line

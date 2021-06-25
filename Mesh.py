@@ -247,7 +247,6 @@ class Mesh:
                 # record points
                 self.sweep_path_points.append([ref_point_x, self.y_elevation, ref_point_z])
                 # find m' of line between intersect int_point and ref point on sweep path
-                # #TODO allow for arbitrary line
                 m_prime, phi = get_slope([ref_point_x, self.y_elevation, ref_point_z], int_point)
                 # rotate sweep line such that parallel to m' line
                 # if skew is positive, algorithm may mistake first point as orthogonal 90 deg, specify initial m based
@@ -367,7 +366,6 @@ class Mesh:
                 # record points
                 self.sweep_path_points.append([ref_point_x, self.y_elevation, ref_point_z])
                 # find m' of line between intersect int_point and ref point on sweep path
-                # #TODO allow for arbitrary line
                 m_prime, phi = get_slope([ref_point_x, self.y_elevation, ref_point_z], int_point)
                 # rotate sweep line such that parallel to m' line
                 current_sweep_nodes = self.__rotate_sweep_nodes(np.pi / 2 - np.abs(phi))
