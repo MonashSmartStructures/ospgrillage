@@ -237,6 +237,7 @@ class Mesh:
 
                 if len(self.assigned_node_tag) == len(self.noz):
                     self.first_connecting_region_nodes = self.assigned_node_tag
+            self.global_x_grid_count += 1
             self.assigned_node_tag = [] # reset variable
             print("Edge mesh @ start span completed")
         else:

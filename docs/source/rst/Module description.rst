@@ -8,8 +8,8 @@ The *ops-grillage* module contains the main :class:`~OpsGrillage` class that han
 #. creating the model instance in Opensees software space, and
 #. writes an executable py file with commands that can recreate the model.
 
-Creating the grillage model
----------------------------
+Creating the grillage model instance
+-------------------------------------------
 The process of creating a grillage model can be categorized into three steps:
 
 #. Creating the grillage object using the :class:`~OpsGrillage` class.
@@ -39,6 +39,9 @@ The above example generates an Opensees model instance of a grillage model with 
     :scale: 75 %
 
     Figure 1: Created nodes.
+
+Creating an executable py file of Grillage Model
+-----------------------------------------------------------
 
 Alternatively, users have the option to create an executable py file (output by OpsGrillage) by flagging the variable
 pyfile= as True. This way, an Opensees software instance of the grillage model is not created - only the executable

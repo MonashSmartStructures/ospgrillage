@@ -488,7 +488,20 @@ def check_dict_same_keys(d_1, d_2):
         for grid in common_key:  # key is grid number
             first_list = d_1[grid]
             second_list = d_2[grid]
-            updated_list = first_list
-            updated_list.extend(point for point in second_list if point not in updated_list)
-            merged.update({grid: updated_list})
+            updated_list = dict()
+            for key,val_1 in first_list.items():
+                if key == 'ends':
+                    val_end = val_1 if val_1 else second_list.get(key)
+                    updated_list.setdefault(key,val_end)
+                else:
+                    val_2 = second_list.get(key)
+                    updated_list.setdefault(key,val_1 + val_2)
+            merged.update({grid:updated_list})
+
+            #updated_list.extend(point for point in second_list if point not in updated_list)
+            #merged.update({grid: updated_list})
     return merged
+
+def merge_intersect_spec(d_1,d_2):
+    # d_1 and d_2 are intersect_spec dict (e.g. {'long_intersect': ,.... 'ends':..})
+    pass

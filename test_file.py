@@ -1,11 +1,12 @@
 import pytest
 from OpsGrillage import *
-
+from PlotWizard import *
 
 # ------------------------------------------------------------------------------------------------------------------
 # create reference bridge model
 @pytest.fixture
 def ref_28m_bridge():
+    pyfile = False
     # reference super T bridge 28m for validation purpose
     # Members
     concrete = UniAxialElasticMaterial(mat_type="Concrete01", mat_vec=[-6.0, -0.004, -6.0, -0.014])
@@ -36,7 +37,7 @@ def ref_28m_bridge():
     end_tranverse_slab = GrillageMember(member_name="exterior I beams", section=end_tranverse_slab_section, material=concrete)
     bridge_28 = OpsGrillage(bridge_name="SuperT_28m", long_dim=28, width=7, skew=0,
                                  num_long_grid=7, num_trans_grid=14, edge_beam_dist=1.0875, mesh_type="Ortho")
-    pyfile = False
+
     bridge_28.create_ops(pyfile=pyfile)
 
     # set material to grillage
@@ -51,6 +52,7 @@ def ref_28m_bridge():
     bridge_28.set_member(end_tranverse_slab, member="start_edge")
     bridge_28.set_member(end_tranverse_slab, member="end_edge")
 
+    return bridge_28
 
 
 @pytest.fixture
@@ -104,6 +106,29 @@ def bridge_model_42_negative(ref_bridge_properties) -> OpsGrillage:
 
     return example_bridge
 
+
+@pytest.fixture
+# A straight bridge with mesh where skew angle A is 42 and skew angle b is 0
+def bridge_42_0_angle_mesh(ref_bridge_properties):
+    # define material
+    I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
+    example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=[42, 0],
+                                 num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
+    pyfile = False
+    example_bridge.create_ops(pyfile=pyfile)
+
+    # set material to grillage
+    example_bridge.set_material(concrete)
+
+    # set grillage member to element groups of grillage model
+    example_bridge.set_member(I_beam, member="interior_main_beam")
+    example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_1")
+    example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_2")
+    example_bridge.set_member(exterior_I_beam, member="edge_beam")
+    example_bridge.set_member(slab, member="transverse_slab")
+    example_bridge.set_member(exterior_I_beam, member="start_edge")
+    example_bridge.set_member(exterior_I_beam, member="end_edge")
+    return example_bridge
 
 @pytest.fixture
 def bridge_model_42_positive(ref_bridge_properties):
@@ -193,15 +218,9 @@ def test_line_load(bridge_model_42_negative):
     ULS_DL = LoadCase(name="Barrier")
     ULS_DL.add_load_groups(Barrier)  # ch
     example_bridge.add_load_case(ULS_DL)
-    ref_answer = {7: [[3.1514141550424397, 0, 3.0], [3, 0, 3]],
-                  8: [[3.1514141550424397, 0, 3.0], [4.276919210414739, 0, 3.0]],
-                  11: [[4.276919210414739, 0, 3.0], [5.402424265787039, 0, 3.0]],
-                  16: [[5.402424265787039, 0, 3.0], [6.302828310084879, 0, 3.0]],
-                  22: [[6.302828310084879, 0, 3.0], [7.227121232563659, 0, 3.0]],
-                  32: [[9.07570707752122, 0, 3.0], [10, 0, 3]],
-                  56: [[7.227121232563659, 0, 3.0], [8.15141415504244, 0, 3.0]],
-                  62: [[8.15141415504244, 0, 3.0], [9.07570707752122, 0, 3.0]]}
-    assert example_bridge.global_line_int_dict[0] == ref_answer
+    ref_answer = [{7: {'long_intersect': [], 'trans_intersect': [[3.1514141550424397, 0, 3.0]], 'edge_intersect': [], 'ends': [3, 0, 3]}, 8: {'long_intersect': [], 'trans_intersect': [[3.1514141550424397, 0, 3.0], [4.276919210414739, 0, 3.0]], 'edge_intersect': [], 'ends': []}, 11: {'long_intersect': [], 'trans_intersect': [[4.276919210414739, 0, 3.0], [5.402424265787039, 0, 3.0]], 'edge_intersect': [], 'ends': []}, 16: {'long_intersect': [], 'trans_intersect': [[5.402424265787039, 0, 3.0], [6.302828310084879, 0, 3.0]], 'edge_intersect': [], 'ends': []}, 22: {'long_intersect': [], 'trans_intersect': [[6.302828310084879, 0, 3.0], [7.227121232563659, 0, 3.0]], 'edge_intersect': [], 'ends': []}, 32: {'long_intersect': [], 'trans_intersect': [[9.07570707752122, 0, 3.0]], 'edge_intersect': [], 'ends': [10, 0, 3]}, 56: {'long_intersect': [], 'trans_intersect': [[7.227121232563659, 0, 3.0], [8.15141415504244, 0, 3.0]], 'edge_intersect': [], 'ends': []}, 62: {'long_intersect': [], 'trans_intersect': [[8.15141415504244, 0, 3.0], [9.07570707752122, 0, 3.0]], 'edge_intersect': [], 'ends': []}}]
+
+    assert example_bridge.global_line_int_dict == ref_answer
 
 
 # test line load function with line load is vertical (slope = infinite) and start end points
@@ -240,6 +259,17 @@ def test_line_load_coincide_long_edge(bridge_model_42_negative):
                                                     54: [[7.227121232563659, 0, 1.0], [8.15141415504244, 0, 1.0]],
                                                     60: [[8.15141415504244, 0, 1.0], [9.07570707752122, 0, 1.0]]}]
 
+def test_line_load_coincide_tranverse_member(bridge_42_0_angle_mesh):
+    example_bridge = bridge_42_0_angle_mesh
+    # create reference line load
+    barrierpoint_1 = LoadPoint(7.5, 0, 1, 2)
+    barrierpoint_2 = LoadPoint(7.5, 0, 6, 2)
+    Barrier = LineLoading("Barrier curb load", point1=barrierpoint_1, point2=barrierpoint_2)
+    ULS_DL = LoadCase(name="Barrier")
+    ULS_DL.add_load_groups(Barrier)  # ch
+    example_bridge.add_load_case(ULS_DL)
+
+    assert example_bridge.global_load_str == [['ops.load(2, *[0, 0.0, 0, 0.0, 0, 0.0])\n', 'ops.load(8, *[0, 0.0, 0, 0.0, 0, 0.0])\n', 'ops.load(1, *[0, 0.0, 0, 0.0, 0, 0.0])\n', 'ops.load(52, *[0, 1.25000000000000, 0, 0.625000000000000, 0, 0])\n', 'ops.load(31, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(32, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(53, *[0, 1.25000000000000, 0, -0.625000000000000, 0, 0])\n', 'ops.load(53, *[0, 1.25000000000000, 0, 0.625000000000000, 0, 0])\n', 'ops.load(32, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(33, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(54, *[0, 1.25000000000000, 0, -0.625000000000000, 0, 0])\n', 'ops.load(2, *[0, 0.0, 0, 0.0, 0, 0.0])\n', 'ops.load(8, *[0, 0.0, 0, 0.0, 0, 0.0])\n', 'ops.load(1, *[0, 0.0, 0, 0.0, 0, 0.0])\n', 'ops.load(51, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(30, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(31, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(52, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(51, *[0, 1.25000000000000, 0, 0.625000000000000, 0, 0])\n', 'ops.load(30, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(31, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(52, *[0, 1.25000000000000, 0, -0.625000000000000, 0, 0])\n', 'ops.load(54, *[0, 1.25000000000000, 0, 0.625000000000000, 0, 0])\n', 'ops.load(33, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(34, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(55, *[0, 1.25000000000000, 0, -0.625000000000000, 0, 0])\n']]
 
 def test_line_load_coincide_edge_beam(bridge_model_42_negative):
     # when set line load z coordinate to z = 0 , test if line returns correct coincide node lines
@@ -506,3 +536,31 @@ def test_add_a_loadcase_with_local_coordinate(bridge_model_42_negative):
 
 def test_load_combination():
     pass
+
+def test_28m_bridge(ref_28m_bridge):
+    bridge_28 = ref_28m_bridge
+    #opsplt.plot_model("nodes")
+    lane_point_1 = LoadPoint(20.89, 0, 3, 5)
+    lane_point_2 = LoadPoint(20.89, 0, 3, 0)
+    line_load_middle = LineLoading("Ref mid_point_load",point1=lane_point_1,point2=lane_point_2)
+    # 57 to 63
+    point_load_case = LoadCase("point_load_case")
+    ref_node_force = NodeForces(0,1000,0,0,0,0)
+    p1 = NodalLoad(name="point",node_tag=57,node_force=ref_node_force)
+    p2 = NodalLoad(name="point",node_tag=58,node_force=ref_node_force)
+    p3 = NodalLoad(name="point",node_tag=59,node_force=ref_node_force)
+    p4 = NodalLoad(name="point",node_tag=60,node_force=ref_node_force)
+    p5 = NodalLoad(name="point",node_tag=61,node_force=ref_node_force)
+    p6 = NodalLoad(name="point",node_tag=62,node_force=ref_node_force)
+    p7 = NodalLoad(name="point",node_tag=63,node_force=ref_node_force)
+    point_load_case.add_load_groups(p1)
+    point_load_case.add_load_groups(p2)
+    point_load_case.add_load_groups(p3)
+    point_load_case.add_load_groups(p4)
+    point_load_case.add_load_groups(p5)
+    point_load_case.add_load_groups(p6)
+    point_load_case.add_load_groups(p7)
+
+    bridge_28.add_load_case(point_load_case)
+    bridge_28.analyse_load_case()
+

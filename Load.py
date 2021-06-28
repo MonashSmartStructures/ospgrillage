@@ -1,12 +1,12 @@
 import pprint
-from collections.abc import Iterable
-from typing import Type
-from scipy import interpolate
-from static import *
-from Mesh import *
 from collections import namedtuple
-from typing import Union
+from collections.abc import Iterable
 from copy import deepcopy
+from typing import Union
+
+from scipy import interpolate
+
+from Mesh import *
 
 # named tuple definition
 LoadPoint = namedtuple("Point", ["x", "y", "z", "p"])
@@ -230,6 +230,7 @@ class NodalLoad(Loads):
     def __init__(self, name, node_tag, node_force):
         super().__init__(name, node_tag=node_tag, Fx=node_force.Fx, Fy=node_force.Fy, Fz=node_force.Fz, Mx=node_force.Mx
                          , My=node_force.My, Mz=node_force.Mz)
+        self.node_tag = node_tag
         if not isinstance(node_tag, Iterable):
             node_list = [node_tag]
         else:
@@ -240,10 +241,8 @@ class NodalLoad(Loads):
 
     def get_nodal_load_str(self):
         # get str for ops.load() function.
-        load_str = []
-        for node in list(self.node_tag):
-            load_value = [self.Fx, self.Fy, self.Fz, self.Mx, self.My, self.Mz]
-            load_str.append("ops.load({pt}, *{val})\n".format(pt=node, val=load_value))
+        load_value = [self.Fx, self.Fy, self.Fz, self.Mx, self.My, self.Mz]
+        load_str = "ops.load({pt}, *{val})\n".format(pt=self.node_tag, val=load_value)
         return load_str
 
 
@@ -266,7 +265,7 @@ class LineLoading(Loads):
         super().__init__(name, **kwargs)
         # shape function object
         self.shape_function = ShapeFunction()
-        # TODO check for local
+        # TODO check if local coordinate is defined instead
         # if three points are defined, set line as curved circular line with point 2 (x2,y2,z2) in the centre of curve
         if self.load_point_3 is not None:  # curve
             # findCircle assumes model plane is y = 0, ignores y input, y in this case is a 2D view of x z plane
@@ -286,6 +285,8 @@ class LineLoading(Loads):
             self.line_equation = Line(self.m, self.c, self.phi)
 
     def interpolate_udl_magnitude(self, point_coordinate):
+        # input: point_coordinate list of [x,y,z]
+        pp = None
         # check if line is straight or curve
         if self.load_point_3 is None:  # straight line
 
@@ -538,7 +539,7 @@ class MovingLoad:
 
 
 class Path:
-    def __init__(self, start_point: Point, end_point: Point, increments=50) -> list:
+    def __init__(self, start_point: Point, end_point: Point, increments=50):
         self.start_point = start_point
         self.end_point = end_point
         # here create a straight path
@@ -547,7 +548,7 @@ class Path:
         self.path_points_z = np.linspace(start_point.z, end_point.z, increments)
         self.path_points_list = []
 
-    def get_path_points(self):
+    def get_path_points(self)->list:
         self.path_points_list = [[x,y,z] for (x,y,z) in zip(self.path_points_x,self.path_points_y,self.path_points_z)]
         return self.path_points_list
 
