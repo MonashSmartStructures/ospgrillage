@@ -498,8 +498,6 @@ def check_dict_same_keys(d_1, d_2):
                     updated_list.setdefault(key,val_1 + val_2)
             merged.update({grid:updated_list})
 
-            #updated_list.extend(point for point in second_list if point not in updated_list)
-            #merged.update({grid: updated_list})
     return merged
 
 def merge_intersect_spec(d_1,d_2):

@@ -181,7 +181,7 @@ def test_point_load_getter(bridge_model_42_negative):  # test get_point_load_nod
     example_bridge.add_load_case(ULS_DL)
     ops.wipe()
 
-    assert example_bridge.load_case_list[0]['load_command'] == [
+    assert example_bridge.load_case_list[0]['load_command'] == [[
         'ops.load(12, *[0, 1.43019976273292, 0, 0.373895820491562, 0, '
         '0.341669431327021])\n', 'ops.load(17, *[0, 2.56980023726709, 0, '
                                  '0.906104179508438, 0, '
@@ -193,7 +193,7 @@ def test_point_load_getter(bridge_model_42_negative):  # test get_point_load_nod
                                                            '-5.28912046252521'
                                                            '])\n',
         'ops.load(13, *[0, 5.72079905093166, 0, -1.49558328196625, 0, '
-        '2.94361356220202])\n']
+        '2.94361356220202])\n']]
 
 
 # test point load returning None when point (loadpoint) is outside of mesh
@@ -218,7 +218,7 @@ def test_line_load(bridge_model_42_negative):
     ULS_DL = LoadCase(name="Barrier")
     ULS_DL.add_load_groups(Barrier)  # ch
     example_bridge.add_load_case(ULS_DL)
-    ref_answer = [{7: {'long_intersect': [], 'trans_intersect': [[3.1514141550424397, 0, 3.0]], 'edge_intersect': [], 'ends': [3, 0, 3]}, 8: {'long_intersect': [], 'trans_intersect': [[3.1514141550424397, 0, 3.0], [4.276919210414739, 0, 3.0]], 'edge_intersect': [], 'ends': []}, 11: {'long_intersect': [], 'trans_intersect': [[4.276919210414739, 0, 3.0], [5.402424265787039, 0, 3.0]], 'edge_intersect': [], 'ends': []}, 16: {'long_intersect': [], 'trans_intersect': [[5.402424265787039, 0, 3.0], [6.302828310084879, 0, 3.0]], 'edge_intersect': [], 'ends': []}, 22: {'long_intersect': [], 'trans_intersect': [[6.302828310084879, 0, 3.0], [7.227121232563659, 0, 3.0]], 'edge_intersect': [], 'ends': []}, 32: {'long_intersect': [], 'trans_intersect': [[9.07570707752122, 0, 3.0]], 'edge_intersect': [], 'ends': [10, 0, 3]}, 56: {'long_intersect': [], 'trans_intersect': [[7.227121232563659, 0, 3.0], [8.15141415504244, 0, 3.0]], 'edge_intersect': [], 'ends': []}, 62: {'long_intersect': [], 'trans_intersect': [[8.15141415504244, 0, 3.0], [9.07570707752122, 0, 3.0]], 'edge_intersect': [], 'ends': []}}]
+    ref_answer = [{7: {'long_intersect': [], 'trans_intersect': [[3.1514141550424397, 0, 3.0]], 'edge_intersect': [], 'ends': [[3, 0, 3]]}, 8: {'long_intersect': [], 'trans_intersect': [[3.1514141550424397, 0, 3.0], [4.276919210414739, 0, 3.0]], 'edge_intersect': [], 'ends': []}, 11: {'long_intersect': [], 'trans_intersect': [[4.276919210414739, 0, 3.0], [5.402424265787039, 0, 3.0]], 'edge_intersect': [], 'ends': []}, 16: {'long_intersect': [], 'trans_intersect': [[5.402424265787039, 0, 3.0], [6.302828310084879, 0, 3.0]], 'edge_intersect': [], 'ends': []}, 22: {'long_intersect': [], 'trans_intersect': [[6.302828310084879, 0, 3.0], [7.227121232563659, 0, 3.0]], 'edge_intersect': [], 'ends': []}, 32: {'long_intersect': [], 'trans_intersect': [[9.07570707752122, 0, 3.0]], 'edge_intersect': [], 'ends': [[10, 0, 3]]}, 56: {'long_intersect': [], 'trans_intersect': [[7.227121232563659, 0, 3.0], [8.15141415504244, 0, 3.0]], 'edge_intersect': [], 'ends': []}, 62: {'long_intersect': [], 'trans_intersect': [[8.15141415504244, 0, 3.0], [9.07570707752122, 0, 3.0]], 'edge_intersect': [], 'ends': []}}]
 
     assert example_bridge.global_line_int_dict == ref_answer
 
@@ -234,7 +234,7 @@ def test_line_load_vertical_and_cross_outside_mesh(bridge_model_42_negative):
     ULS_DL = LoadCase(name="Barrier")
     ULS_DL.add_load_groups(Barrier)  # ch
     example_bridge.add_load_case(ULS_DL)
-    ref_ans = {1: [[2, 0, 0.0], [2, 0, 1.0]], 3: [[2, 0, 1.0], [2.0, 0, 2.2212250296583864]]}
+    ref_ans = {1: {'long_intersect': [[2, 0, 0.0], [2, 0, 1.0]], 'trans_intersect': [], 'edge_intersect': [], 'ends': []}, 3: {'long_intersect': [[2, 0, 1.0]], 'trans_intersect': [], 'edge_intersect': [[2.0, 0, 2.2212250296583864]], 'ends': []}}
     assert example_bridge.global_line_int_dict[0] == ref_ans
 
 
@@ -541,10 +541,12 @@ def test_28m_bridge(ref_28m_bridge):
     bridge_28 = ref_28m_bridge
     #opsplt.plot_model("nodes")
     lane_point_1 = LoadPoint(20.89, 0, 3, 5)
-    lane_point_2 = LoadPoint(20.89, 0, 3, 0)
+    lane_point_2 = LoadPoint(20.89, 0, 7, 5)
     line_load_middle = LineLoading("Ref mid_point_load",point1=lane_point_1,point2=lane_point_2)
     # 57 to 63
     point_load_case = LoadCase("point_load_case")
+    line_load_case = LoadCase("line_load_case")
+    line_load_case.add_load_groups(line_load_middle)
     ref_node_force = NodeForces(0,1000,0,0,0,0)
     p1 = NodalLoad(name="point",node_tag=57,node_force=ref_node_force)
     p2 = NodalLoad(name="point",node_tag=58,node_force=ref_node_force)

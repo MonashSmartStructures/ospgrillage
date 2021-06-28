@@ -1,6 +1,7 @@
 ===========================
 Element generation commands
 ===========================
+This page outlines several key utility functions of ops-grillage
 
 .. function:: op_create_elements(op_member_prop_class, trans_tag, beam_ele_type, expression='long_mem'):)
 

@@ -10,10 +10,10 @@ The *ops-grillage* module contains the main :class:`~OpsGrillage` class that han
 
 Creating the grillage model instance
 -------------------------------------------
-The process of creating a grillage model can be categorized into three steps:
+There are three steps to creating a grillage model:
 
 #. Creating the grillage object using the :class:`~OpsGrillage` class.
-#. Defining various elements of grillage model using the :class:`~Member` class, and :class:`~Material` class.
+#. Defining elements of grillage model using the :class:`~Member` class, and :class:`~Material` class.
 #. Setting the elements of grillage model using :function:`~set_member()` and :function:`~set_material()` functions.
 
 
@@ -38,31 +38,11 @@ The above example generates an Opensees model instance of a grillage model with 
     :align: center
     :scale: 75 %
 
-    Figure 1: Created nodes.
+    Figure 1: Instance of the model created in Opensees.
 
-Creating an executable py file of Grillage Model
------------------------------------------------------------
 
-Alternatively, users have the option to create an executable py file (output by OpsGrillage) by flagging the variable
-pyfile= as True. This way, an Opensees software instance of the grillage model is not created - only the executable
-py file which has the necessary commands to create the Opensees model instance is created instead.
-
-Up to this point, the model in Opensees space and its corresponding executable py file only have the following
-commands defined:
-
-#. command to instantiate the model space in Opensees.
-#. node() commands
-#. Created the geometric transformation object of Opensees for the element definition later on.
-
-The :class:`~OpsGrillage` class contains information which require user input. These information include:
-
-#. Connectivity of nodes forming the elements of grillage model
-#.
-
-Information
-
-Define material properties
-------------------------
+Creating elements and materials of grillage model
+------------------------------------------------------------------
 
 Material properties are defined in two steps:
 
@@ -70,7 +50,8 @@ Material properties are defined in two steps:
 #. Setting the :class:`~Material` class object to a :class:`~GrillageMember` class object.
 
 For most bridges made of steel and concrete, material properties of either concrete and steel can be defined using
-keyword "steel" or "concrete" passed as an argument to :class:`~Material` class.
+keyword "steel" or "concrete" passed as an argument to :class:`~Material` class. For currently available material
+types see
 
 .. code-block:: python
 
@@ -144,3 +125,15 @@ The following is printed to the terminal
 
 The main commands of ops_vis module can be found `here <https://openseespydoc.readthedocs.io/en/latest/src/ops_vis.html>`_
 
+Creating an executable py file of Grillage Model
+-----------------------------------------------------------
+Alternatively, users have the option to create an executable py file (output by OpsGrillage) which when executed,
+creates the grillage model instance in Opensees software. This is done by flagging the input variable `pyfile=`
+as True. In general, the executable py file contains all necessary commands to create the Opensees model instance.
+
+Up to this point, the model in Opensees space and its corresponding executable py file only have the following
+commands defined:
+
+#. command to instantiate the model space in Opensees.
+#. node() commands
+#. Created the geometric transformation object of Opensees for the element definition later on.

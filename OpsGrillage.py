@@ -597,14 +597,14 @@ class OpsGrillage:
         for grid_key, int_list in edited_dict.items():
             if not any([n >= 2 for n in [len(val) for val in int_list.values()]]):
                 if grid_key == start_grid or start_grid in self.Mesh_obj.grid_vicinity_dict[grid_key].values():
-                    int_list.setdefault("ends", [line_load_obj.load_point_1.x, line_load_obj.load_point_1.y,
-                                                 line_load_obj.load_point_1.z])
+                    int_list.setdefault("ends", [[line_load_obj.load_point_1.x, line_load_obj.load_point_1.y,
+                                                 line_load_obj.load_point_1.z]])
                     # edited_dict[grid_key] += [
                     #     [line_load_obj.load_point_1.x, line_load_obj.load_point_1.y,
                     #      line_load_obj.load_point_1.z]]
                 elif grid_key == last_grid or last_grid in self.Mesh_obj.grid_vicinity_dict[grid_key].values():
-                    int_list.setdefault("ends", [line_load_obj.line_end_point.x, line_load_obj.line_end_point.y,
-                                                 line_load_obj.line_end_point.z])
+                    int_list.setdefault("ends", [[line_load_obj.line_end_point.x, line_load_obj.line_end_point.y,
+                                                 line_load_obj.line_end_point.z]])
                     # edited_dict[grid_key] += [
                     #     [line_load_obj.line_end_point.x, line_load_obj.line_end_point.y,
                     #      line_load_obj.line_end_point.z]]
@@ -926,13 +926,13 @@ class OpsGrillage:
                 p2 = points["edge_intersect"][0]
             elif points["long_intersect"] and points["ends"]:  # long, ends
                 p1 = points["long_intersect"][0]
-                p2 = points["ends"]
+                p2 = points["ends"][0]
             elif points["trans_intersect"] and points["ends"]:  # trans, ends
                 p1 = points["trans_intersect"][0]
-                p2 = points["ends"]
+                p2 = points["ends"][0]
             elif points["edge_intersect"] and points["ends"]:  # edge, ends
                 p1 = points["edge_intersect"][0]
-                p2 = points["ends"]
+                p2 = points["ends"][0]
             else:
                 p1 = [0, 0, 0]
                 p2 = p1
@@ -1002,10 +1002,11 @@ class OpsGrillage:
             p_list = []
             # loop each int points
             # TODO Continue here
-            for int_point in int_point_list:  # [x y z]
-                p = patch_load_obj.patch_mag_interpolate(int_point[0], int_point[2])[
-                    0]  # object function returns array like
-                p_list.append(LoadPoint(int_point[0], int_point[1], int_point[2], p))
+            for int_list in int_point_list.values():
+                for int_point in int_list: # [x y z]
+                    p = patch_load_obj.patch_mag_interpolate(int_point[0], int_point[2]) if int_point != [] else []# object function returns array like
+                    # p is array object, extract
+                    p_list.append(LoadPoint(int_point[0], int_point[1], int_point[2], p[0]) if int_point != [] else [])
             # loop each node in grid points
             for items in node_in_grid:
                 coord = self.Mesh_obj.node_spec[items]['coordinate']
