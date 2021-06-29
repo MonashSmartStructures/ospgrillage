@@ -4,16 +4,6 @@ from OpsGrillage import *
 from PlotWizard import *
 import openseespy.opensees as ops
 
-inside = Point(0.5,0,0.1)
-p1 = Point(0,0,0)
-p2 = Point(1,0,0)
-p3 = Point(1,0,1)
-p4 = Point(0,0,1)
-a = np.array([[(2,3),(2,3,4),(2,3,4),(2,3,4,5,6,6,7)],[(2,3,4),(2,3,4),(2,3,4),(2,3,4)],[(0,1)]],dtype=object)
-
-#N,A= calculate_area_given_four_points(inside,p1,p2,p3,p4)
-#inside_flag = check_point_in_grid(inside,p1,p2,p3,p4)
-
 # define material
 concrete = UniAxialElasticMaterial(mat_type="Concrete01", mat_vec=[-6.0, -0.004, -6.0, -0.014])
 
@@ -40,7 +30,7 @@ example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=10, width=7, ske
 pyfile = False
 example_bridge.create_ops(pyfile=pyfile)
 
-# set material to grillage
+# set material to grillage (globally) - comment to disable
 example_bridge.set_material(concrete)
 
 # set grillage member to element groups of grillage model
@@ -49,8 +39,8 @@ example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_1")
 example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_2")
 example_bridge.set_member(exterior_I_beam, member="edge_beam")
 example_bridge.set_member(slab, member="transverse_slab")
-example_bridge.set_member(exterior_I_beam, member="start_edge")
-example_bridge.set_member(exterior_I_beam, member="end_edge")
+example_bridge.set_member(exterior_I_beam, member="start_edge") # proxy
+example_bridge.set_member(exterior_I_beam, member="end_edge")  # proxy
 if not pyfile:
     opsplt.plot_model("nodes")
     pass
@@ -75,7 +65,7 @@ lane_point_4 = LoadPoint(0, 0, 5, 5)
 Lane = PatchLoading("Lane 1", point1=lane_point_1, point2=lane_point_2, point3=lane_point_3, point4=lane_point_4)
 
 # compound load
-M1600 = CompoundLoad("Lane and Barrier")
+M1600 = CompoundLoad("Lane and Barrier") # lane and barrier compounded
 M1600.add_load(load_obj=Single, local_coord=Point(5,0,5))
 M1600.add_load(load_obj=Barrier, local_coord=Point(3,0,5))
 M1600.set_global_coord(Point(4,0,3))

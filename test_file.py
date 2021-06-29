@@ -17,8 +17,8 @@ def ref_28m_bridge():
                              J=0.230698, Iy=0.231329, Iz=0.533953,
                              Ay=0.397032, Az=0.434351)
     transverse_slab_section = Section(op_ele_type="elasticBeamColumn", A=0.5372, E=3.47E+10, G=2.00E+10,
-                           J=2.79e-3, Iy=0.3988, Iz=1.45e-3,
-                           Ay=0.447, Az=0.447, unit_width=True)
+                           J=2.79e-3, Iy=0.3988/2, Iz=1.45e-3/2,
+                           Ay=0.447/2, Az=0.447/2, unit_width=True)
     end_tranverse_slab_section = Section(op_section_type="Elastic", op_ele_type="elasticBeamColumn", A=0.5372/2,
                                       E=3.47E+10,
                                       G=2.00E+10, J=2.68e-3, Iy=0.04985,
@@ -34,7 +34,8 @@ def ref_28m_bridge():
     super_t_beam = GrillageMember(member_name="Intermediate I-beams", section=super_t_beam_section, material=concrete)
     transverse_slab = GrillageMember(member_name="concrete slab", section=transverse_slab_section, material=concrete)
     edge_beam = GrillageMember(member_name="exterior I beams", section=edge_beam_section, material=concrete)
-    end_tranverse_slab = GrillageMember(member_name="exterior I beams", section=end_tranverse_slab_section, material=concrete)
+    end_tranverse_slab = GrillageMember(member_name="edge transverse", section=end_tranverse_slab_section, material=concrete)
+
     bridge_28 = OpsGrillage(bridge_name="SuperT_28m", long_dim=28, width=7, skew=0,
                                  num_long_grid=7, num_trans_grid=14, edge_beam_dist=1.0875, mesh_type="Ortho")
 
@@ -534,12 +535,11 @@ def test_add_a_loadcase_with_local_coordinate(bridge_model_42_negative):
                                               'ops.load(15, *[0, 0.224823081815069, 0, -0.0531036538126367, 0, 0.0660145678416750])\n']
 
 
-def test_load_combination():
-    pass
-
 def test_28m_bridge(ref_28m_bridge):
     bridge_28 = ref_28m_bridge
-    #opsplt.plot_model("nodes")
+    opsplt.plot_model("nodes")
+
+
     lane_point_1 = LoadPoint(20.89, 0, 3, 5)
     lane_point_2 = LoadPoint(20.89, 0, 7, 5)
     line_load_middle = LineLoading("Ref mid_point_load",point1=lane_point_1,point2=lane_point_2)
@@ -565,4 +565,10 @@ def test_28m_bridge(ref_28m_bridge):
 
     bridge_28.add_load_case(point_load_case)
     bridge_28.analyse_load_case()
+    print(ops.nodeDisp(57))
+    print(ops.nodeDisp(63))
+    print(ops.nodeDisp(60))
+    opsv.plot_defo(unDefoFlag=0, endDispFlag=0)
+    #plt.show()
+
 

@@ -265,37 +265,58 @@ def solve_zeta_eta(xp, zp, x1, z1, x2, z2, x3, z3, x4, z4):
     sol = solve((eq1, eq2), (x, z))
     return sol[x], sol[z]
 
+#
+# def calculate_area_given_four_points(inside_point, point1, point2, point3, point4):
+#     # inputs are namedtuple Point() of coordinates
+#     # ref: <https://math.stackexchange.com/questions/190111/how-to-check-if-a-point-is-inside-a-rectangle>
+#     # function typically assume plane of x and y. for usage in OpsGrillage, plane x z is taken instead, where y is z
+#     a1 = np.sqrt((point1.x - point2.x) ** 2 + (point1.z - point2.z) ** 2)
+#     a2 = np.sqrt((point2.x - point3.x) ** 2 + (point2.z - point3.z) ** 2)
+#     a3 = np.sqrt((point3.x - point4.x) ** 2 + (point3.z - point4.z) ** 2)
+#     a4 = np.sqrt((point4.x - point1.x) ** 2 + (point4.z - point1.z) ** 2)
+#     b1 = np.sqrt((point1.x - inside_point.x) ** 2 + (point1.z - inside_point.z) ** 2)
+#     b2 = np.sqrt((point2.x - inside_point.x) ** 2 + (point2.z - inside_point.z) ** 2)
+#     b3 = np.sqrt((point3.x - inside_point.x) ** 2 + (point3.z - inside_point.z) ** 2)
+#     b4 = np.sqrt((point4.x - inside_point.x) ** 2 + (point4.z - inside_point.z) ** 2)
+#     # Herons formula
+#     u1 = (a1 + b1 + b2) / 2
+#     u2 = (a2 + b2 + b3) / 2
+#     u3 = (a3 + b3 + b4) / 2
+#     u4 = (a4 + b4 + b1) / 2
+#     A1 = np.sqrt(u1 * (u1 - a1) * (u1 - b1) * (u1 - b2))
+#     A2 = np.sqrt(u2 * (u2 - a2) * (u2 - b2) * (u2 - b3))
+#     A3 = np.sqrt(u3 * (u3 - a3) * (u3 - b3) * (u3 - b4))
+#     A4 = np.sqrt(u4 * (u4 - a4) * (u4 - b4) * (u4 - b1))
+#     A = a1 * a2
+#     return [A1, A2, A3, A4], A
+#
+#
+# def calculate_area_given_three_points(point1, point2, point3):
+#     # ref: https://ncalculators.com/geometry/triangle-area-by-3-points.htm
+#     A = 0.5 * (point1.x * (point2.z - point3.z) + point2.x * (point3.z - point1.z) + point3.x * (point1.z - point2.z))
+#     return A
 
-def calculate_area_given_four_points(inside_point, point1, point2, point3, point4):
-    # inputs are namedtuple Point() of coordinates
-    # ref: <https://math.stackexchange.com/questions/190111/how-to-check-if-a-point-is-inside-a-rectangle>
-    # function typically assume plane of x and y. for usage in OpsGrillage, plane x z is taken instead, where y is z
-    a1 = np.sqrt((point1.x - point2.x) ** 2 + (point1.z - point2.z) ** 2)
-    a2 = np.sqrt((point2.x - point3.x) ** 2 + (point2.z - point3.z) ** 2)
-    a3 = np.sqrt((point3.x - point4.x) ** 2 + (point3.z - point4.z) ** 2)
-    a4 = np.sqrt((point4.x - point1.x) ** 2 + (point4.z - point1.z) ** 2)
-    b1 = np.sqrt((point1.x - inside_point.x) ** 2 + (point1.z - inside_point.z) ** 2)
-    b2 = np.sqrt((point2.x - inside_point.x) ** 2 + (point2.z - inside_point.z) ** 2)
-    b3 = np.sqrt((point3.x - inside_point.x) ** 2 + (point3.z - inside_point.z) ** 2)
-    b4 = np.sqrt((point4.x - inside_point.x) ** 2 + (point4.z - inside_point.z) ** 2)
-    # Herons formula
-    u1 = (a1 + b1 + b2) / 2
-    u2 = (a2 + b2 + b3) / 2
-    u3 = (a3 + b3 + b4) / 2
-    u4 = (a4 + b4 + b1) / 2
-    A1 = np.sqrt(u1 * (u1 - a1) * (u1 - b1) * (u1 - b2))
-    A2 = np.sqrt(u2 * (u2 - a2) * (u2 - b2) * (u2 - b3))
-    A3 = np.sqrt(u3 * (u3 - a3) * (u3 - b3) * (u3 - b4))
-    A4 = np.sqrt(u4 * (u4 - a4) * (u4 - b4) * (u4 - b1))
-    A = a1 * a2
-    return [A1, A2, A3, A4], A
 
-
-def calculate_area_given_three_points(point1, point2, point3):
-    # ref: https://ncalculators.com/geometry/triangle-area-by-3-points.htm
-    A = 0.5 * (point1.x * (point2.z - point3.z) + point2.x * (point3.z - point1.z) + point3.x * (point1.z - point2.z))
+def calculate_area_given_vertices(p_list):
+    # input list of namedtuple LoadPoint or Point
+    # note: p_list must have been sorted in counter clockwise via sort_vertices function
+    # (this is called prior to this function)
+    x_list = []
+    y_list = []
+    z_list = []
+    A_mag = 0
+    for point in p_list:
+        x_list.append(point.x)
+        y_list.append(point.y)
+        z_list.append(point.z)
+    # add first point to list
+    x_list.append(p_list[0].x)
+    y_list.append(p_list[0].y)
+    z_list.append(p_list[0].z)
+    for count in range(len(x_list)-1):
+        A_mag += x_list[count]*z_list[count+1]-x_list[count+1]*z_list[count]
+    A = np.abs(A_mag/2)
     return A
-
 
 def check_point_in_grid(inside_point, point_list):
     # ref: solution 3 https://www.eecs.umich.edu/courses/eecs380/HANDOUTS/PROJ2/InsidePoly.html
@@ -499,7 +520,3 @@ def check_dict_same_keys(d_1, d_2):
             merged.update({grid:updated_list})
 
     return merged
-
-def merge_intersect_spec(d_1,d_2):
-    # d_1 and d_2 are intersect_spec dict (e.g. {'long_intersect': ,.... 'ends':..})
-    pass
