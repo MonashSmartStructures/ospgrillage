@@ -2,6 +2,7 @@ import pytest
 from OpsGrillage import *
 from PlotWizard import *
 
+
 # ------------------------------------------------------------------------------------------------------------------
 # create reference bridge model
 @pytest.fixture
@@ -13,31 +14,32 @@ def ref_28m_bridge():
 
     # define sections
     super_t_beam_section = Section(op_section_type="Elastic", op_ele_type="elasticBeamColumn", A=1.0447, E=3.47E+10,
-                             G=2.00E+10,
-                             J=0.230698, Iy=0.231329, Iz=0.533953,
-                             Ay=0.397032, Az=0.434351)
+                                   G=2.00E+10,
+                                   J=0.230698, Iy=0.231329, Iz=0.533953,
+                                   Ay=0.397032, Az=0.434351)
     transverse_slab_section = Section(op_ele_type="elasticBeamColumn", A=0.5372, E=3.47E+10, G=2.00E+10,
-                           J=2.79e-3, Iy=0.3988/2, Iz=1.45e-3/2,
-                           Ay=0.447/2, Az=0.447/2, unit_width=True)
-    end_tranverse_slab_section = Section(op_section_type="Elastic", op_ele_type="elasticBeamColumn", A=0.5372/2,
-                                      E=3.47E+10,
-                                      G=2.00E+10, J=2.68e-3, Iy=0.04985,
-                                      Iz=0.725e-3,
-                                      Ay=0.223, Az=0.223)
+                                      J=2.79e-3, Iy=0.3988 / 2, Iz=1.45e-3 / 2,
+                                      Ay=0.447 / 2, Az=0.447 / 2, unit_width=True)
+    end_tranverse_slab_section = Section(op_section_type="Elastic", op_ele_type="elasticBeamColumn", A=0.5372 / 2,
+                                         E=3.47E+10,
+                                         G=2.00E+10, J=2.68e-3, Iy=0.04985,
+                                         Iz=0.725e-3,
+                                         Ay=0.223, Az=0.223)
     edge_beam_section = Section(op_section_type="Elastic", op_ele_type="elasticBeamColumn", A=0.039375,
-                                      E=3.47E+10,
-                                      G=2.00E+10, J=0.21e-3, Iy=0.1e-3,
-                                      Iz=0.166e-3,
-                                      Ay=0.0328, Az=0.0328)
+                                E=3.47E+10,
+                                G=2.00E+10, J=0.21e-3, Iy=0.1e-3,
+                                Iz=0.166e-3,
+                                Ay=0.0328, Az=0.0328)
 
     # define grillage members
     super_t_beam = GrillageMember(member_name="Intermediate I-beams", section=super_t_beam_section, material=concrete)
     transverse_slab = GrillageMember(member_name="concrete slab", section=transverse_slab_section, material=concrete)
     edge_beam = GrillageMember(member_name="exterior I beams", section=edge_beam_section, material=concrete)
-    end_tranverse_slab = GrillageMember(member_name="edge transverse", section=end_tranverse_slab_section, material=concrete)
+    end_tranverse_slab = GrillageMember(member_name="edge transverse", section=end_tranverse_slab_section,
+                                        material=concrete)
 
     bridge_28 = OpsGrillage(bridge_name="SuperT_28m", long_dim=28, width=7, skew=0,
-                                 num_long_grid=7, num_trans_grid=14, edge_beam_dist=1.0875, mesh_type="Ortho")
+                            num_long_grid=7, num_trans_grid=14, edge_beam_dist=1.0875, mesh_type="Ortho")
 
     bridge_28.create_ops(pyfile=pyfile)
 
@@ -131,6 +133,7 @@ def bridge_42_0_angle_mesh(ref_bridge_properties):
     example_bridge.set_member(exterior_I_beam, member="end_edge")
     return example_bridge
 
+
 @pytest.fixture
 def bridge_model_42_positive(ref_bridge_properties):
     # reference bridge 10m long, 7m wide with common skew angle at both ends
@@ -182,7 +185,7 @@ def test_point_load_getter(bridge_model_42_negative):  # test get_point_load_nod
     example_bridge.add_load_case(ULS_DL)
     ops.wipe()
 
-    assert example_bridge.load_case_list[0]['load_command'] == [[
+    assert example_bridge.load_case_list[0]['load_command'] == [
         'ops.load(12, *[0, 1.43019976273292, 0, 0.373895820491562, 0, '
         '0.341669431327021])\n', 'ops.load(17, *[0, 2.56980023726709, 0, '
                                  '0.906104179508438, 0, '
@@ -194,7 +197,7 @@ def test_point_load_getter(bridge_model_42_negative):  # test get_point_load_nod
                                                            '-5.28912046252521'
                                                            '])\n',
         'ops.load(13, *[0, 5.72079905093166, 0, -1.49558328196625, 0, '
-        '2.94361356220202])\n']]
+        '2.94361356220202])\n']
 
 
 # test point load returning None when point (loadpoint) is outside of mesh
@@ -219,7 +222,35 @@ def test_line_load(bridge_model_42_negative):
     ULS_DL = LoadCase(name="Barrier")
     ULS_DL.add_load_groups(Barrier)  # ch
     example_bridge.add_load_case(ULS_DL)
-    ref_answer = [{7: {'long_intersect': [], 'trans_intersect': [[3.1514141550424397, 0, 3.0]], 'edge_intersect': [], 'ends': [[3, 0, 3]]}, 8: {'long_intersect': [], 'trans_intersect': [[3.1514141550424397, 0, 3.0], [4.276919210414739, 0, 3.0]], 'edge_intersect': [], 'ends': []}, 11: {'long_intersect': [], 'trans_intersect': [[4.276919210414739, 0, 3.0], [5.402424265787039, 0, 3.0]], 'edge_intersect': [], 'ends': []}, 16: {'long_intersect': [], 'trans_intersect': [[5.402424265787039, 0, 3.0], [6.302828310084879, 0, 3.0]], 'edge_intersect': [], 'ends': []}, 22: {'long_intersect': [], 'trans_intersect': [[6.302828310084879, 0, 3.0], [7.227121232563659, 0, 3.0]], 'edge_intersect': [], 'ends': []}, 32: {'long_intersect': [], 'trans_intersect': [[9.07570707752122, 0, 3.0]], 'edge_intersect': [], 'ends': [[10, 0, 3]]}, 56: {'long_intersect': [], 'trans_intersect': [[7.227121232563659, 0, 3.0], [8.15141415504244, 0, 3.0]], 'edge_intersect': [], 'ends': []}, 62: {'long_intersect': [], 'trans_intersect': [[8.15141415504244, 0, 3.0], [9.07570707752122, 0, 3.0]], 'edge_intersect': [], 'ends': []}}]
+    ref_answer = [{7: {'long_intersect': [], 'trans_intersect': [[3.1514141550424397, 0, 3.0]], 'edge_intersect': [],
+                       'ends': [[3, 0, 3]]}, 8: {'long_intersect': [], 'trans_intersect': [[3.1514141550424397, 0, 3.0],
+                                                                                           [4.276919210414739, 0, 3.0]],
+                                                 'edge_intersect': [], 'ends': []}, 11: {'long_intersect': [],
+                                                                                         'trans_intersect': [
+                                                                                             [4.276919210414739, 0,
+                                                                                              3.0],
+                                                                                             [5.402424265787039, 0,
+                                                                                              3.0]],
+                                                                                         'edge_intersect': [],
+                                                                                         'ends': []},
+                   16: {'long_intersect': [],
+                        'trans_intersect': [[5.402424265787039, 0, 3.0], [6.302828310084879, 0, 3.0]],
+                        'edge_intersect': [], 'ends': []}, 22: {'long_intersect': [],
+                                                                'trans_intersect': [[6.302828310084879, 0, 3.0],
+                                                                                    [7.227121232563659, 0, 3.0]],
+                                                                'edge_intersect': [], 'ends': []},
+                   32: {'long_intersect': [], 'trans_intersect': [[9.07570707752122, 0, 3.0]], 'edge_intersect': [],
+                        'ends': [[10, 0, 3]]}, 56: {'long_intersect': [],
+                                                    'trans_intersect': [[7.227121232563659, 0, 3.0],
+                                                                        [8.15141415504244, 0, 3.0]],
+                                                    'edge_intersect': [], 'ends': []}, 62: {'long_intersect': [],
+                                                                                            'trans_intersect': [
+                                                                                                [8.15141415504244, 0,
+                                                                                                 3.0],
+                                                                                                [9.07570707752122, 0,
+                                                                                                 3.0]],
+                                                                                            'edge_intersect': [],
+                                                                                            'ends': []}}]
 
     assert example_bridge.global_line_int_dict == ref_answer
 
@@ -235,7 +266,10 @@ def test_line_load_vertical_and_cross_outside_mesh(bridge_model_42_negative):
     ULS_DL = LoadCase(name="Barrier")
     ULS_DL.add_load_groups(Barrier)  # ch
     example_bridge.add_load_case(ULS_DL)
-    ref_ans = {1: {'long_intersect': [[2, 0, 0.0], [2, 0, 1.0]], 'trans_intersect': [], 'edge_intersect': [], 'ends': []}, 3: {'long_intersect': [[2, 0, 1.0]], 'trans_intersect': [], 'edge_intersect': [[2.0, 0, 2.2212250296583864]], 'ends': []}}
+    ref_ans = {
+        1: {'long_intersect': [[2, 0, 0.0], [2, 0, 1.0]], 'trans_intersect': [], 'edge_intersect': [], 'ends': []},
+        3: {'long_intersect': [[2, 0, 1.0]], 'trans_intersect': [], 'edge_intersect': [[2.0, 0, 2.2212250296583864]],
+            'ends': []}}
     assert example_bridge.global_line_int_dict[0] == ref_ans
 
 
@@ -260,6 +294,7 @@ def test_line_load_coincide_long_edge(bridge_model_42_negative):
                                                     54: [[7.227121232563659, 0, 1.0], [8.15141415504244, 0, 1.0]],
                                                     60: [[8.15141415504244, 0, 1.0], [9.07570707752122, 0, 1.0]]}]
 
+
 def test_line_load_coincide_tranverse_member(bridge_42_0_angle_mesh):
     example_bridge = bridge_42_0_angle_mesh
     # create reference line load
@@ -270,7 +305,22 @@ def test_line_load_coincide_tranverse_member(bridge_42_0_angle_mesh):
     ULS_DL.add_load_groups(Barrier)  # ch
     example_bridge.add_load_case(ULS_DL)
 
-    assert example_bridge.global_load_str == [['ops.load(2, *[0, 0.0, 0, 0.0, 0, 0.0])\n', 'ops.load(8, *[0, 0.0, 0, 0.0, 0, 0.0])\n', 'ops.load(1, *[0, 0.0, 0, 0.0, 0, 0.0])\n', 'ops.load(52, *[0, 1.25000000000000, 0, 0.625000000000000, 0, 0])\n', 'ops.load(31, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(32, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(53, *[0, 1.25000000000000, 0, -0.625000000000000, 0, 0])\n', 'ops.load(53, *[0, 1.25000000000000, 0, 0.625000000000000, 0, 0])\n', 'ops.load(32, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(33, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(54, *[0, 1.25000000000000, 0, -0.625000000000000, 0, 0])\n', 'ops.load(2, *[0, 0.0, 0, 0.0, 0, 0.0])\n', 'ops.load(8, *[0, 0.0, 0, 0.0, 0, 0.0])\n', 'ops.load(1, *[0, 0.0, 0, 0.0, 0, 0.0])\n', 'ops.load(51, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(30, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(31, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(52, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(51, *[0, 1.25000000000000, 0, 0.625000000000000, 0, 0])\n', 'ops.load(30, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(31, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(52, *[0, 1.25000000000000, 0, -0.625000000000000, 0, 0])\n', 'ops.load(54, *[0, 1.25000000000000, 0, 0.625000000000000, 0, 0])\n', 'ops.load(33, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(34, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(55, *[0, 1.25000000000000, 0, -0.625000000000000, 0, 0])\n']]
+    assert example_bridge.global_load_str == [
+        ['ops.load(2, *[0, 0.0, 0, 0.0, 0, 0.0])\n', 'ops.load(8, *[0, 0.0, 0, 0.0, 0, 0.0])\n',
+         'ops.load(1, *[0, 0.0, 0, 0.0, 0, 0.0])\n',
+         'ops.load(52, *[0, 1.25000000000000, 0, 0.625000000000000, 0, 0])\n', 'ops.load(31, *[0, 0, 0, 0, 0, 0])\n',
+         'ops.load(32, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(53, *[0, 1.25000000000000, 0, -0.625000000000000, 0, 0])\n',
+         'ops.load(53, *[0, 1.25000000000000, 0, 0.625000000000000, 0, 0])\n', 'ops.load(32, *[0, 0, 0, 0, 0, 0])\n',
+         'ops.load(33, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(54, *[0, 1.25000000000000, 0, -0.625000000000000, 0, 0])\n',
+         'ops.load(2, *[0, 0.0, 0, 0.0, 0, 0.0])\n', 'ops.load(8, *[0, 0.0, 0, 0.0, 0, 0.0])\n',
+         'ops.load(1, *[0, 0.0, 0, 0.0, 0, 0.0])\n', 'ops.load(51, *[0, 0, 0, 0, 0, 0])\n',
+         'ops.load(30, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(31, *[0, 0, 0, 0, 0, 0])\n',
+         'ops.load(52, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(51, *[0, 1.25000000000000, 0, 0.625000000000000, 0, 0])\n',
+         'ops.load(30, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(31, *[0, 0, 0, 0, 0, 0])\n',
+         'ops.load(52, *[0, 1.25000000000000, 0, -0.625000000000000, 0, 0])\n',
+         'ops.load(54, *[0, 1.25000000000000, 0, 0.625000000000000, 0, 0])\n', 'ops.load(33, *[0, 0, 0, 0, 0, 0])\n',
+         'ops.load(34, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(55, *[0, 1.25000000000000, 0, -0.625000000000000, 0, 0])\n']]
+
 
 def test_line_load_coincide_edge_beam(bridge_model_42_negative):
     # when set line load z coordinate to z = 0 , test if line returns correct coincide node lines
@@ -433,6 +483,7 @@ def test_compound_load_distribution_to_nodes():
     pass
 
 
+# test analysis of moving load case, test pass if no errors are returned
 def test_moving_load_case(bridge_model_42_negative):
     ops.wipeAnalysis()
     example_bridge = bridge_model_42_negative
@@ -446,9 +497,9 @@ def test_moving_load_case(bridge_model_42_negative):
     example_bridge.add_moving_load_case(move_point)
 
     example_bridge.analyse_moving_load_case()
-    pass
 
 
+# test moving compound load, test pass if no errors are returned
 def test_moving_compound_load():
     M1600 = CompoundLoad("Lane and Barrier")
     back_wheel = PointLoad(name="single point", point1=LoadPoint(5, 0, 2, 20))  # Single point load 20 N
@@ -539,22 +590,21 @@ def test_28m_bridge(ref_28m_bridge):
     bridge_28 = ref_28m_bridge
     opsplt.plot_model("nodes")
 
-
     lane_point_1 = LoadPoint(20.89, 0, 3, 5)
     lane_point_2 = LoadPoint(20.89, 0, 7, 5)
-    line_load_middle = LineLoading("Ref mid_point_load",point1=lane_point_1,point2=lane_point_2)
+    line_load_middle = LineLoading("Ref mid_point_load", point1=lane_point_1, point2=lane_point_2)
     # 57 to 63
     point_load_case = LoadCase("point_load_case")
     line_load_case = LoadCase("line_load_case")
     line_load_case.add_load_groups(line_load_middle)
-    ref_node_force = NodeForces(0,1000,0,0,0,0)
-    p1 = NodalLoad(name="point",node_tag=57,node_force=ref_node_force)
-    p2 = NodalLoad(name="point",node_tag=58,node_force=ref_node_force)
-    p3 = NodalLoad(name="point",node_tag=59,node_force=ref_node_force)
-    p4 = NodalLoad(name="point",node_tag=60,node_force=ref_node_force)
-    p5 = NodalLoad(name="point",node_tag=61,node_force=ref_node_force)
-    p6 = NodalLoad(name="point",node_tag=62,node_force=ref_node_force)
-    p7 = NodalLoad(name="point",node_tag=63,node_force=ref_node_force)
+    ref_node_force = NodeForces(0, 1000, 0, 0, 0, 0)
+    p1 = NodalLoad(name="point", node_tag=57, node_force=ref_node_force)
+    p2 = NodalLoad(name="point", node_tag=58, node_force=ref_node_force)
+    p3 = NodalLoad(name="point", node_tag=59, node_force=ref_node_force)
+    p4 = NodalLoad(name="point", node_tag=60, node_force=ref_node_force)
+    p5 = NodalLoad(name="point", node_tag=61, node_force=ref_node_force)
+    p6 = NodalLoad(name="point", node_tag=62, node_force=ref_node_force)
+    p7 = NodalLoad(name="point", node_tag=63, node_force=ref_node_force)
     point_load_case.add_load_groups(p1)
     point_load_case.add_load_groups(p2)
     point_load_case.add_load_groups(p3)
@@ -569,6 +619,4 @@ def test_28m_bridge(ref_28m_bridge):
     print(ops.nodeDisp(63))
     print(ops.nodeDisp(60))
     opsv.plot_defo(unDefoFlag=0, endDispFlag=0)
-    #plt.show()
-
-
+    # plt.show()

@@ -530,6 +530,7 @@ class MovingLoad:
                 # add entries of static load to load groups
                 step_point = Point(steps[0],steps[1],steps[2])  # convert increment position into Point tuple
                 load_step_lc.move_load_group(step_point)        # increment the load groups by step point
+                # static load not used
                 for static_load in self.static_load_case:       # add static load portions to each incremental load case
                     static_load_copy = deepcopy(static_load)
                     load_step_lc.add_load_groups(static_load_copy)
