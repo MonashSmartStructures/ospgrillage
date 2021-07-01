@@ -1,6 +1,8 @@
 ========================
 Examples
 ========================
+Here are some more examples of what you can do with *ops-grillage* module.
+
 
 Simple example
 --------------------

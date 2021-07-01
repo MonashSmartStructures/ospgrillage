@@ -305,8 +305,7 @@ def test_line_load_coincide_tranverse_member(bridge_42_0_angle_mesh):
     ULS_DL.add_load_groups(Barrier)  # ch
     example_bridge.add_load_case(ULS_DL)
 
-    assert example_bridge.global_load_str == [
-        ['ops.load(2, *[0, 0.0, 0, 0.0, 0, 0.0])\n', 'ops.load(8, *[0, 0.0, 0, 0.0, 0, 0.0])\n',
+    assert example_bridge.load_case_list[0]['load_command'] == ['ops.load(2, *[0, 0.0, 0, 0.0, 0, 0.0])\n', 'ops.load(8, *[0, 0.0, 0, 0.0, 0, 0.0])\n',
          'ops.load(1, *[0, 0.0, 0, 0.0, 0, 0.0])\n',
          'ops.load(52, *[0, 1.25000000000000, 0, 0.625000000000000, 0, 0])\n', 'ops.load(31, *[0, 0, 0, 0, 0, 0])\n',
          'ops.load(32, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(53, *[0, 1.25000000000000, 0, -0.625000000000000, 0, 0])\n',
@@ -319,7 +318,7 @@ def test_line_load_coincide_tranverse_member(bridge_42_0_angle_mesh):
          'ops.load(30, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(31, *[0, 0, 0, 0, 0, 0])\n',
          'ops.load(52, *[0, 1.25000000000000, 0, -0.625000000000000, 0, 0])\n',
          'ops.load(54, *[0, 1.25000000000000, 0, 0.625000000000000, 0, 0])\n', 'ops.load(33, *[0, 0, 0, 0, 0, 0])\n',
-         'ops.load(34, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(55, *[0, 1.25000000000000, 0, -0.625000000000000, 0, 0])\n']]
+         'ops.load(34, *[0, 0, 0, 0, 0, 0])\n', 'ops.load(55, *[0, 1.25000000000000, 0, -0.625000000000000, 0, 0])\n']
 
 
 def test_line_load_coincide_edge_beam(bridge_model_42_negative):
@@ -431,6 +430,8 @@ def test_patch_load(bridge_model_42_negative):
                                               'ops.load(20, *[0, 1.03275274876943, 0, -0.575684261479612, 0, -0.303246116221267])\n',
                                               'ops.load(15, *[0, 0.224823081815069, 0, -0.0531036538126367, 0, 0.0660145678416750])\n']
 
+def test_patch_partially_outside_mesh(bridge_model_42_negative):
+    example_bridge = bridge_model_42_negative
 
 # ----------------------------------------------------------------------------------------------------------------------
 # test sub functions
@@ -479,7 +480,23 @@ def test_local_vs_global_coord_settings():
     assert M1600.compound_load_obj_list[0].load_point_1 == LoadPoint(x=5, y=0, z=-2, p=20)
 
 
-def test_compound_load_distribution_to_nodes():
+def test_compound_load_distribution_to_nodes(bridge_model_42_negative):
+    ops.wipeAnalysis()
+    example_bridge = bridge_model_42_negative
+
+    M1600 = CompoundLoad("M1600 LM")
+    back_wheel = PointLoad(name="single point", point1=LoadPoint(5, 0, 2, 20))  # Single point load 20 N
+    front_wheel = PointLoad(name="front wheel", point1=LoadPoint(2, 0, 2, 50))  # Single point load 50 N
+    # compound the point loads
+    M1600.add_load(load_obj=back_wheel, local_coord=Point(6, 0, 5))
+    M1600.add_load(load_obj=front_wheel, local_coord=Point(5, 0, 5))
+    M1600.set_global_coord(Point(0, 0, 0))
+
+    static_truck = LoadCase("static M1600")
+    static_truck.add_load_groups(M1600)
+    example_bridge.add_load_case(static_truck)
+    example_bridge.analyse_load_case()
+    ba, ma = example_bridge.get_results()
     pass
 
 
@@ -497,21 +514,30 @@ def test_moving_load_case(bridge_model_42_negative):
     example_bridge.add_moving_load_case(move_point)
 
     example_bridge.analyse_moving_load_case()
-
+    ba, ma = example_bridge.get_results()
 
 # test moving compound load, test pass if no errors are returned
-def test_moving_compound_load():
-    M1600 = CompoundLoad("Lane and Barrier")
+def test_moving_compound_load(bridge_model_42_negative):
+    ops.wipeAnalysis()
+    example_bridge = bridge_model_42_negative
+
+    M1600 = CompoundLoad("M1600 LM")
     back_wheel = PointLoad(name="single point", point1=LoadPoint(5, 0, 2, 20))  # Single point load 20 N
     front_wheel = PointLoad(name="front wheel", point1=LoadPoint(2, 0, 2, 50))  # Single point load 50 N
+    # compound the point loads
     M1600.add_load(load_obj=back_wheel, local_coord=Point(5, 0, 5))
     M1600.add_load(load_obj=front_wheel, local_coord=Point(3, 0, 5))
-    M1600.set_global_coord(Point(4, 0, 3))
+    M1600.set_global_coord(Point(0, 0, 0))
 
-    move_point = MovingLoad(name="Truck 1")
-    single_path = Path(start_point=Point(2, 0, 2), end_point=Point(4, 0, 3))  # Path object
-    move_point.add_loads(load_obj=M1600, path_obj=single_path.get_path_points())
-    pass
+    truck = MovingLoad(name="Truck 1")
+    single_path = Path(start_point=Point(2, 0, 2), end_point=Point(4, 0, 2))  # Path object
+    truck.add_loads(load_obj=M1600, path_obj=single_path.get_path_points())
+    truck.parse_moving_load_cases()
+
+    example_bridge.add_moving_load_case(truck)
+    example_bridge.analyse_moving_load_case()
+    ba,ma = example_bridge.get_results()
+    print("finish test compound moving load")
 
 
 def test_add_a_loadcase_with_local_coordinate(bridge_model_42_negative):

@@ -1,38 +1,25 @@
 ========================
-Creating a grillage model
+Creating grillage models
 ========================
+Here are the some examples of what you can do with *ops-grillage* module. Examples are explained in more detail
+throughout the rest of the documentation.
 
-The *ops-grillage* module contains the main :class:`~OpsGrillage` class that handles:
-
-#. model information inputs.
-#. creating the model instance in Opensees software space, and
-#. writes an executable py file with commands that can recreate the model.
-
-Creating the grillage model instance
--------------------------------------------
-There are three steps to creating a grillage model:
-
-#. Creating the grillage object using the :class:`~OpsGrillage` class.
-#. Defining elements of grillage model using the :class:`~Member` class, and :class:`~Material` class.
-#. Setting the elements of grillage model using :function:`~set_member()` and :function:`~set_material()` functions.
-
-
-An example of using the :class:`~OpsGrillage` to create a grillage model instance is shown as follows:
+To begin, import :class:`~OpsGrillage` and Opensees using abbrevations or as a whole using asterisk. For this example,
+we import the entire module's components to showcase the various functions and classes. In addition, we import the Opensees visualization module
+to plot the grillage model.
 
 .. code-block:: python
 
-    example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=10, width=5, skew=-21,
-                         num_long_grid=2, num_trans_grid=17, cantilever_edge=1, mesh_type="Ortho")
+    from OpsGrillage import *
+    import openseespy.postprocessing.ops_vis as opsv
 
-The above example generates an Opensees model instance of a grillage model with the following properties:
+There are three main stages when using the *ops-grillage* module:
 
-#. Length = 10 m
-#. Width = 5 m
-#. skew angle of 21 degree clockwise (negative sign)
-#. 2 node grids along the transverse (z axis) direction corresponding to interior beams
-#. 13 nodes spaced evenly along the longitudinal (x axis)
-#. Edge beam distance of 1 m
-#. Orthogonal mesh
+#. Defining elements of grillage model using the :class:`~Member` class, and :class:`~Material` class.
+#. Creating the grillage object using the :class:`~OpsGrillage` class.
+#. Setting the elements of grillage model using ```~set_member()``` and ```~set_material()``` functions.
+
+In this example we will detail the steps in order to create an example grillage as shown in Figure 1:
 
 ..  figure:: ../images/Module_description_1.png
     :align: center
@@ -41,10 +28,43 @@ The above example generates an Opensees model instance of a grillage model with 
     Figure 1: Instance of the model created in Opensees.
 
 
-Creating elements and materials of grillage model
-------------------------------------------------------------------
+Creating the grillage model
+-------------------------------------------
+The :class:`~OpsGrillage` class takes:
 
-Material properties are defined in two steps:
+- ``bridge_name``: A string of the grillage model name.
+- ``long_dim``: An :py:class:`float` of the longitudinal length of the grillage model.
+- ``width``: An :py:class:`float` of the transverse width of the grillage model.
+- ``skew``: A :py:class:`float` of the skew angle at the ends of grillage model. This variable can take in a :py:class:`list` of of 2 skew angles - this in turn creates the grillage model having edges with different skew angles.
+- ``num_long_grid``: An :py:class:`int` of the number of grids to be uniformly spaced along the longitudinal direction - each grid line represents the transverse members.
+- ``num_trans_grid``: An :py:class:`int` of the number of grids to be uniformly spaced along the transverse direction - each grid line represents the longitudinal members
+- ``edge_beam_dist``: A :py:class:`float` of the distance between exterior longitudinal beams to edge beam.
+- ``mesh_type``: Mesh type of grillage model. Must take a :py:class:`str` input of either "Orthogonal" or "Oblique".
+
+Users run the following code line with the prescribed variables to create the :class:`~OpsGrillage` object of the example bridge:
+
+.. code-block:: python
+
+    example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=10, width=5, skew=-21,
+                         num_long_grid=2, num_trans_grid=17, edge_beam_dist=1, mesh_type="Ortho")
+
+
+Creating and defining elements of grillage model
+------------------------------------------------------------------
+A grillage element is created using the :class:`GrillageMember` class. A :class:`GrillageMember` object has two
+properties, namely:
+
+*. Material - defined by a :class:`Material` class object, and
+*. Section - defined by a :class:`Section` class object.
+
+.. code-block:: python
+
+    I_beam = GrillageMember(name="Intermediate I-beams", section=I_beam_section, material=concrete)
+    Material properties are defined in two steps:
+
+
+Creating material objects
+------------------------------------------------------------------
 
 #. Creating a :class:`~Material` class object of the bridge material.
 #. Setting the :class:`~Material` class object to a :class:`~GrillageMember` class object.
@@ -55,7 +75,6 @@ types see
 
 .. code-block:: python
 
-    # define material
     concrete = UniAxialElasticMaterial(mat_type="Concrete01", mat_vec=[-6.0, -0.004, -6.0, -0.014])
 
 The :class:`~OpsGrillage` class also allows for global material definition - e.g. an entire bridge made of the same
@@ -63,14 +82,18 @@ material. To do this, users run the function ```set_material()``` passing the :c
 input.
 
 .. code-block:: python
-    # assign material object to grillage model class
+
     test_bridge.set_material(concrete)
 
 Note for variable `mat_type`, users have the option to change the concrete type. The concrete model types are based on
 Opensees database.
 
-Creating section of grillage members
+Creating section objects
 ------------------------------------------------
+A section is created using the :class:`Section` class which takes:
+
+
+An example section creation is shown as follows:
 
 .. code-block:: python
 
@@ -99,15 +122,6 @@ The module automatically implement the unit width properties based on the spacin
 The module checks if all element groups in the grillages are defined by the user. If missing element groups are detected,
 a warning message is printed on the terminal.
 
-Creating a grillage member
------------------------------
-Grillage members are defined using the ``GrillageMember`` class. The class accepts three inputs: str name of the member,
-a Section class object, and a Material class object.
-
-.. code-block:: python
-    # define member
-    I_beam = GrillageMember(name="Intermediate I-beams", section=I_beam_section, material=concrete)
-
 
 
 Setting grillage member to element group in model
@@ -125,8 +139,19 @@ The following is printed to the terminal
 
 The main commands of ops_vis module can be found `here <https://openseespydoc.readthedocs.io/en/latest/src/ops_vis.html>`_
 
-Creating an executable py file of Grillage Model
+Opensees model space or executable py file
 -----------------------------------------------------------
+Once the object of grillage model is created, we can create the model in Opensees software space using the function:
+
+.. code-block:: python
+
+    pyfile = False
+    example_bridge.create_ops(pyfile=pyfile)
+
+Here, the `create_ops` function takes a boolean as parameter which by default is `False`. If set to `True`, an executable py file will be generated instead of the model instance in Opensees space. The executable py file contains all relevent Opensees command from which when executed, creates the model instance in Opensees.
+In this example, we do not want the executable py file so we proceed with flagging False for the parameter.
+
+
 Alternatively, users have the option to create an executable py file (output by OpsGrillage) which when executed,
 creates the grillage model instance in Opensees software. This is done by flagging the input variable `pyfile=`
 as True. In general, the executable py file contains all necessary commands to create the Opensees model instance.
@@ -137,3 +162,13 @@ commands defined:
 #. command to instantiate the model space in Opensees.
 #. node() commands
 #. Created the geometric transformation object of Opensees for the element definition later on.
+
+
+Visualize grillage model
+---------------------------------
+
+To check the created the model in Opensees space, we can plot the model using the Opensees's visualization module. Before visualization, grillage members needs to be first defined.
+
+.. code-block:: python
+
+    opsplt.plot_model("nodes")

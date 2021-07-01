@@ -35,8 +35,8 @@ class Mesh:
         self.pt3 = pt3
 
         # counters to keep track of variables
-        self.node_counter = element_counter
-        self.element_counter = node_counter
+        self.node_counter = node_counter
+        self.element_counter = element_counter
         self.transform_counter = transform_counter
         self.global_x_grid_count = global_x_grid_count
         # edge construction line variables

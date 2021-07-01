@@ -1061,27 +1061,40 @@ class OpsGrillage:
         # check the input parameter type, set load_groups parameter according to its type
         if isinstance(load_case_obj, LoadCase):
             load_groups = load_case_obj.load_groups
-        elif isinstance(load_case_obj, CompoundLoad):
-            load_groups = load_case_obj.compound_load_obj_list
+        elif isinstance(load_case_obj.load_groups[0]['load'], CompoundLoad):
+            load_groups = load_case_obj.load_groups[0]['load'].compound_load_obj_list
         # loop through each load object
         for load_dict in load_groups:
             load_obj = load_dict['load']
-            if isinstance(load_obj, NodalLoad):
-                load_str = load_obj.get_nodal_load_str()
-                #self.global_load_str.append(load_str)
-
-            elif isinstance(load_obj, PointLoad):
-                load_str = self.assign_point_to_four_node(point=list(load_obj.load_point_1)[:-1],
-                                                          mag=load_obj.load_point_1.p)
-                #self.global_load_str.append(load_str)
-            elif isinstance(load_obj, LineLoading):
-                line_grid_intersect = self.get_line_load_nodes(load_obj)  # returns self.line_grid_intersect
-                self.global_line_int_dict.append(line_grid_intersect)
-                load_str = self.assign_line_to_four_node(load_obj, line_grid_intersect)
-                #self.global_load_str.append(load_str)
-
-            elif isinstance(load_obj, PatchLoading):
-                load_str = self.assign_patch_load(load_obj)
+            if isinstance(load_obj,CompoundLoad):
+                # load_obj is a Compound load class, start a nested loop through each load class within compound load
+                # nested loop through each load in compound load, assign and get
+                load_str = []
+                for nested_list_of_load in load_obj.compound_load_obj_list:
+                    if isinstance(nested_list_of_load, NodalLoad):
+                        load_str += nested_list_of_load.get_nodal_load_str()
+                    elif isinstance(nested_list_of_load, PointLoad):
+                        load_str += self.assign_point_to_four_node(point=list(nested_list_of_load.load_point_1)[:-1],
+                                                                  mag=nested_list_of_load.load_point_1.p)
+                    elif isinstance(nested_list_of_load, LineLoading):
+                        line_grid_intersect = self.get_line_load_nodes(nested_list_of_load)  # returns self.line_grid_intersect
+                        self.global_line_int_dict.append(line_grid_intersect)
+                        load_str += self.assign_line_to_four_node(nested_list_of_load, line_grid_intersect)
+                    elif isinstance(nested_list_of_load, PatchLoading):
+                        load_str += self.assign_patch_load(nested_list_of_load)
+            else:
+                # run single assignment of load type (load_obj is a load class)
+                if isinstance(load_obj, NodalLoad):
+                    load_str = load_obj.get_nodal_load_str()
+                elif isinstance(load_obj, PointLoad):
+                    load_str = self.assign_point_to_four_node(point=list(load_obj.load_point_1)[:-1],
+                                                              mag=load_obj.load_point_1.p)
+                elif isinstance(load_obj, LineLoading):
+                    line_grid_intersect = self.get_line_load_nodes(load_obj)  # returns self.line_grid_intersect
+                    self.global_line_int_dict.append(line_grid_intersect)
+                    load_str = self.assign_line_to_four_node(load_obj, line_grid_intersect)
+                elif isinstance(load_obj, PatchLoading):
+                    load_str = self.assign_patch_load(load_obj)
 
         return load_str
 
@@ -1101,7 +1114,6 @@ class OpsGrillage:
         """
         # update the load command list of load case object
         load_str = self.distribute_load_types_to_model(load_case_obj=load_case_obj)
-        # load_case_obj.set_load_case_load_command(load_str=load_str)
         # store load case + load command in dict and add to load_case_list
         load_case_dict = {'name': load_case_obj.name, 'loadcase': load_case_obj, 'load_command': load_str,
                           'load_factor': load_factor}  # FORMATTING HERE
@@ -1119,7 +1131,9 @@ class OpsGrillage:
             load_case_analysis = Analysis(analysis_name=load_case_obj.name, ops_grillage_name=self.model_name,
                                           pyfile=self.pyfile,
                                           time_series_counter=self.global_time_series_counter,
-                                          pattern_counter=self.global_pattern_counter)
+                                          pattern_counter=self.global_pattern_counter,
+                                          node_counter=self.Mesh_obj.node_counter,
+                                          ele_counter=self.Mesh_obj.element_counter)
             load_case_analysis.add_load_command(load_command, load_factor=load_factor)
             # run the Analysis object, collect results, and store Analysis object in the list for Analysis load case
             self.global_time_series_counter, self.global_pattern_counter, node_disp, ele_force \
@@ -1218,7 +1232,9 @@ class OpsGrillage:
                                                 ops_grillage_name=self.model_name,
                                                 pyfile=self.pyfile,
                                                 time_series_counter=self.global_time_series_counter,
-                                                pattern_counter=self.global_pattern_counter)
+                                                pattern_counter=self.global_pattern_counter,
+                                                  node_counter=self.Mesh_obj.node_counter,
+                                                  ele_counter=self.Mesh_obj.element_counter)
                 incremental_analysis.add_load_command(load_command, load_factor=load_factor)
                 self.global_time_series_counter, self.global_pattern_counter, node_disp, ele_force \
                     = incremental_analysis.evaluate_analysis()
@@ -1250,7 +1266,8 @@ class Analysis:
         load combinations
     """
 
-    def __init__(self, analysis_name: str, ops_grillage_name: str, pyfile: bool, analysis_type='Static',
+    def __init__(self, analysis_name: str, ops_grillage_name: str, pyfile: bool, node_counter, ele_counter,
+                 analysis_type='Static',
                  time_series_counter=1, pattern_counter=1):
         self.analysis_name = analysis_name
         self.ops_grillage_name = ops_grillage_name
@@ -1276,7 +1293,8 @@ class Analysis:
         self.analyze_command = "ops.analyze(1)\n"  # default 1 step
         self.analysis_command = "ops.analysis(\"{}\")\n".format(analysis_type)
         self.intergrator_command = "ops.integrator('LoadControl', 1)\n"
-
+        self.mesh_node_counter = node_counter
+        self.mesh_ele_counter = ele_counter
         # if true for pyfile, create pyfile for analysis command
         if self.pyfile:
             with open(self.analysis_file_name, 'w') as file_handle:
@@ -1353,31 +1371,40 @@ class Analysis:
     def extract_grillage_responses(self):
         if not self.pyfile:
             # first loop extract node displacements
-            loop = True
-            counter = 0
-            while loop:
-                try:
-                    counter += 1
-                    disp_list = ops.nodeDisp(counter)
-                    self.node_disp.setdefault(counter, disp_list)
-                except:  # finished extracting all nodes
-                    loop = False
-            print("Node displacement extraction finished at node counter {}".format(counter - 1))
-            # second loop extract ele forces
-            loop = True  # reset loop parameters
-            counter = 0  # reset loop parameters
-            while loop:
-                try:
-                    counter += 1
-                    ele_force = ops.eleForce(counter)
+            for node_tag in range(1,self.mesh_node_counter):
+                disp_list = ops.nodeDisp(node_tag)
+                self.node_disp.setdefault(node_tag, disp_list)
 
-                    if ops.eleForce(counter) is None:
-                        loop = False
-                        break
-                    self.ele_force.setdefault(counter, ele_force)
-                except:
-                    loop = False
-            print("Ele force extraction finished at ele counter {}".format(counter - 1))
+            for ele_tag in range(1,self.mesh_ele_counter):
+                ele_force = ops.eleForce(ele_tag)
+                self.ele_force.setdefault(ele_tag, ele_force)
+
+            #
+            # loop = True
+            # counter = 0
+            # while loop:
+            #     try:
+            #         counter += 1
+            #         disp_list = ops.nodeDisp(counter)
+            #         self.node_disp.setdefault(counter, disp_list)
+            #     except:  # finished extracting all nodes
+            #         loop = False
+            # print("Node displacement extraction finished at node counter {}".format(counter - 1))
+            # # second loop extract ele forces
+            # loop = True  # reset loop parameters
+            # counter = 0  # reset loop parameters
+            # while loop:
+            #     try:
+            #         counter += 1
+            #         ele_force = ops.eleForce(counter)
+            #
+            #         if ops.eleForce(counter) is None:
+            #             loop = False
+            #             break
+            #         self.ele_force.setdefault(counter, ele_force)
+            #     except:
+            #         loop = False
+            # print("Ele force extraction finished at ele counter {}".format(counter - 1))
         print("Extract completed")
         return self.node_disp, self.ele_force
 

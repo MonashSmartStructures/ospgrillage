@@ -50,11 +50,14 @@ The following Opensees element types are supported by ops-grillage
 ### Utilities
 #### Loading Utilities
 - [x] Nodal loads
-- [ ] Line loads
-- [ ] Patch loads 
+- [x] Line loads
+- [x] Patch loads
+- [x] Compound loads (any combination of the above load types) 
 #### Load cases
-- [ ] Multiple load utilities in single load case
-- [ ] Multiple load cases and load factors in load combination
+- [x] Multiple load utilities in single load case
+- [x] Moving load cases
+#### Result output
+- [x] Utilise python's xarray features i.e. dataArrays
 
 
 ### In the works

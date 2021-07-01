@@ -457,7 +457,11 @@ class LoadCase:
         self.position = ref_point
         for load_dict in self.load_groups:
             load_obj = load_dict.get('load')
-            load_obj.move_load(self.position)
+            if isinstance(load_obj,CompoundLoad):
+                for ind_load_obj in load_obj.compound_load_obj_list:
+                    ind_load_obj.move_load(self.position)
+            else:
+                load_obj.move_load(self.position)
 
     # # function handled by ops_grillage to set load commands (ops.load()) of current load case
     # def set_load_case_load_command(self, load_str: list):
@@ -524,7 +528,7 @@ class MovingLoad:
             # loop to create a load case for each increment of the path obj
             load_case_list = []
             for steps in path_list:
-                load_step_lc = LoadCase(name="load {} at {}".format(load_obj.name,repr(steps)))  # _lc in name stands for load case
+                load_step_lc = LoadCase(name="load {} at [{:.2f},{:.2f},{:.2f}]".format(load_obj.name,steps[0],steps[1],steps[2]))  # _lc in name stands for load case
                 load_obj_copy = deepcopy(load_obj)  # Use deepcopy module to copy instance of load
                 load_step_lc.add_load_groups(load_obj_copy)    # and add load to newly created load case
                 # add entries of static load to load groups
