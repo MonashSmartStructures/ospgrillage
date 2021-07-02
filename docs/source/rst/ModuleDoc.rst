@@ -2,7 +2,7 @@
 Module documentation
 #####################
 
-This page describes the details of processes within the ops-grillage module. In providing the outline of processes,
+This page details the processes within *ops-grillage* module. In providing the outline of processes,
 the developers welcome any improvements to its procedures via pull requests.
 
 ====================
@@ -37,6 +37,10 @@ The module adopts the following convention for grillage model:
 
 * y direction is the vertical axis - typically the direction of loads
 
+Two reasons behind selecting the coordinate system as such:
+#. This coordinate system streamlines section transformation (from local to global). The coordinate systems aligns well with the standard Opensees local coordinate systems for Section definition, with local X being the axial direction
+of beam/truss members, while y and z axes being the horizontal and vertical axis of the local coordinate system respectively.
+#. To be consistent with 1D problems where the working axis for 1-D models is typically *x* (horizontal axis) and *y* (vertical axis).
 
 ====================
 Meshing Procedure

@@ -165,6 +165,8 @@ def bridge_model_42_positive(ref_bridge_properties):
 # tests for mesh class object
 def test_model_instance(bridge_model_42_negative):
     example_bridge = bridge_model_42_negative
+    opsplt.plot_model("nodes")
+
     ops.nodeCoord(2)
     print("pass")
     ops.wipe()

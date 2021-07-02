@@ -28,7 +28,14 @@ Meshing description
 
 element grouping
 
+Analysis objects
+^^^^^^^^^^^^^^^^
 
+..  autoclass:: OpsGrillage.Analysis
+    :noindex:
+
+..  autoclass:: OpsGrillage.Results
+    :noindex:
 
 Material class
 ------------------------------------------
@@ -59,3 +66,32 @@ Example table for copy paste usage:
                                         * "Ortho": Orthogonal mesh
                                         * "Oblique" : Skew mesh
    ================================   ===========================================================================
+
+
+Load class
+------------------------------------------
+
+.. autoclass:: Load.Loads
+   :noindex:
+
+.. autoclass:: Load.NodalLoad
+   :noindex:
+
+.. autoclass:: Load.PointLoad
+   :noindex:
+
+.. autoclass:: Load.LineLoading
+   :noindex:
+
+.. autoclass:: Load.PatchLoading
+   :noindex:
+
+.. autoclass:: Load.CompoundLoad
+   :noindex:
+
+.. autoclass:: Load.Path
+   :noindex:
+
+.. autoclass:: Load.ShapeFunction
+   :noindex:
+
