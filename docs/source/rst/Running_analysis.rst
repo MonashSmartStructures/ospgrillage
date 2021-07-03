@@ -114,22 +114,29 @@ From this point, the compound loads are added into `load cases`_ as per ``add_lo
 
 Defining moving loads
 ------------------------
-
-
-Moving load analysis is defined using the :class:`Moving Load` class. The moving load class takes a Load object and Path object
-pair as inputs. The moving load class parses the load object to traverse the defined path object.
+For moving load analysis, users create moving load objects using :class:`Moving Load` class. The moving load class takes a Load object and moves the load
+through a path described by a :class:`Path` object. Path are defined using two Point(x,y,z) namedtuple to describe its start and end position.
 
 .. code-block:: python
 
     single_path = Path(start_point=Point(2,0,2), end_point= Point(4,0,3))  # create path object
     move_point = MovingLoad(name="single_moving_point")
     move_point.add_loads(load_obj=front_wheel,path_obj=single_path.get_path_points())
+
+After adding all loads and respective paths, users run the class function ``parse_moving_load_case()`` which instructs the class to create multiple `load cases`_ for
+which corresponds to the load condition as the load moves through each increment of the path.
+
+.. code-block:: python
+
     move_point.parse_moving_load_cases() # step to finalise moving load - creates incremental load cases for each position of the moving load
+
+From here, use the ``add_moving_load_case()`` function of the :class:`OpsGrillage` to add the moving load as a moving load case. Similar to `load cases`_, user run ``analyse_moving_load_case()``
+to analyze the moving load case.
+
+.. code-block:: python
 
     example_bridge.add_moving_load_case(move_point)
     example_bridge.analyse_moving_load_case()
-
-
 
 
 Defining load combination
@@ -143,28 +150,26 @@ values. An example dictionary is shown as follows:
     load_combinations = {'ULS-DL':1.2,'Live traffic':1.7}
     example_bridge.add_load_combination(name = "ULS", input_dict = load_combinations )
 
-Viewing results
+Getting results
 ------------------------
-
-A set of plotting functions are included as part of the `op-grillage` module - the `PlotWizard` command. To draw and
-plot components of the model, users run the following example. In the example, the plot_section() function draws and
-plots the longitudinal members of the grillage.
+Results are returned as `data arrays <http://xarray.pydata.org/en/stable/user-guide/data-structures.html#>`_ (python's Xarray module).
+To get results, run the ``get_results()`` function and two outputs will be returned:
 
 .. code-block:: python
 
-    import PlotWizard
-    plot_section(test_bridge, "interior_main_beam", 'r')
+    basic_load_case_result,moving_load_results = example_bridge.get_results()
 
-The `plot_section()` function is based on matplotlib plotting commands.
+where,
 
-Alternatively, result visualization can be achieved using the Openseespy module - ops_vis. The `ops_vis` module is one
-of the post-processing modules of Openseespy. The `ops-vis` module has gone through numerous updates and has reach
-maturity for many post-processing applications. This is the recommended plotting feature at the current version of
-`op-grillage`.
+* basic_load_case_result : a data array for non-moving load cases.
+* moving_load_results: a list of data array for each moving load cases defined.
 
-For example users can view the model using the `model()` command. To do this, users add the following command and the
-end of the output py file.
+Each data array contains dimensions of"
 
-.. code-block:: python
+* load case : listing all load case
+* Node : listing all nodes within mesh of grillage model
+* Component: Node responses ordered in this manner - dx,dy,dz,theta_x,theta_y,theta_z,Vx,Vy,Vz,Mx,My,Mz
 
-    ops.model()
+From here, users can use xarray's function for data array to extract 'slices' of data
+
+

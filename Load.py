@@ -95,7 +95,11 @@ class Loads:
 
     # modify load points if compound load option is present i.e. compound_x_list
     def form_compound_load(self, **kwargs):
-
+        """
+        Function to set a number of load types into a compound load group
+        :param kwargs:
+        :return:
+        """
         # if global coordinates are given, reset global to local by subtracting the centroid, then adding the local coord if any
         if any(self.point_list):
             point_list = [i for i in self.point_list if i is not None]
@@ -151,6 +155,12 @@ class Loads:
 
     # function called by Moving load module to move the load group
     def move_load(self, ref_point: Point):
+        """
+        Function to move each load point of load type by a reference coordinate
+        :param ref_point: coordinate to be moved
+        :type ref_point: namedTuple Point(x,y,z)
+        :return: increment each load point by +x, +y, +z where (x,y,z) is the coordinate prescribed by ref_point
+        """
         if any(self.point_list):
             self.load_point_1 = self.load_point_1._replace(x=self.load_point_1.x + ref_point.x,
                                                            z=self.load_point_1.z + ref_point.z) if self.load_point_1 is \
@@ -203,8 +213,10 @@ class Loads:
                                                                                                    not None else self.local_load_point_8
 
 
-
     def apply_load_factor(self, factor=1):
+        """
+        Function to apply load factor to each load point's p value (vertical P force)
+        """
         self.load_point_1 = self.load_point_1._replace(p=factor * self.load_point_1.p) if self.load_point_1 is \
                                                                                           not None else self.load_point_1
         self.load_point_2 = self.load_point_2._replace(p=factor * self.load_point_2.p) if self.load_point_2 is \
@@ -227,7 +239,19 @@ class Loads:
 
 
 class NodalLoad(Loads):
+    """
+    Main class for noda load. Derived from Loads base class
+    """
     def __init__(self, name, node_tag, node_force):
+        """
+        Nodal load takes a node tag and namedtuple NodalForce(Fx,Fy,Fz,Mx,My,Mz) as input.
+        :param name: Name of load
+        :type name: str
+        :param node_tag: Node tag of grillage model for nodal load to be applied
+        :type node_tag: int
+        :param node_force: Named tuple of node forces
+        :type node_force: NodalForces(Fx,Fy,Fz,Mx,My,Mz)
+        """
         super().__init__(name, node_tag=node_tag, Fx=node_force.Fx, Fy=node_force.Fy, Fz=node_force.Fz, Mx=node_force.Mx
                          , My=node_force.My, Mz=node_force.Mz)
         self.node_tag = node_tag
@@ -240,6 +264,9 @@ class NodalLoad(Loads):
                                 "Mz": self.Mz}
 
     def get_nodal_load_str(self):
+        """
+        Function to return ops.load() command for nodal load.
+        """
         # get str for ops.load() function.
         load_value = [self.Fx, self.Fy, self.Fz, self.Mx, self.My, self.Mz]
         load_str = "ops.load({pt}, *{val})\n".format(pt=self.node_tag, val=load_value)
@@ -247,20 +274,17 @@ class NodalLoad(Loads):
 
 
 class PointLoad(Loads):
+    """
+    Class for Point loads. Derived from based load class
+    """
     def __init__(self, name, **kwargs):
         super().__init__(name, **kwargs)
 
-    @staticmethod
-    def get_nodal_load_str(node_list, node_val_list):
-        # node_list and node_val_list must be a list of same size
-
-        load_str = []
-        for count, node in enumerate(node_list):
-            load_str.append("ops.load({pt}, *{val})\n".format(pt=node, val=node_val_list[count]))
-        return load_str
-
 
 class LineLoading(Loads):
+    """
+    Class for line loading. Derived from based Loads class
+    """
     def __init__(self, name, **kwargs):
         super().__init__(name, **kwargs)
         # shape function object
