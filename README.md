@@ -1,3 +1,7 @@
+---
+permalink: /index.html
+---
+
 # Overview
 
 The `ops-grillage` module is a python wrapper for ```Openseespy``` module. ```Openseespy``` 
