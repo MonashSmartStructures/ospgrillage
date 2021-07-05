@@ -1,4 +1,4 @@
-.. currentmodule:: OpsGrillage.Opsgrillage
+
 
 ====================
 API reference
@@ -20,17 +20,19 @@ UML diagram overview
 What parts are considered public API?
 ------------------------------------------
 Simply, any functions documented in this API reference page are considered part of *ops-grillage*'s public API. In other
-words, only the top level
+words, only top level functions within each class (see UML diagram) are part of the public API.
 
 
 OpsGrillage class
 ---------------------------
 
-..  autosummary::
+.. currentmodule:: OpsGrillage
 
-.. autofunction
+.. autosummary::
+   :toctree: generated/
+   :nosignatures:
 
-    OpsGrillage.add_load_case
+   OpsGrillage
 
 
 
