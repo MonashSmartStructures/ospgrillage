@@ -1,0 +1,375 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Creating grillage models &mdash; Openseespy Grillage Wizard 0.0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Performing analysis" href="Running_analysis.html" />
+    <link rel="prev" title="Installation" href="Installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Openseespy Grillage Wizard
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Creating grillage models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#defining-elements-of-grillage-model">Defining elements of grillage model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#creating-material-objects">Creating material objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#creating-section-objects">Creating section objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#creating-the-grillage-model">Creating the grillage model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setting-grillage-member-to-element-group-in-model">Setting grillage member to element group in model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#creating-grillage-in-opensees-model-space-or-as-an-executable-py-file">Creating grillage in Opensees model space or as an executable py file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#visualize-grillage-model">Visualize grillage model</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Running_analysis.html">Performing analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APIdoc.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ModuleDoc.html">Module documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ChangeLog.html">Change Log</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Openseespy Grillage Wizard</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Creating grillage models</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/rst/Module description.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="creating-grillage-models">
+<h1>Creating grillage models<a class="headerlink" href="#creating-grillage-models" title="Permalink to this headline">¶</a></h1>
+<p>Here is one example of what you can do with <em>ops-grillage</em> module. Steps are explained in more detail
+throughout the rest of the documentation.</p>
+<p>To begin, import <a class="reference internal" href="OpsGrillage.html#module-OpsGrillage" title="OpsGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code></a> and Opensees visualization module <cite>ops_vis</cite>. When import, use either abbreviations or import the whole module’s functions using asterisk. For this example,
+we import the entire <a class="reference internal" href="OpsGrillage.html#module-OpsGrillage" title="OpsGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code></a> components to showcase the various functions and classes.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">OpsGrillage</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">openseespy.postprocessing.ops_vis</span> <span class="k">as</span> <span class="nn">opsv</span>
+</pre></div>
+</div>
+<p>In general, there are three stages when using the <em>ops-grillage</em> module:</p>
+<ol class="arabic simple">
+<li><p>Defining elements of grillage model using the <code class="xref py py-class docutils literal notranslate"><span class="pre">Member</span></code> class, and <a class="reference internal" href="Material.html#module-Material" title="Material"><code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code></a> class.</p></li>
+<li><p>Creating the grillage object using the <a class="reference internal" href="OpsGrillage.html#module-OpsGrillage" title="OpsGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code></a> class.</p></li>
+<li><p>Setting the elements of grillage model using <code class="docutils literal notranslate"><span class="pre">`~set_member()`</span></code> and <code class="docutils literal notranslate"><span class="pre">`~set_material()`</span></code> functions.</p></li>
+</ol>
+<p>In this example explain the procedures by creating an example grillage as shown in Figure 1:</p>
+<div class="figure align-center" id="id1">
+<span id="figure-1"></span><a class="reference internal image-reference" href="../_images/42degnegative10m.png"><img alt="../_images/42degnegative10m.png" src="../_images/42degnegative10m.png" style="width: 540.75px; height: 435.0px;" /></a>
+<p class="caption"><span class="caption-text">Figure 1: Instance of the model created in Opensees.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
+<div class="section" id="defining-elements-of-grillage-model">
+<span id="defining-grillage-member"></span><h2>Defining elements of grillage model<a class="headerlink" href="#defining-elements-of-grillage-model" title="Permalink to this headline">¶</a></h2>
+<p>A grillage element is created using the <code class="xref py py-class docutils literal notranslate"><span class="pre">GrillageMember</span></code> class. A <code class="xref py py-class docutils literal notranslate"><span class="pre">GrillageMember</span></code> object takes two
+objects as inputs, namely:</p>
+<ol class="arabic simple">
+<li><p>A <a class="reference internal" href="Material.html#module-Material" title="Material"><code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code></a> class object, and</p></li>
+<li><p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">Section</span></code> class object.</p></li>
+</ol>
+<p>The following code line creates a <code class="xref py py-class docutils literal notranslate"><span class="pre">GrillageMember</span></code> object of the Interior longitudinal beams.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">I_beam</span> <span class="o">=</span> <span class="n">GrillageMember</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Intermediate I-beams&quot;</span><span class="p">,</span> <span class="n">section</span><span class="o">=</span><span class="n">I_beam_section</span><span class="p">,</span> <span class="n">material</span><span class="o">=</span><span class="n">concrete</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>When setting up grillage members, it is often a good idea to first define materials and section objects before creating
+each <code class="xref py py-class docutils literal notranslate"><span class="pre">GrillageMember</span></code> class objects.</p>
+</div>
+<div class="section" id="creating-material-objects">
+<h2>Creating material objects<a class="headerlink" href="#creating-material-objects" title="Permalink to this headline">¶</a></h2>
+<p>A <a class="reference internal" href="Material.html#module-Material" title="Material"><code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code></a> class object is needed when <a class="reference internal" href="#defining-grillage-member">defining Grillage member</a>.</p>
+<p>The following code line creates the Concrete material needed for various grillage members.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">concrete</span> <span class="o">=</span> <span class="n">UniAxialElasticMaterial</span><span class="p">(</span><span class="n">mat_type</span><span class="o">=</span><span class="s2">&quot;Concrete01&quot;</span><span class="p">,</span> <span class="n">mat_vec</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">6.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.004</span><span class="p">,</span> <span class="o">-</span><span class="mf">6.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.014</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>For most bridges made of steel and concrete, material properties of either concrete and steel can be defined using
+keyword “steel” or “concrete” passed as an argument to <a class="reference internal" href="Material.html#module-Material" title="Material"><code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code></a> class.</p>
+<p>The <a class="reference internal" href="OpsGrillage.html#module-OpsGrillage" title="OpsGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code></a> class also allows for global material definition - e.g. an entire bridge made of the same
+material. To do this, users run the function <code class="docutils literal notranslate"><span class="pre">`set_material()`</span></code> passing the <a class="reference internal" href="Material.html#module-Material" title="Material"><code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code></a> class object as the
+input.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">test_bridge</span><span class="o">.</span><span class="n">set_material</span><span class="p">(</span><span class="n">concrete</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note for variable <cite>mat_type</cite>, users have the option to change the concrete type. The concrete model types are based on
+<a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html#steel-reinforcing-steel-materials">Opensees database for concrete and steel</a>.</p>
+</div>
+<div class="section" id="creating-section-objects">
+<h2>Creating section objects<a class="headerlink" href="#creating-section-objects" title="Permalink to this headline">¶</a></h2>
+<p>Similar to Materials, a <code class="xref py py-class docutils literal notranslate"><span class="pre">Section</span></code> class object is needed when <a class="reference internal" href="#defining-grillage-member">defining Grillage member</a>.</p>
+<p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">Section</span></code> class takes in section parameters based on Opensees definition of element types.
+Refer to <a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/element.html">Opensees element command</a> for specifics on
+element types.</p>
+<p>This example section we create an <em>Elastic</em> section with required input parameters for an Opensees <em>Elastic</em> section:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># define sections</span>
+<span class="n">I_beam_section</span> <span class="o">=</span> <span class="n">Section</span><span class="p">(</span><span class="n">op_sec_tag</span><span class="o">=</span><span class="s1">&#39;Elastic&#39;</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="mf">0.896</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="mf">3.47E+10</span><span class="p">,</span> <span class="n">G</span><span class="o">=</span><span class="mf">2.00E+10</span><span class="p">,</span> <span class="n">J</span><span class="o">=</span><span class="mf">0.133</span><span class="p">,</span> <span class="n">Iy</span><span class="o">=</span><span class="mf">0.213</span><span class="p">,</span> <span class="n">Iz</span><span class="o">=</span><span class="mf">0.259</span><span class="p">,</span>
+                     <span class="n">Ay</span><span class="o">=</span><span class="mf">0.233</span><span class="p">,</span> <span class="n">Az</span><span class="o">=</span><span class="mf">0.58</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="creating-the-grillage-model">
+<h2>Creating the grillage model<a class="headerlink" href="#creating-the-grillage-model" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="OpsGrillage.html#module-OpsGrillage" title="OpsGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code></a> class takes:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bridge_name</span></code>: A <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> of the grillage model name.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">long_dim</span></code>: An <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code> of the longitudinal length of the grillage model.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">width</span></code>: An <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code> of the transverse width of the grillage model.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">skew</span></code>: A <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code> of the skew angle at the ends of grillage model. This variable can take in a <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> of of 2 skew angles - this in turn creates the grillage model having edges with different skew angles.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">num_long_grid</span></code>: An <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code> of the number of grids to be uniformly spaced along the longitudinal direction - each grid line represents the transverse members.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">num_trans_grid</span></code>: An <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code> of the number of grids to be uniformly spaced along the transverse direction - each grid line represents the longitudinal members</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">edge_beam_dist</span></code>: A <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code> of the distance between exterior longitudinal beams to edge beam.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mesh_type</span></code>: Mesh type of grillage model. Must take a <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> input of either “Orthogonal” or “Oblique”.</p></li>
+</ul>
+<p>For the example bridge, run the following line with the prescribed variables to create the <a class="reference internal" href="OpsGrillage.html#module-OpsGrillage" title="OpsGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code></a> object:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span> <span class="o">=</span> <span class="n">OpsGrillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;SuperT_10m&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">skew</span><span class="o">=-</span><span class="mi">21</span><span class="p">,</span>
+                     <span class="n">num_long_grid</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">edge_beam_dist</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mesh_type</span><span class="o">=</span><span class="s2">&quot;Ortho&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="setting-grillage-member-to-element-group-in-model">
+<h2>Setting grillage member to element group in model<a class="headerlink" href="#setting-grillage-member-to-element-group-in-model" title="Permalink to this headline">¶</a></h2>
+<p>The members of the grillage model is set using the <cite>set_member()</cite> function of <code class="docutils literal notranslate"><span class="pre">opGrillage</span></code> class. The function takes a <cite>member</cite> class
+object, and a member string tag as arguments. The function the assigns the <cite>member</cite>
+object to the element group in the grillage model.</p>
+<p>An example showing the assignment of interior main beams:</p>
+<p>For skew meshes without customized node points, the grillage elements typically comprised of standardized element groups.
+Table 1 shows the standard elements of a grillage model along with the respective str arguments. Users</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 32%" />
+<col style="width: 68%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>edge_beam</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>exterior_main_beam_1</p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p>interior_main_beam</p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>exterior_main_beam_1</p></td>
+</tr>
+<tr class="row-odd"><td><p>5</p></td>
+<td><p>edge_slab</p></td>
+</tr>
+<tr class="row-even"><td><p>6</p></td>
+<td><p>transverse_slab</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>For orthogonal meshes, nodes in the transverse direction have varied spacing based on the skew edge region.
+The properties of transverse members based on unit metre width is required for its definition section properties.
+The module automatically implement the unit width properties based on the spacing of nodes in the skew edge regions.</p>
+<p>The module checks if all element groups in the grillages are defined by the user. If missing element groups are detected,
+a warning message is printed on the terminal.</p>
+</div>
+<div class="section" id="creating-grillage-in-opensees-model-space-or-as-an-executable-py-file">
+<h2>Creating grillage in Opensees model space or as an executable py file<a class="headerlink" href="#creating-grillage-in-opensees-model-space-or-as-an-executable-py-file" title="Permalink to this headline">¶</a></h2>
+<p>Once the object of grillage model is created, we can create the model in Opensees software space by calling the <cite>create_ops</cite> function:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pyfile</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">example_bridge</span><span class="o">.</span><span class="n">create_ops</span><span class="p">(</span><span class="n">pyfile</span><span class="o">=</span><span class="n">pyfile</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <cite>create_ops</cite> function takes a boolean for <cite>pyfile=</cite> parameter which by default is <cite>False</cite>. In this example we set this to False to create the
+grillage model in Opensees model space. Up to this point, users can run any Opensees command (e.g. <cite>ops_vis</cite> commands) within the interface to interact with
+the grillage model in Opensees.</p>
+<p>Alternatively, when <cite>pyfile=</cite> parameter is set to <cite>True</cite>, an executable py file will be generated instead. The executable py file contains all relevent Opensees command from which when executed, creates the model instance in Opensees.
+Note that in doing so, the model instance in Opensees space is not created.</p>
+</div>
+<div class="section" id="visualize-grillage-model">
+<h2>Visualize grillage model<a class="headerlink" href="#visualize-grillage-model" title="Permalink to this headline">¶</a></h2>
+<p>To check that we created the model in Opensees space, we can plot the model using Opensees’s visualization module <cite>ops_vis</cite>.
+Run the following code line and a plot like in <a class="reference internal" href="#figure-1">Figure 1</a> will be returned:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">opsplt</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="s2">&quot;nodes&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here are more details of <a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/ops_vis.html">ops_vis module</a></p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="Running_analysis.html" class="btn btn-neutral float-right" title="Performing analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="Installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Justin Ngan, Colin Caprani.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
