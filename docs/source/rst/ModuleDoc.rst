@@ -157,17 +157,11 @@ Links to module components
 ====================
 
 
-#. :doc:`GrillageGenerator`
-#. :doc:`Bridge model call`
-#. :doc:`node_data_generation`
-#. :doc:`OPMemberProp`
-#. :doc:`op_create_elements`
-#. :doc:`op_create_nodes`
-#. :doc:`op_section_generate`
-#. :doc:`op_fix`
-#. :doc:`section_property_input`
-#. :doc:`boundary_cond_input`
-#. :doc:`compile_output`
+#. :doc:`Module description`
+#. :doc:`Examples`
+#. :doc:`OpsGrillage`
+#. :doc:`Running_analysis`
+
 
 .. toctree::
    :maxdepth: 2

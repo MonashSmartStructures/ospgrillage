@@ -13,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,6 +31,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -164,8 +167,8 @@
 framework. It also contains methods for moving load analysis which iterates
 over the load path of the Vehicle class, which is passed into.</p>
 <dl class="py class">
-<dt id="Analysis.MovingLoadAnalysis">
-<em class="property">class </em><code class="sig-prename descclassname">Analysis.</code><code class="sig-name descname">MovingLoadAnalysis</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bridge_obj</span></em>, <em class="sig-param"><span class="n">truck_class</span></em>, <em class="sig-param"><span class="n">traverse_prop</span></em>, <em class="sig-param"><span class="n">analysis_type</span></em>, <em class="sig-param"><span class="n">op_wizard_obj</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Analysis.MovingLoadAnalysis" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="Analysis.MovingLoadAnalysis">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Analysis.</span></span><span class="sig-name descname"><span class="pre">MovingLoadAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bridge_obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">truck_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">traverse_prop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">analysis_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_wizard_obj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Analysis.MovingLoadAnalysis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Moving force class. This class handles a given bridge model (either an Opensees model or otherwise specified)
 , a moving vehicle object (class) and a traverse pattern (namedtuple).</p>
@@ -173,8 +176,8 @@ over the load path of the Vehicle class, which is passed into.</p>
 :param bridge_obj: py file name of bridge generation created from GrillageGenerator class
 :param truck_class: vehicle class obj</p>
 <dl class="py method">
-<dt id="Analysis.MovingLoadAnalysis.run_analysis">
-<code class="sig-name descname">run_analysis</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Analysis.MovingLoadAnalysis.run_analysis" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="Analysis.MovingLoadAnalysis.run_analysis">
+<span class="sig-name descname"><span class="pre">run_analysis</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Analysis.MovingLoadAnalysis.run_analysis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to carry out moving load procedure</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -184,8 +187,8 @@ over the load path of the Vehicle class, which is passed into.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="Analysis.MovingLoadAnalysis.moving_static_analysis">
-<code class="sig-name descname">moving_static_analysis</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Analysis.MovingLoadAnalysis.moving_static_analysis" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="Analysis.MovingLoadAnalysis.moving_static_analysis">
+<span class="sig-name descname"><span class="pre">moving_static_analysis</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Analysis.MovingLoadAnalysis.moving_static_analysis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Truckloading directions is fixed at “X” and “Z” (orthogonal direction)
 future versions for varying direction (of given angle or customized) needs
 to be implemented
@@ -193,18 +196,18 @@ to be implemented
 </dd></dl>
 
 <dl class="py method">
-<dt id="Analysis.MovingLoadAnalysis.op_load_positioning">
-<code class="sig-name descname">op_load_positioning</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pos</span></em>, <em class="sig-param"><span class="n">axlwt</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Analysis.MovingLoadAnalysis.op_load_positioning" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="Analysis.MovingLoadAnalysis.op_load_positioning">
+<span class="sig-name descname"><span class="pre">op_load_positioning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axlwt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Analysis.MovingLoadAnalysis.op_load_positioning" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="Analysis.MovingLoadAnalysis.op_search_nodes">
-<code class="sig-name descname">op_search_nodes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pos</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Analysis.MovingLoadAnalysis.op_search_nodes" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="Analysis.MovingLoadAnalysis.op_search_nodes">
+<span class="sig-name descname"><span class="pre">op_search_nodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Analysis.MovingLoadAnalysis.op_search_nodes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="Analysis.MovingLoadAnalysis.moving_transient">
-<code class="sig-name descname">moving_transient</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Analysis.MovingLoadAnalysis.moving_transient" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="Analysis.MovingLoadAnalysis.moving_transient">
+<span class="sig-name descname"><span class="pre">moving_transient</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Analysis.MovingLoadAnalysis.moving_transient" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p></p>
@@ -217,13 +220,13 @@ to be implemented
 </dd></dl>
 
 <dl class="py method">
-<dt id="Analysis.MovingLoadAnalysis.remove_previous_analysis">
-<code class="sig-name descname">remove_previous_analysis</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Analysis.MovingLoadAnalysis.remove_previous_analysis" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="Analysis.MovingLoadAnalysis.remove_previous_analysis">
+<span class="sig-name descname"><span class="pre">remove_previous_analysis</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Analysis.MovingLoadAnalysis.remove_previous_analysis" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="Analysis.MovingLoadAnalysis.get_axles">
-<code class="sig-name descname">get_axles</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Analysis.MovingLoadAnalysis.get_axles" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="Analysis.MovingLoadAnalysis.get_axles">
+<span class="sig-name descname"><span class="pre">get_axles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Analysis.MovingLoadAnalysis.get_axles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to return the coordinates of truck axles with respect
 to the global coordinate of the bridge model. Callable outside of class for readable axle positions
 :return:</p>
@@ -232,23 +235,23 @@ to the global coordinate of the bridge model. Callable outside of class for read
 </dd></dl>
 
 <dl class="py function">
-<dt id="Analysis.op_define_recorder">
-<code class="sig-prename descclassname">Analysis.</code><code class="sig-name descname">op_define_recorder</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Analysis.op_define_recorder" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="Analysis.op_define_recorder">
+<span class="sig-prename descclassname"><span class="pre">Analysis.</span></span><span class="sig-name descname"><span class="pre">op_define_recorder</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Analysis.op_define_recorder" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
-<dt id="Analysis.extract">
-<code class="sig-prename descclassname">Analysis.</code><code class="sig-name descname">extract</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lst</span></em>, <em class="sig-param"><span class="n">num</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Analysis.extract" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="Analysis.extract">
+<span class="sig-prename descclassname"><span class="pre">Analysis.</span></span><span class="sig-name descname"><span class="pre">extract</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Analysis.extract" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
-<dt id="Analysis.sort_list">
-<code class="sig-prename descclassname">Analysis.</code><code class="sig-name descname">sort_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lst</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Analysis.sort_list" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="Analysis.sort_list">
+<span class="sig-prename descclassname"><span class="pre">Analysis.</span></span><span class="sig-name descname"><span class="pre">sort_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lst</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Analysis.sort_list" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
-<dt id="Analysis.op_run_moving">
-<code class="sig-prename descclassname">Analysis.</code><code class="sig-name descname">op_run_moving</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Analysis.op_run_moving" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="Analysis.op_run_moving">
+<span class="sig-prename descclassname"><span class="pre">Analysis.</span></span><span class="sig-name descname"><span class="pre">op_run_moving</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Analysis.op_run_moving" title="Permalink to this definition">¶</a></dt>
 <dd><p>Code to call after Code implementing truck load onto bridge model
 (recreate_model and truck loading)
 The method communicates with Openseespy, running the inbuilt

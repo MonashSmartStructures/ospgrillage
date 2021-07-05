@@ -239,7 +239,7 @@ class OpsGrillage:
                                                                                             x=coordinate[0],
                                                                                             y=coordinate[1],
                                                                                             z=coordinate[2]))
-            else:  # 0 - x , 1 - y, 2 - z
+            else:  # indices correspondance . 0 - x , 1 - y, 2 - z
                 ops.node(nested_v['tag'], coordinate[0], coordinate[1], coordinate[2])
 
     def __write_op_fix(self, mesh_obj):
@@ -469,7 +469,7 @@ class OpsGrillage:
 
     # ---------------------------------------------------------------
     # Function to find nodes or grids correspond to a point or line - called within OpsGrillage for distributing
-    # loads to grillage nodes
+    # loads to grillage nodes. These are low level functions not accessible from API.
 
     # private procedure to find elements within a grid
     def __get_elements(self, node_tag_combo):
@@ -813,6 +813,7 @@ class OpsGrillage:
 
     # Getter for Patch loads
     def get_bounded_nodes(self, patch_load_obj):
+        # function to return nodes bounded by patch load
         point_list = [patch_load_obj.load_point_1, patch_load_obj.load_point_2, patch_load_obj.load_point_3,
                       patch_load_obj.load_point_4]
         bounded_node = []
@@ -835,9 +836,10 @@ class OpsGrillage:
     def assign_point_to_four_node(self, point, mag):
         """
         Function to assign point load to nodes of grid where the point load lies in.
+
         :param point: [x,y=0,z] coordinates of point load
         :param mag: Vertical (y axis direction) magnitude of point load
-        :return:
+
         """
         node_mx = []
         node_mz = []
@@ -1038,14 +1040,7 @@ class OpsGrillage:
 
     @staticmethod
     def get_node_area(inside_point, p_list) -> float:
-        A = 0
         A = calculate_area_given_vertices(p_list)
-        # if len(p_list) == 3:
-        #     A = calculate_area_given_three_points(p_list[0], p_list[1], p_list[2])
-        # elif len(p_list) == 4:
-        #     _, A = calculate_area_given_four_points(inside_point, p_list[0], p_list[1], p_list[2], p_list[3])
-        # elif len(p_list) == 5:
-        #     pass
         return A
 
     # ----------------------------------------------------------------------------------------------------------
@@ -1053,8 +1048,11 @@ class OpsGrillage:
     def distribute_load_types_to_model(self, load_case_obj: Union[LoadCase, CompoundLoad]) -> list:
         """
         Functions to distribute load types to OpsGrillage model.
-        :param load_case_obj:
-        :return: list of str containing ops.load() command for distributing the load object parameter to nodes of model.
+        :param load_case_obj: A load case object or Compound load
+        :type load_case_obj: LoadCase or CompoundLoad
+        :return: string list of all ops.load() command responsible for distributing loads to nodes of model. The string
+        is either evaluated (using eval()) or write to py file if flagged.
+
         """
         global load_groups
         load_str = []
@@ -1101,11 +1099,11 @@ class OpsGrillage:
     def add_load_case(self, load_case_obj: Union[LoadCase, CompoundLoad], load_factor=1):
         """
         Function to add individual load cases to OpsGrillage instance.
-        :param load_factor:
-        :param load_case_obj:
-        :return: Populate self.load_case_list with input load case object. Distributes loads/groups within load case
-                 to grillage model. This returns a list of ops.load() commands and assigns to its respective load case
-                 object
+
+        :param load_factor: Optional load factor for the prescribed load case
+        :param load_case_obj: A load case object of the load condition
+        :type load_case_obj: LoadCase
+
 
         A typical load_case_dict within load_case_dict list has the following format
         .. code:
@@ -1121,6 +1119,10 @@ class OpsGrillage:
         print("Load Case {} added".format(load_case_obj.name))
 
     def analyse_load_case(self):
+        """
+        Function to analyse all basic load cases defined previously using add_load_case() function
+
+        """
         # analyse all load case defined in self.load_case_dict for OpsGrillage instance
         # loop each load case dict
         for load_case_dict in self.load_case_list:
@@ -1201,8 +1203,7 @@ class OpsGrillage:
         :param load_factor: load factor for load case. Default is 1. Load factor defined during definition of load case
                             i.e. creating load case object is superseded by this load factor variable
         :param moving_load_obj: Moving load class object instance
-        :return: Populates self.moving_load_case_dict with individual dict of load cases - each representing an
-                incremental position load case of the moving load.
+
         """
         # get the list of individual load cases
         list_of_incr_load_case_dict = []
@@ -1219,6 +1220,13 @@ class OpsGrillage:
         print("Moving load case: {} created".format(moving_load_obj.name))
 
     def analyse_moving_load_case(self, moving_load_case_name: str = None):
+        """
+        Function to analyze all defined moving load cases.
+
+        :param moving_load_case_name: Optional if users wish to run only a specific load case.
+        :type moving_load_case_name: str
+
+        """
         # function to analyse individual moving load case
         # create analysis object for each load case correspond to increment of moving paths
         # loop through all moving load objects
@@ -1244,8 +1252,9 @@ class OpsGrillage:
 
     def get_results(self):
         """
-        Function to get results from Results object.
-        :return: DataArrays for basic load case, and moving load cases if any
+        Function to get results from all analyses.
+
+        :return: A data array for basic all load case, and a list of data arrays for each moving load cases if any
         """
         basic_da, list_moving_da = self.results.compile_data_array()
         return basic_da, list_moving_da
@@ -1257,13 +1266,16 @@ class Analysis:
     Main class to handle the run/execution of load case + load combination + moving load analysis. Analysis class is
     created and used within OpsGrillage class after "adding load case", "adding load combination" and "adding moving
     load" procedures.
-    Analysis class have the following role in OpsGrillage analysis:
-    *. store information of ops commands for performing static (default) analysis of single/multiple load case(s).
-    *. execute the required ops commands to perform analysis using the OpsGrillage model instance.
-    *. if flagged, writes an executable py file instead which performs the exact analysis as it would for an
+
+    The following are the roles of Analysis object:
+
+    * store information of ops commands for performing static (default) analysis of single/multiple load case(s).
+    * execute the required ops commands to perform analysis using the OpsGrillage model instance.
+    * if flagged, writes an executable py file instead which performs the exact analysis as it would for an
         OpsGrillage instance instead.
-    *. manages multiple load case's ops.load() commands, applying the specified load factors to the load cases for
+    * manages multiple load case's ops.load() commands, applying the specified load factors to the load cases for
         load combinations
+
     """
 
     def __init__(self, analysis_name: str, ops_grillage_name: str, pyfile: bool, node_counter, ele_counter,
@@ -1379,32 +1391,6 @@ class Analysis:
                 ele_force = ops.eleForce(ele_tag)
                 self.ele_force.setdefault(ele_tag, ele_force)
 
-            #
-            # loop = True
-            # counter = 0
-            # while loop:
-            #     try:
-            #         counter += 1
-            #         disp_list = ops.nodeDisp(counter)
-            #         self.node_disp.setdefault(counter, disp_list)
-            #     except:  # finished extracting all nodes
-            #         loop = False
-            # print("Node displacement extraction finished at node counter {}".format(counter - 1))
-            # # second loop extract ele forces
-            # loop = True  # reset loop parameters
-            # counter = 0  # reset loop parameters
-            # while loop:
-            #     try:
-            #         counter += 1
-            #         ele_force = ops.eleForce(counter)
-            #
-            #         if ops.eleForce(counter) is None:
-            #             loop = False
-            #             break
-            #         self.ele_force.setdefault(counter, ele_force)
-            #     except:
-            #         loop = False
-            # print("Ele force extraction finished at ele counter {}".format(counter - 1))
         print("Extract completed")
         return self.node_disp, self.ele_force
 

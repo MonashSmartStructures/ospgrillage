@@ -18,7 +18,7 @@ In general, there are three stages when using the *ops-grillage* module:
 #. Creating the grillage object using the :class:`~OpsGrillage` class.
 #. Setting the elements of grillage model using ```~set_member()``` and ```~set_material()``` functions.
 
-In this example we will detail the steps in order to create an example grillage as shown in Figure 1:
+In this example explain the procedures by creating an example grillage as shown in Figure 1:
 
 .. _Figure 1:
 

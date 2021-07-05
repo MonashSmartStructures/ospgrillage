@@ -19,7 +19,7 @@ Line = namedtuple("line", ["m", "c", "phi"])
 # ---------------------------------------------------------------------------------------------------------------
 class Loads:
     """
-    Main class of loading definition
+    Base class for Point, Line , and Patch loads
     """
     load_point_1: LoadPoint
     load_point_2: LoadPoint
@@ -30,7 +30,25 @@ class Loads:
     load_point_7: LoadPoint
     load_point_8: LoadPoint
 
-    def __init__(self, name, Fx=0, Fy=0, Fz=0, Mx=0, My=0, Mz=0, wx=0, wy=0, wz=0, qx=0, qy=0, qz=0, **kwargs):
+    def __init__(self, name, Fx=0, Fy=0, Fz=0, Mx=0, My=0, Mz=0, **kwargs):
+        """
+
+        :param name: Name of load
+        :param Fx: Axis force in x axis
+        :param Fy: Axis force in y axis
+        :param Fz: Axis force in z axis
+        :param Mx: Moment about x axis
+        :param My: Moment about y axis
+        :param Mz: Moment about z axis
+        :param kwargs: see below
+
+        :keyword:
+
+        * **point1**, **point2**, ..., **point8** : (LoadPoint namedTuple) coordinate points with force magnitude describing the load type
+        * **localpoint1**, **localpoint2**, ..., **localpoint8**: (LoadPoint namedTuple) local coordinate points with force magnitude describing the load type
+
+
+        """
         #
         self.name = name
         self.Fx = Fx
@@ -39,12 +57,6 @@ class Loads:
         self.Mx = Mx
         self.My = My
         self.Mz = Mz
-        self.wx = wx
-        self.wy = wy
-        self.wz = wz
-        self.qx = qx
-        self.qy = qy
-        self.qz = qz
         # Initialise dict for key load points of line UDL and patch load definitions
         self.load_point_data = dict()
         # parse namedtuple of global coordinates
@@ -89,15 +101,20 @@ class Loads:
         self.compound_dist_z = 0  # local coordinate system
         self.ref_point = None  # local coordinate system
         self.compound_group = None  # group number access by LoadCase class to move load group if any path is defined
-        # init dict
-        self.spec = dict()  # dict {node number: {Fx:val, Fy:val, Fz:val, Mx:val, My:val, Mz:val}}
-        self.load_counter = 0
+        # spec dict
+        self.spec = dict(name=self.name,global_points= self.point_list,local_points=self.local_point_list,ref_point=self.ref_point)  # dict {node number: {Fx:val, Fy:val, Fz:val, Mx:val, My:val, Mz:val}}
+        self.load_counter = 0 # counter for compound load
 
     # modify load points if compound load option is present i.e. compound_x_list
     def form_compound_load(self, **kwargs):
         """
-        Function to set a number of load types into a compound load group
-        :param kwargs:
+        Function to set load groups into a compound load group. This function is handled by OpsGrillage.
+        :param kwargs: see below
+
+        :keyword:
+        * **ref_point**: (Point namedTuple) Coordinate of the global ref point (grillage model coordinate) to position the ref point of the compound load group
+        * **compound_dist_x** : (Float) Distance x from ref point of compound load group **in local coordinate** to offset the individual load object
+        * **compound_dist_z** : (Float) Distance z from ref point of compound load group **in local coordinate** to offset the individual load object
         :return:
         """
         # if global coordinates are given, reset global to local by subtracting the centroid, then adding the local coord if any
@@ -146,17 +163,14 @@ class Loads:
                 z=self.load_point_8.z - centroid[
                     1] + self.compound_dist_z + self.ref_point.z) if self.load_point_8 is not None else self.load_point_8
 
-        else:
+        else: #TODO for local coordinate definition
             pass
         # else set points
-
-
-        # find centroid of load_points
 
     # function called by Moving load module to move the load group
     def move_load(self, ref_point: Point):
         """
-        Function to move each load point of load type by a reference coordinate
+        Function to move each load point of load type by a reference coordinate. This function is handled by OpsGrillage
         :param ref_point: coordinate to be moved
         :type ref_point: namedTuple Point(x,y,z)
         :return: increment each load point by +x, +y, +z where (x,y,z) is the coordinate prescribed by ref_point
@@ -245,6 +259,7 @@ class NodalLoad(Loads):
     def __init__(self, name, node_tag, node_force):
         """
         Nodal load takes a node tag and namedtuple NodalForce(Fx,Fy,Fz,Mx,My,Mz) as input.
+
         :param name: Name of load
         :type name: str
         :param node_tag: Node tag of grillage model for nodal load to be applied
@@ -275,7 +290,7 @@ class NodalLoad(Loads):
 
 class PointLoad(Loads):
     """
-    Class for Point loads. Derived from based load class
+    Class for Point loads. Derived from based :py:class:`Loads` class
     """
     def __init__(self, name, **kwargs):
         super().__init__(name, **kwargs)
@@ -309,6 +324,20 @@ class LineLoading(Loads):
             self.line_equation = Line(self.m, self.c, self.phi)
 
     def interpolate_udl_magnitude(self, point_coordinate):
+        """
+        Function to interpolate magnitude of load point between two load points in a line segment.
+
+        Example illustration: Function returns p @ [x y z]
+
+        p(loadpoint1)_____p(x=,y,z)_______ p(loadpoint2)
+        ||||||||||||||||||||||||||||||||||||||||||||||      Line loading
+        ||||||||||||||||||||||||||||||||||||||||||||||
+      __________________________________________________________
+
+        :param point_coordinate: coordinate list [x,y,z]
+        :type point_coordinate: list
+        :return: point force (udl) magnitude at coordinate
+        """
         # input: point_coordinate list of [x,y,z]
         pp = None
         # check if line is straight or curve
@@ -333,6 +362,15 @@ class LineLoading(Loads):
         return pp
 
     def get_point_given_distance(self, xbar, point_coordinate):
+        """
+        Function to return
+        :param xbar: distance
+        :type xbar: float
+        :param point_coordinate: coordinates list [x,y,z]
+        :type point_coordinate: list
+        :return new_point: coordinate list [x,y,z] shifted by distance
+        :type new_point: list
+        """
         # function to return centroid of line load given reference point coordinate (point2) and xbar calculated based
         # on
         z_dis = xbar * np.sin(self.angle)
@@ -342,6 +380,12 @@ class LineLoading(Loads):
         return new_point
 
     def get_line_segment_given_x(self, x):
+        """
+        Function to return straight line equation for line segment (in OpsGrillage case, segment bounded by grid) given x point
+        :param x: value of x input for line equation
+        :type x: float
+        :return: solution of line equation (i.e. y = mx + c)
+        """
         if self.load_point_1.x <= x < self.line_end_point.x or self.load_point_1.x > x >= self.line_end_point.x:
             return line_func(self.line_equation.m, self.line_equation.c, x)
 
@@ -355,6 +399,11 @@ class LineLoading(Loads):
 
 
 class PatchLoading(Loads):
+    """
+    Main class for Patch loads. Derived from base Loads class.
+
+    Patch load can take up to 8 load points. By default requires at least 4 load point for patch (quadrilateral)
+    """
     def __init__(self, name, **kwargs):
         super().__init__(name, **kwargs)
 
@@ -400,12 +449,13 @@ class CompoundLoad:
     is given, CompoundLoad replaces the coordinates of the initial load points (retaining the magnitude of load points)
 
     When set_global_coord() function is called, CompoundLoad sets the input global coordinate as the new centroid of the
-     compounded load groups. This is done by shifting each local coordinate load point in all load groups under
-     CompoundLoad by x (global) and z (global).
+    compounded load groups. This is done by shifting each local coordinate load point in all load groups under
+    CompoundLoad by x (global) and z (global).
 
     Here are a few relationships between CompoundLoad and other classes
-    *. CompoundLoad object can have Loads class and its inheritances (Line, Point, Patch)
-    *. CompoundLoad handles functions of Load classes (e.g. move_load)
+
+    * CompoundLoad object can have Loads class and its inheritances (Line, Point, Patch)
+    * CompoundLoad handles functions of Load classes (e.g. move_load)
 
     """
     def __init__(self, name):
@@ -416,6 +466,14 @@ class CompoundLoad:
         self.global_coord = self.centroid
 
     def add_load(self, load_obj: Loads, local_coord: Point = None):
+        """
+        Function to add load object to compound load group. If a local_coord parameter is given, this new local_coord
+         overwrites the coordinates (either local or global) of the load object.
+        :param load_obj: Load object
+        :param local_coord: Local coordinate of load object
+        :type local_coord: Point namedTuple
+
+        """
         # update the load obj to be part of compound load by first
         # shifting all load points relative to centroid of defined load class
         # then shifting centroid and load_points relative to A Local Coordinate system
@@ -430,6 +488,12 @@ class CompoundLoad:
         self.local_coord_list.append(local_coord)
 
     def set_global_coord(self, global_coord: Point):
+        """
+        Function to set global coordinate of the compound load with respect to global coordinate system of grillage model.
+        The global coordinate is set to all local load points (i.e. it adds the global coord x y z to each local coord)
+        :param global_coord: Coordinate of global coord
+        :type global_coord: Point namedTuple
+        """
         # overwrite global coordinate
         if global_coord != self.global_coord:
             self.global_coord = global_coord
@@ -453,12 +517,13 @@ class LoadCase:
 
 
     Here are a few relationships between LoadCase and other classes
-    *. MovingLoad class creates a series of load case representing the movement of load objects in each load case.
-    *. Load combination takes in several LoadCase class instance with varied load factors into a single analysis
-    *. Analysis class handles the ops. commands required for
-    *. OpsGrillage class takes in load case and updates the variable 'load_command_list' after distributing loads
+
+    * MovingLoad class creates a series of load case representing the movement of load objects in each load case.
+    * Load combination takes in several LoadCase class instance with varied load factors into a single analysis
+    * Analysis class handles the ops. commands required for
+    * OpsGrillage class takes in load case and updates the variable 'load_command_list' after distributing loads
         within the LoadCase class to nodes/elements of the Mesh in OpsGrillage.
-    *. LoadCase class can have Load objects or CompoundLoad class object
+    * LoadCase class can have Load objects or CompoundLoad class object
 
     """
     def __init__(self, name):

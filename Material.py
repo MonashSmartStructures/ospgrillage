@@ -1,6 +1,6 @@
 class Material:
     """
-    Class for material properties definition
+    Base class for Material objects
     """
 
     def __init__(self, mat_type, mat_vec):
@@ -11,7 +11,8 @@ class Material:
 
 class UniAxialElasticMaterial(Material):
     """
-    Class for uniaxial material prop
+    Main class for Opensees UniAxialElasticMaterial objects. This class acts as a wrapper to parse input parameters
+    and returns command lines to generate the prescribe materials in Opensees library.
     """
 
     def __init__(self, mat_type, mat_vec):

@@ -1,3 +1,5 @@
+.. currentmodule:: OpsGrillage.Opsgrillage
+
 ====================
 API reference
 ====================
@@ -8,46 +10,50 @@ showing their interactions, both within and across various classes, are presente
 UML diagram overview
 ----------------------------
 
+..  figure:: ../images/draftUML.PNG
+    :align: center
+    :scale: 50 %
+
+    Figure 1: UML diagram - draft version 1.
+
+
+What parts are considered public API?
+------------------------------------------
+Simply, any functions documented in this API reference page are considered part of *ops-grillage*'s public API. In other
+words, only the top level
 
 
 OpsGrillage class
 ---------------------------
 
-..  autoclass:: OpsGrillage.OpsGrillage
-    :noindex:
+..  autosummary::
 
+.. autofunction
+
+    OpsGrillage.add_load_case
+
+
+
+
+
+Analysis objects
+^^^^^^^^^^^^^^^^
 
 For information regarding the procedures in :class:`~OpsGrillage` class, see
 :doc:`ModuleDoc`. For information of all functions and methods in ``opGrillage`` class, see :doc:`OpsGrillage`
 
 
-
-Node numbering
-
-Meshing description
-
-element grouping
-
-Analysis objects
+Result objects
 ^^^^^^^^^^^^^^^^
 
-..  autoclass:: OpsGrillage.Analysis
-    :noindex:
-
-..  autoclass:: OpsGrillage.Results
-    :noindex:
 
 Material class
 ------------------------------------------
 
-..  autoclass:: OpsGrillage.Material
-    :noindex:
 
 GrillageMember class
 ------------------------------------------
 
-..  autoclass:: OpsGrillage.GrillageMember
-    :noindex:
 
 Mesh class
 ------------------------------------------
@@ -68,30 +74,20 @@ Example table for copy paste usage:
    ================================   ===========================================================================
 
 
+op_create_elements(op_member_prop_class, trans_tag, beam_ele_type, expression='long_mem'):)
+
+Command to construct attribute for element in GrillageGenerator object. The element object is translated to an
+Openseespy command line for each associated element in the model.
+
+================================   ===========================================================================
+``op_member_prop_class`` |str|     constraints type
+``trans_tag`` |list|               a list of constraints arguments
+================================   ===========================================================================
+
+Example element definition
+
+
 Load class
 ------------------------------------------
 
-.. autoclass:: Load.Loads
-   :noindex:
-
-.. autoclass:: Load.NodalLoad
-   :noindex:
-
-.. autoclass:: Load.PointLoad
-   :noindex:
-
-.. autoclass:: Load.LineLoading
-   :noindex:
-
-.. autoclass:: Load.PatchLoading
-   :noindex:
-
-.. autoclass:: Load.CompoundLoad
-   :noindex:
-
-.. autoclass:: Load.Path
-   :noindex:
-
-.. autoclass:: Load.ShapeFunction
-   :noindex:
 
