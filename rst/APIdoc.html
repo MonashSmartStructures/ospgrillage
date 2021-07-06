@@ -1,0 +1,340 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>API reference &mdash; ops-grillage module 0.0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="OpsGrillage.OpsGrillage" href="generated/OpsGrillage.OpsGrillage.html" />
+    <link rel="prev" title="Performing analysis" href="Running_analysis.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> ops-grillage module
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module%20description.html">Creating grillage models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Running_analysis.html">Performing analysis</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#uml-diagram-overview">UML diagram overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-parts-are-considered-public-api">What parts are considered public API?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#opsgrillage-class">OpsGrillage class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/OpsGrillage.OpsGrillage.html">OpsGrillage.OpsGrillage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#analysis-objects">Analysis objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#result-objects">Result objects</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#material-class">Material class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#grillagemember-class">GrillageMember class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mesh-class">Mesh class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#load-class">Load class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ModuleDoc.html">Module documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ChangeLog.html">Change Log</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ops-grillage module</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>API reference</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/rst/APIdoc.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="api-reference">
+<h1>API reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h1>
+<p>This page includes the technical content deliverables of the documentation. Instructions on variables and function
+showing their interactions, both within and across various classes, are presented herein.</p>
+<div class="section" id="uml-diagram-overview">
+<h2>UML diagram overview<a class="headerlink" href="#uml-diagram-overview" title="Permalink to this headline">¶</a></h2>
+<div class="figure align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/draftUML.PNG"><img alt="../_images/draftUML.PNG" src="../_images/draftUML.PNG" style="width: 546.5px; height: 372.0px;" /></a>
+<p class="caption"><span class="caption-text">Figure 1: UML diagram - draft version 1.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+<div class="section" id="what-parts-are-considered-public-api">
+<h2>What parts are considered public API?<a class="headerlink" href="#what-parts-are-considered-public-api" title="Permalink to this headline">¶</a></h2>
+<p>Simply, any functions documented in this API reference page are considered part of <em>ops-grillage</em>’s public API. In other
+words, only top level functions within each class (see UML diagram) are part of the public API.</p>
+</div>
+<div class="section" id="opsgrillage-class">
+<h2>OpsGrillage class<a class="headerlink" href="#opsgrillage-class" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/OpsGrillage.OpsGrillage.html#OpsGrillage.OpsGrillage" title="OpsGrillage.OpsGrillage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OpsGrillage</span></code></a></p></td>
+<td><p>Main class of Openseespy grillage model wrapper.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="analysis-objects">
+<h3>Analysis objects<a class="headerlink" href="#analysis-objects" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="result-objects">
+<h3>Result objects<a class="headerlink" href="#result-objects" title="Permalink to this headline">¶</a></h3>
+<p>For information regarding the procedures in <a class="reference internal" href="OpsGrillage.html#module-OpsGrillage" title="OpsGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code></a> class, see
+<a class="reference internal" href="ModuleDoc.html"><span class="doc">Module documentation</span></a>. For information of all functions and methods in <code class="docutils literal notranslate"><span class="pre">opGrillage</span></code> class, see <a class="reference internal" href="OpsGrillage.html"><span class="doc">OpsGrillage</span></a></p>
+</div>
+</div>
+<div class="section" id="material-class">
+<h2>Material class<a class="headerlink" href="#material-class" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="grillagemember-class">
+<h2>GrillageMember class<a class="headerlink" href="#grillagemember-class" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="mesh-class">
+<h2>Mesh class<a class="headerlink" href="#mesh-class" title="Permalink to this headline">¶</a></h2>
+<p>Example table for copy paste usage:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 72%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">bridge_name</span></code> <a href="#id2"><span class="problematic" id="id3">|str|</span></a></p></td>
+<td><p>name string of bridge model</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">long_dim</span></code> <a href="#id4"><span class="problematic" id="id5">|float|</span></a></p></td>
+<td><p>longitudinal dimension argument</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">width</span></code> <a href="#id6"><span class="problematic" id="id7">|float|</span></a></p></td>
+<td><p>width argument</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">skew</span></code> <a href="#id8"><span class="problematic" id="id9">|float|</span></a></p></td>
+<td><p>skew angle argument: angle can be positive or negative (skew clockwise if positive)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">num_long_grid</span></code> <a href="#id10"><span class="problematic" id="id11">|float|</span></a></p></td>
+<td><p>number of line meshes in the longitudinal direction</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">num_trans_grid</span></code> <a href="#id12"><span class="problematic" id="id13">|float|</span></a></p></td>
+<td><p>number of line mesh in the transverse direction</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cantilever_edge</span></code> <a href="#id14"><span class="problematic" id="id15">|float|</span></a></p></td>
+<td><p>distance between edg</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mesh_type</span></code> <a href="#id16"><span class="problematic" id="id17">|str|</span></a></p></td>
+<td><dl class="simple">
+<dt>string argument for type of mesh:</dt><dd><ul class="simple">
+<li><p>“Ortho”: Orthogonal mesh</p></li>
+<li><p>“Oblique” : Skew mesh</p></li>
+</ul>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>op_create_elements(op_member_prop_class, trans_tag, beam_ele_type, expression=’long_mem’):)</p>
+<p>Command to construct attribute for element in GrillageGenerator object. The element object is translated to an
+Openseespy command line for each associated element in the model.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 70%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">op_member_prop_class</span></code> <a href="#id18"><span class="problematic" id="id19">|str|</span></a></p></td>
+<td><p>constraints type</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">trans_tag</span></code> <a href="#id20"><span class="problematic" id="id21">|list|</span></a></p></td>
+<td><p>a list of constraints arguments</p></td>
+</tr>
+</tbody>
+</table>
+<p>Example element definition</p>
+</div>
+<div class="section" id="load-class">
+<h2>Load class<a class="headerlink" href="#load-class" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="generated/OpsGrillage.OpsGrillage.html" class="btn btn-neutral float-right" title="OpsGrillage.OpsGrillage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="Running_analysis.html" class="btn btn-neutral float-left" title="Performing analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Justin Ngan, Colin Caprani.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

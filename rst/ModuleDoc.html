@@ -1,0 +1,378 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Module documentation &mdash; ops-grillage module 0.0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Examples" href="Examples.html" />
+    <link rel="prev" title="OpsGrillage.OpsGrillage" href="generated/OpsGrillage.OpsGrillage.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> ops-grillage module
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module%20description.html">Creating grillage models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Running_analysis.html">Performing analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APIdoc.html">API reference</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Module documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#grillage-model">Grillage model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#model-space">Model space</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#coordinate-system">Coordinate system</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#meshing-procedure">Meshing Procedure</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#meshing-algorithm">Meshing algorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#meshing-rules">Meshing Rules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#meshing-steps">Meshing steps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#grid-groups">Grid groups</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mesh-variables">Mesh variables</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#links-to-module-components">Links to module components</a><ul class="simple">
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ChangeLog.html">Change Log</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ops-grillage module</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Module documentation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/rst/ModuleDoc.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-documentation">
+<h1>Module documentation<a class="headerlink" href="#module-documentation" title="Permalink to this headline">¶</a></h1>
+<p>This page details the processes within <em>ops-grillage</em> module. In providing the outline of processes,
+the developers welcome any improvements to its procedures via pull requests.</p>
+<div class="section" id="grillage-model">
+<h2>Grillage model<a class="headerlink" href="#grillage-model" title="Permalink to this headline">¶</a></h2>
+<p>The ops-grillage module generates a two-dimensional (2D) grillage model of a bridge in Opensees - see Figure 1.</p>
+<div class="figure align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/Figure_1.png"><img alt="../_images/Figure_1.png" src="../_images/Figure_1.png" style="width: 480.0px; height: 360.0px;" /></a>
+<p class="caption"><span class="caption-text">Figure 1: Typical grillage model nodes.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
+<div class="section" id="model-space">
+<h3>Model space<a class="headerlink" href="#model-space" title="Permalink to this headline">¶</a></h3>
+<p>The Opensees model space is can be set to either 2-D or 3-D.</p>
+<p>By default the <a class="reference internal" href="OpsGrillage.html#module-OpsGrillage" title="OpsGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code></a> object creates a 2-D grillage model that exist in the 3-D model space.
+The model has 6 degrees-of-freedom at each nodes. The grillage model plane lies in the x-z plane of the coordinate system.
+For a 2-D model space, the model plane is the x-y plane.</p>
+</div>
+<div class="section" id="coordinate-system">
+<h3>Coordinate system<a class="headerlink" href="#coordinate-system" title="Permalink to this headline">¶</a></h3>
+<p>The module adopts the following convention for grillage model:</p>
+<ul class="simple">
+<li><p>x direction defines the length of the bridge model - typically the span of the model.</p></li>
+<li><p>z direction defines the width of the bridge model - the slabs elements are layed in this axis direction.</p></li>
+<li><p>y direction is the vertical axis - typically the direction of loads</p></li>
+</ul>
+<p>Two reasons behind selecting the coordinate system as such:
+#. This coordinate system streamlines section transformation (from local to global). The coordinate systems aligns well with the standard Opensees local coordinate systems for Section definition, with local X being the axial direction
+of beam/truss members, while y and z axes being the horizontal and vertical axis of the local coordinate system respectively.
+#. To be consistent with 1D problems where the working axis for 1-D models is typically <em>x</em> (horizontal axis) and <em>y</em> (vertical axis).</p>
+</div>
+</div>
+<div class="section" id="meshing-procedure">
+<h2>Meshing Procedure<a class="headerlink" href="#meshing-procedure" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="OpsGrillage.html#module-OpsGrillage" title="OpsGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code></a> class has a <code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code> class object as a variable. The <code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code> object controls
+the definition of:</p>
+<ul class="simple">
+<li><p>Nodes</p></li>
+<li><p>Element</p></li>
+<li><p>Element local transformation of sections and materials</p></li>
+<li><p>Grouping of grillage elements for calculating properties and assigning members.</p></li>
+</ul>
+<div class="section" id="meshing-algorithm">
+<h3>Meshing algorithm<a class="headerlink" href="#meshing-algorithm" title="Permalink to this headline">¶</a></h3>
+<p>Lets use the following bridge mesh as an explanatory example. Herein, the variable names are given in brackets.</p>
+<div class="figure align-center" id="id2">
+<a class="reference internal image-reference" href="../_images/Moduledoc_1.PNG"><img alt="../_images/Moduledoc_1.PNG" src="../_images/Moduledoc_1.PNG" style="width: 437.25px; height: 401.25px;" /></a>
+<p class="caption"><span class="caption-text">Figure 1: Typical grillage model nodes.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+</div>
+<p>Meshing algorithm is initiated upon creating the <code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code> class object. The following components are generated to
+define the nodes and elements of the mesh:</p>
+<p>#. Construction line at edge of model &#64; the start of the span (start_span_edge)
+A construction line consisting of the edge of the model is first defined. Construction line consist of nodes that
+coincide with the number and position of longitudinal beams in the model. The angle of the construction line is based on skew angle
+(skew_1). By default, the reference point of the construction line coincide with the origin [0,0,0] of the model space.</p>
+<p>#. Construction line at edge of model &#64; the end of the span (end_span_edge)
+Similar to (1), the construction line at the end of the span is created based on number of longitudinal beam. The
+spacing of the nodes in the z direction is identical to that of the first construction line. By default the skew angle
+of this second construction (skew_2) can be different. In constrast, the reference point of second construction line
+is [L, 0 ,f(L)] where L is the length of the model, and f(L) is the z coordinate of the reference node based on
+the defined sweep path of the model - this is next explained</p>
+<p>#. Sweep Path
+By default, the sweep path of the model is a straight line of y = 0 which starts at the origin [0,0,0] of model space.
+A few option</p>
+</div>
+<div class="section" id="meshing-rules">
+<h3>Meshing Rules<a class="headerlink" href="#meshing-rules" title="Permalink to this headline">¶</a></h3>
+<p>In grillages, transverse members are often arranged orthogonally to longitudinal members. When skew angles are small
+(less than 30 degrees angle), orthogonal mesh can be impractical and a skew (Oblique) mesh is usually selected instead.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Up to version 0.0.1, the grillage wizard allow users to freely choose between orthogonal and oblique meshes for
+angles between 11 to 30 degrees. An error exception will be returned when users select “orthogonal mesh”
+but having skew angle less than “11 degrees” - and vice versa. The numbers of 11 and 30 degrees are selected based
+on common industrial practice of grillage analysis.</p>
+</div>
+</div>
+<div class="section" id="meshing-steps">
+<h3>Meshing steps<a class="headerlink" href="#meshing-steps" title="Permalink to this headline">¶</a></h3>
+<p>#. Starting at first construction line, algorithm checks the angle of the construction line relative to the tangent/slope
+of the sweep line at the first position (i.e. &#64; [0,0,0])</p>
+<p>#. If mesh type for the given angle of construction line is permitted, a for loop procedure is initiated.
+The iteration: (1) goes through every point in the construction line, (2) find the point on the sweep path whose normal vector
+intersects the current point of the construction line, (3) create the nodes bounded between the current point and the intersection
+point on the sweep line - see figure below. If mesh type is not valid, the process skips to step 3.</p>
+<p>#. If angle is not permitted, the construction line is taken as the sweep node line. An iteration goes
+through all points on construction line and assigns them as nodes. Then the process move to the step 4.</p>
+<ol class="arabic simple">
+<li><p>Similar to step 2, step 4 comprise the process of step 2 but conducted for the second construction line instead.</p></li>
+</ol>
+<p>#. Remaining uniformly spaced nodes between the two construction lines are now defined. The algorithm spaces the nodes
+evenly based on the number of transverse beam specified.</p>
+<p>While nodes are generated, elements are also created by linking the generated nodes. Node linking is based on the grid numbering
+allocated to each node. For example, A node with x grid = 1 and z grid = 1 forms a longitudinal beam element with node having
+x grid = 2 and z_grid = 1.</p>
+<p>During element generation, elements are characterized into Longitudinal, Transverse, and Edge elements.
+Longitudinal elements are linked by recording the nodes with common z grid grouping across the sweep path.</p>
+</div>
+<div class="section" id="grid-groups">
+<h3>Grid groups<a class="headerlink" href="#grid-groups" title="Permalink to this headline">¶</a></h3>
+<p>Grid groups for elements in the z direct is defined based on the number of longitudinal beams. For the example bridge,
+there are 7 longitudinal beams (2 edge, 2 exterior and 3 interior beams). Therefore, starting from 0, the nodes that
+conincide with edge beams are numbered 0 and 6, while nodes for exterior beams are 1 and 5. The interior beam consist
+of the remaining groups (2,3,4) by this default.</p>
+<p>Grid groups for elements in x direction is defined based on the number of times (or loops) through each intersection point
+with the sweep path. In other words, the total number of groups for x grid varies depending on the (1) number of long beams
+and (2) number of transverse beams.</p>
+<p>All nodes defined during an iteration step for an intersecting point is set to have the same x grid group.</p>
+</div>
+<div class="section" id="mesh-variables">
+<h3>Mesh variables<a class="headerlink" href="#mesh-variables" title="Permalink to this headline">¶</a></h3>
+<p>Nodes are specified into dictionary</p>
+<p>Elements are specified by list. A typical element list is like this [2, 2, 3, 0, 2]
+The entries are the element tag, node_i, node_j, grouping (based on list), and geometric transformation tag.</p>
+<p>Groups are sorted into dictionary</p>
+<p>Common element group as key: return z groups
+Z group as key, return longitudinal elements within the z group
+X group as key, return transverse elements within the x group
+node tag as key, return x spacings between vicinity nodes
+node tag as key, return the z spacings between vicinity nodes</p>
+</div>
+</div>
+<div class="section" id="links-to-module-components">
+<h2>Links to module components<a class="headerlink" href="#links-to-module-components" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="Module%20description.html"><span class="doc">Creating grillage models</span></a></p></li>
+<li><p><a class="reference internal" href="Examples.html"><span class="doc">Examples</span></a></p></li>
+<li><p><a class="reference internal" href="OpsGrillage.html"><span class="doc">OpsGrillage</span></a></p></li>
+<li><p><a class="reference internal" href="Running_analysis.html"><span class="doc">Performing analysis</span></a></p></li>
+</ol>
+<div class="toctree-wrapper compound">
+</div>
+<p>Grillage modelling references</p>
+<p><span class="xref std std-ref">Grillage modelling</span></p>
+<p>Opensees documentation</p>
+<ol class="arabic simple">
+<li><p><span class="xref std std-doc">node command</span></p></li>
+<li><p><span class="xref std std-doc">element command</span></p></li>
+<li><p><span class="xref std std-doc">GeoTrans command</span></p></li>
+<li><p><span class="xref std std-doc">section command</span></p></li>
+<li><p><span class="xref std std-doc">Material command</span></p></li>
+<li><p><span class="xref std std-doc">fix command</span></p></li>
+</ol>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="Examples.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="generated/OpsGrillage.OpsGrillage.html" class="btn btn-neutral float-left" title="OpsGrillage.OpsGrillage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Justin Ngan, Colin Caprani.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

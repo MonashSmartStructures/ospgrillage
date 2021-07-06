@@ -1,0 +1,40 @@
+﻿OpsGrillage.OpsGrillage
+=======================
+
+.. currentmodule:: OpsGrillage
+
+.. autoclass:: OpsGrillage
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~OpsGrillage.__init__
+      ~OpsGrillage.add_load_case
+      ~OpsGrillage.add_load_combination
+      ~OpsGrillage.add_moving_load_case
+      ~OpsGrillage.analyse_load_case
+      ~OpsGrillage.analyse_moving_load_case
+      ~OpsGrillage.assign_line_to_four_node
+      ~OpsGrillage.assign_patch_load
+      ~OpsGrillage.assign_point_to_four_node
+      ~OpsGrillage.create_ops
+      ~OpsGrillage.distribute_load_types_to_model
+      ~OpsGrillage.get_bounded_nodes
+      ~OpsGrillage.get_line_load_nodes
+      ~OpsGrillage.get_node_area
+      ~OpsGrillage.get_point_load_nodes
+      ~OpsGrillage.get_results
+      ~OpsGrillage.set_boundary_condition
+      ~OpsGrillage.set_material
+      ~OpsGrillage.set_member
+   
+   
+
+   
+   
+   
