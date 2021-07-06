@@ -1,22 +1,20 @@
-name: Sphinx docs to gh-pages
-
+name: Deploy to GitHub Pages
 on:
-  push:
-    branches:
-      - ops-grillage
-
-# workflow_dispatch:        # Un comment line if you also want to trigger action manually
+  push:	
+    branches:	
+      - master
 
 jobs:
-  sphinx_docs_to_gh-pages:
-    runs-on: ubuntu-latest
-    name: Sphinx docs to gh-pages
+  deploy:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest    
     steps:
-      - uses: actions/checkout@v2
+    - uses: actions/checkout@master
 
-      - name: Running the Sphinx to gh-pages Action
-        uses: uibcdf/action-sphinx-docs-to-gh-pages@v1.0-beta.1
-        with:
-            branch: ops-grillage
-            dir_docs: docs
-            sphinxopts: ''
+    - name: Deploy
+      uses: s0/git-publish-subdir-action@develop
+      env:
+        REPO: self
+        BRANCH: gh-pages
+        FOLDER: docs/build/html
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
