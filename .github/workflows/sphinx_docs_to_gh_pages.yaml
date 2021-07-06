@@ -3,7 +3,7 @@ name: Sphinx docs to gh-pages
 on:
   push:
     branches:
-      - ops-grillage
+      - main
 
 # workflow_dispatch:        # Un comment line if you also want to trigger action manually
 
