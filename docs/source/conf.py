@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'Openseespy Grillage Wizard'
+project = 'ops-grillage module'
 copyright = '2021, Justin Ngan, Colin Caprani'
 author = 'Justin Ngan, Colin Caprani, Mayer Melhem, Shihab Khan'
 
