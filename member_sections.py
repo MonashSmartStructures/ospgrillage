@@ -5,8 +5,8 @@ class Section:
     Section class to define various grillage sections. Class
     """
 
-    def __init__(self, E, A, Iz, J, Ay, Az, Iy=None, G=None, alpha_y=None, op_ele_type=None, mass=0, c_mass_flag=False,
-                 unit_width=False, op_section_type=None, K11=None, K33=None, K44=None):
+    def __init__(self, E, A, Iz, J, Ay, Az, Iy=None, G=None, alpha_y=None, op_ele_type="elasticBeamColumn", mass=0, c_mass_flag=False,
+                 unit_width=False, op_section_type="Elastic", K11=None, K33=None, K44=None):
         """
         :param E: Elastic modulus
         :type E: float
