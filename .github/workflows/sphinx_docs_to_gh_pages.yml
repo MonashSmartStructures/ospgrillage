@@ -1,0 +1,22 @@
+name: Sphinx docs to gh-pages
+
+on:
+  push:
+    branches:
+      - ops-grillage
+
+# workflow_dispatch:        # Un comment line if you also want to trigger action manually
+
+jobs:
+  sphinx_docs_to_gh-pages:
+    runs-on: ubuntu-latest
+    name: Sphinx docs to gh-pages
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Running the Sphinx to gh-pages Action
+        uses: uibcdf/action-sphinx-docs-to-gh-pages@v1.0-beta.1
+          with:
+            branch: ops-grillage
+            dir_docs: docs
+            sphinxopts: ''
