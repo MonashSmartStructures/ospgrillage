@@ -41,13 +41,13 @@ OpsGrillage class
 Analysis objects
 ^^^^^^^^^^^^^^^^
 
-For information regarding the procedures in :class:`~OpsGrillage` class, see
-:doc:`ModuleDoc`. For information of all functions and methods in ``opGrillage`` class, see :doc:`OpsGrillage`
 
 
 Result objects
 ^^^^^^^^^^^^^^^^
 
+For information regarding the procedures in :class:`~OpsGrillage` class, see
+:doc:`ModuleDoc`. For information of all functions and methods in ``opGrillage`` class, see :doc:`OpsGrillage`
 
 Material class
 ------------------------------------------
