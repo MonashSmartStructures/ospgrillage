@@ -5,7 +5,7 @@ collections_dir     : .
 plugins_dir         : _plugins # takes an array of strings and loads plugins in that order
 layouts_dir         : _layouts
 data_dir            : _data
-includes_dir        :  _includes
+includes_dir        : /build/html/
 sass:
   sass_dir: _sass
 collections:
@@ -14,7 +14,7 @@ collections:
 
 # Handling Reading
 safe                : false
-include             : [".htaccess","docs/build/html/"]
+include             : [".htaccess"]
 exclude             : ["Gemfile", "Gemfile.lock", "node_modules", "vendor/bundle/", "vendor/cache/", "vendor/gems/", "vendor/ruby/"]
 keep_files          : [".git", ".svn"]
 encoding            : "utf-8"
