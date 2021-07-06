@@ -15,19 +15,19 @@ Here are some more examples of what you can do with *ops-grillage* module.
     concrete = UniAxialElasticMaterial(mat_type="Concrete01", mat_vec=[-6.0, -0.004, -6.0, -0.014])
 
     # define sections
-    super_t_beam_section = Section(op_section_type="Elastic", op_ele_type="elasticBeamColumn", A=1.0447, E=3.47E+10,
+    super_t_beam_section = Section(A=1.0447, E=3.47E+10,
                                    G=2.00E+10,
                                    J=0.230698, Iy=0.231329, Iz=0.533953,
                                    Ay=0.397032, Az=0.434351)
-    transverse_slab_section = Section(op_ele_type="elasticBeamColumn", A=0.5372, E=3.47E+10, G=2.00E+10,
+    transverse_slab_section = Section(A=0.5372, E=3.47E+10, G=2.00E+10,
                                       J=2.79e-3, Iy=0.3988 / 2, Iz=1.45e-3 / 2,
                                       Ay=0.447 / 2, Az=0.447 / 2, unit_width=True)
-    end_tranverse_slab_section = Section(op_section_type="Elastic", op_ele_type="elasticBeamColumn", A=0.5372 / 2,
+    end_tranverse_slab_section = Section(A=0.5372 / 2,
                                          E=3.47E+10,
                                          G=2.00E+10, J=2.68e-3, Iy=0.04985,
                                          Iz=0.725e-3,
                                          Ay=0.223, Az=0.223)
-    edge_beam_section = Section(op_section_type="Elastic", op_ele_type="elasticBeamColumn", A=0.039375,
+    edge_beam_section = Section(A=0.039375,
                                 E=3.47E+10,
                                 G=2.00E+10, J=0.21e-3, Iy=0.1e-3,
                                 Iz=0.166e-3,
