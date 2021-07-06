@@ -9,7 +9,7 @@ dependencies:
 
   # Write here all dependencies to compile the sphinx documentation.
   # This list is just an example
-  - python=3.7
+  - python=3.8
   - sphinx
   - sphinx_rtd_theme
   - sphinxcontrib-bibtex
