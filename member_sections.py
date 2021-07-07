@@ -1,11 +1,11 @@
-
 # ----------------------------------------------------------------------------------------------------------------
 class Section:
     """
     Section class to define various grillage sections. Class
     """
 
-    def __init__(self, E, A, Iz, J, Ay, Az, Iy=None, G=None, alpha_y=None, op_ele_type="elasticBeamColumn", mass=0, c_mass_flag=False,
+    def __init__(self, E, A, Iz, J, Ay, Az, Iy=None, G=None, alpha_y=None, op_ele_type="elasticBeamColumn", mass=0,
+                 c_mass_flag=False,
                  unit_width=False, op_section_type="Elastic", K11=None, K33=None, K44=None):
         """
         :param E: Elastic modulus
@@ -92,16 +92,19 @@ class Section:
         # set_member() function
         return asterisk_input
 
-    def get_element_command_str(self, ele_tag, n1, n2, transf_tag, n3=0,n4=0, ele_width=1, sectiontag=None):
+    def get_element_command_str(self, ele_tag, n1, n2, transf_tag, n3=0, n4=0, ele_width=1, sectiontag=None) -> str:
         """
         Function called within OpsGrillage class `set_member()` function.
+
+        For shell elements, n1 n2 n3 n4 are counter clockwise node (n1 being node in quadrant -1 , -1 ). This is checked
+        using sort_vertices function.
+
         """
         # format for ele
         # [node i, node j, ele group, ele tag, transtag]
         section_input = self.get_asterisk_arguments(ele_width)
-        # TODO add strs for more Opensees element types here
-        if self.op_ele_type == "ElasticTimoshenkoBeam":
 
+        if self.op_ele_type == "ElasticTimoshenkoBeam":
             ele_str = "ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transftag}, {mass})\n".format(
                 type=self.op_ele_type, tag=ele_tag, i=n1, j=n2, memberprop=section_input, transftag=transf_tag,
                 mass=self.mass)
@@ -112,9 +115,8 @@ class Section:
         if self.op_ele_type == "nonlinearBeamColumn":
             pass
         if self.op_ele_type == "ShellMITC4":
-            ele_str = "ops.element(\"{type}\", {tag}, *[{i}, {j}], *{memberprop}, {transftag}, {mass})\n".format(
-                type=self.op_ele_type, tag=ele_tag, i=n1, j=n2, memberprop=section_input, transftag=transf_tag,
-                mass=self.mass)
+            ele_str = "ops.element(\"{type}\", {tag}, *[{i}, {j}], {sectag}})\n".format(
+                type=self.op_ele_type, tag=ele_tag, i=n1, j=n2, sectag=sectiontag)
 
         # return string to OpsGrillage for writing command
         return ele_str
@@ -126,7 +128,7 @@ class GrillageMember:
     Grillage member class.
     """
 
-    def __init__(self, section, material, member_name="Undefined"):
+    def __init__(self, section: Section, material, member_name="Undefined"):
         """
         :param section: Section class object assigned to GrillageMember
         :type section: :class:`Section`
@@ -137,3 +139,71 @@ class GrillageMember:
         self.member_name = member_name
         self.section = section
         self.material = material
+
+    def get_section_str(self, section_counter=1, ele_width=1):
+        """
+        Function to return section properties of
+
+        :return section_type: str of section type
+        :return section_arg: str of section inputs
+        :return sec_str: str of ops.section command to be filled in with
+
+        """
+        # extract section variables from Section class
+        section_type = self.section.op_section_type  # opensees section type
+        # section argument
+        section_arg = self.section.get_asterisk_arguments(
+            width=ele_width)  # list of argument for section - Openseespy convention
+
+        # here sort based on section type , return sec_str which will be populated by OpsGrillage
+        # in general first format entry {} is section type, second {} is section tag, each specific entries are
+        # explained in comments below each condition
+        if section_type == "Elastic":
+            # section type, section tag, argument entries from self.get_asterisk_input()
+            sec_str = "ops.section(\"{}\", {}, *{})\n"
+        elif section_type == "ElasticMembranePlateSection":
+            # section type, section tag, E_mod, nu, h, rho
+            sec_str = "ops.section(\"{}\", {}, {}, {}, {}, {})\n"
+
+        # TO add more section types here
+
+        return section_type, section_arg
+
+    def get_element_command_str(self, ele_tag, node_tag_list, transf_tag=None, ele_width=1, materialtag=None,
+                                sectiontag=None) -> str:
+        """
+        Function called within OpsGrillage class `set_member()` function.
+
+        For shell elements, n1 n2 n3 n4 are counter clockwise node (n1 being node in quadrant -1 , -1 ). This is checked
+        using sort_vertices function.
+
+        Procedure to be called
+        1) OpsGrillage assigns the material and section first, then returns the tag of material and section
+        2) OpsGrillage calls get_element_command_str of GrillageMember, then it takes in material section and returns
+         the element command ops.element() for the respective grillage member
+        """
+        # format for ele
+        # [node i, node j, ele group, ele tag, transtag]
+        section_input = None
+        ele_str = None
+        if self.section.op_ele_type == "ElasticTimoshenkoBeam":
+            _, section_input = self.get_section_str(ele_width)
+            ele_str = "ops.element(\"{type}\", {tag}, *{node_tag_list}, *{memberprop}, {transftag}, {mass})\n".format(
+                type=self.section.op_ele_type, tag=ele_tag, node_tag_list=node_tag_list, memberprop=section_input,
+                transftag=transf_tag,
+                mass=self.section.mass)
+        if self.section.op_ele_type == "elasticBeamColumn":
+            _, section_input = self.get_section_str(ele_width)
+            ele_str = "ops.element(\"{type}\", {tag}, *{node_tag_list}, *{memberprop}, {transftag}, {mass})\n".format(
+                type=self.section.op_ele_type, tag=ele_tag, node_tag_list=node_tag_list, memberprop=section_input,
+                transftag=transf_tag,
+                mass=self.section.mass)
+        if self.section.op_ele_type == "nonlinearBeamColumn":
+            pass
+
+        if self.section.op_ele_type == "ShellMITC4":
+            ele_str = "ops.element(\"{type}\", {tag}, *{node_tag_list}, {sectag}})\n".format(
+                type=self.section.op_ele_type, tag=ele_tag, node_tag_list=node_tag_list, sectag=sectiontag)
+
+        # return string to OpsGrillage for writing command
+        return ele_str

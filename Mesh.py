@@ -17,7 +17,7 @@ class Mesh:
 
     def __init__(self, long_dim, width, trans_dim, edge_width, num_trans_beam, num_long_beam, skew_1, skew_2,
                  orthogonal=False, pt1=Point(0,0,0), pt2=Point(0,0,0), pt3=None, element_counter=1, node_counter=1,
-                 transform_counter=0, global_x_grid_count=0, global_edge_count=0, mesh_origin=[0, 0, 0]):
+                 transform_counter=0, global_x_grid_count=0, global_edge_count=0, mesh_origin=[0, 0, 0], quad_ele = False):
         # inputs from OpsGrillage required to create mesh
         self.long_dim = long_dim
         self.trans_dim = trans_dim
@@ -73,31 +73,10 @@ class Mesh:
         self.end_connecting_region_nodes = []
         self.sweep_nodes = []
         self.z_group_recorder = []
-
+        # quad elements flag
+        self.quad_ele = quad_ele
         # ------------------------------------------------------------------------------------------
-        # Sweep path
-        #self.pt2 = Point(long_dim, 0, 0.5)  # 3rd point for defining curve mesh
 
-        # # if defining an arc line segment, specify p2 such that pt2 is the point at the midpoint of the arc
-        # try:
-        #     self.d = findCircle(x1=0, y1=0, x2=pt2.x, y2=pt2.z, x3=pt3.x, y3=pt3.z)
-        #     self.curve = True
-        #     # procedure
-        #     # get tangent at origin
-        #     zeta = 0
-        # except ZeroDivisionError:
-        #     print("3 points result in straight line - not a circle")
-        #     self.d = None
-        #     # procedure to identify straight line segment pinpointing length of grillage
-        #     points = [(pt1.x, pt1.z), (pt2.x, pt2.z)]
-        #     x_coords, y_coords = zip(*points)
-        #     A = np.vstack([x_coords, np.ones(len(x_coords))]).T
-        #     m, c = np.linalg.lstsq(A, y_coords, rcond=None)[0]
-        #     self.m = round(m, self.decimal_lim)
-        #     # self.c = 0  # default 0  to avoid arithmetic error
-        #     zeta = np.arctan(m)  # initial angle of inclination of sweep line about mesh origin
-        #     self.zeta = zeta / np.pi * 180  # rad to degrees
-        #    check condition for orthogonal mesh
         # Create sweep path obj
         self.sweep_path = SweepPath(self.pt1, self.pt2, self.pt3)
         self.zeta, self.m, self.c = self.sweep_path.get_sweep_line_properties()

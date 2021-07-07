@@ -313,16 +313,15 @@ class OpsGrillage:
                   .format(material_type, material_tag))
             return material_tag
 
-    def __write_section(self, op_section_obj):
+    def __write_section(self, grillage_member_obj:GrillageMember):
         """
         Abstracted procedure handled by set_member() function to write section() command for the elements. This method
         is ran only when GrillageMember object requires section() definition following convention of Openseespy.
 
         """
         # extract section variables from Section class
-        section_type = op_section_obj.op_section_type  # str of section type - Openseespy convention
-        # section argument
-        section_arg = op_section_obj.get_asterisk_arguments()  # list of argument for section - Openseespy convention
+        section_type, section_arg = grillage_member_obj.get_section_str()
+        # list of argument for section - Openseespy convention
         section_str = [section_type, section_arg]  # repr both variables as a list for keyword definition
         # if section is specified, get the sectiontagcounter for section assignment
         if not bool(self.section_dict):
@@ -331,8 +330,8 @@ class OpsGrillage:
             lastsectioncounter = self.section_dict[list(self.section_dict)[-1]]
         # if section has been assigned
         sectiontagcounter = self.section_dict.setdefault(repr(section_str), lastsectioncounter + 1)
-        if sectiontagcounter != lastsectioncounter:
-            sec_str = "ops.section(\"{}\", {}, *{})\n".format(section_type, sectiontagcounter, section_arg)
+        if sectiontagcounter not in self.section_dict.values():
+            sec_str = "ops.section(\"{type}\", {tag}, *{arg})\n".format(type=section_type, tag=sectiontagcounter, arg=section_arg)
             if self.pyfile:
                 with open(self.filename, 'a') as file_handle:
                     file_handle.write("# Create section: \n")
@@ -348,7 +347,7 @@ class OpsGrillage:
         return sectiontagcounter
 
     # Function to set grillage elements
-    def set_member(self, grillage_member_obj, member=None):
+    def set_member(self, grillage_member_obj:GrillageMember, member=None):
         """
         Function to set grillage member class object to elements of grillage members.
         :param grillage_member_obj: Grillage_member class object
@@ -359,11 +358,18 @@ class OpsGrillage:
                         - slab
                         - diaphragm
         :return: sets member object to element of grillage in OpsGrillage instance
+
         """
-        # if write flag, write header of element assignment
+        # write member's section command
+        if grillage_member_obj.section.section_command_flag:
+            section_tag = self.__write_section(grillage_member_obj)
+        # write member's material command
+        material_tag = self.__write_uniaxial_material(member=grillage_member_obj)
+
+        # if pyfile True, write a header for each element generated
         if self.pyfile:
             with open(self.filename, 'a') as file_handle:
-                file_handle.write("# Element generation for section: {}\n".format(member))
+                file_handle.write("# Element generation for member: {}\n".format(member))
         z_flag = False
         x_flag = False
         edge_flag = False
@@ -386,7 +392,7 @@ class OpsGrillage:
         elif member == "end_edge":
             common_member_tag = 1
             edge_flag = True
-        else:
+        else: # For now, set None as to assign as slab
             common_member_tag = None
 
         ele_width = 1
@@ -395,6 +401,7 @@ class OpsGrillage:
             for ele in self.Mesh_obj.trans_ele:
                 n1 = ele[1]  # node i
                 n2 = ele[2]  # node j
+                node_tag_list = [n1,n2]
                 # get node width of node_i and node_j
                 lis_1 = self.Mesh_obj.node_width_x_dict[n1]
                 lis_2 = self.Mesh_obj.node_width_x_dict[n2]
@@ -407,14 +414,16 @@ class OpsGrillage:
                         ele_width_record.append((np.sqrt(lis[0][0] ** 2 + lis[0][1] ** 2 + lis[0][2] ** 2) +
                                                  np.sqrt(lis[1][0] ** 2 + lis[1][1] ** 2 + lis[1][2] ** 2)) / 2)
                     else:
+
                         break
                 ele_width = np.mean(
                     ele_width_record)  # if member lies between a triangular and quadrilateral grid, get mean between
                 # both width
                 # here take the average width in x directions
 
-                ele_str = grillage_member_obj.section.get_element_command_str(
-                    ele_tag=ele[0], n1=n1, n2=n2, transf_tag=ele[4], ele_width=ele_width)
+                # ele_str = grillage_member_obj.section.get_element_command_str(
+                    # ele_tag=ele[0], n1=n1, n2=n2, transf_tag=ele[4], ele_width=ele_width)
+                ele_str = grillage_member_obj.get_element_command_str(ele_tag=ele[0],node_tag_list=node_tag_list,transf_tag=ele[4],ele_width=ele_width,materialtag=material_tag,sectiontag=section_tag)
                 if self.pyfile:
                     with open(self.filename, 'a') as file_handle:
                         file_handle.write(ele_str)
@@ -426,8 +435,15 @@ class OpsGrillage:
                 for z_groups in self.Mesh_obj.common_z_group_element[common_member_tag]:
                     # assign properties to elements in z group
                     for ele in self.Mesh_obj.z_group_to_ele[z_groups]:
-                        ele_str = grillage_member_obj.section.get_element_command_str(
-                            ele_tag=ele[0], n1=ele[1], n2=ele[2], transf_tag=ele[4], ele_width=ele_width)
+                        # ele_str = grillage_member_obj.section.get_element_command_str(
+                        #     ele_tag=ele[0], n1=ele[1], n2=ele[2], transf_tag=ele[4], ele_width=ele_width)
+
+                        node_tag_list = [ele[1],ele[2]]
+                        ele_str = grillage_member_obj.get_element_command_str(ele_tag=ele[0],
+                                                                              node_tag_list=node_tag_list,
+                                                                              transf_tag=ele[4], ele_width=ele_width,
+                                                                              materialtag=material_tag,
+                                                                              sectiontag=section_tag)
                         if self.pyfile:
                             with open(self.filename, 'a') as file_handle:
                                 file_handle.write(ele_str)
@@ -438,19 +454,21 @@ class OpsGrillage:
 
                 for ele in self.Mesh_obj.edge_span_ele:
                     if ele[3] == common_member_tag:
-                        ele_str = grillage_member_obj.section.get_element_command_str(
-                            ele_tag=ele[0], n1=ele[1], n2=ele[2], transf_tag=ele[4], ele_width=ele_width)
+                        # ele_str = grillage_member_obj.section.get_element_command_str(
+                        #     ele_tag=ele[0], n1=ele[1], n2=ele[2], transf_tag=ele[4], ele_width=ele_width)
+                        node_tag_list= [ele[1],ele[2]]
+                        ele_str = grillage_member_obj.get_element_command_str(ele_tag=ele[0],
+                                                                              node_tag_list=node_tag_list,
+                                                                              transf_tag=ele[4], ele_width=ele_width,
+                                                                              materialtag=material_tag,
+                                                                              sectiontag=section_tag)
                         if self.pyfile:
                             with open(self.filename, 'a') as file_handle:
                                 file_handle.write(ele_str)
                         else:
                             eval(ele_str)
                     self.ele_group_assigned_list.append("edge: {}".format(common_member_tag))
-        # write member's section command
-        if grillage_member_obj.section.section_command_flag:
-            section_tag = self.__write_section(grillage_member_obj.section)
-        # write member's material command
-        material_tag = self.__write_uniaxial_material(member=grillage_member_obj)
+
 
     # function to set material obj of grillage model. When called by user,
     def set_material(self, material_obj):
@@ -1083,7 +1101,7 @@ class OpsGrillage:
             else:
                 # run single assignment of load type (load_obj is a load class)
                 if isinstance(load_obj, NodalLoad):
-                    load_str = load_obj.get_nodal_load_str()
+                    load_str = [load_obj.get_nodal_load_str()]  # here return load_str as list with single element
                 elif isinstance(load_obj, PointLoad):
                     load_str = self.assign_point_to_four_node(point=list(load_obj.load_point_1)[:-1],
                                                               mag=load_obj.load_point_1.p)
