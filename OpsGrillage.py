@@ -270,7 +270,7 @@ class OpsGrillage:
                 else:  # run instance
                     ops.fix(node_tag, *self.fix_val_roller_x)
 
-    def __write_uniaxial_material(self, member=None, material=None):
+    def __write_uniaxial_material(self, member:GrillageMember=None, material:Union[UniAxialElasticMaterial,NDmaterial]= None):
         """
         Sub-abstracted procedure to write uniaxialMaterial command for the material properties of the grillage model.
 
@@ -286,8 +286,8 @@ class OpsGrillage:
 
         elif material is None:
             material_obj = member.material  # str of section type - Openseespy convention
-        material_type = material_obj.mat_type
-        op_mat_arg = material_obj.mat_vec
+
+        material_type, op_mat_arg = material_obj.get_uni_material_arg_str()
 
         # - write unique material tag and input argument as keyword of dict
         material_str = [material_type, op_mat_arg]  # repr both variables as a list for keyword definition
@@ -300,8 +300,7 @@ class OpsGrillage:
         # if section has been assigned
         material_tag = self.material_dict.setdefault(repr(material_str), lastmaterialtag + 1)
         if material_tag != lastmaterialtag:
-            mat_str = "ops.uniaxialMaterial(\"{type}\", {tag}, *{vec})\n".format(
-                type=material_type, tag=material_tag, vec=op_mat_arg)
+            mat_str = material_obj.get_uni_mat_ops_commands(material_tag=material_tag)
             if self.pyfile:
                 with open(self.filename, 'a') as file_handle:
                     file_handle.write("# Material definition \n")
@@ -469,8 +468,7 @@ class OpsGrillage:
                             eval(ele_str)
                     self.ele_group_assigned_list.append("edge: {}".format(common_member_tag))
 
-
-    # function to set material obj of grillage model. When called by user,
+    # function to set material obj of grillage model.
     def set_material(self, material_obj):
         """
         Function to define a global material model. This function proceeds to write write the material() command to
@@ -1415,7 +1413,7 @@ class Analysis:
 
 class Results:
     """
-    Main class to store results of each analysis and process into data array output for post processing/plotting.
+    Main class to store results of an Analysis class object, process into data array output for post processing/plotting.
     Class object is accessed within OpsGrillage class object.
     """
 
@@ -1428,7 +1426,6 @@ class Results:
         self.mesh_obj = mesh_obj
 
     def insert_analysis_results(self, analysis_obj: Analysis = None, list_of_inc_analysis:list = None):
-
         # Create/parse data based on incoming analysis object or list of analysis obj (moving load)
         if analysis_obj:
             # compile ele forces for each node

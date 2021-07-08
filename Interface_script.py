@@ -4,7 +4,8 @@ from OpsGrillage import *
 from PlotWizard import *
 
 # define material
-concrete = UniAxialElasticMaterial(mat_type="Concrete01", mat_vec=[-6.0, -0.004, -6.0, -0.014])
+mat_vec=[-6.0, -0.004, -6.0, -0.014]
+concrete = UniAxialElasticMaterial(mat_type="Concrete01", fpc=-6, epsc0=-0.004,fpcu=-6,epcU=-0.014)
 
 # define sections
 I_beam_section = Section(op_section_type="Elastic", op_ele_type="elasticBeamColumn", A=0.896, E=3.47E+10, G=2.00E+10,
