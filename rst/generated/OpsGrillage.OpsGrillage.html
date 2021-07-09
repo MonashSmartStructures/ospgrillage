@@ -40,9 +40,7 @@
 
     
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Module documentation" href="../ModuleDoc.html" />
-    <link rel="prev" title="API reference" href="../APIdoc.html" /> 
+    <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -88,25 +86,11 @@
             
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../Installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Module%20description.html">Creating grillage models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Running_analysis.html">Performing analysis</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../APIdoc.html">API reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../APIdoc.html#uml-diagram-overview">UML diagram overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../APIdoc.html#what-parts-are-considered-public-api">What parts are considered public API?</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../APIdoc.html#opsgrillage-class">OpsGrillage class</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">OpsGrillage.OpsGrillage</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../APIdoc.html#analysis-objects">Analysis objects</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../APIdoc.html#result-objects">Result objects</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../APIdoc.html#material-class">Material class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../APIdoc.html#grillagemember-class">GrillageMember class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../APIdoc.html#mesh-class">Mesh class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../APIdoc.html#load-class">Load class</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../APIdoc.html">API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ModuleDoc.html">Module documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ChangeLog.html">Change Log</a></li>
@@ -158,8 +142,6 @@
     
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
-          <li><a href="../APIdoc.html">API reference</a> &raquo;</li>
-        
       <li>OpsGrillage.OpsGrillage</li>
     
     
@@ -189,11 +171,6 @@ Opensees grillage model based on user input.</p>
 <p>The class provides an interface for the user to specify the geometry of the grillage model. A keyword argument
 allows for users to select between skew/oblique or orthogonal mesh. Methods in this class allows users to input
 properties for various elements in the grillage model.</p>
-<p>Example usage:
-example_bridge = OpsGrillage(bridge_name=”SuperT_10m”, long_dim=10, width=7, skew=-42,</p>
-<blockquote>
-<div><p>num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type=”Ortho”)</p>
-</div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -242,14 +219,14 @@ example_bridge = OpsGrillage(bridge_name=”SuperT_10m”, long_dim=10, width=7,
 </dl>
 </p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../OpsGrillage.add_load_case.html#OpsGrillage.OpsGrillage.add_load_case" title="OpsGrillage.OpsGrillage.add_load_case"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_load_case</span></code></a>(load_case_obj[, load_factor])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../OpsGrillage.html#OpsGrillage.OpsGrillage.add_load_case" title="OpsGrillage.OpsGrillage.add_load_case"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_load_case</span></code></a>(load_case_obj[, load_factor])</p></td>
 <td><p>Function to add individual load cases to OpsGrillage instance.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="../OpsGrillage.html#OpsGrillage.OpsGrillage.add_load_combination" title="OpsGrillage.OpsGrillage.add_load_combination"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_load_combination</span></code></a>(load_combination_name, …)</p></td>
-<td><p>Function to create load combinations out of the defined load cases. :param load_combination_name: name of load combination :param load_case_name_dict: dict with load case name as key, and load factor as value                             Format example:                                 {“DL”:1.2, “LL”:1.7} .. note:     Load cases in load_case_name_dict must be added to OpsGrillage instance through add_load_case() function. If load case name not found in defined load cases, return :return: populate self.load_combination_dict , with key being the load_combination name parameter and value             being a list of dict for load cases.</p></td>
+<td><p>To be deprecated</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="../OpsGrillage.html#OpsGrillage.OpsGrillage.add_moving_load_case" title="OpsGrillage.OpsGrillage.add_moving_load_case"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_moving_load_case</span></code></a>(moving_load_obj[, …])</p></td>
-<td><p>Function to add Moving load case to OpsGrillage instance. :param load_factor: load factor for load case. Default is 1. Load factor defined during definition of load case                     i.e. creating load case object is superseded by this load factor variable :param moving_load_obj: Moving load class object instance.</p></td>
+<td><p>Function to add Moving load case to OpsGrillage instance.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="../OpsGrillage.html#OpsGrillage.OpsGrillage.analyse_load_case" title="OpsGrillage.OpsGrillage.analyse_load_case"><code class="xref py py-obj docutils literal notranslate"><span class="pre">analyse_load_case</span></code></a>()</p></td>
 <td><p>Function to analyse all basic load cases defined previously using add_load_case() function</p></td>
@@ -257,35 +234,35 @@ example_bridge = OpsGrillage(bridge_name=”SuperT_10m”, long_dim=10, width=7,
 <tr class="row-even"><td><p><a class="reference internal" href="../OpsGrillage.html#OpsGrillage.OpsGrillage.analyse_moving_load_case" title="OpsGrillage.OpsGrillage.analyse_moving_load_case"><code class="xref py py-obj docutils literal notranslate"><span class="pre">analyse_moving_load_case</span></code></a>([moving_load_case_name])</p></td>
 <td><p>Function to analyze all defined moving load cases.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../OpsGrillage.html#OpsGrillage.OpsGrillage.assign_line_to_four_node" title="OpsGrillage.OpsGrillage.assign_line_to_four_node"><code class="xref py py-obj docutils literal notranslate"><span class="pre">assign_line_to_four_node</span></code></a>(line_load_obj, …)</p></td>
-<td><p>Function to assign line load to mesh. Procedure to assign line load is as follows: #. get properties of line on the grid #. convert line load to equivalent point load #. Find position of equivalent point load #. Runs assignment for point loads function (assign_point_to_four_node) using equivalent point load  properties.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../OpsGrillage.html#OpsGrillage.OpsGrillage.assign_patch_load" title="OpsGrillage.OpsGrillage.assign_patch_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">assign_patch_load</span></code></a>(patch_load_obj)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">assign_line_to_four_node</span></code>(line_load_obj, …)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../OpsGrillage.html#OpsGrillage.OpsGrillage.assign_point_to_four_node" title="OpsGrillage.OpsGrillage.assign_point_to_four_node"><code class="xref py py-obj docutils literal notranslate"><span class="pre">assign_point_to_four_node</span></code></a>(point, mag)</p></td>
-<td><p>Function to assign point load to nodes of grid where the point load lies in.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../OpsGrillage.html#OpsGrillage.OpsGrillage.create_ops" title="OpsGrillage.OpsGrillage.create_ops"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_ops</span></code></a>([pyfile])</p></td>
-<td><p>Main function to create ops model instance or output pyfile for model instance :param pyfile: Boolean to flag either ops instance or pyfile output</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../OpsGrillage.html#OpsGrillage.OpsGrillage.distribute_load_types_to_model" title="OpsGrillage.OpsGrillage.distribute_load_types_to_model"><code class="xref py py-obj docutils literal notranslate"><span class="pre">distribute_load_types_to_model</span></code></a>(load_case_obj)</p></td>
-<td><p>Functions to distribute load types to OpsGrillage model.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../OpsGrillage.html#OpsGrillage.OpsGrillage.get_bounded_nodes" title="OpsGrillage.OpsGrillage.get_bounded_nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_bounded_nodes</span></code></a>(patch_load_obj)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">assign_patch_load</span></code>(patch_load_obj)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../OpsGrillage.html#OpsGrillage.OpsGrillage.get_line_load_nodes" title="OpsGrillage.OpsGrillage.get_line_load_nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_line_load_nodes</span></code></a>(line_load_obj)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">assign_point_to_four_node</span></code>(point, mag)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../OpsGrillage.html#OpsGrillage.OpsGrillage.get_node_area" title="OpsGrillage.OpsGrillage.get_node_area"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_node_area</span></code></a>(inside_point, p_list)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_ops</span></code>([pyfile])</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../OpsGrillage.html#OpsGrillage.OpsGrillage.get_point_load_nodes" title="OpsGrillage.OpsGrillage.get_point_load_nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_point_load_nodes</span></code></a>(point)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">distribute_load_types_to_model</span></code>(load_case_obj)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_bounded_nodes</span></code>(patch_load_obj)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_line_load_nodes</span></code>(line_load_obj)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_node_area</span></code>(inside_point, p_list)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_point_load_nodes</span></code>(point)</p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="../OpsGrillage.html#OpsGrillage.OpsGrillage.get_results" title="OpsGrillage.OpsGrillage.get_results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_results</span></code></a>()</p></td>
-<td><p>Function to get results from all analyses.</p></td>
+<td><p>Function to get results from all load cases.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="../OpsGrillage.html#OpsGrillage.OpsGrillage.set_boundary_condition" title="OpsGrillage.OpsGrillage.set_boundary_condition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_boundary_condition</span></code></a>([edge_group_counter, …])</p></td>
 <td><p>Function for user to modify boundary conditions of the grillage model.</p></td>
@@ -294,7 +271,7 @@ example_bridge = OpsGrillage(bridge_name=”SuperT_10m”, long_dim=10, width=7,
 <td><p>Function to define a global material model.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="../OpsGrillage.html#OpsGrillage.OpsGrillage.set_member" title="OpsGrillage.OpsGrillage.set_member"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_member</span></code></a>(grillage_member_obj[, member])</p></td>
-<td><p>Function to set grillage member class object to elements of grillage members. :param grillage_member_obj: Grillage_member class object :param member: str of member category - select from standard grillage elements                 - interior beam                 - exterior beam                 - edge beam                 - slab                 - diaphragm :return: sets member object to element of grillage in OpsGrillage instance.</p></td>
+<td><p>Function to set grillage member class object to elements of grillage members. :param grillage_member_obj: Grillage_member class object :param member: str of member category - select from standard grillage elements                 - interior beam                 - exterior beam                 - edge beam                 - transverse slab                 - diaphragm :return: sets member object to element of grillage in OpsGrillage instance.</p></td>
 </tr>
 </tbody>
 </table>
@@ -307,10 +284,6 @@ example_bridge = OpsGrillage(bridge_name=”SuperT_10m”, long_dim=10, width=7,
            
           </div>
           <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="../ModuleDoc.html" class="btn btn-neutral float-right" title="Module documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="../APIdoc.html" class="btn btn-neutral float-left" title="API reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-    </div>
 
   <hr/>
 

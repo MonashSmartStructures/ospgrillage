@@ -172,11 +172,6 @@ Opensees grillage model based on user input.</p>
 <p>The class provides an interface for the user to specify the geometry of the grillage model. A keyword argument
 allows for users to select between skew/oblique or orthogonal mesh. Methods in this class allows users to input
 properties for various elements in the grillage model.</p>
-<p>Example usage:
-example_bridge = OpsGrillage(bridge_name=”SuperT_10m”, long_dim=10, width=7, skew=-42,</p>
-<blockquote>
-<div><p>num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type=”Ortho”)</p>
-</div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -192,22 +187,19 @@ example_bridge = OpsGrillage(bridge_name=”SuperT_10m”, long_dim=10, width=7,
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.create_ops">
-<span class="sig-name descname"><span class="pre">create_ops</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.create_ops" title="Permalink to this definition">¶</a></dt>
-<dd><p>Main function to create ops model instance or output pyfile for model instance
-:param pyfile: Boolean to flag either ops instance or pyfile output</p>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.set_boundary_condition">
 <span class="sig-name descname"><span class="pre">set_boundary_condition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edge_group_counter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[1]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restraint_vector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_to_exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.set_boundary_condition" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function for user to modify boundary conditions of the grillage model. Edge nodes are automatically detected
 and recorded as having fixity in vertical y direction.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Development yet to be completed - will progress once user input received</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.set_member">
-<span class="sig-name descname"><span class="pre">set_member</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grillage_member_obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">member</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.set_member" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">set_member</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grillage_member_obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="GrillageMember.html#member_sections.GrillageMember" title="member_sections.GrillageMember"><span class="pre">member_sections.GrillageMember</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">member</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.set_member" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to set grillage member class object to elements of grillage members.
 :param grillage_member_obj: Grillage_member class object
 :param member: str of member category - select from standard grillage elements</p>
@@ -216,7 +208,7 @@ and recorded as having fixity in vertical y direction.</p>
 <li><p>interior beam</p></li>
 <li><p>exterior beam</p></li>
 <li><p>edge beam</p></li>
-<li><p>slab</p></li>
+<li><p>transverse slab</p></li>
 <li><p>diaphragm</p></li>
 </ul>
 </div></blockquote>
@@ -241,142 +233,45 @@ function creates a material object instance to be set for the ops-grillage insta
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.get_point_load_nodes">
-<span class="sig-name descname"><span class="pre">get_point_load_nodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.get_point_load_nodes" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.get_line_load_nodes">
-<span class="sig-name descname"><span class="pre">get_line_load_nodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line_load_obj</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">dict</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.get_line_load_nodes" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.get_bounded_nodes">
-<span class="sig-name descname"><span class="pre">get_bounded_nodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patch_load_obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.get_bounded_nodes" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.assign_point_to_four_node">
-<span class="sig-name descname"><span class="pre">assign_point_to_four_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.assign_point_to_four_node" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to assign point load to nodes of grid where the point load lies in.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>point</strong> – [x,y=0,z] coordinates of point load</p></li>
-<li><p><strong>mag</strong> – Vertical (y axis direction) magnitude of point load</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.assign_line_to_four_node">
-<span class="sig-name descname"><span class="pre">assign_line_to_four_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line_load_obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_grid_intersect</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">list</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.assign_line_to_four_node" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to assign line load to mesh. Procedure to assign line load is as follows:
-#. get properties of line on the grid
-#. convert line load to equivalent point load
-#. Find position of equivalent point load
-#. Runs assignment for point loads function (assign_point_to_four_node) using equivalent point load</p>
-<blockquote>
-<div><p>properties</p>
-</div></blockquote>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>line_load_obj</strong> (<em>LineLoading class</em>) – Lineloading class object containing the line load properties</p></li>
-<li><p><strong>line_grid_intersect</strong> – dict containing intersecting grid as key and intersecting points as values (list)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return load_str_line</dt>
-<dd class="field-even"><p>list containing strings of ops commands to be handled either - write to file
-or eval()</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.assign_patch_load">
-<span class="sig-name descname"><span class="pre">assign_patch_load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patch_load_obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Load.PatchLoading</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">list</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.assign_patch_load" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.get_node_area">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">get_node_area</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inside_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_list</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">float</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.get_node_area" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.distribute_load_types_to_model">
-<span class="sig-name descname"><span class="pre">distribute_load_types_to_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">load_case_obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Load.LoadCase</span><span class="p"><span class="pre">,</span> </span><span class="pre">Load.CompoundLoad</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">list</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.distribute_load_types_to_model" title="Permalink to this definition">¶</a></dt>
-<dd><p>Functions to distribute load types to OpsGrillage model.
-:param load_case_obj: A load case object or Compound load
-:type load_case_obj: LoadCase or CompoundLoad
-:return: string list of all ops.load() command responsible for distributing loads to nodes of model. The string
-is either evaluated (using eval()) or write to py file if flagged.</p>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.add_load_case">
-<span class="sig-name descname"><span class="pre">add_load_case</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">load_case_obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Load.LoadCase</span><span class="p"><span class="pre">,</span> </span><span class="pre">Load.CompoundLoad</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.add_load_case" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">add_load_case</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">load_case_obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="Loads.html#Load.LoadCase" title="Load.LoadCase"><span class="pre">Load.LoadCase</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.add_load_case" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to add individual load cases to OpsGrillage instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>load_factor</strong> – Optional load factor for the prescribed load case</p></li>
-<li><p><strong>load_case_obj</strong> (<em>LoadCase</em>) – A load case object of the load condition</p></li>
+<li><p><strong>load_case_obj</strong> (<a class="reference internal" href="Loads.html#Load.LoadCase" title="Load.LoadCase"><em>LoadCase</em></a>) – A load case object of the load condition</p></li>
 </ul>
 </dd>
 </dl>
-<p>A typical load_case_dict within load_case_dict list has the following format
-.. code:</p>
-<blockquote>
-<div><dl class="simple">
-<dt>load_case_dict = {‘name’:load_case_obj.name, ‘loadcase’: load_case_obj, ‘load_command’: load_str,</dt><dd><p>‘load_factor’: load_factor}</p>
-</dd>
-</dl>
-</div></blockquote>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.analyse_load_case">
 <span class="sig-name descname"><span class="pre">analyse_load_case</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.analyse_load_case" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to analyse all basic load cases defined previously using add_load_case() function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Except</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.add_load_combination">
 <span class="sig-name descname"><span class="pre">add_load_combination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">load_combination_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_case_name_dict</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.add_load_combination" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to create load combinations out of the defined load cases.
-:param load_combination_name: name of load combination
-:param load_case_name_dict: dict with load case name as key, and load factor as value</p>
-<blockquote>
-<div><dl class="simple">
-<dt>Format example:</dt><dd><p>{“DL”:1.2, “LL”:1.7}</p>
-</dd>
-</dl>
-</div></blockquote>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><dl class="simple">
-<dt>populate self.load_combination_dict , with key being the load_combination name parameter and value</dt><dd><p>being a list of dict for load cases</p>
-</dd>
-</dl>
-<p>A typical load_case_dict within load_case_dict list has the following format</p>
-</p>
-</dd>
-</dl>
+<dd><p>To be deprecated</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.add_moving_load_case">
-<span class="sig-name descname"><span class="pre">add_moving_load_case</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">moving_load_obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Load.MovingLoad</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.add_moving_load_case" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to add Moving load case to OpsGrillage instance.
-:param load_factor: load factor for load case. Default is 1. Load factor defined during definition of load case</p>
-<blockquote>
-<div><p>i.e. creating load case object is superseded by this load factor variable</p>
-</div></blockquote>
+<span class="sig-name descname"><span class="pre">add_moving_load_case</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">moving_load_obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="Loads.html#Load.MovingLoad" title="Load.MovingLoad"><span class="pre">Load.MovingLoad</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.add_moving_load_case" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to add Moving load case to OpsGrillage instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>moving_load_obj</strong> – Moving load class object instance</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>moving_load_obj</strong> (<a class="reference internal" href="Loads.html#Load.MovingLoad" title="Load.MovingLoad"><em>MovingLoad</em></a>) – Moving load class object instance</p></li>
+<li><p><strong>load_factor</strong> (<em>Int</em><em> or </em><em>Float</em>) – optional load factor to be set for all incremental load case. Default is 1.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -387,7 +282,7 @@ is either evaluated (using eval()) or write to py file if flagged.</p>
 <dd><p>Function to analyze all defined moving load cases.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>moving_load_case_name</strong> (<em>str</em>) – Optional if users wish to run only a specific load case.</p>
+<dd class="field-odd"><p><strong>moving_load_case_name</strong> (<em>str</em>) – Name of specific load case to be ran (Optional)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -395,10 +290,16 @@ is either evaluated (using eval()) or write to py file if flagged.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.get_results">
 <span class="sig-name descname"><span class="pre">get_results</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.get_results" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to get results from all analyses.</p>
+<dd><p>Function to get results from all load cases.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>A data array for basic all load case, and a list of data arrays for each moving load cases if any</p>
+</dd>
+<dt class="field-even">Returns basic_da</dt>
+<dd class="field-even"><p>Data Array for all basic load case. For details of components see <span class="xref std std-doc">Result</span> Page</p>
+</dd>
+<dt class="field-odd">Returns list_moving_da</dt>
+<dd class="field-odd"><p>A list of Data array each element correspond to a Data array for a single moving load</p>
 </dd>
 </dl>
 </dd></dl>
@@ -416,60 +317,17 @@ load” procedures.</p>
 <ul class="simple">
 <li><p>store information of ops commands for performing static (default) analysis of single/multiple load case(s).</p></li>
 <li><p>execute the required ops commands to perform analysis using the OpsGrillage model instance.</p></li>
-<li><dl class="simple">
-<dt>if flagged, writes an executable py file instead which performs the exact analysis as it would for an</dt><dd><p>OpsGrillage instance instead.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>manages multiple load case’s ops.load() commands, applying the specified load factors to the load cases for</dt><dd><p>load combinations</p>
-</dd>
-</dl>
-</li>
+<li><p>if flagged, writes an executable py file instead which performs the exact analysis as it would for an OpsGrillage instance instead.</p></li>
+<li><p>manages multiple load case’s ops.load() commands, applying the specified load factors to the load cases for load combinations</p></li>
 </ul>
-<dl class="py method">
-<dt class="sig sig-object py" id="OpsGrillage.Analysis.time_series_command">
-<span class="sig-name descname"><span class="pre">time_series_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">load_factor</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.Analysis.time_series_command" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="OpsGrillage.Analysis.pattern_command">
-<span class="sig-name descname"><span class="pre">pattern_command</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.Analysis.pattern_command" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="OpsGrillage.Analysis.add_load_command">
-<span class="sig-name descname"><span class="pre">add_load_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">load_str</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_factor</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.Analysis.add_load_command" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="OpsGrillage.Analysis.evaluate_analysis">
-<span class="sig-name descname"><span class="pre">evaluate_analysis</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.Analysis.evaluate_analysis" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="OpsGrillage.Analysis.extract_grillage_responses">
-<span class="sig-name descname"><span class="pre">extract_grillage_responses</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.Analysis.extract_grillage_responses" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="OpsGrillage.Results">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">OpsGrillage.</span></span><span class="sig-name descname"><span class="pre">Results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh_obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Mesh.Mesh</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.Results" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Main class to store results of each analysis and process into data array output for post processing/plotting.
+<p>Main class to store results of an Analysis class object, process into data array output for post processing/plotting.
 Class object is accessed within OpsGrillage class object.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="OpsGrillage.Results.insert_analysis_results">
-<span class="sig-name descname"><span class="pre">insert_analysis_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">analysis_obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#OpsGrillage.Analysis" title="OpsGrillage.Analysis"><span class="pre">OpsGrillage.Analysis</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list_of_inc_analysis</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.Results.insert_analysis_results" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="OpsGrillage.Results.compile_data_array">
-<span class="sig-name descname"><span class="pre">compile_data_array</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.Results.compile_data_array" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 </div>

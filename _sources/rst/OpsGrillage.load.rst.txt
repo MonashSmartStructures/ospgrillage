@@ -5,3 +5,4 @@ Loads.apply_load_factor
 .. currentmodule:: Load.Loads
 
 .. autofunction:: apply_load_factor
+

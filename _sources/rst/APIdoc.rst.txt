@@ -17,79 +17,139 @@ UML diagram overview
     Figure 1: UML diagram - draft version 1.
 
 
-What parts are considered public API?
+What functions are considered public API?
 ------------------------------------------
-Simply, any functions documented in this API reference page are considered part of *ops-grillage*'s public API. In other
-words, only top level functions within each class (see UML diagram) are part of the public API.
+To put it simply, any functions documented in this API reference page are considered part of *ops-grillage*'s public API.
+There are many more functions which are lower level - these listed functions are the top level functions accessible
+from classes shown in UML diagram.
 
 
 OpsGrillage class
 ---------------------------
 
-.. currentmodule:: OpsGrillage
-
-.. autosummary::
-   :toctree: generated/
-   :nosignatures:
-
-   OpsGrillage
-
-
-
+.. autoclass:: OpsGrillage.OpsGrillage
+    :members:
+    :show-inheritance:
 
 
 Analysis objects
 ^^^^^^^^^^^^^^^^
-
+.. autoclass:: OpsGrillage.Analysis
+    :members:
+    :show-inheritance:
 
 
 Result objects
 ^^^^^^^^^^^^^^^^
-
+.. autoclass:: OpsGrillage.Results
+    :members:
+    :show-inheritance:
 
 
 Material class
 ------------------------------------------
 For information regarding the procedures in :class:`~OpsGrillage` class, see
-:doc:`ModuleDoc`. For information of all functions and methods in ``opGrillage`` class, see :doc:`OpsGrillage`
+:doc:`ModuleDoc`.
+
+
+Opensees Uniaxial Materials
+^^^^^^^^^^^^^^^^
+
+.. autoclass:: Material.UniAxialElasticMaterial
+    :members:
+    :show-inheritance:
+
+Opensees ND materials
+^^^^^^^^^^^^^^^^
+
+.. autoclass:: Material.NDmaterial
+    :members:
+    :show-inheritance:
+
+Section class
+------------------------------------------
+
+.. autoclass:: member_sections.Section
+    :members:
+    :show-inheritance:
 
 GrillageMember class
 ------------------------------------------
-
+.. autoclass:: member_sections.GrillageMember
+    :members:
+    :show-inheritance:
 
 Mesh class
 ------------------------------------------
 
-Example table for copy paste usage:
-
-   ================================   ===========================================================================
-   ``bridge_name`` |str|              name string of bridge model
-   ``long_dim`` |float|               longitudinal dimension argument
-    ``width`` |float|                 width argument
-    ``skew`` |float|                  skew angle argument: angle can be positive or negative (skew clockwise if positive)
-    ``num_long_grid`` |float|         number of line meshes in the longitudinal direction
-    ``num_trans_grid`` |float|        number of line mesh in the transverse direction
-    ``cantilever_edge`` |float|       distance between edg
-    ``mesh_type`` |str|               string argument for type of mesh:
-                                        * "Ortho": Orthogonal mesh
-                                        * "Oblique" : Skew mesh
-   ================================   ===========================================================================
-
-
-op_create_elements(op_member_prop_class, trans_tag, beam_ele_type, expression='long_mem'):)
-
-Command to construct attribute for element in GrillageGenerator object. The element object is translated to an
-Openseespy command line for each associated element in the model.
-
-================================   ===========================================================================
-``op_member_prop_class`` |str|     constraints type
-``trans_tag`` |list|               a list of constraints arguments
-================================   ===========================================================================
-
-Example element definition
 
 
 Load class
 ------------------------------------------
+For information regarding in :class:`~Loads` class, see
+:doc:`Loads`.
 
+NodalLoad
+^^^^^^^^^^^^^^^^
 
+.. autoclass:: Load.NodalLoad
+    :members:
+    :show-inheritance:
+
+PointLoad
+^^^^^^^^^^^^^^^^
+
+.. autoclass:: Load.PointLoad
+    :members:
+    :show-inheritance:
+
+LineLoading
+^^^^^^^^^^^^^^^^
+
+.. autoclass:: Load.LineLoading
+    :members:
+    :show-inheritance:
+
+PatchLoading
+^^^^^^^^^^^^^^^^
+
+.. autoclass:: Load.PatchLoading
+    :members:
+    :show-inheritance:
+
+CompoundLoad
+^^^^^^^^^^^^^^^^
+
+.. autoclass:: Load.CompoundLoad
+    :members:
+    :show-inheritance:
+
+MovingLoad
+^^^^^^^^^^^^^^^^
+
+.. autoclass:: Load.MovingLoad
+    :members:
+    :show-inheritance:
+
+Load case class
+------------------------------------------
+For information regarding in :class:`~LoadCase` class, see
+:doc:`Loads`.
+
+LoadCase
+^^^^^^^^^^^^^^^^
+
+.. autoclass:: Load.LoadCase
+    :members:
+    :show-inheritance:
+
+Misc
+------------------------------------------
+
+.. autoclass:: Load.Path
+    :members:
+    :show-inheritance:
+
+.. autoclass:: Load.ShapeFunction
+    :members:
+    :show-inheritance:
