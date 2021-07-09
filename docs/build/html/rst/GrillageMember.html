@@ -191,23 +191,26 @@ section(‘Elastic’, BeamSecTag,Ec,ABeam,IzBeam)</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="member_sections.Section.get_asterisk_arguments">
 <span class="sig-name descname"><span class="pre">get_asterisk_arguments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#member_sections.Section.get_asterisk_arguments" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to output list of arguments for element type requiring an argument list (with preceding asterisk)
-:return: list containing member properties in accordance with  input convention</p>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="member_sections.Section.get_element_command_str">
-<span class="sig-name descname"><span class="pre">get_element_command_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ele_tag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transf_tag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n3</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n4</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ele_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sectiontag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#member_sections.Section.get_element_command_str" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function called within OpsGrillage class <cite>set_member()</cite> function.</p>
-</dd></dl>
+<dt class="sig sig-object py" id="member_sections.Section.get_section_arg_str">
+<span class="sig-name descname"><span class="pre">get_section_arg_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ele_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#member_sections.Section.get_section_arg_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="member_sections.Section.get_section_command">
+<span class="sig-name descname"><span class="pre">get_section_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">section_tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ele_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#member_sections.Section.get_section_command" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="member_sections.GrillageMember">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">member_sections.</span></span><span class="sig-name descname"><span class="pre">GrillageMember</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">section</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">material</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">member_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Undefined'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#member_sections.GrillageMember" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">member_sections.</span></span><span class="sig-name descname"><span class="pre">GrillageMember</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">section</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#member_sections.Section" title="member_sections.Section"><span class="pre">member_sections.Section</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">material</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">member_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Undefined'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#member_sections.GrillageMember" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Grillage member class.</p>
+<p>Main class for Grillage member definition. Class requires two objects as input parameters: a Section object and a
+Material object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -217,6 +220,11 @@ section(‘Elastic’, BeamSecTag,Ec,ABeam,IzBeam)</p>
 </ul>
 </dd>
 </dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="member_sections.GrillageMember.get_element_command_str">
+<span class="sig-name descname"><span class="pre">get_element_command_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ele_tag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_tag_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transf_tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ele_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">materialtag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sectiontag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#member_sections.GrillageMember.get_element_command_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </div>

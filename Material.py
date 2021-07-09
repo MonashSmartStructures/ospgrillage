@@ -12,6 +12,7 @@ class Material:
         self.fpcu = kwargs.get('fpcu', None)
         self.epcU = kwargs.get('epcU', None)
 
+
 class UniAxialElasticMaterial(Material):
     """
     Main class for Opensees UniAxialElasticMaterial objects. This class acts as a wrapper to parse input parameters

@@ -10,7 +10,7 @@ def ref_28m_bridge():
     pyfile = False
     # reference super T bridge 28m for validation purpose
     # Members
-    concrete = UniAxialElasticMaterial(mat_type="Concrete01", mat_vec=[-6.0, -0.004, -6.0, -0.014])
+    concrete = UniAxialElasticMaterial(mat_type="Concrete01", fpc=-6, epsc0=-0.004,fpcu=-6,epcU=-0.014)
 
     # define sections
     super_t_beam_section = Section(op_section_type="Elastic", op_ele_type="elasticBeamColumn", A=1.0447, E=3.47E+10,
@@ -60,7 +60,7 @@ def ref_28m_bridge():
 
 @pytest.fixture
 def ref_bridge_properties():
-    concrete = UniAxialElasticMaterial(mat_type="Concrete01", mat_vec=[-6.0, -0.004, -6.0, -0.014])
+    concrete = UniAxialElasticMaterial(mat_type="Concrete01", fpc=-6, epsc0=-0.004,fpcu=-6,epcU=-0.014)
 
     # define sections
     I_beam_section = Section(op_section_type="Elastic", op_ele_type="elasticBeamColumn", A=0.896, E=3.47E+10,

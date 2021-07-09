@@ -4,7 +4,6 @@ from OpsGrillage import *
 from PlotWizard import *
 
 # define material
-mat_vec=[-6.0, -0.004, -6.0, -0.014]
 concrete = UniAxialElasticMaterial(mat_type="Concrete01", fpc=-6, epsc0=-0.004,fpcu=-6,epcU=-0.014)
 
 # define sections
@@ -31,7 +30,7 @@ pyfile = False
 example_bridge.create_ops(pyfile=pyfile)
 
 # set material to grillage (globally) - comment to disable
-example_bridge.set_material(concrete)
+# example_bridge.set_material(concrete)
 
 # set grillage member to element groups of grillage model
 example_bridge.set_member(I_beam, member="interior_main_beam")

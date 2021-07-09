@@ -165,20 +165,41 @@
 <span id="material"></span><h1>Material<a class="headerlink" href="#module-Material" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="Material.Material">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Material.</span></span><span class="sig-name descname"><span class="pre">Material</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mat_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mat_vec</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Material.Material" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Material.</span></span><span class="sig-name descname"><span class="pre">Material</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mat_type</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Material.Material" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Base class for Material objects</p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="Material.UniAxialElasticMaterial">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Material.</span></span><span class="sig-name descname"><span class="pre">UniAxialElasticMaterial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mat_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mat_vec</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Material.UniAxialElasticMaterial" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Material.</span></span><span class="sig-name descname"><span class="pre">UniAxialElasticMaterial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mat_type</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Material.UniAxialElasticMaterial" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#Material.Material" title="Material.Material"><code class="xref py py-class docutils literal notranslate"><span class="pre">Material.Material</span></code></a></p>
 <p>Main class for Opensees UniAxialElasticMaterial objects. This class acts as a wrapper to parse input parameters
 and returns command lines to generate the prescribe materials in Opensees library.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="Material.UniAxialElasticMaterial.get_output_arguments">
-<span class="sig-name descname"><span class="pre">get_output_arguments</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Material.UniAxialElasticMaterial.get_output_arguments" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="Material.UniAxialElasticMaterial.get_uni_material_arg_str">
+<span class="sig-name descname"><span class="pre">get_uni_material_arg_str</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Material.UniAxialElasticMaterial.get_uni_material_arg_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Material.UniAxialElasticMaterial.get_uni_mat_ops_commands">
+<span class="sig-name descname"><span class="pre">get_uni_mat_ops_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">material_tag</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Material.UniAxialElasticMaterial.get_uni_mat_ops_commands" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Material.NDmaterial">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Material.</span></span><span class="sig-name descname"><span class="pre">NDmaterial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mat_type</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Material.NDmaterial" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#Material.Material" title="Material.Material"><code class="xref py py-class docutils literal notranslate"><span class="pre">Material.Material</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Material.NDmaterial.get_ndMaterial_args">
+<span class="sig-name descname"><span class="pre">get_ndMaterial_args</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Material.NDmaterial.get_ndMaterial_args" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Material.NDmaterial.get_nd_ops_commands">
+<span class="sig-name descname"><span class="pre">get_nd_ops_commands</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Material.NDmaterial.get_nd_ops_commands" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

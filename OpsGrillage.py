@@ -20,15 +20,11 @@ class OpsGrillage:
     allows for users to select between skew/oblique or orthogonal mesh. Methods in this class allows users to input
     properties for various elements in the grillage model.
 
-    Example usage:
-    example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=-42,
-                             num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
     """
 
     def __init__(self, bridge_name, long_dim, width, skew, num_long_grid,
                  num_trans_grid: float, edge_beam_dist, mesh_type="Ortho", op_instance=True, model="3D", **kwargs):
         """
-
         :param bridge_name: Name of bridge model and output .py file
         :type bridge_name: str
         :param long_dim: Length of the model in the longitudinal direction (default: x axis)
@@ -135,11 +131,7 @@ class OpsGrillage:
         self.results = None
 
     def create_ops(self, pyfile=False):
-        """
-        Main function to create ops model instance or output pyfile for model instance
-        :param pyfile: Boolean to flag either ops instance or pyfile output
 
-        """
         self.pyfile = pyfile
 
         if self.pyfile:
@@ -177,6 +169,9 @@ class OpsGrillage:
         """
         Function for user to modify boundary conditions of the grillage model. Edge nodes are automatically detected
         and recorded as having fixity in vertical y direction.
+
+        .. note::
+            Development yet to be completed - will progress once user input received
         """
         pass
 
@@ -270,7 +265,8 @@ class OpsGrillage:
                 else:  # run instance
                     ops.fix(node_tag, *self.fix_val_roller_x)
 
-    def __write_uniaxial_material(self, member:GrillageMember=None, material:Union[UniAxialElasticMaterial,NDmaterial]= None):
+    def __write_uniaxial_material(self, member: GrillageMember = None,
+                                  material: Union[UniAxialElasticMaterial, NDmaterial] = None):
         """
         Sub-abstracted procedure to write uniaxialMaterial command for the material properties of the grillage model.
 
@@ -312,14 +308,15 @@ class OpsGrillage:
                   .format(material_type, material_tag))
             return material_tag
 
-    def __write_section(self, grillage_member_obj:GrillageMember):
+    def __write_section(self, grillage_member_obj: GrillageMember):
         """
         Abstracted procedure handled by set_member() function to write section() command for the elements. This method
         is ran only when GrillageMember object requires section() definition following convention of Openseespy.
 
         """
         # extract section variables from Section class
-        section_type, section_arg = grillage_member_obj.get_section_str()
+        section_obj = grillage_member_obj.section
+        section_type, section_arg = section_obj.get_section_arg_str()
         # list of argument for section - Openseespy convention
         section_str = [section_type, section_arg]  # repr both variables as a list for keyword definition
         # if section is specified, get the sectiontagcounter for section assignment
@@ -327,10 +324,11 @@ class OpsGrillage:
             lastsectioncounter = 0  # if dict empty, start counter at 0
         else:  # dict not empty, get default value as latest defined tag
             lastsectioncounter = self.section_dict[list(self.section_dict)[-1]]
-        # if section has been assigned
+        # set section tag or get section tag if already been assigned
+        previously_defined_section = list(self.section_dict.values())
         sectiontagcounter = self.section_dict.setdefault(repr(section_str), lastsectioncounter + 1)
-        if sectiontagcounter not in self.section_dict.values():
-            sec_str = "ops.section(\"{type}\", {tag}, *{arg})\n".format(type=section_type, tag=sectiontagcounter, arg=section_arg)
+        if sectiontagcounter not in previously_defined_section:
+            sec_str = section_obj.get_section_command(section_tag=sectiontagcounter)
             if self.pyfile:
                 with open(self.filename, 'a') as file_handle:
                     file_handle.write("# Create section: \n")
@@ -346,7 +344,7 @@ class OpsGrillage:
         return sectiontagcounter
 
     # Function to set grillage elements
-    def set_member(self, grillage_member_obj:GrillageMember, member=None):
+    def set_member(self, grillage_member_obj: GrillageMember, member=None):
         """
         Function to set grillage member class object to elements of grillage members.
         :param grillage_member_obj: Grillage_member class object
@@ -354,14 +352,14 @@ class OpsGrillage:
                         - interior beam
                         - exterior beam
                         - edge beam
-                        - slab
+                        - transverse slab
                         - diaphragm
         :return: sets member object to element of grillage in OpsGrillage instance
 
         """
         # write member's section command
-        if grillage_member_obj.section.section_command_flag:
-            section_tag = self.__write_section(grillage_member_obj)
+        # if grillage_member_obj.section.section_command_flag:
+        section_tag = self.__write_section(grillage_member_obj)
         # write member's material command
         material_tag = self.__write_uniaxial_material(member=grillage_member_obj)
 
@@ -391,7 +389,7 @@ class OpsGrillage:
         elif member == "end_edge":
             common_member_tag = 1
             edge_flag = True
-        else: # For now, set None as to assign as slab
+        else:  # For now, set None as to assign as slab
             common_member_tag = None
 
         ele_width = 1
@@ -400,7 +398,7 @@ class OpsGrillage:
             for ele in self.Mesh_obj.trans_ele:
                 n1 = ele[1]  # node i
                 n2 = ele[2]  # node j
-                node_tag_list = [n1,n2]
+                node_tag_list = [n1, n2]
                 # get node width of node_i and node_j
                 lis_1 = self.Mesh_obj.node_width_x_dict[n1]
                 lis_2 = self.Mesh_obj.node_width_x_dict[n2]
@@ -420,9 +418,9 @@ class OpsGrillage:
                 # both width
                 # here take the average width in x directions
 
-                # ele_str = grillage_member_obj.section.get_element_command_str(
-                    # ele_tag=ele[0], n1=n1, n2=n2, transf_tag=ele[4], ele_width=ele_width)
-                ele_str = grillage_member_obj.get_element_command_str(ele_tag=ele[0],node_tag_list=node_tag_list,transf_tag=ele[4],ele_width=ele_width,materialtag=material_tag,sectiontag=section_tag)
+                ele_str = grillage_member_obj.get_element_command_str(ele_tag=ele[0], node_tag_list=node_tag_list,
+                                                                      transf_tag=ele[4], ele_width=ele_width,
+                                                                      materialtag=material_tag, sectiontag=section_tag)
                 if self.pyfile:
                     with open(self.filename, 'a') as file_handle:
                         file_handle.write(ele_str)
@@ -434,10 +432,7 @@ class OpsGrillage:
                 for z_groups in self.Mesh_obj.common_z_group_element[common_member_tag]:
                     # assign properties to elements in z group
                     for ele in self.Mesh_obj.z_group_to_ele[z_groups]:
-                        # ele_str = grillage_member_obj.section.get_element_command_str(
-                        #     ele_tag=ele[0], n1=ele[1], n2=ele[2], transf_tag=ele[4], ele_width=ele_width)
-
-                        node_tag_list = [ele[1],ele[2]]
+                        node_tag_list = [ele[1], ele[2]]
                         ele_str = grillage_member_obj.get_element_command_str(ele_tag=ele[0],
                                                                               node_tag_list=node_tag_list,
                                                                               transf_tag=ele[4], ele_width=ele_width,
@@ -455,7 +450,7 @@ class OpsGrillage:
                     if ele[3] == common_member_tag:
                         # ele_str = grillage_member_obj.section.get_element_command_str(
                         #     ele_tag=ele[0], n1=ele[1], n2=ele[2], transf_tag=ele[4], ele_width=ele_width)
-                        node_tag_list= [ele[1],ele[2]]
+                        node_tag_list = [ele[1], ele[2]]
                         ele_str = grillage_member_obj.get_element_command_str(ele_tag=ele[0],
                                                                               node_tag_list=node_tag_list,
                                                                               transf_tag=ele[4], ele_width=ele_width,
@@ -850,13 +845,7 @@ class OpsGrillage:
 
     # Setter for Point loads
     def assign_point_to_four_node(self, point, mag):
-        """
-        Function to assign point load to nodes of grid where the point load lies in.
 
-        :param point: [x,y=0,z] coordinates of point load
-        :param mag: Vertical (y axis direction) magnitude of point load
-
-        """
         node_mx = []
         node_mz = []
         # search grid where the point lies in
@@ -908,20 +897,12 @@ class OpsGrillage:
 
     # Setter for Line loads and above
     def assign_line_to_four_node(self, line_load_obj, line_grid_intersect) -> list:
-        """
-        Function to assign line load to mesh. Procedure to assign line load is as follows:
-        #. get properties of line on the grid
-        #. convert line load to equivalent point load
-        #. Find position of equivalent point load
-        #. Runs assignment for point loads function (assign_point_to_four_node) using equivalent point load
-         properties
 
-        :param line_load_obj: Lineloading class object containing the line load properties
-        :param line_grid_intersect: dict containing intersecting grid as key and intersecting points as values (list)
-        :type line_load_obj: LineLoading class
-        :return load_str_line: list containing strings of ops commands to be handled either - write to file
-                                or eval()
-        """
+        # Function to assign line load to mesh. Procedure to assign line load is as follows:
+        # . get properties of line on the grid
+        # . convert line load to equivalent point load
+        # . Find position of equivalent point load
+        # . Runs assignment for point loads function (assign_point_to_four_node) using equivalent point load
 
         # loop each grid
         load_str_line = []
@@ -1062,14 +1043,7 @@ class OpsGrillage:
     # ----------------------------------------------------------------------------------------------------------
     #  functions to add load case and load combination
     def distribute_load_types_to_model(self, load_case_obj: Union[LoadCase, CompoundLoad]) -> list:
-        """
-        Functions to distribute load types to OpsGrillage model.
-        :param load_case_obj: A load case object or Compound load
-        :type load_case_obj: LoadCase or CompoundLoad
-        :return: string list of all ops.load() command responsible for distributing loads to nodes of model. The string
-        is either evaluated (using eval()) or write to py file if flagged.
 
-        """
         global load_groups
         load_str = []
         # check the input parameter type, set load_groups parameter according to its type
@@ -1080,7 +1054,7 @@ class OpsGrillage:
         # loop through each load object
         for load_dict in load_groups:
             load_obj = load_dict['load']
-            if isinstance(load_obj,CompoundLoad):
+            if isinstance(load_obj, CompoundLoad):
                 # load_obj is a Compound load class, start a nested loop through each load class within compound load
                 # nested loop through each load in compound load, assign and get
                 load_str = []
@@ -1089,9 +1063,10 @@ class OpsGrillage:
                         load_str += nested_list_of_load.get_nodal_load_str()
                     elif isinstance(nested_list_of_load, PointLoad):
                         load_str += self.assign_point_to_four_node(point=list(nested_list_of_load.load_point_1)[:-1],
-                                                                  mag=nested_list_of_load.load_point_1.p)
+                                                                   mag=nested_list_of_load.load_point_1.p)
                     elif isinstance(nested_list_of_load, LineLoading):
-                        line_grid_intersect = self.get_line_load_nodes(nested_list_of_load)  # returns self.line_grid_intersect
+                        line_grid_intersect = self.get_line_load_nodes(
+                            nested_list_of_load)  # returns self.line_grid_intersect
                         self.global_line_int_dict.append(line_grid_intersect)
                         load_str += self.assign_line_to_four_node(nested_list_of_load, line_grid_intersect)
                     elif isinstance(nested_list_of_load, PatchLoading):
@@ -1112,7 +1087,7 @@ class OpsGrillage:
 
         return load_str
 
-    def add_load_case(self, load_case_obj: Union[LoadCase, CompoundLoad], load_factor=1):
+    def add_load_case(self, load_case_obj: LoadCase, load_factor=1):
         """
         Function to add individual load cases to OpsGrillage instance.
 
@@ -1120,23 +1095,21 @@ class OpsGrillage:
         :param load_case_obj: A load case object of the load condition
         :type load_case_obj: LoadCase
 
-
-        A typical load_case_dict within load_case_dict list has the following format
-        .. code:
-            load_case_dict = {'name':load_case_obj.name, 'loadcase': load_case_obj, 'load_command': load_str,
-                          'load_factor': load_factor}
         """
         # update the load command list of load case object
         load_str = self.distribute_load_types_to_model(load_case_obj=load_case_obj)
         # store load case + load command in dict and add to load_case_list
         load_case_dict = {'name': load_case_obj.name, 'loadcase': load_case_obj, 'load_command': load_str,
                           'load_factor': load_factor}  # FORMATTING HERE
+
         self.load_case_list.append(load_case_dict)
         print("Load Case {} added".format(load_case_obj.name))
 
     def analyse_load_case(self):
         """
         Function to analyse all basic load cases defined previously using add_load_case() function
+
+        :except:
 
         """
         # analyse all load case defined in self.load_case_dict for OpsGrillage instance
@@ -1159,26 +1132,11 @@ class OpsGrillage:
             # store result in Recorder object
             self.results.insert_analysis_results(analysis_obj=load_case_analysis)
 
-
     def add_load_combination(self, load_combination_name: str, load_case_name_dict: dict):
         """
-        Function to create load combinations out of the defined load cases.
-        :param load_combination_name: name of load combination
-        :param load_case_name_dict: dict with load case name as key, and load factor as value
-                                    Format example:
-                                        {"DL":1.2, "LL":1.7}
-        .. note:
-            Load cases in load_case_name_dict must be added to OpsGrillage instance through add_load_case() function.
-            If load case name not found in defined load cases, return
-        :return: populate self.load_combination_dict , with key being the load_combination name parameter and value
-                    being a list of dict for load cases
+        To be deprecated
 
-            A typical load_case_dict within load_case_dict list has the following format
-        .. code:
-            load_case_dict = {'name':load_case_obj.name, 'loadcase': load_case_obj, 'load_command': load_str,
-                          'load_factor': load_factor}
         """
-
         load_case_dict_list = []  # list of dict: structure of dict See line
         # create dict with key (combination name) and val (list of dict of load cases)
         for load_case_name, load_factor in load_case_name_dict.items():
@@ -1199,26 +1157,14 @@ class OpsGrillage:
         self.load_combination_dict.setdefault(load_combination_name, load_case_dict_list)
         print("Load Combination: {} created".format(load_combination_name))
 
-    # def analyse_load_combination(self, selected_load_combination: str = None):
-    #     # create analysis object, add each factored load case to analysis object
-    #     for load_combination_name, load_case_dict_list in self.load_combination_dict.items():
-    #         load_combination_analysis = Analysis(analysis_name=load_combination_name, ops_grillage_name=self.model_name,
-    #                                              pyfile=self.pyfile,
-    #                                              time_series_counter=self.global_time_series_counter,
-    #                                              pattern_counter=self.global_pattern_counter)
-    #         for load_case_dict in load_case_dict_list:
-    #             load_case_obj = load_case_dict['loadcase']  # maybe unused
-    #             load_command = load_case_dict['load_command']
-    #             load_factor = load_case_dict['load_factor']
-    #             load_combination_analysis.add_load_command(load_command, load_factor=load_factor)
-    #         self.global_time_series_counter, self.global_pattern_counter = load_combination_analysis.evaluate_analysis()
-
     def add_moving_load_case(self, moving_load_obj: MovingLoad, load_factor=1):
         """
         Function to add Moving load case to OpsGrillage instance.
-        :param load_factor: load factor for load case. Default is 1. Load factor defined during definition of load case
-                            i.e. creating load case object is superseded by this load factor variable
+
         :param moving_load_obj: Moving load class object instance
+        :type moving_load_obj: MovingLoad
+        :param load_factor: optional load factor to be set for all incremental load case. Default is 1.
+        :type load_factor: Int or Float
 
         """
         # get the list of individual load cases
@@ -1239,7 +1185,7 @@ class OpsGrillage:
         """
         Function to analyze all defined moving load cases.
 
-        :param moving_load_case_name: Optional if users wish to run only a specific load case.
+        :param moving_load_case_name: Name of specific load case to be ran (Optional)
         :type moving_load_case_name: str
 
         """
@@ -1257,8 +1203,8 @@ class OpsGrillage:
                                                 pyfile=self.pyfile,
                                                 time_series_counter=self.global_time_series_counter,
                                                 pattern_counter=self.global_pattern_counter,
-                                                  node_counter=self.Mesh_obj.node_counter,
-                                                  ele_counter=self.Mesh_obj.element_counter)
+                                                node_counter=self.Mesh_obj.node_counter,
+                                                ele_counter=self.Mesh_obj.element_counter)
                 incremental_analysis.add_load_command(load_command, load_factor=load_factor)
                 self.global_time_series_counter, self.global_pattern_counter, node_disp, ele_force \
                     = incremental_analysis.evaluate_analysis()
@@ -1268,9 +1214,12 @@ class OpsGrillage:
 
     def get_results(self):
         """
-        Function to get results from all analyses.
+        Function to get results from all load cases.
 
         :return: A data array for basic all load case, and a list of data arrays for each moving load cases if any
+        :returns basic_da: Data Array for all basic load case. For details of components see :doc:`Result` Page
+        :returns list_moving_da: A list of Data array each element correspond to a Data array for a single moving load
+        :type list_moving_da: list
         """
         basic_da, list_moving_da = self.results.compile_data_array()
         return basic_da, list_moving_da
@@ -1287,10 +1236,8 @@ class Analysis:
 
     * store information of ops commands for performing static (default) analysis of single/multiple load case(s).
     * execute the required ops commands to perform analysis using the OpsGrillage model instance.
-    * if flagged, writes an executable py file instead which performs the exact analysis as it would for an
-        OpsGrillage instance instead.
-    * manages multiple load case's ops.load() commands, applying the specified load factors to the load cases for
-        load combinations
+    * if flagged, writes an executable py file instead which performs the exact analysis as it would for an OpsGrillage instance instead.
+    * manages multiple load case's ops.load() commands, applying the specified load factors to the load cases for load combinations
 
     """
 
@@ -1399,11 +1346,11 @@ class Analysis:
     def extract_grillage_responses(self):
         if not self.pyfile:
             # first loop extract node displacements
-            for node_tag in range(1,self.mesh_node_counter):
+            for node_tag in range(1, self.mesh_node_counter):
                 disp_list = ops.nodeDisp(node_tag)
                 self.node_disp.setdefault(node_tag, disp_list)
 
-            for ele_tag in range(1,self.mesh_ele_counter):
+            for ele_tag in range(1, self.mesh_ele_counter):
                 ele_force = ops.eleForce(ele_tag)
                 self.ele_force.setdefault(ele_tag, ele_force)
 
@@ -1425,7 +1372,7 @@ class Results:
         # dynamic moving load (incremental) load cases
         self.mesh_obj = mesh_obj
 
-    def insert_analysis_results(self, analysis_obj: Analysis = None, list_of_inc_analysis:list = None):
+    def insert_analysis_results(self, analysis_obj: Analysis = None, list_of_inc_analysis: list = None):
         # Create/parse data based on incoming analysis object or list of analysis obj (moving load)
         if analysis_obj:
             # compile ele forces for each node
@@ -1484,9 +1431,9 @@ class Results:
         # for basic load case  {loadcasename:[{1:,2:...},{1:,2:...}], ... , loadcasename:[{1:,2:...},{1:,2:...} }
         basic_array_list = []
         basic_load_case_coord = []
-        for load_case_name,resp_list_of_2_dict in self.basic_load_case_record.items():
+        for load_case_name, resp_list_of_2_dict in self.basic_load_case_record.items():
             basic_array_list.append([a + b for (a, b) in zip(list(resp_list_of_2_dict[0].values()),
-                                              list(resp_list_of_2_dict[1].values()))])
+                                                             list(resp_list_of_2_dict[1].values()))])
 
             # Coordinate of Load Case dimension
             basic_load_case_coord.append(load_case_name)
@@ -1496,7 +1443,7 @@ class Results:
         basic_da = None
         if basic_array.size:
             basic_da = xr.DataArray(data=basic_array, dims=dim,
-                                    coords={dim[0]:basic_load_case_coord,dim[1]:node,dim[2]:component})
+                                    coords={dim[0]: basic_load_case_coord, dim[1]: node, dim[2]: component})
 
         # for moving load cases
         # [ {}, {} ,..., {} ]  where each {} is a moving load {increloadcasename:[{1:,2:...},{1:,2:...}]..... }
@@ -1508,13 +1455,13 @@ class Results:
             # for each load case increment in ML
             for increment_load_case_name, inc_resp_list_of_2_dict in moving_load_case_inc_dict.items():
                 inc_moving_array_list.append([a + b for (a, b) in zip(list(inc_resp_list_of_2_dict[0].values()),
-                                              list(inc_resp_list_of_2_dict[1].values()))])
+                                                                      list(inc_resp_list_of_2_dict[1].values()))])
                 # Coordinate of Load Case dimension
                 inc_moving_load_case_coord.append(increment_load_case_name)
 
             moving_array = np.array(inc_moving_array_list)
             ind_moving_da = xr.DataArray(data=moving_array, dims=dim,
-                                    coords={dim[0]: inc_moving_load_case_coord, dim[1]: node, dim[2]: component})
+                                         coords={dim[0]: inc_moving_load_case_coord, dim[1]: node, dim[2]: component})
             moving_daarray_list.append(ind_moving_da)
 
-        return basic_da,moving_daarray_list
+        return basic_da, moving_daarray_list
