@@ -200,21 +200,43 @@ and recorded as having fixity in vertical y direction.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.set_member">
 <span class="sig-name descname"><span class="pre">set_member</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grillage_member_obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="GrillageMember.html#member_sections.GrillageMember" title="member_sections.GrillageMember"><span class="pre">member_sections.GrillageMember</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">member</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.set_member" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to set grillage member class object to elements of grillage members.
-:param grillage_member_obj: Grillage_member class object
-:param member: str of member category - select from standard grillage elements</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>interior beam</p></li>
-<li><p>exterior beam</p></li>
-<li><p>edge beam</p></li>
-<li><p>transverse slab</p></li>
-<li><p>diaphragm</p></li>
-</ul>
-</div></blockquote>
+<dd><p>Function to set grillage member class object to elements of grillage members.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>sets member object to element of grillage in OpsGrillage instance</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>grillage_member_obj</strong> – Grillage_member class object</p></li>
+<li><p><strong>member</strong> – <p>str of member category - select from standard grillage elements</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 32%" />
+<col style="width: 68%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>edge_beam</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>exterior_main_beam_1</p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p>interior_main_beam</p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>exterior_main_beam_1</p></td>
+</tr>
+<tr class="row-odd"><td><p>5</p></td>
+<td><p>edge_slab</p></td>
+</tr>
+<tr class="row-even"><td><p>6</p></td>
+<td><p>transverse_slab</p></td>
+</tr>
+</tbody>
+</table>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>sets member object to element of grillage in OpsGrillage instance</p>
 </dd>
 </dl>
 </dd></dl>

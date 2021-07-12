@@ -58,9 +58,45 @@ Here are some more examples of what you can do with *ops-grillage* module.
     bridge_28.set_member(end_tranverse_slab, member="end_edge")
 
 
-The following is printed to terminal
+The following model is created in Opensees model space.
 
-Skewed bridge model
--------------------
+..  figure:: ../images/28m_bridge.png
+    :align: center
+    :scale: 75 %
 
+    Figure 1: Grillage model of the exemplar 28 m bridge.
+
+Adding a moving load analysis
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Here we add a moving load analysis to the 28 m bridge model
+
+.. code-block:: python
+
+    front_wheel = PointLoad(name="front wheel", point1=LoadPoint(2, 0, 2, 50))  # Single point load 50 N
+
+    single_path = Path(start_point=Point(0, 0, 2), end_point=Point(29, 0, 3))  # create path object
+    move_point = MovingLoad(name="single_moving_point")
+    move_point.add_loads(load_obj=front_wheel, path_obj=single_path.get_path_points())
+    move_point.parse_moving_load_cases()
+    bridge_28.add_moving_load_case(move_point)
+
+    bridge_28.analyse_moving_load_case()
+    ba, ma = bridge_28.get_results()
+
+Result acquisition
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The following lines of code shows how we can process the output data array - demonstrated for the Moving load results.
+
+.. code-block:: python
+
+    # extract the first element of the list (single element containing the data array)
+    moving_data_array = ma[0]
+    # Here we can slice data to get a reduced data array for the outputs
+    # query mid point shear force during truck movement
+    moving_data_array.sel(Node=63,Component='dy')
+    # query max of slice
+    moving_data_array.sel(Node=63,Component='dy').idxmax()
+
+Testing various mesh types for bridge dimensions
+--------------------
 

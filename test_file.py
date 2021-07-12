@@ -10,7 +10,7 @@ def ref_28m_bridge():
     pyfile = False
     # reference super T bridge 28m for validation purpose
     # Members
-    concrete = UniAxialElasticMaterial(mat_type="Concrete01", fpc=-6, epsc0=-0.004,fpcu=-6,epcU=-0.014)
+    concrete = UniAxialElasticMaterial(mat_type="Concrete01", fpc=-6, epsc0=-0.004, fpcu=-6, epcU=-0.014)
 
     # define sections
     super_t_beam_section = Section(op_section_type="Elastic", op_ele_type="elasticBeamColumn", A=1.0447, E=3.47E+10,
@@ -60,7 +60,7 @@ def ref_28m_bridge():
 
 @pytest.fixture
 def ref_bridge_properties():
-    concrete = UniAxialElasticMaterial(mat_type="Concrete01", fpc=-6, epsc0=-0.004,fpcu=-6,epcU=-0.014)
+    concrete = UniAxialElasticMaterial(mat_type="Concrete01", fpc=-6, epsc0=-0.004, fpcu=-6, epcU=-0.014)
 
     # define sections
     I_beam_section = Section(op_section_type="Elastic", op_ele_type="elasticBeamColumn", A=0.896, E=3.47E+10,
@@ -288,13 +288,40 @@ def test_line_load_coincide_long_edge(bridge_model_42_negative):
     ULS_DL.add_load_groups(Barrier)  # ch
     example_bridge.add_load_case(ULS_DL)
 
-    assert example_bridge.global_line_int_dict == [{6: [[4.276919210414739, 0, 1.0], [4, 0, 1]],
-                                                    9: [[4.276919210414739, 0, 1.0], [5.402424265787039, 0, 1.0]],
-                                                    14: [[5.402424265787039, 0, 1.0], [6.302828310084879, 0, 1.0]],
-                                                    20: [[6.302828310084879, 0, 1.0], [7.227121232563659, 0, 1.0]],
-                                                    30: [[9.07570707752122, 0, 1.0], [10, 0, 1]],
-                                                    54: [[7.227121232563659, 0, 1.0], [8.15141415504244, 0, 1.0]],
-                                                    60: [[8.15141415504244, 0, 1.0], [9.07570707752122, 0, 1.0]]}]
+    assert example_bridge.global_line_int_dict == [{6: {'long_intersect': [],
+                                                        'trans_intersect': [[4.276919210414739, 0, 1.0]],
+                                                        'edge_intersect': [], 'ends': [[4, 0, 1]]},
+                                                    9: {'long_intersect': [],
+                                                        'trans_intersect': [[4.276919210414739, 0, 1.0],
+                                                                            [5.402424265787039, 0, 1.0]],
+                                                        'edge_intersect': [], 'ends': []}, 14: {'long_intersect': [],
+                                                                                                'trans_intersect': [
+                                                                                                    [5.402424265787039,
+                                                                                                     0, 1.0],
+                                                                                                    [6.302828310084879,
+                                                                                                     0, 1.0]],
+                                                                                                'edge_intersect': [],
+                                                                                                'ends': []},
+                                                    20: {'long_intersect': [],
+                                                         'trans_intersect': [[6.302828310084879, 0, 1.0],
+                                                                             [7.227121232563659, 0, 1.0]],
+                                                         'edge_intersect': [], 'ends': []}, 30: {'long_intersect': [],
+                                                                                                 'trans_intersect': [
+                                                                                                     [9.07570707752122,
+                                                                                                      0, 1.0]],
+                                                                                                 'edge_intersect': [],
+                                                                                                 'ends': [[10, 0, 1]]},
+                                                    54: {'long_intersect': [],
+                                                         'trans_intersect': [[7.227121232563659, 0, 1.0],
+                                                                             [8.15141415504244, 0, 1.0]],
+                                                         'edge_intersect': [], 'ends': []}, 60: {'long_intersect': [],
+                                                                                                 'trans_intersect': [
+                                                                                                     [8.15141415504244,
+                                                                                                      0, 1.0],
+                                                                                                     [9.07570707752122,
+                                                                                                      0, 1.0]],
+                                                                                                 'edge_intersect': [],
+                                                                                                 'ends': []}}]
 
 
 def test_line_load_coincide_tranverse_member(bridge_42_0_angle_mesh):
@@ -347,16 +374,56 @@ def test_line_load_coincide_edge_beam(bridge_model_42_negative):
     ULS_DL.add_load_groups(Barrier)  # ch
     example_bridge.add_load_case(ULS_DL)
 
-    assert example_bridge.global_line_int_dict == [{0: [[0.9004040442978399, 0, 0.0], [-0.0, 0, -0.0]],
-                                                    1: [[0.9004040442978399, 0, 0.0], [2.0259090996701397, 0, 0.0]],
-                                                    2: [[2.0259090996701397, 0, 0.0], [3.1514141550424397, 0, 0.0]],
-                                                    5: [[3.1514141550424397, 0, 0.0], [4.276919210414739, 0, 0.0]],
-                                                    9: [[4.276919210414739, 0, 0.0], [5.402424265787039, 0, 0.0]],
-                                                    14: [[5.402424265787039, 0, 0.0], [6.302828310084879, 0, 0.0]],
-                                                    20: [[6.302828310084879, 0, 0.0], [7.227121232563659, 0, 0.0]],
-                                                    27: [[9.07570707752122, 0, 0.0], [10, 0, 0]],
-                                                    54: [[7.227121232563659, 0, 0.0], [8.15141415504244, 0, 0.0]],
-                                                    60: [[8.15141415504244, 0, 0.0], [9.07570707752122, 0, 0.0]]}]
+    assert example_bridge.global_line_int_dict == [{0: {'long_intersect': [],
+                                                        'trans_intersect': [[0.9004040442978399, 0, 0.0]],
+                                                        'edge_intersect': [[-0.0, 0, -0.0]], 'ends': []},
+                                                    1: {'long_intersect': [],
+                                                        'trans_intersect': [[0.9004040442978399, 0, 0.0],
+                                                                            [2.0259090996701397, 0, 0.0]],
+                                                        'edge_intersect': [], 'ends': []}, 2: {'long_intersect': [],
+                                                                                               'trans_intersect': [
+                                                                                                   [2.0259090996701397,
+                                                                                                    0, 0.0],
+                                                                                                   [3.1514141550424397,
+                                                                                                    0, 0.0]],
+                                                                                               'edge_intersect': [],
+                                                                                               'ends': []},
+                                                    5: {'long_intersect': [],
+                                                        'trans_intersect': [[3.1514141550424397, 0, 0.0],
+                                                                            [4.276919210414739, 0, 0.0]],
+                                                        'edge_intersect': [], 'ends': []}, 9: {'long_intersect': [],
+                                                                                               'trans_intersect': [
+                                                                                                   [4.276919210414739,
+                                                                                                    0, 0.0],
+                                                                                                   [5.402424265787039,
+                                                                                                    0, 0.0]],
+                                                                                               'edge_intersect': [],
+                                                                                               'ends': []},
+                                                    14: {'long_intersect': [],
+                                                         'trans_intersect': [[5.402424265787039, 0, 0.0],
+                                                                             [6.302828310084879, 0, 0.0]],
+                                                         'edge_intersect': [], 'ends': []}, 20: {'long_intersect': [],
+                                                                                                 'trans_intersect': [
+                                                                                                     [6.302828310084879,
+                                                                                                      0, 0.0],
+                                                                                                     [7.227121232563659,
+                                                                                                      0, 0.0]],
+                                                                                                 'edge_intersect': [],
+                                                                                                 'ends': []},
+                                                    27: {'long_intersect': [],
+                                                         'trans_intersect': [[9.07570707752122, 0, 0.0]],
+                                                         'edge_intersect': [], 'ends': [[10, 0, 0]]},
+                                                    54: {'long_intersect': [],
+                                                         'trans_intersect': [[7.227121232563659, 0, 0.0],
+                                                                             [8.15141415504244, 0, 0.0]],
+                                                         'edge_intersect': [], 'ends': []}, 60: {'long_intersect': [],
+                                                                                                 'trans_intersect': [
+                                                                                                     [8.15141415504244,
+                                                                                                      0, 0.0],
+                                                                                                     [9.07570707752122,
+                                                                                                      0, 0.0]],
+                                                                                                 'edge_intersect': [],
+                                                                                                 'ends': []}}]
 
 
 def test_line_load_outside_of_mesh(bridge_model_42_negative):
@@ -693,7 +760,7 @@ def test_patch_partially_outside_mesh(bridge_model_42_negative):
 def test_28m_bridge(ref_28m_bridge):
     bridge_28 = ref_28m_bridge
     opsplt.plot_model("nodes")
-
+    ops.wipeAnalysis()
     lane_point_1 = LoadPoint(20.89, 0, 3, 5)
     lane_point_2 = LoadPoint(20.89, 0, 7, 5)
     line_load_middle = LineLoading("Ref mid_point_load", point1=lane_point_1, point2=lane_point_2)
@@ -701,7 +768,7 @@ def test_28m_bridge(ref_28m_bridge):
     point_load_case = LoadCase("point_load_case")
     line_load_case = LoadCase("line_load_case")
     line_load_case.add_load_groups(line_load_middle)
-    ref_node_force = NodeForces(0, 1000, 0, 0, 0, 0)
+    ref_node_force = NodeForces(0, -1000, 0, 0, 0, 0)
     p1 = NodalLoad(name="point", node_tag=57, node_force=ref_node_force)
     p2 = NodalLoad(name="point", node_tag=58, node_force=ref_node_force)
     p3 = NodalLoad(name="point", node_tag=59, node_force=ref_node_force)
@@ -719,8 +786,31 @@ def test_28m_bridge(ref_28m_bridge):
 
     bridge_28.add_load_case(point_load_case)
     bridge_28.analyse_load_case()
+    ba, ma = bridge_28.get_results()
     print(ops.nodeDisp(57))
     print(ops.nodeDisp(63))
     print(ops.nodeDisp(60))
-    opsv.plot_defo(unDefoFlag=0, endDispFlag=0)
+    # opsv.plot_defo(unDefoFlag=0, endDispFlag=0)
     # plt.show()
+
+    # minY, maxY = opsv.section_force_diagram_3d('Vy', {}, 1)
+    # plt.show()
+    pass
+
+
+def test_28m_brdige_moving_load(ref_28m_bridge):
+    bridge_28 = ref_28m_bridge
+    # create moving load case
+    front_wheel = PointLoad(name="front wheel", point1=LoadPoint(2, 0, 2, 50))  # Single point load 50 N
+
+    single_path = Path(start_point=Point(0, 0, 2), end_point=Point(29, 0, 3))  # create path object
+    move_point = MovingLoad(name="single_moving_point")
+    move_point.add_loads(load_obj=front_wheel, path_obj=single_path.get_path_points())
+    move_point.parse_moving_load_cases()
+    bridge_28.add_moving_load_case(move_point)
+
+    bridge_28.analyse_moving_load_case()
+    ba, ma = bridge_28.get_results()
+    moving = ma[0]
+    moving.sel(Node=63,Component='dy')
+    print(ma)

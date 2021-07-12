@@ -6,7 +6,7 @@ class Section:
 
     def __init__(self, E, A, Iz, J, Ay, Az, Iy=None, G=None, alpha_y=None, op_ele_type="elasticBeamColumn", mass=0,
                  c_mass_flag=False,
-                 unit_width=False, op_section_type="Elastic", K11=None, K33=None, K44=None):
+                 unit_width=False, op_section_type="Elastic", K11=None, K33=None, K44=None,**kwargs):
         """
         :param E: Elastic modulus
         :type E: float
@@ -57,6 +57,12 @@ class Section:
         self.unit_width = unit_width
         self.mass = mass
         self.c_mass_flag = c_mass_flag
+        # keyword args
+        self.num_int_pt = kwargs.get("num_int_pt",None)
+        self.integration_type = kwargs.get("integration_type",None)
+        # quad/tri element parameters
+        self.thick = kwargs.get("thick",None)
+
         # check if section command is needed for the section object
         if self.op_section_type is not None:
             self.section_command_flag = True  # section_command_flag set to True.
@@ -175,7 +181,9 @@ class GrillageMember:
                 transftag=transf_tag,
                 mass=self.section.mass)
         if self.section.op_ele_type == "nonlinearBeamColumn":
-            pass
+            ele_str = "ops.element(\"{type}\",{tag},*{node_tag_list},{num_int_pt},{sectag},{transftag},{mass})\n".format(
+                type=self.section.op_ele_type, tag=ele_tag, node_tag_list=node_tag_list,num_int_pt=self.section.num_int_pt,
+                sectag=sectiontag,transftag=transf_tag,mass=self.section.mass)
 
         if self.section.op_ele_type == "ShellMITC4":
             ele_str = "ops.element(\"{type}\", {tag}, *{node_tag_list}, {sectag}})\n".format(

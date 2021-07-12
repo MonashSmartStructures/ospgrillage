@@ -1,7 +1,7 @@
 import math
 from datetime import datetime
 from itertools import combinations
-
+from PlotWizard import *
 import openseespy.opensees as ops
 
 from Load import *
@@ -347,13 +347,19 @@ class OpsGrillage:
     def set_member(self, grillage_member_obj: GrillageMember, member=None):
         """
         Function to set grillage member class object to elements of grillage members.
+
         :param grillage_member_obj: Grillage_member class object
         :param member: str of member category - select from standard grillage elements
-                        - interior beam
-                        - exterior beam
-                        - edge beam
-                        - transverse slab
-                        - diaphragm
+
+         ===================================   ===========================================================================
+           1                                    edge_beam
+           2                                    exterior_main_beam_1
+           3                                    interior_main_beam
+           4                                    exterior_main_beam_1
+           5                                    edge_slab
+           6                                    transverse_slab
+         ===================================   ===========================================================================
+
         :return: sets member object to element of grillage in OpsGrillage instance
 
         """
@@ -1052,12 +1058,12 @@ class OpsGrillage:
         elif isinstance(load_case_obj.load_groups[0]['load'], CompoundLoad):
             load_groups = load_case_obj.load_groups[0]['load'].compound_load_obj_list
         # loop through each load object
+        load_str = []
         for load_dict in load_groups:
             load_obj = load_dict['load']
             if isinstance(load_obj, CompoundLoad):
                 # load_obj is a Compound load class, start a nested loop through each load class within compound load
                 # nested loop through each load in compound load, assign and get
-                load_str = []
                 for nested_list_of_load in load_obj.compound_load_obj_list:
                     if isinstance(nested_list_of_load, NodalLoad):
                         load_str += nested_list_of_load.get_nodal_load_str()
@@ -1074,16 +1080,16 @@ class OpsGrillage:
             else:
                 # run single assignment of load type (load_obj is a load class)
                 if isinstance(load_obj, NodalLoad):
-                    load_str = [load_obj.get_nodal_load_str()]  # here return load_str as list with single element
+                    load_str += [load_obj.get_nodal_load_str()]  # here return load_str as list with single element
                 elif isinstance(load_obj, PointLoad):
-                    load_str = self.assign_point_to_four_node(point=list(load_obj.load_point_1)[:-1],
+                    load_str += self.assign_point_to_four_node(point=list(load_obj.load_point_1)[:-1],
                                                               mag=load_obj.load_point_1.p)
                 elif isinstance(load_obj, LineLoading):
                     line_grid_intersect = self.get_line_load_nodes(load_obj)  # returns self.line_grid_intersect
                     self.global_line_int_dict.append(line_grid_intersect)
-                    load_str = self.assign_line_to_four_node(load_obj, line_grid_intersect)
+                    load_str += self.assign_line_to_four_node(load_obj, line_grid_intersect)
                 elif isinstance(load_obj, PatchLoading):
-                    load_str = self.assign_patch_load(load_obj)
+                    load_str += self.assign_patch_load(load_obj)
 
         return load_str
 
@@ -1192,6 +1198,8 @@ class OpsGrillage:
         # function to analyse individual moving load case
         # create analysis object for each load case correspond to increment of moving paths
         # loop through all moving load objects
+        if self.pyfile:
+            print("Analysis of OpsGrillage in file writing mode - pyfile flag = True")
         list_of_inc_analysis = []
         for moving_load_obj, load_case_dict_list in self.moving_load_case_dict.items():
             for load_case_dict in load_case_dict_list:
@@ -1211,6 +1219,7 @@ class OpsGrillage:
                 list_of_inc_analysis.append(incremental_analysis)
                 # store result in Recorder object
             self.results.insert_analysis_results(list_of_inc_analysis=list_of_inc_analysis)
+
 
     def get_results(self):
         """
@@ -1240,6 +1249,7 @@ class Analysis:
     * manages multiple load case's ops.load() commands, applying the specified load factors to the load cases for load combinations
 
     """
+    remove_pattern_command: str
 
     def __init__(self, analysis_name: str, ops_grillage_name: str, pyfile: bool, node_counter, ele_counter,
                  analysis_type='Static',
@@ -1270,6 +1280,7 @@ class Analysis:
         self.intergrator_command = "ops.integrator('LoadControl', 1)\n"
         self.mesh_node_counter = node_counter
         self.mesh_ele_counter = ele_counter
+        self.remove_pattern_command = "ops.remove('loadPattern',{})\n".format(self.plain_counter-1)
         # if true for pyfile, create pyfile for analysis command
         if self.pyfile:
             with open(self.analysis_file_name, 'w') as file_handle:
@@ -1324,6 +1335,8 @@ class Analysis:
                 file_handle.write(self.analyze_command)
         else:
             eval(self.wipe_command)
+            if self.plain_counter-1 != 1: # plain counter increments by 1 upon self.pattern_command function, so -1 here
+                eval(self.remove_pattern_command)   # remove previous load pattern if any
             for load_dict in self.load_cases_dict_list:
                 eval(load_dict['time_series'])
                 eval(load_dict['pattern'])
@@ -1351,7 +1364,7 @@ class Analysis:
                 self.node_disp.setdefault(node_tag, disp_list)
 
             for ele_tag in range(1, self.mesh_ele_counter):
-                ele_force = ops.eleForce(ele_tag)
+                ele_force = ops.eleResponse(ele_tag,'localForces')
                 self.ele_force.setdefault(ele_tag, ele_force)
 
         print("Extract completed")
