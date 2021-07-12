@@ -1,0 +1,6 @@
+﻿OpsGrillage.Loads.apply\_load\_factor
+=====================================
+
+.. currentmodule:: OpsGrillage
+
+.. automethod:: Loads.apply_load_factor

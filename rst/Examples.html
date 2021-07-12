@@ -95,8 +95,12 @@
 <li class="toctree-l1"><a class="reference internal" href="APIdoc.html">API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ModuleDoc.html">Module documentation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#m-super-t-bridge-model-with-orthogonal-mesh">28 m super T bridge model with orthogonal mesh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#skewed-bridge-model">Skewed bridge model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#m-super-t-bridge-model-with-orthogonal-mesh">28 m super T bridge model with orthogonal mesh</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#adding-a-moving-load-analysis">Adding a moving load analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#result-acquisition">Result acquisition</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#testing-various-mesh-types-for-bridge-dimensions">Testing various mesh types for bridge dimensions</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ChangeLog.html">Change Log</a></li>
@@ -221,10 +225,43 @@
 <span class="n">bridge_28</span><span class="o">.</span><span class="n">set_member</span><span class="p">(</span><span class="n">end_tranverse_slab</span><span class="p">,</span> <span class="n">member</span><span class="o">=</span><span class="s2">&quot;end_edge&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The following is printed to terminal</p>
+<p>The following model is created in Opensees model space.</p>
+<div class="figure align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/28m_bridge.png"><img alt="../_images/28m_bridge.png" src="../_images/28m_bridge.png" style="width: 569.25px; height: 411.75px;" /></a>
+<p class="caption"><span class="caption-text">Figure 1: Grillage model of the exemplar 28 m bridge.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </div>
-<div class="section" id="skewed-bridge-model">
-<h2>Skewed bridge model<a class="headerlink" href="#skewed-bridge-model" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="adding-a-moving-load-analysis">
+<h3>Adding a moving load analysis<a class="headerlink" href="#adding-a-moving-load-analysis" title="Permalink to this headline">¶</a></h3>
+<p>Here we add a moving load analysis to the 28 m bridge model</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">front_wheel</span> <span class="o">=</span> <span class="n">PointLoad</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;front wheel&quot;</span><span class="p">,</span> <span class="n">point1</span><span class="o">=</span><span class="n">LoadPoint</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span>  <span class="c1"># Single point load 50 N</span>
+
+<span class="n">single_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">start_point</span><span class="o">=</span><span class="n">Point</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">end_point</span><span class="o">=</span><span class="n">Point</span><span class="p">(</span><span class="mi">29</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>  <span class="c1"># create path object</span>
+<span class="n">move_point</span> <span class="o">=</span> <span class="n">MovingLoad</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;single_moving_point&quot;</span><span class="p">)</span>
+<span class="n">move_point</span><span class="o">.</span><span class="n">add_loads</span><span class="p">(</span><span class="n">load_obj</span><span class="o">=</span><span class="n">front_wheel</span><span class="p">,</span> <span class="n">path_obj</span><span class="o">=</span><span class="n">single_path</span><span class="o">.</span><span class="n">get_path_points</span><span class="p">())</span>
+<span class="n">move_point</span><span class="o">.</span><span class="n">parse_moving_load_cases</span><span class="p">()</span>
+<span class="n">bridge_28</span><span class="o">.</span><span class="n">add_moving_load_case</span><span class="p">(</span><span class="n">move_point</span><span class="p">)</span>
+
+<span class="n">bridge_28</span><span class="o">.</span><span class="n">analyse_moving_load_case</span><span class="p">()</span>
+<span class="n">ba</span><span class="p">,</span> <span class="n">ma</span> <span class="o">=</span> <span class="n">bridge_28</span><span class="o">.</span><span class="n">get_results</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="result-acquisition">
+<h3>Result acquisition<a class="headerlink" href="#result-acquisition" title="Permalink to this headline">¶</a></h3>
+<p>The following lines of code shows how we can process the output data array - demonstrated for the Moving load results.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># extract the first element of the list (single element containing the data array)</span>
+<span class="n">moving_data_array</span> <span class="o">=</span> <span class="n">ma</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="c1"># Here we can slice data to get a reduced data array for the outputs</span>
+<span class="c1"># query mid point shear force during truck movement</span>
+<span class="n">moving_data_array</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Node</span><span class="o">=</span><span class="mi">63</span><span class="p">,</span><span class="n">Component</span><span class="o">=</span><span class="s1">&#39;dy&#39;</span><span class="p">)</span>
+<span class="c1"># query max of slice</span>
+<span class="n">moving_data_array</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Node</span><span class="o">=</span><span class="mi">63</span><span class="p">,</span><span class="n">Component</span><span class="o">=</span><span class="s1">&#39;dy&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">idxmax</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="testing-various-mesh-types-for-bridge-dimensions">
+<h2>Testing various mesh types for bridge dimensions<a class="headerlink" href="#testing-various-mesh-types-for-bridge-dimensions" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 

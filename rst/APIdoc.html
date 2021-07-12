@@ -250,21 +250,43 @@ and recorded as having fixity in vertical y direction.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.set_member">
 <span class="sig-name descname"><span class="pre">set_member</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grillage_member_obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="GrillageMember.html#member_sections.GrillageMember" title="member_sections.GrillageMember"><span class="pre">member_sections.GrillageMember</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">member</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.set_member" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to set grillage member class object to elements of grillage members.
-:param grillage_member_obj: Grillage_member class object
-:param member: str of member category - select from standard grillage elements</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>interior beam</p></li>
-<li><p>exterior beam</p></li>
-<li><p>edge beam</p></li>
-<li><p>transverse slab</p></li>
-<li><p>diaphragm</p></li>
-</ul>
-</div></blockquote>
+<dd><p>Function to set grillage member class object to elements of grillage members.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>sets member object to element of grillage in OpsGrillage instance</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>grillage_member_obj</strong> – Grillage_member class object</p></li>
+<li><p><strong>member</strong> – <p>str of member category - select from standard grillage elements</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 32%" />
+<col style="width: 68%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>edge_beam</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>exterior_main_beam_1</p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p>interior_main_beam</p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>exterior_main_beam_1</p></td>
+</tr>
+<tr class="row-odd"><td><p>5</p></td>
+<td><p>edge_slab</p></td>
+</tr>
+<tr class="row-even"><td><p>6</p></td>
+<td><p>transverse_slab</p></td>
+</tr>
+</tbody>
+</table>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>sets member object to element of grillage in OpsGrillage instance</p>
 </dd>
 </dl>
 </dd></dl>
@@ -398,7 +420,7 @@ Class object is accessed within OpsGrillage class object.</p>
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Material.</span></span><span class="sig-name descname"><span class="pre">UniAxialElasticMaterial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mat_type</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Material.UniAxialElasticMaterial" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="Material.html#Material.Material" title="Material.Material"><code class="xref py py-class docutils literal notranslate"><span class="pre">Material.Material</span></code></a></p>
 <p>Main class for Opensees UniAxialElasticMaterial objects. This class acts as a wrapper to parse input parameters
-and returns command lines to generate the prescribe materials in Opensees library.</p>
+and returns command lines to generate the prescribe materials in Opensees material library.</p>
 </dd></dl>
 
 </div>
@@ -408,6 +430,8 @@ and returns command lines to generate the prescribe materials in Opensees librar
 <dt class="sig sig-object py" id="Material.NDmaterial">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Material.</span></span><span class="sig-name descname"><span class="pre">NDmaterial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mat_type</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Material.NDmaterial" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="Material.html#Material.Material" title="Material.Material"><code class="xref py py-class docutils literal notranslate"><span class="pre">Material.Material</span></code></a></p>
+<p>Main class for Opensees ND material object. This class wraps the ND material object by sorting input parameters and
+parse into input commands for ops commands.</p>
 </dd></dl>
 
 </div>
@@ -416,7 +440,7 @@ and returns command lines to generate the prescribe materials in Opensees librar
 <h2>Section class<a class="headerlink" href="#section-class" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="member_sections.Section">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">member_sections.</span></span><span class="sig-name descname"><span class="pre">Section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Iz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">J</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ay</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Az</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Iy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">G</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_ele_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'elasticBeamColumn'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_mass_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_section_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Elastic'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">K11</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">K33</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">K44</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#member_sections.Section" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">member_sections.</span></span><span class="sig-name descname"><span class="pre">Section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Iz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">J</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ay</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Az</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Iy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">G</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_ele_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'elasticBeamColumn'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_mass_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_section_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Elastic'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">K11</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">K33</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">K44</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#member_sections.Section" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Section class to define various grillage sections. Class</p>
 <dl class="field-list simple">
@@ -468,7 +492,7 @@ Material object.</p>
 <div class="section" id="load-class">
 <h2>Load class<a class="headerlink" href="#load-class" title="Permalink to this headline">¶</a></h2>
 <p>For information regarding in <code class="xref py py-class docutils literal notranslate"><span class="pre">Loads</span></code> class, see
-<a class="reference internal" href="Loads.html"><span class="doc">Loads</span></a>.</p>
+<a class="reference internal" href="Loads.html"><span class="doc">Load</span></a>.</p>
 <div class="section" id="nodalload">
 <h3>NodalLoad<a class="headerlink" href="#nodalload" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
@@ -671,7 +695,7 @@ path_list = [Path for LoadCase point 1, [], … , [] for Nth path]</p>
 <div class="section" id="load-case-class">
 <h2>Load case class<a class="headerlink" href="#load-case-class" title="Permalink to this headline">¶</a></h2>
 <p>For information regarding in <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadCase</span></code> class, see
-<a class="reference internal" href="Loads.html"><span class="doc">Loads</span></a>.</p>
+<a class="reference internal" href="Loads.html"><span class="doc">Load</span></a>.</p>
 <div class="section" id="loadcase">
 <h3>LoadCase<a class="headerlink" href="#loadcase" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
