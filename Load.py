@@ -633,7 +633,7 @@ class MovingLoad:
 
 
 class Path:
-    def __init__(self, start_point: Point, end_point: Point, increments=50):
+    def __init__(self, start_point: Point, end_point: Point, increments=50, mid_point:Point = None):
         self.start_point = start_point
         self.end_point = end_point
         # here create a straight path

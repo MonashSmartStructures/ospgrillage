@@ -63,7 +63,7 @@ Lets use the following bridge mesh as an explanatory example. Herein, the variab
     :align: center
     :scale: 75 %
 
-    Figure 1: Typical grillage model nodes.
+    Figure 1: Meshing construction lines, showing start edge construction line (Blue), end edge construction line (Green), sweep path (Black) and sweeping nodes (Red).
 
 Meshing algorithm is initiated upon creating the :class:`~Mesh` class object. The following components are generated to
 define the nodes and elements of the mesh:
@@ -149,7 +149,12 @@ X group as key, return transverse elements within the x group
 node tag as key, return x spacings between vicinity nodes
 node tag as key, return the z spacings between vicinity nodes
 
-
+====================
+Local vs global coordinate system
+====================
+In *ops-grillage*, local coordinate system regards the basic coordinate system of components such as compound loads or
+load objects - which by definition is independent of the global coordinate system i.e. the coordinate system of the
+grillage model space.
 
 
 ====================
@@ -168,16 +173,11 @@ Links to module components
    :hidden:
 
 
+====================
+Links to useful resources
+====================
+Use the following links for more on:
 
-Grillage modelling references
+* `Grillage modelling <http://bridgedesign.org.uk/tutorial/bs-grillage.php>`_
 
-:ref:`Grillage modelling<http://bridgedesign.org.uk/tutorial/bs-grillage.php>`
-
-Opensees documentation
-
-#. :doc:`node command`
-#. :doc:`element command`
-#. :doc:`GeoTrans command`
-#. :doc:`section command`
-#. :doc:`Material command`
-#. :doc:`fix command`
+* `Openseespy documentation <https://openseespydoc.readthedocs.io/en/latest/>`_

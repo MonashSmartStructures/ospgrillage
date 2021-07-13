@@ -798,7 +798,7 @@ def test_28m_bridge(ref_28m_bridge):
     pass
 
 
-def test_28m_brdige_moving_load(ref_28m_bridge):
+def test_28m_bridge_moving_load(ref_28m_bridge):
     bridge_28 = ref_28m_bridge
     # create moving load case
     front_wheel = PointLoad(name="front wheel", point1=LoadPoint(2, 0, 2, 50))  # Single point load 50 N
@@ -812,5 +812,33 @@ def test_28m_brdige_moving_load(ref_28m_bridge):
     bridge_28.analyse_moving_load_case()
     ba, ma = bridge_28.get_results()
     moving = ma[0]
-    moving.sel(Node=63,Component='dy')
+    moving.sel(Node=63, Component='dy')
+    print(ma)
+
+
+def test_28m_brdige_moving_compound_load(ref_28m_bridge):
+    bridge_28 = ref_28m_bridge
+    # create moving load case
+
+    M1600 = CompoundLoad("M1600 LM")
+    back_wheel = PointLoad(name="single point", point1=LoadPoint(5, 0, 2, 20))  # Single point load 20 N
+    front_wheel = PointLoad(name="front wheel", point1=LoadPoint(2, 0, 2, 50))  # Single point load 50 N
+    # compound the point loads
+    M1600.add_load(load_obj=front_wheel, local_coord=Point(5, 0, 5))
+    M1600.add_load(load_obj=back_wheel, local_coord=Point(3, 0, 5))
+    M1600.add_load(load_obj=back_wheel, local_coord=Point(3, 0, 3))
+    M1600.add_load(load_obj=front_wheel, local_coord=Point(5, 0, 3))
+    M1600.set_global_coord(Point(-6, 0, 0))
+
+    truck = MovingLoad(name="4 wheel truck")
+    single_path = Path(start_point=Point(0, 0, 0), end_point=Point(29, 0, 0))  # create path object
+    truck.add_loads(load_obj=M1600, path_obj=single_path.get_path_points())
+    truck.parse_moving_load_cases()
+
+    bridge_28.add_moving_load_case(truck)
+
+    bridge_28.analyse_moving_load_case()
+    ba, ma = bridge_28.get_results()
+    moving = ma[0]
+    moving.sel(Node=63, Component='dy')
     print(ma)
