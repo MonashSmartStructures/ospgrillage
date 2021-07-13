@@ -107,9 +107,11 @@
 <li class="toctree-l3"><a class="reference internal" href="#mesh-variables">Mesh variables</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#local-vs-global-coordinate-system">Local vs global coordinate system</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#links-to-module-components">Links to module components</a><ul class="simple">
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#links-to-useful-resources">Links to useful resources</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html">Examples</a></li>
@@ -228,7 +230,7 @@ the definition of:</p>
 <p>Lets use the following bridge mesh as an explanatory example. Herein, the variable names are given in brackets.</p>
 <div class="figure align-center" id="id2">
 <a class="reference internal image-reference" href="../_images/Moduledoc_1.PNG"><img alt="../_images/Moduledoc_1.PNG" src="../_images/Moduledoc_1.PNG" style="width: 437.25px; height: 401.25px;" /></a>
-<p class="caption"><span class="caption-text">Figure 1: Typical grillage model nodes.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 1: Meshing construction lines, showing start edge construction line (Blue), end edge construction line (Green), sweep path (Black) and sweeping nodes (Red).</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
 <p>Meshing algorithm is initiated upon creating the <code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code> class object. The following components are generated to
 define the nodes and elements of the mesh:</p>
@@ -303,6 +305,12 @@ node tag as key, return x spacings between vicinity nodes
 node tag as key, return the z spacings between vicinity nodes</p>
 </div>
 </div>
+<div class="section" id="local-vs-global-coordinate-system">
+<h2>Local vs global coordinate system<a class="headerlink" href="#local-vs-global-coordinate-system" title="Permalink to this headline">¶</a></h2>
+<p>In <em>ops-grillage</em>, local coordinate system regards the basic coordinate system of components such as compound loads or
+load objects - which by definition is independent of the global coordinate system i.e. the coordinate system of the
+grillage model space.</p>
+</div>
 <div class="section" id="links-to-module-components">
 <h2>Links to module components<a class="headerlink" href="#links-to-module-components" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic simple">
@@ -313,17 +321,14 @@ node tag as key, return the z spacings between vicinity nodes</p>
 </ol>
 <div class="toctree-wrapper compound">
 </div>
-<p>Grillage modelling references</p>
-<p><span class="xref std std-ref">Grillage modelling</span></p>
-<p>Opensees documentation</p>
-<ol class="arabic simple">
-<li><p><span class="xref std std-doc">node command</span></p></li>
-<li><p><span class="xref std std-doc">element command</span></p></li>
-<li><p><span class="xref std std-doc">GeoTrans command</span></p></li>
-<li><p><span class="xref std std-doc">section command</span></p></li>
-<li><p><span class="xref std std-doc">Material command</span></p></li>
-<li><p><span class="xref std std-doc">fix command</span></p></li>
-</ol>
+</div>
+<div class="section" id="links-to-useful-resources">
+<h2>Links to useful resources<a class="headerlink" href="#links-to-useful-resources" title="Permalink to this headline">¶</a></h2>
+<p>Use the following links for more on:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="http://bridgedesign.org.uk/tutorial/bs-grillage.php">Grillage modelling</a></p></li>
+<li><p><a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/">Openseespy documentation</a></p></li>
+</ul>
 </div>
 </div>
 

@@ -98,8 +98,9 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#defining-moving-loads">Defining moving loads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#defining-moving-compound-loads">Defining moving Compound loads</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#defining-load-combination">Defining load combination</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#getting-results">Getting results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#obtaining-results">Obtaining results</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="APIdoc.html">API reference</a></li>
@@ -236,7 +237,7 @@ cases added to the grillage model previously.</p>
 </div>
 </div>
 <div class="section" id="compound-loads">
-<h3>Compound loads<a class="headerlink" href="#compound-loads" title="Permalink to this headline">¶</a></h3>
+<span id="compound-load"></span><h3>Compound loads<a class="headerlink" href="#compound-loads" title="Permalink to this headline">¶</a></h3>
 <p>Two or more groups of load objects can be compounded into a compound load. Compound loads are treated as a single load group within a load case
 having same reference points (e.g. tandem axle) and properties (e.g. load factor)</p>
 <p>To create a compound load, use the <code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundLoad</span></code> class - passing load objects for compounding as input parameters.</p>
@@ -272,6 +273,14 @@ to analyze the moving load case.</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="defining-moving-compound-loads">
+<h2>Defining moving Compound loads<a class="headerlink" href="#defining-moving-compound-loads" title="Permalink to this headline">¶</a></h2>
+<p>Compound loads can be used to describe truck load models where a number of point loads can be compounded to form the
+axle forces of a truck. It is then useful to perform moving load analysis by moving the truck (compounded points) model.</p>
+<p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">MovingLoad</span></code> class allows such definition when users pass <a class="reference internal" href="#compound-load">Compound load</a> object as input for its load
+object parameter.</p>
+<p>Here are a few</p>
+</div>
 <div class="section" id="defining-load-combination">
 <h2>Defining load combination<a class="headerlink" href="#defining-load-combination" title="Permalink to this headline">¶</a></h2>
 <p>Load combinations analysis are performed by using the <a class="reference internal" href="OpsGrillage.html#module-OpsGrillage" title="OpsGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code></a> function <code class="docutils literal notranslate"><span class="pre">add_load_combination()</span></code> function.
@@ -282,24 +291,28 @@ values. An example dictionary is shown as follows:</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="getting-results">
-<h2>Getting results<a class="headerlink" href="#getting-results" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="obtaining-results">
+<h2>Obtaining results<a class="headerlink" href="#obtaining-results" title="Permalink to this headline">¶</a></h2>
 <p>Results are returned as <a class="reference external" href="http://xarray.pydata.org/en/stable/user-guide/data-structures.html#">data arrays</a> (python’s Xarray module).
-To get results, run the <code class="docutils literal notranslate"><span class="pre">get_results()</span></code> function and two outputs will be returned:</p>
+To this, run the <code class="docutils literal notranslate"><span class="pre">get_results()</span></code> function and two outputs will be returned:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">basic_load_case_result</span><span class="p">,</span><span class="n">moving_load_results</span> <span class="o">=</span> <span class="n">example_bridge</span><span class="o">.</span><span class="n">get_results</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>where,</p>
 <ul class="simple">
-<li><p>basic_load_case_result : a data array for non-moving load cases.</p></li>
-<li><p>moving_load_results: a list of data array for each moving load cases defined.</p></li>
+<li><p>basic_load_case_result : a data array containing results for all non-moving load cases.</p></li>
+<li><p>moving_load_results: a list of data array each for a moving load.</p></li>
 </ul>
-<p>Each data array contains dimensions of”</p>
+<p>Each data array contains dimensions of:</p>
 <ul class="simple">
 <li><p>load case : listing all load case</p></li>
 <li><p>Node : listing all nodes within mesh of grillage model</p></li>
 <li><p>Component: Node responses ordered in this manner - dx,dy,dz,theta_x,theta_y,theta_z,Vx,Vy,Vz,Mx,My,Mz</p></li>
 </ul>
+<p>Here is an example of how the data array looks like in practice:</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/stucture_dataarray.PNG"><img alt="../_images/stucture_dataarray.PNG" src="../_images/stucture_dataarray.PNG" style="width: 670.5px; height: 122.25px;" /></a>
+</div>
 <p>From here, users can use xarray’s function for data array to extract ‘slices’ of data</p>
 </div>
 </div>

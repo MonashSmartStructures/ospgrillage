@@ -92,6 +92,8 @@ cases added to the grillage model previously.
     example_bridge.analyse_load_case()
 
 
+.. _Compound load:
+
 Compound loads
 __________________________
 Two or more groups of load objects can be compounded into a compound load. Compound loads are treated as a single load group within a load case
@@ -139,6 +141,17 @@ to analyze the moving load case.
     example_bridge.analyse_moving_load_case()
 
 
+Defining moving Compound loads
+------------------------
+Compound loads can be used to describe truck load models where a number of point loads can be compounded to form the
+axle forces of a truck. It is then useful to perform moving load analysis by moving the truck (compounded points) model.
+
+The :class:`MovingLoad` class allows such definition when users pass `Compound load`_ object as input for its load
+object parameter.
+
+Here are a few
+
+
 Defining load combination
 ------------------------
 Load combinations analysis are performed by using the :class:`OpsGrillage` function ``add_load_combination()`` function.
@@ -150,10 +163,10 @@ values. An example dictionary is shown as follows:
     load_combinations = {'ULS-DL':1.2,'Live traffic':1.7}
     example_bridge.add_load_combination(name = "ULS", input_dict = load_combinations )
 
-Getting results
+Obtaining results
 ------------------------
 Results are returned as `data arrays <http://xarray.pydata.org/en/stable/user-guide/data-structures.html#>`_ (python's Xarray module).
-To get results, run the ``get_results()`` function and two outputs will be returned:
+To this, run the ``get_results()`` function and two outputs will be returned:
 
 .. code-block:: python
 
@@ -161,14 +174,20 @@ To get results, run the ``get_results()`` function and two outputs will be retur
 
 where,
 
-* basic_load_case_result : a data array for non-moving load cases.
-* moving_load_results: a list of data array for each moving load cases defined.
+* basic_load_case_result : a data array containing results for all non-moving load cases.
+* moving_load_results: a list of data array each for a moving load.
 
-Each data array contains dimensions of"
+Each data array contains dimensions of:
 
 * load case : listing all load case
 * Node : listing all nodes within mesh of grillage model
 * Component: Node responses ordered in this manner - dx,dy,dz,theta_x,theta_y,theta_z,Vx,Vy,Vz,Mx,My,Mz
+
+Here is an example of how the data array looks like in practice:
+
+..  figure:: ../images/stucture_dataarray.PNG
+    :align: center
+    :scale: 75 %
 
 From here, users can use xarray's function for data array to extract 'slices' of data
 
