@@ -256,6 +256,9 @@
 <span class="n">moving_data_array</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Node</span><span class="o">=</span><span class="mi">63</span><span class="p">,</span><span class="n">Component</span><span class="o">=</span><span class="s1">&#39;dy&#39;</span><span class="p">)</span>
 <span class="c1"># query max of slice</span>
 <span class="n">moving_data_array</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Node</span><span class="o">=</span><span class="mi">63</span><span class="p">,</span><span class="n">Component</span><span class="o">=</span><span class="s1">&#39;dy&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">idxmax</span><span class="p">()</span>
+<span class="c1"># query max and min envelopes of displacement for all nodes - this is done by max/min function across the &#39;Loadcase&#39; dimension.</span>
+<span class="n">max_dY</span> <span class="o">=</span> <span class="n">moving</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Component</span><span class="o">=</span><span class="s1">&#39;dy&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="s1">&#39;Loadcase&#39;</span><span class="p">)</span>
+<span class="n">min_dY</span> <span class="o">=</span> <span class="n">moving</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Component</span><span class="o">=</span><span class="s1">&#39;dy&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="s1">&#39;Loadcase&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
