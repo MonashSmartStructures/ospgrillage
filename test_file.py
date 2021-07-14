@@ -612,7 +612,24 @@ def test_moving_compound_load(bridge_model_42_negative):
     print("finish test compound moving load")
 
 
+# test when users add a load type defined using local coordinates, and passed as inputs to loadcase without,
+# setting a global_coordinate, a ValueError is raised.
 def test_add_a_loadcase_with_local_coordinate(bridge_model_42_negative):
+    with pytest.raises(ValueError):
+        example_bridge = bridge_model_42_negative
+        lane_point_1 = LoadPoint(5, 0, 3, 5)
+        lane_point_2 = LoadPoint(8, 0, 3, 5)
+        lane_point_3 = LoadPoint(8, 0, 5, 5)
+        lane_point_4 = LoadPoint(5, 0, 5, 5)
+        Lane = PatchLoading("Lane 1", localpoint1=lane_point_1, localpoint2=lane_point_2, localpoint3=lane_point_3,
+                            localpoint4=lane_point_4)
+        ULS_DL = LoadCase(name="Lane")
+        ULS_DL.add_load_groups(Lane)  # ch
+        example_bridge.add_load_case(ULS_DL)
+
+
+# counter to previous test, this time the load obj (local coord) has an input parameter global coord
+def test_add_load_case_with_local_coord_and_global_set_cord(bridge_model_42_negative):
     example_bridge = bridge_model_42_negative
     lane_point_1 = LoadPoint(5, 0, 3, 5)
     lane_point_2 = LoadPoint(8, 0, 3, 5)
@@ -621,69 +638,9 @@ def test_add_a_loadcase_with_local_coordinate(bridge_model_42_negative):
     Lane = PatchLoading("Lane 1", localpoint1=lane_point_1, localpoint2=lane_point_2, localpoint3=lane_point_3,
                         localpoint4=lane_point_4)
     ULS_DL = LoadCase(name="Lane")
-    ULS_DL.add_load_groups(Lane)  # ch
+    global_point = Point(0,0,0)
+    ULS_DL.add_load_groups(Lane,global_coord_of_load_obj=global_point)  # HERE exist the global coord kwargs
     example_bridge.add_load_case(ULS_DL)
-
-    assert example_bridge.global_load_str == ['ops.load(19, *[0, 1.40688131921541, 0, 0.703440659607711, 0, '
-                                              '0.703440659607703])\n', 'ops.load(25, *[0, 1.40688131921534, 0, '
-                                                                       '0.703440659607664, 0, '
-                                                                       '-0.703440659607672])\n', 'ops.load(26, *[0, '
-                                                                                                 '1.40688131921534, '
-                                                                                                 '0, '
-                                                                                                 '-0.703440659607664, '
-                                                                                                 '0, '
-                                                                                                 '-0.703440659607672'
-                                                                                                 '])\n',
-                                              'ops.load(20, *[0, 1.40688131921541, 0, -0.703440659607711, 0, '
-                                              '0.703440659607703])\n', 'ops.load(25, *[0, 1.44420769137308, 0, '
-                                                                       '0.722103845686535, 0, 0.722103845686539])\n',
-                                              'ops.load(60, *[0, 1.44420769137311, 0, 0.722103845686558, 0, '
-                                              '-0.722103845686555])\n', 'ops.load(61, *[0, 1.44420769137311, 0, '
-                                                                        '-0.722103845686558, 0, '
-                                                                        '-0.722103845686555])\n', 'ops.load(26, *[0, '
-                                                                                                  '1.44420769137308, '
-                                                                                                  '0, '
-                                                                                                  '-0.722103845686535, 0, 0.722103845686539])\n',
-                                              'ops.load(13, *[0, 0.0359716930904111, 0, 0.00543781415041399, 0, 0.00549241204442736])\n',
-                                              'ops.load(18, *[0, 0.165240439803109, 0, 0.0589500683755123, 0, -0.0252300768696094])\n',
-                                              'ops.load(19, *[0, 0.660961759212434, 0, -0.235800273502049, 0, -0.217366816107404])\n',
-                                              'ops.load(14, *[0, 0.143886772361644, 0, -0.0217512566016560, 0, 0.0473192422289126])\n',
-                                              'ops.load(18, *[0, 0.225101011074465, 0, 0.0720323235438296, 0, 0.0585262628793609])\n',
-                                              'ops.load(24, *[0, 0.225101011074455, 0, 0.0720323235438248, 0, -0.0585262628793583])\n',
-                                              'ops.load(25, *[0, 0.900404044297820, 0, -0.288129294175299, 0, -0.504226264806779])\n',
-                                              'ops.load(19, *[0, 0.900404044297860, 0, -0.288129294175319, 0, 0.504226264806802])\n',
-                                              'ops.load(24, *[0, 0.231073230619692, 0, 0.0739434337983012, 0, 0.0600790399611201])\n',
-                                              'ops.load(59, *[0, 0.231073230619698, 0, 0.0739434337983036, 0, -0.0600790399611214])\n',
-                                              'ops.load(60, *[0, 0.924292922478790, 0, -0.295773735193214, 0, -0.517604036588122])\n',
-                                              'ops.load(25, *[0, 0.924292922478770, 0, -0.295773735193205, 0, 0.517604036588111])\n',
-                                              'ops.load(59, *[0, 0.224872207710820, 0, 0.0768876019752062, 0, 0.0568977744108761])\n',
-                                              'ops.load(66, *[0, 0.161567176007350, 0, 0.0467730008146084, 0, -0.0408801640107089])\n',
-                                              'ops.load(67, *[0, 0.646268704029401, 0, -0.187092003258433, 0, -0.352198336092261])\n',
-                                              'ops.load(60, *[0, 0.899488830843280, 0, -0.307550407900825, 0, 0.490196210309086])\n',
-                                              'ops.load(60, *[0, 1.40545129819263, 0, 0.750855488039122, 0, 0.683867480899953])\n',
-                                              'ops.load(67, *[0, 1.00979485004594, 0, 0.456767586080160, 0, -0.491348125128713])\n',
-                                              'ops.load(68, *[0, 1.00979485004594, 0, -0.456767586080160, 0, -0.491348125128713])\n',
-                                              'ops.load(61, *[0, 1.40545129819263, 0, -0.750855488039122, 0, 0.683867480899953])\n',
-                                              'ops.load(61, *[0, 0.505962467349345, 0, 0.0973108712498703, 0, 0.265887676573902])\n',
-                                              'ops.load(68, *[0, 0.363526146016538, 0, 0.0591970791559887, 0, -0.191036151050044])\n',
-                                              'ops.load(69, *[0, 0.0403917940018376, 0, -0.00657745323955430, 0, -0.00550309900144157])\n',
-                                              'ops.load(62, *[0, 0.0562180519277050, 0, -0.0108123190277634, 0, 0.00765931578607946])\n',
-                                              'ops.load(20, *[0, 0.08992923272602966, 0, 0.0, 0, 0.0])\n',
-                                              'ops.load(15, *[0, 0.36279806628438915, 0, 0.0, 0, 0.0])\n',
-                                              'ops.load(21, *[0, 0.05030303322337952, 0, 0.0, 0, 0.0])\n',
-                                              'ops.load(20, *[0, 0.506477274917546, 0, 0.0911659094851593, 0, 0.273497728455475])\n',
-                                              'ops.load(26, *[0, 0.506477274917524, 0, 0.0911659094851532, 0, -0.273497728455463])\n',
-                                              'ops.load(27, *[0, 0.0562752527686137, 0, -0.0101295454983504, 0, -0.00787853538760591])\n',
-                                              'ops.load(21, *[0, 0.0562752527686162, 0, -0.0101295454983510, 0, 0.00787853538760626])\n',
-                                              'ops.load(26, *[0, 0.519914768894308, 0, 0.0935846584009749, 0, 0.280753975202926])\n',
-                                              'ops.load(61, *[0, 0.519914768894319, 0, 0.0935846584009780, 0, -0.280753975202932])\n',
-                                              'ops.load(62, *[0, 0.0577683076549244, 0, -0.0103982953778864, 0, -0.00808756307168940])\n',
-                                              'ops.load(27, *[0, 0.0577683076549231, 0, -0.0103982953778861, 0, 0.00808756307168922])\n',
-                                              'ops.load(14, *[0, 0.224823081815069, 0, 0.0531036538126367, 0, 0.0660145678416750])\n',
-                                              'ops.load(19, *[0, 1.03275274876943, 0, 0.575684261479612, 0, -0.303246116221267])\n',
-                                              'ops.load(20, *[0, 1.03275274876943, 0, -0.575684261479612, 0, -0.303246116221267])\n',
-                                              'ops.load(15, *[0, 0.224823081815069, 0, -0.0531036538126367, 0, 0.0660145678416750])\n']
-
 
 def test_patch_partially_outside_mesh(bridge_model_42_negative):
     example_bridge = bridge_model_42_negative
@@ -841,4 +798,6 @@ def test_28m_brdige_moving_compound_load(ref_28m_bridge):
     ba, ma = bridge_28.get_results()
     moving = ma[0]
     moving.sel(Node=63, Component='dy')
+    maxY = moving.sel(Component='Vy').max(dim='Loadcase')
+    minY = moving.sel(Component='Mz').max(dim='Loadcase')
     print(ma)

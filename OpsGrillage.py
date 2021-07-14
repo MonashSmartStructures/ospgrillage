@@ -361,15 +361,16 @@ class OpsGrillage:
          ===================================   ===========================================================================
 
         :return: sets member object to element of grillage in OpsGrillage instance
-
+        :raises ValueError: If model instance is not created beforehand i.e. missing preceding create_ops() command.
         """
-        # write member's section command
-        # if grillage_member_obj.section.section_command_flag:
+        if self.Mesh_obj is None:
+            raise ValueError("Model instance not created. Run ops.create_ops() function before setting members")
+        # check and write member's section command
         section_tag = self.__write_section(grillage_member_obj)
-        # write member's material command
+        # check and write member's material command
         material_tag = self.__write_uniaxial_material(member=grillage_member_obj)
 
-        # if pyfile True, write a header for each element generated
+        # if option for pyfile is True, write the header for element group commands
         if self.pyfile:
             with open(self.filename, 'a') as file_handle:
                 file_handle.write("# Element generation for member: {}\n".format(member))
@@ -377,6 +378,7 @@ class OpsGrillage:
         x_flag = False
         edge_flag = False
         common_member_tag = []
+        # get common element member tags based on input string
         if member == "interior_main_beam":
             common_member_tag = 2
             z_flag = True
@@ -410,6 +412,7 @@ class OpsGrillage:
                 lis_2 = self.Mesh_obj.node_width_x_dict[n2]
                 ele_width = 1
                 ele_width_record = []
+                # for the two list of vicinity nodes, find their distance and store in ele_width_record
                 for lis in [lis_1, lis_2]:
                     if len(lis) == 1:
                         ele_width_record.append(np.sqrt(lis[0][0] ** 2 + lis[0][1] ** 2 + lis[0][2] ** 2) / 2)
@@ -417,7 +420,7 @@ class OpsGrillage:
                         ele_width_record.append((np.sqrt(lis[0][0] ** 2 + lis[0][1] ** 2 + lis[0][2] ** 2) +
                                                  np.sqrt(lis[1][0] ** 2 + lis[1][1] ** 2 + lis[1][2] ** 2)) / 2)
                     else:
-
+                        #
                         break
                 ele_width = np.mean(
                     ele_width_record)  # if member lies between a triangular and quadrilateral grid, get mean between

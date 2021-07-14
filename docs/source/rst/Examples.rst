@@ -96,6 +96,9 @@ The following lines of code shows how we can process the output data array - dem
     moving_data_array.sel(Node=63,Component='dy')
     # query max of slice
     moving_data_array.sel(Node=63,Component='dy').idxmax()
+    # query max and min envelopes of displacement for all nodes - this is done by max/min function across the 'Loadcase' dimension.
+    max_dY = moving.sel(Component='dy').max(dim='Loadcase')
+    min_dY = moving.sel(Component='dy').max(dim='Loadcase')
 
 Testing various mesh types for bridge dimensions
 --------------------

@@ -80,14 +80,14 @@ class Loads:
         self.local_load_point_8 = kwargs.get('localpoint8', None)
 
         # check if user skipped point 1 and defined point1 as point 2 instead
-        if all([self.load_point_1 is None,self.load_point_2 is not None]):
+        if all([self.load_point_1 is None, self.load_point_2 is not None]):
             raise Exception("Load point 1 is not defined")
 
-        if all([self.local_load_point_1 is None,self.local_load_point_2 is not None]):
+        if all([self.local_load_point_1 is None, self.local_load_point_2 is not None]):
             raise Exception("Local load point 1 is not defined")
 
         # check if load object has both a local and global coordinate
-        if all([self.load_point_1 is not None,self.local_load_point_1 is not None]):
+        if all([self.load_point_1 is not None, self.local_load_point_1 is not None]):
             raise Exception("Load object created with both local and global coordinates: Only either one is permitted")
 
         # list of load points tuple
@@ -102,8 +102,9 @@ class Loads:
         self.ref_point = None  # local coordinate system
         self.compound_group = None  # group number access by LoadCase class to move load group if any path is defined
         # spec dict
-        self.spec = dict(name=self.name,global_points= self.point_list,local_points=self.local_point_list,ref_point=self.ref_point)  # dict {node number: {Fx:val, Fy:val, Fz:val, Mx:val, My:val, Mz:val}}
-        self.load_counter = 0 # counter for compound load
+        self.spec = dict(name=self.name, global_points=self.point_list, local_points=self.local_point_list,
+                         ref_point=self.ref_point)  # dict {node number: {Fx:val, Fy:val, Fz:val, Mx:val, My:val, Mz:val}}
+        self.load_counter = 0  # counter for compound load
 
     # modify load points if compound load option is present i.e. compound_x_list
     def form_compound_load(self, **kwargs):
@@ -163,7 +164,7 @@ class Loads:
                 z=self.load_point_8.z - centroid[
                     1] + self.compound_dist_z + self.ref_point.z) if self.load_point_8 is not None else self.load_point_8
 
-        else: #TODO for local coordinate definition
+        else:  # TODO for local coordinate definition
             pass
         # else set points
 
@@ -202,30 +203,29 @@ class Loads:
                                                                                                    not None else self.load_point_8
         else:  # set global position by movign local coordinates by x (global) and z (global)
             self.load_point_1 = self.local_load_point_1._replace(x=self.local_load_point_1.x + ref_point.x,
-                                                           z=self.local_load_point_1.z + ref_point.z) if self.local_load_point_1 is \
-                                                                                                   not None else self.local_load_point_1
+                                                                 z=self.local_load_point_1.z + ref_point.z) if self.local_load_point_1 is \
+                                                                                                               not None else self.local_load_point_1
             self.load_point_2 = self.local_load_point_2._replace(x=self.local_load_point_2.x + ref_point.x,
-                                                           z=self.local_load_point_2.z + ref_point.z) if self.local_load_point_2 is \
-                                                                                                   not None else self.local_load_point_2
+                                                                 z=self.local_load_point_2.z + ref_point.z) if self.local_load_point_2 is \
+                                                                                                               not None else self.local_load_point_2
             self.load_point_3 = self.local_load_point_3._replace(x=self.local_load_point_3.x + ref_point.x,
-                                                           z=self.local_load_point_3.z + ref_point.z) if self.local_load_point_3 is \
-                                                                                                   not None else self.local_load_point_3
+                                                                 z=self.local_load_point_3.z + ref_point.z) if self.local_load_point_3 is \
+                                                                                                               not None else self.local_load_point_3
             self.load_point_4 = self.local_load_point_4._replace(x=self.local_load_point_4.x + ref_point.x,
-                                                           z=self.local_load_point_4.z + ref_point.z) if self.local_load_point_4 is \
-                                                                                                   not None else self.local_load_point_4
+                                                                 z=self.local_load_point_4.z + ref_point.z) if self.local_load_point_4 is \
+                                                                                                               not None else self.local_load_point_4
             self.load_point_5 = self.local_load_point_5._replace(x=self.local_load_point_5.x + ref_point.x,
-                                                           z=self.local_load_point_5.z + ref_point.z) if self.local_load_point_5 is \
-                                                                                                   not None else self.local_load_point_5
+                                                                 z=self.local_load_point_5.z + ref_point.z) if self.local_load_point_5 is \
+                                                                                                               not None else self.local_load_point_5
             self.load_point_6 = self.local_load_point_6._replace(x=self.local_load_point_6.x + ref_point.x,
-                                                           z=self.local_load_point_6.z + ref_point.z) if self.local_load_point_6 is \
-                                                                                                   not None else self.local_load_point_6
+                                                                 z=self.local_load_point_6.z + ref_point.z) if self.local_load_point_6 is \
+                                                                                                               not None else self.local_load_point_6
             self.load_point_7 = self.local_load_point_7._replace(x=self.local_load_point_7.x + ref_point.x,
-                                                           z=self.local_load_point_7.z + ref_point.z) if self.local_load_point_7 is \
-                                                                                                   not None else self.local_load_point_7
+                                                                 z=self.local_load_point_7.z + ref_point.z) if self.local_load_point_7 is \
+                                                                                                               not None else self.local_load_point_7
             self.load_point_8 = self.local_load_point_8._replace(x=self.local_load_point_8.x + ref_point.x,
-                                                           z=self.local_load_point_8.z + ref_point.z) if self.local_load_point_8 is \
-                                                                                                   not None else self.local_load_point_8
-
+                                                                 z=self.local_load_point_8.z + ref_point.z) if self.local_load_point_8 is \
+                                                                                                               not None else self.local_load_point_8
 
     def apply_load_factor(self, factor=1):
         """
@@ -256,6 +256,7 @@ class NodalLoad(Loads):
     """
     Main class for nodal load. Derived from Loads base class
     """
+
     def __init__(self, name, node_tag, node_force):
         """
         Nodal load takes a node tag and namedtuple NodalForce(Fx,Fy,Fz,Mx,My,Mz) as input.
@@ -292,6 +293,7 @@ class PointLoad(Loads):
     """
     Class for Point loads. Derived from based :py:class:`Loads` class
     """
+
     def __init__(self, name, **kwargs):
         super().__init__(name, **kwargs)
 
@@ -300,44 +302,69 @@ class LineLoading(Loads):
     """
     Class for line loading. Derived from based Loads class
     """
+
     def __init__(self, name, **kwargs):
         super().__init__(name, **kwargs)
         # shape function object
         self.shape_function = ShapeFunction()
-        # TODO check if local coordinate is defined instead
-        # if three points are defined, set line as curved circular line with point 2 (x2,y2,z2) in the centre of curve
-        if self.load_point_3 is not None:  # curve
-            # findCircle assumes model plane is y = 0, ignores y input, y in this case is a 2D view of x z plane
-            self.d = findCircle(x1=self.load_point_1.x, y1=self.load_point_1.z,
-                                x2=self.load_point_2.x, y2=self.load_point_2.z,
-                                x3=self.load_point_3.x, y3=self.load_point_3.z)
-            # return a function variable
-            self.line_end_point = self.load_point_3
-        else:  # straight line with 2 points
-            self.m, self.phi = get_slope(
-                [self.load_point_1.x, self.load_point_1.y, self.load_point_1.z],
-                [self.load_point_2.x, self.load_point_2.y, self.load_point_2.z])
-            self.c = get_y_intcp(m=self.m, x=self.load_point_1.x, y=self.load_point_1.z)
-            self.angle = np.arctan(self.m) if self.m is not None else np.pi / 2  # in radian
-            self.line_end_point = self.load_point_2
-            # namedTuple Line
-            self.line_equation = Line(self.m, self.c, self.phi)
+
+        # if local coordinate is defined, create parameters based on local coordinates. later, if add_global_coord()
+        # is called, set their load_point_
+        if not any(self.point_list) and any(self.local_point_list):
+            if self.local_load_point_3 is not None:  # curve
+                # findCircle assumes model plane is y = 0, ignores y input, y in this case is a 2D view of x z plane
+                self.d = findCircle(x1=self.local_load_point_1.x, y1=self.local_load_point_1.z,
+                                    x2=self.local_load_point_2.x, y2=self.local_load_point_2.z,
+                                    x3=self.local_load_point_3.x, y3=self.local_load_point_3.z)
+                # return a function variable
+                self.line_end_point = self.local_load_point_3
+            else:  # straight line with 2 points
+                self.m_local, self.phi_local = get_slope(
+                    [self.local_load_point_1.x, self.local_load_point_1.y, self.local_load_point_1.z],
+                    [self.local_load_point_2.x, self.local_load_point_2.y, self.local_load_point_2.z])
+                self.c_local = get_y_intcp(m=self.m_local, x=self.local_load_point_1.x, y=self.local_load_point_1.z)
+                self.angle_local = np.arctan(self.m_local) if self.m_local is not None else np.pi / 2  # in radian
+                self.line_end_point = self.local_load_point_2
+                # namedTuple Line
+                self.line_equation = Line(self.m_local, self.c_local, self.phi_local)
+
+        elif not any(self.local_point_list) and any(self.point_list):
+            # if three points are defined, set line as curved circular line with point 2 (x2,y2,z2) in the centre of
+            # curve
+            if self.load_point_3 is not None:  # curve
+                # findCircle assumes model plane is y = 0, ignores y input, y in this case is a 2D view of x z plane
+                self.d = findCircle(x1=self.load_point_1.x, y1=self.load_point_1.z,
+                                    x2=self.load_point_2.x, y2=self.load_point_2.z,
+                                    x3=self.load_point_3.x, y3=self.load_point_3.z)
+                # return a function variable
+                self.line_end_point = self.load_point_3
+            else:  # straight line with 2 points
+                self.m, self.phi = get_slope(
+                    [self.load_point_1.x, self.load_point_1.y, self.load_point_1.z],
+                    [self.load_point_2.x, self.load_point_2.y, self.load_point_2.z])
+                self.c = get_y_intcp(m=self.m, x=self.load_point_1.x, y=self.load_point_1.z)
+                self.angle = np.arctan(self.m) if self.m is not None else np.pi / 2  # in radian
+                self.line_end_point = self.load_point_2
+                # namedTuple Line
+                self.line_equation = Line(self.m, self.c, self.phi)
+        else:
+            raise ValueError("Invalid load points for patch load {}".format(self.name))
 
     def interpolate_udl_magnitude(self, point_coordinate):
-      #   """
-      #   Function to interpolate magnitude of load point between two load points in a line segment.
-      #
-      #   Example illustration: Function returns p @ [x y z]
-      #
-      #   p(loadpoint1)_____p(x=,y,z)_______ p(loadpoint2)
-      #   ||||||||||||||||||||||||||||||||||||||||||||||      Line loading
-      #   ||||||||||||||||||||||||||||||||||||||||||||||
-      # __________________________________________________________
-      #
-      #   :param point_coordinate: coordinate list [x,y,z]
-      #   :type point_coordinate: list
-      #   :return: point force (udl) magnitude at coordinate
-      #   """
+        #   """
+        #   Function to interpolate magnitude of load point between two load points in a line segment.
+        #
+        #   Example illustration: Function returns p @ [x y z]
+        #
+        #   p(loadpoint1)_____p(x=,y,z)_______ p(loadpoint2)
+        #   ||||||||||||||||||||||||||||||||||||||||||||||      Line loading
+        #   ||||||||||||||||||||||||||||||||||||||||||||||
+        # __________________________________________________________
+        #
+        #   :param point_coordinate: coordinate list [x,y,z]
+        #   :type point_coordinate: list
+        #   :return: point force (udl) magnitude at coordinate
+        #   """
         # input: point_coordinate list of [x,y,z]
         pp = None
         # check if line is straight or curve
@@ -404,39 +431,78 @@ class PatchLoading(Loads):
 
     Patch load can take up to 8 load points. By default requires at least 4 load point for patch (quadrilateral)
     """
+
     def __init__(self, name, **kwargs):
         super().__init__(name, **kwargs)
 
         # a = sort_vertices([self.load_point_2, self.load_point_3, self.load_point_1, self.load_point_4])
-        # if only four point is define , patch load is a four point straight line quadrilateral
-        if self.load_point_5 is None:
-            # create each line
-            self.line_1 = LineLoading("Patch load line 1", point1=self.load_point_1, point2=self.load_point_2)
-            self.line_2 = LineLoading("Patch load line 2", point1=self.load_point_2, point2=self.load_point_3)
-            self.line_3 = LineLoading("Patch load line 3", point1=self.load_point_3, point2=self.load_point_4)
-            self.line_4 = LineLoading("Patch load line 4", point1=self.load_point_4, point2=self.load_point_1)
+        if not any(self.point_list) and any(self.local_point_list):
+            # if only four point is define , patch load is a four point straight line quadrilateral
+            if self.local_load_point_5 is None:
+                # create each line
+                self.line_1 = LineLoading("Patch load line 1", point1=self.local_load_point_1,
+                                          point2=self.local_load_point_2)
+                self.line_2 = LineLoading("Patch load line 2", point1=self.local_load_point_2,
+                                          point2=self.local_load_point_3)
+                self.line_3 = LineLoading("Patch load line 3", point1=self.local_load_point_3,
+                                          point2=self.local_load_point_4)
+                self.line_4 = LineLoading("Patch load line 4", point1=self.local_load_point_4,
+                                          point2=self.local_load_point_1)
 
-            # create equation of plane from four straight lines
+                # create equation of plane from four straight lines
 
-            # create interpolate object f
-            p = np.array([[self.load_point_1.p, self.load_point_2.p], [self.load_point_3.p, self.load_point_4.p]])
-            x = np.array([[self.load_point_1.x, self.load_point_2.x], [self.load_point_3.x, self.load_point_4.x]])
-            z = np.array([[self.load_point_1.z, self.load_point_2.z], [self.load_point_3.z, self.load_point_4.z]])
+                # create interpolate object f
+                p = np.array([[self.local_load_point_1.p, self.local_load_point_2.p],
+                              [self.local_load_point_3.p, self.local_load_point_4.p]])
+                x = np.array([[self.local_load_point_1.x, self.local_load_point_2.x],
+                              [self.local_load_point_3.x, self.local_load_point_4.x]])
+                z = np.array([[self.local_load_point_1.z, self.local_load_point_2.z],
+                              [self.local_load_point_3.z, self.local_load_point_4.z]])
 
-            # create function to get interpolation of p
-            self.patch_mag_interpolate = interpolate.interp2d(x, z, p)
+                # create function to get interpolation of p
+                self.patch_mag_interpolate = interpolate.interp2d(x, z, p)
 
-        elif self.load_point_8 is not None:
+            elif self.local_load_point_8 is not None:
 
-            # point 1 2 3
-            # point 3 4 5
-            # point 5 6 7
-            # point 7 8 1
-            pass
+                # point 1 2 3
+                # point 3 4 5
+                # point 5 6 7
+                # point 7 8 1
+                pass
+            else:
+                print("patch load points not valid")
+            print("Patch load object created: {} ".format(name))
+        elif any(self.point_list) and not any(self.local_point_list):  # based on global coordinate
+            # if only four point is define , patch load is a four point straight line quadrilateral
+            if self.load_point_5 is None:
+                # create each line
+                self.line_1 = LineLoading("Patch load line 1", point1=self.load_point_1, point2=self.load_point_2)
+                self.line_2 = LineLoading("Patch load line 2", point1=self.load_point_2, point2=self.load_point_3)
+                self.line_3 = LineLoading("Patch load line 3", point1=self.load_point_3, point2=self.load_point_4)
+                self.line_4 = LineLoading("Patch load line 4", point1=self.load_point_4, point2=self.load_point_1)
+
+                # create equation of plane from four straight lines
+
+                # create interpolate object f
+                p = np.array([[self.load_point_1.p, self.load_point_2.p], [self.load_point_3.p, self.load_point_4.p]])
+                x = np.array([[self.load_point_1.x, self.load_point_2.x], [self.load_point_3.x, self.load_point_4.x]])
+                z = np.array([[self.load_point_1.z, self.load_point_2.z], [self.load_point_3.z, self.load_point_4.z]])
+
+                # create function to get interpolation of p
+                self.patch_mag_interpolate = interpolate.interp2d(x, z, p)
+
+            elif self.load_point_8 is not None:
+
+                # point 1 2 3
+                # point 3 4 5
+                # point 5 6 7
+                # point 7 8 1
+                pass
+            else:
+                print("patch load points not valid")
+            print("Patch load object created: {} ".format(name))
         else:
-            print("patch load points not valid")
-
-        print("Patch load object created: {} ".format(name))
+            raise ValueError("Patch load points for patch load {} not valid".format(self.name))
 
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -458,6 +524,7 @@ class CompoundLoad:
     * CompoundLoad handles functions of Load classes (e.g. move_load)
 
     """
+
     def __init__(self, name):
         self.name = name
         self.compound_load_obj_list = []
@@ -469,7 +536,11 @@ class CompoundLoad:
         """
         Function to add load object to compound load group. If a local_coord parameter is given, this new local_coord overwrites the coordinates (either local or global) of the load object.
 
+        ..note:
+            If load object is defined using local coordinate and local_coord is None, its default local coord precedes.
+
         :param load_obj: Load object
+        :type load_obj: PointLoad,LineLoading,PatchLoading
         :param local_coord: Local coordinate of load object
         :type local_coord: Point namedTuple
 
@@ -478,7 +549,7 @@ class CompoundLoad:
         # shifting all load points relative to centroid of defined load class
         # then shifting centroid and load_points relative to A Local Coordinate system
         if local_coord is None:
-            local_coord = Point(0,0,0)
+            local_coord = Point(0, 0, 0)
         load_obj_copy = deepcopy(load_obj)
         load_obj_copy.form_compound_load(compound_dist_x=local_coord.x, compound_dist_z=local_coord.z)
         # then shift load obj relative to global coord (this is the coord of the model) default is 0,0,0 if not set
@@ -525,6 +596,7 @@ class LoadCase:
     * LoadCase class can have Load objects or CompoundLoad class object
 
     """
+
     def __init__(self, name):
         """
 
@@ -536,9 +608,22 @@ class LoadCase:
         # preset load factor for
         self.load_command_list = []
 
-    def add_load_groups(self, load_obj:Loads, **kwargs):
+    def add_load_groups(self, load_obj: Loads, **kwargs):
         load_dict = dict()
-        load_dict.setdefault('load',deepcopy(load_obj))  # create copy of object instance
+        load_dict.setdefault('load', deepcopy(load_obj))  # create copy of object instance
+        # check if load_obj's load points are local points, if True, check if kwargs global coord is provided
+        global_coord_of_load_obj: Point = kwargs.get("global_coord_of_load_obj", None)
+        # if load obj is defined using local coord. Skip this check if load_obj is instance of Compoint load
+        if not isinstance(load_obj,CompoundLoad):
+
+            if any(load_dict['load'].local_point_list):
+                if global_coord_of_load_obj is None:
+                    raise ValueError("Load object : {} has been defined with local coordinates however no Global coord ("
+                                     "global_coord_of_load_obj=Point tuple) is "
+                                     "assigned to map to global coordinate system".format(load_obj.name))
+                else:  # global_coord is not NOne
+                    load_dict['load'].move_load(ref_point=global_coord_of_load_obj)
+
         load_factor = kwargs.get('load_factor', 1)
         load_dict.setdefault('factor', load_factor)
         self.load_groups.append(load_dict)
@@ -549,7 +634,7 @@ class LoadCase:
         self.position = ref_point
         for load_dict in self.load_groups:
             load_obj = load_dict.get('load')
-            if isinstance(load_obj,CompoundLoad):
+            if isinstance(load_obj, CompoundLoad):
                 for ind_load_obj in load_obj.compound_load_obj_list:
                     ind_load_obj.move_load(self.position)
             else:
@@ -568,12 +653,13 @@ class MovingLoad:
     Path class object) to individual load groups.
 
     """
+
     def __init__(self, name):
         self.name = name
         self.load_list = []
         self.path_list = []
-        self.load_case_dict_list = []       # Variable to access
-        self.moving_load_case = []      # Variable recording all created load case for all load group's respective path
+        self.load_case_dict_list = []  # Variable to access
+        self.moving_load_case = []  # Variable recording all created load case for all load group's respective path
         self.static_load_case = []
 
     def add_loads(self, load_obj: Union[Loads, CompoundLoad], path_obj=None):
@@ -607,7 +693,7 @@ class MovingLoad:
     def parse_moving_load_cases(self):
         # loop through all load-path pairs and identify static loads
         for load_pair_dict in self.load_case_dict_list:
-            if not load_pair_dict["path"]: # empty path, load is static
+            if not load_pair_dict["path"]:  # empty path, load is static
                 self.static_load_case.append(load_pair_dict["load"])
 
         # create load case obj for each step in the move
@@ -617,23 +703,25 @@ class MovingLoad:
             # loop to create a load case for each increment of the path obj
             load_case_list = []
             for steps in path_list:
-                load_step_lc = LoadCase(name="load {} at [{:.2f},{:.2f},{:.2f}]".format(load_obj.name,steps[0],steps[1],steps[2]))  # _lc in name stands for load case
+                load_step_lc = LoadCase(
+                    name="load {} at [{:.2f},{:.2f},{:.2f}]".format(load_obj.name, steps[0], steps[1],
+                                                                    steps[2]))  # _lc in name stands for load case
                 load_obj_copy = deepcopy(load_obj)  # Use deepcopy module to copy instance of load
-                load_step_lc.add_load_groups(load_obj_copy)    # and add load to newly created load case
+                load_step_lc.add_load_groups(load_obj_copy)  # and add load to newly created load case
                 # add entries of static load to load groups
-                step_point = Point(steps[0],steps[1],steps[2])  # convert increment position into Point tuple
-                load_step_lc.move_load_group(step_point)        # increment the load groups by step point
+                step_point = Point(steps[0], steps[1], steps[2])  # convert increment position into Point tuple
+                load_step_lc.move_load_group(step_point)  # increment the load groups by step point
                 # static load not used
-                for static_load in self.static_load_case:       # add static load portions to each incremental load case
+                for static_load in self.static_load_case:  # add static load portions to each incremental load case
                     static_load_copy = deepcopy(static_load)
                     load_step_lc.add_load_groups(static_load_copy)
-                load_case_list .append(load_step_lc)
+                load_case_list.append(load_step_lc)
             self.moving_load_case.append(load_case_list)
         return self.moving_load_case
 
 
 class Path:
-    def __init__(self, start_point: Point, end_point: Point, increments=50, mid_point:Point = None):
+    def __init__(self, start_point: Point, end_point: Point, increments=50, mid_point: Point = None):
         self.start_point = start_point
         self.end_point = end_point
         # here create a straight path
@@ -642,8 +730,9 @@ class Path:
         self.path_points_z = np.linspace(start_point.z, end_point.z, increments)
         self.path_points_list = []
 
-    def get_path_points(self)->list:
-        self.path_points_list = [[x,y,z] for (x,y,z) in zip(self.path_points_x,self.path_points_y,self.path_points_z)]
+    def get_path_points(self) -> list:
+        self.path_points_list = [[x, y, z] for (x, y, z) in
+                                 zip(self.path_points_x, self.path_points_y, self.path_points_z)]
         return self.path_points_list
 
 
