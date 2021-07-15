@@ -1,7 +1,9 @@
 import math
 from datetime import datetime
 from itertools import combinations
-from PlotWizard import *
+import openseespy.postprocessing.Get_Rendering as opsplt
+import matplotlib.pyplot as plt
+import openseespy.postprocessing.ops_vis as opsv
 import openseespy.opensees as ops
 
 from Load import *
@@ -23,7 +25,7 @@ class OpsGrillage:
     """
 
     def __init__(self, bridge_name, long_dim, width, skew, num_long_grid,
-                 num_trans_grid: float, edge_beam_dist, mesh_type="Ortho", op_instance=True, model="3D", **kwargs):
+                 num_trans_grid: float, edge_beam_dist, mesh_type="Ortho", model="3D", **kwargs):
         """
         :param bridge_name: Name of bridge model and output .py file
         :type bridge_name: str
@@ -48,7 +50,6 @@ class OpsGrillage:
         self.global_patch_int_dict = dict()
         self.mesh_type = mesh_type
         self.model_name = bridge_name
-        self.op_instance_flag = op_instance
         self.long_dim = long_dim  # span , also c/c between support bearings
         self.width = width  # length of the bearing support - if skew  = 0 , this corresponds to width of bridge
         # if skew is a list containing 2 skew angles, set start and end edge of span to have respective angles
@@ -67,10 +68,6 @@ class OpsGrillage:
         self.trans_dim = None  # to be calculated automatically based on skew
         self.global_mat_object = []  # material matrix
         self.global_line_int_dict = []
-        # Section placeholders
-        self.section_arg = None
-        self.section_tag = None
-        self.section_type = None
 
         # dict
         self.ele_group_assigned_list = []  # list recording assigned ele groups in grillage model
@@ -107,7 +104,6 @@ class OpsGrillage:
         # special rules for grillage - alternative to Properties of grillage definition - use for special dimensions
         self.skew_threshold = [10, 30]  # threshold for grillage to allow option of mesh choices
         self.deci_tol = 4  # tol of decimal places
-        self.while_loop_max = 100
 
         # dict for load cases and load types
         self.load_case_list = []  # list of dict, example [{'loadcase':LoadCase object, 'load_command': list of str}..]
@@ -131,7 +127,13 @@ class OpsGrillage:
         self.results = None
 
     def create_ops(self, pyfile=False):
+        """
+        Function to create model instance in Opensees model space. If pyfile input is True, function creates an
+        executable pyfile for generating the grillage model in Opensees model space.
+        :param pyfile: Boolean to flag py file generation or Opensees model instance.
+        :type pyfile: bool
 
+        """
         self.pyfile = pyfile
 
         if self.pyfile:
@@ -150,6 +152,7 @@ class OpsGrillage:
         self.__write_op_model()
         # create grillage mesh object
         self.__run_mesh_generation()
+        # create the result file for the Mesh object
         self.results = Results(self.Mesh_obj)
 
     # function to run mesh generation
@@ -182,7 +185,6 @@ class OpsGrillage:
         :param transform_type: transformation type
         :type transform_type: str
 
-        :return: Writes ops.geomTransf() line to output py file
         """
 
         for k, v in mesh_obj.transform_dict.items():
@@ -196,13 +198,13 @@ class OpsGrillage:
 
     def __write_op_model(self):
         """
-        Sub-abstracted procedure handled by create_nodes() function. This method creates the model() command
-        in the output py file.
+        Sub-abstracted procedure handled by create_nodes() function. This function instantiates the Opensees model
+        space. If pyfile flagged as True, this function writes the instantiating commands e.g. ops.model() to the
+        output py file.
 
-        :return: Output py file with wipe() and model() commands
-
-        Note: For 3-D model, the default model dimension and node degree-of-freedoms are 3 and 6 respectively.
-        This method automatically sets the aforementioned parameters to 2 and 4 respectively, for a 2-D problem.
+        .. note:
+            For 3-D model, the default model dimension and node degree-of-freedoms are 3 and 6 respectively.
+            This method automatically sets the aforementioned parameters to 2 and 4 respectively, for a 2-D problem.
         """
         # write model() command
         if self.pyfile:
@@ -216,10 +218,10 @@ class OpsGrillage:
 
     def __write_op_node(self, mesh_obj):
         """
-        Sub-abstracted procedure handled by create_nodes() function. This method create node() command for each node
-        point generated during meshing procedures.
+        Sub-abstracted procedure handled by create_nodes() function. This function execute the ops.node command to
+        create model in Opensees model space. If pyfile is flagged true, writes the ops.nodes() command to py file
+        instead.
 
-        :return: Output py file populated with node() commands to generated the prescribed grillage model.
         """
         # write node() command
         if self.pyfile:
@@ -239,10 +241,10 @@ class OpsGrillage:
 
     def __write_op_fix(self, mesh_obj):
         """
-        Abstracted procedure handed by create_nodes() function. This method writes the fix() command for
-        boundary condition definition in the grillage model.
+        Abstracted procedure handed by create_nodes() function. This method writes the ops.fix() command for
+        boundary condition definition in the grillage model. If pyfile is flagged true, writes
+        the ops.fix() command to py file instead.
 
-        :return: Output py file populated with fix() command for boundary condition definition.
         """
         if self.pyfile:
             with open(self.filename, 'a') as file_handle:
@@ -454,7 +456,6 @@ class OpsGrillage:
                             eval(ele_str)
                     self.ele_group_assigned_list.append(z_groups)
             elif edge_flag:
-
                 for ele in self.Mesh_obj.edge_span_ele:
                     if ele[3] == common_member_tag:
                         # ele_str = grillage_member_obj.section.get_element_command_str(
@@ -472,6 +473,40 @@ class OpsGrillage:
                             eval(ele_str)
                     self.ele_group_assigned_list.append("edge: {}".format(common_member_tag))
 
+    # function to set shell members
+    def set_shell_members(self, grillage_member_obj: GrillageMember, quad=True, tri=False):
+        """
+        Function to set shell/quad members across entire mesh grid.
+
+        :param quad:
+        :param tri:
+        :param grillage_member_obj: GrillageMember object
+        :type grillage_member_obj: GrillageMember
+        :raises ValueError: If GrillageMember object was not specified for quad or shell element. Also raises this error
+                            if components of GrillageMember object (e.g. section or material) was not properly defined
+                            for the specific shell element in accordance with Opensees conventions.
+
+        .. note::
+            To distinguish triangular elements with Quad elements
+
+        """
+        # this function creates shell elements out of the node grids of Mesh object
+        shell_counter = 1
+        if self.Mesh_obj is None:
+            raise ValueError("Model instance not created. Run ops.create_ops() function before setting members")
+        # check and write member's section command if any
+        section_tag = self.__write_section(grillage_member_obj)
+        # check and write member's material command if any
+        material_tag = self.__write_uniaxial_material(member=grillage_member_obj)
+        for grid_nodes_list in self.Mesh_obj.grid_number_dict.values():
+            ele_str = grillage_member_obj.get_element_command_str(ele_tag=shell_counter, node_tag_list=grid_nodes_list,
+                                                                  materialtag=material_tag, sectiontag=section_tag)
+            if self.pyfile:
+                with open(self.filename, 'a') as file_handle:
+                    file_handle.write(ele_str)
+            else:
+                eval(ele_str)
+
     # function to set material obj of grillage model.
     def set_material(self, material_obj):
         """
@@ -488,7 +523,7 @@ class OpsGrillage:
         self.__write_uniaxial_material(material=material_obj)
 
     # ---------------------------------------------------------------
-    # Function to find nodes or grids correspond to a point or line - called within OpsGrillage for distributing
+    # Functions to find nodes or grids correspond to a point or line + distributing
     # loads to grillage nodes. These are low level functions not accessible from API.
 
     # private procedure to find elements within a grid
@@ -1086,7 +1121,7 @@ class OpsGrillage:
                     load_str += [load_obj.get_nodal_load_str()]  # here return load_str as list with single element
                 elif isinstance(load_obj, PointLoad):
                     load_str += self.assign_point_to_four_node(point=list(load_obj.load_point_1)[:-1],
-                                                              mag=load_obj.load_point_1.p)
+                                                               mag=load_obj.load_point_1.p)
                 elif isinstance(load_obj, LineLoading):
                     line_grid_intersect = self.get_line_load_nodes(load_obj)  # returns self.line_grid_intersect
                     self.global_line_int_dict.append(line_grid_intersect)
@@ -1223,7 +1258,6 @@ class OpsGrillage:
                 # store result in Recorder object
             self.results.insert_analysis_results(list_of_inc_analysis=list_of_inc_analysis)
 
-
     def get_results(self):
         """
         Function to get results from all load cases.
@@ -1283,7 +1317,7 @@ class Analysis:
         self.intergrator_command = "ops.integrator('LoadControl', 1)\n"
         self.mesh_node_counter = node_counter
         self.mesh_ele_counter = ele_counter
-        self.remove_pattern_command = "ops.remove('loadPattern',{})\n".format(self.plain_counter-1)
+        self.remove_pattern_command = "ops.remove('loadPattern',{})\n".format(self.plain_counter - 1)
         # if true for pyfile, create pyfile for analysis command
         if self.pyfile:
             with open(self.analysis_file_name, 'w') as file_handle:
@@ -1338,8 +1372,8 @@ class Analysis:
                 file_handle.write(self.analyze_command)
         else:
             eval(self.wipe_command)
-            if self.plain_counter-1 != 1: # plain counter increments by 1 upon self.pattern_command function, so -1 here
-                eval(self.remove_pattern_command)   # remove previous load pattern if any
+            if self.plain_counter - 1 != 1:  # plain counter increments by 1 upon self.pattern_command function, so -1 here
+                eval(self.remove_pattern_command)  # remove previous load pattern if any
             for load_dict in self.load_cases_dict_list:
                 eval(load_dict['time_series'])
                 eval(load_dict['pattern'])
@@ -1367,7 +1401,7 @@ class Analysis:
                 self.node_disp.setdefault(node_tag, disp_list)
 
             for ele_tag in range(1, self.mesh_ele_counter):
-                ele_force = ops.eleResponse(ele_tag,'localForces')
+                ele_force = ops.eleResponse(ele_tag, 'localForces')
                 self.ele_force.setdefault(ele_tag, ele_force)
 
         print("Extract completed")

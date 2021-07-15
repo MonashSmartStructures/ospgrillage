@@ -139,7 +139,7 @@ class GrillageMember:
     Material object.
     """
 
-    def __init__(self, section: Section, material, member_name="Undefined"):
+    def __init__(self, section: Section, material, member_name="Undefined", quad_ele_flag=True, tri_ele_flag=False):
         """
         :param section: Section class object assigned to GrillageMember
         :type section: :class:`Section`
@@ -150,6 +150,8 @@ class GrillageMember:
         self.member_name = member_name
         self.section = section
         self.material = material
+        self.quad_flag = quad_ele_flag
+        self.tri_ele_flag = tri_ele_flag
 
     def get_element_command_str(self, ele_tag, node_tag_list, transf_tag=None, ele_width=1, materialtag=None,
                                 sectiontag=None) -> str:

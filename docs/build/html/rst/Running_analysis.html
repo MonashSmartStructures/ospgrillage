@@ -244,12 +244,35 @@ having same reference points (e.g. tandem axle) and properties (e.g. load factor
 <p>The following code creates and add a point and line load to the <code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundLoad</span></code> object.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># compound load</span>
 <span class="n">M1600</span> <span class="o">=</span> <span class="n">CompoundLoad</span><span class="p">(</span><span class="s2">&quot;Lane and Barrier&quot;</span><span class="p">)</span> <span class="c1"># lane and barrier compounded</span>
-<span class="n">M1600</span><span class="o">.</span><span class="n">add_load</span><span class="p">(</span><span class="n">load_obj</span><span class="o">=</span><span class="n">Single</span><span class="p">,</span> <span class="n">local_coord</span><span class="o">=</span><span class="n">Point</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
-<span class="n">M1600</span><span class="o">.</span><span class="n">add_load</span><span class="p">(</span><span class="n">load_obj</span><span class="o">=</span><span class="n">Barrier</span><span class="p">,</span> <span class="n">local_coord</span><span class="o">=</span><span class="n">Point</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
-<span class="n">M1600</span><span class="o">.</span><span class="n">set_global_coord</span><span class="p">(</span><span class="n">Point</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>From this point, the compound loads are added into <a class="reference internal" href="#load-cases">load cases</a> as per <code class="docutils literal notranslate"><span class="pre">add_load_groups()</span></code> function.</p>
+<p>After creating a compound load, users will have to add <code class="xref py py-class docutils literal notranslate"><span class="pre">Loads</span></code> objects (Point, Line, Patch) to the Compound load object:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">M1600</span><span class="o">.</span><span class="n">add_load</span><span class="p">(</span><span class="n">load_obj</span><span class="o">=</span><span class="n">Single</span><span class="p">,</span> <span class="n">local_coord</span><span class="o">=</span><span class="n">Point</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">M1600</span><span class="o">.</span><span class="n">add_load</span><span class="p">(</span><span class="n">load_obj</span><span class="o">=</span><span class="n">Barrier</span><span class="p">,</span> <span class="n">local_coord</span><span class="o">=</span><span class="n">Point</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>When adding each load object, the <code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundLoad</span></code> class allow users to input a <code class="docutils literal notranslate"><span class="pre">load_coord=</span></code> keyworded parameter.
+This relates to the load object - whether it was previously defined in <em>local</em> or <em>global</em> coordinate system. The following explains the various
+input conditions</p>
+<ul class="simple">
+<li><p>if Load object was defined in <em>local</em> coordinate and <code class="docutils literal notranslate"><span class="pre">load_coord=</span></code> is not provided. The local coordinate tied with the Load object precedes.</p></li>
+<li><p>if Load object was defined in <em>local</em> coordinate and <code class="docutils literal notranslate"><span class="pre">load_coord=</span></code> is provided. The local coordinate of <code class="docutils literal notranslate"><span class="pre">load_coord=</span></code> parameter precedes.</p></li>
+<li><p>if Load object was defined in <em>global</em> coordinate and <code class="docutils literal notranslate"><span class="pre">load_coord=</span></code> is not provided. Compound load treats the inherited global coordinates as new <em>local</em> coordinate</p></li>
+<li><p>if Load object was defined in <em>global</em> coordinate and <code class="docutils literal notranslate"><span class="pre">load_coord=</span></code> is provided. The local coordinate of <code class="docutils literal notranslate"><span class="pre">load_coord=</span></code> parameter precedes, the magnitude of load points/vertices carries over to local coordinate.</p></li>
+</ul>
+<p>After defining all required load objects, <code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundLoad</span></code> requires users to define the global coordinate which to map the basic coordinates. The mapping’s reference point is default to the <strong>Origin</strong> of coordinate system
+i.e. (0,0,0)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">M1600</span><span class="o">.</span><span class="n">set_global_coord</span><span class="p">(</span><span class="n">Point</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>This last line shifts all load points of all load objects for <strong>Single</strong> and <strong>Barrier</strong> by x + 4, y + 0 , and z + 3.</p>
+<p>From this point, the compound loads can be added into <a class="reference internal" href="#load-cases">load cases</a> as per <code class="docutils literal notranslate"><span class="pre">add_load_groups()</span></code> function.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Compound loads require users to pay attention between basic and global coordinate system (see <span class="xref std std-ref">ModuleDoc</span> for more information on coordinate systems)</p>
+<p>At the current stage, the <code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundLoad</span></code> parses the load object within <strong>local coordinate system</strong>. When pass as input into <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadCase</span></code>, the Compound load’s vertices / load points
+are automatically converted to <strong>global coordinates</strong>, based on the inputs of <code class="docutils literal notranslate"><span class="pre">set_global_coord</span></code> function</p>
+</div>
 </div>
 </div>
 <div class="section" id="defining-moving-loads">
@@ -279,10 +302,15 @@ to analyze the moving load case.</p>
 axle forces of a truck. It is then useful to perform moving load analysis by moving the truck (compounded points) model.</p>
 <p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">MovingLoad</span></code> class allows such definition when users pass <a class="reference internal" href="#compound-load">Compound load</a> object as input for its load
 object parameter.</p>
-<p>Here are a few</p>
 </div>
 <div class="section" id="defining-load-combination">
 <h2>Defining load combination<a class="headerlink" href="#defining-load-combination" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>At the current stage, Load combinations are partially supported - there is no function to automatically plot and calculate
+load combinations. To this, users will have to obtain the arrays from the data array output - explained in the next section -
+and apply combination factors manually to the array (generally by array multiplication)</p>
+</div>
 <p>Load combinations analysis are performed by using the <a class="reference internal" href="OpsGrillage.html#module-OpsGrillage" title="OpsGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code></a> function <code class="docutils literal notranslate"><span class="pre">add_load_combination()</span></code> function.
 Load combinations are defined by passing an input dictionary of basic load case name as keys with load factors as
 values. An example dictionary is shown as follows:</p>

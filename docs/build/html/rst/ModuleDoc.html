@@ -230,7 +230,7 @@ the definition of:</p>
 <p>Lets use the following bridge mesh as an explanatory example. Herein, the variable names are given in brackets.</p>
 <div class="figure align-center" id="id2">
 <a class="reference internal image-reference" href="../_images/Moduledoc_1.PNG"><img alt="../_images/Moduledoc_1.PNG" src="../_images/Moduledoc_1.PNG" style="width: 437.25px; height: 401.25px;" /></a>
-<p class="caption"><span class="caption-text">Figure 1: Meshing construction lines, showing start edge construction line (Blue), end edge construction line (Green), sweep path (Black) and sweeping nodes (Red).</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 2: Meshing construction lines, showing start edge construction line (Blue), end edge construction line (Green), sweep path (Black) and sweeping nodes (Red).</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
 <p>Meshing algorithm is initiated upon creating the <code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code> class object. The following components are generated to
 define the nodes and elements of the mesh:</p>
@@ -307,9 +307,20 @@ node tag as key, return the z spacings between vicinity nodes</p>
 </div>
 <div class="section" id="local-vs-global-coordinate-system">
 <h2>Local vs global coordinate system<a class="headerlink" href="#local-vs-global-coordinate-system" title="Permalink to this headline">¶</a></h2>
-<p>In <em>ops-grillage</em>, local coordinate system regards the basic coordinate system of components such as compound loads or
-load objects - which by definition is independent of the global coordinate system i.e. the coordinate system of the
+<p>In <em>ops-grillage</em>, local coordinate system refers to a basic coordinate system of components which is independent of the global coordinate system i.e. the coordinate system of the
 grillage model space.</p>
+<p>The definition of the following components within <em>ops-grillage</em> requires attention between basic and global coordinate system</p>
+<ul class="simple">
+<li><p>Load objects (Point, Line, Patch) - takes either local or global coordinate.</p></li>
+<li><p>Path objects (Path for moving load)</p></li>
+<li><p>Compound load object - takes either local or global coordinates.</p></li>
+</ul>
+<p>For <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadCase</span></code>, all load object inputs can be either local or global. Note when local coordinate is defined for a load object, a global reference coordinate needs to be defined or else
+the module raises an Error regarding its point/vertices values.</p>
+<div class="figure align-center" id="id3">
+<a class="reference internal image-reference" href="../_images/coordinate_system_mapping.PNG"><img alt="../_images/coordinate_system_mapping.PNG" src="../_images/coordinate_system_mapping.PNG" style="width: 741.0px; height: 494.25px;" /></a>
+<p class="caption"><span class="caption-text">Figure 3: Mapping of local coordinate of Load/Path objects to global coordinate.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+</div>
 </div>
 <div class="section" id="links-to-module-components">
 <h2>Links to module components<a class="headerlink" href="#links-to-module-components" title="Permalink to this headline">¶</a></h2>
