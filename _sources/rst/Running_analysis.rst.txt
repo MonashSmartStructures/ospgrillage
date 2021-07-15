@@ -107,12 +107,40 @@ The following code creates and add a point and line load to the :class:`Compound
 
     # compound load
     M1600 = CompoundLoad("Lane and Barrier") # lane and barrier compounded
+
+After creating a compound load, users will have to add :class:`~Loads` objects (Point, Line, Patch) to the Compound load object:
+
+.. code-block:: python
+
     M1600.add_load(load_obj=Single, local_coord=Point(5,0,5))
     M1600.add_load(load_obj=Barrier, local_coord=Point(3,0,5))
+
+When adding each load object, the :class:`~CompoundLoad` class allow users to input a ``load_coord=`` keyworded parameter.
+This relates to the load object - whether it was previously defined in *local* or *global* coordinate system. The following explains the various
+input conditions
+
+* if Load object was defined in *local* coordinate and ``load_coord=`` is not provided. The local coordinate tied with the Load object precedes.
+* if Load object was defined in *local* coordinate and ``load_coord=`` is provided. The local coordinate of ``load_coord=`` parameter precedes.
+* if Load object was defined in *global* coordinate and ``load_coord=`` is not provided. Compound load treats the inherited global coordinates as new *local* coordinate
+* if Load object was defined in *global* coordinate and ``load_coord=`` is provided. The local coordinate of ``load_coord=`` parameter precedes, the magnitude of load points/vertices carries over to local coordinate.
+
+After defining all required load objects, :class:`~CompoundLoad` requires users to define the global coordinate which to map the basic coordinates. The mapping's reference point is default to the **Origin** of coordinate system
+i.e. (0,0,0)
+
+.. code-block:: python
+
     M1600.set_global_coord(Point(4,0,3))
 
-From this point, the compound loads are added into `load cases`_ as per ``add_load_groups()`` function.
+This last line shifts all load points of all load objects for **Single** and **Barrier** by x + 4, y + 0 , and z + 3.
 
+From this point, the compound loads can be added into `load cases`_ as per ``add_load_groups()`` function.
+
+.. note::
+
+    Compound loads require users to pay attention between basic and global coordinate system (see :ref:`ModuleDoc` for more information on coordinate systems)
+
+    At the current stage, the :class:`~CompoundLoad` parses the load object within **local coordinate system**. When pass as input into :class:`~LoadCase`, the Compound load's vertices / load points
+    are automatically converted to **global coordinates**, based on the inputs of ``set_global_coord`` function
 
 Defining moving loads
 ------------------------
@@ -149,11 +177,16 @@ axle forces of a truck. It is then useful to perform moving load analysis by mov
 The :class:`MovingLoad` class allows such definition when users pass `Compound load`_ object as input for its load
 object parameter.
 
-Here are a few
 
 
 Defining load combination
 ------------------------
+.. note::
+
+    At the current stage, Load combinations are partially supported - there is no function to automatically plot and calculate
+    load combinations. To this, users will have to obtain the arrays from the data array output - explained in the next section -
+    and apply combination factors manually to the array (generally by array multiplication)
+
 Load combinations analysis are performed by using the :class:`OpsGrillage` function ``add_load_combination()`` function.
 Load combinations are defined by passing an input dictionary of basic load case name as keys with load factors as
 values. An example dictionary is shown as follows:
@@ -162,6 +195,9 @@ values. An example dictionary is shown as follows:
 
     load_combinations = {'ULS-DL':1.2,'Live traffic':1.7}
     example_bridge.add_load_combination(name = "ULS", input_dict = load_combinations )
+
+
+
 
 Obtaining results
 ------------------------

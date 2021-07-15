@@ -573,10 +573,14 @@ CompoundLoad by x (global) and z (global).</p>
 <dt class="sig sig-object py" id="Load.CompoundLoad.add_load">
 <span class="sig-name descname"><span class="pre">add_load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">load_obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#Load.Loads" title="Load.Loads"><span class="pre">Load.Loads</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_coord</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Mesh.Point</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Load.CompoundLoad.add_load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to add load object to compound load group. If a local_coord parameter is given, this new local_coord overwrites the coordinates (either local or global) of the load object.</p>
+<dl class="simple">
+<dt>..note:</dt><dd><p>If load object is defined using local coordinate and local_coord is None, its default local coord precedes.</p>
+</dd>
+</dl>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>load_obj</strong> – Load object</p></li>
+<li><p><strong>load_obj</strong> (<a class="reference internal" href="#Load.PointLoad" title="Load.PointLoad"><em>PointLoad</em></a><em>,</em><a class="reference internal" href="#Load.LineLoading" title="Load.LineLoading"><em>LineLoading</em></a><em>,</em><a class="reference internal" href="#Load.PatchLoading" title="Load.PatchLoading"><em>PatchLoading</em></a>) – Load object</p></li>
 <li><p><strong>local_coord</strong> (<em>Point namedTuple</em>) – Local coordinate of load object</p></li>
 </ul>
 </dd>

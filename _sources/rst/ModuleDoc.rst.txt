@@ -63,7 +63,7 @@ Lets use the following bridge mesh as an explanatory example. Herein, the variab
     :align: center
     :scale: 75 %
 
-    Figure 1: Meshing construction lines, showing start edge construction line (Blue), end edge construction line (Green), sweep path (Black) and sweeping nodes (Red).
+    Figure 2: Meshing construction lines, showing start edge construction line (Blue), end edge construction line (Green), sweep path (Black) and sweeping nodes (Red).
 
 Meshing algorithm is initiated upon creating the :class:`~Mesh` class object. The following components are generated to
 define the nodes and elements of the mesh:
@@ -152,10 +152,24 @@ node tag as key, return the z spacings between vicinity nodes
 ====================
 Local vs global coordinate system
 ====================
-In *ops-grillage*, local coordinate system regards the basic coordinate system of components such as compound loads or
-load objects - which by definition is independent of the global coordinate system i.e. the coordinate system of the
+In *ops-grillage*, local coordinate system refers to a basic coordinate system of components which is independent of the global coordinate system i.e. the coordinate system of the
 grillage model space.
 
+The definition of the following components within *ops-grillage* requires attention between basic and global coordinate system
+
+* Load objects (Point, Line, Patch) - takes either local or global coordinate.
+* Path objects (Path for moving load)
+* Compound load object - takes either local or global coordinates.
+
+
+For :class:`~LoadCase`, all load object inputs can be either local or global. Note when local coordinate is defined for a load object, a global reference coordinate needs to be defined or else
+the module raises an Error regarding its point/vertices values.
+
+..  figure:: ../images/coordinate_system_mapping.PNG
+    :align: center
+    :scale: 75 %
+
+    Figure 3: Mapping of local coordinate of Load/Path objects to global coordinate.
 
 ====================
 Links to module components
