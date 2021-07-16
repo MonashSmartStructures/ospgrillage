@@ -4,19 +4,19 @@ Creating grillage models
 Here is one example of what you can do with *ops-grillage* module. Steps are explained in more detail
 throughout the rest of the documentation.
 
-To begin, import :class:`~OpsGrillage` and Opensees visualization module `ops_vis`. When import, use either abbreviations or import the whole module's functions using asterisk. For this example,
+To begin, import :class:`~OpsGrillage` as ``opsg`` abbreviation. or import the whole module's functions using asterisk. For this example,
 we import the entire :class:`~OpsGrillage` components to showcase the various functions and classes.
 
 .. code-block:: python
 
-    from OpsGrillage import *
+    import OpsGrillage as opsg
     import openseespy.postprocessing.ops_vis as opsv
 
-In general, there are three stages when using the *ops-grillage* module:
+In general, there are three steps when using the *ops-grillage* module:
 
 #. Defining elements of grillage model using the :class:`~Member` class, and :class:`~Material` class.
 #. Creating the grillage object using the :class:`~OpsGrillage` class.
-#. Setting the elements of grillage model using ```~set_member()``` and ```~set_material()``` functions.
+#. Setting the elements of grillage model using ```set_member()``` and ```set_material()``` functions.
 
 In this example explain the procedures by creating an example grillage as shown in Figure 1:
 
@@ -48,7 +48,7 @@ When setting up grillage members, it is often a good idea to first define materi
 each :class:`GrillageMember` class objects.
 
 Creating material objects
-------------------------------------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 A :class:`~Material` class object is needed when `defining Grillage member`_.
 
 The following code line creates the Concrete material needed for various grillage members.
@@ -72,7 +72,7 @@ Note for variable `mat_type`, users have the option to change the concrete type.
 `Opensees database for concrete and steel <https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html#steel-reinforcing-steel-materials>`_.
 
 Creating section objects
-------------------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Similar to Materials, a :class:`Section` class object is needed when `defining Grillage member`_.
 
 A :class:`Section` class takes in section parameters based on Opensees definition of element types.
@@ -110,7 +110,7 @@ For the example bridge, run the following line with the prescribed variables to 
                          num_long_grid=2, num_trans_grid=17, edge_beam_dist=1, mesh_type="Ortho")
 
 
-Setting grillage member to element group in model
+Assigning grillage members
 -------------------------------------------------
 The members of the grillage model is set using the `set_member()` function of ``opGrillage`` class. The function takes a `member` class
 object, and a member string tag as arguments. The function the assigns the `member`
@@ -130,7 +130,7 @@ Table 1 shows the standard elements of a grillage model along with the respectiv
    1                                    edge_beam
    2                                    exterior_main_beam_1
    3                                    interior_main_beam
-   4                                    exterior_main_beam_1
+   4                                    exterior_main_beam_2
    5                                    edge_slab
    6                                    transverse_slab
  ===================================   ===========================================================================
