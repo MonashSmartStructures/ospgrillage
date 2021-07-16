@@ -165,7 +165,7 @@
 <h1>OpsGrillage.OpsGrillage<a class="headerlink" href="#opsgrillage-opsgrillage" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="OpsGrillage.OpsGrillage">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">OpsGrillage.</span></span><span class="sig-name descname"><span class="pre">OpsGrillage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bridge_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">long_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skew</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_long_grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_trans_grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_beam_dist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Ortho'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_instance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'3D'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">OpsGrillage.</span></span><span class="sig-name descname"><span class="pre">OpsGrillage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bridge_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">long_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skew</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_long_grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_trans_grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_beam_dist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Ortho'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'3D'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Main class of Openseespy grillage model wrapper. Outputs an executable py file which generates the prescribed
 Opensees grillage model based on user input.</p>
 <p>The class provides an interface for the user to specify the geometry of the grillage model. A keyword argument
@@ -177,28 +177,28 @@ properties for various elements in the grillage model.</p>
 <li><p><strong>bridge_name</strong> (<em>str</em>) – Name of bridge model and output .py file</p></li>
 <li><p><strong>long_dim</strong> (<em>int</em><em> or </em><em>float</em>) – Length of the model in the longitudinal direction (default: x axis)</p></li>
 <li><p><strong>width</strong> (<em>int</em><em> or </em><em>float</em>) – Width of the model in the transverse direction (default: z axis)</p></li>
-<li><p><strong>skew</strong> (<em>int</em><em> or </em><em>float</em>) – Skew angle of model</p></li>
-<li><p><strong>num_long_grid</strong> (<em>int</em>) – Number of node points in the longitudinal direction</p></li>
-<li><p><strong>num_trans_grid</strong> (<em>int</em>) – Number of node points in the transverse direction</p></li>
+<li><p><strong>skew</strong> (<em>int</em><em> or </em><em>float</em>) – Skew angle of the start and end edges of model</p></li>
+<li><p><strong>num_long_grid</strong> (<em>int</em>) – Number of grid lines in longitudinal direction</p></li>
+<li><p><strong>num_trans_grid</strong> (<em>int</em>) – Number of  grid lines in the transverse direction</p></li>
 <li><p><strong>edge_beam_dist</strong> (<em>int</em><em> or </em><em>float</em>) – Distance of edge beam node lines to exterior main beam node lines</p></li>
-<li><p><strong>mesh_type</strong> (<em>string</em>) – Type of mesh</p></li>
+<li><p><strong>mesh_type</strong> (<em>string</em>) – Type of mesh either “Ortho” for orthogonal mesh or “Oblique” for oblique mesh</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bridge_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">long_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skew</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_long_grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_trans_grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_beam_dist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Ortho'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_instance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'3D'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bridge_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">long_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skew</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_long_grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_trans_grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_beam_dist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Ortho'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'3D'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>bridge_name</strong> (<em>str</em>) – Name of bridge model and output .py file</p></li>
 <li><p><strong>long_dim</strong> (<em>int</em><em> or </em><em>float</em>) – Length of the model in the longitudinal direction (default: x axis)</p></li>
 <li><p><strong>width</strong> (<em>int</em><em> or </em><em>float</em>) – Width of the model in the transverse direction (default: z axis)</p></li>
-<li><p><strong>skew</strong> (<em>int</em><em> or </em><em>float</em>) – Skew angle of model</p></li>
-<li><p><strong>num_long_grid</strong> (<em>int</em>) – Number of node points in the longitudinal direction</p></li>
-<li><p><strong>num_trans_grid</strong> (<em>int</em>) – Number of node points in the transverse direction</p></li>
+<li><p><strong>skew</strong> (<em>int</em><em> or </em><em>float</em>) – Skew angle of the start and end edges of model</p></li>
+<li><p><strong>num_long_grid</strong> (<em>int</em>) – Number of grid lines in longitudinal direction</p></li>
+<li><p><strong>num_trans_grid</strong> (<em>int</em>) – Number of  grid lines in the transverse direction</p></li>
 <li><p><strong>edge_beam_dist</strong> (<em>int</em><em> or </em><em>float</em>) – Distance of edge beam node lines to exterior main beam node lines</p></li>
-<li><p><strong>mesh_type</strong> (<em>string</em>) – Type of mesh</p></li>
+<li><p><strong>mesh_type</strong> (<em>string</em>) – Type of mesh either “Ortho” for orthogonal mesh or “Oblique” for oblique mesh</p></li>
 </ul>
 </dd>
 </dl>
@@ -243,8 +243,8 @@ properties for various elements in the grillage model.</p>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">assign_point_to_four_node</span></code>(point, mag)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_ops</span></code>([pyfile])</p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../OpsGrillage.html#OpsGrillage.OpsGrillage.create_ops" title="OpsGrillage.OpsGrillage.create_ops"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_ops</span></code></a>([pyfile])</p></td>
+<td><p>Function to create model instance in Opensees model space.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">distribute_load_types_to_model</span></code>(load_case_obj)</p></td>
 <td><p></p></td>

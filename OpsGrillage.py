@@ -33,15 +33,15 @@ class OpsGrillage:
         :type long_dim: int or float
         :param width: Width of the model in the transverse direction (default: z axis)
         :type width: int or float
-        :param skew: Skew angle of model
+        :param skew: Skew angle of the start and end edges of model
         :type skew: int or float
-        :param num_long_grid: Number of node points in the longitudinal direction
+        :param num_long_grid: Number of grid lines in longitudinal direction
         :type num_long_grid: int
-        :param num_trans_grid: Number of node points in the transverse direction
+        :param num_trans_grid: Number of  grid lines in the transverse direction
         :type num_trans_grid: int
         :param edge_beam_dist: Distance of edge beam node lines to exterior main beam node lines
         :type edge_beam_dist: int or float
-        :param mesh_type: Type of mesh
+        :param mesh_type: Type of mesh either "Ortho" for orthogonal mesh or "Oblique" for oblique mesh
         :type mesh_type: string
 
         """
@@ -68,7 +68,10 @@ class OpsGrillage:
         self.trans_dim = None  # to be calculated automatically based on skew
         self.global_mat_object = []  # material matrix
         self.global_line_int_dict = []
-
+        # list of components with tags
+        self.element_command_list = []  # list of str for ops.element() commands
+        self.section_command_list = []  # list of str for ops.section() commands
+        self.material_command_list = []
         # dict
         self.ele_group_assigned_list = []  # list recording assigned ele groups in grillage model
         self.section_dict = {}  # dictionary of section tags
@@ -122,9 +125,17 @@ class OpsGrillage:
         self.trans_dim = self.width / math.cos(self.skew_a / 180 * math.pi)
 
         # Mesh objects and pyfile flag
-        self.Mesh_obj = None
         self.pyfile = None
         self.results = None
+
+        # kwargs for rigid link modelling option
+        self.rigid_type = kwargs.get("rigid_1",None)
+        # TODO to be continued after release
+
+        # create mesh object
+        self.Mesh_obj = Mesh(self.long_dim, self.width, self.trans_dim, self.edge_width, self.num_trans_grid,
+                             self.num_long_gird,
+                             self.skew_a, skew_2=self.skew_b, orthogonal=self.ortho_mesh)
 
     def create_ops(self, pyfile=False):
         """
@@ -152,21 +163,43 @@ class OpsGrillage:
         self.__write_op_model()
         # create grillage mesh object
         self.__run_mesh_generation()
+        # create element commands of grillage model
+        for ele_dict in self.element_command_list:
+            for ele_list in ele_dict.values():
+                for ele_str in ele_list:
+                    if self.pyfile:
+                        with open(self.filename, 'a') as file_handle:
+                            file_handle.write(ele_str)
+                    else:
+                        eval(ele_str)
+
         # create the result file for the Mesh object
         self.results = Results(self.Mesh_obj)
 
     # function to run mesh generation
     def __run_mesh_generation(self):
 
-        self.Mesh_obj = Mesh(self.long_dim, self.width, self.trans_dim, self.edge_width, self.num_trans_grid,
-                             self.num_long_gird,
-                             self.skew_a, skew_2=self.skew_b, orthogonal=self.ortho_mesh)
-
         # 2 generate command lines in output py file
         self.__write_op_node(self.Mesh_obj)  # write node() commands
         self.__write_op_fix(self.Mesh_obj)  # write fix() command for support nodes
         self.__write_geom_transf(self.Mesh_obj)  # x dir members
         # 3 identify boundary of mesh
+        for mat_str in self.material_command_list:
+            if self.pyfile:
+                with open(self.filename, 'a') as file_handle:
+                    file_handle.write("# Material definition \n")
+                    file_handle.write(mat_str)
+            else:
+                eval(mat_str)
+        for sec_str in self.section_command_list:
+            if self.pyfile:
+                with open(self.filename, 'a') as file_handle:
+                    file_handle.write("# Create section: \n")
+                    file_handle.write(
+                        sec_str)
+            else:
+                eval(sec_str)
+
 
     def set_boundary_condition(self, edge_group_counter=[1], restraint_vector=[0, 1, 0, 0, 0, 0], group_to_exclude=[0]):
         """
@@ -299,12 +332,13 @@ class OpsGrillage:
         material_tag = self.material_dict.setdefault(repr(material_str), lastmaterialtag + 1)
         if material_tag != lastmaterialtag:
             mat_str = material_obj.get_uni_mat_ops_commands(material_tag=material_tag)
-            if self.pyfile:
-                with open(self.filename, 'a') as file_handle:
-                    file_handle.write("# Material definition \n")
-                    file_handle.write(mat_str)
-            else:
-                eval(mat_str)
+            self.material_command_list.append(mat_str)
+            # if self.pyfile:
+            #     with open(self.filename, 'a') as file_handle:
+            #         file_handle.write("# Material definition \n")
+            #         file_handle.write(mat_str)
+            # else:
+            #     eval(mat_str)
         else:
             print("Material {} with tag {} has been previously defined"
                   .format(material_type, material_tag))
@@ -329,15 +363,11 @@ class OpsGrillage:
         # set section tag or get section tag if already been assigned
         previously_defined_section = list(self.section_dict.values())
         sectiontagcounter = self.section_dict.setdefault(repr(section_str), lastsectioncounter + 1)
+
         if sectiontagcounter not in previously_defined_section:
             sec_str = section_obj.get_section_command(section_tag=sectiontagcounter)
-            if self.pyfile:
-                with open(self.filename, 'a') as file_handle:
-                    file_handle.write("# Create section: \n")
-                    file_handle.write(
-                        sec_str)
-            else:
-                eval(sec_str)
+            self.section_command_list.append(sec_str)
+
             # print to terminal
             print("Section {}, of tag {} created".format(section_type, sectiontagcounter))
         else:
@@ -365,13 +395,15 @@ class OpsGrillage:
         :return: sets member object to element of grillage in OpsGrillage instance
         :raises ValueError: If model instance is not created beforehand i.e. missing preceding create_ops() command.
         """
-        if self.Mesh_obj is None:
-            raise ValueError("Model instance not created. Run ops.create_ops() function before setting members")
+        #if self.Mesh_obj is None:
+        #    raise ValueError("Model instance not created. Run ops.create_ops() function before setting members")
         # check and write member's section command
         section_tag = self.__write_section(grillage_member_obj)
         # check and write member's material command
         material_tag = self.__write_uniaxial_material(member=grillage_member_obj)
-
+        # dictionary for key = common member tag, val is list of str for ops.element()
+        ele_command_dict = dict()
+        ele_command_list = []
         # if option for pyfile is True, write the header for element group commands
         if self.pyfile:
             with open(self.filename, 'a') as file_handle:
@@ -399,12 +431,15 @@ class OpsGrillage:
         elif member == "end_edge":
             common_member_tag = 1
             edge_flag = True
-        else:  # For now, set None as to assign as slab
-            common_member_tag = None
+        elif member == "transverse_slab":  # For now, set None as to assign as slab
+            common_member_tag = "slab"
+        else:
+            raise ValueError("Member str not a standard grillage element - refer to documentation/Module Description"
+                             "for valid member and input string")
 
         ele_width = 1
         # if member properties is based on unit width (e.g. slab elements), get width of element and assign properties
-        if grillage_member_obj.section.unit_width and common_member_tag is None:
+        if grillage_member_obj.section.unit_width and common_member_tag =="slab":
             for ele in self.Mesh_obj.trans_ele:
                 n1 = ele[1]  # node i
                 n2 = ele[2]  # node j
@@ -432,11 +467,12 @@ class OpsGrillage:
                 ele_str = grillage_member_obj.get_element_command_str(ele_tag=ele[0], node_tag_list=node_tag_list,
                                                                       transf_tag=ele[4], ele_width=ele_width,
                                                                       materialtag=material_tag, sectiontag=section_tag)
-                if self.pyfile:
-                    with open(self.filename, 'a') as file_handle:
-                        file_handle.write(ele_str)
-                else:
-                    eval(ele_str)
+                ele_command_list.append(ele_str)
+                # if self.pyfile:
+                #     with open(self.filename, 'a') as file_handle:
+                #         file_handle.write(ele_str)
+                # else:
+                #     eval(ele_str)
         else:
             # loop each element z group assigned under common_member_tag
             if z_flag:
@@ -449,11 +485,14 @@ class OpsGrillage:
                                                                               transf_tag=ele[4], ele_width=ele_width,
                                                                               materialtag=material_tag,
                                                                               sectiontag=section_tag)
-                        if self.pyfile:
-                            with open(self.filename, 'a') as file_handle:
-                                file_handle.write(ele_str)
-                        else:
-                            eval(ele_str)
+
+                        ele_command_list.append(ele_str)
+
+                        # if self.pyfile:
+                        #     with open(self.filename, 'a') as file_handle:
+                        #         file_handle.write(ele_str)
+                        # else:
+                        #     eval(ele_str)
                     self.ele_group_assigned_list.append(z_groups)
             elif edge_flag:
                 for ele in self.Mesh_obj.edge_span_ele:
@@ -466,12 +505,17 @@ class OpsGrillage:
                                                                               transf_tag=ele[4], ele_width=ele_width,
                                                                               materialtag=material_tag,
                                                                               sectiontag=section_tag)
-                        if self.pyfile:
-                            with open(self.filename, 'a') as file_handle:
-                                file_handle.write(ele_str)
-                        else:
-                            eval(ele_str)
+                        ele_command_list.append(ele_str)
+                        # if self.pyfile:
+                        #     with open(self.filename, 'a') as file_handle:
+                        #         file_handle.write(ele_str)
+                        # else:
+                        #     eval(ele_str)
                     self.ele_group_assigned_list.append("edge: {}".format(common_member_tag))
+            # here set the element command list to the common member tag, if previously defined (key exist),
+            # overwrite the element command list for that key
+        ele_command_dict[common_member_tag] = ele_command_list
+        self.element_command_list.append(ele_command_dict)
 
     # function to set shell members
     def set_shell_members(self, grillage_member_obj: GrillageMember, quad=True, tri=False):
@@ -498,9 +542,14 @@ class OpsGrillage:
         section_tag = self.__write_section(grillage_member_obj)
         # check and write member's material command if any
         material_tag = self.__write_uniaxial_material(member=grillage_member_obj)
+        # instantiate shell element list
+        shell_element_list = []
+        shell_element_dict = dict()
+
         for grid_nodes_list in self.Mesh_obj.grid_number_dict.values():
             ele_str = grillage_member_obj.get_element_command_str(ele_tag=shell_counter, node_tag_list=grid_nodes_list,
                                                                   materialtag=material_tag, sectiontag=section_tag)
+            shell_element_list.append(ele_str)
             if self.pyfile:
                 with open(self.filename, 'a') as file_handle:
                     file_handle.write(ele_str)

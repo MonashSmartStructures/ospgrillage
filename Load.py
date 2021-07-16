@@ -30,7 +30,8 @@ class Loads:
     load_point_7: LoadPoint
     load_point_8: LoadPoint
 
-    def __init__(self, name, Fx=0, Fy=0, Fz=0, Mx=0, My=0, Mz=0, **kwargs):
+
+    def __init__(self, name, **kwargs):
         """
 
         :param name: Name of load
@@ -51,12 +52,7 @@ class Loads:
         """
         #
         self.name = name
-        self.Fx = Fx
-        self.Fy = Fy
-        self.Fz = Fz
-        self.Mx = Mx
-        self.My = My
-        self.Mz = Mz
+
         # Initialise dict for key load points of line UDL and patch load definitions
         self.load_point_data = dict()
         # parse namedtuple of global coordinates
@@ -268,8 +264,13 @@ class NodalLoad(Loads):
         :param node_force: Named tuple of node forces
         :type node_force: NodalForces(Fx,Fy,Fz,Mx,My,Mz)
         """
-        super().__init__(name, node_tag=node_tag, Fx=node_force.Fx, Fy=node_force.Fy, Fz=node_force.Fz, Mx=node_force.Mx
-                         , My=node_force.My, Mz=node_force.Mz)
+        super().__init__(name, node_tag=node_tag)
+        self.Fx = node_force.Fx
+        self.Fy = node_force.Fy
+        self.Fz = node_force.Fz
+        self.Mx = node_force.Mx
+        self.My = node_force.My
+        self.Mz = node_force.Mz
         self.node_tag = node_tag
         if not isinstance(node_tag, Iterable):
             node_list = [node_tag]

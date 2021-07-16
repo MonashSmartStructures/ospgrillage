@@ -4,7 +4,7 @@ from OpsGrillage import *
 from PlotWizard import *
 
 # define material
-concrete = UniAxialElasticMaterial(mat_type="Concrete01", fpc=-6, epsc0=-0.004,fpcu=-6,epcU=-0.014)
+concrete = UniAxialElasticMaterial(mat_type="Concrete01", fpc=-6, epsc0=-0.004,fpcu=-6,epsU=-0.014)
 
 # define sections
 I_beam_section = Section(op_section_type="Elastic", op_ele_type="elasticBeamColumn", A=0.896, E=3.47E+10, G=2.00E+10,
@@ -26,8 +26,7 @@ exterior_I_beam = GrillageMember(member_name="exterior I beams", section=exterio
 # construct grillage model
 example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=[42,0],
                              num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
-pyfile = False
-example_bridge.create_ops(pyfile=pyfile)
+
 
 # set material to grillage (globally) - comment to disable
 # example_bridge.set_material(concrete)
@@ -40,6 +39,8 @@ example_bridge.set_member(exterior_I_beam, member="edge_beam")
 example_bridge.set_member(slab, member="transverse_slab")
 example_bridge.set_member(exterior_I_beam, member="start_edge") # proxy
 example_bridge.set_member(exterior_I_beam, member="end_edge")  # proxy
+pyfile = False
+example_bridge.create_ops(pyfile=pyfile)
 if not pyfile:
     opsplt.plot_model("nodes")
     pass

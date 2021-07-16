@@ -11,7 +11,7 @@ class Material:
         self.fpc = kwargs.get('fpc', None)
         self.epsc0 = kwargs.get('epsc0', None)
         self.fpcu = kwargs.get('fpcu', None)
-        self.epcU = kwargs.get('epcU', None)
+        self.epsU = kwargs.get('epsU', None)
 
         # properties for Steel
         self.Fy = kwargs.get('Fy', None)
@@ -35,7 +35,7 @@ class UniAxialElasticMaterial(Material):
 
     def get_uni_material_arg_str(self):
         if self.mat_type == "Concrete01":
-            self.op_mat_arg = [self.fpc, self.epsc0, self.fpcu, self.epcU]
+            self.op_mat_arg = [self.fpc, self.epsc0, self.fpcu, self.epsU]
         elif self.mat_type == "Steel01":
             self.op_mat_arg = [self.Fy, self.E0, self.b, self.a1, self.a2, self.a3, self.a4]
         # check if None in entries

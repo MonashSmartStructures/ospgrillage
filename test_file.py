@@ -10,7 +10,7 @@ def ref_28m_bridge():
     pyfile = False
     # reference super T bridge 28m for validation purpose
     # Members
-    concrete = UniAxialElasticMaterial(mat_type="Concrete01", fpc=-6, epsc0=-0.004, fpcu=-6, epcU=-0.014)
+    concrete = UniAxialElasticMaterial(mat_type="Concrete01", fpc=-6, epsc0=-0.004, fpcu=-6, epsU=-0.014)
 
     # define sections
     super_t_beam_section = Section(op_section_type="Elastic", op_ele_type="elasticBeamColumn", A=1.0447, E=3.47E+10,
@@ -41,11 +41,6 @@ def ref_28m_bridge():
     bridge_28 = OpsGrillage(bridge_name="SuperT_28m", long_dim=28, width=7, skew=0,
                             num_long_grid=7, num_trans_grid=14, edge_beam_dist=1.0875, mesh_type="Ortho")
 
-    bridge_28.create_ops(pyfile=pyfile)
-
-    # set material to grillage
-    bridge_28.set_material(concrete)
-
     # set grillage member to element groups of grillage model
     bridge_28.set_member(super_t_beam, member="interior_main_beam")
     bridge_28.set_member(super_t_beam, member="exterior_main_beam_1")
@@ -55,12 +50,14 @@ def ref_28m_bridge():
     bridge_28.set_member(end_tranverse_slab, member="start_edge")
     bridge_28.set_member(end_tranverse_slab, member="end_edge")
 
+    bridge_28.create_ops(pyfile=pyfile)
+
     return bridge_28
 
 
 @pytest.fixture
 def ref_bridge_properties():
-    concrete = UniAxialElasticMaterial(mat_type="Concrete01", fpc=-6, epsc0=-0.004, fpcu=-6, epcU=-0.014)
+    concrete = UniAxialElasticMaterial(mat_type="Concrete01", fpc=-6, epsc0=-0.004, fpcu=-6, epsU=-0.014)
 
     # define sections
     I_beam_section = Section(op_section_type="Elastic", op_ele_type="elasticBeamColumn", A=0.896, E=3.47E+10,
@@ -92,11 +89,6 @@ def bridge_model_42_negative(ref_bridge_properties) -> OpsGrillage:
     # construct grillage model
     example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=-42,
                                  num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
-    pyfile = False
-    example_bridge.create_ops(pyfile=pyfile)
-
-    # set material to grillage
-    example_bridge.set_material(concrete)
 
     # set grillage member to element groups of grillage model
     example_bridge.set_member(I_beam, member="interior_main_beam")
@@ -107,6 +99,8 @@ def bridge_model_42_negative(ref_bridge_properties) -> OpsGrillage:
     example_bridge.set_member(exterior_I_beam, member="start_edge")
     example_bridge.set_member(exterior_I_beam, member="end_edge")
 
+    pyfile = False
+    example_bridge.create_ops(pyfile=pyfile)
     return example_bridge
 
 
@@ -117,11 +111,6 @@ def bridge_42_0_angle_mesh(ref_bridge_properties):
     I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
     example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=[42, 0],
                                  num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
-    pyfile = False
-    example_bridge.create_ops(pyfile=pyfile)
-
-    # set material to grillage
-    example_bridge.set_material(concrete)
 
     # set grillage member to element groups of grillage model
     example_bridge.set_member(I_beam, member="interior_main_beam")
@@ -131,6 +120,10 @@ def bridge_42_0_angle_mesh(ref_bridge_properties):
     example_bridge.set_member(slab, member="transverse_slab")
     example_bridge.set_member(exterior_I_beam, member="start_edge")
     example_bridge.set_member(exterior_I_beam, member="end_edge")
+
+    pyfile = False
+    example_bridge.create_ops(pyfile=pyfile)
+
     return example_bridge
 
 
@@ -143,11 +136,7 @@ def bridge_model_42_positive(ref_bridge_properties):
     # construct grillage model
     example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=42,
                                  num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
-    pyfile = False
-    example_bridge.create_ops(pyfile=pyfile)
 
-    # set material to grillage
-    example_bridge.set_material(concrete)
 
     # set grillage member to element groups of grillage model
     example_bridge.set_member(I_beam, member="interior_main_beam")
@@ -157,7 +146,8 @@ def bridge_model_42_positive(ref_bridge_properties):
     example_bridge.set_member(slab, member="transverse_slab")
     example_bridge.set_member(exterior_I_beam, member="start_edge")
     example_bridge.set_member(exterior_I_beam, member="end_edge")
-
+    pyfile = False
+    example_bridge.create_ops(pyfile=pyfile)
     return example_bridge
 
 

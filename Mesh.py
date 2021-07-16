@@ -499,11 +499,6 @@ class Mesh:
                                       , edge_counter, tag])
         self.element_counter += 1
 
-    def __assign_shell_members(self, n1, n2, n3, n4):
-
-        # TODO
-        pass
-
     # ------------------------------------------------------------------------------------------
     def __identify_member_groups(self):
         """

@@ -91,11 +91,13 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Creating grillage models</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#defining-elements-of-grillage-model">Defining elements of grillage model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#creating-material-objects">Creating material objects</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#creating-section-objects">Creating section objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#defining-elements-of-grillage-model">Defining elements of grillage model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#creating-material-objects">Creating material objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#creating-section-objects">Creating section objects</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#creating-the-grillage-model">Creating the grillage model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#setting-grillage-member-to-element-group-in-model">Setting grillage member to element group in model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#assigning-grillage-members">Assigning grillage members</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#creating-grillage-in-opensees-model-space-or-as-an-executable-py-file">Creating grillage in Opensees model space or as an executable py file</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#visualize-grillage-model">Visualize grillage model</a></li>
 </ul>
@@ -176,17 +178,17 @@
 <h1>Creating grillage models<a class="headerlink" href="#creating-grillage-models" title="Permalink to this headline">¶</a></h1>
 <p>Here is one example of what you can do with <em>ops-grillage</em> module. Steps are explained in more detail
 throughout the rest of the documentation.</p>
-<p>To begin, import <a class="reference internal" href="OpsGrillage.html#module-OpsGrillage" title="OpsGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code></a> and Opensees visualization module <cite>ops_vis</cite>. When import, use either abbreviations or import the whole module’s functions using asterisk. For this example,
+<p>To begin, import <a class="reference internal" href="OpsGrillage.html#module-OpsGrillage" title="OpsGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code></a> as <code class="docutils literal notranslate"><span class="pre">opsg</span></code> abbreviation. or import the whole module’s functions using asterisk. For this example,
 we import the entire <a class="reference internal" href="OpsGrillage.html#module-OpsGrillage" title="OpsGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code></a> components to showcase the various functions and classes.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">OpsGrillage</span> <span class="kn">import</span> <span class="o">*</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">OpsGrillage</span> <span class="k">as</span> <span class="nn">opsg</span>
 <span class="kn">import</span> <span class="nn">openseespy.postprocessing.ops_vis</span> <span class="k">as</span> <span class="nn">opsv</span>
 </pre></div>
 </div>
-<p>In general, there are three stages when using the <em>ops-grillage</em> module:</p>
+<p>In general, there are three steps when using the <em>ops-grillage</em> module:</p>
 <ol class="arabic simple">
 <li><p>Defining elements of grillage model using the <code class="xref py py-class docutils literal notranslate"><span class="pre">Member</span></code> class, and <a class="reference internal" href="Material.html#module-Material" title="Material"><code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code></a> class.</p></li>
 <li><p>Creating the grillage object using the <a class="reference internal" href="OpsGrillage.html#module-OpsGrillage" title="OpsGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code></a> class.</p></li>
-<li><p>Setting the elements of grillage model using <code class="docutils literal notranslate"><span class="pre">`~set_member()`</span></code> and <code class="docutils literal notranslate"><span class="pre">`~set_material()`</span></code> functions.</p></li>
+<li><p>Setting the elements of grillage model using <code class="docutils literal notranslate"><span class="pre">`set_member()`</span></code> and <code class="docutils literal notranslate"><span class="pre">`set_material()`</span></code> functions.</p></li>
 </ol>
 <p>In this example explain the procedures by creating an example grillage as shown in Figure 1:</p>
 <div class="figure align-center" id="id1">
@@ -207,9 +209,8 @@ objects as inputs, namely:</p>
 </div>
 <p>When setting up grillage members, it is often a good idea to first define materials and section objects before creating
 each <code class="xref py py-class docutils literal notranslate"><span class="pre">GrillageMember</span></code> class objects.</p>
-</div>
 <div class="section" id="creating-material-objects">
-<h2>Creating material objects<a class="headerlink" href="#creating-material-objects" title="Permalink to this headline">¶</a></h2>
+<h3>Creating material objects<a class="headerlink" href="#creating-material-objects" title="Permalink to this headline">¶</a></h3>
 <p>A <a class="reference internal" href="Material.html#module-Material" title="Material"><code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code></a> class object is needed when <a class="reference internal" href="#defining-grillage-member">defining Grillage member</a>.</p>
 <p>The following code line creates the Concrete material needed for various grillage members.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">concrete</span> <span class="o">=</span> <span class="n">UniAxialElasticMaterial</span><span class="p">(</span><span class="n">mat_type</span><span class="o">=</span><span class="s2">&quot;Concrete01&quot;</span><span class="p">,</span> <span class="n">mat_vec</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">6.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.004</span><span class="p">,</span> <span class="o">-</span><span class="mf">6.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.014</span><span class="p">])</span>
@@ -227,7 +228,7 @@ input.</p>
 <a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html#steel-reinforcing-steel-materials">Opensees database for concrete and steel</a>.</p>
 </div>
 <div class="section" id="creating-section-objects">
-<h2>Creating section objects<a class="headerlink" href="#creating-section-objects" title="Permalink to this headline">¶</a></h2>
+<h3>Creating section objects<a class="headerlink" href="#creating-section-objects" title="Permalink to this headline">¶</a></h3>
 <p>Similar to Materials, a <code class="xref py py-class docutils literal notranslate"><span class="pre">Section</span></code> class object is needed when <a class="reference internal" href="#defining-grillage-member">defining Grillage member</a>.</p>
 <p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">Section</span></code> class takes in section parameters based on Opensees definition of element types.
 Refer to <a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/element.html">Opensees element command</a> for specifics on
@@ -237,6 +238,7 @@ element types.</p>
 <span class="n">I_beam_section</span> <span class="o">=</span> <span class="n">Section</span><span class="p">(</span><span class="n">op_sec_tag</span><span class="o">=</span><span class="s1">&#39;Elastic&#39;</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="mf">0.896</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="mf">3.47E+10</span><span class="p">,</span> <span class="n">G</span><span class="o">=</span><span class="mf">2.00E+10</span><span class="p">,</span> <span class="n">J</span><span class="o">=</span><span class="mf">0.133</span><span class="p">,</span> <span class="n">Iy</span><span class="o">=</span><span class="mf">0.213</span><span class="p">,</span> <span class="n">Iz</span><span class="o">=</span><span class="mf">0.259</span><span class="p">,</span>
                      <span class="n">Ay</span><span class="o">=</span><span class="mf">0.233</span><span class="p">,</span> <span class="n">Az</span><span class="o">=</span><span class="mf">0.58</span><span class="p">)</span>
 </pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="creating-the-grillage-model">
@@ -258,8 +260,8 @@ element types.</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="setting-grillage-member-to-element-group-in-model">
-<h2>Setting grillage member to element group in model<a class="headerlink" href="#setting-grillage-member-to-element-group-in-model" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="assigning-grillage-members">
+<h2>Assigning grillage members<a class="headerlink" href="#assigning-grillage-members" title="Permalink to this headline">¶</a></h2>
 <p>The members of the grillage model is set using the <cite>set_member()</cite> function of <code class="docutils literal notranslate"><span class="pre">opGrillage</span></code> class. The function takes a <cite>member</cite> class
 object, and a member string tag as arguments. The function the assigns the <cite>member</cite>
 object to the element group in the grillage model.</p>
@@ -283,7 +285,7 @@ Table 1 shows the standard elements of a grillage model along with the respectiv
 <td><p>interior_main_beam</p></td>
 </tr>
 <tr class="row-even"><td><p>4</p></td>
-<td><p>exterior_main_beam_1</p></td>
+<td><p>exterior_main_beam_2</p></td>
 </tr>
 <tr class="row-odd"><td><p>5</p></td>
 <td><p>edge_slab</p></td>
