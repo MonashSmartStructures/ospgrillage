@@ -791,3 +791,62 @@ def test_28m_brdige_moving_compound_load(ref_28m_bridge):
     maxY = moving.sel(Component='Vy').max(dim='Loadcase')
     minY = moving.sel(Component='Mz').max(dim='Loadcase')
     print(ma)
+
+# test for Mayers simple grid
+def test_simple_grid():
+    # ensure the Super-T girder inputs are run first!
+
+    L = 3
+    w = 2
+    n_l = 5  # when 2, edge_beam not needed; when 3, only one exterior_main_beam is needed, when 4...
+    n_t = 4  # when 2, grid not complete and analysis fails
+
+    simply_grid = OpsGrillage(bridge_name="Simple", long_dim=L, width=w, skew=0,
+                                   num_long_grid=n_l, num_trans_grid=n_t, edge_beam_dist=0.3, mesh_type="Ortho")
+
+    concrete = UniAxialElasticMaterial(mat_type="Concrete01", fpc=-6.0, epsc0=-0.004, fpcu=-6.0, epsU=-0.014)
+    # define sections
+    super_t_beam_section = Section(A=1.0447, E=3.47E+10, G=2.00E+10,
+                                        J=0.230698, Iy=0.231329, Iz=0.533953,
+                                        Ay=0.397032, Az=0.434351)
+    transverse_slab_section = Section(A=0.5372, E=3.47E+10, G=2.00E+10,
+                                           J=2.79e-3, Iy=0.3988 / 2, Iz=1.45e-3 / 2,
+                                           Ay=0.447 / 2, Az=0.447 / 2, unit_width=True)
+    end_tranverse_slab_section = Section(A=0.5372 / 2,
+                                              E=3.47E+10,
+                                              G=2.00E+10, J=2.68e-3, Iy=0.04985,
+                                              Iz=0.725e-3,
+                                              Ay=0.223, Az=0.223)
+    edge_beam_section = Section(A=0.039375,
+                                     E=3.47E+10,
+                                     G=2.00E+10, J=0.21e-3, Iy=0.1e-3,
+                                     Iz=0.166e-3,
+                                     Ay=0.0328, Az=0.0328)
+    # define grillage members
+    super_t_beam = GrillageMember(member_name="Intermediate beams", section=super_t_beam_section,
+                                       material=concrete)
+    transverse_slab = GrillageMember(member_name="concrete slab",
+                                          section=transverse_slab_section, material=concrete)
+    edge_beam = GrillageMember(member_name="exterior beams",
+                                    section=edge_beam_section, material=concrete)
+    end_tranverse_slab = GrillageMember(member_name="edge transverse",
+                                             section=end_tranverse_slab_section, material=concrete)
+
+
+
+
+    # set grillage member to element groups of grillage model
+    simply_grid.set_member(super_t_beam, member="interior_main_beam")
+    simply_grid.set_member(super_t_beam, member="exterior_main_beam_1")
+    simply_grid.set_member(super_t_beam, member="exterior_main_beam_2")
+    simply_grid.set_member(super_t_beam, member="edge_beam")
+    # simply_grid.set_member(edge_beam, member="edge_beam")
+    simply_grid.set_member(transverse_slab, member="transverse_slab")
+    simply_grid.set_member(end_tranverse_slab, member="start_edge")
+    simply_grid.set_member(end_tranverse_slab, member="end_edge")
+
+
+    pyfile=False
+    simply_grid.create_ops(pyfile=pyfile)
+    opsv.plot_model("nodes")
+    plt.show()

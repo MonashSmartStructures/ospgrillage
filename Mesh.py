@@ -15,7 +15,7 @@ class Mesh:
 
     """
 
-    def __init__(self, long_dim, width, trans_dim, edge_width, num_trans_beam, num_long_beam, skew_1, skew_2,
+    def __init__(self, long_dim, width, trans_dim, edge_width, num_trans_beam, num_long_beam, skew_1, skew_2, edge_to_interior_dist=None,
                  orthogonal=False, pt1=Point(0, 0, 0), pt2=Point(0, 0, 0), pt3=None, element_counter=1, node_counter=1,
                  transform_counter=0, global_x_grid_count=0, global_edge_count=0, mesh_origin=[0, 0, 0],
                  quad_ele=False):
@@ -81,9 +81,24 @@ class Mesh:
 
         # Create sweep path obj
         self.sweep_path = SweepPath(self.pt1, self.pt2, self.pt3)
-        self.zeta, self.m, self.c = self.sweep_path.get_sweep_line_properties()
+        self.zeta, self.m, self.c = self.sweep_path.get_sweep_line_properties() # properties m,c,zeta angle
+        # ------------------------------------------------------------------------------------------
         # check condition for orthogonal mesh
-        # self.__check_skew(self.zeta)
+        if self.skew_1 is not 0:
+
+            self.__check_skew(self.skew_1,self.zeta)
+        elif self.skew_2 is not 0:
+            self.__check_skew(self.skew_2,self.zeta)
+
+        # check if angle between construction line and sweep path is sufficiently small - if greater meshing will
+        # result in overlapping edges (between start and end edge) or edge construction line creating extra nodes on
+        # oppposite construction lines.
+        if self.long_dim < self.width * np.tan(self.skew_1 / 180 * np.pi):
+            raise ValueError("insufficent length of grillage resulted in overlapping edge with extra longitudinal members"
+                             "due to skew angle at start edge- try using a smaller angle or larger long_dim")
+        elif self.long_dim < self.width * np.tan(self.skew_2 / 180 * np.pi):
+            raise ValueError("insufficent length of grillage resulted in overlapping edge with extra longitudinal members"
+                             "due to skew angle at end edge- try using a smaller angle or larger long_dim")
         # ------------------------------------------------------------------------------------------
         # edge construction line 1
         self.start_edge_line = EdgeConstructionLine(edge_ref_point=self.mesh_origin, width_z=self.width,
@@ -707,16 +722,15 @@ class Mesh:
             self.transform_counter = tag_value
         return tag_value
 
-    def __check_skew(self, zeta):
+    def __check_skew(self, edge_skew_angle, zeta):
         # zeta in DEGREES
         # if mesh type is beyond default allowance threshold of 11 degree and 30 degree, return exception
-        if np.abs(self.skew_1 - zeta) <= self.skew_threshold[0] and self.orthogonal:
+        if np.abs(edge_skew_angle - zeta) <= self.skew_threshold[0] and self.orthogonal:
             # return error
-            raise Exception("Skew angle too small for orthogonal")
-            self.orthogonal = False
-        elif np.abs(self.skew_1 - zeta) >= self.skew_threshold[1] and not self.orthogonal:
+            raise Exception("Skew angle too small for orthogonal, minimum edge skew angle for an orthogonal mesh is {}".format(self.skew_threshold[0]))
+        elif np.abs(edge_skew_angle - zeta) >= self.skew_threshold[1] and not self.orthogonal:
             self.orthogonal = True
-            raise Exception("Skew angle too large for skewed")
+            raise Exception("Skew angle too large for Oblique mesh, maximum edge skew angle for Oblique mesh is {}".format((self.skew_threshold[1])))
             # raise Exception('Oblique mesh not allowed for angle greater than {}'.format(self.skew_threshold[1]))
 
     # ------------------------------------------------------------------------------------------
@@ -841,9 +855,9 @@ class SweepPath:
         :param pt2: Namedtuple Point of second coordinate
         :param pt3: Namedtuple Point of third coordinate
         """
-        self.pt1 = pt1
-        self.pt2 = pt2
-        self.pt3 = pt3
+        self.pt1 = pt1  # default first
+        self.pt2 = pt2  # default second / last for linear line
+        self.pt3 = pt3  # default mid point of a curved line defined using 3 points
         self.decimal_lim = 4
         self.curve_path = False
         # return variables
@@ -861,6 +875,8 @@ class SweepPath:
             # procedure
             # get tangent at origin
             self.zeta = 0
+            # get tangent at end of curve line (intersect with second construction line)
+
         else:
             # construct straight line sweep path instead
             self.d = None
@@ -873,6 +889,7 @@ class SweepPath:
             # self.c = 0  # default 0  to avoid arithmetic error
             zeta = np.arctan(m)  # initial angle of inclination of sweep line about mesh origin
             self.zeta = zeta / np.pi * 180  # rad to degrees
+            self.eta_angle = self.zeta
 
         return self.zeta, self.m, self.c
 
@@ -881,4 +898,5 @@ class SweepPath:
             # straight line
             return line_func(self.m, self.c, x)
         else:
+            # TODO for curve line
             pass

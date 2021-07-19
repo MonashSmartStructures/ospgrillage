@@ -41,7 +41,7 @@ class UniAxialElasticMaterial(Material):
         # check if None in entries
         if None in self.op_mat_arg:
             raise Exception(
-                "parameters for Material: {} contains non numeric or missing parameter(s)".format(self.mat_type))
+                "One or more missing/non-numeric parameters for Material: {} ".format(self.mat_type))
         return self.mat_type, self.op_mat_arg
 
     def get_uni_mat_ops_commands(self, material_tag):

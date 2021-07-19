@@ -52,7 +52,9 @@ class OpsGrillage:
         self.model_name = bridge_name
         self.long_dim = long_dim  # span , also c/c between support bearings
         self.width = width  # length of the bearing support - if skew  = 0 , this corresponds to width of bridge
-        # if skew is a list containing 2 skew angles, set start and end edge of span to have respective angles
+
+        # parse edge skew angle, check if skew is a list containing 2 skew angles,
+        # set start and end edge of span to have respective angles
         if isinstance(skew, list):
             self.skew_a = skew[0]
             if len(skew) >= 2:
@@ -60,6 +62,9 @@ class OpsGrillage:
         else:  # set skew_a and skew_b variables to equal
             self.skew_a = skew  # angle in degrees
             self.skew_b = skew  # angle in degrees
+        if any([np.abs(self.skew_a)>90,np.abs(self.skew_b)>90]):
+            raise ValueError("Skew angle either start or end edge exceeds 90 degrees. Allowable range is -90 to 90")
+        # next check if arctan (L/w)
 
         self.num_long_gird = num_long_grid  # number of longitudinal beams
         self.num_trans_grid = num_trans_grid  # number of grids for transverse members
@@ -130,7 +135,7 @@ class OpsGrillage:
 
         # kwargs for rigid link modelling option
         self.rigid_type = kwargs.get("rigid_1",None)
-        # TODO to be continued after release
+        # TODO feature for rigid link + offset beam elements to added after release
 
         # create mesh object
         self.Mesh_obj = Mesh(self.long_dim, self.width, self.trans_dim, self.edge_width, self.num_trans_grid,

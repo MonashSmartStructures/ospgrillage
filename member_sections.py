@@ -82,7 +82,7 @@ class Section:
         # if elastic Beam column elements, return str of section input
         if self.op_ele_type == "ElasticTimoshenkoBeam":
             if None in [self.E, self.G, self.A, self.J, self.Iy, self.Iz, self.Ay, self.Az]:
-                raise ValueError("Missing section argument")
+                raise ValueError("One or more missing arguments for Section: {}".format(self.op_section_type))
             asterisk_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.E,
                                                                                                        self.G,
                                                                                                        self.A,
@@ -93,12 +93,14 @@ class Section:
                                                                                                        self.Az * width)
         elif self.op_ele_type == "elasticBeamColumn":  # eleColumn
             if None in [self.E, self.G, self.A, self.J, self.Iy, self.Iz]:
-                raise ValueError("Missing section argument")
+                raise ValueError("One or more missing arguments for Section: {}".format(self.op_section_type))
             asterisk_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.E, self.G, self.A * width,
                                                                                        self.J, self.Iy * width,
                                                                                        self.Iz * width)
 
         elif self.op_ele_type == "ModElasticBeam2d":
+            if None in [self.A * width, self.E, self.Iz * width, self.K11, self.K33, self.K44]:
+                raise ValueError("One or more missing arguments for Section: {}".format(self.op_section_type))
             asterisk_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(
                 self.A * width, self.E, self.Iz * width, self.K11, self.K33, self.K44)
         # else, section tag required in element() input, OpsGrillage automatically assigns the section tag within
