@@ -28,7 +28,7 @@ jobs:
         # the return code.
     - name: pull remote
       run: |
-        git pull https://github.com/MonashSmartStructures/ops-grillage.git gh-pages
+        git pull https://github.com/MonashSmartStructures/ops-grillage.git gh-pages --allow-unrelated-histories
       
     - name: Push changes
       uses: ad-m/github-push-action@master
