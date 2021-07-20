@@ -3,7 +3,8 @@ on:
   push:	
     branches:	
       - ops-grillage
-
+  pull_request:
+    branches: [ ops-grillage ]
 jobs:
   deploy:
     name: Deploy to GitHub Pages
