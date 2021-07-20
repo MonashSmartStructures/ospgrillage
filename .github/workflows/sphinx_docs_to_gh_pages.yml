@@ -13,7 +13,7 @@ jobs:
     
     - uses: ammaraskar/sphinx-action@master
       with:
-        docs-folder: "docs/source"
+        docs-folder: "docs/"
   #  - name: Build and Commit
   #    uses: sphinx-notes/pages@master
   #    with:
