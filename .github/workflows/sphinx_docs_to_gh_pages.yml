@@ -15,6 +15,6 @@ jobs:
       with:
         target_branch: gh-pages
         repository_path: .
-        documentation_path: docs/source
+        documentation_path: docs
         install_requirements: true
     
