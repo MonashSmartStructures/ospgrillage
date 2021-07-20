@@ -10,11 +10,22 @@ jobs:
     runs-on: ubuntu-latest    
     steps:
     - uses: actions/checkout@master
-    - name: Build and Commit
-      uses: sphinx-notes/pages@master
-      with:
-        target_branch: gh-pages-test
-        repository_path: .
-        documentation_path: docs/source
-        install_requirements: true
     
+    - uses: ammaraskar/sphinx-action@master
+      with:
+        docs-folder: "docs/"
+  #  - name: Build and Commit
+  #    uses: sphinx-notes/pages@master
+  #    with:
+  #      target_branch: gh-pages-test
+  #      repository_path: .
+  #      documentation_path: docs/source
+  #      install_requirements: true
+        
+#     - name: Deploy
+#       uses: s0/git-publish-subdir-action@develop
+#       env:
+#         REPO: self
+#         BRANCH: gh-pages
+#         FOLDER: docs/build/html
+#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
