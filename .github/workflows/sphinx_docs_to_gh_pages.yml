@@ -3,6 +3,7 @@ on:
   push:	
     branches:	
       - ops-grillage
+      - gh-pages
 
 jobs:
   deploy:
