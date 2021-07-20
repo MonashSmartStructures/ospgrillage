@@ -13,7 +13,7 @@ jobs:
     - name: Build and Commit
       uses: sphinx-notes/pages@master
       with:
-        target_branch: gh-pages
+        target_branch: gh-pages-test
         repository_path: .
         documentation_path: docs/source
         install_requirements: true
