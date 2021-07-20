@@ -129,7 +129,7 @@ class Mesh:
         self.nox = np.linspace(0, self.long_dim, self.num_trans_beam)
         # ------------------------------------------------------------------------------------------
         # create nodes and elements
-        # if orthogonal, orthogonal mesh only be splayed onto a curve mesh, if skew mesh curved/arc line segment must be
+        # if orthogonal, orthogonal mesh only be slayed onto a curve mesh, if skew mesh curved/arc line segment must be
         # false
         if self.orthogonal:
             # mesh start span construction line region
