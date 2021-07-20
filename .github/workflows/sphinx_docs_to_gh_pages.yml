@@ -16,26 +16,25 @@ jobs:
         docs-folder: "docs/"
     - name: Commit documentation changes
       run: |
-        git clone https://github.com/ammaraskar/sphinx-action-test.git --branch gh-pages --single-branch gh-pages
-        cp -r docs/build/html/* gh-pages/
+        git clone --single branch --branch gh-pages https://github.com/MonashSmartStructures/ops-grillage.git
+        ls
         cd gh-pages
+        cp -r docs/build/html/* gh-pages/
+        git branch --all
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add .
         git commit -m "Update documentation" -a || true
-
+        git push origin gh-pages:gh-pages
         # The above command will fail if no changes were present, so we ignore
         # the return code.
-    - name: pull remote
-      run: |
-        git pull https://github.com/MonashSmartStructures/ops-grillage.git gh-pages --allow-unrelated-histories
-      
-    - name: Push changes
-      uses: ad-m/github-push-action@master
-      with:
-        branch: gh-pages
-        directory: gh-pages
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+    
+#     - name: Push changes
+#       uses: ad-m/github-push-action@master
+#       with:
+#         branch: gh-pages
+#         directory: gh-pages
+#         github_token: ${{ secrets.GITHUB_TOKEN }}
   #  - name: Build and Commit
   #    uses: sphinx-notes/pages@master
   #    with:
