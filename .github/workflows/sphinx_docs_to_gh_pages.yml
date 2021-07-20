@@ -31,8 +31,8 @@ jobs:
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
-        branch: localbranch
-        directory: gh-pages
+        branch: gh-pages
+        directory: localbranch
         github_token: ${{ secrets.GITHUB_TOKEN }}
   #  - name: Build and Commit
   #    uses: sphinx-notes/pages@master
