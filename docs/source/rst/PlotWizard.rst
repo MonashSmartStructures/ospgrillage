@@ -1,7 +1,0 @@
-ops-grillage plotting extension
-=================
-
-.. automodule:: PlotWizard
-   :members:
-   :undoc-members:
-   :show-inheritance:
