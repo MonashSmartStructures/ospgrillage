@@ -88,7 +88,6 @@ This example section we create an *Elastic* section with required input paramete
                          Ay=0.233, Az=0.58)
 
 
-
 Creating the grillage model
 -------------------------------------------
 The :class:`~OpsGrillage` class takes:

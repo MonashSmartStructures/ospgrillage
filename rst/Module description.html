@@ -178,21 +178,21 @@
 <h1>Creating grillage models<a class="headerlink" href="#creating-grillage-models" title="Permalink to this headline">¶</a></h1>
 <p>Here is one example of what you can do with <em>ops-grillage</em> module. Steps are explained in more detail
 throughout the rest of the documentation.</p>
-<p>To begin, import <a class="reference internal" href="OpsGrillage.html#module-OpsGrillage" title="OpsGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code></a> as <code class="docutils literal notranslate"><span class="pre">opsg</span></code> abbreviation. or import the whole module’s functions using asterisk. For this example,
-we import the entire <a class="reference internal" href="OpsGrillage.html#module-OpsGrillage" title="OpsGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code></a> components to showcase the various functions and classes.</p>
+<p>To begin, import <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> as <code class="docutils literal notranslate"><span class="pre">opsg</span></code> abbreviation. or import the whole module’s functions using asterisk. For this example,
+we import the entire <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> components to showcase the various functions and classes.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">OpsGrillage</span> <span class="k">as</span> <span class="nn">opsg</span>
 <span class="kn">import</span> <span class="nn">openseespy.postprocessing.ops_vis</span> <span class="k">as</span> <span class="nn">opsv</span>
 </pre></div>
 </div>
 <p>In general, there are three steps when using the <em>ops-grillage</em> module:</p>
 <ol class="arabic simple">
-<li><p>Defining elements of grillage model using the <code class="xref py py-class docutils literal notranslate"><span class="pre">Member</span></code> class, and <a class="reference internal" href="Material.html#module-Material" title="Material"><code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code></a> class.</p></li>
-<li><p>Creating the grillage object using the <a class="reference internal" href="OpsGrillage.html#module-OpsGrillage" title="OpsGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code></a> class.</p></li>
+<li><p>Defining elements of grillage model using the <code class="xref py py-class docutils literal notranslate"><span class="pre">Member</span></code> class, and <code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code> class.</p></li>
+<li><p>Creating the grillage object using the <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> class.</p></li>
 <li><p>Setting the elements of grillage model using <code class="docutils literal notranslate"><span class="pre">`set_member()`</span></code> and <code class="docutils literal notranslate"><span class="pre">`set_material()`</span></code> functions.</p></li>
 </ol>
 <p>In this example explain the procedures by creating an example grillage as shown in Figure 1:</p>
 <div class="figure align-center" id="id1">
-<span id="figure-1"></span><a class="reference internal image-reference" href="../_images/42degnegative10m.png"><img alt="../_images/42degnegative10m.png" src="../_images/42degnegative10m.png" style="width: 540.75px; height: 435.0px;" /></a>
+<span id="figure-1"></span><a class="reference internal image-reference" href="images/42degnegative10m.png"><img alt="images/42degnegative10m.png" src="images/42degnegative10m.png" /></a>
 <p class="caption"><span class="caption-text">Figure 1: Instance of the model created in Opensees.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </div>
 <div class="section" id="defining-elements-of-grillage-model">
@@ -200,7 +200,7 @@ we import the entire <a class="reference internal" href="OpsGrillage.html#module
 <p>A grillage element is created using the <code class="xref py py-class docutils literal notranslate"><span class="pre">GrillageMember</span></code> class. A <code class="xref py py-class docutils literal notranslate"><span class="pre">GrillageMember</span></code> object takes two
 objects as inputs, namely:</p>
 <ol class="arabic simple">
-<li><p>A <a class="reference internal" href="Material.html#module-Material" title="Material"><code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code></a> class object, and</p></li>
+<li><p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code> class object, and</p></li>
 <li><p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">Section</span></code> class object.</p></li>
 </ol>
 <p>The following code line creates a <code class="xref py py-class docutils literal notranslate"><span class="pre">GrillageMember</span></code> object of the Interior longitudinal beams.</p>
@@ -211,15 +211,15 @@ objects as inputs, namely:</p>
 each <code class="xref py py-class docutils literal notranslate"><span class="pre">GrillageMember</span></code> class objects.</p>
 <div class="section" id="creating-material-objects">
 <h3>Creating material objects<a class="headerlink" href="#creating-material-objects" title="Permalink to this headline">¶</a></h3>
-<p>A <a class="reference internal" href="Material.html#module-Material" title="Material"><code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code></a> class object is needed when <a class="reference internal" href="#defining-grillage-member">defining Grillage member</a>.</p>
+<p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code> class object is needed when <a class="reference internal" href="#defining-grillage-member">defining Grillage member</a>.</p>
 <p>The following code line creates the Concrete material needed for various grillage members.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">concrete</span> <span class="o">=</span> <span class="n">UniAxialElasticMaterial</span><span class="p">(</span><span class="n">mat_type</span><span class="o">=</span><span class="s2">&quot;Concrete01&quot;</span><span class="p">,</span> <span class="n">mat_vec</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">6.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.004</span><span class="p">,</span> <span class="o">-</span><span class="mf">6.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.014</span><span class="p">])</span>
 </pre></div>
 </div>
 <p>For most bridges made of steel and concrete, material properties of either concrete and steel can be defined using
-keyword “steel” or “concrete” passed as an argument to <a class="reference internal" href="Material.html#module-Material" title="Material"><code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code></a> class.</p>
-<p>The <a class="reference internal" href="OpsGrillage.html#module-OpsGrillage" title="OpsGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code></a> class also allows for global material definition - e.g. an entire bridge made of the same
-material. To do this, users run the function <code class="docutils literal notranslate"><span class="pre">`set_material()`</span></code> passing the <a class="reference internal" href="Material.html#module-Material" title="Material"><code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code></a> class object as the
+keyword “steel” or “concrete” passed as an argument to <code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code> class.</p>
+<p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> class also allows for global material definition - e.g. an entire bridge made of the same
+material. To do this, users run the function <code class="docutils literal notranslate"><span class="pre">`set_material()`</span></code> passing the <code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code> class object as the
 input.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">test_bridge</span><span class="o">.</span><span class="n">set_material</span><span class="p">(</span><span class="n">concrete</span><span class="p">)</span>
 </pre></div>
@@ -243,7 +243,7 @@ element types.</p>
 </div>
 <div class="section" id="creating-the-grillage-model">
 <h2>Creating the grillage model<a class="headerlink" href="#creating-the-grillage-model" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="OpsGrillage.html#module-OpsGrillage" title="OpsGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code></a> class takes:</p>
+<p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> class takes:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">bridge_name</span></code>: A <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> of the grillage model name.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">long_dim</span></code>: An <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code> of the longitudinal length of the grillage model.</p></li>
@@ -254,7 +254,7 @@ element types.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">edge_beam_dist</span></code>: A <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code> of the distance between exterior longitudinal beams to edge beam.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">mesh_type</span></code>: Mesh type of grillage model. Must take a <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> input of either “Orthogonal” or “Oblique”.</p></li>
 </ul>
-<p>For the example bridge, run the following line with the prescribed variables to create the <a class="reference internal" href="OpsGrillage.html#module-OpsGrillage" title="OpsGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code></a> object:</p>
+<p>For the example bridge, run the following line with the prescribed variables to create the <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> object:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span> <span class="o">=</span> <span class="n">OpsGrillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;SuperT_10m&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">skew</span><span class="o">=-</span><span class="mi">21</span><span class="p">,</span>
                      <span class="n">num_long_grid</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">edge_beam_dist</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mesh_type</span><span class="o">=</span><span class="s2">&quot;Ortho&quot;</span><span class="p">)</span>
 </pre></div>
