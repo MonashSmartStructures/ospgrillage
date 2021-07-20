@@ -20,8 +20,6 @@ jobs:
         cp -r docs/build/html/* localbranch/
         cd localbranch
         git branch --all
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
         git add .
         git commit -m "Update documentation" -a || true
         git push origin gh-pages
