@@ -19,19 +19,21 @@ jobs:
         git clone https://github.com/MonashSmartStructures/ops-grillage.git --single localbranch --branch gh-pages 
         cp -r docs/build/html/* localbranch/
         cd localbranch
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
         git branch --all
         git add .
         git commit -m "Update documentation" -a || true
-        git push origin gh-pages
+
         # The above command will fail if no changes were present, so we ignore
         # the return code.
     
-#     - name: Push changes
-#       uses: ad-m/github-push-action@master
-#       with:
-#         branch: gh-pages
-#         directory: gh-pages
-#         github_token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        branch: localbranch
+        directory: gh-pages
+        github_token: ${{ secrets.GITHUB_TOKEN }}
   #  - name: Build and Commit
   #    uses: sphinx-notes/pages@master
   #    with:
