@@ -24,8 +24,9 @@ class OpsGrillage:
 
     """
 
-    def __init__(self, bridge_name, long_dim, width, skew, num_long_grid,
-                 num_trans_grid: float, edge_beam_dist, mesh_type="Ortho", model="3D", **kwargs):
+    def __init__(self, bridge_name, long_dim, width, skew: Union[list,float,int], num_long_grid: int,
+                 num_trans_grid: int, edge_beam_dist: Union[list,float,int],
+                 mesh_type="Ortho", model="3D", **kwargs):
         """
         :param bridge_name: Name of bridge model and output .py file
         :type bridge_name: str
@@ -62,13 +63,37 @@ class OpsGrillage:
         else:  # set skew_a and skew_b variables to equal
             self.skew_a = skew  # angle in degrees
             self.skew_b = skew  # angle in degrees
-        if any([np.abs(self.skew_a)>90,np.abs(self.skew_b)>90]):
+        if any([np.abs(self.skew_a) > 90, np.abs(self.skew_b) > 90]):
             raise ValueError("Skew angle either start or end edge exceeds 90 degrees. Allowable range is -90 to 90")
         # next check if arctan (L/w)
-
+        # check input grid line numbers
+        if num_trans_grid <= 2:
+            raise ValueError('invalid num_trans_grid value - hint: should be greater than 2 to have at least 3 grid '
+                             'lines')
         self.num_long_gird = num_long_grid  # number of longitudinal beams
         self.num_trans_grid = num_trans_grid  # number of grids for transverse members
         self.edge_width = edge_beam_dist  # width of cantilever edge beam
+        if isinstance(edge_beam_dist,list):
+            self.edge_width_a = edge_beam_dist[0]
+            if len(edge_beam_dist) >= 2:
+                self.edge_width_b = edge_beam_dist[1]
+            else:
+                self.edge_width_b = edge_beam_dist[0]
+        else:
+            self.edge_width_a = edge_beam_dist
+            self.edge_width_b = edge_beam_dist
+
+        # exterior to interior beam distance, get from kwargs
+        ext_to_int_dist = kwargs.get('ext_to_int_dist',None)
+        if isinstance(ext_to_int_dist,list):
+            self.ext_to_int_a = ext_to_int_dist[0]
+            if len(ext_to_int_dist) >=2:
+                self.ext_to_int_b = ext_to_int_dist[1]
+            else:
+                self.ext_to_int_b = ext_to_int_dist[0]
+        else:
+            self.ext_to_int_a = ext_to_int_dist
+            self.ext_to_int_b = ext_to_int_dist
         # instantiate matrices for geometric dependent properties
         self.trans_dim = None  # to be calculated automatically based on skew
         self.global_mat_object = []  # material matrix
@@ -134,13 +159,14 @@ class OpsGrillage:
         self.results = None
 
         # kwargs for rigid link modelling option
-        self.rigid_type = kwargs.get("rigid_1",None)
+        self.rigid_type = kwargs.get("rigid_1", None)
         # TODO feature for rigid link + offset beam elements to added after release
 
         # create mesh object
-        self.Mesh_obj = Mesh(self.long_dim, self.width, self.trans_dim, self.edge_width, self.num_trans_grid,
-                             self.num_long_gird,
-                             self.skew_a, skew_2=self.skew_b, orthogonal=self.ortho_mesh)
+        self.Mesh_obj = Mesh(long_dim=self.long_dim, width=self.width,trans_dim=self.trans_dim, num_trans_beam=self.num_trans_grid,
+                             num_long_beam=self.num_long_gird, ext_to_int_a=self.ext_to_int_a, ext_to_int_b=self.ext_to_int_b,
+                             skew_1=self.skew_a, edge_dist_a=self.edge_width_a, edge_dist_b=self.edge_width_b,
+                             skew_2 = self.skew_b, orthogonal=self.ortho_mesh)
 
     def create_ops(self, pyfile=False):
         """
@@ -204,7 +230,6 @@ class OpsGrillage:
                         sec_str)
             else:
                 eval(sec_str)
-
 
     def set_boundary_condition(self, edge_group_counter=[1], restraint_vector=[0, 1, 0, 0, 0, 0], group_to_exclude=[0]):
         """
@@ -400,7 +425,7 @@ class OpsGrillage:
         :return: sets member object to element of grillage in OpsGrillage instance
         :raises ValueError: If model instance is not created beforehand i.e. missing preceding create_ops() command.
         """
-        #if self.Mesh_obj is None:
+        # if self.Mesh_obj is None:
         #    raise ValueError("Model instance not created. Run ops.create_ops() function before setting members")
         # check and write member's section command
         section_tag = self.__write_section(grillage_member_obj)
@@ -444,7 +469,7 @@ class OpsGrillage:
 
         ele_width = 1
         # if member properties is based on unit width (e.g. slab elements), get width of element and assign properties
-        if grillage_member_obj.section.unit_width and common_member_tag =="slab":
+        if grillage_member_obj.section.unit_width and common_member_tag == "slab":
             for ele in self.Mesh_obj.trans_ele:
                 n1 = ele[1]  # node i
                 n2 = ele[2]  # node j
@@ -1232,7 +1257,6 @@ class OpsGrillage:
 
     def add_load_combination(self, load_combination_name: str, load_case_name_dict: dict):
         """
-        To be deprecated
 
         """
         load_case_dict_list = []  # list of dict: structure of dict See line
@@ -1245,7 +1269,8 @@ class OpsGrillage:
             else:
                 ind = None
                 continue
-            # get
+            # get the dict from self.load_case_list
+            # self.load_case_list has this format [{'loadcase':LoadCase object, 'load_command': list of str}...]
             load_case_dict = self.load_case_list[ind]
             # update load factor of load_case
             load_case_dict['load_factor'] = load_factor
@@ -1312,17 +1337,39 @@ class OpsGrillage:
                 # store result in Recorder object
             self.results.insert_analysis_results(list_of_inc_analysis=list_of_inc_analysis)
 
-    def get_results(self):
+    def get_results(self,**kwargs):
         """
-        Function to get results from all load cases.
+        Function to get results from all load cases. Alternatively, if keyword "get_combinations" is provided
+        with boolean True, returns data array processed based on defined load combinations instead.
 
         :return: A data array for basic all load case, and a list of data arrays for each moving load cases if any
         :returns basic_da: Data Array for all basic load case. For details of components see :doc:`Result` Page
         :returns list_moving_da: A list of Data array each element correspond to a Data array for a single moving load
         :type list_moving_da: list
+        :returns output_load_comb_dict: A dict with the following key and value pair. load combination name : data array of load combination
+        :type output_load_comb_dict: dict
         """
+
         basic_da, list_moving_da = self.results.compile_data_array()
-        return basic_da, list_moving_da
+
+        comb = kwargs.get("get_combinations",None) # if Boolean true
+        # for load combinations
+        if comb:
+
+            output_load_comb_dict = dict() # {name: datarray, .... name: dataarray}
+            # load comb name,  load case in load comb
+            # this format: self.load_combination_dict.setdefault(load_combination_name, load_case_dict_list)
+            for load_comb_name, load_case_dict_list in self.load_combination_dict.items(): #{0:[{'loadcase':LoadCase object, 'load_command': list of str}
+                print("Obtaining load combinations for {}....".format(load_comb_name))
+                summation_array = None  # instantiate
+                for load_case_dict in load_case_dict_list:# [{'loadcase':LoadCase object, 'load_command': list of str}.]
+                    load_case_name = load_case_dict['load_case'].name
+                    summation_array += basic_da.sel(Loadcase=load_case_name) * load_case_dict['load_factor']
+
+            return output_load_comb_dict
+        else:
+            # return raw data array for manual post processing
+            return basic_da, list_moving_da
 
 
 # ---------------------------------------------------------------------------------------------------------------------

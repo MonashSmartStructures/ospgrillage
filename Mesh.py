@@ -15,14 +15,16 @@ class Mesh:
 
     """
 
-    def __init__(self, long_dim, width, trans_dim, edge_width, num_trans_beam, num_long_beam, skew_1, skew_2, edge_to_interior_dist=None,
+    def __init__(self, long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
+                 skew_2, ext_to_int_a, ext_to_int_b,
                  orthogonal=False, pt1=Point(0, 0, 0), pt2=Point(0, 0, 0), pt3=None, element_counter=1, node_counter=1,
                  transform_counter=0, global_x_grid_count=0, global_edge_count=0, mesh_origin=[0, 0, 0],
                  quad_ele=False):
         # inputs from OpsGrillage required to create mesh
         self.long_dim = long_dim
         self.trans_dim = trans_dim
-        self.edge_width = edge_width
+        self.edge_width_a = edge_dist_a
+        self.edge_width_b = edge_dist_b
         self.width = width
         self.num_trans_beam = num_trans_beam
         self.num_long_beam = num_long_beam
@@ -81,28 +83,31 @@ class Mesh:
 
         # Create sweep path obj
         self.sweep_path = SweepPath(self.pt1, self.pt2, self.pt3)
-        self.zeta, self.m, self.c = self.sweep_path.get_sweep_line_properties() # properties m,c,zeta angle
+        self.zeta, self.m, self.c = self.sweep_path.get_sweep_line_properties()  # properties m,c,zeta angle
         # ------------------------------------------------------------------------------------------
         # check condition for orthogonal mesh
         if self.skew_1 is not 0:
 
-            self.__check_skew(self.skew_1,self.zeta)
+            self.__check_skew(self.skew_1, self.zeta)
         elif self.skew_2 is not 0:
-            self.__check_skew(self.skew_2,self.zeta)
+            self.__check_skew(self.skew_2, self.zeta)
 
         # check if angle between construction line and sweep path is sufficiently small - if greater meshing will
         # result in overlapping edges (between start and end edge) or edge construction line creating extra nodes on
         # oppposite construction lines.
         if self.long_dim < self.width * np.tan(self.skew_1 / 180 * np.pi):
-            raise ValueError("insufficent length of grillage resulted in overlapping edge with extra longitudinal members"
-                             "due to skew angle at start edge- try using a smaller angle or larger long_dim")
+            raise ValueError(
+                "insufficent length of grillage resulted in overlapping edge with extra longitudinal members"
+                "due to skew angle at start edge- try using a smaller angle or larger long_dim")
         elif self.long_dim < self.width * np.tan(self.skew_2 / 180 * np.pi):
-            raise ValueError("insufficent length of grillage resulted in overlapping edge with extra longitudinal members"
-                             "due to skew angle at end edge- try using a smaller angle or larger long_dim")
+            raise ValueError(
+                "insufficent length of grillage resulted in overlapping edge with extra longitudinal members"
+                "due to skew angle at end edge- try using a smaller angle or larger long_dim")
         # ------------------------------------------------------------------------------------------
         # edge construction line 1
         self.start_edge_line = EdgeConstructionLine(edge_ref_point=self.mesh_origin, width_z=self.width,
-                                                    edge_width_z=self.edge_width, edge_angle=self.skew_1,
+                                                    edge_width_a=self.edge_width_a, edge_width_b=self.edge_width_b,
+                                                    edge_angle=self.skew_1,
                                                     num_long_beam=self.num_long_beam, model_plane_y=self.y_elevation)
 
         # ------------------------------------------------------------------------------------------
@@ -110,7 +115,8 @@ class Mesh:
         end_point_z = self.sweep_path.get_line_function(self.long_dim)
 
         self.end_edge_line = EdgeConstructionLine(edge_ref_point=[self.long_dim, 0, end_point_z], width_z=self.width,
-                                                  edge_width_z=self.edge_width, edge_angle=self.skew_2,
+                                                  edge_width_a=self.edge_width_a, edge_width_b=self.edge_width_b,
+                                                  edge_angle=self.skew_2,
                                                   num_long_beam=self.num_long_beam, model_plane_y=self.y_elevation)
         # ------------------------------------------------------------------------------------------
         # Sweep nodes
@@ -526,9 +532,25 @@ class Mesh:
         # dict common element group to z group
         self.common_z_group_element = dict()
         self.common_z_group_element[0] = [0, len(self.noz) - 1]  # edge beams top and bottom edge
-        self.common_z_group_element[1] = [1]  # exterior
-        self.common_z_group_element[2] = list(range(2, len(self.noz) - 2))  # interior
-        self.common_z_group_element[3] = [len(self.noz) - 2]  # exterior 2
+
+        # start with case where only 2 grid line in long dir, no exterior and interior beams
+        exterior_beam_1_group = []
+        exterior_beam_2_group = []
+        interior_beam_group = list(range(2, len(self.noz) - 2))  # default [] when len(self.noz) < 2
+        # if more than 3 grid lines
+        if len(self.noz) > 2:
+            if len(self.noz) == 3:  # 3 grid lines, 2 edge and 1 interior
+                interior_beam_group = [1]  # overwrite interior
+            elif len(self.noz) == 4:  # 4 grid line, 2 edge exterior 1 and exterior 2
+                exterior_beam_1_group = [1]
+                interior_beam_group = []
+                exterior_beam_2_group = [len(self.noz) - 2]
+            else:
+                exterior_beam_1_group = [1]
+                exterior_beam_2_group = [len(self.noz) - 2]
+        self.common_z_group_element[1] = exterior_beam_1_group  # exterior 1
+        self.common_z_group_element[2] = interior_beam_group  # interior
+        self.common_z_group_element[3] = exterior_beam_2_group  # exterior 2
 
         # dict node tag to width in z direction , and neighbouring node
         self.node_width_z_dict = dict()
@@ -727,10 +749,14 @@ class Mesh:
         # if mesh type is beyond default allowance threshold of 11 degree and 30 degree, return exception
         if np.abs(edge_skew_angle - zeta) <= self.skew_threshold[0] and self.orthogonal:
             # return error
-            raise Exception("Skew angle too small for orthogonal, minimum edge skew angle for an orthogonal mesh is {}".format(self.skew_threshold[0]))
+            raise Exception(
+                "Skew angle too small for orthogonal, minimum edge skew angle for an orthogonal mesh is {}".format(
+                    self.skew_threshold[0]))
         elif np.abs(edge_skew_angle - zeta) >= self.skew_threshold[1] and not self.orthogonal:
             self.orthogonal = True
-            raise Exception("Skew angle too large for Oblique mesh, maximum edge skew angle for Oblique mesh is {}".format((self.skew_threshold[1])))
+            raise Exception(
+                "Skew angle too large for Oblique mesh, maximum edge skew angle for Oblique mesh is {}".format(
+                    (self.skew_threshold[1])))
             # raise Exception('Oblique mesh not allowed for angle greater than {}'.format(self.skew_threshold[1]))
 
     # ------------------------------------------------------------------------------------------
@@ -810,21 +836,23 @@ class EdgeConstructionLine:
     edge node class
     """
 
-    def __init__(self, edge_ref_point, width_z, edge_width_z, edge_angle, num_long_beam, model_plane_y,
-                 feature="start"):
+    def __init__(self, edge_ref_point, width_z, edge_width_a, edge_width_b, edge_angle, num_long_beam, model_plane_y,
+                 feature="start", ext_to_int_a=None, ext_to_int_b=None):
+        # TODO add feature for edge const line to consider varying distance between nodes of exterior and interior beam
         # set variables
         self.edge_ref_point = edge_ref_point
         self.width_z = width_z
-        self.edge_width_z = edge_width_z
+        self.edge_width_a = edge_width_a
+        self.edge_width_b = edge_width_b
         self.num_long_beam = num_long_beam
         self.edge_angle = edge_angle
         self.feature = feature
         # calculations
-        last_girder = (self.width_z - self.edge_width_z)  # coord of last girder
-        nox_girder = np.linspace(start=self.edge_width_z, stop=last_girder, num=self.num_long_beam - 2)
+        last_girder = (self.width_z - self.edge_width_b)  # coord of exterior
+        nox_girder = np.linspace(start=self.edge_width_a, stop=last_girder, num=self.num_long_beam - 2)
         # array containing z coordinate of edge construction line
         self.noz = np.hstack((np.hstack((0, nox_girder)), self.width_z))
-
+        # if negative angle, create edge_node_x based on negative angle algorithm, else, do for positive angle algorithm
         if self.edge_angle <= 0:
             edge_node_x = [-(z * np.tan(self.edge_angle / 180 * np.pi)) for z in self.noz]
             self.node_list = [[x + self.edge_ref_point[0], y + self.edge_ref_point[1], z + self.edge_ref_point[2]] for

@@ -433,6 +433,7 @@ def test_line_load_outside_of_mesh(bridge_model_42_negative):
 # test a default patch load - patch is within the mesh and sufficiently larger than a single grid
 def test_patch_load(bridge_model_42_negative):
     example_bridge = bridge_model_42_negative
+
     lane_point_1 = LoadPoint(5, 0, 3, 5)
     lane_point_2 = LoadPoint(8, 0, 3, 5)
     lane_point_3 = LoadPoint(8, 0, 5, 5)
@@ -799,10 +800,10 @@ def test_simple_grid():
     L = 3
     w = 2
     n_l = 5  # when 2, edge_beam not needed; when 3, only one exterior_main_beam is needed, when 4...
-    n_t = 4  # when 2, grid not complete and analysis fails
+    n_t = 3  # when 2, grid not complete and analysis fails
 
     simply_grid = OpsGrillage(bridge_name="Simple", long_dim=L, width=w, skew=0,
-                                   num_long_grid=n_l, num_trans_grid=n_t, edge_beam_dist=0.3, mesh_type="Ortho")
+                                   num_long_grid=n_l, num_trans_grid=n_t, edge_beam_dist=[0.3,1], mesh_type="Ortho")
 
     concrete = UniAxialElasticMaterial(mat_type="Concrete01", fpc=-6.0, epsc0=-0.004, fpcu=-6.0, epsU=-0.014)
     # define sections
@@ -833,14 +834,12 @@ def test_simple_grid():
                                              section=end_tranverse_slab_section, material=concrete)
 
 
-
-
     # set grillage member to element groups of grillage model
     simply_grid.set_member(super_t_beam, member="interior_main_beam")
     simply_grid.set_member(super_t_beam, member="exterior_main_beam_1")
     simply_grid.set_member(super_t_beam, member="exterior_main_beam_2")
-    simply_grid.set_member(super_t_beam, member="edge_beam")
-    # simply_grid.set_member(edge_beam, member="edge_beam")
+    #simply_grid.set_member(super_t_beam, member="edge_beam")
+    simply_grid.set_member(edge_beam, member="edge_beam")
     simply_grid.set_member(transverse_slab, member="transverse_slab")
     simply_grid.set_member(end_tranverse_slab, member="start_edge")
     simply_grid.set_member(end_tranverse_slab, member="end_edge")
