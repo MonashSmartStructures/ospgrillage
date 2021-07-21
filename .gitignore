@@ -26,3 +26,4 @@ Bridge model opensees/~$SN3595 Node.xlsx
 /Vehicle.py
 /Analysis.py
 /Past version of analysis generation py files/
+__pycache__/
