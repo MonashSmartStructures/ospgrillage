@@ -36,23 +36,5 @@ docs/source/_templates/
 .spyproject
 
 # Future pytest cache perhaps
-# .pytest_cache/
+.pytest_cache/
 
-# Some older development files
-# - maybe JN can just remove from his folder as others won't have these?
-Bridge model opensees/CSV.csv
-Bridge model opensees/Data transfer and downloader/
-Bridge model opensees/Example Bridge CSV generator.py
-Bridge model opensees/README.txt
-Bridge model opensees/SN3595 Node.xlsx
-Bridge model opensees/SN3595 simple grillage.xlsx
-Bridge model opensees/runrun.py
-Bridge model opensees/testbridge_ODB/
-Bridge model opensees/~$Benchmark bridge.xlsx
-Bridge model opensees/~$SN3595 Node.xlsx
-/keymaps/
-/Bridge model opensees/Disp.txt
-/Bridge model opensees/ReactionPY.txt
-/Vehicle.py
-/Analysis.py
-/Past version of analysis generation py files/
