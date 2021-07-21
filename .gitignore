@@ -1,21 +1,51 @@
 # Created by .ignore support plugin (hsz.mobi)
 .gitignore
 .idea/
+
+# Byte-compiled / optimized / DLL files
+Bridge model opensees/__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Sphinx documentation
+docs/source/_static/
+docs/source/_templates/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Future pytest cache perhaps
+# .pytest_cache/
+
+# Some older development files
+# - maybe JN can just remove from his folder as others won't have these?
 Bridge model opensees/CSV.csv
 Bridge model opensees/Data transfer and downloader/
 Bridge model opensees/Example Bridge CSV generator.py
 Bridge model opensees/README.txt
 Bridge model opensees/SN3595 Node.xlsx
 Bridge model opensees/SN3595 simple grillage.xlsx
-Bridge model opensees/__pycache__/Analysis.cpython-38.pyc
-Bridge model opensees/__pycache__/Bridge_member.cpython-38.pyc
-Bridge model opensees/__pycache__/Bridgemodel.cpython-38.pyc
-Bridge model opensees/__pycache__/OpenModellerInterface.cpython-38.pyc
-Bridge model opensees/__pycache__/PlotWizard.cpython-38.pyc
-Bridge model opensees/__pycache__/Vehicle.cpython-38.pyc
-Bridge model opensees/__pycache__/test_Analysis.cpython-38.pyc
-docs/source/_static/
-docs/source/_templates/
 Bridge model opensees/runrun.py
 Bridge model opensees/testbridge_ODB/
 Bridge model opensees/~$Benchmark bridge.xlsx
