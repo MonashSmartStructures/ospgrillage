@@ -4,6 +4,7 @@
 
 # Byte-compiled / optimized / DLL files
 Bridge model opensees/__pycache__/
+__pycache__/
 *.py[cod]
 *$py.class
 
@@ -37,4 +38,3 @@ docs/source/_templates/
 
 # Future pytest cache perhaps
 .pytest_cache/
-

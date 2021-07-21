@@ -2,102 +2,103 @@
 Performing analysis
 ========================
 
-Having created the grillage model, users can proceed with grillage analysis. The *ops-grillage* module allows grillage analysis utilities
-by allowing users to specify load cases and run load case analysis. Furthermore, *ops-grillage* module also options for moving load analysis.
+Having created the grillage model, users can proceed with performing a grillage analysis. 
+The *ops-grillage* module allows grillage analysis utilities
+by allowing users to specify load cases comprising of multiple single or compound loads types
+and then run load case analysis. 
+Furthermore, *ops-grillage* module also options for moving load analysis.
 
 
 Defining loads
 ------------------------
-Loads are defined using `Point`_, `Line`_, and `Patch`_ loads. Each point load is defined as a class object. Each load type requires
-user to specify its load point - a namedTuple LoadPoint(x,y,z,p) where x,y,z are the coordinates of the load point, and
-p is the magnitude of the vertical loading.
 
-Depending on the load type, different number of load points are needed for various load type. For example, Point load takes in a single LoadPoint tuple;
-Line load takes in at least two LoadPoint tuple (corresponds to the start and end of the line load); and Patch load takes it at least four points
-(corresponds to the vertices of the patch load).
+Available loads types include `Point`_, `Line`_, and `Patch`_ loads. 
+Each of these load types are defined with a different class object of similar names. 
+Two or more of these load types can be combined to form `Compound`_ loads.
 
-Here are few examples of creating load types. Each load type takes in variable number of LoadPoint tuple as shown below:
+Each load type requires
+user to specify its load point(s).
+This is achieved by a namedTuple :class:`LoadPoint(x,y,z,p)` where `x`,`y`,`z` are the coordinates of the load point
+and `p` is the magnitude of the vertical loading.
+The coordinates are generally in the global coordinate system with respect to the created grillage model.
+However, a user-defined local coordinate system may also be used to assist in then creating `Compound`_ loads.
+The vertical loading is in the direction of the global `y`-axis.
+Loads in other directions and applied moments are currently not supported.
 
-Point Loads
+Depending on the load type, a minimum number of LoadPoint namedTuple objects
+are required. These are defined used the `point#` variable for the load type class for the global coordinate system,
+or else `localpoint#` variable for a user-defined local coordinate system, where # is a digit from 1 to 9.
+Below are examples of creating different load types.
 
 .. _Point:
 
+Point Loads
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Point loads are instantied with the :class:`PointLoad` class and takes only a single :class:`LoadPoint` tuple.
+`p` in the :class:`LoadPoint`  tuple should have units of force (eg. N, kN, kips, etc).
+
+The following example code is 20 force unit point load located at (5,0,2) in the global coordinate system. 
+
 .. code-block:: python
 
-    point_load_location = LoadPoint(5, 0, 2, 20)  # create load point
-    single_point_load = PointLoad(name="single point", point1=location)
+    point_load_location = opsg.LoadPoint(5, 0, 2, 20)  # create load point
+    Single = opsg.PointLoad(name="single point", point1=point_load_location)
+
+To position the load instead in a user defined local coordinate system to later create a `Compound`_ loads, the variable `localpoint1` instead of `point1` is used. 
+
+.. code-block:: python
+
+    point_load_location = opsg.LoadPoint(5, 0, 2, 20)  # create load point
+    Single = opsg.PointLoad(name="single point", localpoint1=point_load_location)
 
 
 .. _Line:
 
 Line Loads
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Line loads are instantied with the :class:`LineLoading` and required at least two :class:`LoadPoint` tuple (corresponds to the start and end of the line load).
+Using more than two tuples allows a curve line loading profile.
+`p` in the :class:`LoadPoint` tuple should have units of force per distance (eg. kN/m, kips/ft, etc).
+
+The following example code is a constant 2 force per distance unit line load (UDL)
+in the global coordinate system from -1 to 11 distance units in the `x`-axis and along the position in the `z`-axis at 3 distance units.
 
 .. code-block:: python
 
-    barrier_point_1 = LoadPoint(-1, 0, 3, 2)
-    barrier_point_2 = LoadPoint(11, 0, 3, 2)
-    Barrier = LineLoading("Barrier curb load", point1=barrier_point_1, point2=barrier_point_2)
+    barrier_point_1 = opsg.LoadPoint(-1, 0, 3, 2)
+    barrier_point_2 = opsg.LoadPoint(11, 0, 3, 2)
+    Barrier = opsg.LineLoading("Barrier curb load", point1=barrier_point_1, point2=barrier_point_2)
+
+As before, to position the load instead in a user defined local coordinate system to later create a `Compound`_ loads, the variable `localpoint#` instead of `point#` is used. 
 
 .. _Patch:
 
 Patch loads
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Patch loads are instantied with the :class:`PatchLoading` and required at least four :class:`LoadPoint` tuple (corresponds to the vertices of the patch load).
+Using more than four tuples allows a curve surface loading profile.
+`p` in the :class:`LoadPoint` tuple should have units of force per area.
+
+The following example code is constant 5 force per area unit patch load 
+in the global coordinate system. 
+To position the load instead in a user defined local coordinate system, the variable `localpoint#` instead of `point#` is used. 
 
 .. code-block:: python
 
-    lane_point_1 = LoadPoint(0, 0, 3, 5)
-    lane_point_2 = LoadPoint(8, 0, 3, 5)
-    lane_point_3 = LoadPoint(8, 0, 5, 5)
-    lane_point_4 = LoadPoint(0, 0, 5, 5)
+    lane_point_1 = opsg.LoadPoint(0, 0, 3, 5)
+    lane_point_2 = opsg.LoadPoint(8, 0, 3, 5)
+    lane_point_3 = opsg.LoadPoint(8, 0, 5, 5)
+    lane_point_4 = opsg.LoadPoint(0, 0, 5, 5)
     Lane = PatchLoading("Lane 1", point1=lane_point_1, point2=lane_point_2, point3=lane_point_3, point4=lane_point_4)
-
-.. note::
-
-    Each load object (Point, Line, Patch) have the option to be defined as local coordinate or global (with respect to
-    coordinate system of the created grillage model
-
-.. _load cases:
-
-Load cases
-______________________
-Load cases are a set of loads used to define a particular loading condition.
-
-After load objects are created, users add the load objects to :class:`LoadCase` class objects. First, users create a
-:class:`LoadCase` class object and giving it its name.
-
-.. code-block:: python
-
-    ULS_DL = LoadCase(name="ULS-DL")
-
-Users then pass load objects as input parameters using ``add_load_groups()`` function.
-
-.. code-block:: python
-
-    ULS_DL.add_load_groups(Single)  # each line adds individual load types to the load case
-    ULS_DL.add_load_groups(Barrier)
-    ULS_DL.add_load_groups(Lane)
-
-After adding loads, the ``ULS_DL`` object can be added to grillage model for analysis using the ``add_load_case()``
-function of :class:`OpsGrillage` class. Users repeat this step for any defined load cases.
-
-.. code-block:: python
-
-    example_bridge.add_load_case(ULS_DL)  # adding this load case to grillage model
-
-
-To analyse loadcase(s), users run the class function ``analyse_load_case()``. This will analyse all load
-cases added to the grillage model previously.
-
-.. code-block:: python
-
-    example_bridge.analyse_load_case()
-
 
 .. _Compound load:
 
 Compound loads
-__________________________
-Two or more groups of load objects can be compounded into a compound load. Compound loads are treated as a single load group within a load case
-having same reference points (e.g. tandem axle) and properties (e.g. load factor)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Two or more groups of load objects can be compounded into a compound load. 
 
 To create a compound load, use the :class:`CompoundLoad` class - passing load objects for compounding as input parameters.
 
@@ -106,34 +107,14 @@ The following code creates and add a point and line load to the :class:`Compound
 .. code-block:: python
 
     # compound load
-    M1600 = CompoundLoad("Lane and Barrier") # lane and barrier compounded
+    C_Load = opsg.CompoundLoad("Lane and Barrier") # lane and barrier compounded
 
 After creating a compound load, users will have to add :class:`~Loads` objects (Point, Line, Patch) to the Compound load object:
 
 .. code-block:: python
 
-    M1600.add_load(load_obj=Single, local_coord=Point(5,0,5))
-    M1600.add_load(load_obj=Barrier, local_coord=Point(3,0,5))
-
-When adding each load object, the :class:`~CompoundLoad` class allow users to input a ``load_coord=`` keyworded parameter.
-This relates to the load object - whether it was previously defined in *local* or *global* coordinate system. The following explains the various
-input conditions
-
-* if Load object was defined in *local* coordinate and ``load_coord=`` is not provided. The local coordinate tied with the Load object precedes.
-* if Load object was defined in *local* coordinate and ``load_coord=`` is provided. The local coordinate of ``load_coord=`` parameter precedes.
-* if Load object was defined in *global* coordinate and ``load_coord=`` is not provided. Compound load treats the inherited global coordinates as new *local* coordinate
-* if Load object was defined in *global* coordinate and ``load_coord=`` is provided. The local coordinate of ``load_coord=`` parameter precedes, the magnitude of load points/vertices carries over to local coordinate.
-
-After defining all required load objects, :class:`~CompoundLoad` requires users to define the global coordinate which to map the basic coordinates. The mapping's reference point is default to the **Origin** of coordinate system
-i.e. (0,0,0)
-
-.. code-block:: python
-
-    M1600.set_global_coord(Point(4,0,3))
-
-This last line shifts all load points of all load objects for **Single** and **Barrier** by x + 4, y + 0 , and z + 3.
-
-From this point, the compound loads can be added into `load cases`_ as per ``add_load_groups()`` function.
+    C_Load.add_load(load_obj=Single, local_coord=Point(5,0,5))
+    C_Load.add_load(load_obj=Barrier, local_coord=Point(3,0,5))
 
 .. note::
 
@@ -142,42 +123,85 @@ From this point, the compound loads can be added into `load cases`_ as per ``add
     At the current stage, the :class:`~CompoundLoad` parses the load object within **local coordinate system**. When pass as input into :class:`~LoadCase`, the Compound load's vertices / load points
     are automatically converted to **global coordinates**, based on the inputs of ``set_global_coord`` function
 
-Defining moving loads
-------------------------
-For moving load analysis, users create moving load objects using :class:`Moving Load` class. The moving load class takes a Load object and moves the load
-through a path described by a :class:`Path` object. Path are defined using two Point(x,y,z) namedtuple to describe its start and end position.
+**Coordinate System**
+
+When adding each load object, the :class:`~CompoundLoad` class allow users to input a ``load_coord=`` keyworded parameter.
+This relates to the load object - whether it was previously defined in the user-defined *local* or in the *global* coordinate system. The following explains the various
+input conditions
+
+* if Load object was defined in *local* coordinate and ``load_coord=`` is not provided. The local coordinate tied with the Load object precedes.
+* if Load object was defined in *local* coordinate and ``load_coord=`` is provided. The local coordinate of ``load_coord=`` parameter precedes.
+* if Load object was defined in *global* coordinate and ``load_coord=`` is not provided. Compound load treats the inherited global coordinates as new *local* coordinate
+* if Load object was defined in *global* coordinate and ``load_coord=`` is provided. The local coordinate of ``load_coord=`` parameter precedes, the magnitude of load points/vertices carries over to local coordinate.
+
+After defining all required load objects, :class:`~CompoundLoad` requires users to define the global coordinate which to map the user-defined local coordinates. 
+If not specified, the mapping's reference point is default to the **Origin** of coordinate system i.e. (0,0,0)
+
+For example, this code line shifts all load points of all load objects for **Single** and **Barrier** in the **C_Load** compound load by x + 4, y + 0 , and z + 3.
 
 .. code-block:: python
 
-    single_path = Path(start_point=Point(2,0,2), end_point= Point(4,0,3))  # create path object
-    move_point = MovingLoad(name="single_moving_point")
-    move_point.add_loads(load_obj=front_wheel,path_obj=single_path.get_path_points())
+    C_Load.set_global_coord(Point(4,0,3))
 
-After adding all loads and respective paths, users run the class function ``parse_moving_load_case()`` which instructs the class to create multiple `load cases`_ for
+.. _load cases:
+
+Load cases
+______________________
+Load cases are a set of load types (`Point`_, `Line`_, `Patch`_, `Compound load`_) used to define a particular loading condition. Compound loads are treated as a single load group within a load case
+having same reference points (e.g. tandem axle) and properties (e.g. load factor)
+
+After load type objects are created, users add the load objects to :class:`LoadCase` class objects. First, users instantiates a
+:class:`LoadCase` class object and giving it its name.
+
+.. code-block:: python
+
+    DL = LoadCase(name="Dead Load")
+
+Users then pass load objects as input parameters using ``add_load_groups()`` function.
+
+.. code-block:: python
+
+    DL.add_load_groups(Single)  # each line adds individual load types to the load case
+    DL.add_load_groups(Barrier)
+    DL.add_load_groups(Lane)
+
+After adding loads, the :class:`LoadCase` object is added to grillage model for analysis using the ``add_load_case()``
+function of :class:`OpsGrillage` class. Users repeat this step for any defined load cases.
+
+.. code-block:: python
+
+    example_bridge.add_load_case(DL)  # adding this load case to grillage model
+
+
+Moving loads
+------------------------
+For moving load analysis, users create moving load objects using :class:`MovingLoad` class. The moving load class takes a load type object (`Point`_, `Line`_, `Patch`_, `Compound load`_) and moves the load
+through a path points described by a :class:`Path` object and obtained by the ``get_path_points()`` method. 
+Path are defined using two namedTuple :class:`Point(x,y,z)` to describe its start and end position.
+
+The following example code is a line load is defined as a moving load travelling a path from 2 to 4 distance units in the global coordinate system.
+
+.. code-block:: python
+
+    line_point_1 = opsg.LoadPoint(0, 0, 3, 6)
+    line_point_2 = opsg.LoadPoint(20, 0, 3, 6)
+    Line = opsg.LineLoading("Line load", point1=line_point_1, point2=line_point_2)
+	single_path = opsg.Path(start_point=opsg.Point(2,0,2), end_point= opsg.Point(4,0,2))  # create path object
+    move_line = opsg.MovingLoad(name="Line Load moving")
+    move_line.add_loads(load_obj=Line,path_obj=single_path.get_path_points())
+
+After adding all load types and respective paths for a moving load, users run the class function ``parse_moving_load_case()`` which instructs the class to create multiple `load cases`_ for
 which corresponds to the load condition as the load moves through each increment of the path.
 
 .. code-block:: python
 
     move_point.parse_moving_load_cases() # step to finalise moving load - creates incremental load cases for each position of the moving load
 
-From here, use the ``add_moving_load_case()`` function of the :class:`OpsGrillage` to add the moving load as a moving load case. Similar to `load cases`_, user run ``analyse_moving_load_case()``
-to analyze the moving load case.
+From here, use the ``add_moving_load_case()`` function of the :class:`OpsGrillage` to add the moving load as a moving load case. 
 
 .. code-block:: python
 
     example_bridge.add_moving_load_case(move_point)
-    example_bridge.analyse_moving_load_case()
-
-
-Defining moving Compound loads
-------------------------
-Compound loads can be used to describe truck load models where a number of point loads can be compounded to form the
-axle forces of a truck. It is then useful to perform moving load analysis by moving the truck (compounded points) model.
-
-The :class:`MovingLoad` class allows such definition when users pass `Compound load`_ object as input for its load
-object parameter.
-
-
 
 Defining load combination
 ------------------------
@@ -193,16 +217,32 @@ values. An example dictionary is shown as follows:
 
 .. code-block:: python
 
-    load_combinations = {'ULS-DL':1.2,'Live traffic':1.7}
+    load_combinations = {'Dead Load':1.2,'Live traffic':1.7}
     example_bridge.add_load_combination(name = "ULS", input_dict = load_combinations )
 
 
+Running anaylysis 
+------------------------
 
+Once all loadcases (static or moving) have been defined and added to the grillage the analysis can be conducted.
+
+To analyse non-moving loadcase(s), users run the class function ``analyse_load_case()``. 
+This will analyse all non-moving load cases added to the grillage model previously.
+
+.. code-block:: python
+
+    example_bridge.analyse_load_case()
+
+Users run ``analyse_moving_load_case()`` to analyze the moving load case.
+
+.. code-block:: python
+
+    example_bridge.analyse_moving_load_case()
 
 Obtaining results
-------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Results are returned as `data arrays <http://xarray.pydata.org/en/stable/user-guide/data-structures.html#>`_ (python's Xarray module).
-To this, run the ``get_results()`` function and two outputs will be returned:
+To this, run the ``get_results()`` function and an output tuple of two objects will be returned:
 
 .. code-block:: python
 
@@ -211,7 +251,7 @@ To this, run the ``get_results()`` function and two outputs will be returned:
 where,
 
 * basic_load_case_result : a data array containing results for all non-moving load cases.
-* moving_load_results: a list of data array each for a moving load.
+* moving_load_results: a list of data array each for a moving load (blank if ``analysis_moving_load_case()`` is not used).
 
 Each data array contains dimensions of:
 
