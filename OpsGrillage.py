@@ -24,8 +24,8 @@ class OpsGrillage:
 
     """
 
-    def __init__(self, bridge_name, long_dim, width, skew: Union[list,float,int], num_long_grid: int,
-                 num_trans_grid: int, edge_beam_dist: Union[list,float,int],
+    def __init__(self, bridge_name, long_dim, width, skew: Union[list, float, int], num_long_grid: int,
+                 num_trans_grid: int, edge_beam_dist: Union[list, float, int],
                  mesh_type="Ortho", model="3D", **kwargs):
         """
         :param bridge_name: Name of bridge model and output .py file
@@ -73,7 +73,7 @@ class OpsGrillage:
         self.num_long_gird = num_long_grid  # number of longitudinal beams
         self.num_trans_grid = num_trans_grid  # number of grids for transverse members
         self.edge_width = edge_beam_dist  # width of cantilever edge beam
-        if isinstance(edge_beam_dist,list):
+        if isinstance(edge_beam_dist, list):
             self.edge_width_a = edge_beam_dist[0]
             if len(edge_beam_dist) >= 2:
                 self.edge_width_b = edge_beam_dist[1]
@@ -84,10 +84,10 @@ class OpsGrillage:
             self.edge_width_b = edge_beam_dist
 
         # exterior to interior beam distance, get from kwargs
-        ext_to_int_dist = kwargs.get('ext_to_int_dist',None)
-        if isinstance(ext_to_int_dist,list):
+        ext_to_int_dist = kwargs.get('ext_to_int_dist', None)
+        if isinstance(ext_to_int_dist, list):
             self.ext_to_int_a = ext_to_int_dist[0]
-            if len(ext_to_int_dist) >=2:
+            if len(ext_to_int_dist) >= 2:
                 self.ext_to_int_b = ext_to_int_dist[1]
             else:
                 self.ext_to_int_b = ext_to_int_dist[0]
@@ -163,10 +163,12 @@ class OpsGrillage:
         # TODO feature for rigid link + offset beam elements to added after release
 
         # create mesh object
-        self.Mesh_obj = Mesh(long_dim=self.long_dim, width=self.width,trans_dim=self.trans_dim, num_trans_beam=self.num_trans_grid,
-                             num_long_beam=self.num_long_gird, ext_to_int_a=self.ext_to_int_a, ext_to_int_b=self.ext_to_int_b,
+        self.Mesh_obj = Mesh(long_dim=self.long_dim, width=self.width, trans_dim=self.trans_dim,
+                             num_trans_beam=self.num_trans_grid,
+                             num_long_beam=self.num_long_gird, ext_to_int_a=self.ext_to_int_a,
+                             ext_to_int_b=self.ext_to_int_b,
                              skew_1=self.skew_a, edge_dist_a=self.edge_width_a, edge_dist_b=self.edge_width_b,
-                             skew_2 = self.skew_b, orthogonal=self.ortho_mesh)
+                             skew_2=self.skew_b, orthogonal=self.ortho_mesh)
 
     def create_ops(self, pyfile=False):
         """
@@ -651,7 +653,7 @@ class OpsGrillage:
                 grid = grid_tag
 
         node_list = self.Mesh_obj.grid_number_dict.get(grid, None)
-        return node_list, grid  # n3 = grid number
+        return node_list, grid  # grid = grid number
 
     # Getter for Line loads nodes
     def get_line_load_nodes(self, line_load_obj) -> dict:
@@ -675,7 +677,7 @@ class OpsGrillage:
         # loop each grid check if line segment lies in grid
         for grid_tag, grid_nodes in self.Mesh_obj.grid_number_dict.items():
             point_list = []
-            # loop all nodes in grid to get coordinates
+            # get coordinates of all nodes in grid
             for node_tag in grid_nodes:
                 coord = self.Mesh_obj.node_spec[node_tag]['coordinate']
                 coord_point = Point(coord[0], coord[1], coord[2])
@@ -984,7 +986,7 @@ class OpsGrillage:
 
         point_list = [Point(p1[0], p1[1], p1[2]), Point(p2[0], p2[1], p2[2]), Point(p3[0], p3[1], p3[2])]
         if len(grid_nodes) == 3:
-            sorted_list = sort_vertices(point_list)
+            sorted_list,sorted_node_tag = sort_vertices(point_list,grid_nodes)
             Nv = ShapeFunction.linear_triangular(x=point[0], z=point[2], x1=sorted_list[0].x, z1=sorted_list[0].z,
                                                  x2=sorted_list[1].x, z2=sorted_list[1].z, x3=sorted_list[2].x,
                                                  z3=sorted_list[2].z)
@@ -996,7 +998,7 @@ class OpsGrillage:
             # extract coordinates of fourth point
             p4 = self.Mesh_obj.node_spec[grid_nodes[3]]['coordinate']
             point_list.append(Point(p4[0], p4[1], p4[2]))
-            sorted_list = sort_vertices(point_list)
+            sorted_list,sorted_node_tag = sort_vertices(point_list,grid_nodes)
             # mapping coordinates to natural coordinate, then finds eta (x) and zeta (z) of the point xp,zp
             eta, zeta = solve_zeta_eta(xp=point[0], zp=point[2], x1=sorted_list[0].x, z1=sorted_list[0].z,
                                        x2=sorted_list[1].x, z2=sorted_list[1].z, x3=sorted_list[2].x,
@@ -1013,7 +1015,7 @@ class OpsGrillage:
             node_mz = [mag * n for n in Nmz]
 
         load_str = []
-        for count, node in enumerate(grid_nodes):
+        for count, node in enumerate(sorted_node_tag):
             load_str.append("ops.load({pt}, *{val})\n".format(pt=node, val=[0, node_load[count], 0, node_mx[count], 0,
                                                                             node_mz[count]]))
         return load_str
@@ -1068,7 +1070,8 @@ class OpsGrillage:
             # get magnitudes at point 1 and point 2
             w1 = line_load_obj.interpolate_udl_magnitude([p1[0], 0, p1[1]])
             w2 = line_load_obj.interpolate_udl_magnitude([p2[0], 0, p2[1]])
-            W = (w1 + w2) * L / 2
+
+            W = (w1 + w2) / 2
             # get mid point of line
             x_bar = ((2 * w1 + w2) / (w1 + w2)) * L / 3  # from p2
             load_point = line_load_obj.get_point_given_distance(xbar=x_bar,
@@ -1145,7 +1148,7 @@ class OpsGrillage:
                 if sum(dupe) > 1:
                     p_list.pop(count)
             # sort points in counterclockwise
-            p_list = sort_vertices(p_list)  # sort takes namedtuple
+            p_list,_ = sort_vertices(p_list)  # sort takes namedtuple
             # get centroid of patch on grid
             xc, yc, zc = get_patch_centroid(p_list)
             inside_point = Point(xc, yc, zc)
@@ -1178,6 +1181,7 @@ class OpsGrillage:
         load_str = []
         for load_dict in load_groups:
             load_obj = load_dict['load']
+            # if compound load, distribute each individual load types within the compound load
             if isinstance(load_obj, CompoundLoad):
                 # load_obj is a Compound load class, start a nested loop through each load class within compound load
                 # nested loop through each load in compound load, assign and get
@@ -1194,6 +1198,7 @@ class OpsGrillage:
                         load_str += self.assign_line_to_four_node(nested_list_of_load, line_grid_intersect)
                     elif isinstance(nested_list_of_load, PatchLoading):
                         load_str += self.assign_patch_load(nested_list_of_load)
+            # else, a single load type, assign it as it is
             else:
                 # run single assignment of load type (load_obj is a load class)
                 if isinstance(load_obj, NodalLoad):
@@ -1228,7 +1233,7 @@ class OpsGrillage:
         self.load_case_list.append(load_case_dict)
         print("Load Case {} added".format(load_case_obj.name))
 
-    def analyse_load_case(self):
+    def analyse_load_case(self, **kwargs):
         """
         Function to analyse all basic load cases defined previously using add_load_case() function
 
@@ -1237,31 +1242,57 @@ class OpsGrillage:
         """
         # analyse all load case defined in self.load_case_dict for OpsGrillage instance
         # loop each load case dict
-        for load_case_dict in self.load_case_list:
-            # create analysis object, run and get results
-            load_case_obj = load_case_dict['loadcase']
-            load_command = load_case_dict['load_command']
-            load_factor = load_case_dict['load_factor']
-            load_case_analysis = Analysis(analysis_name=load_case_obj.name, ops_grillage_name=self.model_name,
-                                          pyfile=self.pyfile,
-                                          time_series_counter=self.global_time_series_counter,
-                                          pattern_counter=self.global_pattern_counter,
-                                          node_counter=self.Mesh_obj.node_counter,
-                                          ele_counter=self.Mesh_obj.element_counter)
-            load_case_analysis.add_load_command(load_command, load_factor=load_factor)
-            # run the Analysis object, collect results, and store Analysis object in the list for Analysis load case
-            self.global_time_series_counter, self.global_pattern_counter, node_disp, ele_force \
-                = load_case_analysis.evaluate_analysis()
-            # store result in Recorder object
-            self.results.insert_analysis_results(analysis_obj=load_case_analysis)
+        run_basic = kwargs.get("basic", False) # Boolean
+        run_moving = kwargs.get("moving", False) # Boolean
+        if run_basic:
+            for load_case_dict in self.load_case_list:
+                # create analysis object, run and get results
+                load_case_obj = load_case_dict['loadcase']
+                load_command = load_case_dict['load_command']
+                load_factor = load_case_dict['load_factor']
+                load_case_analysis = Analysis(analysis_name=load_case_obj.name, ops_grillage_name=self.model_name,
+                                              pyfile=self.pyfile,
+                                              time_series_counter=self.global_time_series_counter,
+                                              pattern_counter=self.global_pattern_counter,
+                                              node_counter=self.Mesh_obj.node_counter,
+                                              ele_counter=self.Mesh_obj.element_counter)
+                load_case_analysis.add_load_command(load_command, load_factor=load_factor)
+                # run the Analysis object, collect results, and store Analysis object in the list for Analysis load case
+                self.global_time_series_counter, self.global_pattern_counter, node_disp, ele_force \
+                    = load_case_analysis.evaluate_analysis()
+                # store result in Recorder object
+                self.results.insert_analysis_results(analysis_obj=load_case_analysis)
+        elif run_moving:
+            list_of_inc_analysis = []
+            for moving_load_obj, load_case_dict_list in self.moving_load_case_dict.items():
+                for load_case_dict in load_case_dict_list:
+                    load_case_obj = load_case_dict['loadcase']  # maybe unused
+                    load_command = load_case_dict['load_command']
+                    load_factor = load_case_dict['load_factor']
+                    incremental_analysis = Analysis(analysis_name=load_case_obj.name,
+                                                    ops_grillage_name=self.model_name,
+                                                    pyfile=self.pyfile,
+                                                    time_series_counter=self.global_time_series_counter,
+                                                    pattern_counter=self.global_pattern_counter,
+                                                    node_counter=self.Mesh_obj.node_counter,
+                                                    ele_counter=self.Mesh_obj.element_counter)
+                    incremental_analysis.add_load_command(load_command, load_factor=load_factor)
+                    self.global_time_series_counter, self.global_pattern_counter, node_disp, ele_force \
+                        = incremental_analysis.evaluate_analysis()
+                    list_of_inc_analysis.append(incremental_analysis)
+                    # store result in Recorder object
+                self.results.insert_analysis_results(list_of_inc_analysis=list_of_inc_analysis)
+        else:
+            print("No analysis was performed. hint: both kwargs for \"run_basic\" or \"run_moving\" could be set to "
+                  "False")
 
-    def add_load_combination(self, load_combination_name: str, load_case_name_dict: dict):
+    def add_load_combination(self, load_combination_name: str, load_case_and_factor_dict: dict):
         """
 
         """
         load_case_dict_list = []  # list of dict: structure of dict See line
         # create dict with key (combination name) and val (list of dict of load cases)
-        for load_case_name, load_factor in load_case_name_dict.items():
+        for load_case_name, load_factor in load_case_and_factor_dict.items():
             # lookup the defined load cases for load_case_name
             a = [index for (index, val) in enumerate(self.load_case_list) if val['name'] == load_case_name]
             if a:
@@ -1304,40 +1335,40 @@ class OpsGrillage:
 
         print("Moving load case: {} created".format(moving_load_obj.name))
 
-    def analyse_moving_load_case(self, moving_load_case_name: str = None):
-        """
-        Function to analyze all defined moving load cases.
+    # def analyse_moving_load_case(self, moving_load_case_name: str = None):
+    #     """
+    #     Function to analyze all defined moving load cases.
+    #
+    #     :param moving_load_case_name: Name of specific load case to be ran (Optional)
+    #     :type moving_load_case_name: str
+    #
+    #     """
+    #     # function to analyse individual moving load case
+    #     # create analysis object for each load case correspond to increment of moving paths
+    #     # loop through all moving load objects
+    #     if self.pyfile:
+    #         print("Analysis of OpsGrillage in file writing mode - pyfile flag = True")
+    #     list_of_inc_analysis = []
+    #     for moving_load_obj, load_case_dict_list in self.moving_load_case_dict.items():
+    #         for load_case_dict in load_case_dict_list:
+    #             load_case_obj = load_case_dict['loadcase']  # maybe unused
+    #             load_command = load_case_dict['load_command']
+    #             load_factor = load_case_dict['load_factor']
+    #             incremental_analysis = Analysis(analysis_name=load_case_obj.name,
+    #                                             ops_grillage_name=self.model_name,
+    #                                             pyfile=self.pyfile,
+    #                                             time_series_counter=self.global_time_series_counter,
+    #                                             pattern_counter=self.global_pattern_counter,
+    #                                             node_counter=self.Mesh_obj.node_counter,
+    #                                             ele_counter=self.Mesh_obj.element_counter)
+    #             incremental_analysis.add_load_command(load_command, load_factor=load_factor)
+    #             self.global_time_series_counter, self.global_pattern_counter, node_disp, ele_force \
+    #                 = incremental_analysis.evaluate_analysis()
+    #             list_of_inc_analysis.append(incremental_analysis)
+    #             # store result in Recorder object
+    #         self.results.insert_analysis_results(list_of_inc_analysis=list_of_inc_analysis)
 
-        :param moving_load_case_name: Name of specific load case to be ran (Optional)
-        :type moving_load_case_name: str
-
-        """
-        # function to analyse individual moving load case
-        # create analysis object for each load case correspond to increment of moving paths
-        # loop through all moving load objects
-        if self.pyfile:
-            print("Analysis of OpsGrillage in file writing mode - pyfile flag = True")
-        list_of_inc_analysis = []
-        for moving_load_obj, load_case_dict_list in self.moving_load_case_dict.items():
-            for load_case_dict in load_case_dict_list:
-                load_case_obj = load_case_dict['loadcase']  # maybe unused
-                load_command = load_case_dict['load_command']
-                load_factor = load_case_dict['load_factor']
-                incremental_analysis = Analysis(analysis_name=load_case_obj.name,
-                                                ops_grillage_name=self.model_name,
-                                                pyfile=self.pyfile,
-                                                time_series_counter=self.global_time_series_counter,
-                                                pattern_counter=self.global_pattern_counter,
-                                                node_counter=self.Mesh_obj.node_counter,
-                                                ele_counter=self.Mesh_obj.element_counter)
-                incremental_analysis.add_load_command(load_command, load_factor=load_factor)
-                self.global_time_series_counter, self.global_pattern_counter, node_disp, ele_force \
-                    = incremental_analysis.evaluate_analysis()
-                list_of_inc_analysis.append(incremental_analysis)
-                # store result in Recorder object
-            self.results.insert_analysis_results(list_of_inc_analysis=list_of_inc_analysis)
-
-    def get_results(self,**kwargs):
+    def get_results(self, **kwargs):
         """
         Function to get results from all load cases. Alternatively, if keyword "get_combinations" is provided
         with boolean True, returns data array processed based on defined load combinations instead.
@@ -1351,24 +1382,30 @@ class OpsGrillage:
         """
 
         basic_da, list_moving_da = self.results.compile_data_array()
-
-        comb = kwargs.get("get_combinations",None) # if Boolean true
+        # get kwargs
+        comb = kwargs.get("get_combinations", False)  # if Boolean true
+        save_filename = kwargs.get("save_filename", None)  # str of file name
         # for load combinations
         if comb:
-
-            output_load_comb_dict = dict() # {name: datarray, .... name: dataarray}
+            output_load_comb_dict = dict()  # {name: datarray, .... name: dataarray}
             # load comb name,  load case in load comb
             # this format: self.load_combination_dict.setdefault(load_combination_name, load_case_dict_list)
-            for load_comb_name, load_case_dict_list in self.load_combination_dict.items(): #{0:[{'loadcase':LoadCase object, 'load_command': list of str}
+            for load_comb_name, load_case_dict_list in self.load_combination_dict.items():  # {0:[{'loadcase':LoadCase object, 'load_command': list of str}
                 print("Obtaining load combinations for {}....".format(load_comb_name))
                 summation_array = None  # instantiate
-                for load_case_dict in load_case_dict_list:# [{'loadcase':LoadCase object, 'load_command': list of str}.]
-                    load_case_name = load_case_dict['load_case'].name
-                    summation_array += basic_da.sel(Loadcase=load_case_name) * load_case_dict['load_factor']
+                for load_case_dict in load_case_dict_list:  # [{'loadcase':LoadCase object, 'load_command': list of str}.]
+                    load_case_name = load_case_dict['loadcase'].name
+                    if summation_array is None:
 
+                        summation_array = basic_da.sel(Loadcase=load_case_name) * load_case_dict['load_factor']
+                    else:
+                        summation_array += basic_da.sel(Loadcase=load_case_name) * load_case_dict['load_factor']
+                output_load_comb_dict[load_comb_name] = summation_array
             return output_load_comb_dict
         else:
             # return raw data array for manual post processing
+            if save_filename:
+                basic_da.to_netcdf()
             return basic_da, list_moving_da
 
 
@@ -1494,6 +1531,7 @@ class Analysis:
         # return time series and plain counter to update global time series and plain counter by by OpsGrillage
         return self.time_series_counter, self.plain_counter, node_disp, ele_force
 
+    # function to extract grillage model responses (dx,dy,dz,rotx,roty,rotz,N,Vy,Vz,Mx,My,Mz) and store to Result class
     def extract_grillage_responses(self):
         if not self.pyfile:
             # first loop extract node displacements

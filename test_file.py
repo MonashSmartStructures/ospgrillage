@@ -137,7 +137,6 @@ def bridge_model_42_positive(ref_bridge_properties):
     example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=42,
                                  num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
 
-
     # set grillage member to element groups of grillage model
     example_bridge.set_member(I_beam, member="interior_main_beam")
     example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_1")
@@ -442,7 +441,7 @@ def test_patch_load(bridge_model_42_negative):
     ULS_DL = LoadCase(name="Lane")
     ULS_DL.add_load_groups(Lane)  # ch
     example_bridge.add_load_case(ULS_DL)
-    example_bridge.analyse_load_case()
+    example_bridge.analyse_load_case(basic=True)
 
     assert example_bridge.global_load_str == [
         'ops.load(19, *[0, 1.40688131921541, 0, 0.703440659607712, 0, 0.703440659607704])\n',
@@ -477,8 +476,8 @@ def test_patch_load(bridge_model_42_negative):
         'ops.load(68, *[0, 0.363526146016537, 0, 0.0591970791559885, 0, -0.191036151050043])\n',
         'ops.load(69, *[0, 0.0403917940018375, 0, -0.00657745323955428, 0, -0.00550309900144156])\n',
         'ops.load(62, *[0, 0.0562180519277049, 0, -0.0108123190277633, 0, 0.00765931578607944])\n',
-        'ops.load(20, *[0, 0.08992923272603146, 0, 0.0, 0, 0.0])\n',
-        'ops.load(15, *[0, 0.36279806628439637, 0, 0.0, 0, 0.0])\n',
+        'ops.load(15, *[0, 0.08992923272603146, 0, 0.0, 0, 0.0])\n',
+        'ops.load(20, *[0, 0.36279806628439637, 0, 0.0, 0, 0.0])\n',
         'ops.load(21, *[0, 0.05030303322338052, 0, 0.0, 0, 0.0])\n',
         'ops.load(20, *[0, 0.506477274917540, 0, 0.0911659094851582, 0, 0.273497728455472])\n',
         'ops.load(26, *[0, 0.506477274917518, 0, 0.0911659094851522, 0, -0.273497728455460])\n',
@@ -501,8 +500,10 @@ def test_patch_load(bridge_model_42_negative):
 def test_sort_vertices():
     point_list = [LoadPoint(x=8, y=0, z=3, p=5), LoadPoint(x=8, y=0, z=5, p=5), LoadPoint(x=5, y=0, z=3, p=5),
                   LoadPoint(x=5, y=0, z=5, p=5)]
-    assert sort_vertices(point_list) == [LoadPoint(x=5, y=0, z=3, p=5), LoadPoint(x=8, y=0, z=3, p=5),
+    ref_ans = [LoadPoint(x=5, y=0, z=3, p=5), LoadPoint(x=8, y=0, z=3, p=5),
                                          LoadPoint(x=8, y=0, z=5, p=5), LoadPoint(x=5, y=0, z=5, p=5)]
+    actual,_ = sort_vertices(point_list)
+    assert actual == ref_ans
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -557,7 +558,7 @@ def test_compound_load_distribution_to_nodes(bridge_model_42_negative):
     static_truck = LoadCase("static M1600")
     static_truck.add_load_groups(M1600)
     example_bridge.add_load_case(static_truck)
-    example_bridge.analyse_load_case()
+    example_bridge.analyse_load_case(basic=True)
     ba, ma = example_bridge.get_results()
     pass
 
@@ -575,7 +576,7 @@ def test_moving_load_case(bridge_model_42_negative):
     move_point.parse_moving_load_cases()
     example_bridge.add_moving_load_case(move_point)
 
-    example_bridge.analyse_moving_load_case()
+    example_bridge.analyse_load_case(moving=True)
     ba, ma = example_bridge.get_results()
 
 
@@ -598,7 +599,7 @@ def test_moving_compound_load(bridge_model_42_negative):
     truck.parse_moving_load_cases()
 
     example_bridge.add_moving_load_case(truck)
-    example_bridge.analyse_moving_load_case()
+    example_bridge.analyse_load_case(moving=True)
     ba, ma = example_bridge.get_results()
     print("finish test compound moving load")
 
@@ -629,9 +630,10 @@ def test_add_load_case_with_local_coord_and_global_set_cord(bridge_model_42_nega
     Lane = PatchLoading("Lane 1", localpoint1=lane_point_1, localpoint2=lane_point_2, localpoint3=lane_point_3,
                         localpoint4=lane_point_4)
     ULS_DL = LoadCase(name="Lane")
-    global_point = Point(0,0,0)
-    ULS_DL.add_load_groups(Lane,global_coord_of_load_obj=global_point)  # HERE exist the global coord kwargs
+    global_point = Point(0, 0, 0)
+    ULS_DL.add_load_groups(Lane, global_coord_of_load_obj=global_point)  # HERE exist the global coord kwargs
     example_bridge.add_load_case(ULS_DL)
+
 
 def test_patch_partially_outside_mesh(bridge_model_42_negative):
     example_bridge = bridge_model_42_negative
@@ -643,7 +645,7 @@ def test_patch_partially_outside_mesh(bridge_model_42_negative):
     ULS_DL = LoadCase(name="Lane")
     ULS_DL.add_load_groups(Lane)  # ch
     example_bridge.add_load_case(ULS_DL)
-    example_bridge.analyse_load_case()
+    example_bridge.analyse_load_case(basic=True)
     ba, ma = example_bridge.get_results()
 
     example_bridge.load_case_list[0]['load_command'] = ['ops.load(14, *[0, 1.1724010993461413, 0, 0.0, 0, 0.0])\n',
@@ -704,7 +706,8 @@ def test_patch_partially_outside_mesh(bridge_model_42_negative):
                                                         'ops.load(62, *[0, 0.0577683076549246, 0, -0.0103982953778865, 0, -0.00808756307168943])\n',
                                                         'ops.load(27, *[0, 0.0577683076549234, 0, -0.0103982953778861, 0, 0.00808756307168926])\n']
 
-
+# example super t 28 m  ref bridge
+# test for comparing max deflection with a numerical comparison model in Lusas
 def test_28m_bridge(ref_28m_bridge):
     bridge_28 = ref_28m_bridge
     opsplt.plot_model("nodes")
@@ -733,19 +736,23 @@ def test_28m_bridge(ref_28m_bridge):
     point_load_case.add_load_groups(p7)
 
     bridge_28.add_load_case(point_load_case)
-    bridge_28.analyse_load_case()
-    ba, ma = bridge_28.get_results()
+    # add a load combination
+    bridge_28.add_load_combination(load_combination_name="factored_point",
+                                   load_case_and_factor_dict={"point_load_case": 1.5})
+    bridge_28.analyse_load_case(basic=True)
+
+    ba, ma = bridge_28.get_results(get_combinations=False)
     print(ops.nodeDisp(57))
     print(ops.nodeDisp(63))
     print(ops.nodeDisp(60))
     # opsv.plot_defo(unDefoFlag=0, endDispFlag=0)
     # plt.show()
-
-    # minY, maxY = opsv.section_force_diagram_3d('Vy', {}, 1)
-    # plt.show()
+    # opsv.section_force_distribution_3d()
+    minY, maxY = opsv.section_force_diagram_3d('Vy', {}, 1)
+    plt.show()
     pass
 
-
+# test for 28 m ref bridge, using a moving load
 def test_28m_bridge_moving_load(ref_28m_bridge):
     bridge_28 = ref_28m_bridge
     # create moving load case
@@ -757,13 +764,13 @@ def test_28m_bridge_moving_load(ref_28m_bridge):
     move_point.parse_moving_load_cases()
     bridge_28.add_moving_load_case(move_point)
 
-    bridge_28.analyse_moving_load_case()
+    bridge_28.analyse_load_case(moving=True)
     ba, ma = bridge_28.get_results()
     moving = ma[0]
     moving.sel(Node=63, Component='dy')
     print(ma)
 
-
+# test for 28 m  bridge using a moving compound load
 def test_28m_brdige_moving_compound_load(ref_28m_bridge):
     bridge_28 = ref_28m_bridge
     # create moving load case
@@ -785,7 +792,7 @@ def test_28m_brdige_moving_compound_load(ref_28m_bridge):
 
     bridge_28.add_moving_load_case(truck)
 
-    bridge_28.analyse_moving_load_case()
+    bridge_28.analyse_load_case(moving=True)
     ba, ma = bridge_28.get_results()
     moving = ma[0]
     moving.sel(Node=63, Component='dy')
@@ -793,59 +800,76 @@ def test_28m_brdige_moving_compound_load(ref_28m_bridge):
     minY = moving.sel(Component='Mz').max(dim='Loadcase')
     print(ma)
 
-# test for Mayers simple grid
-def test_simple_grid():
-    # ensure the Super-T girder inputs are run first!
 
+# Simple 2 x 3 Grid example
+def test_simple_grid():
     L = 3
     w = 2
     n_l = 5  # when 2, edge_beam not needed; when 3, only one exterior_main_beam is needed, when 4...
     n_t = 3  # when 2, grid not complete and analysis fails
 
     simply_grid = OpsGrillage(bridge_name="Simple", long_dim=L, width=w, skew=0,
-                                   num_long_grid=n_l, num_trans_grid=n_t, edge_beam_dist=[0.3,1], mesh_type="Ortho")
+                              num_long_grid=n_l, num_trans_grid=n_t, edge_beam_dist=[0.3], mesh_type="Ortho")
 
     concrete = UniAxialElasticMaterial(mat_type="Concrete01", fpc=-6.0, epsc0=-0.004, fpcu=-6.0, epsU=-0.014)
     # define sections
     super_t_beam_section = Section(A=1.0447, E=3.47E+10, G=2.00E+10,
-                                        J=0.230698, Iy=0.231329, Iz=0.533953,
-                                        Ay=0.397032, Az=0.434351)
+                                   J=0.230698, Iy=0.231329, Iz=0.533953,
+                                   Ay=0.397032, Az=0.434351)
     transverse_slab_section = Section(A=0.5372, E=3.47E+10, G=2.00E+10,
-                                           J=2.79e-3, Iy=0.3988 / 2, Iz=1.45e-3 / 2,
-                                           Ay=0.447 / 2, Az=0.447 / 2, unit_width=True)
+                                      J=2.79e-3, Iy=0.3988 / 2, Iz=1.45e-3 / 2,
+                                      Ay=0.447 / 2, Az=0.447 / 2, unit_width=True)
     end_tranverse_slab_section = Section(A=0.5372 / 2,
-                                              E=3.47E+10,
-                                              G=2.00E+10, J=2.68e-3, Iy=0.04985,
-                                              Iz=0.725e-3,
-                                              Ay=0.223, Az=0.223)
+                                         E=3.47E+10,
+                                         G=2.00E+10, J=2.68e-3, Iy=0.04985,
+                                         Iz=0.725e-3,
+                                         Ay=0.223, Az=0.223)
     edge_beam_section = Section(A=0.039375,
-                                     E=3.47E+10,
-                                     G=2.00E+10, J=0.21e-3, Iy=0.1e-3,
-                                     Iz=0.166e-3,
-                                     Ay=0.0328, Az=0.0328)
+                                E=3.47E+10,
+                                G=2.00E+10, J=0.21e-3, Iy=0.1e-3,
+                                Iz=0.166e-3,
+                                Ay=0.0328, Az=0.0328)
     # define grillage members
     super_t_beam = GrillageMember(member_name="Intermediate beams", section=super_t_beam_section,
-                                       material=concrete)
+                                  material=concrete)
     transverse_slab = GrillageMember(member_name="concrete slab",
-                                          section=transverse_slab_section, material=concrete)
+                                     section=transverse_slab_section, material=concrete)
     edge_beam = GrillageMember(member_name="exterior beams",
-                                    section=edge_beam_section, material=concrete)
+                               section=edge_beam_section, material=concrete)
     end_tranverse_slab = GrillageMember(member_name="edge transverse",
-                                             section=end_tranverse_slab_section, material=concrete)
-
+                                        section=end_tranverse_slab_section, material=concrete)
 
     # set grillage member to element groups of grillage model
     simply_grid.set_member(super_t_beam, member="interior_main_beam")
     simply_grid.set_member(super_t_beam, member="exterior_main_beam_1")
     simply_grid.set_member(super_t_beam, member="exterior_main_beam_2")
-    #simply_grid.set_member(super_t_beam, member="edge_beam")
+    # simply_grid.set_member(super_t_beam, member="edge_beam")
     simply_grid.set_member(edge_beam, member="edge_beam")
     simply_grid.set_member(transverse_slab, member="transverse_slab")
     simply_grid.set_member(end_tranverse_slab, member="start_edge")
     simply_grid.set_member(end_tranverse_slab, member="end_edge")
 
-
-    pyfile=False
+    pyfile = False
     simply_grid.create_ops(pyfile=pyfile)
     opsv.plot_model("nodes")
     plt.show()
+
+    # loading
+    # Line load (100 load at midspan)
+    point_1 = LoadPoint(L / 2, 0, 0, 1e3)
+    point_2 = LoadPoint(L / 2, 0, w, 1e3)
+    # test_load = opsg.LineLoading("Test Load", point1=point_1, point2=point_2)
+    test_load = LineLoading("Test Load", point1=point_1, point2=point_2)  # It's as if Fy is redundant?
+
+    # Load case creating and assign
+    test_case = LoadCase(name="Test Case")
+    test_case.add_load_groups(test_load)
+    simply_grid.add_load_case(test_case)  # adding load case to grillage model
+    print(simply_grid.load_case_list[0]['load_command'])
+    simply_grid.analyse_load_case(basic=True)
+    minY, maxY = opsv.section_force_diagram_3d('Vy', {}, 1)
+    plt.show()
+    results = simply_grid.get_results()
+    results[0]
+    print(maxY)
+    pass

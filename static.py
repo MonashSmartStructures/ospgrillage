@@ -417,7 +417,11 @@ def find_plane_centroid(point_list):
     return [x_c, z_c]
 
 
-def sort_vertices(point_list):
+def sort_vertices(point_list, node_tag_list=None):
+    # note the node_tag_list must correspond to that of point_list, this is ensure in the higher level
+    # functions which calls sort_vertices
+    if node_tag_list is None:
+        node_tag_list = []
     center_x_z = find_plane_centroid(point_list)
     angle_list = []
     for point in point_list:
@@ -430,7 +434,9 @@ def sort_vertices(point_list):
     [i + 2 * np.pi for i in angle_list if i < 0]
     # sort for counter clockwise
     sorted_points = [x for _, x in sorted(zip(angle_list, point_list))]
-    return sorted_points
+
+    sorted_node_tag = [x for _, x in sorted(zip(angle_list, node_tag_list))]
+    return sorted_points,sorted_node_tag
 
 
 def get_patch_centroid(point_list):

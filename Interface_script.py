@@ -90,7 +90,7 @@ SLS_LL.add_load_groups(Single)
 example_bridge.add_load_case(SLS_LL)
 
 example_bridge.add_moving_load_case(move_point)
-example_bridge.analyse_moving_load_case()
+example_bridge.analyse_load_case(moving=True)
 ba,ma = example_bridge.get_results()
 print("finished ")
 # --------------------------------------------------------------------------------------------------------------------
