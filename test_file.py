@@ -1,7 +1,5 @@
 import pytest
 from OpsGrillage import *
-from PlotWizard import *
-
 
 # ------------------------------------------------------------------------------------------------------------------
 # create reference bridge model
