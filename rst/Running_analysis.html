@@ -104,7 +104,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#moving-loads">Moving loads</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#defining-load-combination">Defining load combination</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#running-anaylysis">Running anaylysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#running-analysis">Running analysis</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#obtaining-results">Obtaining results</a></li>
 </ul>
 </li>
@@ -335,12 +335,6 @@ which corresponds to the load condition as the load moves through each increment
 </div>
 <div class="section" id="defining-load-combination">
 <h2>Defining load combination<a class="headerlink" href="#defining-load-combination" title="Permalink to this headline">¶</a></h2>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>At the current stage, Load combinations are partially supported - there is no function to automatically plot and calculate
-load combinations. To this, users will have to obtain the arrays from the data array output - explained in the next section -
-and apply combination factors manually to the array (generally by array multiplication)</p>
-</div>
 <p>Load combinations analysis are performed by using the <a class="reference internal" href="OpsGrillage.html#module-OpsGrillage" title="OpsGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code></a> function <code class="docutils literal notranslate"><span class="pre">add_load_combination()</span></code> function.
 Load combinations are defined by passing an input dictionary of basic load case name as keys with load factors as
 values. An example dictionary is shown as follows:</p>
@@ -348,9 +342,11 @@ values. An example dictionary is shown as follows:</p>
 <span class="n">example_bridge</span><span class="o">.</span><span class="n">add_load_combination</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;ULS&quot;</span><span class="p">,</span> <span class="n">input_dict</span> <span class="o">=</span> <span class="n">load_combinations</span> <span class="p">)</span>
 </pre></div>
 </div>
+<p>Load combinations are automatically calculated at the end after analysing all load cases. The following section on Running Analysis will
+explain how these load combinations are extracted.</p>
 </div>
-<div class="section" id="running-anaylysis">
-<h2>Running anaylysis<a class="headerlink" href="#running-anaylysis" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="running-analysis">
+<h2>Running analysis<a class="headerlink" href="#running-analysis" title="Permalink to this headline">¶</a></h2>
 <p>Once all loadcases (static or moving) have been defined and added to the grillage the analysis can be conducted.</p>
 <p>To analyse non-moving loadcase(s), users run the class function <code class="docutils literal notranslate"><span class="pre">analyse_load_case()</span></code>.
 This will analyse all non-moving load cases added to the grillage model previously.</p>
@@ -384,6 +380,13 @@ To this, run the <code class="docutils literal notranslate"><span class="pre">ge
 <a class="reference internal image-reference" href="../_images/stucture_dataarray.PNG"><img alt="../_images/stucture_dataarray.PNG" src="../_images/stucture_dataarray.PNG" style="width: 670.5px; height: 122.25px;" /></a>
 </div>
 <p>From here, users can use xarray’s function for data array to extract ‘slices’ of data</p>
+<p>For load combinations, users flag the <cite>get_combination=</cite> keyword as <em>True</em>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">load_combination_dict</span> <span class="o">=</span> <span class="n">example_bridge</span><span class="o">.</span><span class="n">get_results</span><span class="p">(</span><span class="n">get_combinations</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Instead of two data arrays, the function returns a single dict with names of load combinations as key, paired with a data array
+of the load combination as its value. The data array has the same dimensions as those from basic_load_case_result and
+moving_load_results, only this time the arrays are modified by load factors defined for the load combinations.</p>
 </div>
 </div>
 </div>

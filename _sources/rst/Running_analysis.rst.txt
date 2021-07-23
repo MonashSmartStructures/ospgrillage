@@ -205,12 +205,6 @@ From here, use the ``add_moving_load_case()`` function of the :class:`OpsGrillag
 
 Defining load combination
 ------------------------
-.. note::
-
-    At the current stage, Load combinations are partially supported - there is no function to automatically plot and calculate
-    load combinations. To this, users will have to obtain the arrays from the data array output - explained in the next section -
-    and apply combination factors manually to the array (generally by array multiplication)
-
 Load combinations analysis are performed by using the :class:`OpsGrillage` function ``add_load_combination()`` function.
 Load combinations are defined by passing an input dictionary of basic load case name as keys with load factors as
 values. An example dictionary is shown as follows:
@@ -220,8 +214,10 @@ values. An example dictionary is shown as follows:
     load_combinations = {'Dead Load':1.2,'Live traffic':1.7}
     example_bridge.add_load_combination(name = "ULS", input_dict = load_combinations )
 
+Load combinations are automatically calculated at the end after analysing all load cases. The following section on Running Analysis will
+explain how these load combinations are extracted.
 
-Running anaylysis 
+Running analysis
 ------------------------
 
 Once all loadcases (static or moving) have been defined and added to the grillage the analysis can be conducted.
@@ -267,4 +263,12 @@ Here is an example of how the data array looks like in practice:
 
 From here, users can use xarray's function for data array to extract 'slices' of data
 
+For load combinations, users flag the `get_combination=` keyword as *True*.
 
+.. code-block:: python
+
+    load_combination_dict = example_bridge.get_results(get_combinations=True)
+
+Instead of two data arrays, the function returns a single dict with names of load combinations as key, paired with a data array
+of the load combination as its value. The data array has the same dimensions as those from basic_load_case_result and
+moving_load_results, only this time the arrays are modified by load factors defined for the load combinations.
