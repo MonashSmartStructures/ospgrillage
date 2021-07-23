@@ -302,7 +302,7 @@ having same reference points (e.g. tandem axle) and properties (e.g. load factor
 </pre></div>
 </div>
 <p>After adding loads, the <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadCase</span></code> object is added to grillage model for analysis using the <code class="docutils literal notranslate"><span class="pre">add_load_case()</span></code>
-function of <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> class. Users repeat this step for any defined load cases.</p>
+function of <a class="reference internal" href="OpsGrillage.html#module-OpsGrillage" title="OpsGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code></a> class. Users repeat this step for any defined load cases.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span><span class="o">.</span><span class="n">add_load_case</span><span class="p">(</span><span class="n">DL</span><span class="p">)</span>  <span class="c1"># adding this load case to grillage model</span>
 </pre></div>
 </div>
@@ -328,7 +328,7 @@ which corresponds to the load condition as the load moves through each increment
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">move_point</span><span class="o">.</span><span class="n">parse_moving_load_cases</span><span class="p">()</span> <span class="c1"># step to finalise moving load - creates incremental load cases for each position of the moving load</span>
 </pre></div>
 </div>
-<p>From here, use the <code class="docutils literal notranslate"><span class="pre">add_moving_load_case()</span></code> function of the <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> to add the moving load as a moving load case.</p>
+<p>From here, use the <code class="docutils literal notranslate"><span class="pre">add_moving_load_case()</span></code> function of the <a class="reference internal" href="OpsGrillage.html#module-OpsGrillage" title="OpsGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code></a> to add the moving load as a moving load case.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span><span class="o">.</span><span class="n">add_moving_load_case</span><span class="p">(</span><span class="n">move_point</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -341,7 +341,7 @@ which corresponds to the load condition as the load moves through each increment
 load combinations. To this, users will have to obtain the arrays from the data array output - explained in the next section -
 and apply combination factors manually to the array (generally by array multiplication)</p>
 </div>
-<p>Load combinations analysis are performed by using the <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> function <code class="docutils literal notranslate"><span class="pre">add_load_combination()</span></code> function.
+<p>Load combinations analysis are performed by using the <a class="reference internal" href="OpsGrillage.html#module-OpsGrillage" title="OpsGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code></a> function <code class="docutils literal notranslate"><span class="pre">add_load_combination()</span></code> function.
 Load combinations are defined by passing an input dictionary of basic load case name as keys with load factors as
 values. An example dictionary is shown as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">load_combinations</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Dead Load&#39;</span><span class="p">:</span><span class="mf">1.2</span><span class="p">,</span><span class="s1">&#39;Live traffic&#39;</span><span class="p">:</span><span class="mf">1.7</span><span class="p">}</span>
