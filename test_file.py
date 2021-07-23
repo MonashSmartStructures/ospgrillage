@@ -106,7 +106,7 @@ def bridge_model_42_negative(ref_bridge_properties) -> OpsGrillage:
 
 @pytest.fixture
 # A straight bridge with mesh where skew angle A is 42 and skew angle b is 0
-def bridge_42_0_angle_mesh(ref_bridge_properties):
+def bridge_42_0_angle_mesh(ref_bridge_properties) -> OpsGrillage:
     # define material
     I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
     example_bridge = OpsGrillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=[42, 0],
@@ -128,7 +128,7 @@ def bridge_42_0_angle_mesh(ref_bridge_properties):
 
 
 @pytest.fixture
-def bridge_model_42_positive(ref_bridge_properties):
+def bridge_model_42_positive(ref_bridge_properties) -> OpsGrillage:
     # reference bridge 10m long, 7m wide with common skew angle at both ends
     # define material
     I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
@@ -315,6 +315,8 @@ def test_line_load_coincide_long_edge(bridge_model_42_negative):
 
 def test_line_load_coincide_tranverse_member(bridge_42_0_angle_mesh):
     example_bridge = bridge_42_0_angle_mesh
+    #opsplt.plot_model("nodes")
+
     # create reference line load
     barrierpoint_1 = LoadPoint(7.5, 0, 1, 2)
     barrierpoint_2 = LoadPoint(7.5, 0, 6, 2)
