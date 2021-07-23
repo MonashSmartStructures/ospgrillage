@@ -82,11 +82,13 @@ GrillageMember class
 Mesh class
 ------------------------------------------
 
-
+.. autoclass:: Mesh.Mesh
+    :members:
+    :show-inheritance:
 
 Load class
 ------------------------------------------
-For information regarding in :class:`~Loads` class, see
+For information regarding definition of :class:`~Loads` class, see
 :doc:`Loads`.
 
 NodalLoad
