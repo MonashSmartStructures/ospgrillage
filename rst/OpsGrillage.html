@@ -305,9 +305,9 @@ function creates a material object instance to be set for the ops-grillage insta
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.analyse_load_case">
-<span class="sig-name descname"><span class="pre">analyse_load_case</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.analyse_load_case" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to analyse all basic load cases defined previously using add_load_case() function</p>
+<dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.analyze">
+<span class="sig-name descname"><span class="pre">analyze</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.analyze" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to analyze all basic load cases defined previously using add_load_case() function</p>
 <dl class="field-list simple">
 <dt class="field-odd">Except</dt>
 <dd class="field-odd"><p></p></dd>
@@ -317,7 +317,9 @@ function creates a material object instance to be set for the ops-grillage insta
 <dl class="py method">
 <dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.add_load_combination">
 <span class="sig-name descname"><span class="pre">add_load_combination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">load_combination_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_case_and_factor_dict</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.add_load_combination" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Function to add load combination to OpsGrillage analysis. Load combinations are defined through a dict with
+load case name str to be included in combination as keys, and load factor (type float/int) as value of dict.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.add_moving_load_case">
