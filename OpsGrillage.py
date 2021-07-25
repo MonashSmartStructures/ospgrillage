@@ -986,7 +986,7 @@ class OpsGrillage:
 
         point_list = [Point(p1[0], p1[1], p1[2]), Point(p2[0], p2[1], p2[2]), Point(p3[0], p3[1], p3[2])]
         if len(grid_nodes) == 3:
-            sorted_list,sorted_node_tag = sort_vertices(point_list,grid_nodes)
+            sorted_list, sorted_node_tag = sort_vertices(point_list, grid_nodes)
             Nv = ShapeFunction.linear_triangular(x=point[0], z=point[2], x1=sorted_list[0].x, z1=sorted_list[0].z,
                                                  x2=sorted_list[1].x, z2=sorted_list[1].z, x3=sorted_list[2].x,
                                                  z3=sorted_list[2].z)
@@ -998,7 +998,7 @@ class OpsGrillage:
             # extract coordinates of fourth point
             p4 = self.Mesh_obj.node_spec[grid_nodes[3]]['coordinate']
             point_list.append(Point(p4[0], p4[1], p4[2]))
-            sorted_list,sorted_node_tag = sort_vertices(point_list,grid_nodes)
+            sorted_list, sorted_node_tag = sort_vertices(point_list, grid_nodes)
             # mapping coordinates to natural coordinate, then finds eta (x) and zeta (z) of the point xp,zp
             eta, zeta = solve_zeta_eta(xp=point[0], zp=point[2], x1=sorted_list[0].x, z1=sorted_list[0].z,
                                        x2=sorted_list[1].x, z2=sorted_list[1].z, x3=sorted_list[2].x,
@@ -1148,7 +1148,7 @@ class OpsGrillage:
                 if sum(dupe) > 1:
                     p_list.pop(count)
             # sort points in counterclockwise
-            p_list,_ = sort_vertices(p_list)  # sort takes namedtuple
+            p_list, _ = sort_vertices(p_list)  # sort takes namedtuple
             # get centroid of patch on grid
             xc, yc, zc = get_patch_centroid(p_list)
             inside_point = Point(xc, yc, zc)
@@ -1233,61 +1233,81 @@ class OpsGrillage:
         self.load_case_list.append(load_case_dict)
         print("Load Case {} added".format(load_case_obj.name))
 
-    def analyse_load_case(self, **kwargs):
+    def analyze(self, **kwargs):
         """
-        Function to analyse all basic load cases defined previously using add_load_case() function
+        Function to analyze all basic load cases defined previously using add_load_case() function
 
         :except:
 
         """
-        # analyse all load case defined in self.load_case_dict for OpsGrillage instance
+        # analyze all load case defined in self.load_case_dict for OpsGrillage instance
         # loop each load case dict
-        run_basic = kwargs.get("basic", False) # Boolean
-        run_moving = kwargs.get("moving", False) # Boolean
-        if run_basic:
-            for load_case_dict in self.load_case_list:
-                # create analysis object, run and get results
-                load_case_obj = load_case_dict['loadcase']
+        # get run options from kwargs
+        all_flag = kwargs.get("all", False)  # Default Boolean
+        selected_load_case: list = kwargs.get("load_case", None)  #
+        selected_moving_load_lc_list = None
+        # if selected_load_case kwargs given, filter and select load case from load case list to run
+        # if given selected load case as a list, select for all load case matching the list
+        if isinstance(selected_load_case, list):
+            selected_basic_lc = [lc for lc in self.load_case_list if lc['loadcase'].name in selected_load_case]
+            selected_moving_load_lc_list = [lc for ml_name, lc in self.moving_load_case_dict.items() if
+                                            ml_name in selected_load_case]
+        # else if single string of load case name
+        elif isinstance(selected_load_case, str):
+            selected_basic_lc = [lc for lc in self.load_case_list if lc['loadcase'].name == selected_load_case]
+            selected_moving_load_lc_list = [lc for (ml_name, lc) in self.moving_load_case_dict.items() if
+                                            ml_name == selected_load_case]
+        elif all_flag:  # else, run all load case in list
+            selected_basic_lc = self.load_case_list
+            selected_moving_load_lc_list = list(self.moving_load_case_dict.values())
+        else:
+            raise Exception("missing kwargs for run options: hint: requires input for either `load_case=`, `all=`, `")
+
+        # run basic load case
+        for load_case_dict in selected_basic_lc:
+            # create analysis object, run and get results
+            load_case_obj = load_case_dict['loadcase']
+            load_command = load_case_dict['load_command']
+            load_factor = load_case_dict['load_factor']
+            load_case_analysis = Analysis(analysis_name=load_case_obj.name, ops_grillage_name=self.model_name,
+                                          pyfile=self.pyfile,
+                                          time_series_counter=self.global_time_series_counter,
+                                          pattern_counter=self.global_pattern_counter,
+                                          node_counter=self.Mesh_obj.node_counter,
+                                          ele_counter=self.Mesh_obj.element_counter)
+            load_case_analysis.add_load_command(load_command, load_factor=load_factor)
+            # run the Analysis object, collect results, and store Analysis object in the list for Analysis load case
+            self.global_time_series_counter, self.global_pattern_counter, node_disp, ele_force \
+                = load_case_analysis.evaluate_analysis()
+            # store result in Recorder object
+            self.results.insert_analysis_results(analysis_obj=load_case_analysis)
+
+        # run moving load case
+        list_of_inc_analysis = []
+        # for moving_load_obj, load_case_dict_list in self.moving_load_case_dict.items():
+        for load_case_dict_list in selected_moving_load_lc_list:
+            for load_case_dict in load_case_dict_list:
+                load_case_obj = load_case_dict['loadcase']  # maybe unused
                 load_command = load_case_dict['load_command']
                 load_factor = load_case_dict['load_factor']
-                load_case_analysis = Analysis(analysis_name=load_case_obj.name, ops_grillage_name=self.model_name,
-                                              pyfile=self.pyfile,
-                                              time_series_counter=self.global_time_series_counter,
-                                              pattern_counter=self.global_pattern_counter,
-                                              node_counter=self.Mesh_obj.node_counter,
-                                              ele_counter=self.Mesh_obj.element_counter)
-                load_case_analysis.add_load_command(load_command, load_factor=load_factor)
-                # run the Analysis object, collect results, and store Analysis object in the list for Analysis load case
+                incremental_analysis = Analysis(analysis_name=load_case_obj.name,
+                                                ops_grillage_name=self.model_name,
+                                                pyfile=self.pyfile,
+                                                time_series_counter=self.global_time_series_counter,
+                                                pattern_counter=self.global_pattern_counter,
+                                                node_counter=self.Mesh_obj.node_counter,
+                                                ele_counter=self.Mesh_obj.element_counter)
+                incremental_analysis.add_load_command(load_command, load_factor=load_factor)
                 self.global_time_series_counter, self.global_pattern_counter, node_disp, ele_force \
-                    = load_case_analysis.evaluate_analysis()
+                    = incremental_analysis.evaluate_analysis()
+                list_of_inc_analysis.append(incremental_analysis)
                 # store result in Recorder object
-                self.results.insert_analysis_results(analysis_obj=load_case_analysis)
-        elif run_moving:
-            list_of_inc_analysis = []
-            for moving_load_obj, load_case_dict_list in self.moving_load_case_dict.items():
-                for load_case_dict in load_case_dict_list:
-                    load_case_obj = load_case_dict['loadcase']  # maybe unused
-                    load_command = load_case_dict['load_command']
-                    load_factor = load_case_dict['load_factor']
-                    incremental_analysis = Analysis(analysis_name=load_case_obj.name,
-                                                    ops_grillage_name=self.model_name,
-                                                    pyfile=self.pyfile,
-                                                    time_series_counter=self.global_time_series_counter,
-                                                    pattern_counter=self.global_pattern_counter,
-                                                    node_counter=self.Mesh_obj.node_counter,
-                                                    ele_counter=self.Mesh_obj.element_counter)
-                    incremental_analysis.add_load_command(load_command, load_factor=load_factor)
-                    self.global_time_series_counter, self.global_pattern_counter, node_disp, ele_force \
-                        = incremental_analysis.evaluate_analysis()
-                    list_of_inc_analysis.append(incremental_analysis)
-                    # store result in Recorder object
-                self.results.insert_analysis_results(list_of_inc_analysis=list_of_inc_analysis)
-        else:
-            print("No analysis was performed. hint: both kwargs for \"run_basic\" or \"run_moving\" could be set to "
-                  "False")
+            self.results.insert_analysis_results(list_of_inc_analysis=list_of_inc_analysis)
 
     def add_load_combination(self, load_combination_name: str, load_case_and_factor_dict: dict):
         """
+        Function to add load combination to OpsGrillage analysis. Load combinations are defined through a dict with
+        load case name str to be included in combination as keys, and load factor (type float/int) as value of dict.
 
         """
         load_case_dict_list = []  # list of dict: structure of dict See line
@@ -1388,24 +1408,32 @@ class OpsGrillage:
         # for load combinations
         if comb:
             output_load_comb_dict = dict()  # {name: datarray, .... name: dataarray}
+            new_ma_list = [] # placeholder for moving load combinations
             # load comb name,  load case in load comb
             # this format: self.load_combination_dict.setdefault(load_combination_name, load_case_dict_list)
             for load_comb_name, load_case_dict_list in self.load_combination_dict.items():  # {0:[{'loadcase':LoadCase object, 'load_command': list of str}
                 print("Obtaining load combinations for {}....".format(load_comb_name))
                 summation_array = None  # instantiate
+                # check and add load cases to load combinations for basic non moving load cases
                 for load_case_dict in load_case_dict_list:  # [{'loadcase':LoadCase object, 'load_command': list of str}.]
                     load_case_name = load_case_dict['loadcase'].name
                     if summation_array is None:
-
                         summation_array = basic_da.sel(Loadcase=load_case_name) * load_case_dict['load_factor']
                     else:
                         summation_array += basic_da.sel(Loadcase=load_case_name) * load_case_dict['load_factor']
+                # check and add load cases to load combinations for moving load cases
+                    # get the list of increm load case correspond to matching moving load case of load combination
+                    list_of_load_case_dict = self.moving_load_case_dict.get(load_case_name,[])
+                    for incremental_load_case in list_of_load_case_dict:
+                        # apply load factor to all incremental load cases, then write to placeholder variable new_ma_list
+                        new_ma_list.append(list_moving_da.sel(Loadcase=incremental_load_case["name"]) * load_case_dict['load_factor'])
+
                 output_load_comb_dict[load_comb_name] = summation_array
             return output_load_comb_dict
         else:
             # return raw data array for manual post processing
             if save_filename:
-                basic_da.to_netcdf()
+                basic_da.to_netcdf(save_filename)
             return basic_da, list_moving_da
 
 

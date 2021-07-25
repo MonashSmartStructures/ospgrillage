@@ -82,7 +82,7 @@ move_point.parse_moving_load_cases()
 ULS_DL = LoadCase(name="ULS-DL")
 ULS_DL.add_load_groups(Lane)  # change here
 example_bridge.add_load_case(ULS_DL)
-example_bridge.analyse_load_case()
+example_bridge.analyze()
 
 
 SLS_LL = LoadCase(name="Live traffic")
@@ -90,7 +90,7 @@ SLS_LL.add_load_groups(Single)
 example_bridge.add_load_case(SLS_LL)
 
 example_bridge.add_moving_load_case(move_point)
-example_bridge.analyse_load_case(moving=True)
+example_bridge.analyze(moving=True)
 ba,ma = example_bridge.get_results()
 print("finished ")
 # --------------------------------------------------------------------------------------------------------------------

@@ -441,7 +441,7 @@ def test_patch_load(bridge_model_42_negative):
     ULS_DL = LoadCase(name="Lane")
     ULS_DL.add_load_groups(Lane)  # ch
     example_bridge.add_load_case(ULS_DL)
-    example_bridge.analyse_load_case(basic=True)
+    example_bridge.analyze(all=True)
 
     assert example_bridge.global_load_str == [
         'ops.load(19, *[0, 1.40688131921541, 0, 0.703440659607712, 0, 0.703440659607704])\n',
@@ -558,7 +558,7 @@ def test_compound_load_distribution_to_nodes(bridge_model_42_negative):
     static_truck = LoadCase("static M1600")
     static_truck.add_load_groups(M1600)
     example_bridge.add_load_case(static_truck)
-    example_bridge.analyse_load_case(basic=True)
+    example_bridge.analyze(all=True)
     ba, ma = example_bridge.get_results()
     pass
 
@@ -576,7 +576,7 @@ def test_moving_load_case(bridge_model_42_negative):
     move_point.parse_moving_load_cases()
     example_bridge.add_moving_load_case(move_point)
 
-    example_bridge.analyse_load_case(moving=True)
+    example_bridge.analyze(all=True)
     ba, ma = example_bridge.get_results()
 
 
@@ -599,7 +599,7 @@ def test_moving_compound_load(bridge_model_42_negative):
     truck.parse_moving_load_cases()
 
     example_bridge.add_moving_load_case(truck)
-    example_bridge.analyse_load_case(moving=True)
+    example_bridge.analyze(all=True)
     ba, ma = example_bridge.get_results()
     print("finish test compound moving load")
 
@@ -645,7 +645,7 @@ def test_patch_partially_outside_mesh(bridge_model_42_negative):
     ULS_DL = LoadCase(name="Lane")
     ULS_DL.add_load_groups(Lane)  # ch
     example_bridge.add_load_case(ULS_DL)
-    example_bridge.analyse_load_case(basic=True)
+    example_bridge.analyze(all=True)
     ba, ma = example_bridge.get_results()
 
     example_bridge.load_case_list[0]['load_command'] = ['ops.load(14, *[0, 1.1724010993461413, 0, 0.0, 0, 0.0])\n',
@@ -739,7 +739,7 @@ def test_28m_bridge(ref_28m_bridge):
     # add a load combination
     bridge_28.add_load_combination(load_combination_name="factored_point",
                                    load_case_and_factor_dict={"point_load_case": 1.5})
-    bridge_28.analyse_load_case(basic=True)
+    bridge_28.analyze(all=True)
 
     ba, ma = bridge_28.get_results(get_combinations=False)
     print(ops.nodeDisp(57))
@@ -764,7 +764,7 @@ def test_28m_bridge_moving_load(ref_28m_bridge):
     move_point.parse_moving_load_cases()
     bridge_28.add_moving_load_case(move_point)
 
-    bridge_28.analyse_load_case(moving=True)
+    bridge_28.analyze(all=True)
     ba, ma = bridge_28.get_results()
     moving = ma[0]
     moving.sel(Node=63, Component='dy')
@@ -788,11 +788,12 @@ def test_28m_brdige_moving_compound_load(ref_28m_bridge):
     truck = MovingLoad(name="4 wheel truck")
     single_path = Path(start_point=Point(0, 0, 0), end_point=Point(29, 0, 0))  # create path object
     truck.add_loads(load_obj=M1600, path_obj=single_path.get_path_points())
-    truck.parse_moving_load_cases()
+    truck.parse_moving_load_cases() # process inputs to create incremental static load cases correspond to each position
+    # of moving truck
 
     bridge_28.add_moving_load_case(truck)
 
-    bridge_28.analyse_load_case(moving=True)
+    bridge_28.analyze(all=True)
     ba, ma = bridge_28.get_results()
     moving = ma[0]
     moving.sel(Node=63, Component='dy')
@@ -857,7 +858,7 @@ def test_simple_grid():
     # loading
     # Line load (100 load at midspan)
     point_1 = LoadPoint(L / 2, 0, 0, 1e3)
-    point_2 = LoadPoint(L / 2, 0, w, 1e3)
+    point_2 = LoadPoint(L / 2.1, 0, w, 1e3)
     # test_load = opsg.LineLoading("Test Load", point1=point_1, point2=point_2)
     test_load = LineLoading("Test Load", point1=point_1, point2=point_2)  # It's as if Fy is redundant?
 
@@ -865,11 +866,13 @@ def test_simple_grid():
     test_case = LoadCase(name="Test Case")
     test_case.add_load_groups(test_load)
     simply_grid.add_load_case(test_case)  # adding load case to grillage model
+    simply_grid.add_load_combination("ULS",{test_case.name:2})
     print(simply_grid.load_case_list[0]['load_command'])
-    simply_grid.analyse_load_case(basic=True)
+    simply_grid.analyze(all=True)
     minY, maxY = opsv.section_force_diagram_3d('Vy', {}, 1)
     plt.show()
-    results = simply_grid.get_results()
-    results[0]
+    results = simply_grid.get_results(get_combinations=False)
+    #results[0]
+    print(results[0])
     print(maxY)
     pass
