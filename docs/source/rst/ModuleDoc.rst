@@ -1,5 +1,5 @@
 #####################
-Module documentation
+Module design
 #####################
 
 This page details the processes within *ops-grillage* module. In providing the outline of processes,
@@ -195,3 +195,16 @@ Use the following links for more on:
 * `Grillage modelling <http://bridgedesign.org.uk/tutorial/bs-grillage.php>`_
 
 * `Openseespy documentation <https://openseespydoc.readthedocs.io/en/latest/>`_
+
+====================
+Further development
+====================
+(what will need to be done)
+
+- mesh
+
+- rigid
+
+- multi
+
+- if users want different model space - requires large rework .

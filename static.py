@@ -217,6 +217,7 @@ def solve_zeta_eta(xp, zp, x1, z1, x2, z2, x3, z3, x4, z4):
     sol = solve((eq1, eq2), (x, z))
     return sol[x], sol[z]
 
+
 #
 # def calculate_area_given_four_points(inside_point, point1, point2, point3, point4):
 #     # inputs are namedtuple Point() of coordinates
@@ -248,6 +249,13 @@ def solve_zeta_eta(xp, zp, x1, z1, x2, z2, x3, z3, x4, z4):
 #     A = 0.5 * (point1.x * (point2.z - point3.z) + point2.x * (point3.z - point1.z) + point3.x * (point1.z - point2.z))
 #     return A
 
+def get_distance(a, b):
+    return np.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2)
+
+
+def is_between(a, c, b):
+    return get_distance(a, c) + get_distance(c, b) == get_distance(a, b)
+
 
 def calculate_area_given_vertices(p_list):
     # input list of namedtuple LoadPoint or Point
@@ -265,10 +273,11 @@ def calculate_area_given_vertices(p_list):
     x_list.append(p_list[0].x)
     y_list.append(p_list[0].y)
     z_list.append(p_list[0].z)
-    for count in range(len(x_list)-1):
-        A_mag += x_list[count]*z_list[count+1]-x_list[count+1]*z_list[count]
-    A = np.abs(A_mag/2)
+    for count in range(len(x_list) - 1):
+        A_mag += x_list[count] * z_list[count + 1] - x_list[count + 1] * z_list[count]
+    A = np.abs(A_mag / 2)
     return A
+
 
 def check_point_in_grid(inside_point, point_list):
     # ref: solution 3 https://www.eecs.umich.edu/courses/eecs380/HANDOUTS/PROJ2/InsidePoly.html
@@ -368,32 +377,32 @@ def check_intersect(p1, q1, p2, q2):
     if (o1 != o2) and (o3 != o4):
         general_intersect = True
         colinear = False
-        return general_intersect,colinear
+        return general_intersect, colinear
 
     # Special Cases
     # p1 , q1 and p2 are colinear and p2 lies on segment p1q1
     if (o1 == 0) and onSegment(p1, p2, q1):
         general_intersect = True
         colinear = True
-        return general_intersect,colinear
+        return general_intersect, colinear
 
     # p1 , q1 and q2 are colinear and q2 lies on segment p1q1
     if (o2 == 0) and onSegment(p1, q2, q1):
         general_intersect = True
         colinear = True
-        return general_intersect,colinear
+        return general_intersect, colinear
 
     # p2 , q2 and p1 are colinear and p1 lies on segment p2q2
     if (o3 == 0) and onSegment(p2, p1, q2):
         general_intersect = True
         colinear = True
-        return general_intersect,colinear
+        return general_intersect, colinear
 
     # p2 , q2 and q1 are colinear and q1 lies on segment p2q2
     if (o4 == 0) and onSegment(p2, q1, q2):
         general_intersect = True
         colinear = True
-        return general_intersect,colinear
+        return general_intersect, colinear
 
     # If none of the cases
     return general_intersect, colinear
@@ -436,7 +445,7 @@ def sort_vertices(point_list, node_tag_list=None):
     sorted_points = [x for _, x in sorted(zip(angle_list, point_list))]
 
     sorted_node_tag = [x for _, x in sorted(zip(angle_list, node_tag_list))]
-    return sorted_points,sorted_node_tag
+    return sorted_points, sorted_node_tag
 
 
 def get_patch_centroid(point_list):
@@ -468,13 +477,13 @@ def check_dict_same_keys(d_1, d_2):
             first_list = d_1[grid]
             second_list = d_2[grid]
             updated_list = dict()
-            for key,val_1 in first_list.items():
+            for key, val_1 in first_list.items():
                 if key == 'ends':
                     val_end = val_1 if val_1 else second_list.get(key)
-                    updated_list.setdefault(key,val_end)
+                    updated_list.setdefault(key, val_end)
                 else:
                     val_2 = second_list.get(key)
-                    updated_list.setdefault(key,val_1 + val_2)
-            merged.update({grid:updated_list})
+                    updated_list.setdefault(key, val_1 + val_2)
+            merged.update({grid: updated_list})
 
     return merged

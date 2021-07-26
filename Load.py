@@ -414,15 +414,18 @@ class LineLoading(Loads):
         # :type x: float
         # :return: solution of line equation (i.e. y = mx + c)
         # """
-        if self.load_point_1.x <= x < self.line_end_point.x or self.load_point_1.x > x >= self.line_end_point.x:
-            return line_func(self.line_equation.m, self.line_equation.c, x)
+        if self.line_equation.m is None:  # if vertical line
+            pass
+        else:
+            if self.load_point_1.x <= x <= self.line_end_point.x or self.load_point_1.x >= x >= self.line_end_point.x:
+                return line_func(self.line_equation.m, self.line_equation.c, x)
 
     def get_line_segment_given_z(self, z):
         if self.line_equation.m is None:  # if vertical line
-            if self.load_point_1.z <= z < self.line_end_point.z or self.load_point_1.z > z >= self.line_end_point.z:
+            if self.load_point_1.z <= z <= self.line_end_point.z or self.load_point_1.z >= z >= self.line_end_point.z:
                 return self.load_point_1.x
         else:
-            if self.load_point_1.z <= z < self.line_end_point.z or self.load_point_1.z > z >= self.line_end_point.z:
+            if self.load_point_1.z <= z <= self.line_end_point.z or self.load_point_1.z >= z >= self.line_end_point.z:
                 return inv_line_func(self.line_equation.m, self.line_equation.c, z)
 
 

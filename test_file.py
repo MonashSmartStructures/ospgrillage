@@ -211,35 +211,8 @@ def test_line_load(bridge_model_42_negative):
     ULS_DL = LoadCase(name="Barrier")
     ULS_DL.add_load_groups(Barrier)  # ch
     example_bridge.add_load_case(ULS_DL)
-    ref_answer = [{7: {'long_intersect': [], 'trans_intersect': [[3.1514141550424397, 0, 3.0]], 'edge_intersect': [],
-                       'ends': [[3, 0, 3]]}, 8: {'long_intersect': [], 'trans_intersect': [[3.1514141550424397, 0, 3.0],
-                                                                                           [4.276919210414739, 0, 3.0]],
-                                                 'edge_intersect': [], 'ends': []}, 11: {'long_intersect': [],
-                                                                                         'trans_intersect': [
-                                                                                             [4.276919210414739, 0,
-                                                                                              3.0],
-                                                                                             [5.402424265787039, 0,
-                                                                                              3.0]],
-                                                                                         'edge_intersect': [],
-                                                                                         'ends': []},
-                   16: {'long_intersect': [],
-                        'trans_intersect': [[5.402424265787039, 0, 3.0], [6.302828310084879, 0, 3.0]],
-                        'edge_intersect': [], 'ends': []}, 22: {'long_intersect': [],
-                                                                'trans_intersect': [[6.302828310084879, 0, 3.0],
-                                                                                    [7.227121232563659, 0, 3.0]],
-                                                                'edge_intersect': [], 'ends': []},
-                   32: {'long_intersect': [], 'trans_intersect': [[9.07570707752122, 0, 3.0]], 'edge_intersect': [],
-                        'ends': [[10, 0, 3]]}, 56: {'long_intersect': [],
-                                                    'trans_intersect': [[7.227121232563659, 0, 3.0],
-                                                                        [8.15141415504244, 0, 3.0]],
-                                                    'edge_intersect': [], 'ends': []}, 62: {'long_intersect': [],
-                                                                                            'trans_intersect': [
-                                                                                                [8.15141415504244, 0,
-                                                                                                 3.0],
-                                                                                                [9.07570707752122, 0,
-                                                                                                 3.0]],
-                                                                                            'edge_intersect': [],
-                                                                                            'ends': []}}]
+    example_bridge.analyze(all=True)
+    ref_answer = [{7: {'long_intersect': [], 'trans_intersect': [[3.1514141550424406, 0, 3.0]], 'edge_intersect': [], 'ends': [[3, 0, 3]]}, 8: {'long_intersect': [], 'trans_intersect': [[3.1514141550424406, 0, 3.0], [4.276919210414739, 0, 3.0]], 'edge_intersect': [], 'ends': []}, 11: {'long_intersect': [], 'trans_intersect': [[4.276919210414739, 0, 3.0], [5.4024242657870385, 0, 3.0]], 'edge_intersect': [], 'ends': []}, 16: {'long_intersect': [], 'trans_intersect': [[5.4024242657870385, 0, 3.0], [6.302828310084881, 0, 3.0]], 'edge_intersect': [], 'ends': []}, 22: {'long_intersect': [], 'trans_intersect': [[6.302828310084881, 0, 3.0], [7.227121232563658, 0, 3.0]], 'edge_intersect': [], 'ends': []}, 31: {'long_intersect': [], 'trans_intersect': [[10.0, 0, 3.0]], 'edge_intersect': [], 'ends': [[10, 0, 3]]}, 32: {'long_intersect': [], 'trans_intersect': [[10.0, 0, 3.0], [9.075707077521221, 0, 3.0]], 'edge_intersect': [], 'ends': []}, 56: {'long_intersect': [], 'trans_intersect': [[7.227121232563658, 0, 3.0], [8.15141415504244, 0, 3.0]], 'edge_intersect': [], 'ends': []}, 62: {'long_intersect': [], 'trans_intersect': [[8.15141415504244, 0, 3.0], [9.075707077521221, 0, 3.0]], 'edge_intersect': [], 'ends': []}}]
 
     assert example_bridge.global_line_int_dict == ref_answer
 
@@ -311,7 +284,7 @@ def test_line_load_coincide_long_edge(bridge_model_42_negative):
                                                                                                  'ends': []}}]
 
 
-def test_line_load_coincide_tranverse_member(bridge_42_0_angle_mesh):
+def test_line_load_coincide_transverse_member(bridge_42_0_angle_mesh):
     example_bridge = bridge_42_0_angle_mesh
     #opsplt.plot_model("nodes")
 
@@ -356,8 +329,8 @@ def test_line_load_coincide_edge_beam(bridge_model_42_negative):
 
     example_bridge = bridge_model_42_negative
     # create reference line load
-    barrierpoint_1 = LoadPoint(-1, 0, 0, 2)
-    barrierpoint_2 = LoadPoint(10, 0, 0, 2)
+    barrierpoint_1 = LoadPoint(5, 0, 1, 2)
+    barrierpoint_2 = LoadPoint(10, 0, 1, 2)
     Barrier = LineLoading("Barrier curb load", point1=barrierpoint_1, point2=barrierpoint_2)
     ULS_DL = LoadCase(name="Barrier")
     ULS_DL.add_load_groups(Barrier)  # ch
@@ -573,7 +546,7 @@ def test_moving_load_case(bridge_model_42_negative):
     single_path = Path(start_point=Point(2, 0, 2), end_point=Point(4, 0, 3))  # create path object
     move_point = MovingLoad(name="single_moving_point")
     move_point.add_loads(load_obj=front_wheel, path_obj=single_path.get_path_points())
-    move_point.parse_moving_load_cases()
+    #move_point.parse_moving_load_cases()
     example_bridge.add_moving_load_case(move_point)
 
     example_bridge.analyze(all=True)
@@ -596,7 +569,7 @@ def test_moving_compound_load(bridge_model_42_negative):
     truck = MovingLoad(name="Truck 1")
     single_path = Path(start_point=Point(2, 0, 2), end_point=Point(4, 0, 2))  # Path object
     truck.add_loads(load_obj=M1600, path_obj=single_path.get_path_points())
-    truck.parse_moving_load_cases()
+    #truck.parse_moving_load_cases()
 
     example_bridge.add_moving_load_case(truck)
     example_bridge.analyze(all=True)
@@ -648,7 +621,7 @@ def test_patch_partially_outside_mesh(bridge_model_42_negative):
     example_bridge.analyze(all=True)
     ba, ma = example_bridge.get_results()
 
-    example_bridge.load_case_list[0]['load_command'] = ['ops.load(14, *[0, 1.1724010993461413, 0, 0.0, 0, 0.0])\n',
+    assert example_bridge.load_case_list[0]['load_command'] == ['ops.load(14, *[0, 1.1724010993461413, 0, 0.0, 0, 0.0])\n',
                                                         'ops.load(10, *[0, 1.1724010993461444, 0, 0.0, 0, 0.0])\n',
                                                         'ops.load(15, *[0, 1.172401099346146, 0, 0.0, 0, 0.0])\n',
                                                         'ops.load(14, *[0, 1.75860164901919, 0, 0.879300824509587, 0, 0.879300824509594])\n',
@@ -761,7 +734,7 @@ def test_28m_bridge_moving_load(ref_28m_bridge):
     single_path = Path(start_point=Point(0, 0, 2), end_point=Point(29, 0, 3))  # create path object
     move_point = MovingLoad(name="single_moving_point")
     move_point.add_loads(load_obj=front_wheel, path_obj=single_path.get_path_points())
-    move_point.parse_moving_load_cases()
+    #move_point.parse_moving_load_cases()
     bridge_28.add_moving_load_case(move_point)
 
     bridge_28.analyze(all=True)
@@ -788,7 +761,7 @@ def test_28m_brdige_moving_compound_load(ref_28m_bridge):
     truck = MovingLoad(name="4 wheel truck")
     single_path = Path(start_point=Point(0, 0, 0), end_point=Point(29, 0, 0))  # create path object
     truck.add_loads(load_obj=M1600, path_obj=single_path.get_path_points())
-    truck.parse_moving_load_cases() # process inputs to create incremental static load cases correspond to each position
+    #truck.parse_moving_load_cases() # process inputs to create incremental static load cases correspond to each position
     # of moving truck
 
     bridge_28.add_moving_load_case(truck)
@@ -857,10 +830,10 @@ def test_simple_grid():
 
     # loading
     # Line load (100 load at midspan)
-    point_1 = LoadPoint(L / 2, 0, 0, 1e3)
-    point_2 = LoadPoint(L / 2.1, 0, w, 1e3)
+    point_1 = LoadPoint(L/2, 0, 0, 1e3)
+    point_2 = LoadPoint(L / 2, 0, w, 1e3)
     # test_load = opsg.LineLoading("Test Load", point1=point_1, point2=point_2)
-    test_load = LineLoading("Test Load", point1=point_1, point2=point_2)  # It's as if Fy is redundant?
+    test_load = LineLoading("Test Load", point1=point_1, point2=point_2)  #
 
     # Load case creating and assign
     test_case = LoadCase(name="Test Case")
@@ -874,5 +847,5 @@ def test_simple_grid():
     results = simply_grid.get_results(get_combinations=False)
     #results[0]
     print(results[0])
-    print(maxY)
+    print(maxY,minY)
     pass
