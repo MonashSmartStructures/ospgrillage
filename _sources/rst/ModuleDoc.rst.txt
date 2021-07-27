@@ -199,9 +199,10 @@ Use the following links for more on:
 ====================
 Further development
 ====================
-(what will need to be done)
+The initial release of *ops-grillage* contains core algorithms to generate meshes of grillage models. However the
+release comes with limitations and further development are required to extend beyond these limitations.
 
-- mesh
+Currently, only straight meshes are available.
 
 - rigid
 

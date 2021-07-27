@@ -96,6 +96,8 @@
 <li class="toctree-l1"><a class="reference internal" href="ModuleDoc.html">Module design</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#m-super-t-bridge-model-with-orthogonal-mesh">28 m super T bridge model with orthogonal mesh</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#adding-dl-and-sdl-to-analysis">Adding DL and SDL to analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#adding-a-load-combination-for-sdl-and-dl">Adding a load combination for SDL and DL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#adding-a-moving-load-analysis">Adding a moving load analysis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#result-acquisition">Result acquisition</a></li>
 </ul>
@@ -178,6 +180,29 @@
 <h2>28 m super T bridge model with orthogonal mesh<a class="headerlink" href="#m-super-t-bridge-model-with-orthogonal-mesh" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">OpsGrillage</span> <span class="k">as</span> <span class="nn">og</span>
 <span class="n">pyfile</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="c1"># unit</span>
+<span class="n">inch</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">kip</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">sec</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+<span class="n">g</span> <span class="o">=</span> <span class="mf">386.4</span><span class="o">*</span><span class="n">inch</span><span class="o">/</span><span class="n">sec</span><span class="o">**</span><span class="mi">2</span>  <span class="c1"># 9.81 m/s2</span>
+<span class="c1"># Imperial</span>
+<span class="n">ft</span> <span class="o">=</span> <span class="mi">12</span><span class="o">*</span><span class="n">inch</span>
+<span class="n">lb</span> <span class="o">=</span> <span class="n">kip</span><span class="o">/</span><span class="mi">1000</span>
+<span class="n">ksi</span> <span class="o">=</span> <span class="n">kip</span><span class="o">/</span><span class="n">inch</span><span class="o">**</span><span class="mi">2</span>
+<span class="n">psf</span> <span class="o">=</span> <span class="n">lb</span><span class="o">/</span><span class="n">ft</span><span class="o">**</span><span class="mi">2</span>
+<span class="c1"># metric</span>
+
+<span class="c1"># variables</span>
+<span class="n">E</span> <span class="o">=</span> <span class="mi">3000</span><span class="o">*</span><span class="n">ksi</span>
+<span class="n">v</span> <span class="o">=</span> <span class="mf">0.3</span>
+<span class="n">G</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">E</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">v</span><span class="p">)</span>
+<span class="n">q</span> <span class="o">=</span> <span class="mi">150</span><span class="o">*</span><span class="n">psf</span>
+
+<span class="n">L</span> <span class="o">=</span> <span class="mf">32.804</span><span class="o">*</span><span class="n">ft</span>
+<span class="n">H</span> <span class="o">=</span> <span class="mi">15</span><span class="o">*</span><span class="n">ft</span>
+
 <span class="c1"># reference super T bridge 28m for validation purpose</span>
 <span class="c1"># Members</span>
 <span class="n">concrete</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">UniAxialElasticMaterial</span><span class="p">(</span><span class="n">mat_type</span><span class="o">=</span><span class="s2">&quot;Concrete01&quot;</span><span class="p">,</span> <span class="n">fpc</span><span class="o">=-</span><span class="mi">6</span><span class="p">,</span> <span class="n">epsc0</span><span class="o">=-</span><span class="mf">0.004</span><span class="p">,</span> <span class="n">fpcu</span><span class="o">=-</span><span class="mi">6</span><span class="p">,</span> <span class="n">epsU</span><span class="o">=-</span><span class="mf">0.014</span><span class="p">)</span>
@@ -227,6 +252,12 @@
 <div class="figure align-center" id="id1">
 <a class="reference internal image-reference" href="images/28m_bridge.png"><img alt="images/28m_bridge.png" src="images/28m_bridge.png" /></a>
 <p class="caption"><span class="caption-text">Figure 1: Grillage model of the exemplar 28 m bridge.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
+<div class="section" id="adding-dl-and-sdl-to-analysis">
+<h3>Adding DL and SDL to analysis<a class="headerlink" href="#adding-dl-and-sdl-to-analysis" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="adding-a-load-combination-for-sdl-and-dl">
+<h3>Adding a load combination for SDL and DL<a class="headerlink" href="#adding-a-load-combination-for-sdl-and-dl" title="Permalink to this headline">¶</a></h3>
 </div>
 <div class="section" id="adding-a-moving-load-analysis">
 <h3>Adding a moving load analysis<a class="headerlink" href="#adding-a-moving-load-analysis" title="Permalink to this headline">¶</a></h3>
