@@ -154,7 +154,7 @@ def test_model_instance(bridge_model_42_negative):
     example_bridge = bridge_model_42_negative
     opsplt.plot_model("nodes")
 
-    ops.nodeCoord(2)
+    print(ops.nodeCoord(18))
     print("pass")
     ops.wipe()
 
@@ -238,7 +238,6 @@ def test_line_load_vertical_and_cross_outside_mesh(bridge_model_42_negative):
 # test a line load which coincide with edge z = 0 or z = 7
 def test_line_load_coincide_long_edge(bridge_model_42_negative):
     # when set line load z coordinate to z = 0 , test if line returns correct coincide node lines
-
     example_bridge = bridge_model_42_negative
     # create reference line load
     barrierpoint_1 = LoadPoint(4, 0, 1, 2)
@@ -546,7 +545,6 @@ def test_moving_load_case(bridge_model_42_negative):
     single_path = Path(start_point=Point(2, 0, 2), end_point=Point(4, 0, 3))  # create path object
     move_point = MovingLoad(name="single_moving_point")
     move_point.add_loads(load_obj=front_wheel, path_obj=single_path.get_path_points())
-    #move_point.parse_moving_load_cases()
     example_bridge.add_moving_load_case(move_point)
 
     example_bridge.analyze(all=True)
@@ -569,7 +567,6 @@ def test_moving_compound_load(bridge_model_42_negative):
     truck = MovingLoad(name="Truck 1")
     single_path = Path(start_point=Point(2, 0, 2), end_point=Point(4, 0, 2))  # Path object
     truck.add_loads(load_obj=M1600, path_obj=single_path.get_path_points())
-    #truck.parse_moving_load_cases()
 
     example_bridge.add_moving_load_case(truck)
     example_bridge.analyze(all=True)
@@ -606,7 +603,7 @@ def test_add_load_case_with_local_coord_and_global_set_cord(bridge_model_42_nega
     global_point = Point(0, 0, 0)
     ULS_DL.add_load_groups(Lane, global_coord_of_load_obj=global_point)  # HERE exist the global coord kwargs
     example_bridge.add_load_case(ULS_DL)
-
+    assert ULS_DL.load_groups
 
 def test_patch_partially_outside_mesh(bridge_model_42_negative):
     example_bridge = bridge_model_42_negative
@@ -734,7 +731,6 @@ def test_28m_bridge_moving_load(ref_28m_bridge):
     single_path = Path(start_point=Point(0, 0, 2), end_point=Point(29, 0, 3))  # create path object
     move_point = MovingLoad(name="single_moving_point")
     move_point.add_loads(load_obj=front_wheel, path_obj=single_path.get_path_points())
-    #move_point.parse_moving_load_cases()
     bridge_28.add_moving_load_case(move_point)
 
     bridge_28.analyze(all=True)
@@ -742,6 +738,7 @@ def test_28m_bridge_moving_load(ref_28m_bridge):
     moving = ma[0]
     moving.sel(Node=63, Component='dy')
     print(ma)
+
 
 # test for 28 m  bridge using a moving compound load
 def test_28m_brdige_moving_compound_load(ref_28m_bridge):
@@ -761,8 +758,6 @@ def test_28m_brdige_moving_compound_load(ref_28m_bridge):
     truck = MovingLoad(name="4 wheel truck")
     single_path = Path(start_point=Point(0, 0, 0), end_point=Point(29, 0, 0))  # create path object
     truck.add_loads(load_obj=M1600, path_obj=single_path.get_path_points())
-    #truck.parse_moving_load_cases() # process inputs to create incremental static load cases correspond to each position
-    # of moving truck
 
     bridge_28.add_moving_load_case(truck)
 
@@ -834,18 +829,27 @@ def test_simple_grid():
     point_2 = LoadPoint(L / 2, 0, w, 1e3)
     # test_load = opsg.LineLoading("Test Load", point1=point_1, point2=point_2)
     test_load = LineLoading("Test Load", point1=point_1, point2=point_2)  #
-
+    test_load = PointLoad("Test Point", point1 = LoadPoint(L/2,0,w/2,1e3))
+    test_load2 = PointLoad("Test Point", point1 = LoadPoint(L/2,0,1.7,1e3))
+    test_load3 = PointLoad("Test Point", point1 = LoadPoint(L/2,0,w,1e3))
+    test_load4 = PointLoad("Test Point", point1 = LoadPoint(L/2,0,0.3,1e3))
+    test_load5 = PointLoad("Test Point", point1 = LoadPoint(L/2,0,0,1e3))
     # Load case creating and assign
     test_case = LoadCase(name="Test Case")
     test_case.add_load_groups(test_load)
+    test_case.add_load_groups(test_load2)
+    test_case.add_load_groups(test_load3)
+    test_case.add_load_groups(test_load4)
+    test_case.add_load_groups(test_load5)
     simply_grid.add_load_case(test_case)  # adding load case to grillage model
     simply_grid.add_load_combination("ULS",{test_case.name:2})
     print(simply_grid.load_case_list[0]['load_command'])
     simply_grid.analyze(all=True)
-    minY, maxY = opsv.section_force_diagram_3d('Vy', {}, 1)
+    opsv.plot_defo()
+    plt.show()
+    minY, maxY = opsv.section_force_diagram_3d('Mz', {}, 1)
     plt.show()
     results = simply_grid.get_results(get_combinations=False)
-    #results[0]
     print(results[0])
     print(maxY,minY)
     pass

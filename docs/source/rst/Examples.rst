@@ -11,6 +11,29 @@ Here are some more examples of what you can do with *ops-grillage* module.
 
     import OpsGrillage as og
     pyfile = False
+
+    # unit
+    inch = 1.0
+    kip = 1.0
+    sec = 1.0
+
+    g = 386.4*inch/sec**2  # 9.81 m/s2
+    # Imperial
+    ft = 12*inch
+    lb = kip/1000
+    ksi = kip/inch**2
+    psf = lb/ft**2
+    # metric
+
+    # variables
+    E = 3000*ksi
+    v = 0.3
+    G = 0.5*E/(1+v)
+    q = 150*psf
+
+    L = 32.804*ft
+    H = 15*ft
+
     # reference super T bridge 28m for validation purpose
     # Members
     concrete = og.UniAxialElasticMaterial(mat_type="Concrete01", fpc=-6, epsc0=-0.004, fpcu=-6, epsU=-0.014)
@@ -64,6 +87,14 @@ The following model is created in Opensees model space.
 
     Figure 1: Grillage model of the exemplar 28 m bridge.
 
+Adding DL and SDL to analysis
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+Adding a load combination for SDL and DL
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
 Adding a moving load analysis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Here we add a moving load analysis to the 28 m bridge model
@@ -80,6 +111,7 @@ Here we add a moving load analysis to the 28 m bridge model
 
     bridge_28.analyse_moving_load_case()
     non_moving_results, moving_load_results = bridge_28.get_results()
+
 
 Result acquisition
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

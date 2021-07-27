@@ -79,6 +79,7 @@ class Mesh:
         self.z_group_recorder = []
         # quad elements flag
         self.quad_ele = quad_ele
+        self.max_grid_dim = None  #
         # ------------------------------------------------------------------------------------------
 
         # Create sweep path obj
@@ -87,14 +88,13 @@ class Mesh:
         # ------------------------------------------------------------------------------------------
         # check condition for orthogonal mesh
         if self.skew_1 is not 0:
-
             self.__check_skew(self.skew_1, self.zeta)
         elif self.skew_2 is not 0:
             self.__check_skew(self.skew_2, self.zeta)
 
         # check if angle between construction line and sweep path is sufficiently small - if greater meshing will
         # result in overlapping edges (between start and end edge) or edge construction line creating extra nodes on
-        # oppposite construction lines.
+        # opposite construction lines.
         if self.long_dim < self.width * np.tan(self.skew_1 / 180 * np.pi):
             raise ValueError(
                 "insufficent length of grillage resulted in overlapping edge with extra longitudinal members"

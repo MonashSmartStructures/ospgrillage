@@ -250,7 +250,7 @@ def solve_zeta_eta(xp, zp, x1, z1, x2, z2, x3, z3, x4, z4):
 #     return A
 
 def get_distance(a, b):
-    return np.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2)
+    return np.sqrt((a.x - b.x) ** 2 + (a.z - b.z) ** 2)
 
 
 def is_between(a, c, b):

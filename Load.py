@@ -438,8 +438,22 @@ class PatchLoading(Loads):
 
     def __init__(self, name, **kwargs):
         super().__init__(name, **kwargs)
-
-        # a = sort_vertices([self.load_point_2, self.load_point_3, self.load_point_1, self.load_point_4])
+        if not all(v is None for v in self.point_list):
+            a,_ = sort_vertices([self.load_point_2, self.load_point_3, self.load_point_1, self.load_point_4])
+            match = [self.load_point_1, self.load_point_2, self.load_point_3, self.load_point_4]
+            # if len(self.point_list) < 4:
+            #     raise ValueError("invalid number of vertices. Hint:  either 4 or 8 is accepted for patch")
+        elif not all(v is None for v in self.local_point_list):
+            a,_ = sort_vertices([self.local_load_point_2, self.local_load_point_3, self.local_load_point_1, self.local_load_point_4])
+            match = [self.local_load_point_1, self.local_load_point_2, self.local_load_point_3, self.local_load_point_4]
+        else:
+            raise ValueError("vertices missing.hint: patch load must have either 4  or 8 vertices  ")
+        if a != match:
+            raise Exception("vertices of patch load gives invalid patch layout: hint: make sure vertices are in counter"
+                            "clockwise order with first point (load_point_1) being the bottom left vertice of the "
+                            "patch load")
+        # get patch min dimension
+        self.patch_min_dim = None  # instantiate
         if not any(self.point_list) and any(self.local_point_list):
             # if only four point is define , patch load is a four point straight line quadrilateral
             if self.local_load_point_5 is None:
@@ -465,7 +479,10 @@ class PatchLoading(Loads):
 
                 # create function to get interpolation of p
                 self.patch_mag_interpolate = interpolate.interp2d(x, z, p)
-
+                mod_list = [ls for ls in self.local_point_list if ls is not None]
+                self.patch_min_dim = min(
+                    [get_distance(p1, p2) for (p1, p2) in zip(mod_list, mod_list[1:] + [mod_list[0]]) if
+                     all([p1 is not None, p2 is not None])])
             elif self.local_load_point_8 is not None:
 
                 # point 1 2 3
@@ -494,16 +511,18 @@ class PatchLoading(Loads):
 
                 # create function to get interpolation of p
                 self.patch_mag_interpolate = interpolate.interp2d(x, z, p)
-
+                mod_list = [ls for ls in self.point_list if ls is not None]
+                self.patch_min_dim = min([get_distance(p1,p2) for (p1,p2) in zip(mod_list,mod_list[1:]+[mod_list[0]])
+                                          if all([p1 is not None, p2 is not None])])
             elif self.load_point_8 is not None:
-
+                #TODO
                 # point 1 2 3
                 # point 3 4 5
                 # point 5 6 7
                 # point 7 8 1
                 pass
             else:
-                print("patch load points not valid")
+                print("Warning: patch vertices not valid: hint: recheck values ")
             print("Patch load object created: {} ".format(name))
         else:
             raise ValueError("Patch load points for patch load {} not valid".format(self.name))
