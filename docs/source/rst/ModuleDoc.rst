@@ -11,7 +11,7 @@ Grillage model
 
 The ops-grillage module generates a two-dimensional (2D) grillage model of a bridge in Opensees - see Figure 1.
 
-..  figure:: ../../images/Figure_1.png
+..  figure:: ../../_images/Figure_1.png
     :align: center
     :scale: 75 %
 
