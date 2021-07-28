@@ -59,7 +59,7 @@ Meshing algorithm
 ---------------------
 Lets use the following bridge mesh as an explanatory example. Herein, the variable names are given in brackets.
 
-..  figure:: ../images/Moduledoc_1.PNG
+..  figure:: ../../images/Moduledoc_1.PNG
     :align: center
     :scale: 75 %
 
@@ -165,7 +165,7 @@ The definition of the following components within *ops-grillage* requires attent
 For :class:`~LoadCase`, all load object inputs can be either local or global. Note when local coordinate is defined for a load object, a global reference coordinate needs to be defined or else
 the module raises an Error regarding its point/vertices values.
 
-..  figure:: ../images/coordinate_system_mapping.PNG
+..  figure:: ../../images/coordinate_system_mapping.PNG
     :align: center
     :scale: 75 %
 
@@ -202,10 +202,21 @@ Further development
 The initial release of *ops-grillage* contains core algorithms to generate meshes of grillage models. However the
 release comes with limitations and further development are required to extend beyond these limitations.
 
-Currently, only straight meshes are available.
+The current version of *ops-grillage* is limited to straight meshes. However, the developers coded the module in a way
+where curve mesh is possible in future developments. Specifically, `SweepPath` class in meshing procedure can be introduced with
+curved lines instead of straight (current version). This makes curve mesh possible with the sweep nodes been coded to be always orthogonal
+to sweep path.
 
-- rigid
+Current version of *ops-grillage* is limited to a single span mesh, where the support edges lies on the start and end
+edge of the mesh. Multi-span mesh is possible with a few more developements. This is done by introducing intermediate
+edge construction lines. This is done by developing the `EdgeConstructionLine` class. However,
+this requires a bit more development as current edge construction lines are only recognized as end
+supports - catering meshing procedures for one span.
 
-- multi
+The developers also acknowledges that there is minor conflict between the coordinate system of *ops-grillage* and the default
+coordinate system for the `ops_vis` module of `Openseespy`. The `ops_vis` module default isotropic angle is x - y with z axis plane
+being the model plane of a 2-D model in 3-D space. Currently the easiest solution is to further develop `ops_vis` to allow
+multi isotropic views of the model space. If developers were to program *ops-grillage* to fit `ops_vis` current default axis,
+it would require substantial rework of the entire module - since the module assume the model plane of the 2D grillage is the
+y axis.
 
-- if users want different model space - requires large rework .

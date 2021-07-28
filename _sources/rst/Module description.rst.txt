@@ -22,7 +22,7 @@ This example explains the procedures by creating an example grillage as shown in
 
 .. _Figure 1:
 
-..  figure:: /images/42degnegative10m.png
+..  figure:: ../../images/42degnegative10m.png
     :align: center
     :scale: 75 %
 
