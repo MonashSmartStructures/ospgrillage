@@ -1269,7 +1269,8 @@ class OpsGrillage:
                 continue
             # get the dict from self.load_case_list
             # self.load_case_list has this format [{'loadcase':LoadCase object, 'load_command': list of str}...]
-            load_case_dict = self.load_case_list[ind]
+            load_case_dict = deepcopy(self.load_case_list[ind])
+
             # update load factor of load_case
             load_case_dict['load_factor'] = load_factor
             # add load case dict to new list for load combination
@@ -1351,7 +1352,7 @@ class OpsGrillage:
         :type output_load_comb_dict: dict
         """
 
-        basic_da, list_moving_da = self.results.compile_data_array()
+        basic_da = self.results.compile_data_array()
         # get kwargs
         comb = kwargs.get("get_combinations", False)  # if Boolean true
         save_filename = kwargs.get("save_filename", None)  # str of file name
@@ -1377,7 +1378,7 @@ class OpsGrillage:
                     for incremental_load_case in list_of_load_case_dict:
                         # apply load factor to all incremental load cases, then write to placeholder variable new_ma_list
                         new_ma_list.append(
-                            list_moving_da.sel(Loadcase=incremental_load_case["name"]) * load_case_dict['load_factor'])
+                            basic_da.sel(Loadcase=incremental_load_case["name"]) * load_case_dict['load_factor'])
 
                 output_load_comb_dict[load_comb_name] = summation_array
             return output_load_comb_dict
@@ -1385,7 +1386,7 @@ class OpsGrillage:
             # return raw data array for manual post processing
             if save_filename:
                 basic_da.to_netcdf(save_filename)
-            return basic_da, list_moving_da
+            return basic_da
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -1519,7 +1520,7 @@ class Analysis:
                 self.node_disp.setdefault(node_tag, disp_list)
 
             for ele_tag in range(1, self.mesh_ele_counter):
-                ele_force = ops.eleResponse(ele_tag, 'localForces')
+                ele_force = ops.eleResponse(ele_tag, 'forces')
                 self.ele_force.setdefault(ele_tag, ele_force)
 
         print("Extract completed")
@@ -1606,12 +1607,7 @@ class Results:
             # Coordinate of Load Case dimension
             basic_load_case_coord.append(load_case_name)
             # combine disp and force with respect to Component axis : size 12
-        basic_array = np.array(basic_array_list)
-        # create data array for each basic load case if any
-        basic_da = None
-        if basic_array.size:
-            basic_da = xr.DataArray(data=basic_array, dims=dim,
-                                    coords={dim[0]: basic_load_case_coord, dim[1]: node, dim[2]: component})
+
 
         # for moving load cases
         # [ {}, {} ,..., {} ]  where each {} is a moving load {increloadcasename:[{1:,2:...},{1:,2:...}]..... }
@@ -1622,14 +1618,20 @@ class Results:
             inc_moving_array_list = []
             # for each load case increment in ML
             for increment_load_case_name, inc_resp_list_of_2_dict in moving_load_case_inc_dict.items():
-                inc_moving_array_list.append([a + b for (a, b) in zip(list(inc_resp_list_of_2_dict[0].values()),
+                basic_array_list.append([a + b for (a, b) in zip(list(inc_resp_list_of_2_dict[0].values()),
                                                                       list(inc_resp_list_of_2_dict[1].values()))])
                 # Coordinate of Load Case dimension
-                inc_moving_load_case_coord.append(increment_load_case_name)
+                #inc_moving_load_case_coord.append(increment_load_case_name)
+                basic_load_case_coord.append(increment_load_case_name)
 
-            moving_array = np.array(inc_moving_array_list)
-            ind_moving_da = xr.DataArray(data=moving_array, dims=dim,
-                                         coords={dim[0]: inc_moving_load_case_coord, dim[1]: node, dim[2]: component})
-            moving_daarray_list.append(ind_moving_da)
+            # moving_array = np.array(inc_moving_array_list)
+            # ind_moving_da = xr.DataArray(data=moving_array, dims=dim,
+            #                              coords={dim[0]: inc_moving_load_case_coord, dim[1]: node, dim[2]: component})
+            # moving_daarray_list.append(ind_moving_da)
+        basic_array = np.array(basic_array_list)
+        # create data array for each basic load case if any
+        basic_da = None
+        if basic_array.size:
+            basic_da = xr.DataArray(data=basic_array, dims=dim,coords = {dim[0]: basic_load_case_coord, dim[1]: node, dim[2]: component})
 
-        return basic_da, moving_daarray_list
+        return basic_da

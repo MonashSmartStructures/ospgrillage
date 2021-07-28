@@ -12,7 +12,7 @@ Here are some more examples of what you can do with *ops-grillage* module.
     import OpsGrillage as og
     pyfile = False
 
-    # unit
+    # units
     inch = 1.0
     kip = 1.0
     sec = 1.0
@@ -81,7 +81,7 @@ Here are some more examples of what you can do with *ops-grillage* module.
 
 The following model is created in Opensees model space.
 
-..  figure:: ../images/28m_bridge.png
+..  figure:: ../../images/28m_bridge.png
     :align: center
     :scale: 75 %
 
@@ -167,7 +167,7 @@ Here is a grillage model with different edge skew angles - left edge is -42 degr
     opsplt.plot_model("nodes")
 
 
-..  figure:: ../images/42_0_mesh.png
+..  figure:: ../../images/42_0_mesh.png
     :align: center
     :scale: 75 %
 
