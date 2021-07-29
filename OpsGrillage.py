@@ -1248,6 +1248,7 @@ class OpsGrillage:
                 self.global_time_series_counter, self.global_pattern_counter, node_disp, ele_force \
                     = incremental_analysis.evaluate_analysis()
                 list_of_inc_analysis.append(incremental_analysis)
+
                 # store result in Recorder object
             self.results.insert_analysis_results(list_of_inc_analysis=list_of_inc_analysis)
 
@@ -1521,7 +1522,21 @@ class Analysis:
 
             for ele_tag in range(1, self.mesh_ele_counter):
                 ele_force = ops.eleResponse(ele_tag, 'forces')
-                self.ele_force.setdefault(ele_tag, ele_force)
+                # get ele's x y and z list
+                nd1, nd2 = ops.eleNodes(ele_tag)
+                ex = np.array([ops.nodeCoord(nd1)[0],
+                               ops.nodeCoord(nd2)[0]])
+                ey = np.array([ops.nodeCoord(nd1)[1],
+                               ops.nodeCoord(nd2)[1]])
+                ez = np.array([ops.nodeCoord(nd1)[2],
+                               ops.nodeCoord(nd2)[2]])
+
+                s_all, xl = opsv.section_force_distribution_3d(ex, ey, ez, ele_force, nep=2,ele_load_data=['-beamUniform', 0., 0., 0.])
+
+                self.ele_force.setdefault(ele_tag, np.hstack([s_all[0],s_all[1]]))
+        else:
+            print("OpsGrillage is at output mode, pyfile = True. No results are extracted")
+
 
         print("Extract completed")
         return self.node_disp, self.ele_force
@@ -1547,10 +1562,15 @@ class Results:
             # compile ele forces for each node
             node_disp = analysis_obj.node_disp
             node_force = dict.fromkeys(analysis_obj.node_disp.keys(), [0, 0, 0, 0, 0, 0])  # copy the dict keys
+            ele_force_dict = dict.fromkeys(list(ops.getEleTags()))  # dict key is element tag, value is ele force from
+            ele_nodes_dict = dict.fromkeys(list(ops.getEleTags()))
+            # analysis_obj.ele_force
             # extract element forces and sort them to according to nodes - summing in the process
             for ele_num, ele_forces in analysis_obj.ele_force.items():
+                ele_force_dict.update({ele_num:ele_forces})
                 # get ele nodes
                 ele_nodes = ops.eleNodes(ele_num)
+                ele_nodes_dict.update({ele_num:ele_nodes})
                 # for node i
                 force_i = ele_forces[:6]  # list 6:
                 # for node j
@@ -1561,7 +1581,7 @@ class Results:
                 # update second node
                 sum_force_j = [a + b for (a, b) in zip(force_j, node_force[ele_nodes[1]])]
                 node_force.update({ele_nodes[1]: sum_force_j})
-            self.basic_load_case_record.setdefault(analysis_obj.analysis_name, [node_disp, node_force])
+            self.basic_load_case_record.setdefault(analysis_obj.analysis_name, [node_disp, ele_force_dict,ele_nodes_dict])
         # if
         elif list_of_inc_analysis:
             inc_load_case_record = dict()
@@ -1569,10 +1589,14 @@ class Results:
                 # compile ele forces for each node
                 node_disp = inc_analysis_obj.node_disp
                 node_force = dict.fromkeys(inc_analysis_obj.node_disp.keys(), [0, 0, 0, 0, 0, 0])  # copy the dict keys
+                ele_force_dict = dict.fromkeys(list(ops.getEleTags()))
+                ele_nodes_dict = dict.fromkeys(list(ops.getEleTags()))
                 # extract element forces and sort them to according to nodes - summing in the process
                 for ele_num, ele_forces in inc_analysis_obj.ele_force.items():
+                    ele_force_dict.update({ele_num: ele_forces})
                     # get ele nodes
                     ele_nodes = ops.eleNodes(ele_num)
+                    ele_nodes_dict.update({ele_num: ele_nodes})
                     # for node i
                     force_i = ele_forces[:6]  # list 6:
                     # for node j
@@ -1583,7 +1607,7 @@ class Results:
                     # update second node
                     sum_force_j = [a + b for (a, b) in zip(force_j, node_force[ele_nodes[1]])]
                     node_force.update({ele_nodes[1]: sum_force_j})
-                inc_load_case_record.setdefault(inc_analysis_obj.analysis_name, [node_disp, node_force])
+                inc_load_case_record.setdefault(inc_analysis_obj.analysis_name, [node_disp, ele_force_dict,ele_nodes_dict])
 
             self.moving_load_case_record.append(inc_load_case_record)
 
@@ -1591,19 +1615,32 @@ class Results:
         # Final function called to compile all inserted analyses into xarray dataArray format
         # Dimension names
         dim = ["Loadcase", "Node", "Component"]
+        dim2 = ["Loadcase", "Element", "Component"]
         # Coordinates of dimension
         node = list(self.mesh_obj.node_spec.keys())  # for Node
+        ele = list(ops.getEleTags())
         # for Component
-        component = ["dx", "dy", "dz", "theta_x", "theta_y", "theta_z", "Vx", "Vy", "Vz", "Mx", "My", "Mz"]
-
+        # component = ["dx", "dy", "dz", "theta_x", "theta_y", "theta_z", "Vx", "Vy", "Vz", "Mx", "My", "Mz"]
+        component = ["dx", "dy", "dz", "theta_x", "theta_y", "theta_z"]
+        # force_component = ["Vx", "Vy", "Vz", "Mx", "My", "Mz"]
+        force_component = ["Vx_i", "Vy_i", "Vz_i", "Mx_i", "My_i", "Mz_i","Vx_j", "Vy_j", "Vz_j", "Mx_j", "My_j", "Mz_j"]
         # Sort data for dataArrays
         # for basic load case  {loadcasename:[{1:,2:...},{1:,2:...}], ... , loadcasename:[{1:,2:...},{1:,2:...} }
         basic_array_list = []
         basic_load_case_coord = []
+        basic_ele_force_list = []
+        extracted_ele_nodes_list = False # a 2D array of ele node i and ele node j
+        ele_nodes_list = []
         for load_case_name, resp_list_of_2_dict in self.basic_load_case_record.items():
-            basic_array_list.append([a + b for (a, b) in zip(list(resp_list_of_2_dict[0].values()),
-                                                             list(resp_list_of_2_dict[1].values()))])
-
+            # for displacements of each node
+            # basic_array_list.append([a + b for (a, b) in zip(list(resp_list_of_2_dict[0].values()),
+            #                                                  list(resp_list_of_2_dict[1].values()))])
+            basic_array_list.append([a for a in list(resp_list_of_2_dict[0].values())])
+            basic_ele_force_list.append([a for a in list(resp_list_of_2_dict[1].values())])
+            if not extracted_ele_nodes_list:
+                ele_nodes_list = list(resp_list_of_2_dict[2].values())
+                extracted_ele_nodes_list = True
+            # for section forces of each element
             # Coordinate of Load Case dimension
             basic_load_case_coord.append(load_case_name)
             # combine disp and force with respect to Component axis : size 12
@@ -1618,20 +1655,32 @@ class Results:
             inc_moving_array_list = []
             # for each load case increment in ML
             for increment_load_case_name, inc_resp_list_of_2_dict in moving_load_case_inc_dict.items():
-                basic_array_list.append([a + b for (a, b) in zip(list(inc_resp_list_of_2_dict[0].values()),
-                                                                      list(inc_resp_list_of_2_dict[1].values()))])
+                # basic_array_list.append([a + b for (a, b) in zip(list(inc_resp_list_of_2_dict[0].values()),
+                #                                                       list(inc_resp_list_of_2_dict[1].values()))])
+                basic_array_list.append([a for a in list(inc_resp_list_of_2_dict[0].values())])
+                basic_ele_force_list.append([a for a in list(inc_resp_list_of_2_dict[1].values())])
                 # Coordinate of Load Case dimension
-                #inc_moving_load_case_coord.append(increment_load_case_name)
+                # inc_moving_load_case_coord.append(increment_load_case_name)
                 basic_load_case_coord.append(increment_load_case_name)
-
+                if not extracted_ele_nodes_list:
+                    ele_nodes_list = list(inc_resp_list_of_2_dict[2].values())
+                    extracted_ele_nodes_list = True
             # moving_array = np.array(inc_moving_array_list)
             # ind_moving_da = xr.DataArray(data=moving_array, dims=dim,
             #                              coords={dim[0]: inc_moving_load_case_coord, dim[1]: node, dim[2]: component})
             # moving_daarray_list.append(ind_moving_da)
         basic_array = np.array(basic_array_list)
+        force_array = np.array(basic_ele_force_list)
+        ele_array = np.array(ele_nodes_list)
         # create data array for each basic load case if any
         basic_da = None
         if basic_array.size:
+            # displacement data array
             basic_da = xr.DataArray(data=basic_array, dims=dim,coords = {dim[0]: basic_load_case_coord, dim[1]: node, dim[2]: component})
+            # element force data array
+            force_da = xr.DataArray(data= force_array, dims=dim2,coords= {dim2[0]:basic_load_case_coord,dim2[1]:ele,dim2[2]:force_component})
+            ele_nodes = xr.DataArray(data = ele_array,dims=[dim2[1],"Nodes"],coords={dim2[1]:ele,"Nodes":["i","j"]})
+            # create data set
+            result = xr.Dataset({"displacements":basic_da,"forces":force_da,"ele_nodes":ele_nodes})
 
-        return basic_da
+        return result

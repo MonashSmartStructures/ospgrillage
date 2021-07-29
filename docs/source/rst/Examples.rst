@@ -12,37 +12,34 @@ Here are some more examples of what you can do with *ops-grillage* module.
     import OpsGrillage as og
     pyfile = False
 
-    # units
-    inch = 1.0
-    kip = 1.0
+    # metric units
+    meter = 1.0
+    N = 1.0
     sec = 1.0
+    MPa = 1e9*N/m**2
+    g = 9.81*m/sec**2  # 9.81 m/s2
 
-    g = 386.4*inch/sec**2  # 9.81 m/s2
-    # Imperial
-    ft = 12*inch
-    lb = kip/1000
-    ksi = kip/inch**2
-    psf = lb/ft**2
-    # metric
+
 
     # variables
-    E = 3000*ksi
+    E = 34.7*MPa
+    G = 20e9*MPa # Pa
     v = 0.3
-    G = 0.5*E/(1+v)
-    q = 150*psf
 
-    L = 32.804*ft
-    H = 15*ft
+    q = 40e9*N/m**2
+
+    L = 28*m
+    H = 7*m
 
     # reference super T bridge 28m for validation purpose
     # Members
     concrete = og.UniAxialElasticMaterial(mat_type="Concrete01", fpc=-6, epsc0=-0.004, fpcu=-6, epsU=-0.014)
     # define sections
-    super_t_beam_section = og.Section(A=1.0447, E=3.47E+10,
-                                   G=2.00E+10,
+    super_t_beam_section = og.Section(A=1.0447, E=E,
+                                   G=G,
                                    J=0.230698, Iy=0.231329, Iz=0.533953,
                                    Ay=0.397032, Az=0.434351)
-    transverse_slab_section = og.Section(A=0.5372, E=3.47E+10, G=2.00E+10,
+    transverse_slab_section = og.Section(A=0.5372, E=E, G=G,
                                       J=2.79e-3, Iy=0.3988 / 2, Iz=1.45e-3 / 2,
                                       Ay=0.447 / 2, Az=0.447 / 2, unit_width=True)
     end_tranverse_slab_section = og.Section(A=0.5372 / 2,
@@ -63,7 +60,7 @@ Here are some more examples of what you can do with *ops-grillage* module.
     end_tranverse_slab = og.GrillageMember(member_name="edge transverse", section=end_tranverse_slab_section,
                                         material=concrete)
 
-    bridge_28 = og.OpsGrillage(bridge_name="SuperT_28m", long_dim=28, width=7, skew=0,
+    bridge_28 = og.OpsGrillage(bridge_name="SuperT_28m", long_dim=L, width=H, skew=0,
                             num_long_grid=7, num_trans_grid=14, edge_beam_dist=1.0875, mesh_type="Ortho")
 
     # set grillage member to element groups of grillage model
