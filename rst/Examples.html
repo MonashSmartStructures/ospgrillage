@@ -181,37 +181,34 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">OpsGrillage</span> <span class="k">as</span> <span class="nn">og</span>
 <span class="n">pyfile</span> <span class="o">=</span> <span class="kc">False</span>
 
-<span class="c1"># units</span>
-<span class="n">inch</span> <span class="o">=</span> <span class="mf">1.0</span>
-<span class="n">kip</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="c1"># metric units</span>
+<span class="n">meter</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mf">1.0</span>
 <span class="n">sec</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">MPa</span> <span class="o">=</span> <span class="mf">1e9</span><span class="o">*</span><span class="n">N</span><span class="o">/</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span>
+<span class="n">g</span> <span class="o">=</span> <span class="mf">9.81</span><span class="o">*</span><span class="n">m</span><span class="o">/</span><span class="n">sec</span><span class="o">**</span><span class="mi">2</span>  <span class="c1"># 9.81 m/s2</span>
 
-<span class="n">g</span> <span class="o">=</span> <span class="mf">386.4</span><span class="o">*</span><span class="n">inch</span><span class="o">/</span><span class="n">sec</span><span class="o">**</span><span class="mi">2</span>  <span class="c1"># 9.81 m/s2</span>
-<span class="c1"># Imperial</span>
-<span class="n">ft</span> <span class="o">=</span> <span class="mi">12</span><span class="o">*</span><span class="n">inch</span>
-<span class="n">lb</span> <span class="o">=</span> <span class="n">kip</span><span class="o">/</span><span class="mi">1000</span>
-<span class="n">ksi</span> <span class="o">=</span> <span class="n">kip</span><span class="o">/</span><span class="n">inch</span><span class="o">**</span><span class="mi">2</span>
-<span class="n">psf</span> <span class="o">=</span> <span class="n">lb</span><span class="o">/</span><span class="n">ft</span><span class="o">**</span><span class="mi">2</span>
-<span class="c1"># metric</span>
+
 
 <span class="c1"># variables</span>
-<span class="n">E</span> <span class="o">=</span> <span class="mi">3000</span><span class="o">*</span><span class="n">ksi</span>
+<span class="n">E</span> <span class="o">=</span> <span class="mf">34.7</span><span class="o">*</span><span class="n">MPa</span>
+<span class="n">G</span> <span class="o">=</span> <span class="mf">20e9</span><span class="o">*</span><span class="n">MPa</span> <span class="c1"># Pa</span>
 <span class="n">v</span> <span class="o">=</span> <span class="mf">0.3</span>
-<span class="n">G</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">E</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">v</span><span class="p">)</span>
-<span class="n">q</span> <span class="o">=</span> <span class="mi">150</span><span class="o">*</span><span class="n">psf</span>
 
-<span class="n">L</span> <span class="o">=</span> <span class="mf">32.804</span><span class="o">*</span><span class="n">ft</span>
-<span class="n">H</span> <span class="o">=</span> <span class="mi">15</span><span class="o">*</span><span class="n">ft</span>
+<span class="n">q</span> <span class="o">=</span> <span class="mf">40e9</span><span class="o">*</span><span class="n">N</span><span class="o">/</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span>
+
+<span class="n">L</span> <span class="o">=</span> <span class="mi">28</span><span class="o">*</span><span class="n">m</span>
+<span class="n">H</span> <span class="o">=</span> <span class="mi">7</span><span class="o">*</span><span class="n">m</span>
 
 <span class="c1"># reference super T bridge 28m for validation purpose</span>
 <span class="c1"># Members</span>
 <span class="n">concrete</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">UniAxialElasticMaterial</span><span class="p">(</span><span class="n">mat_type</span><span class="o">=</span><span class="s2">&quot;Concrete01&quot;</span><span class="p">,</span> <span class="n">fpc</span><span class="o">=-</span><span class="mi">6</span><span class="p">,</span> <span class="n">epsc0</span><span class="o">=-</span><span class="mf">0.004</span><span class="p">,</span> <span class="n">fpcu</span><span class="o">=-</span><span class="mi">6</span><span class="p">,</span> <span class="n">epsU</span><span class="o">=-</span><span class="mf">0.014</span><span class="p">)</span>
 <span class="c1"># define sections</span>
-<span class="n">super_t_beam_section</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">Section</span><span class="p">(</span><span class="n">A</span><span class="o">=</span><span class="mf">1.0447</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="mf">3.47E+10</span><span class="p">,</span>
-                               <span class="n">G</span><span class="o">=</span><span class="mf">2.00E+10</span><span class="p">,</span>
+<span class="n">super_t_beam_section</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">Section</span><span class="p">(</span><span class="n">A</span><span class="o">=</span><span class="mf">1.0447</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="n">E</span><span class="p">,</span>
+                               <span class="n">G</span><span class="o">=</span><span class="n">G</span><span class="p">,</span>
                                <span class="n">J</span><span class="o">=</span><span class="mf">0.230698</span><span class="p">,</span> <span class="n">Iy</span><span class="o">=</span><span class="mf">0.231329</span><span class="p">,</span> <span class="n">Iz</span><span class="o">=</span><span class="mf">0.533953</span><span class="p">,</span>
                                <span class="n">Ay</span><span class="o">=</span><span class="mf">0.397032</span><span class="p">,</span> <span class="n">Az</span><span class="o">=</span><span class="mf">0.434351</span><span class="p">)</span>
-<span class="n">transverse_slab_section</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">Section</span><span class="p">(</span><span class="n">A</span><span class="o">=</span><span class="mf">0.5372</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="mf">3.47E+10</span><span class="p">,</span> <span class="n">G</span><span class="o">=</span><span class="mf">2.00E+10</span><span class="p">,</span>
+<span class="n">transverse_slab_section</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">Section</span><span class="p">(</span><span class="n">A</span><span class="o">=</span><span class="mf">0.5372</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="n">E</span><span class="p">,</span> <span class="n">G</span><span class="o">=</span><span class="n">G</span><span class="p">,</span>
                                   <span class="n">J</span><span class="o">=</span><span class="mf">2.79e-3</span><span class="p">,</span> <span class="n">Iy</span><span class="o">=</span><span class="mf">0.3988</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">Iz</span><span class="o">=</span><span class="mf">1.45e-3</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
                                   <span class="n">Ay</span><span class="o">=</span><span class="mf">0.447</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">Az</span><span class="o">=</span><span class="mf">0.447</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">unit_width</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">end_tranverse_slab_section</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">Section</span><span class="p">(</span><span class="n">A</span><span class="o">=</span><span class="mf">0.5372</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
@@ -232,7 +229,7 @@
 <span class="n">end_tranverse_slab</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">GrillageMember</span><span class="p">(</span><span class="n">member_name</span><span class="o">=</span><span class="s2">&quot;edge transverse&quot;</span><span class="p">,</span> <span class="n">section</span><span class="o">=</span><span class="n">end_tranverse_slab_section</span><span class="p">,</span>
                                     <span class="n">material</span><span class="o">=</span><span class="n">concrete</span><span class="p">)</span>
 
-<span class="n">bridge_28</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">OpsGrillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;SuperT_28m&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="mi">28</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">skew</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="n">bridge_28</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">OpsGrillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;SuperT_28m&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="n">L</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">H</span><span class="p">,</span> <span class="n">skew</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                         <span class="n">num_long_grid</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">edge_beam_dist</span><span class="o">=</span><span class="mf">1.0875</span><span class="p">,</span> <span class="n">mesh_type</span><span class="o">=</span><span class="s2">&quot;Ortho&quot;</span><span class="p">)</span>
 
 <span class="c1"># set grillage member to element groups of grillage model</span>
