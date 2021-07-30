@@ -1,6 +1,6 @@
 import os
 from setuptools import setup, find_packages
-from ops-grillage import __version__ as version
+from opsgrillage import __version__ as version
 
 # Utility function to read the README file.
 def read(fname):
@@ -16,7 +16,7 @@ setup(
     author="Monash Smart Structures",
     author_email="colin.caprani@monash.edu",
     url="https://monashsmartstructures.github.io/ops-grillage/",
-    packages=find_packages(include=["ops-grillage"]),
+    packages=find_packages(include=["opsgrillage"]),
     long_description=read("README"),
     classifiers=[
         "Development Status " " 3 - Alpha",
