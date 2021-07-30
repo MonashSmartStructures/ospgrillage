@@ -6,10 +6,10 @@ import matplotlib.pyplot as plt
 import openseespy.postprocessing.ops_vis as opsv
 import openseespy.opensees as ops
 
-from Load import *
-from Mesh import *
-from Material import *
-from member_sections import *
+from opsgrillage.Load import *
+from opsgrillage.Mesh import *
+from opsgrillage.Material import *
+from opsgrillage.member_sections import *
 import xarray as xr
 
 

@@ -17,7 +17,7 @@ setup(
     author_email="colin.caprani@monash.edu",
     url="https://monashsmartstructures.github.io/ops-grillage/",
     packages=find_packages(include=["opsgrillage"]),
-    long_description=read("README"),
+    long_description=read("README.md"),
     classifiers=[
         "Development Status " " 3 - Alpha",
         "Topic :: Scientific/Engineering",
