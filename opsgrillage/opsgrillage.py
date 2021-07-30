@@ -6,9 +6,9 @@ import matplotlib.pyplot as plt
 import openseespy.postprocessing.ops_vis as opsv
 import openseespy.opensees as ops
 
-from opsgrillage.Load import *
-from opsgrillage.Mesh import *
-from opsgrillage.Material import *
+from opsgrillage.load import *
+from opsgrillage.mesh import *
+from opsgrillage.material import *
 from opsgrillage.member_sections import *
 import xarray as xr
 
@@ -332,27 +332,28 @@ class OpsGrillage:
                 else:  # run instance
                     ops.fix(node_tag, *self.fix_val_roller_x)
 
-    def __write_uniaxial_material(self, member: GrillageMember = None,
-                                  material: Union[UniAxialElasticMaterial, NDmaterial] = None):
+    def __write_material(self, member: GrillageMember = None,
+                         material: Material = None) -> int:
         """
         Sub-abstracted procedure to write uniaxialMaterial command for the material properties of the grillage model.
 
         :return: Output py file with uniaxialMaterial() command
         """
-        # function to generate uniaxialMaterial() command in output py file
-        # ops.uniaxialMaterial(self.mat_type_op, 1, *self.mat_matrix)
+
         material_obj = None
         if member is None and material is None:
             raise Exception("Uniaxial material has no input GrillageMember or Material Object")
-        if member is None:
-            material_obj = material  # str of section type - Openseespy convention
-
+        elif member is None:
+            # This is for the option of updating preivously defined material commands
+            material_obj = material
         elif material is None:
-            material_obj = member.material  # str of section type - Openseespy convention
+            material_obj = member.material
+            if not member.material_command_flag:
+                return 1  # placeholder num
 
-        material_type, op_mat_arg = material_obj.get_uni_material_arg_str()
+        material_type, op_mat_arg = member.material.get_material_args()  # get the material arguments
 
-        # - write unique material tag and input argument as keyword of dict
+        # - write unique material tag and input argument to store as key for dict
         material_str = [material_type, op_mat_arg]  # repr both variables as a list for keyword definition
         # if section is specified, get the materialtagcounter for material() assignment
         if not bool(self.material_dict):
@@ -363,29 +364,26 @@ class OpsGrillage:
         # if section has been assigned
         material_tag = self.material_dict.setdefault(repr(material_str), lastmaterialtag + 1)
         if material_tag != lastmaterialtag:
-            mat_str = material_obj.get_uni_mat_ops_commands(material_tag=material_tag)
+            mat_str = member.material.get_ops_material_command(material_tag=material_tag)
             self.material_command_list.append(mat_str)
-            # if self.pyfile:
-            #     with open(self.filename, 'a') as file_handle:
-            #         file_handle.write("# Material definition \n")
-            #         file_handle.write(mat_str)
-            # else:
-            #     eval(mat_str)
+
         else:
             print("Material {} with tag {} has been previously defined"
                   .format(material_type, material_tag))
-            return material_tag
+        return material_tag
 
-    def __write_section(self, grillage_member_obj: GrillageMember):
+    def __write_section(self, grillage_member_obj: GrillageMember) -> int:
         """
         Abstracted procedure handled by set_member() function to write section() command for the elements. This method
         is ran only when GrillageMember object requires section() definition following convention of Openseespy.
 
         """
+        # checks if grillage member's element type requires the generation of ops.section()
+        if not grillage_member_obj.section_command_flag:
+            return 1  # placeholder num
         # extract section variables from Section class
-        section_obj = grillage_member_obj.section
-        section_type, section_arg = section_obj.get_section_arg_str()
-        # list of argument for section - Openseespy convention
+        section_type = grillage_member_obj.section
+        section_arg = grillage_member_obj.get_section_arguments()
         section_str = [section_type, section_arg]  # repr both variables as a list for keyword definition
         # if section is specified, get the sectiontagcounter for section assignment
         if not bool(self.section_dict):
@@ -397,7 +395,7 @@ class OpsGrillage:
         sectiontagcounter = self.section_dict.setdefault(repr(section_str), lastsectioncounter + 1)
 
         if sectiontagcounter not in previously_defined_section:
-            sec_str = section_obj.get_section_command(section_tag=sectiontagcounter)
+            sec_str = grillage_member_obj.get_ops_section_command(section_tag=sectiontagcounter)
             self.section_command_list.append(sec_str)
 
             # print to terminal
@@ -430,12 +428,13 @@ class OpsGrillage:
         :return: sets member object to element of grillage in OpsGrillage instance
         :raises ValueError: If model instance is not created beforehand i.e. missing preceding create_ops() command.
         """
-        # if self.Mesh_obj is None:
-        #    raise ValueError("Model instance not created. Run ops.create_ops() function before setting members")
+        print("Setting member: {} of model".format(member))
+        if member is None:
+            raise ValueError("Missing target elements of grillage model to be assigned. Hint, member=")
         # check and write member's section command
         section_tag = self.__write_section(grillage_member_obj)
         # check and write member's material command
-        material_tag = self.__write_uniaxial_material(member=grillage_member_obj)
+        material_tag = self.__write_material(member=grillage_member_obj)
         # dictionary for key = common member tag, val is list of str for ops.element()
         ele_command_dict = dict()
         ele_command_list = []
@@ -576,7 +575,7 @@ class OpsGrillage:
         # check and write member's section command if any
         section_tag = self.__write_section(grillage_member_obj)
         # check and write member's material command if any
-        material_tag = self.__write_uniaxial_material(member=grillage_member_obj)
+        material_tag = self.__write_material(member=grillage_member_obj)
         # instantiate shell element list
         shell_element_list = []
         shell_element_dict = dict()
@@ -604,7 +603,7 @@ class OpsGrillage:
         self.global_mat_object = material_obj  # material matrix for
 
         # write uniaxialMaterial() command to output file
-        self.__write_uniaxial_material(material=material_obj)
+        self.__write_material(material=material_obj)
 
     # ---------------------------------------------------------------
     # Functions to find nodes or grids correspond to a point or line + distributing
@@ -667,7 +666,7 @@ class OpsGrillage:
         z = 0
         x_start = []
         z_start = []
-        colinear_spec = [] # list storing coordinates *sublist of element coinciding points
+        colinear_spec = []  # list storing coordinates *sublist of element coinciding points
         # colinear_spec has the following properties: key (ele number), [point1, point2]
         intersect_spec = dict()  # a sub dict for characterizing the line segment's intersecting points within grid
         grid_inter_points = []
@@ -701,9 +700,9 @@ class OpsGrillage:
                 if R_z_col:
                     colinear_spec += R_z_col
                 if R_x_col:
-                    colinear_spec +=R_x_col
+                    colinear_spec += R_x_col
                 if R_edge_col:
-                    colinear_spec+=R_edge_col
+                    colinear_spec += R_edge_col
             # if no intersection, continue to next grid
             elif Rz == [] and Rx == [] and Redge == []:
                 continue
@@ -1016,7 +1015,7 @@ class OpsGrillage:
                 p1 = ele[1]
                 p2 = ele[2]
                 # get magnitudes at point 1 and point 2
-                L = get_distance(p1,p2)
+                L = get_distance(p1, p2)
                 w1 = line_load_obj.interpolate_udl_magnitude([p1.x, p1.y, p1.z])
                 w2 = line_load_obj.interpolate_udl_magnitude([p2.x, p2.y, p2.z])
                 W = (w1 + w2) / 2
@@ -1057,10 +1056,10 @@ class OpsGrillage:
         # apply patch for full bound grids completed
 
         # search the intersecting grids using line load function
-        intersect_grid_1,_ = self.get_line_load_nodes(patch_load_obj.line_1)
-        intersect_grid_2,_ = self.get_line_load_nodes(patch_load_obj.line_2)
-        intersect_grid_3,_ = self.get_line_load_nodes(patch_load_obj.line_3)
-        intersect_grid_4,_ = self.get_line_load_nodes(patch_load_obj.line_4)
+        intersect_grid_1, _ = self.get_line_load_nodes(patch_load_obj.line_1)
+        intersect_grid_2, _ = self.get_line_load_nodes(patch_load_obj.line_2)
+        intersect_grid_3, _ = self.get_line_load_nodes(patch_load_obj.line_3)
+        intersect_grid_4, _ = self.get_line_load_nodes(patch_load_obj.line_4)
         # merging process of the intersect grid dicts
         merged = check_dict_same_keys(intersect_grid_1, intersect_grid_2)
         merged = check_dict_same_keys(merged, intersect_grid_3)
@@ -1139,10 +1138,12 @@ class OpsGrillage:
                         load_str += self.assign_point_to_four_node(point=list(nested_list_of_load.load_point_1)[:-1],
                                                                    mag=nested_list_of_load.load_point_1.p)
                     elif isinstance(nested_list_of_load, LineLoading):
-                        line_grid_intersect,line_ele_colinear = self.get_line_load_nodes(
+                        line_grid_intersect, line_ele_colinear = self.get_line_load_nodes(
                             nested_list_of_load)  # returns self.line_grid_intersect
                         self.global_line_int_dict.append(line_grid_intersect)
-                        load_str += self.assign_line_to_four_node(nested_list_of_load, line_grid_intersect=line_grid_intersect,line_ele_colinear=line_ele_colinear)
+                        load_str += self.assign_line_to_four_node(nested_list_of_load,
+                                                                  line_grid_intersect=line_grid_intersect,
+                                                                  line_ele_colinear=line_ele_colinear)
                     elif isinstance(nested_list_of_load, PatchLoading):
                         load_str += self.assign_patch_load(nested_list_of_load)
             # else, a single load type, assign it as it is
@@ -1154,9 +1155,11 @@ class OpsGrillage:
                     load_str += self.assign_point_to_four_node(point=list(load_obj.load_point_1)[:-1],
                                                                mag=load_obj.load_point_1.p)
                 elif isinstance(load_obj, LineLoading):
-                    line_grid_intersect,line_ele_colinear = self.get_line_load_nodes(load_obj)  # returns self.line_grid_intersect
+                    line_grid_intersect, line_ele_colinear = self.get_line_load_nodes(
+                        load_obj)  # returns self.line_grid_intersect
                     self.global_line_int_dict.append(line_grid_intersect)
-                    load_str += self.assign_line_to_four_node(load_obj, line_grid_intersect=line_grid_intersect,line_ele_colinear=line_ele_colinear)
+                    load_str += self.assign_line_to_four_node(load_obj, line_grid_intersect=line_grid_intersect,
+                                                              line_ele_colinear=line_ele_colinear)
                 elif isinstance(load_obj, PatchLoading):
                     load_str += self.assign_patch_load(load_obj)
 
@@ -1178,7 +1181,7 @@ class OpsGrillage:
                           'load_factor': load_factor}  # FORMATTING HERE
 
         self.load_case_list.append(load_case_dict)
-        print("Load Case {} added".format(load_case_obj.name))
+        print("Load Case: {} added".format(load_case_obj.name))
 
     def analyze(self, **kwargs):
         """
@@ -1531,12 +1534,12 @@ class Analysis:
                 ez = np.array([ops.nodeCoord(nd1)[2],
                                ops.nodeCoord(nd2)[2]])
 
-                s_all, xl = opsv.section_force_distribution_3d(ex, ey, ez, ele_force, nep=2,ele_load_data=['-beamUniform', 0., 0., 0.])
+                s_all, xl = opsv.section_force_distribution_3d(ex, ey, ez, ele_force, nep=2,
+                                                               ele_load_data=['-beamUniform', 0., 0., 0.])
 
-                self.ele_force.setdefault(ele_tag, np.hstack([s_all[0],s_all[1]]))
+                self.ele_force.setdefault(ele_tag, np.hstack([s_all[0], s_all[1]]))
         else:
             print("OpsGrillage is at output mode, pyfile = True. No results are extracted")
-
 
         print("Extract completed")
         return self.node_disp, self.ele_force
@@ -1567,10 +1570,10 @@ class Results:
             # analysis_obj.ele_force
             # extract element forces and sort them to according to nodes - summing in the process
             for ele_num, ele_forces in analysis_obj.ele_force.items():
-                ele_force_dict.update({ele_num:ele_forces})
+                ele_force_dict.update({ele_num: ele_forces})
                 # get ele nodes
                 ele_nodes = ops.eleNodes(ele_num)
-                ele_nodes_dict.update({ele_num:ele_nodes})
+                ele_nodes_dict.update({ele_num: ele_nodes})
                 # for node i
                 force_i = ele_forces[:6]  # list 6:
                 # for node j
@@ -1581,7 +1584,8 @@ class Results:
                 # update second node
                 sum_force_j = [a + b for (a, b) in zip(force_j, node_force[ele_nodes[1]])]
                 node_force.update({ele_nodes[1]: sum_force_j})
-            self.basic_load_case_record.setdefault(analysis_obj.analysis_name, [node_disp, ele_force_dict,ele_nodes_dict])
+            self.basic_load_case_record.setdefault(analysis_obj.analysis_name,
+                                                   [node_disp, ele_force_dict, ele_nodes_dict])
         # if
         elif list_of_inc_analysis:
             inc_load_case_record = dict()
@@ -1607,7 +1611,8 @@ class Results:
                     # update second node
                     sum_force_j = [a + b for (a, b) in zip(force_j, node_force[ele_nodes[1]])]
                     node_force.update({ele_nodes[1]: sum_force_j})
-                inc_load_case_record.setdefault(inc_analysis_obj.analysis_name, [node_disp, ele_force_dict,ele_nodes_dict])
+                inc_load_case_record.setdefault(inc_analysis_obj.analysis_name,
+                                                [node_disp, ele_force_dict, ele_nodes_dict])
 
             self.moving_load_case_record.append(inc_load_case_record)
 
@@ -1623,13 +1628,14 @@ class Results:
         # component = ["dx", "dy", "dz", "theta_x", "theta_y", "theta_z", "Vx", "Vy", "Vz", "Mx", "My", "Mz"]
         component = ["dx", "dy", "dz", "theta_x", "theta_y", "theta_z"]
         # force_component = ["Vx", "Vy", "Vz", "Mx", "My", "Mz"]
-        force_component = ["Vx_i", "Vy_i", "Vz_i", "Mx_i", "My_i", "Mz_i","Vx_j", "Vy_j", "Vz_j", "Mx_j", "My_j", "Mz_j"]
+        force_component = ["Vx_i", "Vy_i", "Vz_i", "Mx_i", "My_i", "Mz_i", "Vx_j", "Vy_j", "Vz_j", "Mx_j", "My_j",
+                           "Mz_j"]
         # Sort data for dataArrays
         # for basic load case  {loadcasename:[{1:,2:...},{1:,2:...}], ... , loadcasename:[{1:,2:...},{1:,2:...} }
         basic_array_list = []
         basic_load_case_coord = []
         basic_ele_force_list = []
-        extracted_ele_nodes_list = False # a 2D array of ele node i and ele node j
+        extracted_ele_nodes_list = False  # a 2D array of ele node i and ele node j
         ele_nodes_list = []
         for load_case_name, resp_list_of_2_dict in self.basic_load_case_record.items():
             # for displacements of each node
@@ -1644,7 +1650,6 @@ class Results:
             # Coordinate of Load Case dimension
             basic_load_case_coord.append(load_case_name)
             # combine disp and force with respect to Component axis : size 12
-
 
         # for moving load cases
         # [ {}, {} ,..., {} ]  where each {} is a moving load {increloadcasename:[{1:,2:...},{1:,2:...}]..... }
@@ -1676,11 +1681,14 @@ class Results:
         basic_da = None
         if basic_array.size:
             # displacement data array
-            basic_da = xr.DataArray(data=basic_array, dims=dim,coords = {dim[0]: basic_load_case_coord, dim[1]: node, dim[2]: component})
+            basic_da = xr.DataArray(data=basic_array, dims=dim,
+                                    coords={dim[0]: basic_load_case_coord, dim[1]: node, dim[2]: component})
             # element force data array
-            force_da = xr.DataArray(data= force_array, dims=dim2,coords= {dim2[0]:basic_load_case_coord,dim2[1]:ele,dim2[2]:force_component})
-            ele_nodes = xr.DataArray(data = ele_array,dims=[dim2[1],"Nodes"],coords={dim2[1]:ele,"Nodes":["i","j"]})
+            force_da = xr.DataArray(data=force_array, dims=dim2,
+                                    coords={dim2[0]: basic_load_case_coord, dim2[1]: ele, dim2[2]: force_component})
+            ele_nodes = xr.DataArray(data=ele_array, dims=[dim2[1], "Nodes"],
+                                     coords={dim2[1]: ele, "Nodes": ["i", "j"]})
             # create data set
-            result = xr.Dataset({"displacements":basic_da,"forces":force_da,"ele_nodes":ele_nodes})
+            result = xr.Dataset({"displacements": basic_da, "forces": force_da, "ele_nodes": ele_nodes})
 
         return result

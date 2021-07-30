@@ -9,7 +9,7 @@ the developers welcome any improvements to its procedures via pull requests.
 Grillage model
 ====================
 
-The ops-grillage module generates a two-dimensional (2D) grillage model of a bridge in Opensees - see Figure 1.
+The *ops-grillage* module generates a two-dimensional (2D) grillage model of a bridge in Opensees - see Figure 1.
 
 ..  figure:: ../../_images/Figure_1.png
     :align: center
@@ -19,7 +19,7 @@ The ops-grillage module generates a two-dimensional (2D) grillage model of a bri
 
 Model space
 ---------------------
-The Opensees model space is can be set to either 2-D or 3-D.
+The Opensees model space can be set to either 2-D or 3-D.
 
 By default the :class:`~OpsGrillage` object creates a 2-D grillage model that exist in the 3-D model space.
 The model has 6 degrees-of-freedom at each nodes. The grillage model plane lies in the x-z plane of the coordinate system.
@@ -29,7 +29,7 @@ For a 2-D model space, the model plane is the x-y plane.
 Coordinate system
 ---------------------
 
-The module adopts the following convention for grillage model:
+The module adopts the following coordinate convention for grillage model:
 
 * x direction defines the length of the bridge model - typically the span of the model.
 
@@ -37,9 +37,9 @@ The module adopts the following convention for grillage model:
 
 * y direction is the vertical axis - typically the direction of loads
 
-Two reasons behind selecting the coordinate system as such:
-#. This coordinate system streamlines section transformation (from local to global). The coordinate systems aligns well with the standard Opensees local coordinate systems for Section definition, with local X being the axial direction
-of beam/truss members, while y and z axes being the horizontal and vertical axis of the local coordinate system respectively.
+Two reasons behind selecting the coordinate system are as such:
+#. This coordinate system is consistent with geometric transformation (from local to global) in Opensees. The geometric transformation is used in Section definition, with local X being the axial direction
+of beam/truss members; y and z axes being the vertical and horizontal axis of the local coordinate system respectively.
 #. To be consistent with 1D problems where the working axis for 1-D models is typically *x* (horizontal axis) and *y* (vertical axis).
 
 ====================

@@ -6,7 +6,7 @@ from typing import Union
 
 from scipy import interpolate
 
-from opsgrillage.Mesh import *
+from opsgrillage.mesh import *
 
 # named tuple definition
 LoadPoint = namedtuple("Point", ["x", "y", "z", "p"])
