@@ -27,21 +27,21 @@ from classes shown in UML diagram.
 OpsGrillage class
 ---------------------------
 
-.. autoclass:: OpsGrillage.OpsGrillage
+.. autoclass:: opsgrillage.OpsGrillage
     :members:
     :show-inheritance:
 
 
 Analysis objects
 ^^^^^^^^^^^^^^^^
-.. autoclass:: OpsGrillage.Analysis
+.. autoclass:: opsgrillage.Analysis
     :members:
     :show-inheritance:
 
 
 Result objects
 ^^^^^^^^^^^^^^^^
-.. autoclass:: OpsGrillage.Results
+.. autoclass:: opsgrillage.Results
     :members:
     :show-inheritance:
 
@@ -55,14 +55,14 @@ For information regarding the procedures in :class:`~OpsGrillage` class, see
 Opensees Uniaxial Materials
 ^^^^^^^^^^^^^^^^
 
-.. autoclass:: Material.UniAxialElasticMaterial
+.. autoclass:: material.Material
     :members:
     :show-inheritance:
 
 Opensees ND materials
 ^^^^^^^^^^^^^^^^
 
-.. autoclass:: Material.NDmaterial
+.. autoclass:: material.NDmaterial
     :members:
     :show-inheritance:
 
@@ -82,7 +82,7 @@ GrillageMember class
 Mesh class
 ------------------------------------------
 
-.. autoclass:: Mesh.Mesh
+.. autoclass:: mesh.Mesh
     :members:
     :show-inheritance:
 
@@ -94,42 +94,42 @@ For information regarding definition of :class:`~Loads` class, see
 NodalLoad
 ^^^^^^^^^^^^^^^^
 
-.. autoclass:: Load.NodalLoad
+.. autoclass:: load.NodalLoad
     :members:
     :show-inheritance:
 
 PointLoad
 ^^^^^^^^^^^^^^^^
 
-.. autoclass:: Load.PointLoad
+.. autoclass:: load.PointLoad
     :members:
     :show-inheritance:
 
 LineLoading
 ^^^^^^^^^^^^^^^^
 
-.. autoclass:: Load.LineLoading
+.. autoclass:: load.LineLoading
     :members:
     :show-inheritance:
 
 PatchLoading
 ^^^^^^^^^^^^^^^^
 
-.. autoclass:: Load.PatchLoading
+.. autoclass:: load.PatchLoading
     :members:
     :show-inheritance:
 
 CompoundLoad
 ^^^^^^^^^^^^^^^^
 
-.. autoclass:: Load.CompoundLoad
+.. autoclass:: load.CompoundLoad
     :members:
     :show-inheritance:
 
 MovingLoad
 ^^^^^^^^^^^^^^^^
 
-.. autoclass:: Load.MovingLoad
+.. autoclass:: load.MovingLoad
     :members:
     :show-inheritance:
 
@@ -141,17 +141,17 @@ For information regarding in :class:`~LoadCase` class, see
 LoadCase
 ^^^^^^^^^^^^^^^^
 
-.. autoclass:: Load.LoadCase
+.. autoclass:: load.LoadCase
     :members:
     :show-inheritance:
 
 Misc
 ------------------------------------------
 
-.. autoclass:: Load.Path
+.. autoclass:: load.Path
     :members:
     :show-inheritance:
 
-.. autoclass:: Load.ShapeFunction
+.. autoclass:: load.ShapeFunction
     :members:
     :show-inheritance:
