@@ -123,3 +123,13 @@ def create_initial_material_dict():
     with open('mat_lib.json', 'w') as f:
         json.dump(mat_lib, f, indent=4)
 
+def read_mat_lib():
+    """
+    Just a demo on reading the mat lib
+    """
+
+    with open('mat_lib.json', "r") as f:
+        mat_lib = json.load(f)
+
+    # Do something with mat_lib
+    print(mat_lib)
