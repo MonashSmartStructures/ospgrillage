@@ -213,328 +213,32 @@ from classes shown in UML diagram.</p>
 </div>
 <div class="section" id="opsgrillage-class">
 <h2>OpsGrillage class<a class="headerlink" href="#opsgrillage-class" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="OpsGrillage.OpsGrillage">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">OpsGrillage.</span></span><span class="sig-name descname"><span class="pre">OpsGrillage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bridge_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">long_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skew</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_long_grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_trans_grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_beam_dist</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Ortho'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'3D'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Main class of Openseespy grillage model wrapper. Outputs an executable py file which generates the prescribed
-Opensees grillage model based on user input.</p>
-<p>The class provides an interface for the user to specify the geometry of the grillage model. A keyword argument
-allows for users to select between skew/oblique or orthogonal mesh. Methods in this class allows users to input
-properties for various elements in the grillage model.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>bridge_name</strong> (<em>str</em>) – Name of bridge model and output .py file</p></li>
-<li><p><strong>long_dim</strong> (<em>int</em><em> or </em><em>float</em>) – Length of the model in the longitudinal direction (default: x axis)</p></li>
-<li><p><strong>width</strong> (<em>int</em><em> or </em><em>float</em>) – Width of the model in the transverse direction (default: z axis)</p></li>
-<li><p><strong>skew</strong> (<em>int</em><em> or </em><em>float</em>) – Skew angle of the start and end edges of model</p></li>
-<li><p><strong>num_long_grid</strong> (<em>int</em>) – Number of grid lines in longitudinal direction</p></li>
-<li><p><strong>num_trans_grid</strong> (<em>int</em>) – Number of  grid lines in the transverse direction</p></li>
-<li><p><strong>edge_beam_dist</strong> (<em>int</em><em> or </em><em>float</em>) – Distance of edge beam node lines to exterior main beam node lines</p></li>
-<li><p><strong>mesh_type</strong> (<em>string</em>) – Type of mesh either “Ortho” for orthogonal mesh or “Oblique” for oblique mesh</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.create_ops">
-<span class="sig-name descname"><span class="pre">create_ops</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.create_ops" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to create model instance in Opensees model space. If pyfile input is True, function creates an
-executable pyfile for generating the grillage model in Opensees model space.
-:param pyfile: Boolean to flag py file generation or Opensees model instance.
-:type pyfile: bool</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.set_boundary_condition">
-<span class="sig-name descname"><span class="pre">set_boundary_condition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edge_group_counter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[1]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restraint_vector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_to_exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.set_boundary_condition" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function for user to modify boundary conditions of the grillage model. Edge nodes are automatically detected
-and recorded as having fixity in vertical y direction.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Development yet to be completed - will progress once user input received</p>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.set_member">
-<span class="sig-name descname"><span class="pre">set_member</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grillage_member_obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="GrillageMember.html#member_sections.GrillageMember" title="member_sections.GrillageMember"><span class="pre">member_sections.GrillageMember</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">member</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.set_member" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to set grillage member class object to elements of grillage members.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>grillage_member_obj</strong> – Grillage_member class object</p></li>
-<li><p><strong>member</strong> – <p>str of member category - select from standard grillage elements</p>
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 49%" />
-<col style="width: 51%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Standard</p></th>
-<th class="head"></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>edge_beam</p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>exterior_main_beam_1</p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>interior_main_beam</p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>exterior_main_beam_1</p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>edge_slab</p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>transverse_slab</p></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>sets member object to element of grillage in OpsGrillage instance</p>
-</dd>
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><strong>ValueError</strong> – If model instance is not created beforehand i.e. missing preceding create_ops() command.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.set_shell_members">
-<span class="sig-name descname"><span class="pre">set_shell_members</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grillage_member_obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="GrillageMember.html#member_sections.GrillageMember" title="member_sections.GrillageMember"><span class="pre">member_sections.GrillageMember</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">quad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tri</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.set_shell_members" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to set shell/quad members across entire mesh grid.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>quad</strong> – </p></li>
-<li><p><strong>tri</strong> – </p></li>
-<li><p><strong>grillage_member_obj</strong> (<a class="reference internal" href="GrillageMember.html#member_sections.GrillageMember" title="member_sections.GrillageMember"><em>GrillageMember</em></a>) – GrillageMember object</p></li>
-</ul>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>ValueError</strong> – If GrillageMember object was not specified for quad or shell element. Also raises this error
-if components of GrillageMember object (e.g. section or material) was not properly defined
-for the specific shell element in accordance with Opensees conventions.</p>
-</dd>
-</dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>To distinguish triangular elements with Quad elements</p>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.set_material">
-<span class="sig-name descname"><span class="pre">set_material</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">material_obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.set_material" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to define a global material model. This function proceeds to write write the material() command to
-output file. By default, function is only called and handled within set_member function. When called by user,
-function creates a material object instance to be set for the ops-grillage instance.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Function populates object variables: (1) mat_matrix, and (2) mat_type_op.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.add_load_case">
-<span class="sig-name descname"><span class="pre">add_load_case</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">load_case_obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="Loads.html#Load.LoadCase" title="Load.LoadCase"><span class="pre">Load.LoadCase</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.add_load_case" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to add individual load cases to OpsGrillage instance.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>load_factor</strong> – Optional load factor for the prescribed load case</p></li>
-<li><p><strong>load_case_obj</strong> (<a class="reference internal" href="Loads.html#Load.LoadCase" title="Load.LoadCase"><em>LoadCase</em></a>) – A load case object of the load condition</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.analyze">
-<span class="sig-name descname"><span class="pre">analyze</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.analyze" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to analyze all basic load cases defined previously using add_load_case() function</p>
-<dl class="field-list simple">
-<dt class="field-odd">Except</dt>
-<dd class="field-odd"><p></p></dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.add_load_combination">
-<span class="sig-name descname"><span class="pre">add_load_combination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">load_combination_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_case_and_factor_dict</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.add_load_combination" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to add load combination to OpsGrillage analysis. Load combinations are defined through a dict with
-load case name str to be included in combination as keys, and load factor (type float/int) as value of dict.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.add_moving_load_case">
-<span class="sig-name descname"><span class="pre">add_moving_load_case</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">moving_load_obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="Loads.html#Load.MovingLoad" title="Load.MovingLoad"><span class="pre">Load.MovingLoad</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.add_moving_load_case" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to add Moving load case to OpsGrillage instance.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>moving_load_obj</strong> (<a class="reference internal" href="Loads.html#Load.MovingLoad" title="Load.MovingLoad"><em>MovingLoad</em></a>) – Moving load class object instance</p></li>
-<li><p><strong>load_factor</strong> (<em>Int</em><em> or </em><em>Float</em>) – optional load factor to be set for all incremental load case. Default is 1.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.get_results">
-<span class="sig-name descname"><span class="pre">get_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.get_results" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to get results from all load cases. Alternatively, if keyword “get_combinations” is provided
-with boolean True, returns data array processed based on defined load combinations instead.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A data array for basic all load case, and a list of data arrays for each moving load cases if any</p>
-</dd>
-<dt class="field-even">Returns basic_da</dt>
-<dd class="field-even"><p>Data Array for all basic load case. For details of components see <span class="xref std std-doc">Result</span> Page</p>
-</dd>
-<dt class="field-odd">Returns list_moving_da</dt>
-<dd class="field-odd"><p>A list of Data array each element correspond to a Data array for a single moving load</p>
-</dd>
-<dt class="field-even">Returns output_load_comb_dict</dt>
-<dd class="field-even"><p>A dict with the following key and value pair. load combination name : data array of load combination</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
 <div class="section" id="analysis-objects">
 <h3>Analysis objects<a class="headerlink" href="#analysis-objects" title="Permalink to this headline">¶</a></h3>
-<dl class="py class">
-<dt class="sig sig-object py" id="OpsGrillage.Analysis">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">OpsGrillage.</span></span><span class="sig-name descname"><span class="pre">Analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">analysis_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ops_grillage_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pyfile</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_counter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ele_counter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">analysis_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Static'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_counter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pattern_counter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.Analysis" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Main class to handle the run/execution of load case + load combination + moving load analysis. Analysis class is
-created and used within OpsGrillage class after “adding load case”, “adding load combination” and “adding moving
-load” procedures.</p>
-<p>The following are the roles of Analysis object:</p>
-<ul class="simple">
-<li><p>store information of ops commands for performing static (default) analysis of single/multiple load case(s).</p></li>
-<li><p>execute the required ops commands to perform analysis using the OpsGrillage model instance.</p></li>
-<li><p>if flagged, writes an executable py file instead which performs the exact analysis as it would for an OpsGrillage instance instead.</p></li>
-<li><p>manages multiple load case’s ops.load() commands, applying the specified load factors to the load cases for load combinations</p></li>
-</ul>
-</dd></dl>
-
 </div>
 <div class="section" id="result-objects">
 <h3>Result objects<a class="headerlink" href="#result-objects" title="Permalink to this headline">¶</a></h3>
-<dl class="py class">
-<dt class="sig sig-object py" id="OpsGrillage.Results">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">OpsGrillage.</span></span><span class="sig-name descname"><span class="pre">Results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh_obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#Mesh.Mesh" title="Mesh.Mesh"><span class="pre">Mesh.Mesh</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.Results" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Main class to store results of an Analysis class object, process into data array output for post processing/plotting.
-Class object is accessed within OpsGrillage class object.</p>
-</dd></dl>
-
 </div>
 </div>
 <div class="section" id="material-class">
 <h2>Material class<a class="headerlink" href="#material-class" title="Permalink to this headline">¶</a></h2>
-<p>For information regarding the procedures in <a class="reference internal" href="OpsGrillage.html#module-OpsGrillage" title="OpsGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code></a> class, see
+<p>For information regarding the procedures in <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> class, see
 <a class="reference internal" href="ModuleDoc.html"><span class="doc">Module design</span></a>.</p>
 <div class="section" id="opensees-uniaxial-materials">
 <h3>Opensees Uniaxial Materials<a class="headerlink" href="#opensees-uniaxial-materials" title="Permalink to this headline">¶</a></h3>
-<dl class="py class">
-<dt class="sig sig-object py" id="Material.UniAxialElasticMaterial">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Material.</span></span><span class="sig-name descname"><span class="pre">UniAxialElasticMaterial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mat_type</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Material.UniAxialElasticMaterial" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="Material.html#Material.Material" title="Material.Material"><code class="xref py py-class docutils literal notranslate"><span class="pre">Material.Material</span></code></a></p>
-<p>Main class for Opensees UniAxialElasticMaterial objects. This class acts as a wrapper to parse input parameters
-and returns command lines to generate the prescribe materials in Opensees material library.</p>
-</dd></dl>
-
 </div>
 <div class="section" id="opensees-nd-materials">
 <h3>Opensees ND materials<a class="headerlink" href="#opensees-nd-materials" title="Permalink to this headline">¶</a></h3>
-<dl class="py class">
-<dt class="sig sig-object py" id="Material.NDmaterial">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Material.</span></span><span class="sig-name descname"><span class="pre">NDmaterial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mat_type</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Material.NDmaterial" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="Material.html#Material.Material" title="Material.Material"><code class="xref py py-class docutils literal notranslate"><span class="pre">Material.Material</span></code></a></p>
-<p>Main class for Opensees ND material object. This class wraps the ND material object by sorting input parameters and
-parse into input commands for ops commands.</p>
-</dd></dl>
-
 </div>
 </div>
 <div class="section" id="section-class">
 <h2>Section class<a class="headerlink" href="#section-class" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="member_sections.Section">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">member_sections.</span></span><span class="sig-name descname"><span class="pre">Section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">op_ele_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'elasticBeamColumn'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_mass_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_section_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Elastic'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#member_sections.Section" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Section class to define various grillage sections. Class</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>E</strong> (<em>float</em>) – Elastic modulus</p></li>
-<li><p><strong>A</strong> (<em>float</em>) – Cross sectional area</p></li>
-<li><p><strong>Iz</strong> (<em>float</em>) – Moment of inertia about z axis</p></li>
-<li><p><strong>J</strong> (<em>float</em>) – Torsional inertia</p></li>
-<li><p><strong>Ay</strong> (<em>float</em>) – Cross sectional area in the y direction</p></li>
-<li><p><strong>Az</strong> (<em>float</em>) – Cross sectional area in the z direction</p></li>
-<li><p><strong>Iy</strong> (<em>float</em>) – Moment of inertia about z axis</p></li>
-<li><p><strong>G</strong> (<em>float</em>) – Shear modulus</p></li>
-<li><p><strong>alpha_y</strong> (<em>float</em>) – shear shape factor along the local y-axis (optional)</p></li>
-<li><p><strong>op_ele_type</strong> (<em>str</em>) – Opensees element type</p></li>
-<li><p><strong>op_section_type</strong> (<em>str</em>) – Opensees section type</p></li>
-<li><p><strong>unit_width</strong> (<em>bool</em>) – Flag for unit width properties</p></li>
-</ul>
-</dd>
-</dl>
-<p>Example
-section(‘Elastic’, BeamSecTag,Ec,ABeam,IzBeam)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Keyword</dt>
-<dd class="field-odd"><p></p></dd>
-</dl>
-</dd></dl>
-
 </div>
 <div class="section" id="grillagemember-class">
 <h2>GrillageMember class<a class="headerlink" href="#grillagemember-class" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="member_sections.GrillageMember">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">member_sections.</span></span><span class="sig-name descname"><span class="pre">GrillageMember</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">section</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="GrillageMember.html#member_sections.Section" title="member_sections.Section"><span class="pre">member_sections.Section</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">material</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">member_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Undefined'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quad_ele_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tri_ele_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#member_sections.GrillageMember" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Main class for Grillage member definition. Class requires two objects as input parameters: a Section object and a
-Material object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>section</strong> (<a class="reference internal" href="GrillageMember.html#member_sections.Section" title="member_sections.Section"><code class="xref py py-class docutils literal notranslate"><span class="pre">Section</span></code></a>) – Section class object assigned to GrillageMember</p></li>
-<li><p><strong>material</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">uniaxialMaterial</span></code>) – Material class object assigned to GrillageMember</p></li>
-<li><p><strong>name</strong> – Name of the grillage member (Optional)</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
 </div>
 <div class="section" id="mesh-class">
 <h2>Mesh class<a class="headerlink" href="#mesh-class" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="Mesh.Mesh">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Mesh.</span></span><span class="sig-name descname"><span class="pre">Mesh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">long_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trans_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_dist_a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_dist_b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_trans_beam</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_long_beam</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skew_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skew_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ext_to_int_a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ext_to_int_b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orthogonal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pt1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Point(x=0,</span> <span class="pre">y=0,</span> <span class="pre">z=0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pt2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Point(x=0,</span> <span class="pre">y=0,</span> <span class="pre">z=0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pt3</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">element_counter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_counter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform_counter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_x_grid_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_edge_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quad_ele</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Mesh.Mesh" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Class for mesh groups. The class holds information pertaining the mesh group such as element connectivity and nodes
-of the mesh object.</p>
-</dd></dl>
-
 </div>
 <div class="section" id="load-class">
 <h2>Load class<a class="headerlink" href="#load-class" title="Permalink to this headline">¶</a></h2>
@@ -542,205 +246,21 @@ of the mesh object.</p>
 <a class="reference internal" href="Loads.html"><span class="doc">Load</span></a>.</p>
 <div class="section" id="nodalload">
 <h3>NodalLoad<a class="headerlink" href="#nodalload" title="Permalink to this headline">¶</a></h3>
-<dl class="py class">
-<dt class="sig sig-object py" id="Load.NodalLoad">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Load.</span></span><span class="sig-name descname"><span class="pre">NodalLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_tag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_force</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Load.NodalLoad" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="Loads.html#Load.Loads" title="Load.Loads"><code class="xref py py-class docutils literal notranslate"><span class="pre">Load.Loads</span></code></a></p>
-<p>Main class for nodal load. Derived from Loads base class</p>
-<p>Nodal load takes a node tag and namedtuple NodalForce(Fx,Fy,Fz,Mx,My,Mz) as input.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<em>str</em>) – Name of load</p></li>
-<li><p><strong>node_tag</strong> (<em>int</em>) – Node tag of grillage model for nodal load to be applied</p></li>
-<li><p><strong>node_force</strong> (<em>NodalForces</em><em>(</em><em>Fx</em><em>,</em><em>Fy</em><em>,</em><em>Fz</em><em>,</em><em>Mx</em><em>,</em><em>My</em><em>,</em><em>Mz</em><em>)</em>) – Named tuple of node forces</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="Load.NodalLoad.get_nodal_load_str">
-<span class="sig-name descname"><span class="pre">get_nodal_load_str</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Load.NodalLoad.get_nodal_load_str" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to return ops.load() command for nodal load.</p>
-</dd></dl>
-
-</dd></dl>
-
 </div>
 <div class="section" id="pointload">
 <h3>PointLoad<a class="headerlink" href="#pointload" title="Permalink to this headline">¶</a></h3>
-<dl class="py class">
-<dt class="sig sig-object py" id="Load.PointLoad">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Load.</span></span><span class="sig-name descname"><span class="pre">PointLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Load.PointLoad" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="Loads.html#Load.Loads" title="Load.Loads"><code class="xref py py-class docutils literal notranslate"><span class="pre">Load.Loads</span></code></a></p>
-<p>Class for Point loads. Derived from based <a class="reference internal" href="Loads.html#Load.Loads" title="Load.Loads"><code class="xref py py-class docutils literal notranslate"><span class="pre">Loads</span></code></a> class</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> – Name of load</p></li>
-<li><p><strong>Fx</strong> – Axis force in x axis</p></li>
-<li><p><strong>Fy</strong> – Axis force in y axis</p></li>
-<li><p><strong>Fz</strong> – Axis force in z axis</p></li>
-<li><p><strong>Mx</strong> – Moment about x axis</p></li>
-<li><p><strong>My</strong> – Moment about y axis</p></li>
-<li><p><strong>Mz</strong> – Moment about z axis</p></li>
-<li><p><strong>kwargs</strong> – see below</p></li>
-</ul>
-</dd>
-<dt class="field-even">Keyword</dt>
-<dd class="field-even"><p></p></dd>
-</dl>
-<ul class="simple">
-<li><p><strong>point1</strong>, <strong>point2</strong>, …, <strong>point8</strong> : (LoadPoint namedTuple) coordinate points with force magnitude describing the load type</p></li>
-<li><p><strong>localpoint1</strong>, <strong>localpoint2</strong>, …, <strong>localpoint8</strong>: (LoadPoint namedTuple) local coordinate points with force magnitude describing the load type</p></li>
-</ul>
-</dd></dl>
-
 </div>
 <div class="section" id="lineloading">
 <h3>LineLoading<a class="headerlink" href="#lineloading" title="Permalink to this headline">¶</a></h3>
-<dl class="py class">
-<dt class="sig sig-object py" id="Load.LineLoading">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Load.</span></span><span class="sig-name descname"><span class="pre">LineLoading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Load.LineLoading" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="Loads.html#Load.Loads" title="Load.Loads"><code class="xref py py-class docutils literal notranslate"><span class="pre">Load.Loads</span></code></a></p>
-<p>Class for line loading. Derived from based Loads class</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> – Name of load</p></li>
-<li><p><strong>Fx</strong> – Axis force in x axis</p></li>
-<li><p><strong>Fy</strong> – Axis force in y axis</p></li>
-<li><p><strong>Fz</strong> – Axis force in z axis</p></li>
-<li><p><strong>Mx</strong> – Moment about x axis</p></li>
-<li><p><strong>My</strong> – Moment about y axis</p></li>
-<li><p><strong>Mz</strong> – Moment about z axis</p></li>
-<li><p><strong>kwargs</strong> – see below</p></li>
-</ul>
-</dd>
-<dt class="field-even">Keyword</dt>
-<dd class="field-even"><p></p></dd>
-</dl>
-<ul class="simple">
-<li><p><strong>point1</strong>, <strong>point2</strong>, …, <strong>point8</strong> : (LoadPoint namedTuple) coordinate points with force magnitude describing the load type</p></li>
-<li><p><strong>localpoint1</strong>, <strong>localpoint2</strong>, …, <strong>localpoint8</strong>: (LoadPoint namedTuple) local coordinate points with force magnitude describing the load type</p></li>
-</ul>
-</dd></dl>
-
 </div>
 <div class="section" id="patchloading">
 <h3>PatchLoading<a class="headerlink" href="#patchloading" title="Permalink to this headline">¶</a></h3>
-<dl class="py class">
-<dt class="sig sig-object py" id="Load.PatchLoading">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Load.</span></span><span class="sig-name descname"><span class="pre">PatchLoading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Load.PatchLoading" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="Loads.html#Load.Loads" title="Load.Loads"><code class="xref py py-class docutils literal notranslate"><span class="pre">Load.Loads</span></code></a></p>
-<p>Main class for Patch loads. Derived from base Loads class.</p>
-<p>Patch load can take up to 8 load points. By default requires at least 4 load point for patch (quadrilateral)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> – Name of load</p></li>
-<li><p><strong>Fx</strong> – Axis force in x axis</p></li>
-<li><p><strong>Fy</strong> – Axis force in y axis</p></li>
-<li><p><strong>Fz</strong> – Axis force in z axis</p></li>
-<li><p><strong>Mx</strong> – Moment about x axis</p></li>
-<li><p><strong>My</strong> – Moment about y axis</p></li>
-<li><p><strong>Mz</strong> – Moment about z axis</p></li>
-<li><p><strong>kwargs</strong> – see below</p></li>
-</ul>
-</dd>
-<dt class="field-even">Keyword</dt>
-<dd class="field-even"><p></p></dd>
-</dl>
-<ul class="simple">
-<li><p><strong>point1</strong>, <strong>point2</strong>, …, <strong>point8</strong> : (LoadPoint namedTuple) coordinate points with force magnitude describing the load type</p></li>
-<li><p><strong>localpoint1</strong>, <strong>localpoint2</strong>, …, <strong>localpoint8</strong>: (LoadPoint namedTuple) local coordinate points with force magnitude describing the load type</p></li>
-</ul>
-</dd></dl>
-
 </div>
 <div class="section" id="compoundload">
 <h3>CompoundLoad<a class="headerlink" href="#compoundload" title="Permalink to this headline">¶</a></h3>
-<dl class="py class">
-<dt class="sig sig-object py" id="Load.CompoundLoad">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Load.</span></span><span class="sig-name descname"><span class="pre">CompoundLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Load.CompoundLoad" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Main class for Compound load definition.</p>
-<p>When a Load object is pass as an input, CompoundLoad treats the initial positions (load_points) of the Load classes
-as local coordinates. Then CompoundLoad sets the loads “in-place” of the local coordinate. If class input local_coord
-is given, CompoundLoad replaces the coordinates of the initial load points (retaining the magnitude of load points)</p>
-<p>When set_global_coord() function is called, CompoundLoad sets the input global coordinate as the new centroid of the
-compounded load groups. This is done by shifting each local coordinate load point in all load groups under
-CompoundLoad by x (global) and z (global).</p>
-<p>Here are a few relationships between CompoundLoad and other classes</p>
-<ul class="simple">
-<li><p>CompoundLoad object can have Loads class and its inheritances (Line, Point, Patch)</p></li>
-<li><p>CompoundLoad handles functions of Load classes (e.g. move_load)</p></li>
-</ul>
-<dl class="py method">
-<dt class="sig sig-object py" id="Load.CompoundLoad.add_load">
-<span class="sig-name descname"><span class="pre">add_load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">load_obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="Loads.html#Load.Loads" title="Load.Loads"><span class="pre">Load.Loads</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_coord</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Mesh.Point</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Load.CompoundLoad.add_load" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to add load object to compound load group. If a local_coord parameter is given, this new local_coord overwrites the coordinates (either local or global) of the load object.</p>
-<dl class="simple">
-<dt>..note:</dt><dd><p>If load object is defined using local coordinate and local_coord is None, its default local coord precedes.</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>load_obj</strong> (<a class="reference internal" href="Loads.html#Load.PointLoad" title="Load.PointLoad"><em>PointLoad</em></a><em>,</em><a class="reference internal" href="Loads.html#Load.LineLoading" title="Load.LineLoading"><em>LineLoading</em></a><em>,</em><a class="reference internal" href="Loads.html#Load.PatchLoading" title="Load.PatchLoading"><em>PatchLoading</em></a>) – Load object</p></li>
-<li><p><strong>local_coord</strong> (<em>Point namedTuple</em>) – Local coordinate of load object</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="Load.CompoundLoad.set_global_coord">
-<span class="sig-name descname"><span class="pre">set_global_coord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_coord</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Mesh.Point</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Load.CompoundLoad.set_global_coord" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to set global coordinate of the compound load with respect to global coordinate system of grillage model.
-The global coordinate is set to all local load points (i.e. it adds the global coord x y z to each local coord)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>global_coord</strong> (<em>Point namedTuple</em>) – Value of x y z (global coord) to offset the basic coordinate system</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
 </div>
 <div class="section" id="movingload">
 <h3>MovingLoad<a class="headerlink" href="#movingload" title="Permalink to this headline">¶</a></h3>
-<dl class="py class">
-<dt class="sig sig-object py" id="Load.MovingLoad">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Load.</span></span><span class="sig-name descname"><span class="pre">MovingLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Load.MovingLoad" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Main class of moving load case. MovingLoad class parses and creates multiple loadcase object corresponding to
-traversing the input load groups - be it compound or single. Moving load is able to set various path (defined by
-Path class object) to individual load groups.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="Load.MovingLoad.add_loads">
-<span class="sig-name descname"><span class="pre">add_loads</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">load_obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="Loads.html#Load.Loads" title="Load.Loads"><span class="pre">Load.Loads</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="Loads.html#Load.CompoundLoad" title="Load.CompoundLoad"><span class="pre">Load.CompoundLoad</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_obj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Load.MovingLoad.add_loads" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to set a load type (Loads class object) with its path (Path class object). Function accepts compound load (Compound load class) as a load input, which in turn sets the path object to all loads within the compound
-load group.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>load_obj</strong> – Loads class object , or Compound load object</p></li>
-<li><p><strong>path_obj</strong> – Path class object - A path object must be defined for the Load class object. If none is defined, Load is treated as a static load and is added to each incremental analysis of the moving load</p></li>
-</ul>
-</dd>
-</dl>
-<p>Structure of lists (example)</p>
-<p>load_list = [1st LoadCase point,  2nd LoadCase patch, … , Nth LoadCase misc load]
-path_list = [Path for LoadCase point 1, [], … , [] for Nth path]</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Size of load_list and path_list must be identical.</p>
-</div>
-</dd></dl>
-
-</dd></dl>
-
 </div>
 </div>
 <div class="section" id="load-case-class">
@@ -749,82 +269,10 @@ path_list = [Path for LoadCase point 1, [], … , [] for Nth path]</p>
 <a class="reference internal" href="Loads.html"><span class="doc">Load</span></a>.</p>
 <div class="section" id="loadcase">
 <h3>LoadCase<a class="headerlink" href="#loadcase" title="Permalink to this headline">¶</a></h3>
-<dl class="py class">
-<dt class="sig sig-object py" id="Load.LoadCase">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Load.</span></span><span class="sig-name descname"><span class="pre">LoadCase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Load.LoadCase" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Main class for load cases. Each load case holds information about:
-#. Load object types (point line patch or combination i.e. compound load)
-#. load case ops load command line - this is generated by ops-grillage class method (add_load_case()) and updated to LoadCase class object.
-#. Load factor - all load objects within a Load case are link to one same load factor</p>
-<p>Here are a few relationships between LoadCase and other classes</p>
-<ul class="simple">
-<li><p>MovingLoad class creates a series of load case representing the movement of load objects in each load case.</p></li>
-<li><p>Load combination takes in several LoadCase class instance with varied load factors into a single analysis</p></li>
-<li><p>Analysis class handles the ops. commands required for</p></li>
-<li><p>OpsGrillage class takes in load case and updates the variable ‘load_command_list’ after distributing loads within the LoadCase class to nodes/elements of the Mesh in OpsGrillage.</p></li>
-<li><p>LoadCase class can have Load objects or CompoundLoad class object</p></li>
-</ul>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>name</strong> – str of load case name</p>
-</dd>
-</dl>
-</dd></dl>
-
 </div>
 </div>
 <div class="section" id="misc">
 <h2>Misc<a class="headerlink" href="#misc" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="Load.Path">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Load.</span></span><span class="sig-name descname"><span class="pre">Path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_point</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Mesh.Point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_point</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Mesh.Point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">increments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid_point</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Mesh.Point</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Load.Path" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="Load.ShapeFunction">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Load.</span></span><span class="sig-name descname"><span class="pre">ShapeFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_three_node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'triangle_linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">option_four_node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hermite'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Load.ShapeFunction" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Class for shape functions. Shape functions are presented as class methods. More shape functions can be added herein</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="Load.ShapeFunction.hermite_shape_function_1d">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">hermite_shape_function_1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zeta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Load.ShapeFunction.hermite_shape_function_1d" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>zeta</strong> – absolute position in x direction</p></li>
-<li><p><strong>a</strong> – absolute position in x direction</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Four terms [N1, N2, N3, N4] of hermite shape function</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="Load.ShapeFunction.linear_shape_function">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">linear_shape_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zeta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Load.ShapeFunction.linear_shape_function" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>zeta</strong> – absolute position in x direction</p></li>
-<li><p><strong>eta</strong> – absolute position in z direction</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Four terms [N1, N2, N3, N4] of Linear shape function</p>
-</dd>
-</dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Further validation needed - trial on different bridge models</p>
-</div>
-</dd></dl>
-
-</dd></dl>
-
 </div>
 </div>
 
