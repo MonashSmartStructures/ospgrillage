@@ -1692,3 +1692,24 @@ class Results:
             result = xr.Dataset({"displacements": basic_da, "forces": force_da, "ele_nodes": ele_nodes})
 
         return result
+
+
+# =====================================================================================================================
+# top level ospgrillage module functions.
+# =====================================================================================================================
+def create_section(**kwargs):
+    return Section(**kwargs)
+
+
+def create_material(**kwargs):
+    return Material(**kwargs)
+
+
+def create_member(**kwargs):
+    return GrillageMember(**kwargs)
+
+
+def set_member(ospg_obj: OpsGrillage, grillage_member_obj: GrillageMember, member_string=None):
+    return ospg_obj.set_member(grillage_member_obj=grillage_member_obj, member=member_string)
+
+

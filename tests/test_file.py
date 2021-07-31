@@ -8,8 +8,8 @@ def ref_28m_bridge():
     pyfile = False
     # reference super T bridge 28m for validation purpose
     # Members
-
-    concrete = og.Material(type="concrete", code="AS5100-2017", grade="50MPa")
+    concrete = og.create_material(type="concrete", code="AS5100-2017", grade="50MPa")
+    # concrete = og.Material(type="concrete", code="AS5100-2017", grade="50MPa")
     # define sections
     super_t_beam_section = og.Section(A=1.0447,
                                       J=0.230698, Iy=0.231329, Iz=0.533953,
@@ -639,6 +639,7 @@ def test_patch_partially_outside_mesh(bridge_model_42_negative):
 # test for comparing max deflection with a numerical comparison model in Lusas
 def test_28m_bridge(ref_28m_bridge):
     bridge_28 = ref_28m_bridge
+
     og.opsplt.plot_model("nodes")
     og.ops.wipeAnalysis()
     lane_point_1 = og.LoadPoint(20.89, 0, 3, 5)

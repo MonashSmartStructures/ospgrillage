@@ -59,7 +59,7 @@ Meshing algorithm
 ---------------------
 Lets use the following bridge mesh as an explanatory example. Herein, the variable names are given in brackets.
 
-..  figure:: ../../images/Moduledoc_1.PNG
+..  figure:: ../../_images/Moduledoc_1.PNG
     :align: center
     :scale: 75 %
 
@@ -165,7 +165,7 @@ The definition of the following components within *ops-grillage* requires attent
 For :class:`~LoadCase`, all load object inputs can be either local or global. Note when local coordinate is defined for a load object, a global reference coordinate needs to be defined or else
 the module raises an Error regarding its point/vertices values.
 
-..  figure:: ../../images/coordinate_system_mapping.PNG
+..  figure:: ../../_images/coordinate_system_mapping.PNG
     :align: center
     :scale: 75 %
 

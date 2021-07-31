@@ -107,14 +107,16 @@ The following code creates and add a point and line load to the :class:`Compound
 .. code-block:: python
 
     # compound load
-    C_Load = opsg.CompoundLoad("Lane and Barrier") # lane and barrier compounded
+    wheel_1 = opsg.PointLoad(opsg.LoadPoint(0, 0, 3, 5))
+    wheel_2 = opsg.PointLoad(opsg.LoadPoint(0, 0, 3, 5))
+    C_Load = opsg.CompoundLoad("Axle tandem")
 
 After creating a compound load, users will have to add :class:`~Loads` objects (Point, Line, Patch) to the Compound load object:
 
 .. code-block:: python
 
-    C_Load.add_load(load_obj=Single, local_coord=Point(5,0,5))
-    C_Load.add_load(load_obj=Barrier, local_coord=Point(3,0,5))
+    C_Load.add_load(load_obj=wheel_1, local_coord=Point(5,0,5))
+    C_Load.add_load(load_obj=wheel_2, local_coord=Point(3,0,5))
 
 .. note::
 
