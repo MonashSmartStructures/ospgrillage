@@ -23,25 +23,37 @@ To put it simply, any functions documented in this API reference page are consid
 There are many more functions which are lower level - these listed functions are the top level functions accessible
 from classes shown in UML diagram.
 
+Top level functions
+--------------------------
+
+.. currentmodule:: ospgrillage
+
+.. autosummary::
+   :toctree: generated/
+   :nosignatures:
+   :members:
+
+   opsgrillage
+
 
 OpsGrillage class
 ---------------------------
 
-.. autoclass:: opsgrillage.OpsGrillage
+.. autoclass:: ospgrillage.OpsGrillage
     :members:
     :show-inheritance:
 
 
 Analysis objects
 ^^^^^^^^^^^^^^^^
-.. autoclass:: opsgrillage.Analysis
+.. autoclass:: ospgrillage.Analysis
     :members:
     :show-inheritance:
 
 
 Result objects
 ^^^^^^^^^^^^^^^^
-.. autoclass:: opsgrillage.Results
+.. autoclass:: ospgrillage.Results
     :members:
     :show-inheritance:
 
