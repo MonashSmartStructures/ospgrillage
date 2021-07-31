@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+"""
+Module description
+"""
+
 import pprint
 from collections import namedtuple
 from collections.abc import Iterable

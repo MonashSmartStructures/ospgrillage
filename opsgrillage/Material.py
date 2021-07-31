@@ -1,5 +1,15 @@
+# -*- coding: utf-8 -*-
+"""
+Module contains the wrapper for the defintions of the OpenSeesPy materials.
+"""
+
 import json
 
+def create_material(**kwargs):
+    """
+    User interface function for material
+    """
+    return UniAxialElasticMaterial(**kwargs) 
 
 class Material:
     """
@@ -101,7 +111,6 @@ class Material:
             print("Material library unable to be read\nUsing default library")
             mat_lib = self._create_default_dict()
         return mat_lib
-
 
 class UniAxialElasticMaterial(Material):
     """

@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+"""
+Module description
+"""
+
 import numpy as np
 from scipy.spatial import distance
 from sympy import symbols, Eq, solve
