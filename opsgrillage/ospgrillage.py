@@ -8,7 +8,7 @@ import openseespy.opensees as ops
 
 from opsgrillage.load import *
 from opsgrillage.mesh import *
-from opsgrillage.material import *
+from opsgrillage.Material import *
 from opsgrillage.member_sections import *
 import xarray as xr
 
