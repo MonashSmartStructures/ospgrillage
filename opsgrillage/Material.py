@@ -6,10 +6,19 @@ class Material:
     Base class for Material objects
     """
 
-    def __init__(self, mat_type, **kwargs):
-        self.mat_type = mat_type
+    def __init__(self, **kwargs):
+        self.mat_type = None  # this is the os convention for materials e.g. Concrete01
         self.op_mat_arg = None
         # assigns variables for all kwargs for specific material types , else sets None
+        #
+        self.code = kwargs.get("code","AS5100-2017")
+        self.material_type = kwargs.get("type",None)
+        self.material_grade = kwargs.get("grade",None)
+
+        self.E = kwargs.get("E",None)
+        self.G = kwargs.get("G",None)
+        self.poisson = kwargs.get("v",None)
+
         # properties for Concrete
         self.fpc = kwargs.get("fpc", None)
         self.epsc0 = kwargs.get("epsc0", None)
@@ -27,7 +36,45 @@ class Material:
         self.a3 = kwargs.get("a3", None)
         self.a4 = kwargs.get("a4", None)
 
-        self._mat_lib = _read_mat_lib()
+        self._mat_lib = self._read_mat_lib()
+        self.parse_material_command()
+
+    def parse_material_command(self):
+        # function to parse the material inputs according to opensees inputs
+        # if standardized material, use material library
+        if self.code:
+            with open('mat_lib.json', "r") as f:
+                mat_lib = json.load(f)
+                self.poisson = mat_lib[self.material_type][self.code][self.material_grade]['v']
+                self.E = mat_lib[self.material_type][self.code][self.material_grade]['E']
+                self.fpc = mat_lib[self.material_type][self.code][self.material_grade]['fc']
+                self.density = mat_lib[self.material_type][self.code][self.material_grade]['rho']
+
+        else:  # a custom material
+            pass
+
+        if self.G is None:
+            self.G = self.E / (2 * (1 + self.poisson))  # if not G is defined, use formula to calculate G
+
+        if self.material_type == "concrete":
+            self.mat_type = "Concrete01"  # default opensees material type to represent concrete
+        elif self.material_type == "steel":
+            self.mat_type = "Steel01"  # default opensees material type to represent steel
+
+    def get_material_args(self):
+        # function to get material arguments. This function is handled by opsgrilalge during set_material
+        if self.mat_type == "Concrete01":
+            self.op_mat_arg = [self.fpc, self.epsc0, self.fpcu, self.epsU]
+        elif self.mat_type == "Steel01":
+            self.op_mat_arg = [self.Fy, self.E0, self.b, self.a1, self.a2, self.a3, self.a4]
+
+        # TO ADD MORE materials
+
+        # check if None in entries
+        if None in self.op_mat_arg:
+            raise Exception(
+                "One or more missing/non-numeric parameters for Material: {} ".format(self.mat_type))
+        return self.mat_type, self.op_mat_arg
 
     def _create_default_dict(self):
         """
