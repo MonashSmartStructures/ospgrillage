@@ -1,12 +1,40 @@
-# ----------------------------------------------------------------------------------------------------------------
+# -*- coding: utf-8 -*-
+"""
+This module manages user interface functions and class defintions for the
+grillage members. In our terminology, we define a section as the geomterical
+properties of the structural elements, and the member as the combination of
+the section and material properties.
+"""
+
+
+def create_section(**kwargs):
+    """
+    User interface for section creation
+    """
+    return Section(**kwargs)
+
+
+def create_member(**kwargs):
+    """
+    User interface for member creation
+    """
+    return GrillageMember(**kwargs)
+
+
 class Section:
     """
     Section class to define various grillage sections. Class
     """
 
-    def __init__(self, op_ele_type="elasticBeamColumn", mass=0,
-                 c_mass_flag=False,
-                 unit_width=False, op_section_type="Elastic", **kwargs):
+    def __init__(
+        self,
+        op_ele_type="elasticBeamColumn",
+        mass=0,
+        c_mass_flag=False,
+        unit_width=False,
+        op_section_type="Elastic",
+        **kwargs
+    ):
         """
         :param E: Elastic modulus
         :type E: float

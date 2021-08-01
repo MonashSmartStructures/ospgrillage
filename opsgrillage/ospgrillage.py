@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+"""
+Module description
+"""
+
 import math
 from datetime import datetime
 from itertools import combinations
