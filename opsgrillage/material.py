@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
 """
-Module contains the wrapper for the defintions of the OpenSeesPy materials.
+Module contains the wrapper for the definitions of the OpenSeesPy materials.
 """
 
 import json
+
 
 def create_material(**kwargs):
     """
     User interface function for material
     """
-    return UniAxialElasticMaterial(**kwargs) 
+    return Material(**kwargs)
+
 
 class Material:
     """
@@ -21,13 +23,13 @@ class Material:
         self.op_mat_arg = None
         # assigns variables for all kwargs for specific material types , else sets None
         #
-        self.code = kwargs.get("code","AS5100-2017")
-        self.material_type = kwargs.get("type",None)
-        self.material_grade = kwargs.get("grade",None)
+        self.code = kwargs.get("code", "AS5100-2017")
+        self.material_type = kwargs.get("type", None)
+        self.material_grade = kwargs.get("grade", None)
 
-        self.E = kwargs.get("E",None)
-        self.G = kwargs.get("G",None)
-        self.poisson = kwargs.get("v",None)
+        self.E = kwargs.get("E", None)
+        self.G = kwargs.get("G", None)
+        self.poisson = kwargs.get("v", None)
 
         # properties for Concrete
         self.fpc = kwargs.get("fpc", None)
@@ -88,6 +90,7 @@ class Material:
 
     def _create_default_dict(self):
         """
+        Function to create the default mat_lib.js file. The default version is 0.0.1.
         Just to make sure the JSON file is formatted correctly
         Note: 1 ksi = 6.89475728 MPa
         """
@@ -148,16 +151,16 @@ class Material:
         with open("mat_lib.json", "w") as f:
             json.dump(self._mat_lib, f, indent=4)
 
-
     def _read_mat_lib(self):
         mat_lib = {}
         try:
             with open("mat_lib.json", "r") as f:
-               mat_lib = json.load(f)
+                mat_lib = json.load(f)
         except (FileNotFoundError, IOError):
             print("Material library unable to be read\nUsing default library")
             mat_lib = self._create_default_dict()
         return mat_lib
+
 
 class UniAxialElasticMaterial(Material):
     """
@@ -201,6 +204,7 @@ class UniAxialElasticMaterial(Material):
             )
         return mat_str
 
+
 class NDmaterial(Material):
     """
     Main class for Opensees ND material object. This class wraps the ND material object by sorting input parameters and
@@ -215,7 +219,3 @@ class NDmaterial(Material):
 
     def get_nd_ops_commands(self):
         pass
-
-
-
-

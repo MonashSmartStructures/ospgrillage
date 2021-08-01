@@ -11,27 +11,27 @@ def ref_28m_bridge():
     concrete = og.create_material(type="concrete", code="AS5100-2017", grade="50MPa")
     # concrete = og.Material(type="concrete", code="AS5100-2017", grade="50MPa")
     # define sections
-    super_t_beam_section = og.Section(A=1.0447,
+    super_t_beam_section = og.create_section(A=1.0447,
                                       J=0.230698, Iy=0.231329, Iz=0.533953,
                                       Ay=0.397032, Az=0.434351)
-    transverse_slab_section = og.Section(A=0.5372,
+    transverse_slab_section = og.create_section(A=0.5372,
                                          J=2.79e-3, Iy=0.3988 / 2, Iz=1.45e-3 / 2,
                                          Ay=0.447 / 2, Az=0.447 / 2, unit_width=True)
-    end_tranverse_slab_section = og.Section(A=0.5372 / 2,
+    end_tranverse_slab_section = og.create_section(A=0.5372 / 2,
                                             J=2.68e-3, Iy=0.04985,
                                             Iz=0.725e-3,
                                             Ay=0.223, Az=0.223)
-    edge_beam_section = og.Section(A=0.039375,
+    edge_beam_section = og.create_section(A=0.039375,
                                    J=0.21e-3, Iy=0.1e-3,
                                    Iz=0.166e-3,
                                    Ay=0.0328, Az=0.0328)
 
     # define grillage members
-    super_t_beam = og.GrillageMember(member_name="Intermediate I-beams", section=super_t_beam_section,
+    super_t_beam = og.create_member(member_name="Intermediate I-beams", section=super_t_beam_section,
                                      material=concrete)
-    transverse_slab = og.GrillageMember(member_name="concrete slab", section=transverse_slab_section, material=concrete)
-    edge_beam = og.GrillageMember(member_name="exterior I beams", section=edge_beam_section, material=concrete)
-    end_tranverse_slab = og.GrillageMember(member_name="edge transverse", section=end_tranverse_slab_section,
+    transverse_slab = og.create_member(member_name="concrete slab", section=transverse_slab_section, material=concrete)
+    edge_beam = og.create_member(member_name="exterior I beams", section=edge_beam_section, material=concrete)
+    end_tranverse_slab = og.create_member(member_name="edge transverse", section=end_tranverse_slab_section,
                                            material=concrete)
 
     bridge_28 = og.OpsGrillage(bridge_name="SuperT_28m", long_dim=28, width=7, skew=0,

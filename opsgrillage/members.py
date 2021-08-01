@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-This module manages user interface functions and class defintions for the
-grillage members. In our terminology, we define a section as the geomterical
+This module manages user interface functions and class definitions for the
+grillage members. In our terminology, we define a section as the geometrical
 properties of the structural elements, and the member as the combination of
 the section and material properties.
 """
