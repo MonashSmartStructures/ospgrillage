@@ -1,6 +1,6 @@
 # Example module interface for ops-grillage
 # import modules
-import ospgrillage as og
+import opsgrillage as og
 from og.PlotWizard import *
 
 # define material

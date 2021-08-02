@@ -11,7 +11,7 @@ from typing import Union
 
 from scipy import interpolate
 
-from ospgrillage.mesh import *
+from opsgrillage.mesh import *
 
 
 def create_load_case(**kwargs):

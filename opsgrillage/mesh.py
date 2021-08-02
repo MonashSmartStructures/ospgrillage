@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------------------------------------------
 # Mesh class
 # ----------------------------------------------------------------------------------------------------------------
-from ospgrillage.static import *
+from opsgrillage.static import *
 from collections import namedtuple
 
 # named tuple definition

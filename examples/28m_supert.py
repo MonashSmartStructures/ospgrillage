@@ -1,4 +1,4 @@
-import ospgrillage as og
+import opsgrillage as og
 
 pyfile = False
 

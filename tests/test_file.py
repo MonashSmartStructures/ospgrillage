@@ -1,5 +1,5 @@
 import pytest
-import ospgrillage as og
+import opsgrillage as og
 
 # ------------------------------------------------------------------------------------------------------------------
 # create reference bridge model
