@@ -97,6 +97,12 @@ beam-and-slab bridge deck. The model comprises of standard grillage members of:
 - Two transverse edge slabs
 - Remaing transverse slabs
 
+..  figure:: ../../images/Standard_elements.png
+    :align: center
+    :scale: 75 %
+
+    Figure 2: Standard elements supported by *ospgrillage*
+
 The :class:`~OpsGrillage` class takes:
 
 - ``bridge_name``: A :py:class:`str` of the grillage model name.
@@ -107,6 +113,14 @@ The :class:`~OpsGrillage` class takes:
 - ``num_trans_grid``: An :py:class:`int` of the number of grid lines to be uniformly spaced along the transverse direction - each grid line represents the total number of transverse members.
 - ``edge_beam_dist``: A :py:class:`float` of the distance between exterior longitudinal beams to edge beam.
 - ``mesh_type``: Mesh type of grillage model. Must take a :py:class:`str` input of either "Ortho" or "Oblique". The default is "Ortho" (an orthogonal mesh). However, "Ortho" is not accepted for certain skew angles.
+
+
+..  figure:: ../../images/edge_angles.png
+    :align: center
+    :scale: 75 %
+
+    Figure 3: Grid numbers and edge angles
+
 
 For the example bridge, the following code line with the prescribed variables creates the :class:`~OpsGrillage` object:
 

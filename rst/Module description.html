@@ -254,6 +254,10 @@ beam-and-slab bridge deck. The model comprises of standard grillage members of:<
 <li><p>Two transverse edge slabs</p></li>
 <li><p>Remaing transverse slabs</p></li>
 </ul>
+<div class="figure align-center" id="id2">
+<a class="reference internal image-reference" href="../images/Standard_elements.png"><img alt="../images/Standard_elements.png" src="../images/Standard_elements.png" /></a>
+<p class="caption"><span class="caption-text">Figure 2: Standard elements supported by <em>ospgrillage</em></span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+</div>
 <p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> class takes:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">bridge_name</span></code>: A <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> of the grillage model name.</p></li>
@@ -265,6 +269,10 @@ beam-and-slab bridge deck. The model comprises of standard grillage members of:<
 <li><p><code class="docutils literal notranslate"><span class="pre">edge_beam_dist</span></code>: A <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code> of the distance between exterior longitudinal beams to edge beam.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">mesh_type</span></code>: Mesh type of grillage model. Must take a <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> input of either “Ortho” or “Oblique”. The default is “Ortho” (an orthogonal mesh). However, “Ortho” is not accepted for certain skew angles.</p></li>
 </ul>
+<div class="figure align-center" id="id3">
+<a class="reference internal image-reference" href="../images/edge_angles.png"><img alt="../images/edge_angles.png" src="../images/edge_angles.png" /></a>
+<p class="caption"><span class="caption-text">Figure 3: Grid numbers and edge angles</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+</div>
 <p>For the example bridge, the following code line with the prescribed variables creates the <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> object:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span> <span class="o">=</span> <span class="n">opsg</span><span class="o">.</span><span class="n">OpsGrillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;SuperT_10m&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">skew</span><span class="o">=-</span><span class="mi">21</span><span class="p">,</span>
                      <span class="n">num_long_grid</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">edge_beam_dist</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mesh_type</span><span class="o">=</span><span class="s2">&quot;Ortho&quot;</span><span class="p">)</span>
