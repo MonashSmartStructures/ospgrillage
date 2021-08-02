@@ -227,12 +227,67 @@ from classes shown in UML diagram.</p>
 <h2>Material class<a class="headerlink" href="#material-class" title="Permalink to this headline">¶</a></h2>
 <p>For information regarding the procedures in <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> class, see
 <a class="reference internal" href="ModuleDoc.html"><span class="doc">Module design</span></a>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="material.Material">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">material.</span></span><span class="sig-name descname"><span class="pre">Material</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#material.Material" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class for Material objects</p>
+</dd></dl>
+
 </div>
 <div class="section" id="section-class">
 <h2>Section class<a class="headerlink" href="#section-class" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="members.Section">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">members.</span></span><span class="sig-name descname"><span class="pre">Section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">op_ele_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'elasticBeamColumn'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_mass_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_section_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Elastic'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#members.Section" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Section class to define various grillage sections. Class</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>E</strong> (<em>float</em>) – Elastic modulus</p></li>
+<li><p><strong>A</strong> (<em>float</em>) – Cross sectional area</p></li>
+<li><p><strong>Iz</strong> (<em>float</em>) – Moment of inertia about z axis</p></li>
+<li><p><strong>J</strong> (<em>float</em>) – Torsional inertia</p></li>
+<li><p><strong>Ay</strong> (<em>float</em>) – Cross sectional area in the y direction</p></li>
+<li><p><strong>Az</strong> (<em>float</em>) – Cross sectional area in the z direction</p></li>
+<li><p><strong>Iy</strong> (<em>float</em>) – Moment of inertia about z axis</p></li>
+<li><p><strong>G</strong> (<em>float</em>) – Shear modulus</p></li>
+<li><p><strong>alpha_y</strong> (<em>float</em>) – shear shape factor along the local y-axis (optional)</p></li>
+<li><p><strong>op_ele_type</strong> (<em>str</em>) – Opensees element type</p></li>
+<li><p><strong>op_section_type</strong> (<em>str</em>) – Opensees section type</p></li>
+<li><p><strong>unit_width</strong> (<em>bool</em>) – Flag for unit width properties</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example
+section(‘Elastic’, BeamSecTag,Ec,ABeam,IzBeam)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="grillagemember-class">
 <h2>GrillageMember class<a class="headerlink" href="#grillagemember-class" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="members.GrillageMember">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">members.</span></span><span class="sig-name descname"><span class="pre">GrillageMember</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">section</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#members.Section" title="members.Section"><span class="pre">members.Section</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">material</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">member_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Undefined'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quad_ele_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tri_ele_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#members.GrillageMember" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Main class for Grillage member definition. Class requires two objects as input parameters: a Section object and a
+Material object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>section</strong> (<a class="reference internal" href="#members.Section" title="members.Section"><code class="xref py py-class docutils literal notranslate"><span class="pre">Section</span></code></a>) – Section class object assigned to GrillageMember</p></li>
+<li><p><strong>material</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">uniaxialMaterial</span></code>) – Material class object assigned to GrillageMember</p></li>
+<li><p><strong>name</strong> – Name of the grillage member (Optional)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="mesh-class">
 <h2>Mesh class<a class="headerlink" href="#mesh-class" title="Permalink to this headline">¶</a></h2>
