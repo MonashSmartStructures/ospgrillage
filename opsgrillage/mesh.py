@@ -322,8 +322,9 @@ class Mesh:
                     self.first_connecting_region_nodes = self.assigned_node_tag
                 self.ortho_previous_node_column = self.assigned_node_tag
                 self.assigned_node_tag = []
-            self.global_edge_count += 1
+
             print("Edge mesh @ start span completed")
+        self.global_edge_count += 1
         # --------------------------------------------------------------------------------------------
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         # second edge construction line

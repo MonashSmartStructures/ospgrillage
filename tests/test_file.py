@@ -769,14 +769,13 @@ def test_simple_grid():
     simply_grid.set_member(super_t_beam, member="interior_main_beam")
     simply_grid.set_member(super_t_beam, member="exterior_main_beam_1")
     simply_grid.set_member(super_t_beam, member="exterior_main_beam_2")
-    # simply_grid.set_member(super_t_beam, member="edge_beam")
     simply_grid.set_member(edge_beam, member="edge_beam")
     simply_grid.set_member(transverse_slab, member="transverse_slab")
     simply_grid.set_member(end_tranverse_slab, member="start_edge")
     simply_grid.set_member(end_tranverse_slab, member="end_edge")
 
     pyfile = False
-    simply_grid.create_ops(pyfile=pyfile)
+    simply_grid.create_ops(pyfile=False)
     # opsv.plot_model("nodes")
     # plt.show()
 
@@ -786,18 +785,18 @@ def test_simple_grid():
     point_2 = og.LoadPoint(L / 2, 0, w, 1e3)
     # test_load = opsg.LineLoading("Test Load", point1=point_1, point2=point_2)
     test_load = og.LineLoading("Test Load", point1=point_1, point2=point_2)  #
-    test_load = og.PointLoad("Test Point", point1=og.LoadPoint(L / 2, 0, w / 2, 1e3))
+    #test_load = og.PointLoad("Test Point", point1=og.LoadPoint(L / 2, 0, w / 2, 1e3))
 
     # Load case creating and assign
     test_case = og.LoadCase(name="Test Case")
     test_case.add_load_groups(test_load)
-    test_load2 = og.PointLoad("Test Point", point1=og.LoadPoint(L / 2, 0, 1.7, 1e3))
+    #test_load2 = og.PointLoad("Test Point", point1=og.LoadPoint(L / 2, 0, 1.7, 1e3))
     # test_load3 = PointLoad("Test Point", point1 = LoadPoint(L/2,0,w,1e3))
-    test_load4 = og.PointLoad("Test Point", point1=og.LoadPoint(L / 2, 0, 0.3, 1e3))
+    #test_load4 = og.PointLoad("Test Point", point1=og.LoadPoint(L / 2, 0, 0.3, 1e3))
     # test_load5 = PointLoad("Test Point", point1 = LoadPoint(L/2,0,0,1e3))
-    test_case.add_load_groups(test_load2)
+    #test_case.add_load_groups(test_load2)
     # test_case.add_load_groups(test_load3)
-    test_case.add_load_groups(test_load4)
+    #test_case.add_load_groups(test_load4)
     # test_case.add_load_groups(test_load5)
     simply_grid.add_load_case(test_case)  # adding load case to grillage model
     simply_grid.add_load_combination("ULS", {test_case.name: 2})

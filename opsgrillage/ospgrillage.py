@@ -20,7 +20,7 @@ import xarray as xr
 
 def create_grillage(**kwargs):
     """
-    User interface for creating grillage model
+    User interface for creating grillage model / OpsGrilage object.
     """
     return OpsGrillage(**kwargs)
 
