@@ -31,7 +31,9 @@ from classes shown in UML diagram.
 Top level functions
 --------------------------
 
-
+.. automodule:: ospgrillage
+    :members:
+    :show-inheritance:
 
 OpsGrillage class
 ---------------------------

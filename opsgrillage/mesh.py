@@ -87,9 +87,9 @@ class Mesh:
         self.zeta, self.m, self.c = self.sweep_path.get_sweep_line_properties()  # properties m,c,zeta angle
         # ------------------------------------------------------------------------------------------
         # check condition for orthogonal mesh
-        if self.skew_1 is not 0:
+        if self.skew_1 != 0:
             self.__check_skew(self.skew_1, self.zeta)
-        elif self.skew_2 is not 0:
+        elif self.skew_2 != 0:
             self.__check_skew(self.skew_2, self.zeta)
 
         # check if angle between construction line and sweep path is sufficiently small - if greater meshing will

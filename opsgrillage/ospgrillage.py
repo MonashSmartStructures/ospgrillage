@@ -146,6 +146,7 @@ class OpsGrillage:
         # default vector for standard (for 2D grillage in x - z plane) - 1 represent fix for [Vx,Vy,Vz, Mx, My, Mz]
         self.fix_val_pin = [1, 1, 1, 0, 0, 0]  # pinned
         self.fix_val_roller_x = [0, 1, 1, 0, 0, 0]  # roller
+        self.fix_val_fixed = [1,1,1,1,1,1]  # rigid /fixed support
         # special rules for grillage - alternative to Properties of grillage definition - use for special dimensions
         self.skew_threshold = [10, 30]  # threshold for grillage to allow option of mesh choices
         self.deci_tol = 4  # tol of decimal places
@@ -1029,11 +1030,12 @@ class OpsGrillage:
                 w1 = line_load_obj.interpolate_udl_magnitude([p1.x, p1.y, p1.z])
                 w2 = line_load_obj.interpolate_udl_magnitude([p2.x, p2.y, p2.z])
                 W = (w1 + w2) / 2
+                mag = W*L
                 # get mid point of line
                 x_bar = ((2 * w1 + w2) / (w1 + w2)) * L / 3  # from p2
                 load_point = line_load_obj.get_point_given_distance(xbar=x_bar,
                                                                     point_coordinate=[p2.x, p2.y, p2.z])
-                load_str = self.assign_point_to_four_node(point=load_point, mag=W)
+                load_str = self.assign_point_to_four_node(point=load_point, mag=mag)
                 load_str_line += load_str  # append to major list for line load
                 assigned_ele.append(ele[0])
         return load_str_line

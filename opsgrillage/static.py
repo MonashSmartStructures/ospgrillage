@@ -220,7 +220,7 @@ def solve_zeta_eta(xp, zp, x1, z1, x2, z2, x3, z3, x4, z4):
     eq2 = Eq(
         4 * xp - ((1 - x) * (1 - z) * x1 + (1 + x) * (1 - z) * x2 + (1 + x) * (1 + z) * x3 + (1 - x) * (1 + z) * x4), 0)
     sol = solve((eq1, eq2), (x, z))
-    return sol[x], sol[z]
+    return sol[x], sol[z]  # sol[x] = eta, sol[z] = zeta
 
 
 #

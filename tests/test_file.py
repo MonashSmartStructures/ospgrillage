@@ -80,7 +80,7 @@ def bridge_model_42_negative(ref_bridge_properties):
     I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
 
     # construct grillage model
-    example_bridge = og.OpsGrillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=-42,
+    example_bridge = og.OpsGrillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=0,
                                     num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
 
     # set grillage member to element groups of grillage model
