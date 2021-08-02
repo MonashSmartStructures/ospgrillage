@@ -4,7 +4,7 @@
 API reference
 ====================
 
-This page includes the technical content deliverables of the documentation. Instructions on variables and function
+This page presents the technical content deliverables of the module. Instructions on variables and function
 showing their interactions, both within and across various classes, are presented herein.
 
 UML diagram overview
@@ -26,22 +26,12 @@ from classes shown in UML diagram.
 Top level functions
 --------------------------
 
-.. currentmodule:: ospgrillage
-
-.. autosummary::
-   :toctree: generated/
-   :nosignatures:
-   :members:
-
-   opsgrillage
-
 
 OpsGrillage class
 ---------------------------
 
-.. autoclass:: ospgrillage.OpsGrillage
+.. automodule:: ospgrillage
     :members:
-    :show-inheritance:
 
 
 Analysis objects
