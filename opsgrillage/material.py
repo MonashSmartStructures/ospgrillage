@@ -55,12 +55,10 @@ class Material:
         # function to parse the material inputs according to opensees inputs
         # if standardized material, use material library
         if self.code:
-            with open('mat_lib.json', "r") as f:
-                mat_lib = json.load(f)
-                self.poisson = mat_lib[self.material_type][self.code][self.material_grade]['v']
-                self.E = mat_lib[self.material_type][self.code][self.material_grade]['E']
-                self.fpc = mat_lib[self.material_type][self.code][self.material_grade]['fc']
-                self.density = mat_lib[self.material_type][self.code][self.material_grade]['rho']
+            self.poisson = self._mat_lib[self.material_type][self.code][self.material_grade]['v']
+            self.E = self._mat_lib[self.material_type][self.code][self.material_grade]['E']
+            self.fpc = self._mat_lib[self.material_type][self.code][self.material_grade]['fc']
+            self.density = self._mat_lib[self.material_type][self.code][self.material_grade]['rho']
 
         else:  # a custom material
             pass

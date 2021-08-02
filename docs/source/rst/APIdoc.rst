@@ -19,6 +19,11 @@ UML diagram overview
 
 What functions are considered public API?
 ------------------------------------------
+This module comprised of user interface functions to
+
+This module manages user interface functions and class definitions for the
+grillage members.
+
 To put it simply, any functions documented in this API reference page are considered part of *ops-grillage*'s public API.
 There are many more functions which are lower level - these listed functions are the top level functions accessible
 from classes shown in UML diagram.
@@ -34,14 +39,14 @@ OpsGrillage class
     :members:
 
 
-Analysis objects
+Analysis class
 ^^^^^^^^^^^^^^^^
 .. autoclass:: ospgrillage.Analysis
     :members:
     :show-inheritance:
 
 
-Result objects
+Result class
 ^^^^^^^^^^^^^^^^
 .. autoclass:: ospgrillage.Results
     :members:
@@ -54,30 +59,20 @@ For information regarding the procedures in :class:`~OpsGrillage` class, see
 :doc:`ModuleDoc`.
 
 
-Opensees Uniaxial Materials
-^^^^^^^^^^^^^^^^
-
 .. autoclass:: material.Material
-    :members:
-    :show-inheritance:
-
-Opensees ND materials
-^^^^^^^^^^^^^^^^
-
-.. autoclass:: material.NDmaterial
     :members:
     :show-inheritance:
 
 Section class
 ------------------------------------------
 
-.. autoclass:: member_sections.Section
+.. autoclass:: members.Section
     :members:
     :show-inheritance:
 
 GrillageMember class
 ------------------------------------------
-.. autoclass:: member_sections.GrillageMember
+.. autoclass:: members.GrillageMember
     :members:
     :show-inheritance:
 
