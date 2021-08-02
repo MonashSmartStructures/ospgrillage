@@ -32,6 +32,7 @@ Top level functions
 --------------------------
 
 
+
 OpsGrillage class
 ---------------------------
 
@@ -41,7 +42,7 @@ OpsGrillage class
 
 Analysis class
 ^^^^^^^^^^^^^^^^
-.. autoclass:: ospgrillage.Analysis
+.. autoclass:: opsgrillage/ospgrillage.Analysis
     :members:
     :show-inheritance:
 

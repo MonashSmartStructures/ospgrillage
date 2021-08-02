@@ -107,14 +107,16 @@ The following code creates and add a point and line load to the :class:`Compound
 .. code-block:: python
 
     # compound load
-    C_Load = opsg.CompoundLoad("Lane and Barrier") # lane and barrier compounded
+    wheel_1 = opsg.PointLoad(opsg.LoadPoint(0, 0, 3, 5))
+    wheel_2 = opsg.PointLoad(opsg.LoadPoint(0, 0, 3, 5))
+    C_Load = opsg.CompoundLoad("Axle tandem")
 
 After creating a compound load, users will have to add :class:`~Loads` objects (Point, Line, Patch) to the Compound load object:
 
 .. code-block:: python
 
-    C_Load.add_load(load_obj=Single, local_coord=Point(5,0,5))
-    C_Load.add_load(load_obj=Barrier, local_coord=Point(3,0,5))
+    C_Load.add_load(load_obj=wheel_1, local_coord=Point(5,0,5))
+    C_Load.add_load(load_obj=wheel_2, local_coord=Point(3,0,5))
 
 .. note::
 
@@ -205,12 +207,6 @@ From here, use the ``add_moving_load_case()`` function of the :class:`OpsGrillag
 
 Defining load combination
 ------------------------
-.. note::
-
-    At the current stage, Load combinations are partially supported - there is no function to automatically plot and calculate
-    load combinations. To this, users will have to obtain the arrays from the data array output - explained in the next section -
-    and apply combination factors manually to the array (generally by array multiplication)
-
 Load combinations analysis are performed by using the :class:`OpsGrillage` function ``add_load_combination()`` function.
 Load combinations are defined by passing an input dictionary of basic load case name as keys with load factors as
 values. An example dictionary is shown as follows:
@@ -220,8 +216,10 @@ values. An example dictionary is shown as follows:
     load_combinations = {'Dead Load':1.2,'Live traffic':1.7}
     example_bridge.add_load_combination(name = "ULS", input_dict = load_combinations )
 
+Load combinations are automatically calculated at the end after analysing all load cases. The following section on Running Analysis will
+explain how these load combinations are extracted.
 
-Running anaylysis 
+Running analysis
 ------------------------
 
 Once all loadcases (static or moving) have been defined and added to the grillage the analysis can be conducted.
@@ -267,4 +265,12 @@ Here is an example of how the data array looks like in practice:
 
 From here, users can use xarray's function for data array to extract 'slices' of data
 
+For load combinations, users flag the `get_combination=` keyword as *True*.
 
+.. code-block:: python
+
+    load_combination_dict = example_bridge.get_results(get_combinations=True)
+
+Instead of two data arrays, the function returns a single dict with names of load combinations as key, paired with a data array
+of the load combination as its value. The data array has the same dimensions as those from basic_load_case_result and
+moving_load_results, only this time the arrays are modified by load factors defined for the load combinations.

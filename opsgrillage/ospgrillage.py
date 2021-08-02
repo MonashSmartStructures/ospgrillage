@@ -18,6 +18,13 @@ from opsgrillage.members import *
 import xarray as xr
 
 
+def create_grillage(**kwargs):
+    """
+    User interface for creating grillage model
+    """
+    return OpsGrillage(**kwargs)
+
+
 class OpsGrillage:
     """
     Main class of Openseespy grillage model wrapper. Outputs an executable py file which generates the prescribed
@@ -470,8 +477,9 @@ class OpsGrillage:
         elif member == "end_edge":
             common_member_tag = 1
             edge_flag = True
-        elif member == "transverse_slab":  # For now, set None as to assign as slab
+        elif member == "transverse_slab":
             common_member_tag = "slab"
+            x_flag = True
         else:
             raise ValueError("Member str not a standard grillage element - refer to documentation/Module Description"
                              "for valid member and input string")
@@ -497,7 +505,7 @@ class OpsGrillage:
                                                  np.sqrt(lis[1][0] ** 2 + lis[1][1] ** 2 + lis[1][2] ** 2)) / 2)
                     else:
                         #
-                        break
+                        break # has assigned element
                 ele_width = np.mean(
                     ele_width_record)  # if member lies between a triangular and quadrilateral grid, get mean between
                 # both width
@@ -507,13 +515,7 @@ class OpsGrillage:
                                                                       transf_tag=ele[4], ele_width=ele_width,
                                                                       materialtag=material_tag, sectiontag=section_tag)
                 ele_command_list.append(ele_str)
-                # if self.pyfile:
-                #     with open(self.filename, 'a') as file_handle:
-                #         file_handle.write(ele_str)
-                # else:
-                #     eval(ele_str)
-        else:
-            # loop each element z group assigned under common_member_tag
+        else: # non-unit width member assignment
             if z_flag:
                 for z_groups in self.Mesh_obj.common_z_group_element[common_member_tag]:
                     # assign properties to elements in z group
@@ -527,11 +529,6 @@ class OpsGrillage:
 
                         ele_command_list.append(ele_str)
 
-                        # if self.pyfile:
-                        #     with open(self.filename, 'a') as file_handle:
-                        #         file_handle.write(ele_str)
-                        # else:
-                        #     eval(ele_str)
                     self.ele_group_assigned_list.append(z_groups)
             elif edge_flag:
                 for ele in self.Mesh_obj.edge_span_ele:
@@ -545,14 +542,22 @@ class OpsGrillage:
                                                                               materialtag=material_tag,
                                                                               sectiontag=section_tag)
                         ele_command_list.append(ele_str)
-                        # if self.pyfile:
-                        #     with open(self.filename, 'a') as file_handle:
-                        #         file_handle.write(ele_str)
-                        # else:
-                        #     eval(ele_str)
                     self.ele_group_assigned_list.append("edge: {}".format(common_member_tag))
             # here set the element command list to the common member tag, if previously defined (key exist),
             # overwrite the element command list for that key
+            elif x_flag:
+                # assigns all transverse ele (regardless of width)
+                # This option is only for uniform grids
+                for ele in self.Mesh_obj.trans_ele:
+                    n1 = ele[1]  # node i
+                    n2 = ele[2]  # node j
+                    node_tag_list = [n1, n2]
+                    ele_width = 1
+                    ele_str = grillage_member_obj.get_element_command_str(ele_tag=ele[0], node_tag_list=node_tag_list,
+                                                                          transf_tag=ele[4], ele_width=ele_width,
+                                                                          materialtag=material_tag,
+                                                                          sectiontag=section_tag)
+                    ele_command_list.append(ele_str)
         ele_command_dict[common_member_tag] = ele_command_list
         self.element_command_list.append(ele_command_dict)
 
@@ -1538,7 +1543,8 @@ class Analysis:
                                ops.nodeCoord(nd2)[1]])
                 ez = np.array([ops.nodeCoord(nd1)[2],
                                ops.nodeCoord(nd2)[2]])
-
+                # here we use opsv's built section force distribution to get force components in element (beam for now)
+                # a bett
                 s_all, xl = opsv.section_force_distribution_3d(ex, ey, ez, ele_force, nep=2,
                                                                ele_load_data=['-beamUniform', 0., 0., 0.])
 
@@ -1546,7 +1552,7 @@ class Analysis:
         else:
             print("OpsGrillage is at output mode, pyfile = True. No results are extracted")
 
-        print("Extract completed")
+        print("Extraction of results completed for Analysis:{} ".format(self.analysis_name))
         return self.node_disp, self.ele_force
 
 

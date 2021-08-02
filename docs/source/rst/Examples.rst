@@ -54,7 +54,7 @@ Here are some more examples of what you can do with *ops-grillage* module.
     super_t_beam = og.create_member(member_name="Intermediate I-beams", section=super_t_beam_section, material=concrete)
     transverse_slab = og.create_member(member_name="concrete slab", section=transverse_slab_section, material=concrete)
     edge_beam = og.create_member(member_name="exterior I beams", section=edge_beam_section, material=concrete)
-    end_tranverse_slab = og.create_member(member_name="edge transverse", section=end_tranverse_slab_section,
+    end_transverse_slab = og.create_member(member_name="edge transverse", section=end_transverse_slab_section,
                                            material=concrete)
 
     bridge_28 = og.OpsGrillage(bridge_name="SuperT_28m", long_dim=L, width=H, skew=edge_skew,
@@ -84,7 +84,7 @@ Adding DL and SDL to analysis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code-block:: python
 
-    test
+    dead_load = LineLoading("DL",point1=point1,point2=point2)
 
 Adding a load combination for SDL and DL
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -92,7 +92,7 @@ To define load combinations, users provide a python dictionary with key being th
 and value being the load factor to be applied for load combination.
 
 .. code-block:: python
-    uls_dict = {}
+    uls_dict = {"DL":1.2,"SDL":1.5}
     sls_dict = {}
     bridge_28.add_load_combination(load_combination_name="ULS", load_case_and_factor_dict=uls_dict) # add ULS combination
     bridge_28.add_load_combination(load_combination_name="SLS", load_case_and_factor_dict=sls_dict) # add SLS combination

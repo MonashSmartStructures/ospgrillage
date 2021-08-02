@@ -199,6 +199,7 @@ def test_line_load(bridge_model_42_negative):
     ULS_DL.add_load_groups(Barrier)  # ch
     example_bridge.add_load_case(ULS_DL)
     example_bridge.analyze(all=True)
+    example_bridge.get_results()
     ref_answer = [{7: {'long_intersect': [], 'trans_intersect': [[3.1514141550424406, 0, 3.0]], 'edge_intersect': [],
                        'ends': [[3, 0, 3]]}, 8: {'long_intersect': [], 'trans_intersect': [[3.1514141550424406, 0, 3.0],
                                                                                            [4.276919210414739, 0, 3.0]],

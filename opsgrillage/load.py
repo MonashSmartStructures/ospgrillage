@@ -13,6 +13,18 @@ from scipy import interpolate
 
 from opsgrillage.mesh import *
 
+
+def create_load_case(**kwargs):
+    return LoadCase(**kwargs)
+
+
+def create_compound_load(**kwargs):
+    return CompoundLoad(**kwargs)
+
+
+
+
+
 # named tuple definition
 LoadPoint = namedtuple("Point", ["x", "y", "z", "p"])
 NodeForces = namedtuple("node_forces", ["Fx", "Fy", "Fz", "Mx", "My", "Mz"])

@@ -91,7 +91,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../Module%20description.html">Creating grillage models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Running_analysis.html">Performing analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../APIdoc.html">API reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ModuleDoc.html">Module documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ModuleDoc.html">Module design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ChangeLog.html">Change Log</a></li>
 </ul>
@@ -163,117 +163,6 @@
             
   <div class="section" id="opsgrillage-opsgrillage">
 <h1>OpsGrillage.OpsGrillage<a class="headerlink" href="#opsgrillage-opsgrillage" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="OpsGrillage.OpsGrillage">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">OpsGrillage.</span></span><span class="sig-name descname"><span class="pre">OpsGrillage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bridge_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">long_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skew</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_long_grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_trans_grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_beam_dist</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Ortho'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'3D'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Main class of Openseespy grillage model wrapper. Outputs an executable py file which generates the prescribed
-Opensees grillage model based on user input.</p>
-<p>The class provides an interface for the user to specify the geometry of the grillage model. A keyword argument
-allows for users to select between skew/oblique or orthogonal mesh. Methods in this class allows users to input
-properties for various elements in the grillage model.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>bridge_name</strong> (<em>str</em>) – Name of bridge model and output .py file</p></li>
-<li><p><strong>long_dim</strong> (<em>int</em><em> or </em><em>float</em>) – Length of the model in the longitudinal direction (default: x axis)</p></li>
-<li><p><strong>width</strong> (<em>int</em><em> or </em><em>float</em>) – Width of the model in the transverse direction (default: z axis)</p></li>
-<li><p><strong>skew</strong> (<em>int</em><em> or </em><em>float</em>) – Skew angle of the start and end edges of model</p></li>
-<li><p><strong>num_long_grid</strong> (<em>int</em>) – Number of grid lines in longitudinal direction</p></li>
-<li><p><strong>num_trans_grid</strong> (<em>int</em>) – Number of  grid lines in the transverse direction</p></li>
-<li><p><strong>edge_beam_dist</strong> (<em>int</em><em> or </em><em>float</em>) – Distance of edge beam node lines to exterior main beam node lines</p></li>
-<li><p><strong>mesh_type</strong> (<em>string</em>) – Type of mesh either “Ortho” for orthogonal mesh or “Oblique” for oblique mesh</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="OpsGrillage.OpsGrillage.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bridge_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">long_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skew</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_long_grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_trans_grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_beam_dist</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Ortho'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'3D'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#OpsGrillage.OpsGrillage.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>bridge_name</strong> (<em>str</em>) – Name of bridge model and output .py file</p></li>
-<li><p><strong>long_dim</strong> (<em>int</em><em> or </em><em>float</em>) – Length of the model in the longitudinal direction (default: x axis)</p></li>
-<li><p><strong>width</strong> (<em>int</em><em> or </em><em>float</em>) – Width of the model in the transverse direction (default: z axis)</p></li>
-<li><p><strong>skew</strong> (<em>int</em><em> or </em><em>float</em>) – Skew angle of the start and end edges of model</p></li>
-<li><p><strong>num_long_grid</strong> (<em>int</em>) – Number of grid lines in longitudinal direction</p></li>
-<li><p><strong>num_trans_grid</strong> (<em>int</em>) – Number of  grid lines in the transverse direction</p></li>
-<li><p><strong>edge_beam_dist</strong> (<em>int</em><em> or </em><em>float</em>) – Distance of edge beam node lines to exterior main beam node lines</p></li>
-<li><p><strong>mesh_type</strong> (<em>string</em>) – Type of mesh either “Ortho” for orthogonal mesh or “Oblique” for oblique mesh</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#OpsGrillage.OpsGrillage.__init__" title="OpsGrillage.OpsGrillage.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(bridge_name, long_dim, width, skew, …)</p></td>
-<td><p><dl class="field-list simple">
-<dt class="field-odd">param bridge_name</dt>
-<dd class="field-odd"><p>Name of bridge model and output .py file</p>
-</dd>
-</dl>
-</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../OpsGrillage.html#OpsGrillage.OpsGrillage.add_load_case" title="OpsGrillage.OpsGrillage.add_load_case"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_load_case</span></code></a>(load_case_obj[, load_factor])</p></td>
-<td><p>Function to add individual load cases to OpsGrillage instance.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../OpsGrillage.html#OpsGrillage.OpsGrillage.add_load_combination" title="OpsGrillage.OpsGrillage.add_load_combination"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_load_combination</span></code></a>(load_combination_name, …)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../OpsGrillage.html#OpsGrillage.OpsGrillage.add_moving_load_case" title="OpsGrillage.OpsGrillage.add_moving_load_case"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_moving_load_case</span></code></a>(moving_load_obj[, …])</p></td>
-<td><p>Function to add Moving load case to OpsGrillage instance.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../OpsGrillage.html#OpsGrillage.OpsGrillage.analyse_load_case" title="OpsGrillage.OpsGrillage.analyse_load_case"><code class="xref py py-obj docutils literal notranslate"><span class="pre">analyse_load_case</span></code></a>(**kwargs)</p></td>
-<td><p>Function to analyse all basic load cases defined previously using add_load_case() function</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">assign_line_to_four_node</span></code>(line_load_obj, …)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">assign_patch_load</span></code>(patch_load_obj)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">assign_point_to_four_node</span></code>(point, mag)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../OpsGrillage.html#OpsGrillage.OpsGrillage.create_ops" title="OpsGrillage.OpsGrillage.create_ops"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_ops</span></code></a>([pyfile])</p></td>
-<td><p>Function to create model instance in Opensees model space.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">distribute_load_types_to_model</span></code>(load_case_obj)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_bounded_nodes</span></code>(patch_load_obj)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_line_load_nodes</span></code>(line_load_obj)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_node_area</span></code>(inside_point, p_list)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_point_load_nodes</span></code>(point)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../OpsGrillage.html#OpsGrillage.OpsGrillage.get_results" title="OpsGrillage.OpsGrillage.get_results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_results</span></code></a>(**kwargs)</p></td>
-<td><p>Function to get results from all load cases.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../OpsGrillage.html#OpsGrillage.OpsGrillage.set_boundary_condition" title="OpsGrillage.OpsGrillage.set_boundary_condition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_boundary_condition</span></code></a>([edge_group_counter, …])</p></td>
-<td><p>Function for user to modify boundary conditions of the grillage model.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../OpsGrillage.html#OpsGrillage.OpsGrillage.set_material" title="OpsGrillage.OpsGrillage.set_material"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_material</span></code></a>(material_obj)</p></td>
-<td><p>Function to define a global material model.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../OpsGrillage.html#OpsGrillage.OpsGrillage.set_member" title="OpsGrillage.OpsGrillage.set_member"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_member</span></code></a>(grillage_member_obj[, member])</p></td>
-<td><p>Function to set grillage member class object to elements of grillage members.</p></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 </div>
 
 

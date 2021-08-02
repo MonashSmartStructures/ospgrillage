@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Module documentation &mdash; ops-grillage module 0.0.1 documentation</title>
+  <title>Module design &mdash; ops-grillage module 0.0.1 documentation</title>
   
 
   
@@ -93,7 +93,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Module%20description.html">Creating grillage models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Running_analysis.html">Performing analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="APIdoc.html">API reference</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Module documentation</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Module design</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#grillage-model">Grillage model</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#model-space">Model space</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#coordinate-system">Coordinate system</a></li>
@@ -112,6 +112,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#links-to-useful-resources">Links to useful resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#further-development">Further development</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html">Examples</a></li>
@@ -164,7 +165,7 @@
     
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Module documentation</li>
+      <li>Module design</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -183,41 +184,41 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-documentation">
-<h1>Module documentation<a class="headerlink" href="#module-documentation" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-design">
+<h1>Module design<a class="headerlink" href="#module-design" title="Permalink to this headline">¶</a></h1>
 <p>This page details the processes within <em>ops-grillage</em> module. In providing the outline of processes,
 the developers welcome any improvements to its procedures via pull requests.</p>
 <div class="section" id="grillage-model">
 <h2>Grillage model<a class="headerlink" href="#grillage-model" title="Permalink to this headline">¶</a></h2>
-<p>The ops-grillage module generates a two-dimensional (2D) grillage model of a bridge in Opensees - see Figure 1.</p>
+<p>The <em>ops-grillage</em> module generates a two-dimensional (2D) grillage model of a bridge in Opensees - see Figure 1.</p>
 <div class="figure align-center" id="id1">
-<a class="reference internal image-reference" href="../_images/Figure_1.png"><img alt="../_images/Figure_1.png" src="../_images/Figure_1.png" style="width: 480.0px; height: 360.0px;" /></a>
+<a class="reference internal image-reference" href="../_images/Figure_1.png"><img alt="../_images/Figure_1.png" src="../_images/Figure_1.png" /></a>
 <p class="caption"><span class="caption-text">Figure 1: Typical grillage model nodes.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </div>
 <div class="section" id="model-space">
 <h3>Model space<a class="headerlink" href="#model-space" title="Permalink to this headline">¶</a></h3>
-<p>The Opensees model space is can be set to either 2-D or 3-D.</p>
-<p>By default the <a class="reference internal" href="OpsGrillage.html#module-OpsGrillage" title="OpsGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code></a> object creates a 2-D grillage model that exist in the 3-D model space.
+<p>The Opensees model space can be set to either 2-D or 3-D.</p>
+<p>By default the <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> object creates a 2-D grillage model that exist in the 3-D model space.
 The model has 6 degrees-of-freedom at each nodes. The grillage model plane lies in the x-z plane of the coordinate system.
 For a 2-D model space, the model plane is the x-y plane.</p>
 </div>
 <div class="section" id="coordinate-system">
 <h3>Coordinate system<a class="headerlink" href="#coordinate-system" title="Permalink to this headline">¶</a></h3>
-<p>The module adopts the following convention for grillage model:</p>
+<p>The module adopts the following coordinate convention for grillage model:</p>
 <ul class="simple">
 <li><p>x direction defines the length of the bridge model - typically the span of the model.</p></li>
 <li><p>z direction defines the width of the bridge model - the slabs elements are layed in this axis direction.</p></li>
 <li><p>y direction is the vertical axis - typically the direction of loads</p></li>
 </ul>
-<p>Two reasons behind selecting the coordinate system as such:
-#. This coordinate system streamlines section transformation (from local to global). The coordinate systems aligns well with the standard Opensees local coordinate systems for Section definition, with local X being the axial direction
-of beam/truss members, while y and z axes being the horizontal and vertical axis of the local coordinate system respectively.
+<p>Two reasons behind selecting the coordinate system are as such:
+#. This coordinate system is consistent with geometric transformation (from local to global) in Opensees. The geometric transformation is used in Section definition, with local X being the axial direction
+of beam/truss members; y and z axes being the vertical and horizontal axis of the local coordinate system respectively.
 #. To be consistent with 1D problems where the working axis for 1-D models is typically <em>x</em> (horizontal axis) and <em>y</em> (vertical axis).</p>
 </div>
 </div>
 <div class="section" id="meshing-procedure">
 <h2>Meshing Procedure<a class="headerlink" href="#meshing-procedure" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="OpsGrillage.html#module-OpsGrillage" title="OpsGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code></a> class has a <code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code> class object as a variable. The <code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code> object controls
+<p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> class has a <code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code> class object as a variable. The <code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code> object controls
 the definition of:</p>
 <ul class="simple">
 <li><p>Nodes</p></li>
@@ -229,7 +230,7 @@ the definition of:</p>
 <h3>Meshing algorithm<a class="headerlink" href="#meshing-algorithm" title="Permalink to this headline">¶</a></h3>
 <p>Lets use the following bridge mesh as an explanatory example. Herein, the variable names are given in brackets.</p>
 <div class="figure align-center" id="id2">
-<a class="reference internal image-reference" href="../_images/Moduledoc_1.PNG"><img alt="../_images/Moduledoc_1.PNG" src="../_images/Moduledoc_1.PNG" style="width: 437.25px; height: 401.25px;" /></a>
+<a class="reference internal image-reference" href="../_images/Moduledoc_1.PNG"><img alt="../_images/Moduledoc_1.PNG" src="../_images/Moduledoc_1.PNG" /></a>
 <p class="caption"><span class="caption-text">Figure 2: Meshing construction lines, showing start edge construction line (Blue), end edge construction line (Green), sweep path (Black) and sweeping nodes (Red).</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
 <p>Meshing algorithm is initiated upon creating the <code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code> class object. The following components are generated to
@@ -318,7 +319,7 @@ grillage model space.</p>
 <p>For <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadCase</span></code>, all load object inputs can be either local or global. Note when local coordinate is defined for a load object, a global reference coordinate needs to be defined or else
 the module raises an Error regarding its point/vertices values.</p>
 <div class="figure align-center" id="id3">
-<a class="reference internal image-reference" href="../_images/coordinate_system_mapping.PNG"><img alt="../_images/coordinate_system_mapping.PNG" src="../_images/coordinate_system_mapping.PNG" style="width: 741.0px; height: 494.25px;" /></a>
+<a class="reference internal image-reference" href="../_images/coordinate_system_mapping.PNG"><img alt="../_images/coordinate_system_mapping.PNG" src="../_images/coordinate_system_mapping.PNG" /></a>
 <p class="caption"><span class="caption-text">Figure 3: Mapping of local coordinate of Load/Path objects to global coordinate.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </div>
 </div>
@@ -340,6 +341,26 @@ the module raises an Error regarding its point/vertices values.</p>
 <li><p><a class="reference external" href="http://bridgedesign.org.uk/tutorial/bs-grillage.php">Grillage modelling</a></p></li>
 <li><p><a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/">Openseespy documentation</a></p></li>
 </ul>
+</div>
+<div class="section" id="further-development">
+<h2>Further development<a class="headerlink" href="#further-development" title="Permalink to this headline">¶</a></h2>
+<p>The initial release of <em>ops-grillage</em> contains core algorithms to generate meshes of grillage models. However the
+release comes with limitations and further development are required to extend beyond these limitations.</p>
+<p>The current version of <em>ops-grillage</em> is limited to straight meshes. However, the developers coded the module in a way
+where curve mesh is possible in future developments. Specifically, <cite>SweepPath</cite> class in meshing procedure can be introduced with
+curved lines instead of straight (current version). This makes curve mesh possible with the sweep nodes been coded to be always orthogonal
+to sweep path.</p>
+<p>Current version of <em>ops-grillage</em> is limited to a single span mesh, where the support edges lies on the start and end
+edge of the mesh. Multi-span mesh is possible with a few more developements. This is done by introducing intermediate
+edge construction lines. This is done by developing the <cite>EdgeConstructionLine</cite> class. However,
+this requires a bit more development as current edge construction lines are only recognized as end
+supports - catering meshing procedures for one span.</p>
+<p>The developers also acknowledges that there is minor conflict between the coordinate system of <em>ops-grillage</em> and the default
+coordinate system for the <cite>ops_vis</cite> module of <cite>Openseespy</cite>. The <cite>ops_vis</cite> module default isotropic angle is x - y with z axis plane
+being the model plane of a 2-D model in 3-D space. Currently the easiest solution is to further develop <cite>ops_vis</cite> to allow
+multi isotropic views of the model space. If developers were to program <em>ops-grillage</em> to fit <cite>ops_vis</cite> current default axis,
+it would require substantial rework of the entire module - since the module assume the model plane of the 2D grillage is the
+y axis.</p>
 </div>
 </div>
 
