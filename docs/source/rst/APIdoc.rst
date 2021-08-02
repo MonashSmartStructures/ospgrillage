@@ -36,13 +36,14 @@ Top level functions
 OpsGrillage class
 ---------------------------
 
-.. automodule:: ospgrillage
+.. autoclass:: ospgrillage.OpsGrillage
     :members:
+    :show-inheritance:
 
 
 Analysis class
 ^^^^^^^^^^^^^^^^
-.. autoclass:: opsgrillage/ospgrillage.Analysis
+.. autoclass:: ospgrillage.Analysis
     :members:
     :show-inheritance:
 

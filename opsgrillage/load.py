@@ -22,7 +22,24 @@ def create_compound_load(**kwargs):
     return CompoundLoad(**kwargs)
 
 
+def create_point_load(**kwargs):
+    return PointLoad(**kwargs)
 
+
+def create_line_load(**kwargs):
+    return LineLoading(**kwargs)
+
+
+def create_patch_load(**kwargs):
+    return PatchLoading(**kwargs)
+
+
+def create_load_vertices(**kwargs):
+    x = kwargs.get("x", None)
+    y = kwargs.get("y", None)
+    z = kwargs.get("z", None)
+    p = kwargs.get("p", None)
+    return LoadPoint(x, y, z, p)
 
 
 # named tuple definition
@@ -46,7 +63,6 @@ class Loads:
     load_point_6: LoadPoint
     load_point_7: LoadPoint
     load_point_8: LoadPoint
-
 
     def __init__(self, name, **kwargs):
         """
@@ -456,12 +472,13 @@ class PatchLoading(Loads):
     def __init__(self, name, **kwargs):
         super().__init__(name, **kwargs)
         if not all(v is None for v in self.point_list):
-            a,_ = sort_vertices([self.load_point_2, self.load_point_3, self.load_point_1, self.load_point_4])
+            a, _ = sort_vertices([self.load_point_2, self.load_point_3, self.load_point_1, self.load_point_4])
             match = [self.load_point_1, self.load_point_2, self.load_point_3, self.load_point_4]
             # if len(self.point_list) < 4:
             #     raise ValueError("invalid number of vertices. Hint:  either 4 or 8 is accepted for patch")
         elif not all(v is None for v in self.local_point_list):
-            a,_ = sort_vertices([self.local_load_point_2, self.local_load_point_3, self.local_load_point_1, self.local_load_point_4])
+            a, _ = sort_vertices(
+                [self.local_load_point_2, self.local_load_point_3, self.local_load_point_1, self.local_load_point_4])
             match = [self.local_load_point_1, self.local_load_point_2, self.local_load_point_3, self.local_load_point_4]
         else:
             raise ValueError("vertices missing.hint: patch load must have either 4  or 8 vertices  ")
@@ -529,10 +546,11 @@ class PatchLoading(Loads):
                 # create function to get interpolation of p
                 self.patch_mag_interpolate = interpolate.interp2d(x, z, p)
                 mod_list = [ls for ls in self.point_list if ls is not None]
-                self.patch_min_dim = min([get_distance(p1,p2) for (p1,p2) in zip(mod_list,mod_list[1:]+[mod_list[0]])
-                                          if all([p1 is not None, p2 is not None])])
+                self.patch_min_dim = min(
+                    [get_distance(p1, p2) for (p1, p2) in zip(mod_list, mod_list[1:] + [mod_list[0]])
+                     if all([p1 is not None, p2 is not None])])
             elif self.load_point_8 is not None:
-                #TODO
+                # TODO
                 # point 1 2 3
                 # point 3 4 5
                 # point 5 6 7
@@ -654,13 +672,14 @@ class LoadCase:
         # check if load_obj's load points are local points, if True, check if kwargs global coord is provided
         global_coord_of_load_obj: Point = kwargs.get("global_coord_of_load_obj", None)
         # if load obj is defined using local coord. Skip this check if load_obj is instance of Compoint load
-        if not isinstance(load_obj,CompoundLoad):
+        if not isinstance(load_obj, CompoundLoad):
 
             if any(load_dict['load'].local_point_list):
                 if global_coord_of_load_obj is None:
-                    raise ValueError("Load object : {} has been defined with local coordinates however no Global coord ("
-                                     "global_coord_of_load_obj=Point tuple) is "
-                                     "assigned to map to global coordinate system".format(load_obj.name))
+                    raise ValueError(
+                        "Load object : {} has been defined with local coordinates however no Global coord ("
+                        "global_coord_of_load_obj=Point tuple) is "
+                        "assigned to map to global coordinate system".format(load_obj.name))
                 else:  # global_coord is not NOne
                     load_dict['load'].move_load(ref_point=global_coord_of_load_obj)
 

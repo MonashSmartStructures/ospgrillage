@@ -1,13 +1,13 @@
 
 # Overview
 
-The `ops-grillage` module is a python wrapper for ```Openseespy``` module. ```Openseespy``` 
+The `ospgrillage` module is a python wrapper to create structural grillage models for ```Openseespy``` module. ```Openseespy``` 
 is a Python interpreter of Open System for Earthquake Engineering Simulation (OpenSees) software framework.
-`ops-grillage` allow python users to create py file that generates a grillage model in Openseespy.
+`ospgrillage` allow python users to generate grillage model in ```Openseespy``` model space or create an output executable py file 
+which on execute, creates the prescribed ```Openseespy``` model instead.
 
 A typical output py file from the wizard contains relevant ```Openseespy``` commands for constructing a 
-model in Opensees domain. The commands are automatically generated based on user specified inputs 
-regarding the bridge model. The wrapper allows quick generation of py file with few basic command lines in Python 
+model in Opensees domain. The wrapper allows quick generation of py file with few basic command lines in Python 
 interface. This module lowers the bar for research, education, and training of the software for structural
 analysis purposes.
 
@@ -15,7 +15,7 @@ analysis purposes.
 
 To run the wrapper, download from github link() and import the following files:
     
-    import OpsGrillage as og
+    import ospgrillage as og
     
 For detailed information on installation, refer to [installation]
 
