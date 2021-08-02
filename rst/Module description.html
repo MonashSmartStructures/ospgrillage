@@ -182,8 +182,7 @@
 throughout the rest of the documentation.</p>
 <p>To begin, import <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> as <code class="docutils literal notranslate"><span class="pre">opsg</span></code> or other abbreviation. You can import the whole module’s functions using asterisk.
 We will also import the <em>openseespy</em> visualization tool for visualization purposes.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">OpsGrillage</span> <span class="k">as</span> <span class="nn">opsg</span>
-<span class="kn">import</span> <span class="nn">openseespy.postprocessing.ops_vis</span> <span class="k">as</span> <span class="nn">opsv</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ospgrillage</span> <span class="k">as</span> <span class="nn">ospg</span>
 </pre></div>
 </div>
 <p>In general, there are three main steps to create a grillage model when using the <em>ops-grillage</em> module:</p>
@@ -194,7 +193,7 @@ We will also import the <em>openseespy</em> visualization tool for visualization
 </ol>
 <p>This example explains the procedures by creating an example grillage as shown in Figure 1:</p>
 <div class="figure align-center" id="id1">
-<span id="figure-1"></span><a class="reference internal image-reference" href="../images/42degnegative10m.png"><img alt="../images/42degnegative10m.png" src="../images/42degnegative10m.png" /></a>
+<span id="figure-1"></span><a class="reference internal image-reference" href="../_images/42degnegative10m.png"><img alt="../_images/42degnegative10m.png" src="../_images/42degnegative10m.png" /></a>
 <p class="caption"><span class="caption-text">Figure 1: Instance of the model created in Opensees.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </div>
 <div class="section" id="defining-elements-of-grillage-model">
@@ -255,7 +254,7 @@ beam-and-slab bridge deck. The model comprises of standard grillage members of:<
 <li><p>Remaing transverse slabs</p></li>
 </ul>
 <div class="figure align-center" id="id2">
-<a class="reference internal image-reference" href="../images/Standard_elements.png"><img alt="../images/Standard_elements.png" src="../images/Standard_elements.png" /></a>
+<a class="reference internal image-reference" href="../_images/Standard_elements.png"><img alt="../_images/Standard_elements.png" src="../_images/Standard_elements.png" /></a>
 <p class="caption"><span class="caption-text">Figure 2: Standard elements supported by <em>ospgrillage</em></span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
 <p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> class takes:</p>
@@ -270,7 +269,7 @@ beam-and-slab bridge deck. The model comprises of standard grillage members of:<
 <li><p><code class="docutils literal notranslate"><span class="pre">mesh_type</span></code>: Mesh type of grillage model. Must take a <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> input of either “Ortho” or “Oblique”. The default is “Ortho” (an orthogonal mesh). However, “Ortho” is not accepted for certain skew angles.</p></li>
 </ul>
 <div class="figure align-center" id="id3">
-<a class="reference internal image-reference" href="../images/edge_angles.png"><img alt="../images/edge_angles.png" src="../images/edge_angles.png" /></a>
+<a class="reference internal image-reference" href="../_images/edge_angles.png"><img alt="../_images/edge_angles.png" src="../_images/edge_angles.png" /></a>
 <p class="caption"><span class="caption-text">Figure 3: Grid numbers and edge angles</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </div>
 <p>For the example bridge, the following code line with the prescribed variables creates the <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> object:</p>
