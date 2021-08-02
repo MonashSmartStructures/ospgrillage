@@ -1644,8 +1644,6 @@ class Results:
         ele_nodes_list = []
         for load_case_name, resp_list_of_2_dict in self.basic_load_case_record.items():
             # for displacements of each node
-            # basic_array_list.append([a + b for (a, b) in zip(list(resp_list_of_2_dict[0].values()),
-            #                                                  list(resp_list_of_2_dict[1].values()))])
             basic_array_list.append([a for a in list(resp_list_of_2_dict[0].values())])
             basic_ele_force_list.append([a for a in list(resp_list_of_2_dict[1].values())])
             if not extracted_ele_nodes_list:
@@ -1655,10 +1653,6 @@ class Results:
             # Coordinate of Load Case dimension
             basic_load_case_coord.append(load_case_name)
             # combine disp and force with respect to Component axis : size 12
-
-        # for moving load cases
-        # [ {}, {} ,..., {} ]  where each {} is a moving load {increloadcasename:[{1:,2:...},{1:,2:...}]..... }
-        moving_daarray_list = []
 
         for moving_load_case_inc_dict in self.moving_load_case_record:  # for each moving load, loop thru increment LC
             inc_moving_load_case_coord = []
@@ -1675,10 +1669,7 @@ class Results:
                 if not extracted_ele_nodes_list:
                     ele_nodes_list = list(inc_resp_list_of_2_dict[2].values())
                     extracted_ele_nodes_list = True
-            # moving_array = np.array(inc_moving_array_list)
-            # ind_moving_da = xr.DataArray(data=moving_array, dims=dim,
-            #                              coords={dim[0]: inc_moving_load_case_coord, dim[1]: node, dim[2]: component})
-            # moving_daarray_list.append(ind_moving_da)
+
         basic_array = np.array(basic_array_list)
         force_array = np.array(basic_ele_force_list)
         ele_array = np.array(ele_nodes_list)
@@ -1695,7 +1686,8 @@ class Results:
                                      coords={dim2[1]: ele, "Nodes": ["i", "j"]})
             # create data set
             result = xr.Dataset({"displacements": basic_da, "forces": force_da, "ele_nodes": ele_nodes})
-
+        else:
+            result = None
         return result
 
 
