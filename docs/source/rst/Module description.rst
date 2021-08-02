@@ -9,8 +9,7 @@ We will also import the *openseespy* visualization tool for visualization purpos
 
 .. code-block:: python
 
-    import OpsGrillage as opsg
-    import openseespy.postprocessing.ops_vis as opsv
+    import ospgrillage as ospg
 
 In general, there are three main steps to create a grillage model when using the *ops-grillage* module:
 
@@ -22,7 +21,7 @@ This example explains the procedures by creating an example grillage as shown in
 
 .. _Figure 1:
 
-..  figure:: ../../images/42degnegative10m.png
+..  figure:: ../../_images/42degnegative10m.png
     :align: center
     :scale: 75 %
 
@@ -97,7 +96,7 @@ beam-and-slab bridge deck. The model comprises of standard grillage members of:
 - Two transverse edge slabs
 - Remaing transverse slabs
 
-..  figure:: ../../images/Standard_elements.png
+..  figure:: ../../_images/Standard_elements.png
     :align: center
     :scale: 75 %
 
@@ -115,7 +114,7 @@ The :class:`~OpsGrillage` class takes:
 - ``mesh_type``: Mesh type of grillage model. Must take a :py:class:`str` input of either "Ortho" or "Oblique". The default is "Ortho" (an orthogonal mesh). However, "Ortho" is not accepted for certain skew angles.
 
 
-..  figure:: ../../images/edge_angles.png
+..  figure:: ../../_images/edge_angles.png
     :align: center
     :scale: 75 %
 

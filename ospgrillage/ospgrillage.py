@@ -11,10 +11,10 @@ import matplotlib.pyplot as plt
 import openseespy.postprocessing.ops_vis as opsv
 import openseespy.opensees as ops
 
-from opsgrillage.load import *
-from opsgrillage.mesh import *
-from opsgrillage.material import *
-from opsgrillage.members import *
+from ospgrillage.load import *
+from ospgrillage.mesh import *
+from ospgrillage.material import *
+from ospgrillage.members import *
 import xarray as xr
 
 
