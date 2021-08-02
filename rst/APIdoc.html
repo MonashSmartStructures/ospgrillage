@@ -97,15 +97,11 @@
 <li class="toctree-l2"><a class="reference internal" href="#what-functions-are-considered-public-api">What functions are considered public API?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#top-level-functions">Top level functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#opsgrillage-class">OpsGrillage class</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#analysis-objects">Analysis objects</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#result-objects">Result objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#analysis-class">Analysis class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#result-class">Result class</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#material-class">Material class</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#opensees-uniaxial-materials">Opensees Uniaxial Materials</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#opensees-nd-materials">Opensees ND materials</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#material-class">Material class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#section-class">Section class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#grillagemember-class">GrillageMember class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#mesh-class">Mesh class</a></li>
@@ -208,6 +204,9 @@ showing their interactions, both within and across various classes, are presente
 </div>
 <div class="section" id="what-functions-are-considered-public-api">
 <h2>What functions are considered public API?<a class="headerlink" href="#what-functions-are-considered-public-api" title="Permalink to this headline">¶</a></h2>
+<p>This module comprised of user interface functions to</p>
+<p>This module manages user interface functions and class definitions for the
+grillage members.</p>
 <p>To put it simply, any functions documented in this API reference page are considered part of <em>ops-grillage</em>’s public API.
 There are many more functions which are lower level - these listed functions are the top level functions accessible
 from classes shown in UML diagram.</p>
@@ -217,23 +216,17 @@ from classes shown in UML diagram.</p>
 </div>
 <div class="section" id="opsgrillage-class">
 <h2>OpsGrillage class<a class="headerlink" href="#opsgrillage-class" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="analysis-objects">
-<h3>Analysis objects<a class="headerlink" href="#analysis-objects" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="analysis-class">
+<h3>Analysis class<a class="headerlink" href="#analysis-class" title="Permalink to this headline">¶</a></h3>
 </div>
-<div class="section" id="result-objects">
-<h3>Result objects<a class="headerlink" href="#result-objects" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="result-class">
+<h3>Result class<a class="headerlink" href="#result-class" title="Permalink to this headline">¶</a></h3>
 </div>
 </div>
 <div class="section" id="material-class">
 <h2>Material class<a class="headerlink" href="#material-class" title="Permalink to this headline">¶</a></h2>
 <p>For information regarding the procedures in <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> class, see
 <a class="reference internal" href="ModuleDoc.html"><span class="doc">Module design</span></a>.</p>
-<div class="section" id="opensees-uniaxial-materials">
-<h3>Opensees Uniaxial Materials<a class="headerlink" href="#opensees-uniaxial-materials" title="Permalink to this headline">¶</a></h3>
-</div>
-<div class="section" id="opensees-nd-materials">
-<h3>Opensees ND materials<a class="headerlink" href="#opensees-nd-materials" title="Permalink to this headline">¶</a></h3>
-</div>
 </div>
 <div class="section" id="section-class">
 <h2>Section class<a class="headerlink" href="#section-class" title="Permalink to this headline">¶</a></h2>
