@@ -122,7 +122,7 @@ Here are the valid input types for which CompoundLoad accepts:
 
 
 .. list-table:: Table: 1 Valid combinations for CompoundLoad object
-   :widths: 25 25 50
+   :widths: 25 25 25 25
    :header-rows: 1
 
    * - Load's coordinate space

@@ -292,6 +292,36 @@ Vertical (normal to grid) loads are applied in the <span class="math notranslate
 <p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">GrillageMember</span></code> objects are assigned to the grillage model using the <cite>set_member()</cite> method of <code class="docutils literal notranslate"><span class="pre">OpsGrillage</span></code> class. The function takes a <cite>GrillageMember</cite> class
 object, and a member string tag as arguments.</p>
 <p>The member string tag specifies the standard grillage element to assign the <code class="docutils literal notranslate"><span class="pre">GrillageMember</span></code> object.</p>
+<table class="colwidths-given docutils align-default" id="id4">
+<caption><span class="caption-text">Table: 1 Current supported member string and tags</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><cite>edge_beam</cite></p></td>
+<td><p>Elements along x axis at top and bottom edges of mesh (z = 0, z = width)</p></td>
+</tr>
+<tr class="row-even"><td><p><cite>exterior_main_beam_1</cite></p></td>
+<td><p>Elements along first grid line after bottom edge (z = 0)</p></td>
+</tr>
+<tr class="row-odd"><td><p><cite>exterior_main_beam_2</cite></p></td>
+<td><p>Elements along first grid line after top edge (z = width)</p></td>
+</tr>
+<tr class="row-even"><td><p><cite>interior_main_beam</cite></p></td>
+<td><p>For all elements in x direction between grid lines of exterior_main_beam_1 and exterior_main_beam_2</p></td>
+</tr>
+<tr class="row-odd"><td><p><cite>start_edge</cite></p></td>
+<td><p>Elements along z axis where longitudinal grid line x = 0</p></td>
+</tr>
+<tr class="row-even"><td><p><cite>end_edge</cite></p></td>
+<td><p>Elements along z axis where longitudinal grid line x = Length</p></td>
+</tr>
+<tr class="row-odd"><td><p><cite>transverse_slab</cite></p></td>
+<td><p>For all elements in transverse direction between start_edge and end_edge</p></td>
+</tr>
+</tbody>
+</table>
 <p>This example shows the assignment of interior main beams with the example intermediate concrete I-beams:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span><span class="o">.</span><span class="n">set_member</span><span class="p">(</span><span class="n">I_beam</span><span class="p">,</span> <span class="n">member</span><span class="o">=</span><span class="s2">&quot;interior_main_beam&quot;</span><span class="p">)</span>
 </pre></div>

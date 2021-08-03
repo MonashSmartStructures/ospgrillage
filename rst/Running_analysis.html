@@ -192,13 +192,13 @@ Furthermore, <em>ops-grillage</em> module also options for moving load analysis.
 <h2>Defining loads<a class="headerlink" href="#defining-loads" title="Permalink to this headline">¶</a></h2>
 <p>Available loads types include <a class="reference internal" href="#point">Point</a>, <a class="reference internal" href="#line">Line</a>, and <a class="reference internal" href="#patch">Patch</a> loads.
 Each of these load types are defined with a different class object of similar names.
-Two or more of these load types can be combined to form <a href="#id2"><span class="problematic" id="id3">`Compound`_</span></a> loads.</p>
+Two or more of these load types can be combined to form <a href="#id3"><span class="problematic" id="id4">`Compound`_</span></a> loads.</p>
 <p>Each load type requires
 user to specify its load point(s).
 This is achieved by a namedTuple <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadPoint(x,y,z,p)</span></code> where <cite>x</cite>,`y`,`z` are the coordinates of the load point
 and <cite>p</cite> is the magnitude of the vertical loading.
 The coordinates are generally in the global coordinate system with respect to the created grillage model.
-However, a user-defined local coordinate system may also be used to assist in then creating <a href="#id4"><span class="problematic" id="id5">`Compound`_</span></a> loads.
+However, a user-defined local coordinate system may also be used to assist in then creating <a href="#id5"><span class="problematic" id="id6">`Compound`_</span></a> loads.
 The vertical loading is in the direction of the global <cite>y</cite>-axis.
 Loads in other directions and applied moments are currently not supported.</p>
 <p>Depending on the load type, a minimum number of LoadPoint namedTuple objects
@@ -214,7 +214,7 @@ Below are examples of creating different load types.</p>
 <span class="n">Single</span> <span class="o">=</span> <span class="n">opsg</span><span class="o">.</span><span class="n">PointLoad</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;single point&quot;</span><span class="p">,</span> <span class="n">point1</span><span class="o">=</span><span class="n">point_load_location</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>To position the load instead in a user defined local coordinate system to later create a <a href="#id6"><span class="problematic" id="id7">`Compound`_</span></a> loads, the variable <cite>localpoint1</cite> instead of <cite>point1</cite> is used.</p>
+<p>To position the load instead in a user defined local coordinate system to later create a <a href="#id7"><span class="problematic" id="id8">`Compound`_</span></a> loads, the variable <cite>localpoint1</cite> instead of <cite>point1</cite> is used.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">point_load_location</span> <span class="o">=</span> <span class="n">opsg</span><span class="o">.</span><span class="n">LoadPoint</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>  <span class="c1"># create load point</span>
 <span class="n">Single</span> <span class="o">=</span> <span class="n">opsg</span><span class="o">.</span><span class="n">PointLoad</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;single point&quot;</span><span class="p">,</span> <span class="n">localpoint1</span><span class="o">=</span><span class="n">point_load_location</span><span class="p">)</span>
 </pre></div>
@@ -232,7 +232,7 @@ in the global coordinate system from -1 to 11 distance units in the <cite>x</cit
 <span class="n">Barrier</span> <span class="o">=</span> <span class="n">opsg</span><span class="o">.</span><span class="n">LineLoading</span><span class="p">(</span><span class="s2">&quot;Barrier curb load&quot;</span><span class="p">,</span> <span class="n">point1</span><span class="o">=</span><span class="n">barrier_point_1</span><span class="p">,</span> <span class="n">point2</span><span class="o">=</span><span class="n">barrier_point_2</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>As before, to position the load instead in a user defined local coordinate system to later create a <a href="#id8"><span class="problematic" id="id9">`Compound`_</span></a> loads, the variable <cite>localpoint#</cite> instead of <cite>point#</cite> is used.</p>
+<p>As before, to position the load instead in a user defined local coordinate system to later create a <a href="#id9"><span class="problematic" id="id10">`Compound`_</span></a> loads, the variable <cite>localpoint#</cite> instead of <cite>point#</cite> is used.</p>
 </div>
 <div class="section" id="patch-loads">
 <span id="patch"></span><h3>Patch loads<a class="headerlink" href="#patch-loads" title="Permalink to this headline">¶</a></h3>
@@ -267,6 +267,44 @@ To position the load instead in a user defined local coordinate system, the vari
 </pre></div>
 </div>
 <p>Here are the valid input types for which CompoundLoad accepts:</p>
+<table class="colwidths-given docutils align-default" id="id2">
+<caption><span class="caption-text">Table: 1 Valid combinations for CompoundLoad object</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Load’s coordinate space</p></th>
+<th class="head"><p><cite>local_coord=</cite></p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Require <cite>set_global_coord()</cite>?</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Global</p></td>
+<td><p>No</p></td>
+<td><p>Sets the Load’s points to global space</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Global</p></td>
+<td><p>Yes</p></td>
+<td><p>Overwrites the Load’s global space, keeping only the Magnitude of the global load</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Local</p></td>
+<td><p>No</p></td>
+<td><p>Sets the Load’s local space, later set to global using <cite>set_global_coord()</cite></p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Local</p></td>
+<td><p>Yes</p></td>
+<td><p><strong>Invalid combination</strong>, loads are defined in local space already</p></td>
+<td><p>N/A</p></td>
+</tr>
+</tbody>
+</table>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Compound loads require users to pay attention between basic and global coordinate system (see <span class="xref std std-ref">ModuleDoc</span> for more information on coordinate systems)</p>

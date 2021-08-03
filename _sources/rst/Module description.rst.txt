@@ -146,7 +146,7 @@ The member string tag specifies the standard grillage element to assign the ``Gr
 
 
 .. list-table:: Table: 1 Current supported member string and tags
-   :widths: 25 25 50
+   :widths: 50 50
    :header-rows: 0
 
    * - `edge_beam`
