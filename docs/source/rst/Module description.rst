@@ -96,7 +96,7 @@ beam-and-slab bridge deck. The model comprises of standard grillage members of:
 - Two transverse edge slabs
 - Remaing transverse slabs
 
-..  figure:: ../../_images/Standard_elements.png
+..  figure:: ../../_images/Standard_elements.PNG
     :align: center
     :scale: 75 %
 
@@ -114,7 +114,7 @@ The :class:`~OpsGrillage` class takes:
 - ``mesh_type``: Mesh type of grillage model. Must take a :py:class:`str` input of either "Ortho" or "Oblique". The default is "Ortho" (an orthogonal mesh). However, "Ortho" is not accepted for certain skew angles.
 
 
-..  figure:: ../../_images/edge_angles.png
+..  figure:: ../../_images/edge_angles.PNG
     :align: center
     :scale: 75 %
 
