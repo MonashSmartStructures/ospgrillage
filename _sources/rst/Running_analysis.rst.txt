@@ -146,7 +146,7 @@ Here are the valid input types for which CompoundLoad accepts:
      - **Invalid combination**, loads are defined in local space already
      - N/A
 
-
+Test
 
 .. note::
 
@@ -160,7 +160,6 @@ Here are the valid input types for which CompoundLoad accepts:
 When adding each load object, the :class:`~CompoundLoad` class allow users to input a ``load_coord=`` keyworded parameter.
 This relates to the load object - whether it was previously defined in the user-defined *local* or in the *global* coordinate system. The following explains the various
 input conditions
-
 
 
 After defining all required load objects, :class:`~CompoundLoad` requires users to define the global coordinate which to map the user-defined local coordinates. 
