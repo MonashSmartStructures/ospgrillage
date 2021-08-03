@@ -1,38 +1,39 @@
 ========================
 Creating grillage models
 ========================
-Here is how grillage models are created with *ops-grillage* module. Steps are explained in more detail
+Here is how grillage models are created with *ospgrillage* module. Steps are explained in more detail
 throughout the rest of the documentation.
 
-To begin, import :class:`~OpsGrillage` as ``opsg`` or other abbreviation. You can import the whole module's functions using asterisk.
-We will also import the *openseespy* visualization tool for visualization purposes.
+To begin, import ``ospgrillage`` as ``opsg`` or ``og``.
 
 .. code-block:: python
 
     import ospgrillage as ospg
 
-In general, there are three main steps to create a grillage model when using the *ops-grillage* module:
 
-#. Defining elements of grillage model using the :class:`~GrillageMember` class; requiring a :class:`~Section` and :class:`~Material` class object.
-#. Creating the grillage object using the :class:`~OpsGrillage` class.
-#. Assigning the elements of grillage model using ```set_member()``` methods.
+The *ospgrillage* module consist of user **interface functions** which can be called after the module.
+In general, there are three main steps to create a grillage model when using the *ospgrillage* module:
 
-This example explains the procedures by creating an example grillage as shown in Figure 1:
+#. Creating elements of a grillage model i.e. members.
+#. Creating the grillage model object (the nodes and mesh).
+#. Assigning the defined grillage members to the elements of grillage model.
+
+We will detail these main steps by creating a grillage model of a bridge deck as shown in Figure 1.
 
 .. _Figure 1:
 
 ..  figure:: ../../_images/42degnegative10m.png
     :align: center
-    :scale: 75 %
+    :scale: 50 %
 
-    Figure 1: Instance of the model created in Opensees.
+    Figure 1: Grillage model in Openseespy
 
 .. _defining Grillage member:
 
 Defining elements of grillage model
 ------------------------------------------------------------------
-A grillage element is created using the :class:`GrillageMember` class. A :class:`GrillageMember` object requires two
-objects as inputs, namely:
+A grillage element is created using the ```create_member()``` interface function. This function creates a
+:class:`GrillageMember` class. A :class:`GrillageMember` object requires two objects as inputs, namely:
 
 #. *material* = A :class:`Material` class object, and
 #. *section* = A :class:`Section` class object.
@@ -42,7 +43,7 @@ with material and section defintions explained next.
 
 .. code-block:: python
 
-    I_beam = opsg.GrillageMember(member_name="Intermediate I-beams", section=I_beam_section, material=concrete)
+    I_beam = opsg.create_member(member_name="Intermediate I-beams", section=I_beam_section, material=concrete)
 
 When setting up grillage members, it is often a good idea to first instantiate a :class:`~Section` and :class:`~Material` class objects before creating
 each :class:`GrillageMember` class objects.
@@ -60,7 +61,7 @@ The following example code line creates the Opensees concrete material Concrete0
 
 .. code-block:: python
 
-    concrete = opsg.UniAxialElasticMaterial(mat_type="Concrete01", fpc=-6.0,epsc0=-0.004,fpcu=-6.0,epsU=-0.014)
+    concrete = opsg.create_material(type="concrete", code="AS5100-2017", grade="50MPa")
 
 For most bridges made of steel and concrete, material properties of either concrete and steel can be defined using
 keyword "steel" or "concrete" passed as an argument to :class:`~Material` class.
@@ -145,6 +146,7 @@ The member string tag specifies the standard grillage element to assign the ``Gr
 
 Table 1: Current supported member string tag
 
+
 ===================================   ===========================================================================
    `edge_beam`                           for both edge longitudinal beams
    `exterior_main_beam_1`                for the first exterior longitduinal beam along x-axis (nearest to 0 on z-axis)
@@ -154,6 +156,7 @@ Table 1: Current supported member string tag
    `end_edge`                            for the second edge transverse slab along z-axis
    `transverse_slab`                     for all other transverse slab
  ===================================   ===========================================================================
+
 
 This example shows the assignment of interior main beams with the example intermediate concrete I-beams:
 
