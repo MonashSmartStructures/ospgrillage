@@ -292,16 +292,6 @@ Vertical (normal to grid) loads are applied in the <span class="math notranslate
 <p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">GrillageMember</span></code> objects are assigned to the grillage model using the <cite>set_member()</cite> method of <code class="docutils literal notranslate"><span class="pre">OpsGrillage</span></code> class. The function takes a <cite>GrillageMember</cite> class
 object, and a member string tag as arguments.</p>
 <p>The member string tag specifies the standard grillage element to assign the <code class="docutils literal notranslate"><span class="pre">GrillageMember</span></code> object.</p>
-<p>Table 1: Current supported member string tag
-===================================   ===========================================================================
-<cite>edge_beam</cite>                           Elements along x axis at top and bottom edges of mesh (z = 0, z = width)
-<cite>exterior_main_beam_1</cite>                Elements along first grid line after bottom edge (z = 0)
-<cite>exterior_main_beam_2</cite>                Elements along first grid line after top edge (z = width)
-<cite>interior_main_beam</cite>                  For all elements in x direction between grid lines of exterior_main_beam_1 and exterior_main_beam_2
-<cite>start_edge</cite>                          Elements along z axis where longitudinal grid line x = 0
-<cite>end_edge</cite>                            Elements along z axis where longitudinal grid line x = Length
-<cite>transverse_slab</cite>                     For all elements in transverse direction between start_edge and end_edge
-===================================   ===========================================================================</p>
 <p>This example shows the assignment of interior main beams with the example intermediate concrete I-beams:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span><span class="o">.</span><span class="n">set_member</span><span class="p">(</span><span class="n">I_beam</span><span class="p">,</span> <span class="n">member</span><span class="o">=</span><span class="s2">&quot;interior_main_beam&quot;</span><span class="p">)</span>
 </pre></div>

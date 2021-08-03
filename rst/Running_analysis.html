@@ -277,12 +277,6 @@ are automatically converted to <strong>global coordinates</strong>, based on the
 <p>When adding each load object, the <code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundLoad</span></code> class allow users to input a <code class="docutils literal notranslate"><span class="pre">load_coord=</span></code> keyworded parameter.
 This relates to the load object - whether it was previously defined in the user-defined <em>local</em> or in the <em>global</em> coordinate system. The following explains the various
 input conditions</p>
-<ul class="simple">
-<li><p>if Load object was defined in <em>local</em> coordinate and <code class="docutils literal notranslate"><span class="pre">load_coord=</span></code> is not provided. The local coordinate tied with the Load object precedes.</p></li>
-<li><p>if Load object was defined in <em>local</em> coordinate and <code class="docutils literal notranslate"><span class="pre">load_coord=</span></code> is provided. The local coordinate of <code class="docutils literal notranslate"><span class="pre">load_coord=</span></code> parameter precedes.</p></li>
-<li><p>if Load object was defined in <em>global</em> coordinate and <code class="docutils literal notranslate"><span class="pre">load_coord=</span></code> is not provided. Compound load treats the inherited global coordinates as new <em>local</em> coordinate</p></li>
-<li><p>if Load object was defined in <em>global</em> coordinate and <code class="docutils literal notranslate"><span class="pre">load_coord=</span></code> is provided. The local coordinate of <code class="docutils literal notranslate"><span class="pre">load_coord=</span></code> parameter precedes, the magnitude of load points/vertices carries over to local coordinate.</p></li>
-</ul>
 <p>After defining all required load objects, <code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundLoad</span></code> requires users to define the global coordinate which to map the user-defined local coordinates.
 If not specified, the mapping’s reference point is default to the <strong>Origin</strong> of coordinate system i.e. (0,0,0)</p>
 <p>For example, this code line shifts all load points of all load objects for <strong>Single</strong> and <strong>Barrier</strong> in the <strong>C_Load</strong> compound load by x + 4, y + 0 , and z + 3.</p>
