@@ -120,14 +120,33 @@ After creating a compound load, users will have to add :class:`~Loads` objects (
 
 Here are the valid input types for which CompoundLoad accepts:
 
-======================   ===============   ====================================   ===============================
-Load's coordinate space  `local_coord=`    Description                            Require `set_global_coord()`?
-======================   ===============   ====================================   ===============================
-Global                   No                Sets the Load's points to global space No
-Global                   Yes               Overwrites the Load's global space, keeping only the Magnitude of the global load   Yes
-Local                    No                Sets the Load's local space, later set to global using `set_global_coord()`   Yes
-Local                    Yes               Invalid combination -returns ValueError   N/a
-======================   ===============   ====================================   ===============================
+
+.. list-table:: Table: 1 Valid combinations for CompoundLoad object
+   :widths: 25 25 50
+   :header-rows: 1
+
+   * - Load's coordinate space
+     - `local_coord=`
+     - Description
+     - Require `set_global_coord()`?
+   * - Global
+     - No
+     - Sets the Load's points to global space
+     - No
+   * - Global
+     - Yes
+     - Overwrites the Load's global space, keeping only the Magnitude of the global load
+     - Yes
+   * - Local
+     - No
+     - Sets the Load's local space, later set to global using `set_global_coord()`
+     - Yes
+   * - Local
+     - Yes
+     - **Invalid combination**, loads are defined in local space already
+     - N/A
+
+
 
 .. note::
 
@@ -142,10 +161,7 @@ When adding each load object, the :class:`~CompoundLoad` class allow users to in
 This relates to the load object - whether it was previously defined in the user-defined *local* or in the *global* coordinate system. The following explains the various
 input conditions
 
-* if Load object was defined in *local* coordinate and ``load_coord=`` is not provided. The local coordinate tied with the Load object precedes.
-* if Load object was defined in *local* coordinate and ``load_coord=`` is provided. The local coordinate of ``load_coord=`` parameter precedes.
-* if Load object was defined in *global* coordinate and ``load_coord=`` is not provided. Compound load treats the inherited global coordinates as new *local* coordinate
-* if Load object was defined in *global* coordinate and ``load_coord=`` is provided. The local coordinate of ``load_coord=`` parameter precedes, the magnitude of load points/vertices carries over to local coordinate.
+
 
 After defining all required load objects, :class:`~CompoundLoad` requires users to define the global coordinate which to map the user-defined local coordinates. 
 If not specified, the mapping's reference point is default to the **Origin** of coordinate system i.e. (0,0,0)
