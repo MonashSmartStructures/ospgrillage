@@ -1,9 +1,9 @@
-﻿OpsGrillage.OpsGrillage
+﻿ospgrillage.ospgrillage
 =======================
 
-.. currentmodule:: OpsGrillage
+.. currentmodule:: opsgrillage
 
-.. autoclass:: OpsGrillage
+.. autoclass:: ospgrillage
 
    
    .. automethod:: __init__
@@ -13,25 +13,25 @@
 
    .. autosummary::
    
-      ~OpsGrillage.__init__
-      ~OpsGrillage.add_load_case
-      ~OpsGrillage.add_load_combination
-      ~OpsGrillage.add_moving_load_case
-      ~OpsGrillage.analyse_load_case
-      ~OpsGrillage.analyse_moving_load_case
-      ~OpsGrillage.assign_line_to_four_node
-      ~OpsGrillage.assign_patch_load
-      ~OpsGrillage.assign_point_to_four_node
-      ~OpsGrillage.create_ops
-      ~OpsGrillage.distribute_load_types_to_model
-      ~OpsGrillage.get_bounded_nodes
-      ~OpsGrillage.get_line_load_nodes
-      ~OpsGrillage.get_node_area
-      ~OpsGrillage.get_point_load_nodes
-      ~OpsGrillage.get_results
-      ~OpsGrillage.set_boundary_condition
-      ~OpsGrillage.set_material
-      ~OpsGrillage.set_member
+      ~ospgrillage.__init__
+      ~ospgrillage.add_load_case
+      ~ospgrillage.add_load_combination
+      ~ospgrillage.add_moving_load_case
+      ~ospgrillage.analyse_load_case
+      ~ospgrillage.analyse_moving_load_case
+      ~ospgrillage.assign_line_to_four_node
+      ~ospgrillage.assign_patch_load
+      ~ospgrillage.assign_point_to_four_node
+      ~ospgrillage.create_ops
+      ~ospgrillage.distribute_load_types_to_model
+      ~ospgrillage.get_bounded_nodes
+      ~ospgrillage.get_line_load_nodes
+      ~ospgrillage.get_node_area
+      ~ospgrillage.get_point_load_nodes
+      ~ospgrillage.get_results
+      ~ospgrillage.set_boundary_condition
+      ~ospgrillage.set_material
+      ~ospgrillage.set_member
    
    
 

@@ -19,21 +19,13 @@ UML diagram overview
 
 What functions are considered public API?
 ------------------------------------------
-This module comprised of user interface functions to
+This module comprised of user interface functions to take user inputs and pass to its corresponding object.
 
-This module manages user interface functions and class definitions for the
-grillage members.
 
-To put it simply, any functions documented in this API reference page are considered part of *ops-grillage*'s public API.
-There are many more functions which are lower level - these listed functions are the top level functions accessible
-from classes shown in UML diagram.
 
 Top level functions
 --------------------------
 
-.. automodule:: ospgrillage
-    :members:
-    :show-inheritance:
 
 OpsGrillage class
 ---------------------------
