@@ -644,7 +644,7 @@ def test_28m_bridge_compound_point_load_midspan(ref_28m_bridge):
     p_list = [0,edge_dist,edge_dist+2,edge_dist+4,edge_dist+6,bridge_28.width-edge_dist,bridge_28.width]
     for p in p_list:
         point = og.PointLoad(name="compound point",point1=og.LoadPoint(bridge_28.long_dim/2,0,p,P))
-        test_point_load.add_load(load_obj=point)
+        test_point_load.add_load(load_obj=point,local_coord=og.Point(1,0,1))
     point_case = og.LoadCase(name="Compound point load case")
     point_case.add_load_groups(test_point_load)
 

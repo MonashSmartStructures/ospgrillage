@@ -626,8 +626,23 @@ class CompoundLoad:
         # shifting all load points relative to centroid of defined load class
         # then shifting centroid and load_points relative to A Local Coordinate system
         load_obj_copy = deepcopy(load_obj)
-        if local_coord is not None:  # points defined as global already
-            #local_coord = Point(0, 0, 0)
+        # check if input load object is valid (local vs global coordinate) system.
+        # If local load + local_coord input, raise ValueError
+        if local_coord is not None and any(load_obj_copy.local_point_list):
+            raise ValueError("{} was defined in local coordinate space. However a `load_coord=` parameter"
+                             "exist for this load when creating compound load "
+                             "Hint: Loads defined in local coordinate space does not "
+                             "need another "
+                             "`local_coord=` parameter".format(load_obj_copy.name))
+        # if global load + local_coord input, raise Value error
+        #if local_coord is not None and not any(load_obj_copy.local_point_list):
+        #    raise ValueError("{} was defined in global coordinate. However a local_coord= parameter exist for this load"
+        #                     ".Hint: Load defined in global coordinate space does not need `local_coord=` "
+        #                     "parameter".format(load_obj_copy.name))
+        #    pass
+        # inputs for compound load are valid, proceed to set compound load
+        # if local coord is passed in,
+        if local_coord is not None:  # else points defined as global already
             load_obj_copy.form_compound_load(compound_dist_x=local_coord.x, compound_dist_z=local_coord.z)
             # then shift load obj relative to global coord (this is the coord of the model) default is 0,0,0 if not set
             # by user
@@ -686,7 +701,7 @@ class LoadCase:
         # preset load factor for
         self.load_command_list = []
 
-    def add_load_groups(self, load_obj: Loads, **kwargs):
+    def add_load_groups(self, load_obj: Union[Loads,CompoundLoad], **kwargs):
         load_dict = dict()
         load_dict.setdefault('load', deepcopy(load_obj))  # create copy of object instance
         # check if load_obj's load points are local points, if True, check if kwargs global coord is provided

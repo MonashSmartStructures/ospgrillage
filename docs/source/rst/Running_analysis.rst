@@ -118,6 +118,17 @@ After creating a compound load, users will have to add :class:`~Loads` objects (
     C_Load.add_load(load_obj=wheel_1, local_coord=Point(5,0,5))
     C_Load.add_load(load_obj=wheel_2, local_coord=Point(3,0,5))
 
+Here are the valid input types for which CompoundLoad accepts:
+
+======================   ===============   ====================================   ===============================
+Load's coordinate space  `local_coord=`    Description                            Require `set_global_coord()`?
+======================   ===============   ====================================   ===============================
+Global                   No                Sets the Load's points to global space No
+Global                   Yes               Overwrites the Load's global space, keeping only the Magnitude of the global load   Yes
+Local                    No                Sets the Load's local space, later set to global using `set_global_coord()`   Yes
+Local                    Yes               Invalid combination -returns ValueError   N/a
+======================   ===============   ====================================   ===============================
+
 .. note::
 
     Compound loads require users to pay attention between basic and global coordinate system (see :ref:`ModuleDoc` for more information on coordinate systems)

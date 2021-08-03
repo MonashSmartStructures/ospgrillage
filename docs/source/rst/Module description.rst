@@ -145,17 +145,15 @@ object, and a member string tag as arguments.
 The member string tag specifies the standard grillage element to assign the ``GrillageMember`` object.
 
 Table 1: Current supported member string tag
-
-
 ===================================   ===========================================================================
-   `edge_beam`                           for both edge longitudinal beams
-   `exterior_main_beam_1`                for the first exterior longitduinal beam along x-axis (nearest to 0 on z-axis)
-   `exterior_main_beam_2`                for the second exterior longitduinal beam along x-axis
-   `interior_main_beam`                  for all other longitudinal beams
-   `start_edge`                          for the first edge transverse slab along z-axis (0 on x-axis)
-   `end_edge`                            for the second edge transverse slab along z-axis
-   `transverse_slab`                     for all other transverse slab
- ===================================   ===========================================================================
+`edge_beam`                           Elements along x axis at top and bottom edges of mesh (z = 0, z = width)
+`exterior_main_beam_1`                Elements along first grid line after bottom edge (z = 0)
+`exterior_main_beam_2`                Elements along first grid line after top edge (z = width)
+`interior_main_beam`                  For all elements in x direction between grid lines of exterior_main_beam_1 and exterior_main_beam_2
+`start_edge`                          Elements along z axis where longitudinal grid line x = 0
+`end_edge`                            Elements along z axis where longitudinal grid line x = Length
+`transverse_slab`                     For all elements in transverse direction between start_edge and end_edge
+===================================   ===========================================================================
 
 
 This example shows the assignment of interior main beams with the example intermediate concrete I-beams:
