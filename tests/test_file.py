@@ -636,6 +636,22 @@ def test_patch_partially_outside_mesh(bridge_model_42_negative):
         'ops.load(27, *[0, 0.0161751261433784, 0, -0.0103982953778861, 0, 0.00808756307168926])\n']
 
 
+def test_28m_bridge_compound_point_load_midspan(ref_28m_bridge):
+    bridge_28 = ref_28m_bridge
+    edge_dist = 0.3
+    P = 1000
+    test_point_load = og.CompoundLoad("Point test case")
+    p_list = [0,edge_dist,edge_dist+2,edge_dist+4,edge_dist+6,bridge_28.width-edge_dist,bridge_28.width]
+    for p in p_list:
+        point = og.PointLoad(name="compound point",point1=og.LoadPoint(bridge_28.long_dim/2,0,p,P))
+        test_point_load.add_load(load_obj=point)
+    point_case = og.LoadCase(name="Compound point load case")
+    point_case.add_load_groups(test_point_load)
+
+    bridge_28.add_load_case(point_case)
+    bridge_28.load_case_list
+
+
 # example super t 28 m  ref bridge
 # test for comparing max deflection with a numerical comparison model in Lusas
 def test_28m_bridge(ref_28m_bridge):

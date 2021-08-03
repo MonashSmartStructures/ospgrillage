@@ -15,33 +15,52 @@ from ospgrillage.mesh import *
 
 
 def create_load_case(**kwargs):
+    """
+    User interface for LoadCase creation
+    """
     return LoadCase(**kwargs)
 
 
 def create_compound_load(**kwargs):
+    """
+    User interface for compound load
+    """
     return CompoundLoad(**kwargs)
 
 
 def create_point_load(**kwargs):
+    """
+    User interface for PointLoad
+    """
     return PointLoad(**kwargs)
 
 
 def create_line_load(**kwargs):
+    """
+    User interface for LineLoading
+    """
     return LineLoading(**kwargs)
 
 
 def create_patch_load(**kwargs):
+    """
+    User interface for PatchLoading
+    """
     return PatchLoading(**kwargs)
 
 
 def create_load_vertices(**kwargs):
+    """
+    User interface to create LoadPoint named tuple
+    """
     x = kwargs.get("x", None)
     y = kwargs.get("y", None)
     z = kwargs.get("z", None)
     p = kwargs.get("p", None)
     return LoadPoint(x, y, z, p)
 
-
+def create_moving_path(**kwargs):
+    return Path(**kwargs)
 # named tuple definition
 LoadPoint = namedtuple("Point", ["x", "y", "z", "p"])
 NodeForces = namedtuple("node_forces", ["Fx", "Fy", "Fz", "Mx", "My", "Mz"])
@@ -606,13 +625,14 @@ class CompoundLoad:
         # update the load obj to be part of compound load by first
         # shifting all load points relative to centroid of defined load class
         # then shifting centroid and load_points relative to A Local Coordinate system
-        if local_coord is None:
-            local_coord = Point(0, 0, 0)
         load_obj_copy = deepcopy(load_obj)
-        load_obj_copy.form_compound_load(compound_dist_x=local_coord.x, compound_dist_z=local_coord.z)
-        # then shift load obj relative to global coord (this is the coord of the model) default is 0,0,0 if not set
-        # by user
-        load_obj_copy.move_load(self.global_coord)
+        if local_coord is not None:  # points defined as global already
+            #local_coord = Point(0, 0, 0)
+            load_obj_copy.form_compound_load(compound_dist_x=local_coord.x, compound_dist_z=local_coord.z)
+            # then shift load obj relative to global coord (this is the coord of the model) default is 0,0,0 if not set
+            # by user
+            load_obj_copy.move_load(self.global_coord)
+
         self.compound_load_obj_list.append(load_obj_copy)  # after update, append to list
         self.local_coord_list.append(local_coord)
 
@@ -798,7 +818,8 @@ class Path:
 # ---------------------------------------------------------------------------------------------------------------
 class ShapeFunction:
     """
-    Class for shape functions. Shape functions are presented as class methods. More shape functions can be added herein
+    Class for shape functions. Shape functions are used primarily to distribute loads to nodes.
+    More shape functions can be added herein
     """
 
     def __init__(self, option_three_node="triangle_linear", option_four_node="hermite"):
