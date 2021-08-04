@@ -182,18 +182,6 @@
             
   <div class="section" id="creating-grillage-models">
 <h1>Creating grillage models<a class="headerlink" href="#creating-grillage-models" title="Permalink to this headline">¶</a></h1>
-<p>Here we show how to use the <em>ospgrillage</em> module to create a grillage model in Opensees. In essence, <em>ospgrillage</em> does so by
-wrapping Openseespy’s commands.</p>
-<p>To begin, do import <code class="docutils literal notranslate"><span class="pre">ospgrillage</span></code> as either <code class="docutils literal notranslate"><span class="pre">ospg</span></code> or <code class="docutils literal notranslate"><span class="pre">og</span></code>. Following code line shows the import process.
-In addition to import, we representunit convention and signs with variables as shown in the same code block.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ospgrillage</span> <span class="k">as</span> <span class="nn">ospg</span>
-<span class="c1"># create unit signs for illustration purposes</span>
-<span class="n">N</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="n">m</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="n">Giga</span> <span class="o">=</span> <span class="mf">1e9</span>
-<span class="n">Pa</span> <span class="o">=</span> <span class="n">N</span><span class="o">/</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span>
-</pre></div>
-</div>
 <p>The <em>ospgrillage</em> module contains <strong>interface functions</strong> which can be called after the module syntax. These interface function
 has  <code class="docutils literal notranslate"><span class="pre">set_</span></code>, <code class="docutils literal notranslate"><span class="pre">create_</span></code> or <code class="docutils literal notranslate"><span class="pre">get_</span></code> in their syntax. For example, creating a material object using <code class="docutils literal notranslate"><span class="pre">create_material()</span></code>.
 As an alternative, users can directly interact with the objects without using interface functions.</p>
@@ -206,7 +194,17 @@ As an alternative, users can directly interact with the objects without using in
 <p>We will detail these main steps by creating a grillage model of a bridge deck as shown in Figure 1.</p>
 <div class="figure align-center" id="id1">
 <span id="figure-1"></span><a class="reference internal image-reference" href="../_images/42degnegative10m.png"><img alt="../_images/42degnegative10m.png" src="../_images/42degnegative10m.png" /></a>
-<p class="caption"><span class="caption-text">Figure 1: Grillage model in Openseespy</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 1: Grillage model created using Openseespy</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
+<p>To begin, do import <code class="docutils literal notranslate"><span class="pre">ospgrillage</span></code> as either <code class="docutils literal notranslate"><span class="pre">ospg</span></code> or <code class="docutils literal notranslate"><span class="pre">og</span></code>. Following code line shows the import process.
+As will be needed later, we also prepared the unit convention of variables for this example as shown in the same code block.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ospgrillage</span> <span class="k">as</span> <span class="nn">ospg</span>
+<span class="c1"># create unit signs for variables of example</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">m</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">Giga</span> <span class="o">=</span> <span class="mf">1e9</span>
+<span class="n">Pa</span> <span class="o">=</span> <span class="n">N</span><span class="o">/</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span>
+</pre></div>
 </div>
 <div class="section" id="defining-elements-of-grillage-model">
 <span id="defining-grillage-member"></span><h2>Defining elements of grillage model<a class="headerlink" href="#defining-elements-of-grillage-model" title="Permalink to this headline">¶</a></h2>
@@ -269,7 +267,7 @@ element types and inputs.</p>
 <p>Creating the rest of the sections for the aforementioned grillage elements:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">slab_section</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_section</span><span class="p">(</span><span class="n">A</span><span class="o">=</span><span class="mf">0.04428</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">J</span><span class="o">=</span><span class="mf">2.6e-4</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">4</span><span class="p">,</span> <span class="n">Iy</span><span class="o">=</span><span class="mf">1.1e-4</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">4</span><span class="p">,</span> <span class="n">Iz</span><span class="o">=</span><span class="mf">2.42e-4</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">4</span><span class="p">,</span><span class="n">Ay</span><span class="o">=</span><span class="mf">3.69e-1</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">Az</span><span class="o">=</span><span class="mf">3.69e-1</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">unit_width</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">edge_beam_section</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_section</span><span class="p">(</span><span class="n">A</span><span class="o">=</span><span class="mf">0.044625</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span><span class="n">J</span><span class="o">=</span><span class="mf">2.28e-3</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">4</span><span class="p">,</span> <span class="n">Iy</span><span class="o">=</span><span class="mf">2.23e-1</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">4</span><span class="p">,</span><span class="n">Iz</span><span class="o">=</span><span class="mf">1.2e-3</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">4</span><span class="p">,</span> <span class="n">Ay</span><span class="o">=</span><span class="mf">3.72e-2</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">Az</span><span class="o">=</span><span class="mf">3.72e-2</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">edge_slab_section</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_section</span><span class="p">(</span><span class="n">A</span><span class="o">=</span><span class="mf">0.044625</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span><span class="n">J</span><span class="o">=</span><span class="mf">2.28e-3</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">4</span><span class="p">,</span> <span class="n">Iy</span><span class="o">=</span><span class="mf">2.23e-1</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">4</span><span class="p">,</span><span class="n">Iz</span><span class="o">=</span><span class="mf">1.2e-3</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">4</span><span class="p">,</span> <span class="n">Ay</span><span class="o">=</span><span class="mf">3.72e-2</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">Az</span><span class="o">=</span><span class="mf">3.72e-2</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">edge_slab_section</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_section</span><span class="p">(</span><span class="n">A</span><span class="o">=</span><span class="mf">0.039375</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span><span class="n">J</span><span class="o">=</span><span class="mf">0.21e-3</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">4</span><span class="p">,</span> <span class="n">Iy</span><span class="o">=</span><span class="mf">0.1e-3</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span><span class="n">Iz</span><span class="o">=</span><span class="mf">0.166e-3</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span><span class="n">Ay</span><span class="o">=</span><span class="mf">0.0328</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">Az</span><span class="o">=</span><span class="mf">0.0328</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -291,12 +289,12 @@ beam-and-slab bridge deck. The model comprises of standard grillage members of:<
 <li><p>Two transverse edge slabs</p></li>
 <li><p>Remaining transverse slabs</p></li>
 </ul>
-<p>Figure 2 illustrates the standard grillage members on an exemplar orthogonal grillage mesh.</p>
+<p>Figure 2 illustrates the standard grillage members and their position on an exemplar orthogonal grillage mesh.</p>
 <div class="figure align-center" id="id2">
 <a class="reference internal image-reference" href="../_images/Standard_elements.PNG"><img alt="../_images/Standard_elements.PNG" src="../_images/Standard_elements.PNG" /></a>
 <p class="caption"><span class="caption-text">Figure 2: Standard elements supported by <em>ospgrillage</em></span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
-<p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> class takes:</p>
+<p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> class takes the following keyword arguments:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">bridge_name</span></code>: A <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> of the grillage model name.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">long_dim</span></code>: A <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code> of the longitudinal length of the grillage model.</p></li>
@@ -312,7 +310,7 @@ beam-and-slab bridge deck. The model comprises of standard grillage members of:<
 <a class="reference internal image-reference" href="../_images/edge_angles.PNG"><img alt="../_images/edge_angles.PNG" src="../_images/edge_angles.PNG" /></a>
 <p class="caption"><span class="caption-text">Figure 3: Grid numbers and edge angles</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </div>
-<p>For the example bridge, the following code line with the prescribed variables creates the <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> object:</p>
+<p>For the example bridge in Figure 1, the following code line with the prescribed variables creates its inherit <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> object i.e. <em>example_bridge</em>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_grillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;SuperT_10m&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">skew</span><span class="o">=-</span><span class="mi">21</span><span class="p">,</span>
                      <span class="n">num_long_grid</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">edge_beam_dist</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mesh_type</span><span class="o">=</span><span class="s2">&quot;Ortho&quot;</span><span class="p">)</span>
 </pre></div>
@@ -358,7 +356,7 @@ object, and a member string tag as arguments.</p>
 </tr>
 </tbody>
 </table>
-<p>This example shows the assignment of interior main beams with the example intermediate concrete I-beams:</p>
+<p>Heres the codeline that assigns interior main beams of the grillage model with the earlier object of intermediate concrete <em>I-beam</em>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span><span class="o">.</span><span class="n">set_member</span><span class="p">(</span><span class="n">I_beam</span><span class="p">,</span> <span class="n">member</span><span class="o">=</span><span class="s2">&quot;interior_main_beam&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -366,12 +364,11 @@ object, and a member string tag as arguments.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span><span class="o">.</span><span class="n">set_member</span><span class="p">(</span><span class="n">I_beam</span><span class="p">,</span> <span class="n">member</span><span class="o">=</span><span class="s2">&quot;interior_main_beam&quot;</span><span class="p">)</span>
 <span class="n">example_bridge</span><span class="o">.</span><span class="n">set_member</span><span class="p">(</span><span class="n">I_beam</span><span class="p">,</span> <span class="n">member</span><span class="o">=</span><span class="s2">&quot;exterior_main_beam_1&quot;</span><span class="p">)</span>
 <span class="n">example_bridge</span><span class="o">.</span><span class="n">set_member</span><span class="p">(</span><span class="n">I_beam</span><span class="p">,</span> <span class="n">member</span><span class="o">=</span><span class="s2">&quot;exterior_main_beam_1&quot;</span><span class="p">)</span>
-<span class="n">example_bridge</span><span class="o">.</span><span class="n">set_member</span><span class="p">(</span><span class="n">I_beam</span><span class="p">,</span> <span class="n">member</span><span class="o">=</span><span class="s2">&quot;edge_beam&quot;</span><span class="p">)</span>
-<span class="n">example_bridge</span><span class="o">.</span><span class="n">set_member</span><span class="p">(</span><span class="n">I_beam</span><span class="p">,</span> <span class="n">member</span><span class="o">=</span><span class="s2">&quot;transverse_slab&quot;</span><span class="p">)</span>
-<span class="n">example_bridge</span><span class="o">.</span><span class="n">set_member</span><span class="p">(</span><span class="n">I_beam</span><span class="p">,</span> <span class="n">member</span><span class="o">=</span><span class="s2">&quot;edge_slab&quot;</span><span class="p">)</span>
+<span class="n">example_bridge</span><span class="o">.</span><span class="n">set_member</span><span class="p">(</span><span class="n">edge_beam</span><span class="p">,</span> <span class="n">member</span><span class="o">=</span><span class="s2">&quot;edge_beam&quot;</span><span class="p">)</span>
+<span class="n">example_bridge</span><span class="o">.</span><span class="n">set_member</span><span class="p">(</span><span class="n">slab</span><span class="p">,</span> <span class="n">member</span><span class="o">=</span><span class="s2">&quot;transverse_slab&quot;</span><span class="p">)</span>
+<span class="n">example_bridge</span><span class="o">.</span><span class="n">set_member</span><span class="p">(</span><span class="n">edge_slab</span><span class="p">,</span> <span class="n">member</span><span class="o">=</span><span class="s2">&quot;edge_slab&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>For skew meshes without customized node points, the grillage elements typically comprised of standardized element groups.</p>
 <p>For orthogonal meshes, nodes in the transverse direction have varied spacing based on the skew edge region.
 The properties of transverse members based on unit metre width is required for its definition section properties.
 The module automatically implement the unit width properties based on the spacing of nodes in the skew edge regions.</p>
@@ -392,14 +389,14 @@ input.</p>
 <li><p>create the model in Opensees software space for further grillage analysis, or;</p></li>
 <li><p>an executable python file that can be edited and used for a more complex analysis.</p></li>
 </ol>
-<p>These are achieved by calling the <cite>create_ops()</cite> function.</p>
-<p>The <cite>create_ops()</cite> function takes a boolean for <cite>pyfile=</cite> parameter which by default is <cite>False</cite>.
+<p>These are achieved by calling the <code class="docutils literal notranslate"><span class="pre">create_ops()</span></code> function.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">create_ops()</span></code> function takes a boolean for <cite>pyfile=</cite> parameter which by default is <cite>False</cite>.
 Setting False creates the
 grillage model in Opensees model space to immediately perform further analysis (see more in documentation).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span><span class="o">.</span><span class="n">create_ops</span><span class="p">(</span><span class="n">pyfile</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Up to this point, users can run any Opensees command (e.g. <cite>ops_vis</cite> commands) within the interface to interact with
+<p>Up to this point, users can run any Openseespy command (e.g. <cite>ops_vis</cite> commands) within the interface to interact with
 the grillage model in Opensees.</p>
 <p>Alternatively, when <cite>pyfile=</cite> parameter is set to <cite>True</cite>, an executable py file will be generated instead.
 The executable py file contains all relevent Opensees command from which when executed,
@@ -408,13 +405,13 @@ Note that in doing so, the model instance in Opensees space is not created.</p>
 <div class="section" id="visualize-grillage-model">
 <h3>Visualize grillage model<a class="headerlink" href="#visualize-grillage-model" title="Permalink to this headline">¶</a></h3>
 <p>To check that we created the model in Opensees space, we can plot the model using Openseespy’s visualization module <cite>ops_vis</cite>.
-The <em>ospgrillage</em> module wraps and import Openseespy’s <cite>ops_vis</cite> module.
-Run the following code line and a plot like in <a class="reference internal" href="#figure-1">Figure 1</a> will be returned:</p>
+The <em>ospgrillage</em> module already wraps and import Openseespy’s <cite>ops_vis</cite> module. Therefore, one can run access <cite>ops_vis</cite> by running
+the following code line and a plot like in <a class="reference internal" href="#figure-1">Figure 1</a> will be returned:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ospg</span><span class="o">.</span><span class="n">opsplt</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="s2">&quot;nodes&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Whilst all nodes will be visualized, only the assigned members are visualized.
-Failure to not have all members assigned will cause subsequent analysis not to work.</p>
+<p>Whilst all nodes will be visualized, only the assigned members are visualized. This is a good way to check if desired members are assigned
+and hence, shown on the plot. Failure to not have all members assigned will affect subsequent analysis.</p>
 <p>Here are more details of <a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/ops_vis.html">ops_vis module</a></p>
 </div>
 </div>
