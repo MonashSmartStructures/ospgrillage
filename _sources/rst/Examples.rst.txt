@@ -84,7 +84,7 @@ Adding DL and SDL to analysis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code-block:: python
 
-    dead_load = LineLoading("DL",point1=point1,point2=point2)
+    dead_load = create_line_load("DL",point1=point1,point2=point2)
 
 Adding a load combination for SDL and DL
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -105,15 +105,15 @@ Here we add a moving load analysis to the 28 m bridge model
 
 .. code-block:: python
 
-    front_wheel = og.PointLoad(name="front wheel", point1=LoadPoint(2, 0, 2, 50))  # Single point load 50 N
+    front_wheel = og.create_point_load(name="front wheel", point1=LoadPoint(2, 0, 2, 50))  # Single point load 50 N
 
-    single_path = og.Path(start_point=Point(0, 0, 2), end_point=Point(29, 0, 3))  # create path object
-    move_point = og.MovingLoad(name="single_moving_point")
-    move_point.add_loads(load_obj=front_wheel, path_obj=single_path.get_path_points())
-    move_point.parse_moving_load_cases()
-    bridge_28.add_moving_load_case(move_point)
+    single_path = og.create_moving_path(start_point=Point(0, 0, 2), end_point=Point(29, 0, 3))  # create path object
+    move_point = og.create_moving_load(name="single_moving_point")
+    move_point.set_path(single_path)
+    move_point.add_loads(load_obj=front_wheel)
+    bridge_28.add_load_case(move_point)
 
-    bridge_28.analyse_moving_load_case()
+    bridge_28.analyze()
     results = bridge_28.get_results()
 
 
@@ -139,7 +139,7 @@ Here is a grillage model with different edge skew angles - left edge is -42 degr
 .. code-block:: python
 
     import OpsGrillage as og
-    concrete = og.UniAxialElasticMaterial(mat_type="Concrete01", fpc=-6, epsc0=-0.004, fpcu=-6, epsU=-0.014)
+    concrete = og.create_material(mat_type="Concrete01", fpc=-6, epsc0=-0.004, fpcu=-6, epsU=-0.014)
 
     # define sections
     I_beam_section = og.Section(A=0.896, E=3.47E+10,G=2.00E+10, J=0.133, Iy=0.213, Iz=0.259, Ay=0.233, Az=0.58)

@@ -183,9 +183,8 @@
             
   <div class="section" id="performing-analysis">
 <h1>Performing analysis<a class="headerlink" href="#performing-analysis" title="Permalink to this headline">¶</a></h1>
-<p>Having created the grillage model, users can proceed with performing a grillage analysis.
-The <em>ops-grillage</em> module allows grillage analysis utilities
-by allowing users to specify load cases comprising of multiple single or compound loads types
+<p>Having created the grillage model, users can proceed with grillage analysis.
+The <em>opsgrillage</em> module contains grillage analysis utilities, allowing users to specify load cases comprising of multiple single or compound loads types
 and then run load case analysis.
 Furthermore, <em>ops-grillage</em> module also options for moving load analysis.</p>
 <div class="section" id="defining-loads">
@@ -207,6 +206,8 @@ or else <cite>localpoint#</cite> variable for a user-defined local coordinate sy
 Below are examples of creating different load types.</p>
 <div class="section" id="point-loads">
 <span id="point"></span><h3>Point Loads<a class="headerlink" href="#point-loads" title="Permalink to this headline">¶</a></h3>
+<p>Point load is the most basic force, a force applied vertically (y-axis direction) on a single infinitismal point of the grillage model.
+Point loads are used represent a large range of loads, such as concentrated load of a car axle.</p>
 <p>Point loads are instantied with the <code class="xref py py-class docutils literal notranslate"><span class="pre">PointLoad</span></code> class and takes only a single <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadPoint</span></code> tuple.
 <cite>p</cite> in the <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadPoint</span></code>  tuple should have units of force (eg. N, kN, kips, etc).</p>
 <p>The following example code is 20 force unit point load located at (5,0,2) in the global coordinate system.</p>
@@ -222,6 +223,8 @@ Below are examples of creating different load types.</p>
 </div>
 <div class="section" id="line-loads">
 <span id="line"></span><h3>Line Loads<a class="headerlink" href="#line-loads" title="Permalink to this headline">¶</a></h3>
+<p>Line loads are loads exerted along a line. Line loads are useful to represent loads such as self weight of longitudinal beams or
+distributed load on beam elements along the span direction.</p>
 <p>Line loads are instantied with the <code class="xref py py-class docutils literal notranslate"><span class="pre">LineLoading</span></code> and required at least two <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadPoint</span></code> tuple (corresponds to the start and end of the line load).
 Using more than two tuples allows a curve line loading profile.
 <cite>p</cite> in the <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadPoint</span></code> tuple should have units of force per distance (eg. kN/m, kips/ft, etc).</p>
