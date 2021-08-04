@@ -798,7 +798,7 @@ class MovingLoad:
             load_case_list = []
             for steps in path_list:
                 load_step_lc = LoadCase(
-                    name="load {} at [{:.2f},{:.2f},{:.2f}]".format(load_obj.name, steps[0], steps[1],
+                    name="load: {} at [{:.2f},{:.2f},{:.2f}]".format(load_obj.name, steps[0], steps[1],
                                                                     steps[2]))  # _lc in name stands for load case
                 load_obj_copy = deepcopy(load_obj)  # Use deepcopy module to copy instance of load
                 load_step_lc.add_load_groups(load_obj_copy)  # and add load to newly created load case
