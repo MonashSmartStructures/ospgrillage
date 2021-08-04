@@ -2,9 +2,8 @@
 Performing analysis
 ========================
 
-Having created the grillage model, users can proceed with performing a grillage analysis. 
-The *ops-grillage* module allows grillage analysis utilities
-by allowing users to specify load cases comprising of multiple single or compound loads types
+Having created the grillage model, users can proceed with grillage analysis.
+The *opsgrillage* module contains grillage analysis utilities, allowing users to specify load cases comprising of multiple single or compound loads types
 and then run load case analysis. 
 Furthermore, *ops-grillage* module also options for moving load analysis.
 
@@ -34,6 +33,8 @@ Below are examples of creating different load types.
 
 Point Loads
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Point load is the most basic force, a force applied vertically (y-axis direction) on a single infinitismal point of the grillage model.
+Point loads are used represent a large range of loads, such as concentrated load of a car axle.
 
 Point loads are instantied with the :class:`PointLoad` class and takes only a single :class:`LoadPoint` tuple.
 `p` in the :class:`LoadPoint`  tuple should have units of force (eg. N, kN, kips, etc).
@@ -57,6 +58,8 @@ To position the load instead in a user defined local coordinate system to later 
 
 Line Loads
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Line loads are loads exerted along a line. Line loads are useful to represent loads such as self weight of longitudinal beams or
+distributed load on beam elements along the span direction.
 
 Line loads are instantied with the :class:`LineLoading` and required at least two :class:`LoadPoint` tuple (corresponds to the start and end of the line load).
 Using more than two tuples allows a curve line loading profile.

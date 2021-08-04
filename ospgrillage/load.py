@@ -59,8 +59,15 @@ def create_load_vertices(**kwargs):
     p = kwargs.get("p", None)
     return LoadPoint(x, y, z, p)
 
+
+def create_moving_load(**kwargs):
+    return MovingLoad(**kwargs)
+
+
 def create_moving_path(**kwargs):
     return Path(**kwargs)
+
+
 # named tuple definition
 LoadPoint = namedtuple("Point", ["x", "y", "z", "p"])
 NodeForces = namedtuple("node_forces", ["Fx", "Fy", "Fz", "Mx", "My", "Mz"])
@@ -635,7 +642,7 @@ class CompoundLoad:
                              "need another "
                              "`local_coord=` parameter".format(load_obj_copy.name))
         # if global load + local_coord input, raise Value error
-        #if local_coord is not None and not any(load_obj_copy.local_point_list):
+        # if local_coord is not None and not any(load_obj_copy.local_point_list):
         #    raise ValueError("{} was defined in global coordinate. However a local_coord= parameter exist for this load"
         #                     ".Hint: Load defined in global coordinate space does not need `local_coord=` "
         #                     "parameter".format(load_obj_copy.name))
@@ -701,7 +708,7 @@ class LoadCase:
         # preset load factor for
         self.load_command_list = []
 
-    def add_load_groups(self, load_obj: Union[Loads,CompoundLoad], **kwargs):
+    def add_load_groups(self, load_obj: Union[Loads, CompoundLoad], **kwargs):
         load_dict = dict()
         load_dict.setdefault('load', deepcopy(load_obj))  # create copy of object instance
         # check if load_obj's load points are local points, if True, check if kwargs global coord is provided
@@ -748,13 +755,33 @@ class MovingLoad:
 
     """
 
-    def __init__(self, name):
+    def __init__(self, name, **kwargs):
         self.name = name
         self.load_list = []
-        self.path_list = []
+        self.global_path_obj = []
         self.load_case_dict_list = []  # Variable to access
         self.moving_load_case = []  # Variable recording all created load case for all load group's respective path
         self.static_load_case = []
+        # get kwargs
+        self.common_path = kwargs.get("common_path", None)
+        self.global_increment = kwargs.get("global_increment", None) # for advance use
+
+    def set_path(self, path_obj):
+        """
+        Function to assign Path object to MovingLoad object. All loads added to the object through add_loads() will
+        traverse the set_path object.
+
+        """
+        if self.global_increment is not None:
+            raise ValueError("Option for Basic use - common path defined for all added loads in MovingLoad however"
+                             "a global increment parameter was defined. Hint: Remove global_increment= on creating"
+                             "moving load object")
+        # else, valid input for setting a basic moving load - proceed setting common path variable
+        self.common_path = path_obj
+        # if all loads defined before setting path, append their
+        # TODO
+        # if self.load_case_dict_list: #
+        #    for loads in self.load_case_dict_list:
 
     def add_loads(self, load_obj: Union[Loads, CompoundLoad], path_obj=None):
         """
@@ -775,12 +802,20 @@ class MovingLoad:
         """
         # if no path object is added, set empty list to path_obj. The load group will be treated as a static load
         # present throughout the movement of other load groups (added to the series of moving load case)
-        if path_obj is None:
-            # path_obj = [] version
-            raise Exception("Path object not defined")
+        # if path_obj is None:
+        #     # path_obj = [] version
+        #     raise Exception("Path object not defined")
         load_pair_path = dict()
         load_pair_path.setdefault("load", load_obj)
-        load_pair_path.setdefault("path", path_obj)
+        # check if basic moving load case
+        if self.common_path and self.global_increment is None:
+            load_pair_path.setdefault("path",
+                                      self.common_path.get_path_points())  # .get_path_points() class method of Path class
+        elif self.global_increment:  # advance use - where each object has individual path
+            load_pair_path.setdefault("path", path_obj.get_custom_path_points(self.global_increment))
+        else:  # error, no global statement was provided,
+            raise ValueError("No global_increment= was provided for Moving load - intended for advance usage with "
+                             "individual loads having individual paths")
         self.load_case_dict_list.append(load_pair_path)
 
     # function to sort moving loads into multiple load cases - automatically called by Ops-grillage
@@ -799,7 +834,7 @@ class MovingLoad:
             for steps in path_list:
                 load_step_lc = LoadCase(
                     name="load: {} at [{:.2f},{:.2f},{:.2f}]".format(load_obj.name, steps[0], steps[1],
-                                                                    steps[2]))  # _lc in name stands for load case
+                                                                     steps[2]))  # _lc in name stands for load case
                 load_obj_copy = deepcopy(load_obj)  # Use deepcopy module to copy instance of load
                 load_step_lc.add_load_groups(load_obj_copy)  # and add load to newly created load case
                 # add entries of static load to load groups
@@ -828,6 +863,14 @@ class Path:
         self.path_points_list = [[x, y, z] for (x, y, z) in
                                  zip(self.path_points_x, self.path_points_y, self.path_points_z)]
         return self.path_points_list
+
+    def get_custom_path_points(self, new_increment):
+        path_points_x = np.linspace(self.start_point.x, self.end_point.x, new_increment)
+        path_points_y = np.linspace(self.start_point.x, self.end_point.x, new_increment)
+        path_points_z = np.linspace(self.start_point.x, self.end_point.x, new_increment)
+        path_point_list = [[x, y, z] for (x, y, z) in
+                           zip(path_points_x, path_points_y, path_points_z)]
+        return path_point_list
 
 
 # ---------------------------------------------------------------------------------------------------------------

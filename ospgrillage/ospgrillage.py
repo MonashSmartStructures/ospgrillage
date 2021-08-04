@@ -1177,7 +1177,7 @@ class OpsGrillage:
 
         return load_str
 
-    def add_load_case(self, load_case_obj: LoadCase, load_factor=1):
+    def add_load_case(self, load_case_obj: Union[LoadCase,MovingLoad], load_factor=1):
         """
         Function to add individual load cases to OpsGrillage instance.
 
@@ -1186,20 +1186,43 @@ class OpsGrillage:
         :type load_case_obj: LoadCase
 
         """
-        # update the load command list of load case object
-        load_str = self.distribute_load_types_to_model(load_case_obj=load_case_obj)
-        # store load case + load command in dict and add to load_case_list
-        load_case_dict = {'name': load_case_obj.name, 'loadcase': load_case_obj, 'load_command': load_str,
-                          'load_factor': load_factor}  # FORMATTING HERE
 
-        self.load_case_list.append(load_case_dict)
-        print("Load Case: {} added".format(load_case_obj.name))
+
+        if isinstance(load_case_obj,LoadCase):
+            # update the load command list of load case object
+            load_str = self.distribute_load_types_to_model(load_case_obj=load_case_obj)
+            # store load case + load command in dict and add to load_case_list
+            load_case_dict = {'name': load_case_obj.name, 'loadcase': load_case_obj, 'load_command': load_str,
+                              'load_factor': load_factor}  # FORMATTING HERE
+
+            self.load_case_list.append(load_case_dict)
+            print("Load Case: {} added".format(load_case_obj.name))
+        elif isinstance(load_case_obj, MovingLoad):
+            # get the list of individual load cases
+            list_of_incr_load_case_dict = []
+            moving_load_obj = load_case_obj
+            moving_load_obj.parse_moving_load_cases()
+
+            # for each load case, find the load commands of load distribution
+            for moving_load_case_list in moving_load_obj.moving_load_case:
+                for increment_load_case in moving_load_case_list:
+                    load_str = self.distribute_load_types_to_model(load_case_obj=increment_load_case)
+                    increment_load_case_dict = {'name': increment_load_case.name, 'loadcase': increment_load_case,
+                                                'load_command': load_str,
+                                                'load_factor': load_factor}
+                    list_of_incr_load_case_dict.append(increment_load_case_dict)
+                self.moving_load_case_dict[moving_load_obj.name] = list_of_incr_load_case_dict
+
+            print("Moving load case: {} created".format(moving_load_obj.name))
+        else:
+            raise ValueError("Input of add_load_case not a valid object. Hint:accepts only LoadCase or MovingLoad "
+                             "objects")
 
     def analyze(self, **kwargs):
         """
         Function to analyze all basic load cases defined previously using add_load_case() function
 
-        :except:
+        :except: raise ValueError if missing kwargs for loadcase=, or all=
 
         """
         # analyze all load case defined in self.load_case_dict for OpsGrillage instance
@@ -1295,65 +1318,33 @@ class OpsGrillage:
         self.load_combination_dict.setdefault(load_combination_name, load_case_dict_list)
         print("Load Combination: {} created".format(load_combination_name))
 
-    def add_moving_load_case(self, moving_load_obj: MovingLoad, load_factor=1):
-        """
-        Function to add Moving load case to OpsGrillage instance.
-
-        :param moving_load_obj: Moving load class object instance
-        :type moving_load_obj: MovingLoad
-        :param load_factor: optional load factor to be set for all incremental load case. Default is 1.
-        :type load_factor: Int or Float
-
-        """
-        # get the list of individual load cases
-        list_of_incr_load_case_dict = []
-
-        moving_load_obj.parse_moving_load_cases()
-
-        # for each load case, find the load commands of load distribution
-        for moving_load_case_list in moving_load_obj.moving_load_case:
-            for increment_load_case in moving_load_case_list:
-                load_str = self.distribute_load_types_to_model(load_case_obj=increment_load_case)
-                increment_load_case_dict = {'name': increment_load_case.name, 'loadcase': increment_load_case,
-                                            'load_command': load_str,
-                                            'load_factor': load_factor}
-                list_of_incr_load_case_dict.append(increment_load_case_dict)
-            self.moving_load_case_dict[moving_load_obj.name] = list_of_incr_load_case_dict
-
-        print("Moving load case: {} created".format(moving_load_obj.name))
-
-    # def analyse_moving_load_case(self, moving_load_case_name: str = None):
+    # def add_moving_load_case(self, moving_load_obj: MovingLoad, load_factor=1):
     #     """
-    #     Function to analyze all defined moving load cases.
+    #     Function to add Moving load case to OpsGrillage instance.
     #
-    #     :param moving_load_case_name: Name of specific load case to be ran (Optional)
-    #     :type moving_load_case_name: str
+    #     :param moving_load_obj: Moving load class object instance
+    #     :type moving_load_obj: MovingLoad
+    #     :param load_factor: optional load factor to be set for all incremental load case. Default is 1.
+    #     :type load_factor: Int or Float
     #
     #     """
-    #     # function to analyse individual moving load case
-    #     # create analysis object for each load case correspond to increment of moving paths
-    #     # loop through all moving load objects
-    #     if self.pyfile:
-    #         print("Analysis of OpsGrillage in file writing mode - pyfile flag = True")
-    #     list_of_inc_analysis = []
-    #     for moving_load_obj, load_case_dict_list in self.moving_load_case_dict.items():
-    #         for load_case_dict in load_case_dict_list:
-    #             load_case_obj = load_case_dict['loadcase']  # maybe unused
-    #             load_command = load_case_dict['load_command']
-    #             load_factor = load_case_dict['load_factor']
-    #             incremental_analysis = Analysis(analysis_name=load_case_obj.name,
-    #                                             ops_grillage_name=self.model_name,
-    #                                             pyfile=self.pyfile,
-    #                                             time_series_counter=self.global_time_series_counter,
-    #                                             pattern_counter=self.global_pattern_counter,
-    #                                             node_counter=self.Mesh_obj.node_counter,
-    #                                             ele_counter=self.Mesh_obj.element_counter)
-    #             incremental_analysis.add_load_command(load_command, load_factor=load_factor)
-    #             self.global_time_series_counter, self.global_pattern_counter, node_disp, ele_force \
-    #                 = incremental_analysis.evaluate_analysis()
-    #             list_of_inc_analysis.append(incremental_analysis)
-    #             # store result in Recorder object
-    #         self.results.insert_analysis_results(list_of_inc_analysis=list_of_inc_analysis)
+    #     # get the list of individual load cases
+    #     list_of_incr_load_case_dict = []
+    #
+    #     moving_load_obj.parse_moving_load_cases()
+    #
+    #     # for each load case, find the load commands of load distribution
+    #     for moving_load_case_list in moving_load_obj.moving_load_case:
+    #         for increment_load_case in moving_load_case_list:
+    #             load_str = self.distribute_load_types_to_model(load_case_obj=increment_load_case)
+    #             increment_load_case_dict = {'name': increment_load_case.name, 'loadcase': increment_load_case,
+    #                                         'load_command': load_str,
+    #                                         'load_factor': load_factor}
+    #             list_of_incr_load_case_dict.append(increment_load_case_dict)
+    #         self.moving_load_case_dict[moving_load_obj.name] = list_of_incr_load_case_dict
+    #
+    #     print("Moving load case: {} created".format(moving_load_obj.name))
+
 
     def get_results(self, **kwargs):
         """
