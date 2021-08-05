@@ -9,9 +9,9 @@ Here are some more examples of what you can do with *ops-grillage* module.
 
 .. code-block:: python
 
-    import opsgrillage as og
+    import ospgrillage as og
 
-    # metric units
+    # Units
     meter = 1.0
     N = 1.0
     sec = 1.0
@@ -30,25 +30,18 @@ Here are some more examples of what you can do with *ops-grillage* module.
     trans_grid_lines = 14
     long_grid_lines = 7
 
-    # reference super T bridge 28m for validation purpose
-    # Members
-
+    # Create materials
     concrete = og.create_material(type="concrete", code="AS5100-2017", grade="50MPa")
-    # define sections
-    super_t_beam_section = og.create_section(A=1.0447,
-                                      J=0.230698, Iy=0.231329, Iz=0.533953,
-                                      Ay=0.397032, Az=0.434351)
-    transverse_slab_section = og.create_section(A=0.5372,
-                                         J=2.79e-3, Iy=0.3988 / 2, Iz=1.45e-3 / 2,
-                                         Ay=0.447 / 2, Az=0.447 / 2, unit_width=True)
-    end_tranverse_slab_section = og.create_section(A=0.5372 / 2,
-                                            J=2.68e-3, Iy=0.04985,
-                                            Iz=0.725e-3,
-                                            Ay=0.223, Az=0.223)
-    edge_beam_section = og.create_section(A=0.039375,
-                                   J=0.21e-3, Iy=0.1e-3,
-                                   Iz=0.166e-3,
-                                   Ay=0.0328, Az=0.0328)
+    # Define sections
+    super_t_beam_section = og.create_section(A=1.0447*m**2,J=0.230698*m**4, Iy=0.231329*m**4, Iz=0.533953*m**4,Ay=0.397032*m**2, Az=0.434351*m**2)
+
+
+    transverse_slab_section = og.create_section(A=0.5372*m**2,J=2.79e-3*m**4, Iy=0.3988 / 2 *m**4, Iz=1.45e-3 / 2*m**4,Ay=0.447 / 2*m**2, Az=0.447 / 2*m**2, unit_width=True)
+
+
+    end_tranverse_slab_section = og.create_section(A=0.5372 / 2*m**2,J=2.68e-3*m**4, Iy=0.04985*m**4,Iz=0.725e-3*m**4,Ay=0.223*m**2, Az=0.223*m**2)
+
+    edge_beam_section = og.create_section(A=0.039375*m**2,J=0.21e-3*m**4, Iy=0.1e-3*m**4,Iz=0.166e-3*m**4,Ay=0.0328*m**2, Az=0.0328*m**2)
 
     # define grillage members
     super_t_beam = og.create_member(member_name="Intermediate I-beams", section=super_t_beam_section, material=concrete)
@@ -70,9 +63,10 @@ Here are some more examples of what you can do with *ops-grillage* module.
     bridge_28.set_member(end_tranverse_slab, member="end_edge")
 
     bridge_28.create_ops(pyfile=False)
+    # plot model
     og.opsplt.plot_model("nodes")
 
-The following model is created in Opensees model space.
+Figure 1 shows the plotted model in Opensees model space.
 
 ..  figure:: ../../images/28m_bridge.png
     :align: center
@@ -82,6 +76,7 @@ The following model is created in Opensees model space.
 
 Adding DL and SDL to analysis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Adding basic load cases, i.e.
 .. code-block:: python
 
     dead_load = create_line_load("DL",point1=point1,point2=point2)
@@ -96,7 +91,6 @@ and value being the load factor to be applied for load combination.
     sls_dict = {}
     bridge_28.add_load_combination(load_combination_name="ULS", load_case_and_factor_dict=uls_dict) # add ULS combination
     bridge_28.add_load_combination(load_combination_name="SLS", load_case_and_factor_dict=sls_dict) # add SLS combination
-
 
 
 Adding a moving load analysis
@@ -132,38 +126,25 @@ The following lines of code shows how we can process the output data array - dem
     max_dY = results.sel(Component='dy').max(dim='Loadcase')
     min_dY = results.sel(Component='dy').max(dim='Loadcase')
 
+    # See which nodes are i and j for each element
+    print(results['ele_nodes'].sel(Element=ele_set,Nodes="i"))
+
+    np.array(results['forces'].sel(Element=ele_set,Component="Mz_i"))
+
+    # sum the nodal forces from the members on one side
+    print(np.sum(np.array(results['forces'].sel(Element=ele_set,Component="Mz_i"))))
+    # sum should be approximate equal to PL/4 or sum of lusas plot
+    # PL/4 = 49000.00
+
 Testing various mesh types for bridge dimensions
 --------------------
-Here is a grillage model with different edge skew angles - left edge is -42 degrees, right edge is 0 degrees (orthogonal).
+Here is a version of the aforementioned grillage model with different dimensions and varied edge skew angles - left edge is 42 degrees, right edge is 0 degrees (orthogonal).
+Material and section properties follows those of aforementioned model.
 
 .. code-block:: python
 
-    import OpsGrillage as og
-    concrete = og.create_material(mat_type="Concrete01", fpc=-6, epsc0=-0.004, fpcu=-6, epsU=-0.014)
-
-    # define sections
-    I_beam_section = og.Section(A=0.896, E=3.47E+10,G=2.00E+10, J=0.133, Iy=0.213, Iz=0.259, Ay=0.233, Az=0.58)
-    slab_section = og.Section(A=0.04428, E=3.47E+10, G=2.00E+10, J=2.6e-4, Iy=1.1e-4, Iz=2.42e-4,
-                           Ay=3.69e-1, Az=3.69e-1, unit_width=True)
-    exterior_I_beam_section = og.Section(A=0.044625, E=3.47E+10, G=2.00E+10, J=2.28e-3, Iy=2.23e-1, Iz=1.2e-3,
-                                      Ay=3.72e-2, Az=3.72e-2)
-
-    # define grillage members
-    I_beam = og.GrillageMember(member_name="Intermediate I-beams", section=I_beam_section, material=concrete)
-    slab = og.GrillageMember(member_name="concrete slab", section=slab_section, material=concrete)
-    exterior_I_beam = og.GrillageMember(member_name="exterior I beams", section=exterior_I_beam_section, material=concrete)
-    example_bridge = og.OpsGrillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=[42, 0],
-                                 num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
-
-    # set grillage member to element groups of grillage model
-    example_bridge.set_member(I_beam, member="interior_main_beam")
-    example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_1")
-    example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_2")
-    example_bridge.set_member(exterior_I_beam, member="edge_beam")
-    example_bridge.set_member(slab, member="transverse_slab")
-    example_bridge.set_member(exterior_I_beam, member="start_edge")
-    example_bridge.set_member(exterior_I_beam, member="end_edge")
-
+    example_bridge = og.create_grillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=[42, 0],
+                             num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
 
     example_bridge.create_ops(pyfile=False)
     og.opsplt.plot_model("nodes")

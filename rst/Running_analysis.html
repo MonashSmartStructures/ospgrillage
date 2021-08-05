@@ -184,35 +184,31 @@
   <div class="section" id="performing-analysis">
 <h1>Performing analysis<a class="headerlink" href="#performing-analysis" title="Permalink to this headline">¶</a></h1>
 <p>Having created the grillage model, users can proceed with grillage analysis.
-The <em>opsgrillage</em> module contains grillage analysis utilities, allowing users to specify load cases comprising of multiple single or compound loads types
-and then run load case analysis.
-Furthermore, <em>ops-grillage</em> module also options for moving load analysis.</p>
+The <em>ospgrillage</em> module contains grillage analysis utilities which wraps Openseespy commands to perform load analysis.
+This allow users to specify load cases comprising of multiple loads types and then run load case analysis.
+Furthermore, <em>ospgrillage</em> module also options for moving load analysis.</p>
 <div class="section" id="defining-loads">
 <h2>Defining loads<a class="headerlink" href="#defining-loads" title="Permalink to this headline">¶</a></h2>
 <p>Available loads types include <a class="reference internal" href="#point">Point</a>, <a class="reference internal" href="#line">Line</a>, and <a class="reference internal" href="#patch">Patch</a> loads.
-Each of these load types are defined with a different class object of similar names.
-Two or more of these load types can be combined to form <a href="#id3"><span class="problematic" id="id4">`Compound`_</span></a> loads.</p>
-<p>Each load type requires
-user to specify its load point(s).
-This is achieved by a namedTuple <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadPoint(x,y,z,p)</span></code> where <cite>x</cite>,`y`,`z` are the coordinates of the load point
-and <cite>p</cite> is the magnitude of the vertical loading.
-The coordinates are generally in the global coordinate system with respect to the created grillage model.
-However, a user-defined local coordinate system may also be used to assist in then creating <a href="#id5"><span class="problematic" id="id6">`Compound`_</span></a> loads.
-The vertical loading is in the direction of the global <cite>y</cite>-axis.
+Two or more of these load types can be combined to form <a href="#id3"><span class="problematic" id="id4">`Compound`_</span></a> loads. All load types are applied in the direction of the global <cite>y</cite>-axis.
 Loads in other directions and applied moments are currently not supported.</p>
-<p>Depending on the load type, a minimum number of LoadPoint namedTuple objects
-are required. These are defined used the <cite>point#</cite> variable for the load type class for the global coordinate system,
-or else <cite>localpoint#</cite> variable for a user-defined local coordinate system, where # is a digit from 1 to 9.
+<p>Each load type requires user to specify its load point(s). This is achieved by a namedTuple <cite>LoadPoint(x,y,z,p)</cite> where <cite>x</cite>,`y`,`z` are the coordinates of the load point
+and <cite>p</cite> is the magnitude of the vertical loading. Note, <cite>p</cite> is a unit magnitude which is interpreted differently based on the load type - this will be later explained.</p>
+<p>The coordinates are generally in the global coordinate system with respect to the created grillage model.
+However, a user-defined local coordinate system may also be used to assist in then creating <a href="#id5"><span class="problematic" id="id6">`Compound`_</span></a> loads.</p>
+<p>Depending on the load type, a minimum number of LoadPoint namedTuple
+are required. These are defined used the <cite>point</cite> variable for the load type class for the global coordinate system,
+or else <cite>localpoint</cite> variable for a user-defined local coordinate system, where # is a digit from 1 to 9.
 Below are examples of creating different load types.</p>
 <div class="section" id="point-loads">
 <span id="point"></span><h3>Point Loads<a class="headerlink" href="#point-loads" title="Permalink to this headline">¶</a></h3>
-<p>Point load is the most basic force, a force applied vertically (y-axis direction) on a single infinitismal point of the grillage model.
+<p>Point load is a force applied on a single infinitismal point of the grillage model.
 Point loads are used represent a large range of loads, such as concentrated load of a car axle.</p>
-<p>Point loads are instantied with the <code class="xref py py-class docutils literal notranslate"><span class="pre">PointLoad</span></code> class and takes only a single <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadPoint</span></code> tuple.
-<cite>p</cite> in the <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadPoint</span></code>  tuple should have units of force (eg. N, kN, kips, etc).</p>
-<p>The following example code is 20 force unit point load located at (5,0,2) in the global coordinate system.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">point_load_location</span> <span class="o">=</span> <span class="n">opsg</span><span class="o">.</span><span class="n">LoadPoint</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>  <span class="c1"># create load point</span>
-<span class="n">Single</span> <span class="o">=</span> <span class="n">opsg</span><span class="o">.</span><span class="n">PointLoad</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;single point&quot;</span><span class="p">,</span> <span class="n">point1</span><span class="o">=</span><span class="n">point_load_location</span><span class="p">)</span>
+<p>Point loads are instantiated with the interface function <code class="docutils literal notranslate"><span class="pre">create_point_load</span></code> or directly with the <code class="xref py py-class docutils literal notranslate"><span class="pre">PointLoad</span></code> class.
+Point load takes only a single <cite>LoadPoint</cite> tuple. <cite>p</cite> in the tuple should have units of force (eg. N, kN, kips, etc).</p>
+<p>The following example code creates a 20 force unit point load located at (5,0,2) in the global coordinate system.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">point_load_location</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">LoadPoint</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>  <span class="c1"># create load point</span>
+<span class="n">Single</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">PointLoad</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;single point&quot;</span><span class="p">,</span> <span class="n">point1</span><span class="o">=</span><span class="n">point_load_location</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>To position the load instead in a user defined local coordinate system to later create a <a href="#id7"><span class="problematic" id="id8">`Compound`_</span></a> loads, the variable <cite>localpoint1</cite> instead of <cite>point1</cite> is used.</p>
@@ -331,10 +327,11 @@ If not specified, the mapping’s reference point is default to the <strong>Orig
 having same reference points (e.g. tandem axle) and properties (e.g. load factor)</p>
 <p>After load type objects are created, users add the load objects to <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadCase</span></code> class objects. First, users instantiates a
 <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadCase</span></code> class object and giving it its name.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">DL</span> <span class="o">=</span> <span class="n">LoadCase</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Dead Load&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">DL</span> <span class="o">=</span> <span class="n">create_load_case</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Dead Load&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Users then pass load objects as input parameters using <code class="docutils literal notranslate"><span class="pre">add_load_groups()</span></code> function.</p>
+<p>Users then pass load objects as input parameters using <code class="docutils literal notranslate"><span class="pre">add_load_groups()</span></code> function. The following code line shows how
+the above load types are added to <em>DL</em> load case.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">DL</span><span class="o">.</span><span class="n">add_load_groups</span><span class="p">(</span><span class="n">Single</span><span class="p">)</span>  <span class="c1"># each line adds individual load types to the load case</span>
 <span class="n">DL</span><span class="o">.</span><span class="n">add_load_groups</span><span class="p">(</span><span class="n">Barrier</span><span class="p">)</span>
 <span class="n">DL</span><span class="o">.</span><span class="n">add_load_groups</span><span class="p">(</span><span class="n">Lane</span><span class="p">)</span>
@@ -354,61 +351,48 @@ function of <code class="xref py py-class docutils literal notranslate"><span cl
 through a path points described by a <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code> object and obtained by the <code class="docutils literal notranslate"><span class="pre">get_path_points()</span></code> method.
 Path are defined using two namedTuple <code class="xref py py-class docutils literal notranslate"><span class="pre">Point(x,y,z)</span></code> to describe its start and end position.</p>
 <p>The following example code is a line load is defined as a moving load travelling a path from 2 to 4 distance units in the global coordinate system.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">line_point_1</span> <span class="o">=</span> <span class="n">opsg</span><span class="o">.</span><span class="n">LoadPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
-<span class="n">line_point_2</span> <span class="o">=</span> <span class="n">opsg</span><span class="o">.</span><span class="n">LoadPoint</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
-<span class="n">Line</span> <span class="o">=</span> <span class="n">opsg</span><span class="o">.</span><span class="n">LineLoading</span><span class="p">(</span><span class="s2">&quot;Line load&quot;</span><span class="p">,</span> <span class="n">point1</span><span class="o">=</span><span class="n">line_point_1</span><span class="p">,</span> <span class="n">point2</span><span class="o">=</span><span class="n">line_point_2</span><span class="p">)</span>
-    <span class="n">single_path</span> <span class="o">=</span> <span class="n">opsg</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">start_point</span><span class="o">=</span><span class="n">opsg</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">end_point</span><span class="o">=</span> <span class="n">opsg</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>  <span class="c1"># create path object</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">front_wheel</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">LoadPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>   <span class="c1"># Local</span>
+<span class="n">back_wheel</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">LoadPoint</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>   <span class="c1"># Local</span>
+<span class="n">tandem</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_compound_load</span><span class="p">(</span><span class="s2">&quot;Two wheel vehicle&quot;</span><span class="p">)</span>
+
+<span class="n">single_path</span> <span class="o">=</span> <span class="n">opsg</span><span class="o">.</span><span class="n">create_moving_path</span><span class="p">(</span><span class="n">start_point</span><span class="o">=</span><span class="n">ospg</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">end_point</span><span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>  <span class="c1"># create path object</span>
 <span class="n">move_line</span> <span class="o">=</span> <span class="n">opsg</span><span class="o">.</span><span class="n">MovingLoad</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Line Load moving&quot;</span><span class="p">)</span>
-<span class="n">move_line</span><span class="o">.</span><span class="n">add_loads</span><span class="p">(</span><span class="n">load_obj</span><span class="o">=</span><span class="n">Line</span><span class="p">,</span><span class="n">path_obj</span><span class="o">=</span><span class="n">single_path</span><span class="o">.</span><span class="n">get_path_points</span><span class="p">())</span>
+<span class="n">move_line</span><span class="o">.</span><span class="n">set_path</span><span class="p">(</span><span class="n">single_path</span><span class="p">)</span>
+<span class="n">move_line</span><span class="o">.</span><span class="n">add_loads</span><span class="p">(</span><span class="n">load_obj</span><span class="o">=</span><span class="n">Line</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>After adding all load types and respective paths for a moving load, users run the class function <code class="docutils literal notranslate"><span class="pre">parse_moving_load_case()</span></code> which instructs the class to create multiple <a class="reference internal" href="#load-cases">load cases</a> for
-which corresponds to the load condition as the load moves through each increment of the path.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">move_point</span><span class="o">.</span><span class="n">parse_moving_load_cases</span><span class="p">()</span> <span class="c1"># step to finalise moving load - creates incremental load cases for each position of the moving load</span>
-</pre></div>
-</div>
-<p>From here, use the <code class="docutils literal notranslate"><span class="pre">add_moving_load_case()</span></code> function of the <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> to add the moving load as a moving load case.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span><span class="o">.</span><span class="n">add_moving_load_case</span><span class="p">(</span><span class="n">move_point</span><span class="p">)</span>
+<p>From here, use the <code class="docutils literal notranslate"><span class="pre">add_load_case()</span></code> function of the <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> to add the moving load. Here, the function automatically
+creates multiple <a class="reference internal" href="#load-cases">load cases</a> which corresponds to the load condition as the load moves through each increment of the path.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span><span class="o">.</span><span class="n">add_load_case</span><span class="p">(</span><span class="n">move_point</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="defining-load-combination">
 <h2>Defining load combination<a class="headerlink" href="#defining-load-combination" title="Permalink to this headline">¶</a></h2>
-<p>Load combinations analysis are performed by using the <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> function <code class="docutils literal notranslate"><span class="pre">add_load_combination()</span></code> function.
+<p>Load combinations analysis are performed by using the <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> function <code class="docutils literal notranslate"><span class="pre">add_load_combination()</span></code>.
 Load combinations are defined by passing an input dictionary of basic load case name as keys with load factors as
 values. An example dictionary is shown as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">load_combinations</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Dead Load&#39;</span><span class="p">:</span><span class="mf">1.2</span><span class="p">,</span><span class="s1">&#39;Live traffic&#39;</span><span class="p">:</span><span class="mf">1.7</span><span class="p">}</span>
 <span class="n">example_bridge</span><span class="o">.</span><span class="n">add_load_combination</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;ULS&quot;</span><span class="p">,</span> <span class="n">input_dict</span> <span class="o">=</span> <span class="n">load_combinations</span> <span class="p">)</span>
 </pre></div>
 </div>
-<p>Load combinations are automatically calculated at the end after analysing all load cases. The following section on Running Analysis will
-explain how these load combinations are extracted.</p>
+<p>Load combinations are automatically calculated from the analysis results at the end after analysing all load cases.
+The following section on Running Analysis will explain how these load combinations are extracted.</p>
 </div>
 <div class="section" id="running-analysis">
 <h2>Running analysis<a class="headerlink" href="#running-analysis" title="Permalink to this headline">¶</a></h2>
-<p>Once all loadcases (static or moving) have been defined and added to the grillage the analysis can be conducted.</p>
-<p>To analyse non-moving loadcase(s), users run the class function <code class="docutils literal notranslate"><span class="pre">analyse_load_case()</span></code>.
-This will analyse all non-moving load cases added to the grillage model previously.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span><span class="o">.</span><span class="n">analyse_load_case</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>Users run <code class="docutils literal notranslate"><span class="pre">analyse_moving_load_case()</span></code> to analyze the moving load case.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span><span class="o">.</span><span class="n">analyse_moving_load_case</span><span class="p">()</span>
-</pre></div>
-</div>
+<p>Once all defined load cases (static and moving) have been added to the grillage the analysis can be conducted.</p>
+<p>To analyse loadcase(s), users run the class function <code class="docutils literal notranslate"><span class="pre">analyze()</span></code>. This function takes either keyword arguments
+<code class="docutils literal notranslate"><span class="pre">all=</span></code> or <code class="docutils literal notranslate"><span class="pre">loadcase=</span></code>. When <code class="docutils literal notranslate"><span class="pre">all=True</span></code>, <code class="docutils literal notranslate"><span class="pre">analyze()</span></code> will run all defined load cases. If users wish to run only
+a specific set of load cases, pass a list of load case name str to <code class="docutils literal notranslate"><span class="pre">loadcase=</span></code>  keyword. This will analyse all load cases of the list.</p>
 <div class="section" id="obtaining-results">
 <h3>Obtaining results<a class="headerlink" href="#obtaining-results" title="Permalink to this headline">¶</a></h3>
 <p>Results are returned as <a class="reference external" href="http://xarray.pydata.org/en/stable/user-guide/data-structures.html#">data arrays</a> (python’s Xarray module).
 To this, run the <code class="docutils literal notranslate"><span class="pre">get_results()</span></code> function and an output tuple of two objects will be returned:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">basic_load_case_result</span><span class="p">,</span><span class="n">moving_load_results</span> <span class="o">=</span> <span class="n">example_bridge</span><span class="o">.</span><span class="n">get_results</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span>  <span class="n">example_bridge</span><span class="o">.</span><span class="n">get_results</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>where,</p>
-<ul class="simple">
-<li><p>basic_load_case_result : a data array containing results for all non-moving load cases.</p></li>
-<li><p>moving_load_results: a list of data array each for a moving load (blank if <code class="docutils literal notranslate"><span class="pre">analysis_moving_load_case()</span></code> is not used).</p></li>
-</ul>
-<p>Each data array contains dimensions of:</p>
+<p>The <em>result</em> data array contains dimensions of:</p>
 <ul class="simple">
 <li><p>load case : listing all load case</p></li>
 <li><p>Node : listing all nodes within mesh of grillage model</p></li>
