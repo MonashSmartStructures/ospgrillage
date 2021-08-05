@@ -21,28 +21,24 @@ This module comprised of user interface functions to take user inputs and return
 
 
 
-Top level functions
---------------------------
-
-
 OpsGrillage class
 ---------------------------
 
-.. autoclass:: ospgrillage.OpsGrillage
+.. automodule:: ospgrillage.osp_grillage
     :members:
     :show-inheritance:
 
 
 Analysis class
 ^^^^^^^^^^^^^^^^
-.. autoclass:: ospgrillage.Analysis
+.. autoclass:: osp_grillage.Analysis
     :members:
     :show-inheritance:
 
 
 Result class
 ^^^^^^^^^^^^^^^^
-.. autoclass:: ospgrillage.Results
+.. autoclass:: osp_grillage.Results
     :members:
     :show-inheritance:
 
@@ -66,11 +62,6 @@ Section class
 
 GrillageMember class
 ------------------------------------------
-.. autoclass:: members.GrillageMember
-    :members:
-    :show-inheritance:
-
-
 
 .. automodule:: members
     :members:
@@ -146,10 +137,14 @@ LoadCase
 Misc
 ------------------------------------------
 
+LoadCase
+^^^^^^^^^^^^^^^^
 .. autoclass:: load.Path
     :members:
     :show-inheritance:
 
+Shape functions
+^^^^^^^^^^^^^^^^
 .. autoclass:: load.ShapeFunction
     :members:
     :show-inheritance:
