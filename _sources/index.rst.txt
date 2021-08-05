@@ -29,7 +29,7 @@ Documentation
    rst/Examples
    rst/ChangeLog
    rst/OpsGrillage
-   rst/Load
+   rst/Loads
 
 
 
