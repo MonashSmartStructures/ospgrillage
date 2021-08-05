@@ -25,24 +25,21 @@ OpsGrillage class
 ---------------------------
 
 
-.. automodule:: ospgrillage.osp_grillage
+.. autoclass:: ospgrillage.osp_grillage.OpsGrillage
     :members:
     :show-inheritance:
 
 Analysis class
 ^^^^^^^^^^^^^^^^
 
-
-
-
-.. autoclass:: ospgrillage.osp_grillage.OpsGrillage
+.. autoclass:: ospgrillage.osp_grillage.Analysis
     :members:
     :show-inheritance:
 
 
 Result class
 ^^^^^^^^^^^^^^^^
-.. autoclass:: osp_grillage.Results
+.. autoclass:: ospgrillage.osp_grillage.Results
     :members:
     :show-inheritance:
 
@@ -60,22 +57,21 @@ For information regarding the procedures in :class:`~OpsGrillage` class, see
 Section class
 ------------------------------------------
 
-.. autoclass:: members.Section
+.. autoclass:: ospgrillage.members.Section
     :members:
     :show-inheritance:
 
 GrillageMember class
 ------------------------------------------
 
-.. automodule:: members
+.. autoclass:: ospgrillage.members.GrillageMember
     :members:
     :show-inheritance:
-
 
 Mesh class
 ------------------------------------------
 
-.. autoclass:: mesh.Mesh
+.. autoclass:: ospgrillage.mesh.Mesh
     :members:
     :show-inheritance:
 
@@ -87,54 +83,53 @@ For information regarding definition of :class:`~Loads` class, see
 NodalLoad
 ^^^^^^^^^^^^^^^^
 
-.. autoclass:: load.NodalLoad
+.. autoclass:: ospgrillage.load.NodalLoad
     :members:
     :show-inheritance:
 
 PointLoad
 ^^^^^^^^^^^^^^^^
 
-.. autoclass:: load.PointLoad
+.. autoclass:: ospgrillage.load.PointLoad
     :members:
     :show-inheritance:
 
 LineLoading
 ^^^^^^^^^^^^^^^^
 
-.. autoclass:: load.LineLoading
+.. autoclass:: ospgrillage.load.LineLoading
     :members:
     :show-inheritance:
 
 PatchLoading
 ^^^^^^^^^^^^^^^^
 
-.. autoclass:: load.PatchLoading
+.. autoclass:: ospgrillage.load.PatchLoading
     :members:
     :show-inheritance:
 
 CompoundLoad
-^^^^^^^^^^^^^^^^
+------------------------------------------
 
-.. autoclass:: load.CompoundLoad
+.. autoclass:: ospgrillage.load.CompoundLoad
     :members:
     :show-inheritance:
 
 MovingLoad
-^^^^^^^^^^^^^^^^
+------------------------------------------
 
-.. autoclass:: load.MovingLoad
+.. autoclass:: ospgrillage.load.MovingLoad
     :members:
     :show-inheritance:
 
-Load case class
+
+
+LoadCase
 ------------------------------------------
 For information regarding in :class:`~LoadCase` class, see
 :doc:`Loads`.
 
-LoadCase
-^^^^^^^^^^^^^^^^
-
-.. autoclass:: load.LoadCase
+.. autoclass:: ospgrillage.load.LoadCase
     :members:
     :show-inheritance:
 
@@ -143,12 +138,12 @@ Misc
 
 LoadCase
 ^^^^^^^^^^^^^^^^
-.. autoclass:: load.Path
+.. autoclass:: ospgrillage.load.Path
     :members:
     :show-inheritance:
 
 Shape functions
 ^^^^^^^^^^^^^^^^
-.. autoclass:: load.ShapeFunction
+.. autoclass:: ospgrillage.load.ShapeFunction
     :members:
     :show-inheritance:
