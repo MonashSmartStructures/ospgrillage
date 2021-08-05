@@ -428,14 +428,15 @@ class OpsGrillage:
 
 
          =====================================    ======================================
-         Standard
+         Standard                                 Description
          =====================================    ======================================
-          edge_beam
-          exterior_main_beam_1
-          interior_main_beam
-          exterior_main_beam_1
-          edge_slab
-          transverse_slab
+          edge_beam                               Elements along x axis at top and bottom edges of mesh (z = 0, z = width)
+          exterior_main_beam_1                    Elements along first grid line after bottom edge (z = 0)
+          interior_main_beam                      For all elements in x direction between grid lines of exterior_main_beam_1 and exterior_main_beam_2
+          exterior_main_beam_1                    Elements along first grid line after top edge (z = width)
+          start_edge                     	      Elements along z axis where longitudinal grid line x = 0
+          end_edge                                Elements along z axis where longitudinal grid line x = Length
+          transverse_slab                         For all elements in transverse direction between start_edge and end_edge
          =====================================    ======================================
 
         :return: sets member object to element of grillage in OpsGrillage instance
