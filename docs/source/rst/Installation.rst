@@ -2,8 +2,18 @@
 Installation
 ========================
 
-Windows
+Required dependencies
+----------------------
+
+* Python (3.8 or later)
+* Openseespy (3.3 or later)
+* numpy
+* xarray
+
+
+Instructions
 --------------------
+The easiest way to install is to use `pip`.
 
 .. code-block:: python
 
@@ -17,15 +27,15 @@ For development, install as follows:
     cd ops-grillage
     pip install -e
 
-Requirements
---------------------
-The *ops-grillage* module uses several external modules for its usage. A list of modules required for the working
-environment of *ops-grillage* is found in the *requirement.txt* file.
 
-Pip
--------------------
 
-To install a working environment with all required module run, run the following command line in terminal
+Installing dependencies
+------------------------
+
+The *ospgrillage* module uses several external modules for its usage. A list of modules required for the working
+environment of *ospgrillage* is found in the *requirement.txt* file.
+
+To install a working environment with all required dependencies, run the following command line in terminal
 
 .. code-block:: python
 
@@ -34,7 +44,7 @@ To install a working environment with all required module run, run the following
 
 Tests
 -------------------
-The module comes with a pytest protocol named `test_file.py` which users can run on the terminal.
+The module comes with a pytest protocol named `test_file.py` which users can run `pytest` in the root directory of the module.
 
 .. code-block:: python
 

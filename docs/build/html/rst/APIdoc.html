@@ -95,7 +95,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#uml-diagram-overview">UML diagram overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#what-functions-are-considered-public-api">What functions are considered public API?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-ospgrillage.osp_grillage">OpsGrillage class</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#opsgrillage-class">OpsGrillage class</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#analysis-class">Analysis class</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#result-class">Result class</a></li>
 </ul>
@@ -209,18 +209,11 @@ showing their interactions, both within and across various classes, are presente
 <h2>What functions are considered public API?<a class="headerlink" href="#what-functions-are-considered-public-api" title="Permalink to this headline">¶</a></h2>
 <p>This module comprised of user interface functions to take user inputs and returns its corresponding object creation</p>
 </div>
-<div class="section" id="module-ospgrillage.osp_grillage">
-<span id="opsgrillage-class"></span><h2>OpsGrillage class<a class="headerlink" href="#module-ospgrillage.osp_grillage" title="Permalink to this headline">¶</a></h2>
-<p>Module description</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="ospgrillage.osp_grillage.create_grillage">
-<span class="sig-prename descclassname"><span class="pre">ospgrillage.osp_grillage.</span></span><span class="sig-name descname"><span class="pre">create_grillage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.create_grillage" title="Permalink to this definition">¶</a></dt>
-<dd><p>User interface for creating grillage model / OpsGrilage object.</p>
-</dd></dl>
-
+<div class="section" id="opsgrillage-class">
+<h2>OpsGrillage class<a class="headerlink" href="#opsgrillage-class" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="ospgrillage.osp_grillage.OpsGrillage">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.osp_grillage.</span></span><span class="sig-name descname"><span class="pre">OpsGrillage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bridge_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">long_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skew</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_long_grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_trans_grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_beam_dist</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Ortho'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'3D'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OpsGrillage" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="osp_grillage.OpsGrillage">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">osp_grillage.</span></span><span class="sig-name descname"><span class="pre">OpsGrillage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bridge_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">long_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skew</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_long_grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_trans_grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_beam_dist</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Ortho'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'3D'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#osp_grillage.OpsGrillage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Main class of Openseespy grillage model wrapper. Outputs an executable py file which generates the prescribed
 Opensees grillage model based on user input.</p>
@@ -242,8 +235,8 @@ properties for various elements in the grillage model.</p>
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="ospgrillage.osp_grillage.OpsGrillage.create_ops">
-<span class="sig-name descname"><span class="pre">create_ops</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OpsGrillage.create_ops" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="osp_grillage.OpsGrillage.create_ops">
+<span class="sig-name descname"><span class="pre">create_ops</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#osp_grillage.OpsGrillage.create_ops" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to create model instance in Opensees model space. If pyfile input is True, function creates an
 executable pyfile for generating the grillage model in Opensees model space.
 :param pyfile: Boolean to flag py file generation or Opensees model instance.
@@ -251,8 +244,8 @@ executable pyfile for generating the grillage model in Opensees model space.
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="ospgrillage.osp_grillage.OpsGrillage.set_boundary_condition">
-<span class="sig-name descname"><span class="pre">set_boundary_condition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edge_group_counter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[1]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restraint_vector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_to_exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OpsGrillage.set_boundary_condition" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="osp_grillage.OpsGrillage.set_boundary_condition">
+<span class="sig-name descname"><span class="pre">set_boundary_condition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edge_group_counter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[1]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restraint_vector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_to_exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#osp_grillage.OpsGrillage.set_boundary_condition" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function for user to modify boundary conditions of the grillage model. Edge nodes are automatically detected
 and recorded as having fixity in vertical y direction.</p>
 <div class="admonition note">
@@ -262,8 +255,8 @@ and recorded as having fixity in vertical y direction.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="ospgrillage.osp_grillage.OpsGrillage.set_member">
-<span class="sig-name descname"><span class="pre">set_member</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grillage_member_obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">ospgrillage.members.GrillageMember</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">member</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OpsGrillage.set_member" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="osp_grillage.OpsGrillage.set_member">
+<span class="sig-name descname"><span class="pre">set_member</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grillage_member_obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">ospgrillage.members.GrillageMember</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">member</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#osp_grillage.OpsGrillage.set_member" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to set grillage member class object to elements of grillage members.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -314,8 +307,8 @@ and recorded as having fixity in vertical y direction.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="ospgrillage.osp_grillage.OpsGrillage.set_shell_members">
-<span class="sig-name descname"><span class="pre">set_shell_members</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grillage_member_obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">ospgrillage.members.GrillageMember</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tri</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OpsGrillage.set_shell_members" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="osp_grillage.OpsGrillage.set_shell_members">
+<span class="sig-name descname"><span class="pre">set_shell_members</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grillage_member_obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">ospgrillage.members.GrillageMember</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tri</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#osp_grillage.OpsGrillage.set_shell_members" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to set shell/quad members across entire mesh grid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -338,8 +331,8 @@ for the specific shell element in accordance with Opensees conventions.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="ospgrillage.osp_grillage.OpsGrillage.set_material">
-<span class="sig-name descname"><span class="pre">set_material</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">material_obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OpsGrillage.set_material" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="osp_grillage.OpsGrillage.set_material">
+<span class="sig-name descname"><span class="pre">set_material</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">material_obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#osp_grillage.OpsGrillage.set_material" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to define a global material model. This function proceeds to write write the material() command to
 output file. By default, function is only called and handled within set_member function. When called by user,
 function creates a material object instance to be set for the ops-grillage instance.</p>
@@ -351,8 +344,8 @@ function creates a material object instance to be set for the ops-grillage insta
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="ospgrillage.osp_grillage.OpsGrillage.add_load_case">
-<span class="sig-name descname"><span class="pre">add_load_case</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">load_case_obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">ospgrillage.load.LoadCase</span><span class="p"><span class="pre">,</span> </span><span class="pre">ospgrillage.load.MovingLoad</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OpsGrillage.add_load_case" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="osp_grillage.OpsGrillage.add_load_case">
+<span class="sig-name descname"><span class="pre">add_load_case</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">load_case_obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">ospgrillage.load.LoadCase</span><span class="p"><span class="pre">,</span> </span><span class="pre">ospgrillage.load.MovingLoad</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#osp_grillage.OpsGrillage.add_load_case" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to add individual load cases to OpsGrillage instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -365,8 +358,8 @@ function creates a material object instance to be set for the ops-grillage insta
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="ospgrillage.osp_grillage.OpsGrillage.analyze">
-<span class="sig-name descname"><span class="pre">analyze</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OpsGrillage.analyze" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="osp_grillage.OpsGrillage.analyze">
+<span class="sig-name descname"><span class="pre">analyze</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#osp_grillage.OpsGrillage.analyze" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to analyze all basic load cases defined previously using add_load_case() function</p>
 <dl class="field-list simple">
 <dt class="field-odd">Except</dt>
@@ -376,15 +369,15 @@ function creates a material object instance to be set for the ops-grillage insta
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="ospgrillage.osp_grillage.OpsGrillage.add_load_combination">
-<span class="sig-name descname"><span class="pre">add_load_combination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">load_combination_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_case_and_factor_dict</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OpsGrillage.add_load_combination" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="osp_grillage.OpsGrillage.add_load_combination">
+<span class="sig-name descname"><span class="pre">add_load_combination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">load_combination_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_case_and_factor_dict</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#osp_grillage.OpsGrillage.add_load_combination" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to add load combination to OpsGrillage analysis. Load combinations are defined through a dict with
 load case name str to be included in combination as keys, and load factor (type float/int) as value of dict.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="ospgrillage.osp_grillage.OpsGrillage.get_results">
-<span class="sig-name descname"><span class="pre">get_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OpsGrillage.get_results" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="osp_grillage.OpsGrillage.get_results">
+<span class="sig-name descname"><span class="pre">get_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#osp_grillage.OpsGrillage.get_results" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to get results from all load cases. Alternatively, if keyword “get_combinations” is provided
 with boolean True, returns data array processed based on defined load combinations instead.</p>
 <dl class="field-list simple">
@@ -403,30 +396,6 @@ with boolean True, returns data array processed based on defined load combinatio
 </dl>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="ospgrillage.osp_grillage.Analysis">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.osp_grillage.</span></span><span class="sig-name descname"><span class="pre">Analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">analysis_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ops_grillage_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pyfile</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_counter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ele_counter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">analysis_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Static'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_counter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pattern_counter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.Analysis" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Main class to handle the run/execution of load case + load combination + moving load analysis. Analysis class is
-created and used within OpsGrillage class after “adding load case”, “adding load combination” and “adding moving
-load” procedures.</p>
-<p>The following are the roles of Analysis object:</p>
-<ul class="simple">
-<li><p>store information of ops commands for performing static (default) analysis of single/multiple load case(s).</p></li>
-<li><p>execute the required ops commands to perform analysis using the OpsGrillage model instance.</p></li>
-<li><p>if flagged, writes an executable py file instead which performs the exact analysis as it would for an OpsGrillage instance instead.</p></li>
-<li><p>manages multiple load case’s ops.load() commands, applying the specified load factors to the load cases for load combinations</p></li>
-</ul>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="ospgrillage.osp_grillage.Results">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.osp_grillage.</span></span><span class="sig-name descname"><span class="pre">Results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh_obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">ospgrillage.mesh.Mesh</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.Results" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Main class to store results of an Analysis class object, process into data array output for post processing/plotting.
-Class object is accessed within OpsGrillage class object.</p>
 </dd></dl>
 
 <div class="section" id="analysis-class">
@@ -462,7 +431,7 @@ Class object is accessed within OpsGrillage class object.</p>
 </div>
 <div class="section" id="material-class">
 <h2>Material class<a class="headerlink" href="#material-class" title="Permalink to this headline">¶</a></h2>
-<p>For information regarding the procedures in <a class="reference internal" href="#ospgrillage.osp_grillage.OpsGrillage" title="ospgrillage.osp_grillage.OpsGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code></a> class, see
+<p>For information regarding the procedures in <a class="reference internal" href="generated/osp_grillage.OpsGrillage.html#osp_grillage.OpsGrillage" title="osp_grillage.OpsGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code></a> class, see
 <a class="reference internal" href="ModuleDoc.html"><span class="doc">Module design</span></a>.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="material.Material">

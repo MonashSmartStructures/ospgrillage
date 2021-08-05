@@ -308,7 +308,7 @@ node tag as key, return the z spacings between vicinity nodes</p>
 </div>
 <div class="section" id="local-vs-global-coordinate-system">
 <h2>Local vs global coordinate system<a class="headerlink" href="#local-vs-global-coordinate-system" title="Permalink to this headline">¶</a></h2>
-<p>In <em>ops-grillage</em>, local coordinate system refers to a basic coordinate system of components which is independent of the global coordinate system i.e. the coordinate system of the
+<p>In <em>ospgrillage</em>, local coordinate system refers to a basic coordinate system of components which is independent of the global coordinate system i.e. the coordinate system of the
 grillage model space.</p>
 <p>The definition of the following components within <em>ops-grillage</em> requires attention between basic and global coordinate system</p>
 <ul class="simple">
@@ -344,21 +344,21 @@ the module raises an Error regarding its point/vertices values.</p>
 </div>
 <div class="section" id="further-development">
 <h2>Further development<a class="headerlink" href="#further-development" title="Permalink to this headline">¶</a></h2>
-<p>The initial release of <em>ops-grillage</em> contains core algorithms to generate meshes of grillage models. However the
+<p>The initial release of <em>ospgrillage</em> contains core algorithms to generate meshes of grillage models. However the
 release comes with limitations and further development are required to extend beyond these limitations.</p>
-<p>The current version of <em>ops-grillage</em> is limited to straight meshes. However, the developers coded the module in a way
+<p>The current version of <em>ospgrillage</em> is limited to straight meshes. However, the developers coded the module in a way
 where curve mesh is possible in future developments. Specifically, <cite>SweepPath</cite> class in meshing procedure can be introduced with
 curved lines instead of straight (current version). This makes curve mesh possible with the sweep nodes been coded to be always orthogonal
 to sweep path.</p>
-<p>Current version of <em>ops-grillage</em> is limited to a single span mesh, where the support edges lies on the start and end
-edge of the mesh. Multi-span mesh is possible with a few more developements. This is done by introducing intermediate
+<p>Current version of <em>ospgrillage</em> is limited to a single span mesh, where the support edges lies on the start and end
+edge of the mesh. Multi-span mesh is possible with a few more developments. This is done by introducing intermediate
 edge construction lines. This is done by developing the <cite>EdgeConstructionLine</cite> class. However,
 this requires a bit more development as current edge construction lines are only recognized as end
 supports - catering meshing procedures for one span.</p>
-<p>The developers also acknowledges that there is minor conflict between the coordinate system of <em>ops-grillage</em> and the default
+<p>The developers also acknowledges that there is minor conflict between the coordinate system of <em>ospgrillage</em> and the default
 coordinate system for the <cite>ops_vis</cite> module of <cite>Openseespy</cite>. The <cite>ops_vis</cite> module default isotropic angle is x - y with z axis plane
 being the model plane of a 2-D model in 3-D space. Currently the easiest solution is to further develop <cite>ops_vis</cite> to allow
-multi isotropic views of the model space. If developers were to program <em>ops-grillage</em> to fit <cite>ops_vis</cite> current default axis,
+multi isotropic views of the model space. If developers were to program <em>ospgrillage</em> to fit <cite>ops_vis</cite> current default axis,
 it would require substantial rework of the entire module - since the module assume the model plane of the 2D grillage is the
 y axis.</p>
 </div>

@@ -1,7 +1,7 @@
 Load
 =====================
 
-.. currentmodule:: ospgrillage
+.. currentmodule:: load
 
 .. automodule:: load
    :members:
