@@ -43,12 +43,12 @@ The following example code creates a 20 force unit point load located at (5,0,2)
     point_load_location = ospg.LoadPoint(5, 0, 2, 20)  # create load point
     Single = ospg.PointLoad(name="single point", point1=point_load_location)
 
-To position the load instead in a user defined local coordinate system to later create a `Compound`_ loads, the variable `localpoint1` instead of `point1` is used. 
+To position the load instead in a user defined local coordinate system to later create a `Compound Load`_, the variable `localpoint1` instead of `point1` is used.
 
 .. code-block:: python
 
-    point_load_location = opsg.LoadPoint(5, 0, 2, 20)  # create load point
-    Single = opsg.PointLoad(name="single point", localpoint1=point_load_location)
+    point_load_location = ospg.LoadPoint(5, 0, 2, 20)  # create load point
+    Single = ospg.PointLoad(name="single point", localpoint1=point_load_location)
 
 
 .. _Line:
@@ -67,18 +67,20 @@ in the global coordinate system from -1 to 11 distance units in the `x`-axis and
 
 .. code-block:: python
 
-    barrier_point_1 = opsg.LoadPoint(-1, 0, 3, 2)
-    barrier_point_2 = opsg.LoadPoint(11, 0, 3, 2)
-    Barrier = opsg.LineLoading("Barrier curb load", point1=barrier_point_1, point2=barrier_point_2)
+    barrier_point_1 = ospg.LoadPoint(-1, 0, 3, 2)
+    barrier_point_2 = ospg.LoadPoint(11, 0, 3, 2)
+    Barrier = ospg.LineLoading("Barrier curb load", point1=barrier_point_1, point2=barrier_point_2)
 
-As before, to position the load instead in a user defined local coordinate system to later create a `Compound`_ loads, the variable `localpoint#` instead of `point#` is used. 
+As before, to position the load instead in a user defined local coordinate system to later create a `Compound load`_ loads, the variable `localpoint#` instead of `point#` is used.
 
 .. _Patch:
 
 Patch loads
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Patch loads are useful to represent loads distributed uniformly over a certain area such as traffic lanes.
 
-Patch loads are instantied with the :class:`PatchLoading` and required at least four :class:`LoadPoint` tuple (corresponds to the vertices of the patch load).
+Patch loads are instantiated with the interface function ``create_load(type="patch)``, or directly
+using :class:`PatchLoading` and required at least four :class:`LoadPoint` tuple (corresponds to the vertices of the patch load).
 Using more than four tuples allows a curve surface loading profile.
 `p` in the :class:`LoadPoint` tuple should have units of force per area.
 
@@ -88,10 +90,10 @@ To position the load instead in a user defined local coordinate system, the vari
 
 .. code-block:: python
 
-    lane_point_1 = opsg.LoadPoint(0, 0, 3, 5)
-    lane_point_2 = opsg.LoadPoint(8, 0, 3, 5)
-    lane_point_3 = opsg.LoadPoint(8, 0, 5, 5)
-    lane_point_4 = opsg.LoadPoint(0, 0, 5, 5)
+    lane_point_1 = ospg.LoadPoint(0, 0, 3, 5)
+    lane_point_2 = ospg.LoadPoint(8, 0, 3, 5)
+    lane_point_3 = ospg.LoadPoint(8, 0, 5, 5)
+    lane_point_4 = ospg.LoadPoint(0, 0, 5, 5)
     Lane = PatchLoading("Lane 1", point1=lane_point_1, point2=lane_point_2, point3=lane_point_3, point4=lane_point_4)
 
 .. _Compound load:
@@ -100,23 +102,33 @@ Compound loads
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Two or more groups of load objects can be compounded into a compound load. 
 
-To create a compound load, use the :class:`CompoundLoad` class - passing load objects for compounding as input parameters.
+To create a compound load, use the ``create_compound_load()`` function or the
+:class:`CompoundLoad` class - passing load objects for compounding as input parameters.
 
 The following code creates and add a point and line load to the :class:`CompoundLoad` object.
 
 .. code-block:: python
 
     # compound load
-    wheel_1 = opsg.PointLoad(opsg.LoadPoint(0, 0, 3, 5))
-    wheel_2 = opsg.PointLoad(opsg.LoadPoint(0, 0, 3, 5))
-    C_Load = opsg.CompoundLoad("Axle tandem")
+    wheel_1 = ospg.PointLoad(opsg.LoadPoint(0, 0, 3, 5))
+    wheel_2 = ospg.PointLoad(opsg.LoadPoint(0, 0, 3, 5))
+    C_Load = ospg.CompoundLoad("Axle tandem")
 
 After creating a compound load, users will have to add :class:`~Loads` objects (Point, Line, Patch) to the Compound load object:
 
 .. code-block:: python
 
-    C_Load.add_load(load_obj=wheel_1, local_coord=Point(5,0,5))
-    C_Load.add_load(load_obj=wheel_2, local_coord=Point(3,0,5))
+    C_Load.add_load(load_obj=wheel_1)
+    C_Load.add_load(load_obj=wheel_2)
+
+After defining all required load objects, :class:`~CompoundLoad` requires users to define the global coordinate which to map the user-defined local coordinates.
+If not specified, the mapping's reference point is default to the **Origin** of coordinate system i.e. (0,0,0)
+
+For example, this code line sets the **Origin** as well as load points for all load objects of **C_load**  by x + 4, y + 0 , and z + 3.
+
+.. code-block:: python
+
+    C_Load.set_global_coord(Point(4,0,3))
 
 Here are the valid input types for which CompoundLoad accepts:
 
@@ -145,14 +157,6 @@ Here are the valid input types for which CompoundLoad accepts:
      - **Invalid combination**, loads are defined in local space already
      - N/A
 
-Test
-
-.. note::
-
-    Compound loads require users to pay attention between basic and global coordinate system (see :ref:`ModuleDoc` for more information on coordinate systems)
-
-    At the current stage, the :class:`~CompoundLoad` parses the load object within **local coordinate system**. When pass as input into :class:`~LoadCase`, the Compound load's vertices / load points
-    are automatically converted to **global coordinates**, based on the inputs of ``set_global_coord`` function
 
 **Coordinate System**
 
@@ -161,14 +165,13 @@ This relates to the load object - whether it was previously defined in the user-
 input conditions
 
 
-After defining all required load objects, :class:`~CompoundLoad` requires users to define the global coordinate which to map the user-defined local coordinates. 
-If not specified, the mapping's reference point is default to the **Origin** of coordinate system i.e. (0,0,0)
+.. note::
 
-For example, this code line shifts all load points of all load objects for **Single** and **Barrier** in the **C_Load** compound load by x + 4, y + 0 , and z + 3.
+    Compound loads require users to pay attention between basic and global coordinate system (see :ref:`ModuleDoc` for more information on coordinate systems)
 
-.. code-block:: python
+    At the current stage, the :class:`~CompoundLoad` parses the load object within **local coordinate system**. When pass as input into :class:`~LoadCase`, the Compound load's vertices / load points
+    are automatically converted to **global coordinates**, based on the inputs of ``set_global_coord`` function
 
-    C_Load.set_global_coord(Point(4,0,3))
 
 .. _load cases:
 
@@ -254,8 +257,12 @@ a specific set of load cases, pass a list of load case name str to ``loadcase=``
 .. code-block:: python
     # run either one
     example_bridge.analyze(all = True)
-    #
-    example_bridge.analyze(load_case=)
+    # or a single str
+    example_bridge.analyze(load_case="DL")
+    # or a single element list
+    example_bridge.analyze(load_case=["DL"])
+    # or a list of multiple load cases
+    example_bridge.analyze(load_case=["DL","SDL"])
 
 
 Obtaining results
