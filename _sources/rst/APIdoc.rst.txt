@@ -25,9 +25,7 @@ OpsGrillage class
 ---------------------------
 
 
-.. currentmodule:: osp_grillage
-
-.. autoclass:: OpsGrillage
+.. automodule:::: ospgrillage.osp_grillage
     :members:
     :show-inheritance:
 
