@@ -1,6 +1,7 @@
 OpsGrillage
 =====================
+.. py:currentmodule:: osp_grillage
 
-.. automodule:: ospgrillage
+.. autoclass:: OpsGrillage
    :members:
    :show-inheritance:
