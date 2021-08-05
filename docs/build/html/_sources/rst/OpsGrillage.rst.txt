@@ -1,6 +1,6 @@
 OpsGrillage
 =====================
 
-.. automodule:: OpsGrillage
+.. automodule:: ospgrillage
    :members:
    :show-inheritance:

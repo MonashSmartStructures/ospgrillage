@@ -23,7 +23,7 @@ def create_member(**kwargs):
 
 class Section:
     """
-    Section class to define various grillage sections. Class
+    Class to wrap Openseespy command to create sections.
     """
 
     def __init__(
@@ -36,24 +36,6 @@ class Section:
         **kwargs
     ):
         """
-        :param E: Elastic modulus
-        :type E: float
-        :param A: Cross sectional area
-        :type A: float
-        :param Iz: Moment of inertia about z axis
-        :type Iz: float
-        :param J: Torsional inertia
-        :type J: float
-        :param Ay: Cross sectional area in the y direction
-        :type Ay: float
-        :param Az: Cross sectional area in the z direction
-        :type Az: float
-        :param Iy: Moment of inertia about z axis
-        :type Iy: float
-        :param G: Shear modulus
-        :type G: float
-        :param alpha_y: shear shape factor along the local y-axis (optional)
-        :type alpha_y: float
         :param op_ele_type: Opensees element type
         :type op_ele_type: str
         :param op_section_type: Opensees section type
@@ -61,10 +43,17 @@ class Section:
         :param unit_width: Flag for unit width properties
         :type unit_width: bool
 
-        Example
-        section('Elastic', BeamSecTag,Ec,ABeam,IzBeam)
+        Here are some basic keywords for Section. Section accepts Openseespy keyword arguments for various element
+        properties as well - see Openseespy section() and element()
 
         :keyword:
+        * A (``float``): Cross sectional area
+        * Iz (``float``): Moment of inertia about local z axis
+        * Iy (``float``): Moment of inertia about local y axis
+        * J (``float``): Torsional inertia - about local x axis
+        * Az (``float``): Cross sectional area in the local z direction
+        * Ay (``float``): Cross sectional area in the local y direction
+
 
         """
         # sections
@@ -108,7 +97,7 @@ class GrillageMember:
         :param section: Section class object assigned to GrillageMember
         :type section: :class:`Section`
         :param material: Material class object assigned to GrillageMember
-        :type material: :class:`uniaxialMaterial`
+        :type material: :class:`Material`
         :param name: Name of the grillage member (Optional)
         """
         self.member_name = member_name

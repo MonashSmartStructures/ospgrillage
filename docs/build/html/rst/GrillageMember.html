@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>GrillageMember &mdash; ops-grillage module 0.0.1 documentation</title>
+  <title>GrillageMember &mdash; ospgrillage module 0.0.1 documentation</title>
   
 
   
@@ -54,7 +54,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> ops-grillage module
+            <a href="../index.html" class="icon icon-home"> ospgrillage module
           
 
           
@@ -109,7 +109,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">ops-grillage module</a>
+          <a href="../index.html">ospgrillage module</a>
         
       </nav>
 
@@ -161,8 +161,91 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="grillagemember">
-<h1>GrillageMember<a class="headerlink" href="#grillagemember" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-members">
+<span id="grillagemember"></span><h1>GrillageMember<a class="headerlink" href="#module-members" title="Permalink to this headline">¶</a></h1>
+<p>This module manages user interface functions and class definitions for the
+grillage members. In our terminology, we define a section as the geometrical
+properties of the structural elements, and the member as the combination of
+the section and material properties.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="members.create_section">
+<span class="sig-prename descclassname"><span class="pre">members.</span></span><span class="sig-name descname"><span class="pre">create_section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#members.create_section" title="Permalink to this definition">¶</a></dt>
+<dd><p>User interface for section creation</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="members.create_member">
+<span class="sig-prename descclassname"><span class="pre">members.</span></span><span class="sig-name descname"><span class="pre">create_member</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#members.create_member" title="Permalink to this definition">¶</a></dt>
+<dd><p>User interface for member creation</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="members.Section">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">members.</span></span><span class="sig-name descname"><span class="pre">Section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">op_ele_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'elasticBeamColumn'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_mass_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_section_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Elastic'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#members.Section" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class to wrap Openseespy command to create sections.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>op_ele_type</strong> (<em>str</em>) – Opensees element type</p></li>
+<li><p><strong>op_section_type</strong> (<em>str</em>) – Opensees section type</p></li>
+<li><p><strong>unit_width</strong> (<em>bool</em>) – Flag for unit width properties</p></li>
+</ul>
+</dd>
+</dl>
+<p>Here are some basic keywords for Section. Section accepts Openseespy keyword arguments for various element
+properties as well - see Openseespy section() and element()</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+<ul class="simple">
+<li><p>A (<code class="docutils literal notranslate"><span class="pre">float</span></code>): Cross sectional area</p></li>
+<li><p>Iz (<code class="docutils literal notranslate"><span class="pre">float</span></code>): Moment of inertia about local z axis</p></li>
+<li><p>Iy (<code class="docutils literal notranslate"><span class="pre">float</span></code>): Moment of inertia about local y axis</p></li>
+<li><p>J (<code class="docutils literal notranslate"><span class="pre">float</span></code>): Torsional inertia - about local x axis</p></li>
+<li><p>Az (<code class="docutils literal notranslate"><span class="pre">float</span></code>): Cross sectional area in the local z direction</p></li>
+<li><p>Ay (<code class="docutils literal notranslate"><span class="pre">float</span></code>): Cross sectional area in the local y direction</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="members.GrillageMember">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">members.</span></span><span class="sig-name descname"><span class="pre">GrillageMember</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">section</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#members.Section" title="members.Section"><span class="pre">members.Section</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">material</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">member_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Undefined'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quad_ele_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tri_ele_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#members.GrillageMember" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Main class for Grillage member definition. Class requires two objects as input parameters: a Section object and a
+Material object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>section</strong> (<a class="reference internal" href="#members.Section" title="members.Section"><code class="xref py py-class docutils literal notranslate"><span class="pre">Section</span></code></a>) – Section class object assigned to GrillageMember</p></li>
+<li><p><strong>material</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code>) – Material class object assigned to GrillageMember</p></li>
+<li><p><strong>name</strong> – Name of the grillage member (Optional)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="members.GrillageMember.get_member_prop_arguments">
+<span class="sig-name descname"><span class="pre">get_member_prop_arguments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#members.GrillageMember.get_member_prop_arguments" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="members.GrillageMember.get_section_arguments">
+<span class="sig-name descname"><span class="pre">get_section_arguments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ele_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#members.GrillageMember.get_section_arguments" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="members.GrillageMember.get_ops_section_command">
+<span class="sig-name descname"><span class="pre">get_ops_section_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">section_tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">material_tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ele_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#members.GrillageMember.get_ops_section_command" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="members.GrillageMember.get_element_command_str">
+<span class="sig-name descname"><span class="pre">get_element_command_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ele_tag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_tag_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transf_tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ele_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">materialtag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sectiontag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#members.GrillageMember.get_element_command_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
 
 

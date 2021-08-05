@@ -1,7 +1,7 @@
 GrillageMember
 =====================
 
-.. automodule:: member_sections
+.. automodule:: members
    :members:
    :undoc-members:
    :show-inheritance:

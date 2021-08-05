@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.abspath('../../ospgrillage'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'ops-grillage module'
+project = 'ospgrillage module'
 copyright = '2021, Justin Ngan, Colin Caprani'
 author = 'Justin Ngan, Colin Caprani, Mayer Melhem, Shihab Khan'
 

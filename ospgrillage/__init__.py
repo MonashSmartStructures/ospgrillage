@@ -5,5 +5,5 @@ from ospgrillage.mesh import *
 from ospgrillage.load import *
 from ospgrillage.material import *
 from ospgrillage.members import *
-from ospgrillage.ospgrillage import *
+from ospgrillage.osp_grillage import *
 from ospgrillage.PlotWizard import *
