@@ -68,7 +68,7 @@ Here are some more examples of what you can do with *ops-grillage* module.
 
 Figure 1 shows the plotted model in Opensees model space.
 
-..  figure:: ../../images/28m_bridge.png
+..  figure:: ../../_images/28m_bridge.png
     :align: center
     :scale: 75 %
 

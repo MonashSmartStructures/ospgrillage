@@ -12,8 +12,8 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../../ospgrillage'))
-
+sys.path.insert(0, os.path.abspath('../../'))
+from ospgrillage import __version__ as ver
 
 # -- Project information -----------------------------------------------------
 
@@ -22,7 +22,11 @@ copyright = '2021, Justin Ngan, Colin Caprani'
 author = 'Justin Ngan, Colin Caprani, Mayer Melhem, Shihab Khan'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.1'
+# The short Major.Minor.Build version
+_v = ver.split('.')
+_build = ''.join([c for c in _v[2] if c.isdigit()])
+version = _v[0] + '.' + _v[1] + '.' + _build
+release = ver
 
 
 # -- General configuration ---------------------------------------------------
