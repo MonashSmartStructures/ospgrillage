@@ -7,7 +7,7 @@
 Openseespy Grillage wizard
 ================================================
 
-The `ops-grillage` module is a python module wrapper for the `Openseespy` python package. `ops-grillage` can be used to:
+The `ospgrillage` module is a python module wrapper for the `Openseespy` python package. `ospgrillage` can be used to:
 
 1) Output an executable python scripts containing commands to create a specified grillage model for use in Open System for Earthquake Engineering Simulation (OpenSees) software framework.
 
@@ -28,12 +28,11 @@ Documentation
    rst/ModuleDoc
    rst/Examples
    rst/ChangeLog
-   rst/Loads
 
 
 
 Support
 =============
-For technical support, please email jun.ngan@monash.edu or raise an issue on the github page.
+For technical support, please email colin.caprani@monash.edu or jun.ngan@monash.edu. Otherwise, you can raise an issue on the github page.
 
-If you wish to contribute a feature to *ops-grillage* module, please do not hesitate to contact us.
+If you wish to contribute a feature to *ospgrillage* module, please do not hesitate to contact us.
