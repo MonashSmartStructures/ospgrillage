@@ -25,7 +25,7 @@ OpsGrillage class
 ---------------------------
 
 
-.. automodule:::: ospgrillage.osp_grillage
+.. automodule:: ospgrillage.osp_grillage
     :members:
     :show-inheritance:
 
@@ -35,7 +35,7 @@ Analysis class
 
 
 
-.. autoclass:: osp_grillage.Analysis
+.. autoclass:: ospgrillage.osp_grillage.OpsGrillage
     :members:
     :show-inheritance:
 
@@ -53,7 +53,7 @@ For information regarding the procedures in :class:`~OpsGrillage` class, see
 :doc:`ModuleDoc`.
 
 
-.. autoclass:: material.Material
+.. autoclass:: ospgrillage.material.Material
     :members:
     :show-inheritance:
 
