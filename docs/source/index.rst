@@ -28,6 +28,7 @@ Documentation
    rst/ModuleDoc
    rst/Examples
    rst/ChangeLog
+   rst/Loads
 
 
 

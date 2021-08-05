@@ -28,46 +28,32 @@ def create_compound_load(**kwargs):
     return CompoundLoad(**kwargs)
 
 
-def create_point_load(**kwargs):
+def create_load(**kwargs):
     """
-    User interface for PointLoad
+    User interface function to create load types. Specify type =
+    :param kwargs:
+    :return:
     """
-    return PointLoad(**kwargs)
-
-
-def create_line_load(**kwargs):
-    """
-    User interface for LineLoading
-    """
-    return LineLoading(**kwargs)
-
-
-def create_patch_load(**kwargs):
-    """
-    User interface for PatchLoading
-    """
-    return PatchLoading(**kwargs)
-
-
-def create_load_vertices(**kwargs):
-    """
-    User interface to create LoadPoint named tuple
-    """
-    x = kwargs.get("x", None)
-    y = kwargs.get("y", None)
-    z = kwargs.get("z", None)
-    p = kwargs.get("p", None)
-    return LoadPoint(x, y, z, p)
-
-
-def create_nodal_force(**kwargs):
-    fx = kwargs.get("Fx",None)
-    fy = kwargs.get("Fx",None)
-    fz = kwargs.get("Fx",None)
-    mx = kwargs.get("Fx",None)
-    my = kwargs.get("Fx",None)
-    mz = kwargs.get("Fx",None)
-    return NodeForces(fx,fy,fz,mx,my,mz)
+    type = kwargs.get("type", None)
+    if type == "point":
+        return PointLoad(**kwargs)
+    elif type == "line":
+        return LineLoading(**kwargs)
+    elif type == "patch":
+        return PatchLoading(**kwargs)
+    elif type == "nodal":
+        fx = kwargs.get("Fx", None)
+        fy = kwargs.get("Fy", None)
+        fz = kwargs.get("Fz", None)
+        mx = kwargs.get("Mx", None)
+        my = kwargs.get("My", None)
+        mz = kwargs.get("Mz", None)
+        if any([fx is None, fy is None, fz is None, mx is None, my is None, mz is None]):
+            raise ValueError(
+                "Missing arguments for nodal force definition : Hint check if all required keywords are given")
+        return NodeForces(fx, fy, fz, mx, my, mz)
+    else:
+        raise TypeError("load type not specified. hint: specify kwarg type= for create_load()")
 
 
 def create_moving_load(**kwargs):
@@ -774,7 +760,7 @@ class MovingLoad:
         self.static_load_case = []
         # get kwargs
         self.common_path = kwargs.get("common_path", None)
-        self.global_increment = kwargs.get("global_increment", None) # for advance use
+        self.global_increment = kwargs.get("global_increment", None)  # for advance use
 
     def set_path(self, path_obj):
         """

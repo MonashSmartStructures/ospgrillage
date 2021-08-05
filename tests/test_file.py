@@ -451,7 +451,7 @@ def test_compound_load_distribution_to_nodes(bridge_model_42_negative):
     example_bridge = bridge_model_42_negative
 
     M1600 = og.CompoundLoad("M1600 LM")
-    back_wheel = og.PointLoad(name="single point", point1=og.LoadPoint(5, 0, 2, 20))  # Single point load 20 N
+    back_wheel = og.create_load(type="point", name="single point", point1=og.LoadPoint(5, 0, 2, 20))  # Single point load 20 N
     front_wheel = og.PointLoad(name="front wheel", point1=og.LoadPoint(2, 0, 2, 50))  # Single point load 50 N
     # compound the point loads
     M1600.add_load(load_obj=back_wheel, local_coord=og.Point(6, 0, 5))
