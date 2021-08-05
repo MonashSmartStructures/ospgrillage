@@ -1,5 +1,3 @@
-
-
 ====================
 API reference
 ====================
@@ -19,7 +17,7 @@ UML diagram overview
 
 What functions are considered public API?
 ------------------------------------------
-This module comprised of user interface functions to take user inputs and pass to its corresponding object.
+This module comprised of user interface functions to take user inputs and returns its corresponding object creation
 
 
 
@@ -71,6 +69,13 @@ GrillageMember class
 .. autoclass:: members.GrillageMember
     :members:
     :show-inheritance:
+
+
+
+.. automodule:: members
+    :members:
+    :show-inheritance:
+
 
 Mesh class
 ------------------------------------------

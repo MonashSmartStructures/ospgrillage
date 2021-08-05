@@ -3,48 +3,45 @@ Performing analysis
 ========================
 
 Having created the grillage model, users can proceed with grillage analysis.
-The *opsgrillage* module contains grillage analysis utilities, allowing users to specify load cases comprising of multiple single or compound loads types
-and then run load case analysis. 
-Furthermore, *ops-grillage* module also options for moving load analysis.
+The *ospgrillage* module contains grillage analysis utilities which wraps Openseespy commands to perform load analysis.
+This allow users to specify load cases comprising of multiple loads types and then run load case analysis.
+Furthermore, *ospgrillage* module also options for moving load analysis.
 
 
 Defining loads
 ------------------------
 
-Available loads types include `Point`_, `Line`_, and `Patch`_ loads. 
-Each of these load types are defined with a different class object of similar names. 
-Two or more of these load types can be combined to form `Compound`_ loads.
-
-Each load type requires
-user to specify its load point(s).
-This is achieved by a namedTuple :class:`LoadPoint(x,y,z,p)` where `x`,`y`,`z` are the coordinates of the load point
-and `p` is the magnitude of the vertical loading.
-The coordinates are generally in the global coordinate system with respect to the created grillage model.
-However, a user-defined local coordinate system may also be used to assist in then creating `Compound`_ loads.
-The vertical loading is in the direction of the global `y`-axis.
+Available loads types include `Point`_, `Line`_, and `Patch`_ loads.
+Two or more of these load types can be combined to form `Compound`_ loads. All load types are applied in the direction of the global `y`-axis.
 Loads in other directions and applied moments are currently not supported.
 
-Depending on the load type, a minimum number of LoadPoint namedTuple objects
-are required. These are defined used the `point#` variable for the load type class for the global coordinate system,
-or else `localpoint#` variable for a user-defined local coordinate system, where # is a digit from 1 to 9.
+Each load type requires user to specify its load point(s). This is achieved by a namedTuple `LoadPoint(x,y,z,p)` where `x`,`y`,`z` are the coordinates of the load point
+and `p` is the magnitude of the vertical loading. Note, `p` is a unit magnitude which is interpreted differently based on the load type - this will be later explained.
+
+The coordinates are generally in the global coordinate system with respect to the created grillage model.
+However, a user-defined local coordinate system may also be used to assist in then creating `Compound`_ loads.
+
+Depending on the load type, a minimum number of LoadPoint namedTuple
+are required. These are defined used the `point` variable for the load type class for the global coordinate system,
+or else `localpoint` variable for a user-defined local coordinate system, where # is a digit from 1 to 9.
 Below are examples of creating different load types.
 
 .. _Point:
 
 Point Loads
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Point load is the most basic force, a force applied vertically (y-axis direction) on a single infinitismal point of the grillage model.
+Point load is a force applied on a single infinitismal point of the grillage model.
 Point loads are used represent a large range of loads, such as concentrated load of a car axle.
 
-Point loads are instantied with the :class:`PointLoad` class and takes only a single :class:`LoadPoint` tuple.
-`p` in the :class:`LoadPoint`  tuple should have units of force (eg. N, kN, kips, etc).
+Point loads are instantiated with the interface function ``create_point_load`` or directly with the :class:`PointLoad` class.
+Point load takes only a single `LoadPoint` tuple. `p` in the tuple should have units of force (eg. N, kN, kips, etc).
 
-The following example code is 20 force unit point load located at (5,0,2) in the global coordinate system. 
+The following example code creates a 20 force unit point load located at (5,0,2) in the global coordinate system.
 
 .. code-block:: python
 
-    point_load_location = opsg.LoadPoint(5, 0, 2, 20)  # create load point
-    Single = opsg.PointLoad(name="single point", point1=point_load_location)
+    point_load_location = ospg.LoadPoint(5, 0, 2, 20)  # create load point
+    Single = ospg.PointLoad(name="single point", point1=point_load_location)
 
 To position the load instead in a user defined local coordinate system to later create a `Compound`_ loads, the variable `localpoint1` instead of `point1` is used. 
 
@@ -123,7 +120,6 @@ After creating a compound load, users will have to add :class:`~Loads` objects (
 
 Here are the valid input types for which CompoundLoad accepts:
 
-
 .. list-table:: Table: 1 Valid combinations for CompoundLoad object
    :widths: 25 25 25 25
    :header-rows: 1
@@ -186,9 +182,10 @@ After load type objects are created, users add the load objects to :class:`LoadC
 
 .. code-block:: python
 
-    DL = LoadCase(name="Dead Load")
+    DL = create_load_case(name="Dead Load")
 
-Users then pass load objects as input parameters using ``add_load_groups()`` function.
+Users then pass load objects as input parameters using ``add_load_groups()`` function. The following code line shows how
+the above load types are added to *DL* load case.
 
 .. code-block:: python
 
@@ -214,29 +211,26 @@ The following example code is a line load is defined as a moving load travelling
 
 .. code-block:: python
 
-    line_point_1 = opsg.LoadPoint(0, 0, 3, 6)
-    line_point_2 = opsg.LoadPoint(20, 0, 3, 6)
-    Line = opsg.LineLoading("Line load", point1=line_point_1, point2=line_point_2)
-	single_path = opsg.Path(start_point=opsg.Point(2,0,2), end_point= opsg.Point(4,0,2))  # create path object
+    front_wheel = ospg.LoadPoint(0, 0, 0, 6)   # Local
+    back_wheel = ospg.LoadPoint(-1, 0, 0, 6)   # Local
+    tandem = ospg.create_compound_load("Two wheel vehicle")
+
+    single_path = opsg.create_moving_path(start_point=ospg.Point(2,0,2), end_point= ospg.Point(4,0,2))  # create path object
     move_line = opsg.MovingLoad(name="Line Load moving")
-    move_line.add_loads(load_obj=Line,path_obj=single_path.get_path_points())
+    move_line.set_path(single_path)
+    move_line.add_loads(load_obj=Line)
 
-After adding all load types and respective paths for a moving load, users run the class function ``parse_moving_load_case()`` which instructs the class to create multiple `load cases`_ for
-which corresponds to the load condition as the load moves through each increment of the path.
 
-.. code-block:: python
-
-    move_point.parse_moving_load_cases() # step to finalise moving load - creates incremental load cases for each position of the moving load
-
-From here, use the ``add_moving_load_case()`` function of the :class:`OpsGrillage` to add the moving load as a moving load case. 
+From here, use the ``add_load_case()`` function of the :class:`OpsGrillage` to add the moving load. Here, the function automatically
+creates multiple `load cases`_ which corresponds to the load condition as the load moves through each increment of the path.
 
 .. code-block:: python
 
-    example_bridge.add_moving_load_case(move_point)
+    example_bridge.add_load_case(move_point)
 
 Defining load combination
 ------------------------
-Load combinations analysis are performed by using the :class:`OpsGrillage` function ``add_load_combination()`` function.
+Load combinations analysis are performed by using the :class:`OpsGrillage` function ``add_load_combination()``.
 Load combinations are defined by passing an input dictionary of basic load case name as keys with load factors as
 values. An example dictionary is shown as follows:
 
@@ -245,26 +239,24 @@ values. An example dictionary is shown as follows:
     load_combinations = {'Dead Load':1.2,'Live traffic':1.7}
     example_bridge.add_load_combination(name = "ULS", input_dict = load_combinations )
 
-Load combinations are automatically calculated at the end after analysing all load cases. The following section on Running Analysis will
-explain how these load combinations are extracted.
+Load combinations are automatically calculated from the analysis results at the end after analysing all load cases.
+The following section on Running Analysis will explain how these load combinations are extracted.
 
 Running analysis
 ------------------------
 
-Once all loadcases (static or moving) have been defined and added to the grillage the analysis can be conducted.
+Once all defined load cases (static and moving) have been added to the grillage the analysis can be conducted.
 
-To analyse non-moving loadcase(s), users run the class function ``analyse_load_case()``. 
-This will analyse all non-moving load cases added to the grillage model previously.
-
-.. code-block:: python
-
-    example_bridge.analyse_load_case()
-
-Users run ``analyse_moving_load_case()`` to analyze the moving load case.
+To analyse loadcase(s), users run the class function ``analyze()``. This function takes either keyword arguments
+``all=`` or ``loadcase=``. When ``all=True``, ``analyze()`` will run all defined load cases. If users wish to run only
+a specific set of load cases, pass a list of load case name str to ``loadcase=``  keyword. This will analyse all load cases of the list.
 
 .. code-block:: python
+    # run either one
+    example_bridge.analyze(all = True)
+    #
+    example_bridge.analyze(load_case=)
 
-    example_bridge.analyse_moving_load_case()
 
 Obtaining results
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -273,14 +265,10 @@ To this, run the ``get_results()`` function and an output tuple of two objects w
 
 .. code-block:: python
 
-    basic_load_case_result,moving_load_results = example_bridge.get_results()
+    results =  example_bridge.get_results()
 
-where,
 
-* basic_load_case_result : a data array containing results for all non-moving load cases.
-* moving_load_results: a list of data array each for a moving load (blank if ``analysis_moving_load_case()`` is not used).
-
-Each data array contains dimensions of:
+The *result* data array contains dimensions of:
 
 * load case : listing all load case
 * Node : listing all nodes within mesh of grillage model

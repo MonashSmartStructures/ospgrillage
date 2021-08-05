@@ -60,6 +60,16 @@ def create_load_vertices(**kwargs):
     return LoadPoint(x, y, z, p)
 
 
+def create_nodal_force(**kwargs):
+    fx = kwargs.get("Fx",None)
+    fy = kwargs.get("Fx",None)
+    fz = kwargs.get("Fx",None)
+    mx = kwargs.get("Fx",None)
+    my = kwargs.get("Fx",None)
+    mz = kwargs.get("Fx",None)
+    return NodeForces(fx,fy,fz,mx,my,mz)
+
+
 def create_moving_load(**kwargs):
     return MovingLoad(**kwargs)
 
