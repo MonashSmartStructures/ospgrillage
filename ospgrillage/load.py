@@ -14,6 +14,18 @@ from scipy import interpolate
 from ospgrillage.mesh import *
 
 
+def create_load_vertices(**kwargs):
+    x = kwargs.get("x",None)
+    y = kwargs.get("y",None)
+    z = kwargs.get("z",None)
+    p = kwargs.get("p",None)
+
+    if not any([x is None, y is None, z is None]):
+        return LoadPoint(x,y,z,p)
+    else:
+        raise ValueError("Missing one or more keyword arguments for x=, y=, z=, or p=")
+
+
 def create_load_case(**kwargs):
     """
     User interface for LoadCase creation

@@ -2,8 +2,8 @@
 API reference
 ====================
 
-This page presents the technical content deliverables of the module. Instructions on variables and function
-showing their interactions, both within and across various classes, are presented herein.
+This page outlines *ospgrillage*'s API. For detail regarding module design and algorithms, refer to :doc:`ModuleDoc`.
+
 
 UML diagram overview
 ----------------------------
@@ -23,7 +23,6 @@ This module comprised of user interface functions to take user inputs and return
 
 OpsGrillage class
 ---------------------------
-
 
 .. autoclass:: ospgrillage.osp_grillage.OpsGrillage
     :members:
@@ -85,28 +84,28 @@ NodalLoad
 
 .. autoclass:: ospgrillage.load.NodalLoad
     :members:
-    :show-inheritance:
+
 
 PointLoad
 ^^^^^^^^^^^^^^^^
 
 .. autoclass:: ospgrillage.load.PointLoad
     :members:
-    :show-inheritance:
+
 
 LineLoading
 ^^^^^^^^^^^^^^^^
 
 .. autoclass:: ospgrillage.load.LineLoading
     :members:
-    :show-inheritance:
+
 
 PatchLoading
 ^^^^^^^^^^^^^^^^
 
 .. autoclass:: ospgrillage.load.PatchLoading
     :members:
-    :show-inheritance:
+
 
 CompoundLoad
 ------------------------------------------
@@ -121,7 +120,6 @@ MovingLoad
 .. autoclass:: ospgrillage.load.MovingLoad
     :members:
     :show-inheritance:
-
 
 
 LoadCase

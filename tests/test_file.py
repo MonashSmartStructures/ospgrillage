@@ -80,7 +80,7 @@ def bridge_model_42_negative(ref_bridge_properties):
     I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
 
     # construct grillage model
-    example_bridge = og.OpsGrillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=0,
+    example_bridge = og.OpsGrillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=-42,
                                     num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
 
     # set grillage member to element groups of grillage model
@@ -269,7 +269,9 @@ def test_line_load_coincide_transverse_member(bridge_42_0_angle_mesh):
     # opsplt.plot_model("nodes")
 
     # create reference line load
+
     barrierpoint_1 = og.LoadPoint(7.5, 0, 1, 2)
+    #barrierpoint_1 = og.create_load_vertices(x=7.5, y=0, z=1, p=2)
     barrierpoint_2 = og.LoadPoint(7.5, 0, 6, 2)
     Barrier = og.LineLoading("Barrier curb load", point1=barrierpoint_1, point2=barrierpoint_2)
     ULS_DL = og.LoadCase(name="Barrier")
@@ -335,10 +337,10 @@ def test_line_load_outside_of_mesh(bridge_model_42_negative):
 def test_patch_load(bridge_model_42_negative):
     example_bridge = bridge_model_42_negative
 
-    lane_point_1 = og.LoadPoint(5, 0, 3, 5)
-    lane_point_2 = og.LoadPoint(8, 0, 3, 5)
-    lane_point_3 = og.LoadPoint(8, 0, 5, 5)
-    lane_point_4 = og.LoadPoint(5, 0, 5, 5)
+    lane_point_1 = og.create_load_vertices(x=5, y=0, z=3, p=5)
+    lane_point_2 = og.create_load_vertices(x=8, y=0, z=3, p=5)
+    lane_point_3 = og.create_load_vertices(x=8, y=0, z=5, p=5)
+    lane_point_4 = og.create_load_vertices(x=5, y=0, z=5, p=5)
     Lane = og.PatchLoading("Lane 1", point1=lane_point_1, point2=lane_point_2, point3=lane_point_3, point4=lane_point_4)
     ULS_DL = og.LoadCase(name="Lane")
     ULS_DL.add_load_groups(Lane)  # ch
@@ -502,11 +504,13 @@ def test_moving_load_and_basic_load_together(bridge_model_42_negative):
 
     single_path = og.Path(start_point=og.Point(2, 0, 2), end_point=og.Point(4, 0, 3))  # create path object
     move_point = og.MovingLoad(name="single_moving_point")
-    move_point.add_loads(load_obj=front_wheel, path_obj=single_path)
+    move_point.set_path(single_path)
+    move_point.add_loads(load_obj=front_wheel)
     example_bridge.add_load_case(move_point)
 
     # example_bridge.analyze(all=True)
-    example_bridge.analyze(load_case="single_moving_point")
+    example_bridge.analyze(all=True)
+    #results = example_bridge.get_results(load_case="single_moving_point")
     results = example_bridge.get_results()
     print(results)
 
@@ -723,7 +727,7 @@ def test_28m_bridge_moving_load(ref_28m_bridge):
 
 
 # test for 28 m  bridge using a moving compound load
-def test_28m_brdige_moving_compound_load(ref_28m_bridge):
+def test_28m_bridge_moving_compound_load(ref_28m_bridge):
     bridge_28 = ref_28m_bridge
     # create moving load case
 

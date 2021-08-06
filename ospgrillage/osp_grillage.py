@@ -1319,52 +1319,59 @@ class OpsGrillage:
         self.load_combination_dict.setdefault(load_combination_name, load_case_dict_list)
         print("Load Combination: {} created".format(load_combination_name))
 
-    # def add_moving_load_case(self, moving_load_obj: MovingLoad, load_factor=1):
-    #     """
-    #     Function to add Moving load case to OpsGrillage instance.
-    #
-    #     :param moving_load_obj: Moving load class object instance
-    #     :type moving_load_obj: MovingLoad
-    #     :param load_factor: optional load factor to be set for all incremental load case. Default is 1.
-    #     :type load_factor: Int or Float
-    #
-    #     """
-    #     # get the list of individual load cases
-    #     list_of_incr_load_case_dict = []
-    #
-    #     moving_load_obj.parse_moving_load_cases()
-    #
-    #     # for each load case, find the load commands of load distribution
-    #     for moving_load_case_list in moving_load_obj.moving_load_case:
-    #         for increment_load_case in moving_load_case_list:
-    #             load_str = self.distribute_load_types_to_model(load_case_obj=increment_load_case)
-    #             increment_load_case_dict = {'name': increment_load_case.name, 'loadcase': increment_load_case,
-    #                                         'load_command': load_str,
-    #                                         'load_factor': load_factor}
-    #             list_of_incr_load_case_dict.append(increment_load_case_dict)
-    #         self.moving_load_case_dict[moving_load_obj.name] = list_of_incr_load_case_dict
-    #
-    #     print("Moving load case: {} created".format(moving_load_obj.name))
-
 
     def get_results(self, **kwargs):
         """
         Function to get results from all load cases. Alternatively, if keyword "get_combinations" is provided
         with boolean True, returns data array processed based on defined load combinations instead.
 
-        :return: A data array for basic all load case, and a list of data arrays for each moving load cases if any
-        :returns basic_da: Data Array for all basic load case. For details of components see :doc:`Result` Page
-        :returns list_moving_da: A list of Data array each element correspond to a Data array for a single moving load
-        :type list_moving_da: list
-        :returns output_load_comb_dict: A dict with the following key and value pair. load combination name : data array of load combination
-        :type output_load_comb_dict: dict
+        :keyword:
+        *get_combinations (`bool`):
+        *save_file_name (`str`):
+        *load_case (`str`): str or list of specific load case
+
         """
 
         basic_da = self.results.compile_data_array()
+
         # get kwargs
         comb = kwargs.get("get_combinations", False)  # if Boolean true
         save_filename = kwargs.get("save_filename", None)  # str of file name
-        # for load combinations
+        specific_load_case = kwargs.get("load_case",None)  # str of fil
+
+        if isinstance(specific_load_case,str):
+            specific_load_case = [specific_load_case]
+
+        # filter basic_da for specific load case
+
+        # check from basic load case
+        if specific_load_case:
+            storing_da = None
+            for load_case_name in specific_load_case:
+                # lookup basic load case
+                namelist = [a['name'] for a in self.load_case_list]
+                for name in namelist:
+                    if load_case_name == name:
+                        extract_da = basic_da.sel(Loadcase=name)
+                        if storing_da is None:
+                            storing_da = extract_da
+                        else:  # storing_da is not none, concat in "loadcase" dimension
+                            storing_da = xr.concat([storing_da,extract_da], dim="Loadcase")
+                        print("Extracted load case data for : {}".format(name))
+                # lookup moving load case
+                for moving_name in self.moving_load_case_dict.keys():
+                    if load_case_name == moving_name:
+                        # get all string of moving name, then slice
+                        incremental_lc_name_list = [a['name'] for a in self.moving_load_case_dict[moving_name]]
+                        for name in incremental_lc_name_list:
+                            extract_da = basic_da.sel(Loadcase=name)
+                            if storing_da is None:
+                                storing_da = extract_da
+                            else:  # storing_da is not none, concat in "loadcase" dimension
+                                storing_da = xr.concat([storing_da, extract_da], dim="Loadcase")
+                        print("Extracted moving load case results : {}".format(moving_name))
+            basic_da = storing_da  # Overwrite basic_da, proceed to check/evaluate combinations
+        # check if combinations
         if comb:
             output_load_comb_dict = dict()  # {name: datarray, .... name: dataarray}
             new_ma_list = []  # placeholder for moving load combinations
