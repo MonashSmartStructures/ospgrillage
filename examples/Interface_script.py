@@ -58,7 +58,7 @@ exterior_I_beam = og.GrillageMember(
 )
 
 # construct grillage model
-example_bridge = og.OpsGrillage(
+example_bridge = og.OspGrillage(
     bridge_name="SuperT_10m",
     long_dim=10,
     width=7,

@@ -75,7 +75,7 @@ end_tranverse_slab = og.GrillageMember(
     member_name="edge transverse", section=end_tranverse_slab_section, material=concrete
 )
 
-bridge_28 = og.OpsGrillage(
+bridge_28 = og.OspGrillage(
     bridge_name="SuperT_28m",
     long_dim=L,
     width=H,

@@ -20,12 +20,12 @@ import xarray as xr
 
 def create_grillage(**kwargs):
     """
-    User interface for creating grillage model / OpsGrilage object.
+    User interface for creating grillage model / OspGrilage object.
     """
-    return OpsGrillage(**kwargs)
+    return OspGrillage(**kwargs)
 
 
-class OpsGrillage:
+class OspGrillage:
     """
     Main class of Openseespy grillage model wrapper. Outputs an executable py file which generates the prescribed
     Opensees grillage model based on user input.
@@ -146,7 +146,7 @@ class OpsGrillage:
         # default vector for standard (for 2D grillage in x - z plane) - 1 represent fix for [Vx,Vy,Vz, Mx, My, Mz]
         self.fix_val_pin = [1, 1, 1, 0, 0, 0]  # pinned
         self.fix_val_roller_x = [0, 1, 1, 0, 0, 0]  # roller
-        self.fix_val_fixed = [1,1,1,1,1,1]  # rigid /fixed support
+        self.fix_val_fixed = [1, 1, 1, 1, 1, 1]  # rigid /fixed support
         # special rules for grillage - alternative to Properties of grillage definition - use for special dimensions
         self.skew_threshold = [10, 30]  # threshold for grillage to allow option of mesh choices
         self.deci_tol = 4  # tol of decimal places
@@ -187,7 +187,8 @@ class OpsGrillage:
         """
         Function to create model instance in Opensees model space. If pyfile input is True, function creates an
         executable pyfile for generating the grillage model in Opensees model space.
-        :param pyfile: Boolean to flag py file generation or Opensees model instance.
+
+        :param pyfile: if True returns an executable py file instead of creating Opensees instance of model.
         :type pyfile: bool
 
         """
@@ -224,7 +225,6 @@ class OpsGrillage:
 
     # function to run mesh generation
     def __run_mesh_generation(self):
-
         # 2 generate command lines in output py file
         self.__write_op_node(self.Mesh_obj)  # write node() commands
         self.__write_op_fix(self.Mesh_obj)  # write fix() command for support nodes
@@ -248,11 +248,10 @@ class OpsGrillage:
 
     def set_boundary_condition(self, edge_group_counter=[1], restraint_vector=[0, 1, 0, 0, 0, 0], group_to_exclude=[0]):
         """
-        Function for user to modify boundary conditions of the grillage model. Edge nodes are automatically detected
-        and recorded as having fixity in vertical y direction.
+        Function to set or modify customized support conditions.
 
         .. note::
-            Development yet to be completed - will progress once user input received
+            This feature to be available for future release.
         """
         pass
 
@@ -423,24 +422,29 @@ class OpsGrillage:
         """
         Function to set grillage member class object to elements of grillage members.
 
-        :param grillage_member_obj: Grillage_member class object
-        :param member: str of member category - select from standard grillage elements
+        :param grillage_member_obj: `GrillageMember` class object
+        :type grillage_member_obj: GrillageMember
+        :param member: str of member category - see below table for the available name strings
+        :type member: str
 
 
          =====================================    ======================================
          Standard                                 Description
          =====================================    ======================================
-          edge_beam                               Elements along x axis at top and bottom edges of mesh (z = 0, z = width)
+          edge_beam                               Elements along x axis at top and
+                                                  bottom edges of mesh (z = 0, z = width)
           exterior_main_beam_1                    Elements along first grid line after bottom edge (z = 0)
-          interior_main_beam                      For all elements in x direction between grid lines of exterior_main_beam_1 and exterior_main_beam_2
+          interior_main_beam                      For all elements in x direction between grid lines of
+                                                  exterior_main_beam_1 and exterior_main_beam_2
           exterior_main_beam_1                    Elements along first grid line after top edge (z = width)
           start_edge                     	      Elements along z axis where longitudinal grid line x = 0
           end_edge                                Elements along z axis where longitudinal grid line x = Length
-          transverse_slab                         For all elements in transverse direction between start_edge and end_edge
+          transverse_slab                         For all elements in transverse direction
+                                                  between start_edge and end_edge
          =====================================    ======================================
 
-        :return: sets member object to element of grillage in OpsGrillage instance
-        :raises ValueError: If model instance is not created beforehand i.e. missing preceding create_ops() command.
+
+        :raises ValueError: If missing argument for member=
         """
         print("Setting member: {} of model".format(member))
         if member is None:
@@ -507,7 +511,7 @@ class OpsGrillage:
                                                  np.sqrt(lis[1][0] ** 2 + lis[1][1] ** 2 + lis[1][2] ** 2)) / 2)
                     else:
                         #
-                        break # has assigned element
+                        break  # has assigned element
                 ele_width = np.mean(
                     ele_width_record)  # if member lies between a triangular and quadrilateral grid, get mean between
                 # both width
@@ -517,7 +521,7 @@ class OpsGrillage:
                                                                       transf_tag=ele[4], ele_width=ele_width,
                                                                       materialtag=material_tag, sectiontag=section_tag)
                 ele_command_list.append(ele_str)
-        else: # non-unit width member assignment
+        else:  # non-unit width member assignment
             if z_flag:
                 for z_groups in self.Mesh_obj.common_z_group_element[common_member_tag]:
                     # assign properties to elements in z group
@@ -568,16 +572,16 @@ class OpsGrillage:
         """
         Function to set shell/quad members across entire mesh grid.
 
-        :param quad:
-        :param tri:
+        :param quad: Boolean to flag setting quad shell members
+        :param tri: Boolean to flag setting triangular shell members
         :param grillage_member_obj: GrillageMember object
         :type grillage_member_obj: GrillageMember
         :raises ValueError: If GrillageMember object was not specified for quad or shell element. Also raises this error
-                            if components of GrillageMember object (e.g. section or material) was not properly defined
-                            for the specific shell element in accordance with Opensees conventions.
+                            if components of GrillageMember object (e.g. section or material) is not a valid property
+                            for the specific shell element type in accordance with Opensees conventions.
 
         .. note::
-            To distinguish triangular elements with Quad elements
+            Feature coming in development for shell element definition
 
         """
         # this function creates shell elements out of the node grids of Mesh object
@@ -607,9 +611,10 @@ class OpsGrillage:
         """
         Function to define a global material model. This function proceeds to write write the material() command to
         output file. By default, function is only called and handled within set_member function. When called by user,
-        function creates a material object instance to be set for the ops-grillage instance.
+        function creates a material object instance to be set for the Opensees instance.
 
-        :return: Function populates object variables: (1) mat_matrix, and (2) mat_type_op.
+        .. note::
+            Currently, function does not have overwriting feature yet.
         """
         # set material to global material object
         self.global_mat_object = material_obj  # material matrix for
@@ -741,15 +746,11 @@ class OpsGrillage:
                 if grid_key == start_grid or start_grid in self.Mesh_obj.grid_vicinity_dict[grid_key].values():
                     int_list.setdefault("ends", [[line_load_obj.load_point_1.x, line_load_obj.load_point_1.y,
                                                   line_load_obj.load_point_1.z]])
-                    # edited_dict[grid_key] += [
-                    #     [line_load_obj.load_point_1.x, line_load_obj.load_point_1.y,
-                    #      line_load_obj.load_point_1.z]]
+
                 elif grid_key == last_grid or last_grid in self.Mesh_obj.grid_vicinity_dict[grid_key].values():
                     int_list.setdefault("ends", [[line_load_obj.line_end_point.x, line_load_obj.line_end_point.y,
                                                   line_load_obj.line_end_point.z]])
-                    # edited_dict[grid_key] += [
-                    #     [line_load_obj.line_end_point.x, line_load_obj.line_end_point.y,
-                    #      line_load_obj.line_end_point.z]]
+
                 else:
                     int_list.setdefault("ends", [])
             else:
@@ -1031,7 +1032,7 @@ class OpsGrillage:
                 w1 = line_load_obj.interpolate_udl_magnitude([p1.x, p1.y, p1.z])
                 w2 = line_load_obj.interpolate_udl_magnitude([p2.x, p2.y, p2.z])
                 W = (w1 + w2) / 2
-                mag = W*L
+                mag = W * L
                 # get mid point of line
                 x_bar = ((2 * w1 + w2) / (w1 + w2)) * L / 3  # from p2
                 load_point = line_load_obj.get_point_given_distance(xbar=x_bar,
@@ -1178,18 +1179,17 @@ class OpsGrillage:
 
         return load_str
 
-    def add_load_case(self, load_case_obj: Union[LoadCase,MovingLoad], load_factor=1):
+    def add_load_case(self, load_case_obj: Union[LoadCase, MovingLoad], load_factor=1):
         """
-        Function to add individual load cases to OpsGrillage instance.
+        Function to add load cases to Ospllage grillage model. Function also adds moving load cases
 
-        :param load_factor: Optional load factor for the prescribed load case
-        :param load_case_obj: A load case object of the load condition
-        :type load_case_obj: LoadCase
+        :param load_factor: Optional load factor for the prescribed load case. Default = 1
+        :param load_case_obj: LoadCase or MovingLoad object
+        :type load_case_obj: LoadCase,MovingLoad
 
         """
 
-
-        if isinstance(load_case_obj,LoadCase):
+        if isinstance(load_case_obj, LoadCase):
             # update the load command list of load case object
             load_str = self.distribute_load_types_to_model(load_case_obj=load_case_obj)
             # store load case + load command in dict and add to load_case_list
@@ -1202,6 +1202,7 @@ class OpsGrillage:
             # get the list of individual load cases
             list_of_incr_load_case_dict = []
             moving_load_obj = load_case_obj
+            # object method to create incremental load cases representing the position of the load
             moving_load_obj.parse_moving_load_cases()
 
             # for each load case, find the load commands of load distribution
@@ -1221,15 +1222,20 @@ class OpsGrillage:
 
     def analyze(self, **kwargs):
         """
-        Function to analyze all basic load cases defined previously using add_load_case() function
+        Function to analyze defined load
 
-        :except: raise ValueError if missing kwargs for loadcase=, or all=
+        :keyword:
+
+        * all (`bool`): If True, runs all load cases. If not provided, default to True.
+        * load_case ('list' or 'str'): String or list of name strings for selected load case to be analyzed.
+
+        :except: raise ValueError if missing arguments for either load_case=, or all=
 
         """
-        # analyze all load case defined in self.load_case_dict for OpsGrillage instance
+        # analyze all load case defined in self.load_case_dict for OspGrillage instance
         # loop each load case dict
         # get run options from kwargs
-        all_flag = kwargs.get("all", False)  # Default Boolean
+        all_flag = kwargs.get("all", True)  # Default Boolean
         selected_load_case: list = kwargs.get("load_case", None)  #
         selected_moving_load_lc_list = None
         # if selected_load_case kwargs given, filter and select load case from load case list to run
@@ -1293,8 +1299,14 @@ class OpsGrillage:
 
     def add_load_combination(self, load_combination_name: str, load_case_and_factor_dict: dict):
         """
-        Function to add load combination to OpsGrillage analysis. Load combinations are defined through a dict with
+        Function to add load combination to analysis. Load combinations are defined through a dict with
         load case name str to be included in combination as keys, and load factor (type float/int) as value of dict.
+
+        :param load_combination_name: Name string of load combination
+        :type load_combination_name: str
+        :param load_case_and_factor_dict: dict with name string of load cases within the combination as key,
+                                            corresponding load factor as value.
+        :type load_case_and_factor_dict: str
 
         """
         load_case_dict_list = []  # list of dict: structure of dict See line
@@ -1319,16 +1331,22 @@ class OpsGrillage:
         self.load_combination_dict.setdefault(load_combination_name, load_case_dict_list)
         print("Load Combination: {} created".format(load_combination_name))
 
-
     def get_results(self, **kwargs):
         """
-        Function to get results from all load cases. Alternatively, if keyword "get_combinations" is provided
+        Function to get results from load cases. Alternatively, if keyword "get_combinations" is provided
         with boolean True, returns data array processed based on defined load combinations instead.
 
         :keyword:
-        *get_combinations (`bool`):
-        *save_file_name (`str`):
-        *load_case (`str`): str or list of specific load case
+        * get_combinations (`bool`): If true, returns a list of DataSet, each element of list represent a defined load combination
+        * save_file_name (`str`): Name string of file name. Saves to NetCDF.
+        * load_case (`str`): str or list of name string of specific load case to extract. Returned DataSet with the specified Load cases only
+
+        :return results: xarray DataSet of analysis results - extracted based on keyword option specified.
+                            If get_combination is True, returns a list of DataSet, with each element correspond to
+                            a load combination.
+
+        Alternatively, saves and store a NetCDF format of the DataSet - with filename specified in save_file_name=
+        argument.
 
         """
 
@@ -1337,9 +1355,9 @@ class OpsGrillage:
         # get kwargs
         comb = kwargs.get("get_combinations", False)  # if Boolean true
         save_filename = kwargs.get("save_filename", None)  # str of file name
-        specific_load_case = kwargs.get("load_case",None)  # str of fil
+        specific_load_case = kwargs.get("load_case", None)  # str of fil
 
-        if isinstance(specific_load_case,str):
+        if isinstance(specific_load_case, str):
             specific_load_case = [specific_load_case]
 
         # filter basic_da for specific load case
@@ -1356,7 +1374,7 @@ class OpsGrillage:
                         if storing_da is None:
                             storing_da = extract_da
                         else:  # storing_da is not none, concat in "loadcase" dimension
-                            storing_da = xr.concat([storing_da,extract_da], dim="Loadcase")
+                            storing_da = xr.concat([storing_da, extract_da], dim="Loadcase")
                         print("Extracted load case data for : {}".format(name))
                 # lookup moving load case
                 for moving_name in self.moving_load_case_dict.keys():
@@ -1408,14 +1426,14 @@ class OpsGrillage:
 class Analysis:
     """
     Main class to handle the run/execution of load case + load combination + moving load analysis. Analysis class is
-    created and used within OpsGrillage class after "adding load case", "adding load combination" and "adding moving
+    created and used within OspGrillage class after "adding load case", "adding load combination" and "adding moving
     load" procedures.
 
     The following are the roles of Analysis object:
 
     * store information of ops commands for performing static (default) analysis of single/multiple load case(s).
-    * execute the required ops commands to perform analysis using the OpsGrillage model instance.
-    * if flagged, writes an executable py file instead which performs the exact analysis as it would for an OpsGrillage instance instead.
+    * execute the required ops commands to perform analysis using the OspGrillage model instance.
+    * if flagged, writes an executable py file instead which performs the exact analysis as it would for an OspGrillage instance instead.
     * manages multiple load case's ops.load() commands, applying the specified load factors to the load cases for load combinations
 
     """
@@ -1523,7 +1541,7 @@ class Analysis:
         print("Analysis: {} completed".format(self.analysis_name))
         # extract results
         node_disp, ele_force = self.extract_grillage_responses()
-        # return time series and plain counter to update global time series and plain counter by by OpsGrillage
+        # return time series and plain counter to update global time series and plain counter by by OspGrillage
         return self.time_series_counter, self.plain_counter, node_disp, ele_force
 
     # function to extract grillage model responses (dx,dy,dz,rotx,roty,rotz,N,Vy,Vz,Mx,My,Mz) and store to Result class
@@ -1551,7 +1569,7 @@ class Analysis:
 
                 self.ele_force.setdefault(ele_tag, np.hstack([s_all[0], s_all[1]]))
         else:
-            print("OpsGrillage is at output mode, pyfile = True. No results are extracted")
+            print("OspGrillage is at output mode, pyfile = True. No results are extracted")
 
         print("Extraction of results completed for Analysis:{} ".format(self.analysis_name))
         return self.node_disp, self.ele_force
@@ -1560,7 +1578,7 @@ class Analysis:
 class Results:
     """
     Main class to store results of an Analysis class object, process into data array output for post processing/plotting.
-    Class object is accessed within OpsGrillage class object.
+    Class object is accessed within OspGrillage class object.
     """
 
     def __init__(self, mesh_obj: Mesh):
@@ -1696,6 +1714,3 @@ class Results:
         else:
             result = None
         return result
-
-
-

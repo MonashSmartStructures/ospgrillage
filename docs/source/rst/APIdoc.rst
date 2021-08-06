@@ -24,7 +24,7 @@ This module comprised of user interface functions to take user inputs and return
 OpsGrillage class
 ---------------------------
 
-.. autoclass:: ospgrillage.osp_grillage.OpsGrillage
+.. autoclass:: ospgrillage.osp_grillage.OspGrillage
     :members:
     :show-inheritance:
 

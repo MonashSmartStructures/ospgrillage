@@ -54,7 +54,6 @@ class Section:
         * Az (``float``): Cross sectional area in the local z direction
         * Ay (``float``): Cross sectional area in the local y direction
 
-
         """
         # sections
         self.op_section_type = op_section_type  # section tag based on Openseespy
@@ -94,11 +93,12 @@ class GrillageMember:
 
     def __init__(self, section: Section, material, member_name="Undefined", quad_ele_flag=False, tri_ele_flag=False):
         """
-        :param section: Section class object assigned to GrillageMember
+        :param section: Section class object
         :type section: :class:`Section`
-        :param material: Material class object assigned to GrillageMember
+        :param material: Material class object
         :type material: :class:`Material`
-        :param name: Name of the grillage member (Optional)
+        :param member_name: Name of the grillage member (Optional)
+        :type member_name: str
         """
         self.member_name = member_name
         self.section = section
@@ -154,8 +154,8 @@ class GrillageMember:
 
         return asterisk_input
 
+    # Function to return argument, handled by OspGrillage
     def get_section_arguments(self, ele_width=1):
-        # Function to return argument
         section_args = None
 
         if self.section.op_section_type == "Elastic":

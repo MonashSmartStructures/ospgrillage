@@ -110,8 +110,8 @@ The following code creates and add a point and line load to the :class:`Compound
 .. code-block:: python
 
     # compound load
-    wheel_1 = ospg.PointLoad(opsg.LoadPoint(0, 0, 3, 5))
-    wheel_2 = ospg.PointLoad(opsg.LoadPoint(0, 0, 3, 5))
+    wheel_1 = ospg.PointLoad(ospg.LoadPoint(0, 0, 3, 5))
+    wheel_2 = ospg.PointLoad(ospg.LoadPoint(0, 0, 3, 5))
     C_Load = ospg.CompoundLoad("Axle tandem")
 
 After creating a compound load, users will have to add :class:`~Loads` objects (Point, Line, Patch) to the Compound load object:
@@ -197,7 +197,7 @@ the above load types are added to *DL* load case.
     DL.add_load_groups(Lane)
 
 After adding loads, the :class:`LoadCase` object is added to grillage model for analysis using the ``add_load_case()``
-function of :class:`OpsGrillage` class. Users repeat this step for any defined load cases.
+function of :class:`OspGrillage` class. Users repeat this step for any defined load cases.
 
 .. code-block:: python
 
@@ -218,13 +218,13 @@ The following example code is a line load is defined as a moving load travelling
     back_wheel = ospg.LoadPoint(-1, 0, 0, 6)   # Local
     tandem = ospg.create_compound_load("Two wheel vehicle")
 
-    single_path = opsg.create_moving_path(start_point=ospg.Point(2,0,2), end_point= ospg.Point(4,0,2))  # create path object
-    move_line = opsg.MovingLoad(name="Line Load moving")
+    single_path = ospg.create_moving_path(start_point=ospg.Point(2,0,2), end_point= ospg.Point(4,0,2))  # create path object
+    move_line = ospg.MovingLoad(name="Line Load moving")
     move_line.set_path(single_path)
     move_line.add_loads(load_obj=Line)
 
 
-From here, use the ``add_load_case()`` function of the :class:`OpsGrillage` to add the moving load. Here, the function automatically
+From here, use the ``add_load_case()`` function of the :class:`OspGrillage` to add the moving load. Here, the function automatically
 creates multiple `load cases`_ which corresponds to the load condition as the load moves through each increment of the path.
 
 .. code-block:: python
@@ -233,7 +233,7 @@ creates multiple `load cases`_ which corresponds to the load condition as the lo
 
 Defining load combination
 ------------------------
-Load combinations analysis are performed by using the :class:`OpsGrillage` function ``add_load_combination()``.
+Load combinations analysis are performed by using the :class:`OspGrillage` function ``add_load_combination()``.
 Load combinations are defined by passing an input dictionary of basic load case name as keys with load factors as
 values. An example dictionary is shown as follows:
 

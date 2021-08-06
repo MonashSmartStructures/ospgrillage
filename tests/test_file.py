@@ -34,7 +34,7 @@ def ref_28m_bridge():
     end_tranverse_slab = og.create_member(member_name="edge transverse", section=end_tranverse_slab_section,
                                            material=concrete)
 
-    bridge_28 = og.OpsGrillage(bridge_name="SuperT_28m", long_dim=28, width=7, skew=0,
+    bridge_28 = og.OspGrillage(bridge_name="SuperT_28m", long_dim=28, width=7, skew=0,
                                num_long_grid=7, num_trans_grid=14, edge_beam_dist=1.0875, mesh_type="Ortho")
 
     # set grillage member to element groups of grillage model
@@ -80,7 +80,7 @@ def bridge_model_42_negative(ref_bridge_properties):
     I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
 
     # construct grillage model
-    example_bridge = og.OpsGrillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=-42,
+    example_bridge = og.OspGrillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=-42,
                                     num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
 
     # set grillage member to element groups of grillage model
@@ -102,7 +102,7 @@ def bridge_model_42_negative(ref_bridge_properties):
 def bridge_42_0_angle_mesh(ref_bridge_properties):
     # define material
     I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
-    example_bridge = og.OpsGrillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=[42, 0],
+    example_bridge = og.OspGrillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=[42, 0],
                                     num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
 
     # set grillage member to element groups of grillage model
@@ -127,7 +127,7 @@ def bridge_model_42_positive(ref_bridge_properties):
     I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
 
     # construct grillage model
-    example_bridge = og.OpsGrillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=42,
+    example_bridge = og.OspGrillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=42,
                                     num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
 
     # set grillage member to element groups of grillage model
@@ -510,8 +510,8 @@ def test_moving_load_and_basic_load_together(bridge_model_42_negative):
 
     # example_bridge.analyze(all=True)
     example_bridge.analyze(all=True)
-    #results = example_bridge.get_results(load_case="single_moving_point")
-    results = example_bridge.get_results()
+    results = example_bridge.get_results(load_case="single_moving_point")
+    #results = example_bridge.get_results()
     print(results)
 
 
@@ -763,7 +763,7 @@ def test_simple_grid():
     n_l = 5  # when 2, edge_beam not needed; when 3, only one exterior_main_beam is needed, when 4...
     n_t = 3  # when 2, grid not complete and analysis fails
 
-    simply_grid = og.OpsGrillage(bridge_name="Simple", long_dim=L, width=w, skew=0,
+    simply_grid = og.OspGrillage(bridge_name="Simple", long_dim=L, width=w, skew=0,
                                  num_long_grid=n_l, num_trans_grid=n_t, edge_beam_dist=[0.3], mesh_type="Ortho")
     concrete = og.Material(type="concrete", code="AS5100-2017", grade="50MPa")
 

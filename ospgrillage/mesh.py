@@ -11,7 +11,7 @@ Point = namedtuple("Point", ['x', 'y', 'z'])
 class Mesh:
     """
     Class for mesh groups. The class holds information pertaining the mesh group such as element connectivity and nodes
-    of the mesh object.
+    of the mesh object. Positional arguments are handled by OspGrillage class.
 
     """
 
@@ -20,7 +20,7 @@ class Mesh:
                  orthogonal=False, pt1=Point(0, 0, 0), pt2=Point(0, 0, 0), pt3=None, element_counter=1, node_counter=1,
                  transform_counter=0, global_x_grid_count=0, global_edge_count=0, mesh_origin=[0, 0, 0],
                  quad_ele=False):
-        # inputs from OpsGrillage required to create mesh
+        # inputs from OspGrillage required to create mesh
         self.long_dim = long_dim
         self.trans_dim = trans_dim
         self.edge_width_a = edge_dist_a
