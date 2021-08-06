@@ -119,7 +119,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#movingload">MovingLoad</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#loadcase">LoadCase</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#misc">Misc</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id1">LoadCase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">LoadCase</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#shape-functions">Shape functions</a></li>
 </ul>
 </li>
@@ -199,13 +199,12 @@
             
   <div class="section" id="api-reference">
 <h1>API reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h1>
-<p>This page presents the technical content deliverables of the module. Instructions on variables and function
-showing their interactions, both within and across various classes, are presented herein.</p>
+<p>This page outlines <em>ospgrillage</em>’s API. For detail regarding module design and algorithms, refer to <a class="reference internal" href="ModuleDoc.html"><span class="doc">Module design</span></a>.</p>
 <div class="section" id="uml-diagram-overview">
 <h2>UML diagram overview<a class="headerlink" href="#uml-diagram-overview" title="Permalink to this headline">¶</a></h2>
-<div class="figure align-center" id="id2">
+<div class="figure align-center" id="id8">
 <a class="reference internal image-reference" href="../_images/draftUML.PNG"><img alt="../_images/draftUML.PNG" src="../_images/draftUML.PNG" style="width: 546.5px; height: 372.0px;" /></a>
-<p class="caption"><span class="caption-text">Figure 1: UML diagram - draft version 1.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 1: UML diagram - draft version 1.</span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 <div class="section" id="what-functions-are-considered-public-api">
@@ -387,19 +386,12 @@ load case name str to be included in combination as keys, and load factor (type 
 <dd><p>Function to get results from all load cases. Alternatively, if keyword “get_combinations” is provided
 with boolean True, returns data array processed based on defined load combinations instead.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A data array for basic all load case, and a list of data arrays for each moving load cases if any</p>
-</dd>
-<dt class="field-even">Returns basic_da</dt>
-<dd class="field-even"><p>Data Array for all basic load case. For details of components see <span class="xref std std-doc">Result</span> Page</p>
-</dd>
-<dt class="field-odd">Returns list_moving_da</dt>
-<dd class="field-odd"><p>A list of Data array each element correspond to a Data array for a single moving load</p>
-</dd>
-<dt class="field-even">Returns output_load_comb_dict</dt>
-<dd class="field-even"><p>A dict with the following key and value pair. load combination name : data array of load combination</p>
-</dd>
+<dt class="field-odd">Keyword</dt>
+<dd class="field-odd"><p></p></dd>
 </dl>
+<p><a href="#id1"><span class="problematic" id="id2">*</span></a>get_combinations (<cite>bool</cite>):
+<a href="#id3"><span class="problematic" id="id4">*</span></a>save_file_name (<cite>str</cite>):
+<a href="#id5"><span class="problematic" id="id6">*</span></a>load_case (<cite>str</cite>): str or list of specific load case</p>
 </dd></dl>
 
 </dd></dl>
@@ -520,8 +512,7 @@ of the mesh object.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.load.NodalLoad">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">NodalLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_tag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_force</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.NodalLoad" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="Loads.html#ospgrillage.load.Loads" title="ospgrillage.load.Loads"><code class="xref py py-class docutils literal notranslate"><span class="pre">ospgrillage.load.Loads</span></code></a></p>
-<p>Main class for nodal load. Derived from Loads base class</p>
+<dd><p>Main class for nodal load. Derived from Loads base class</p>
 <p>Nodal load takes a node tag and namedtuple NodalForce(Fx,Fy,Fz,Mx,My,Mz) as input.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -546,8 +537,7 @@ of the mesh object.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.load.PointLoad">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">PointLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.PointLoad" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="Loads.html#ospgrillage.load.Loads" title="ospgrillage.load.Loads"><code class="xref py py-class docutils literal notranslate"><span class="pre">ospgrillage.load.Loads</span></code></a></p>
-<p>Class for Point loads. Derived from based <a class="reference internal" href="Loads.html#ospgrillage.load.Loads" title="ospgrillage.load.Loads"><code class="xref py py-class docutils literal notranslate"><span class="pre">Loads</span></code></a> class</p>
+<dd><p>Class for Point loads. Derived from based <a class="reference internal" href="Loads.html#ospgrillage.load.Loads" title="ospgrillage.load.Loads"><code class="xref py py-class docutils literal notranslate"><span class="pre">Loads</span></code></a> class</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -576,8 +566,7 @@ of the mesh object.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.load.LineLoading">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">LineLoading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LineLoading" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="Loads.html#ospgrillage.load.Loads" title="ospgrillage.load.Loads"><code class="xref py py-class docutils literal notranslate"><span class="pre">ospgrillage.load.Loads</span></code></a></p>
-<p>Class for line loading. Derived from based Loads class</p>
+<dd><p>Class for line loading. Derived from based Loads class</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -606,8 +595,7 @@ of the mesh object.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.load.PatchLoading">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">PatchLoading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.PatchLoading" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="Loads.html#ospgrillage.load.Loads" title="ospgrillage.load.Loads"><code class="xref py py-class docutils literal notranslate"><span class="pre">ospgrillage.load.Loads</span></code></a></p>
-<p>Main class for Patch loads. Derived from base Loads class.</p>
+<dd><p>Main class for Patch loads. Derived from base Loads class.</p>
 <p>Patch load can take up to 8 load points. By default requires at least 4 load point for patch (quadrilateral)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -755,8 +743,8 @@ path_list = [Path for LoadCase point 1, [], … , [] for Nth path]</p>
 </div>
 <div class="section" id="misc">
 <h2>Misc<a class="headerlink" href="#misc" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id1">
-<h3>LoadCase<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id7">
+<h3>LoadCase<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.load.Path">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">Path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_point</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">ospgrillage.mesh.Point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_point</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">ospgrillage.mesh.Point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">increments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid_point</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ospgrillage.mesh.Point</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.Path" title="Permalink to this definition">¶</a></dt>
