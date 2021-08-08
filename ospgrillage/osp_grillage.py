@@ -907,7 +907,7 @@ class OspGrillage:
         return bounded_node, bounded_grids
 
     # Setter for Point loads
-    def assign_point_to_four_node(self, point, mag):
+    def assign_point_to_four_node(self, point, mag, shape_func="hermite"):
 
         node_mx = []
         node_mz = []
@@ -943,19 +943,26 @@ class OspGrillage:
                                        z3=sorted_list[2].z, x4=sorted_list[3].x, z4=sorted_list[3].z)
 
             # access shape function of line load
-            N = ShapeFunction.linear_shape_function(eta, zeta)
-            Nv, Nmx, Nmz = ShapeFunction.hermite_shape_function_2d(eta, zeta)
+            if shape_func == "hermite":
+                Nv, Nmx, Nmz = ShapeFunction.hermite_shape_function_2d(eta, zeta)
+                node_mx = [mag * n for n in Nmx]
+                # Mz
+                node_mz = [mag * n for n in Nmz]
+            else:  # linear shaep function
+                Nv = ShapeFunction.linear_shape_function(eta, zeta)
+            # Nv, Nmx, Nmz = ShapeFunction.hermite_shape_function_2d(eta, zeta)
             # Fy
             node_load = [mag * n for n in Nv]
-            # Mx
-            node_mx = [mag * n for n in Nmx]
-            # Mz
-            node_mz = [mag * n for n in Nmz]
 
         load_str = []
-        for count, node in enumerate(sorted_node_tag):
-            load_str.append("ops.load({pt}, *{val})\n".format(pt=node, val=[0, node_load[count], 0, node_mx[count], 0,
-                                                                            node_mz[count]]))
+        if shape_func == "hermite":
+            for count, node in enumerate(sorted_node_tag):
+                load_str.append("ops.load({pt}, *{val})\n".format(pt=node, val=[0, node_load[count], 0, node_mx[count], 0,
+                                                                                node_mz[count]]))
+        else:
+            for count, node in enumerate(sorted_node_tag):
+                load_str.append("ops.load({pt}, *{val})\n".format(pt=node, val=[0, node_load[count], 0, 0, 0,
+                                                                                0]))
         return load_str
 
     # Setter for Line loads and above
@@ -1016,7 +1023,7 @@ class OspGrillage:
                                                                 point_coordinate=[p2[0], self.y_elevation, p2[2]])
 
             # uses point load assignment function to assign load point and mag to four nodes in grid
-            load_str = self.assign_point_to_four_node(point=load_point, mag=W)
+            load_str = self.assign_point_to_four_node(point=load_point, mag=W, shape_func=line_load_obj.shape_function)
             load_str_line += load_str  # append to major list for line load
 
         # loop through all colinear elements
@@ -1065,7 +1072,7 @@ class OspGrillage:
             # _, A = calculate_area_given_four_points(inside_point, p_list[0], p_list[1], p_list[2], p_list[3])
             mag = A * sum([point.p for point in p_list]) / len(p_list)
             # assign point and mag to 4 nodes of grid
-            load_str = self.assign_point_to_four_node(point=[xc, yc, zc], mag=mag)
+            load_str = self.assign_point_to_four_node(point=[xc, yc, zc], mag=mag,shape_func=patch_load_obj.shape_function)
             self.global_load_str += load_str
         # apply patch for full bound grids completed
 
@@ -1150,7 +1157,8 @@ class OspGrillage:
                         load_str += nested_list_of_load.get_nodal_load_str()
                     elif isinstance(nested_list_of_load, PointLoad):
                         load_str += self.assign_point_to_four_node(point=list(nested_list_of_load.load_point_1)[:-1],
-                                                                   mag=nested_list_of_load.load_point_1.p)
+                                                                   mag=nested_list_of_load.load_point_1.p,
+                                                                   shape_func=nested_list_of_load.shape_function)
                     elif isinstance(nested_list_of_load, LineLoading):
                         line_grid_intersect, line_ele_colinear = self.get_line_load_nodes(
                             nested_list_of_load)  # returns self.line_grid_intersect
@@ -1167,7 +1175,8 @@ class OspGrillage:
                     load_str += [load_obj.get_nodal_load_str()]  # here return load_str as list with single element
                 elif isinstance(load_obj, PointLoad):
                     load_str += self.assign_point_to_four_node(point=list(load_obj.load_point_1)[:-1],
-                                                               mag=load_obj.load_point_1.p)
+                                                               mag=load_obj.load_point_1.p,
+                                                               shape_func=load_obj.shape_function)
                 elif isinstance(load_obj, LineLoading):
                     line_grid_intersect, line_ele_colinear = self.get_line_load_nodes(
                         load_obj)  # returns self.line_grid_intersect

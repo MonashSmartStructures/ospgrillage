@@ -376,7 +376,7 @@ class LineLoading(Loads):
     def __init__(self, name, **kwargs):
         super().__init__(name, **kwargs)
         # shape function object
-        self.shape_function = ShapeFunction()
+        #self.shape_function = ShapeFunction()
 
         # if local coordinate is defined, create parameters based on local coordinates. later, if add_global_coord()
         # is called, set their load_point_
