@@ -30,7 +30,7 @@ Below are examples of creating different load types.
 
 Point Loads
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Point load is a force applied on a single infinitismal point of the grillage model.
+Point load is a force applied on a single infinitesmal point of the grillage model.
 Point loads are used represent a large range of loads, such as concentrated load of a car axle.
 
 Point loads are instantiated with the interface function ``create_point_load`` or directly with the :class:`PointLoad` class.
@@ -71,7 +71,7 @@ in the global coordinate system from -1 to 11 distance units in the `x`-axis and
     barrier_point_2 = ospg.LoadPoint(11, 0, 3, 2)
     Barrier = ospg.LineLoading("Barrier curb load", point1=barrier_point_1, point2=barrier_point_2)
 
-As before, to position the load instead in a user defined local coordinate system to later create a `Compound load`_ loads, the variable `localpoint#` instead of `point#` is used.
+As before, to position the load instead in a user defined local coordinate system to later create a `Compound load`_ loads, the variable `localpoint` instead of `point` is used.
 
 .. _Patch:
 
@@ -86,7 +86,7 @@ Using more than four tuples allows a curve surface loading profile.
 
 The following example code is constant 5 force per area unit patch load 
 in the global coordinate system. 
-To position the load instead in a user defined local coordinate system, the variable `localpoint#` instead of `point#` is used. 
+To position the load instead in a user defined local coordinate system, the variable `localpoint` instead of `point` is used.
 
 .. code-block:: python
 

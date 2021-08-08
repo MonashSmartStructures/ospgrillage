@@ -16,7 +16,7 @@ from ospgrillage.mesh import *
 
 def create_load_vertices(**kwargs):
     x = kwargs.get("x",None)
-    y = kwargs.get("y",None)
+    y = kwargs.get("y",0)
     z = kwargs.get("z",None)
     p = kwargs.get("p",None)
 
@@ -142,6 +142,8 @@ class Loads:
         self.local_load_point_7 = kwargs.get('localpoint7', None)
         self.local_load_point_8 = kwargs.get('localpoint8', None)
 
+        # shape function
+        self.shape_function = kwargs.get("shape_function", "hermite")
         # check if user skipped point 1 and defined point1 as point 2 instead
         if all([self.load_point_1 is None, self.load_point_2 is not None]):
             raise Exception("Load point 1 is not defined")
@@ -764,6 +766,17 @@ class MovingLoad:
     """
 
     def __init__(self, name, **kwargs):
+        """
+
+        :param name:
+        :keyword:
+        * common_path (`Path`): Path object specifying the common path for all loads defined in moving load to traverse
+        * global_increment(`int`): Number of increments to discretize Path object.
+
+        .. note::
+            global_increment argument is used in advance moving load analysis, where a moving load object attributes
+            each assigned load type with a corresponding unique Path object (which can differ between different paths).
+        """
         self.name = name
         self.load_list = []
         self.global_path_obj = []
@@ -776,8 +789,11 @@ class MovingLoad:
 
     def set_path(self, path_obj):
         """
-        Function to assign Path object to MovingLoad object. All loads added to the object through add_loads() will
-        traverse the set_path object.
+        Function to assign/modify the common path variable with a new Path object.
+         All loads added later to Moving load object will traverse the same common path object.
+
+        :param path_obj: Path object to specify common path variable.
+        :type path_obj: Path
 
         """
         if self.global_increment is not None:
@@ -797,15 +813,8 @@ class MovingLoad:
         load group.
 
         :param load_obj: Loads class object , or Compound load object
-        :param path_obj: Path class object - A path object must be defined for the Load class object. If none is defined, Load is treated as a static load and is added to each incremental analysis of the moving load
+        :param path_obj: Path class object - this is for advance use, where users specify unique path object for each load within the moving load object.
 
-        Structure of lists (example)
-
-        load_list = [1st LoadCase point,  2nd LoadCase patch, ... , Nth LoadCase misc load]
-        path_list = [Path for LoadCase point 1, [], ... , [] for Nth path]
-
-        .. note::
-            Size of load_list and path_list must be identical.
 
         """
         # if no path object is added, set empty list to path_obj. The load group will be treated as a static load
@@ -858,6 +867,9 @@ class MovingLoad:
 
 
 class Path:
+    """
+    Main class to define path of a moving load object
+    """
     def __init__(self, start_point: Point, end_point: Point, increments=50, mid_point: Point = None):
         self.start_point = start_point
         self.end_point = end_point
