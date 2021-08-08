@@ -681,11 +681,34 @@ The global coordinate is set to all local load points (i.e. it adds the global c
 <p>Main class of moving load case. MovingLoad class parses and creates multiple loadcase object corresponding to
 traversing the input load groups - be it compound or single. Moving load is able to set various path (defined by
 Path class object) to individual load groups.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> – </p>
+</dd>
+<dt class="field-even">Keyword</dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+<ul class="simple">
+<li><p>common_path (<cite>Path</cite>): Path object specifying the common path for all loads defined in moving load to traverse</p></li>
+<li><p>global_increment(<cite>int</cite>): Number of increments to discretize Path object.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>global_increment argument is used in advance moving load analysis, where a moving load object attributes
+each assigned load type with a corresponding unique Path object (which can differ between different paths).</p>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="ospgrillage.load.MovingLoad.set_path">
 <span class="sig-name descname"><span class="pre">set_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.MovingLoad.set_path" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to assign Path object to MovingLoad object. All loads added to the object through add_loads() will
-traverse the set_path object.</p>
+<dd><dl class="simple">
+<dt>Function to assign/modify the common path variable with a new Path object.</dt><dd><p>All loads added later to Moving load object will traverse the same common path object.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path_obj</strong> (<a class="reference internal" href="#ospgrillage.load.Path" title="ospgrillage.load.Path"><em>Path</em></a>) – Path object to specify common path variable.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -697,17 +720,10 @@ load group.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>load_obj</strong> – Loads class object , or Compound load object</p></li>
-<li><p><strong>path_obj</strong> – Path class object - A path object must be defined for the Load class object. If none is defined, Load is treated as a static load and is added to each incremental analysis of the moving load</p></li>
+<li><p><strong>path_obj</strong> – Path class object - this is for advance use, where users specify unique path object for each load within the moving load object.</p></li>
 </ul>
 </dd>
 </dl>
-<p>Structure of lists (example)</p>
-<p>load_list = [1st LoadCase point,  2nd LoadCase patch, … , Nth LoadCase misc load]
-path_list = [Path for LoadCase point 1, [], … , [] for Nth path]</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Size of load_list and path_list must be identical.</p>
-</div>
 </dd></dl>
 
 <dl class="py method">
@@ -721,6 +737,7 @@ path_list = [Path for LoadCase point 1, [], … , [] for Nth path]</p>
 <dt class="sig sig-object py" id="ospgrillage.load.Path">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">Path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_point</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">ospgrillage.mesh.Point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_point</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">ospgrillage.mesh.Point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">increments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid_point</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ospgrillage.mesh.Point</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.Path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Main class to define path of a moving load object</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ospgrillage.load.Path.get_path_points">
 <span class="sig-name descname"><span class="pre">get_path_points</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">list</span><a class="headerlink" href="#ospgrillage.load.Path.get_path_points" title="Permalink to this definition">¶</a></dt>

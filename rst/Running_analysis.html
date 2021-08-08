@@ -206,7 +206,7 @@ or else <cite>localpoint</cite> variable for a user-defined local coordinate sys
 Below are examples of creating different load types.</p>
 <div class="section" id="point-loads">
 <span id="point"></span><h3>Point Loads<a class="headerlink" href="#point-loads" title="Permalink to this headline">¶</a></h3>
-<p>Point load is a force applied on a single infinitismal point of the grillage model.
+<p>Point load is a force applied on a single infinitesmal point of the grillage model.
 Point loads are used represent a large range of loads, such as concentrated load of a car axle.</p>
 <p>Point loads are instantiated with the interface function <code class="docutils literal notranslate"><span class="pre">create_point_load</span></code> or directly with the <code class="xref py py-class docutils literal notranslate"><span class="pre">PointLoad</span></code> class.
 Point load takes only a single <cite>LoadPoint</cite> tuple. <cite>p</cite> in the tuple should have units of force (eg. N, kN, kips, etc).</p>
@@ -235,7 +235,7 @@ in the global coordinate system from -1 to 11 distance units in the <cite>x</cit
 <span class="n">Barrier</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">LineLoading</span><span class="p">(</span><span class="s2">&quot;Barrier curb load&quot;</span><span class="p">,</span> <span class="n">point1</span><span class="o">=</span><span class="n">barrier_point_1</span><span class="p">,</span> <span class="n">point2</span><span class="o">=</span><span class="n">barrier_point_2</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>As before, to position the load instead in a user defined local coordinate system to later create a <a class="reference internal" href="#compound-load">Compound load</a> loads, the variable <cite>localpoint#</cite> instead of <cite>point#</cite> is used.</p>
+<p>As before, to position the load instead in a user defined local coordinate system to later create a <a class="reference internal" href="#compound-load">Compound load</a> loads, the variable <cite>localpoint</cite> instead of <cite>point</cite> is used.</p>
 </div>
 <div class="section" id="patch-loads">
 <span id="patch"></span><h3>Patch loads<a class="headerlink" href="#patch-loads" title="Permalink to this headline">¶</a></h3>
@@ -246,7 +246,7 @@ Using more than four tuples allows a curve surface loading profile.
 <cite>p</cite> in the <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadPoint</span></code> tuple should have units of force per area.</p>
 <p>The following example code is constant 5 force per area unit patch load
 in the global coordinate system.
-To position the load instead in a user defined local coordinate system, the variable <cite>localpoint#</cite> instead of <cite>point#</cite> is used.</p>
+To position the load instead in a user defined local coordinate system, the variable <cite>localpoint</cite> instead of <cite>point</cite> is used.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lane_point_1</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">LoadPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 <span class="n">lane_point_2</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">LoadPoint</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 <span class="n">lane_point_3</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">LoadPoint</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
