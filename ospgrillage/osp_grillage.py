@@ -957,8 +957,9 @@ class OspGrillage:
         load_str = []
         if shape_func == "hermite":
             for count, node in enumerate(sorted_node_tag):
-                load_str.append("ops.load({pt}, *{val})\n".format(pt=node, val=[0, node_load[count], 0, node_mx[count], 0,
-                                                                                node_mz[count]]))
+                load_str.append(
+                    "ops.load({pt}, *{val})\n".format(pt=node, val=[0, node_load[count], 0, node_mx[count], 0,
+                                                                    node_mz[count]]))
         else:
             for count, node in enumerate(sorted_node_tag):
                 load_str.append("ops.load({pt}, *{val})\n".format(pt=node, val=[0, node_load[count], 0, 0, 0,
@@ -1049,6 +1050,31 @@ class OspGrillage:
                 assigned_ele.append(ele[0])
         return load_str_line
 
+    def assign_beam_ele_line_load(self, line_load_obj: LineLoading):
+        load_str_line = []
+        ele_group = []
+        if line_load_obj.long_beam_ele_load_flag:
+            ele_group = self.Mesh_obj.long_ele
+        elif line_load_obj.trans_beam_ele_load_flag:
+            ele_group = self.Mesh_obj.trans_ele
+        for ele in ele_group:
+            if ele[3] != 0:  # exclude edge beams
+                p1 = ele[1]
+                p2 = ele[2]
+                L = get_distance(p1, p2)
+                w1 = line_load_obj.load_point_1.p
+                w2 = line_load_obj.line_end_point.p
+                W = (w1 + w2) / 2
+                mag = W * L
+                # get mid point of line
+                x_bar = ((2 * w1 + w2) / (w1 + w2)) * L / 3  # from p2
+                load_point = line_load_obj.get_point_given_distance(xbar=x_bar,
+                                                                    point_coordinate=[p2.x, p2.y, p2.z])
+                load_str = self.assign_point_to_four_node(point=load_point, mag=mag)
+                load_str_line += load_str  # append to major list for line load
+
+        return load_str_line
+
     # setter for patch loads
     def assign_patch_load(self, patch_load_obj: PatchLoading) -> list:
         # searches grid that encompass the patch load
@@ -1072,7 +1098,8 @@ class OspGrillage:
             # _, A = calculate_area_given_four_points(inside_point, p_list[0], p_list[1], p_list[2], p_list[3])
             mag = A * sum([point.p for point in p_list]) / len(p_list)
             # assign point and mag to 4 nodes of grid
-            load_str = self.assign_point_to_four_node(point=[xc, yc, zc], mag=mag,shape_func=patch_load_obj.shape_function)
+            load_str = self.assign_point_to_four_node(point=[xc, yc, zc], mag=mag,
+                                                      shape_func=patch_load_obj.shape_function)
             self.global_load_str += load_str
         # apply patch for full bound grids completed
 
@@ -1160,12 +1187,15 @@ class OspGrillage:
                                                                    mag=nested_list_of_load.load_point_1.p,
                                                                    shape_func=nested_list_of_load.shape_function)
                     elif isinstance(nested_list_of_load, LineLoading):
-                        line_grid_intersect, line_ele_colinear = self.get_line_load_nodes(
-                            nested_list_of_load)  # returns self.line_grid_intersect
-                        self.global_line_int_dict.append(line_grid_intersect)
-                        load_str += self.assign_line_to_four_node(nested_list_of_load,
-                                                                  line_grid_intersect=line_grid_intersect,
-                                                                  line_ele_colinear=line_ele_colinear)
+                        if any([nested_list_of_load.long_beam_ele_load_flag,nested_list_of_load.trans_beam_ele_load_flag]):
+                            load_str += self.assign_beam_ele_line_load(line_load_obj=nested_list_of_load)
+                        else:
+                            line_grid_intersect, line_ele_colinear = self.get_line_load_nodes(
+                                nested_list_of_load)  # returns self.line_grid_intersect
+                            self.global_line_int_dict.append(line_grid_intersect)
+                            load_str += self.assign_line_to_four_node(nested_list_of_load,
+                                                                      line_grid_intersect=line_grid_intersect,
+                                                                      line_ele_colinear=line_ele_colinear)
                     elif isinstance(nested_list_of_load, PatchLoading):
                         load_str += self.assign_patch_load(nested_list_of_load)
             # else, a single load type, assign it as it is
@@ -1178,11 +1208,14 @@ class OspGrillage:
                                                                mag=load_obj.load_point_1.p,
                                                                shape_func=load_obj.shape_function)
                 elif isinstance(load_obj, LineLoading):
-                    line_grid_intersect, line_ele_colinear = self.get_line_load_nodes(
-                        load_obj)  # returns self.line_grid_intersect
-                    self.global_line_int_dict.append(line_grid_intersect)
-                    load_str += self.assign_line_to_four_node(load_obj, line_grid_intersect=line_grid_intersect,
-                                                              line_ele_colinear=line_ele_colinear)
+                    if any([load_obj.long_beam_ele_load_flag, load_obj.trans_beam_ele_load_flag]):
+                        load_str += self.assign_beam_ele_line_load(line_load_obj=load_obj)
+                    else:
+                        line_grid_intersect, line_ele_colinear = self.get_line_load_nodes(
+                            load_obj)  # returns self.line_grid_intersect
+                        self.global_line_int_dict.append(line_grid_intersect)
+                        load_str += self.assign_line_to_four_node(load_obj, line_grid_intersect=line_grid_intersect,
+                                                                  line_ele_colinear=line_ele_colinear)
                 elif isinstance(load_obj, PatchLoading):
                     load_str += self.assign_patch_load(load_obj)
 
