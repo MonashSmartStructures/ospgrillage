@@ -21,6 +21,9 @@ import xarray as xr
 def create_grillage(**kwargs):
     """
     User interface for creating grillage model / OspGrilage object.
+
+    :keyword:
+    Parameters for :class:`OspGrillage`. See :ref:`OpsGrillage` for information of parameters.
     """
     return OspGrillage(**kwargs)
 
@@ -1349,6 +1352,10 @@ class OspGrillage:
         :param load_case_and_factor_dict: dict with name string of load cases within the combination as key,
                                             corresponding load factor as value.
         :type load_case_and_factor_dict: str
+
+        Example format:
+
+        load_comb = {DL:1.2, LL: 1.5}
 
         """
         load_case_dict_list = []  # list of dict: structure of dict See line

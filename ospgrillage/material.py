@@ -8,7 +8,9 @@ import json
 
 def create_material(**kwargs):
     """
-    User interface function for material
+    User interface function to create material/ `Material` object
+    :keyword:
+    For kwargs, see :ref:`Module description` for more information on the available inputs.
     """
     return Material(**kwargs)
 

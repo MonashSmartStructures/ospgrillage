@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Module description
+Load module consist of class/methods which wraps Openseespy to create and run load analysis. First part of the module
+comprise the user interface functions. Following are the classes of various load types, compound load, load case,
+moving load and moving load path.
 """
 
 import pprint
@@ -15,6 +17,19 @@ from ospgrillage.mesh import *
 
 
 def create_load_vertices(**kwargs):
+    """
+    User interface function to create load vertices of various load types.
+
+    :returns LoadPoint(x,y,z,p): namedTuple
+    :except: ValueError if missing one or more keyword arguments.
+    :keyword:
+
+    * x: Value of x coordinate
+    * y: Value of y coordinate. Default is model plane y = 0
+    * z: Value of z coordinate
+    * p: Magnitude of vertical load in y direction.
+
+    """
     x = kwargs.get("x",None)
     y = kwargs.get("y",0)
     z = kwargs.get("z",None)
@@ -28,23 +43,39 @@ def create_load_vertices(**kwargs):
 
 def create_load_case(**kwargs):
     """
-    User interface for LoadCase creation
+    User interface function to create load case/ LoadCase objects
+
+    :keyword:
+    * name(`str`): Name string of Load case object
+
+    :returns LoadCase:
     """
     return LoadCase(**kwargs)
 
 
 def create_compound_load(**kwargs):
     """
-    User interface for compound load
+    User interface function to create compound load/ CompoundLoad objects
+
+    :keyword:
+    name (`str`): Name string of compound load
+    :returns CompoundLoad:
     """
     return CompoundLoad(**kwargs)
 
 
 def create_load(**kwargs):
     """
-    User interface function to create load types. Specify type =
-    :param kwargs:
-    :return:
+    User interface function to create load types.
+
+    :keyword:
+    * type(`str`): type of load. Choose either ["point","line","patch","nodal"]
+    * point# (`LoadPoint` namedTuple): LoadPoint for load type in global coordinate. Note different load type requires a
+            different minimum LoadPoint.
+    * local_load_point_# (`LoadPoint` namedTuple): LoadPoint for load type in local coordinate. Note different load type
+            requires a different minimum LoadPoint.
+
+    :return: PointLoad, LineLoading, PatchLoading, or NodalForces
     """
     type = kwargs.get("type", None)
     if type == "point":
@@ -69,10 +100,29 @@ def create_load(**kwargs):
 
 
 def create_moving_load(**kwargs):
+    """
+    User interface function to create Moving Load object.
+    :return MovingLoad:
+    :keyword:
+    * common_path(`Path`): Path object for all load groups added to the Moving load object to traverse
+    * global_increment(`float` or `int`): Number of increments to discretize Path object. This keyword is only used in
+            advance usage where Moving Load contains multiple load groups each with unique path objects.
+
+    See :ref:`Loads` or :ref:`Running_analysis` for more information on this.
+    """
     return MovingLoad(**kwargs)
 
 
 def create_moving_path(**kwargs):
+    """
+    User interface function to create Path object for moving load.
+    :keyword:
+    * start_point (`Point`): Start point of path
+    * end_point (`Point`): End point of path
+    * increments (`int`): Increment of path steps. Default is 50
+    * mid_point (`Point`): Default = None
+    :returns Path:
+    """
     return Path(**kwargs)
 
 
@@ -553,6 +603,29 @@ class PatchLoading(Loads):
                 self.patch_min_dim = min(
                     [get_distance(p1, p2) for (p1, p2) in zip(mod_list, mod_list[1:] + [mod_list[0]]) if
                      all([p1 is not None, p2 is not None])])
+                # check if triangular patch
+            elif self.local_load_point_4 is None: #
+                self.line_1 = LineLoading("Patch load line 1", point1=self.local_load_point_1,
+                                          point2=self.local_load_point_2)
+                self.line_2 = LineLoading("Patch load line 2", point1=self.local_load_point_2,
+                                          point2=self.local_load_point_3)
+                self.line_3 = LineLoading("Patch load line 3", point1=self.local_load_point_3,
+                                          point2=self.local_load_point_1)
+
+                # TODO create equation of plane from 3 points, interpolate object f
+                p = np.array([[self.local_load_point_1.p, self.local_load_point_2.p],
+                              [self.local_load_point_3.p]])
+                x = np.array([[self.local_load_point_1.x, self.local_load_point_2.x],
+                              [self.local_load_point_3.x]])
+                z = np.array([[self.local_load_point_1.z, self.local_load_point_2.z],
+                              [self.local_load_point_3.z]])
+                # create function to get interpolation of p
+                self.patch_mag_interpolate = interpolate.interp2d(x, z, p)
+                mod_list = [ls for ls in self.local_point_list if ls is not None]
+                self.patch_min_dim = min(
+                    [get_distance(p1, p2) for (p1, p2) in zip(mod_list, mod_list[1:] + [mod_list[0]]) if
+                     all([p1 is not None, p2 is not None])])
+
             elif self.local_load_point_8 is not None:
 
                 # point 1 2 3
@@ -564,16 +637,33 @@ class PatchLoading(Loads):
                 print("patch load points not valid")
             print("Patch load object created: {} ".format(name))
         elif any(self.point_list) and not any(self.local_point_list):  # based on global coordinate
+            # create each line
+            self.line_1 = LineLoading("Patch load line 1", point1=self.load_point_1, point2=self.load_point_2)
+            self.line_2 = LineLoading("Patch load line 2", point1=self.load_point_2, point2=self.load_point_3)
+            self.line_3 = LineLoading("Patch load line 3", point1=self.load_point_3, point2=self.load_point_4)
             # if only four point is define , patch load is a four point straight line quadrilateral
             if self.load_point_5 is None:
-                # create each line
-                self.line_1 = LineLoading("Patch load line 1", point1=self.load_point_1, point2=self.load_point_2)
-                self.line_2 = LineLoading("Patch load line 2", point1=self.load_point_2, point2=self.load_point_3)
-                self.line_3 = LineLoading("Patch load line 3", point1=self.load_point_3, point2=self.load_point_4)
+                # create fourth line
                 self.line_4 = LineLoading("Patch load line 4", point1=self.load_point_4, point2=self.load_point_1)
 
                 # create equation of plane from four straight lines
 
+                # create interpolate object f
+                p = np.array([[self.load_point_1.p, self.load_point_2.p], [self.load_point_3.p, self.load_point_4.p]])
+                x = np.array([[self.load_point_1.x, self.load_point_2.x], [self.load_point_3.x, self.load_point_4.x]])
+                z = np.array([[self.load_point_1.z, self.load_point_2.z], [self.load_point_3.z, self.load_point_4.z]])
+
+                # create function to get interpolation of p
+                self.patch_mag_interpolate = interpolate.interp2d(x, z, p)
+                mod_list = [ls for ls in self.point_list if ls is not None]
+                self.patch_min_dim = min(
+                    [get_distance(p1, p2) for (p1, p2) in zip(mod_list, mod_list[1:] + [mod_list[0]])
+                     if all([p1 is not None, p2 is not None])])
+            elif self.load_point_4 is None:
+                # update line 3
+                self.line_3 = LineLoading("Patch load line 3", point1=self.load_point_3, point2=self.load_point_1)
+
+                # TODO create equation of plane from 3 points
                 # create interpolate object f
                 p = np.array([[self.load_point_1.p, self.load_point_2.p], [self.load_point_3.p, self.load_point_4.p]])
                 x = np.array([[self.load_point_1.x, self.load_point_2.x], [self.load_point_3.x, self.load_point_4.x]])
@@ -709,7 +799,6 @@ class LoadCase:
 
     def __init__(self, name):
         """
-
         :param name: str of load case name
         """
         self.name = name
@@ -719,6 +808,15 @@ class LoadCase:
         self.load_command_list = []
 
     def add_load_groups(self, load_obj: Union[Loads, CompoundLoad], **kwargs):
+        """
+
+        :param load_obj: Load or Compound load object
+        :param kwargs: keyword arguments
+        :keyword:
+        * global_coord_of_load_obj (`Point` namedTuple): if load objects are defined in local coordinate, this parameter
+            is required to set the origin of local coordinate of load groups onto the global coordiante of the grillage
+
+        """
         load_dict = dict()
         load_dict.setdefault('load', deepcopy(load_obj))  # create copy of object instance
         # check if load_obj's load points are local points, if True, check if kwargs global coord is provided
@@ -768,7 +866,7 @@ class MovingLoad:
     def __init__(self, name, **kwargs):
         """
 
-        :param name:
+        :param name: Name string of moving load
         :keyword:
         * common_path (`Path`): Path object specifying the common path for all loads defined in moving load to traverse
         * global_increment(`int`): Number of increments to discretize Path object.
