@@ -19,7 +19,7 @@ Each load type requires user to specify its load point(s). This is achieved by a
 and `p` is the magnitude of the vertical loading. Note, `p` is a unit magnitude which is interpreted differently based on the load type - this will be later explained.
 
 The coordinates are generally in the global coordinate system with respect to the created grillage model.
-However, a user-defined local coordinate system may also be used to assist in then creating `Compound`_ loads.
+However, a user-defined local coordinate system may also be used to assist in then creating `Compound load`_ loads.
 
 Depending on the load type, a minimum number of LoadPoint namedTuple
 are required. These are defined used the `point` variable for the load type class for the global coordinate system,
@@ -40,15 +40,15 @@ The following example code creates a 20 force unit point load located at (5,0,2)
 
 .. code-block:: python
 
-    point_load_location = ospg.LoadPoint(5, 0, 2, 20)  # create load point
-    Single = ospg.PointLoad(name="single point", point1=point_load_location)
+    point_load_location = ospg.create_load_vertices(x=5, y=0, z=2, p=20)  # create load point
+    Single = ospg.create_load(type="point",name="single point", point1=point_load_location)
 
 To position the load instead in a user defined local coordinate system to later create a `Compound Load`_, the variable `localpoint1` instead of `point1` is used.
 
 .. code-block:: python
 
-    point_load_location = ospg.LoadPoint(5, 0, 2, 20)  # create load point
-    Single = ospg.PointLoad(name="single point", localpoint1=point_load_location)
+    point_load_location = ospg.create_load_vertices(5, 0, 2, 20)  # create load point
+    Single = ospg.create_load(type="point",name="single point", localpoint1=point_load_location)
 
 
 .. _Line:
