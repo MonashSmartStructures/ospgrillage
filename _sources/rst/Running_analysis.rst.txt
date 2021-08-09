@@ -72,7 +72,7 @@ distributed load on beam elements along the span direction.
 
 [picture]
 
-Line loads are instantied with the :class:`LineLoading` and required at least two :class:`LoadPoint` tuple (corresponds to the start and end of the line load).
+Line loads are instantiated with the interface function ``create_load(type="line)`` and required at least two :class:`LoadPoint` tuple (corresponds to the start and end of the line load).
 Using more than two tuples allows a curve line loading profile.
 `p` in the :class:`LoadPoint` tuple should have units of force per distance (eg. kN/m, kips/ft, etc).
 

@@ -228,7 +228,7 @@ Point loads are used represent a large range of loads, such as concentrated load
 <p>Line loads are loads exerted along a line. Line loads are useful to represent loads such as self weight of longitudinal beams or
 distributed load on beam elements along the span direction.</p>
 <p>[picture]</p>
-<p>Line loads are instantied with the <code class="xref py py-class docutils literal notranslate"><span class="pre">LineLoading</span></code> and required at least two <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadPoint</span></code> tuple (corresponds to the start and end of the line load).
+<p>Line loads are instantiated with the interface function <code class="docutils literal notranslate"><span class="pre">create_load(type=&quot;line)</span></code> and required at least two <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadPoint</span></code> tuple (corresponds to the start and end of the line load).
 Using more than two tuples allows a curve line loading profile.
 <cite>p</cite> in the <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadPoint</span></code> tuple should have units of force per distance (eg. kN/m, kips/ft, etc).</p>
 <p>The following example code is a constant 2 force per distance unit line load (UDL)

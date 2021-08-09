@@ -200,9 +200,29 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="ospgrillage.load.create_load">
 <span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">create_load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.create_load" title="Permalink to this definition">¶</a></dt>
-<dd><p>User interface function to create load types. Specify type =
-:param kwargs:
-:return:</p>
+<dd><p>User interface function to create load types.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+<ul class="simple">
+<li><p>type(<cite>str</cite>): type of load. Choose either [“point”,”line”,”patch”,”nodal”]</p></li>
+<li><dl class="simple">
+<dt>point# (<cite>LoadPoint</cite> namedTuple): LoadPoint for load type in global coordinate. Note different load type requires a</dt><dd><p>different minimum LoadPoint.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>local_load_point_# (<cite>LoadPoint</cite> namedTuple): LoadPoint for load type in local coordinate. Note different load type</dt><dd><p>requires a different minimum LoadPoint.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>PointLoad, LineLoading, PatchLoading, or NodalForces</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
