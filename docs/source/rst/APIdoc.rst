@@ -17,7 +17,22 @@ UML diagram overview
 
 What functions are considered public API?
 ------------------------------------------
-This module comprised of user interface functions to take user inputs and returns its corresponding object creation
+This module comprised of user interface functions to take user inputs and returns its corresponding object creation.
+
+
+.. autosummary::
+    :toctree: generated/
+
+    ospgrillage.osp_grillage.create_grillage
+    ospgrillage.material.create_material
+    ospgrillage.members.create_section
+    ospgrillage.members.create_member
+    ospgrillage.load.create_load_vertices
+    ospgrillage.load.create_load
+    ospgrillage.load.create_load_case
+    ospgrillage.load.create_compound_load
+    ospgrillage.load.create_moving_path
+    ospgrillage.load.create_moving_load
 
 
 

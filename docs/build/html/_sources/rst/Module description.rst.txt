@@ -2,8 +2,8 @@
 Creating grillage models
 ========================
 The *ospgrillage* module contains **interface functions** which can be called after the module syntax. These interface function
-has  ``set_``, ``create_`` or ``get_`` in their syntax. For example, creating a material object using ``create_material()``.
-As an alternative, users can directly interact with the objects without using interface functions.
+has  ``set_``, ``create_`` or ``get_`` in their syntax. For example, users create a material with ``create_material()``.
+Alternatively, users can directly interact with the objects without using interface functions.
 
 In general, there are three main steps to create a grillage model with *ospgrillage*:
 

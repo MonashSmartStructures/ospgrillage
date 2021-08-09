@@ -2,8 +2,8 @@
 API reference
 ====================
 
-This page presents the technical content deliverables of the module. Instructions on variables and function
-showing their interactions, both within and across various classes, are presented herein.
+This page outlines *ospgrillage*'s API. For detail regarding module design and algorithms, refer to :doc:`ModuleDoc`.
+
 
 UML diagram overview
 ----------------------------
@@ -17,34 +17,43 @@ UML diagram overview
 
 What functions are considered public API?
 ------------------------------------------
-This module comprised of user interface functions to take user inputs and returns its corresponding object creation
+This module comprised of user interface functions to take user inputs and returns its corresponding object creation.
+
+
+.. autosummary::
+    :toctree: generated/
+
+    ospgrillage.osp_grillage.create_grillage
+    ospgrillage.material.create_material
+    ospgrillage.members.create_section
+    ospgrillage.members.create_member
+    ospgrillage.load.create_load_vertices
+    ospgrillage.load.create_load
+    ospgrillage.load.create_load_case
+    ospgrillage.load.create_compound_load
+    ospgrillage.load.create_moving_path
+    ospgrillage.load.create_moving_load
 
 
 
 OpsGrillage class
 ---------------------------
 
-
-.. currentmodule:: osp_grillage
-
-.. autoclass:: OpsGrillage
+.. autoclass:: ospgrillage.osp_grillage.OspGrillage
     :members:
     :show-inheritance:
 
 Analysis class
 ^^^^^^^^^^^^^^^^
 
-
-
-
-.. autoclass:: osp_grillage.Analysis
+.. autoclass:: ospgrillage.osp_grillage.Analysis
     :members:
     :show-inheritance:
 
 
 Result class
 ^^^^^^^^^^^^^^^^
-.. autoclass:: osp_grillage.Results
+.. autoclass:: ospgrillage.osp_grillage.Results
     :members:
     :show-inheritance:
 
@@ -55,29 +64,28 @@ For information regarding the procedures in :class:`~OpsGrillage` class, see
 :doc:`ModuleDoc`.
 
 
-.. autoclass:: material.Material
+.. autoclass:: ospgrillage.material.Material
     :members:
     :show-inheritance:
 
 Section class
 ------------------------------------------
 
-.. autoclass:: members.Section
+.. autoclass:: ospgrillage.members.Section
     :members:
     :show-inheritance:
 
 GrillageMember class
 ------------------------------------------
 
-.. automodule:: members
+.. autoclass:: ospgrillage.members.GrillageMember
     :members:
     :show-inheritance:
-
 
 Mesh class
 ------------------------------------------
 
-.. autoclass:: mesh.Mesh
+.. autoclass:: ospgrillage.mesh.Mesh
     :members:
     :show-inheritance:
 
@@ -89,54 +97,52 @@ For information regarding definition of :class:`~Loads` class, see
 NodalLoad
 ^^^^^^^^^^^^^^^^
 
-.. autoclass:: load.NodalLoad
+.. autoclass:: ospgrillage.load.NodalLoad
     :members:
-    :show-inheritance:
+
 
 PointLoad
 ^^^^^^^^^^^^^^^^
 
-.. autoclass:: load.PointLoad
+.. autoclass:: ospgrillage.load.PointLoad
     :members:
-    :show-inheritance:
+
 
 LineLoading
 ^^^^^^^^^^^^^^^^
 
-.. autoclass:: load.LineLoading
+.. autoclass:: ospgrillage.load.LineLoading
     :members:
-    :show-inheritance:
+
 
 PatchLoading
 ^^^^^^^^^^^^^^^^
 
-.. autoclass:: load.PatchLoading
+.. autoclass:: ospgrillage.load.PatchLoading
     :members:
-    :show-inheritance:
+
 
 CompoundLoad
-^^^^^^^^^^^^^^^^
+------------------------------------------
 
-.. autoclass:: load.CompoundLoad
+.. autoclass:: ospgrillage.load.CompoundLoad
     :members:
     :show-inheritance:
 
 MovingLoad
-^^^^^^^^^^^^^^^^
+------------------------------------------
 
-.. autoclass:: load.MovingLoad
+.. autoclass:: ospgrillage.load.MovingLoad
     :members:
     :show-inheritance:
 
-Load case class
+
+LoadCase
 ------------------------------------------
 For information regarding in :class:`~LoadCase` class, see
 :doc:`Loads`.
 
-LoadCase
-^^^^^^^^^^^^^^^^
-
-.. autoclass:: load.LoadCase
+.. autoclass:: ospgrillage.load.LoadCase
     :members:
     :show-inheritance:
 
@@ -145,12 +151,12 @@ Misc
 
 LoadCase
 ^^^^^^^^^^^^^^^^
-.. autoclass:: load.Path
+.. autoclass:: ospgrillage.load.Path
     :members:
     :show-inheritance:
 
 Shape functions
 ^^^^^^^^^^^^^^^^
-.. autoclass:: load.ShapeFunction
+.. autoclass:: ospgrillage.load.ShapeFunction
     :members:
     :show-inheritance:

@@ -375,7 +375,6 @@ class LineLoading(Loads):
 
     def __init__(self, name, **kwargs):
         super().__init__(name, **kwargs)
-        # shape function object
         self.long_beam_ele_load_flag = kwargs.get("long_beam_element_load",False)
         self.trans_beam_ele_load_flag = kwargs.get("trans_beam_element_load",False)
 

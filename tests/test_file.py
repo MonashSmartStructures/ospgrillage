@@ -208,7 +208,7 @@ def test_line_load(bridge_model_42_negative):
                                                  'edge_intersect': [], 'ends': []}, 11: {'long_intersect': [],
                                                                                          'trans_intersect': [
                                                                                              [4.276919210414739, 0,
-                                                                                              3.0],
+                                                                                                3.0],
                                                                                              [5.4024242657870385, 0,
                                                                                               3.0]],
                                                                                          'edge_intersect': [],
@@ -399,6 +399,20 @@ def test_patch_load(bridge_model_42_negative):
         'ops.load(15, *[0, 0.106207307625274, 0, -0.0531036538126368, 0, 0.0660145678416751])\n']
 
 
+# test for patch load with linear shape function for load distribution
+def test_patch_load_using_linear_shape_function(bridge_model_42_negative):
+    example_bridge = bridge_model_42_negative
+
+    lane_point_1 = og.create_load_vertices(x=5, y=0, z=3, p=5)
+    lane_point_2 = og.create_load_vertices(x=8, y=0, z=3, p=5)
+    lane_point_3 = og.create_load_vertices(x=8, y=0, z=5, p=5)
+    lane_point_4 = og.create_load_vertices(x=5, y=0, z=5, p=5)
+    Lane = og.PatchLoading("Lane 1", point1=lane_point_1, point2=lane_point_2, point3=lane_point_3,
+                           point4=lane_point_4, shape_function="linear")
+    ULS_DL = og.LoadCase(name="Lane")
+    ULS_DL.add_load_groups(Lane)  # ch
+    example_bridge.add_load_case(ULS_DL)
+    example_bridge.analyze(all=True)
 # ----------------------------------------------------------------------------------------------------------------------
 # test sub functions
 # ----------------------------------------------------------------------------------------------------------------------
@@ -414,7 +428,7 @@ def test_sort_vertices():
 
 # ----------------------------------------------------------------------------------------------------------------------
 # tests for Loadcase, compound load, and moving load objects
-# test to check if compound load gives correct coordinates for encompassed load objects
+# test to check if compound load gives correct coordinates for different load objects
 def test_compound_load_correct_position():
     location = og.create_load_vertices(x=5, y=0, z=-2, p=20)  # create load point
     Single = og.create_load(type="point",name="single point", point1=location)
