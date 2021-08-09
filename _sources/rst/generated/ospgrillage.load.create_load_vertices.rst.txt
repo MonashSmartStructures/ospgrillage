@@ -1,0 +1,6 @@
+﻿ospgrillage.load.create\_load\_vertices
+=======================================
+
+.. currentmodule:: ospgrillage.load
+
+.. autofunction:: create_load_vertices

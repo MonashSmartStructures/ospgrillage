@@ -2,14 +2,14 @@
 Module design
 #####################
 
-This page details the processes within *ops-grillage* module. In providing the outline of processes,
+This page details the processes within *ospgrillage* module. In providing the outline of processes,
 the developers welcome any improvements to its procedures via pull requests.
 
 ====================
 Grillage model
 ====================
 
-The *ops-grillage* module generates a two-dimensional (2D) grillage model of a bridge in Opensees - see Figure 1.
+The *ospgrillage* module generates a two-dimensional (2D) grillage model of a bridge deck in Opensees - see Figure 1.
 
 ..  figure:: ../../_images/Figure_1.png
     :align: center
@@ -19,45 +19,47 @@ The *ops-grillage* module generates a two-dimensional (2D) grillage model of a b
 
 Model space
 ---------------------
-The Opensees model space can be set to either 2-D or 3-D.
 
 By default the :class:`~OpsGrillage` object creates a 2-D grillage model that exist in the 3-D model space.
 The model has 6 degrees-of-freedom at each nodes. The grillage model plane lies in the x-z plane of the coordinate system.
 For a 2-D model space, the model plane is the x-y plane.
 
+Development for 1-D models in 2-D space is yet to complete but we welcome any pull request for it.
 
 Coordinate system
 ---------------------
 
-The module adopts the following coordinate convention for grillage model:
+The module adopts the following coordinate system for grillage models:
 
-* x direction defines the length of the bridge model - typically the span of the model.
+* global x direction defines the length of the bridge model - typically the span of the model.
 
-* z direction defines the width of the bridge model - the slabs elements are layed in this axis direction.
+* global z direction defines the width of the bridge model - the slabs elements are layed in this axis direction.
 
-* y direction is the vertical axis - typically the direction of loads
+* global y direction is the vertical axis - typically the direction of loads
 
 Two reasons behind selecting the coordinate system are as such:
-#. This coordinate system is consistent with geometric transformation (from local to global) in Opensees. The geometric transformation is used in Section definition, with local X being the axial direction
-of beam/truss members; y and z axes being the vertical and horizontal axis of the local coordinate system respectively.
-#. To be consistent with 1D problems where the working axis for 1-D models is typically *x* (horizontal axis) and *y* (vertical axis).
+# To be consistent with geometric transformation (from local to global) of Opensees. The geometric transformation is used in Section definition, with local X being the axial direction
+of beam/truss members; where y and z axes being the vertical and horizontal axis of the local coordinate system respectively.
+
+# To be consistent with 1D problems where the working axis for 1-D models is typically *x* (horizontal axis) and *y* (vertical axis).
 
 ====================
 Meshing Procedure
 ====================
 
-The :class:`~OpsGrillage` class has a :class:`~Mesh` class object as a variable. The :class:`~Mesh` object controls
-the definition of:
+The :class:`~OspGrillage` class handles a :class:`~Mesh` class object which stores information of the grillage mesh, such as:
 
 * Nodes
-* Element
+* Elements
 * Element local transformation of sections and materials
 * Grouping of grillage elements for calculating properties and assigning members.
+* width and distance between
 
 
 Meshing algorithm
 ---------------------
-Lets use the following bridge mesh as an explanatory example. Herein, the variable names are given in brackets.
+
+Figure 2 shows an bridge mesh nodes as an explanatory example.
 
 ..  figure:: ../../_images/Moduledoc_1.PNG
     :align: center
@@ -65,22 +67,22 @@ Lets use the following bridge mesh as an explanatory example. Herein, the variab
 
     Figure 2: Meshing construction lines, showing start edge construction line (Blue), end edge construction line (Green), sweep path (Black) and sweeping nodes (Red).
 
-Meshing algorithm is initiated upon creating the :class:`~Mesh` class object. The following components are generated to
+Meshing algorithm is controlled by the :class:`~Mesh` class object. The following components are generated to
 define the nodes and elements of the mesh:
 
-#. Construction line at edge of model @ the start of the span (start_span_edge)
+# Construction line at edge of model @ the start of the span (start_span_edge)
 A construction line consisting of the edge of the model is first defined. Construction line consist of nodes that
 coincide with the number and position of longitudinal beams in the model. The angle of the construction line is based on skew angle
 (skew_1). By default, the reference point of the construction line coincide with the origin [0,0,0] of the model space.
 
-#. Construction line at edge of model @ the end of the span (end_span_edge)
+# Construction line at edge of model @ the end of the span (end_span_edge)
 Similar to (1), the construction line at the end of the span is created based on number of longitudinal beam. The
 spacing of the nodes in the z direction is identical to that of the first construction line. By default the skew angle
 of this second construction (skew_2) can be different. In constrast, the reference point of second construction line
 is [L, 0 ,f(L)] where L is the length of the model, and f(L) is the z coordinate of the reference node based on
 the defined sweep path of the model - this is next explained
 
-#. Sweep Path
+# Sweep Path
 By default, the sweep path of the model is a straight line of y = 0 which starts at the origin [0,0,0] of model space.
 A few option
 
@@ -90,27 +92,27 @@ In grillages, transverse members are often arranged orthogonally to longitudinal
 (less than 30 degrees angle), orthogonal mesh can be impractical and a skew (Oblique) mesh is usually selected instead.
 
 .. note::
-    Up to version 0.0.1, the grillage wizard allow users to freely choose between orthogonal and oblique meshes for
+    Up to version 0.1.0, the grillage wizard allow users to freely choose between orthogonal and oblique meshes for
     angles between 11 to 30 degrees. An error exception will be returned when users select "orthogonal mesh"
     but having skew angle less than "11 degrees" - and vice versa. The numbers of 11 and 30 degrees are selected based
     on common industrial practice of grillage analysis.
 
 Meshing steps
 ---------------------
-#. Starting at first construction line, algorithm checks the angle of the construction line relative to the tangent/slope
+# Starting at first construction line, algorithm checks the angle of the construction line relative to the tangent/slope
 of the sweep line at the first position (i.e. @ [0,0,0])
 
-#. If mesh type for the given angle of construction line is permitted, a for loop procedure is initiated.
+# If mesh type for the given angle of construction line is permitted, a for loop procedure is initiated.
 The iteration: (1) goes through every point in the construction line, (2) find the point on the sweep path whose normal vector
 intersects the current point of the construction line, (3) create the nodes bounded between the current point and the intersection
 point on the sweep line - see figure below. If mesh type is not valid, the process skips to step 3.
 
-#. If angle is not permitted, the construction line is taken as the sweep node line. An iteration goes
+# If angle is not permitted, the construction line is taken as the sweep node line. An iteration goes
 through all points on construction line and assigns them as nodes. Then the process move to the step 4.
 
-#. Similar to step 2, step 4 comprise the process of step 2 but conducted for the second construction line instead.
+# Similar to step 2, step 4 comprise the process of step 2 but conducted for the second construction line instead.
 
-#. Remaining uniformly spaced nodes between the two construction lines are now defined. The algorithm spaces the nodes
+# Remaining uniformly spaced nodes between the two construction lines are now defined. The algorithm spaces the nodes
 evenly based on the number of transverse beam specified.
 
 While nodes are generated, elements are also created by linking the generated nodes. Node linking is based on the grid numbering

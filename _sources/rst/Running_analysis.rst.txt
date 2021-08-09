@@ -11,29 +11,41 @@ Furthermore, *ospgrillage* module also options for moving load analysis.
 Defining loads
 ------------------------
 
+Loads are created with the interface function ``create_load()``. Users pass argument for `type=` to specify the load type.
 Available loads types include `Point`_, `Line`_, and `Patch`_ loads.
-Two or more of these load types can be combined to form `Compound`_ loads. All load types are applied in the direction of the global `y`-axis.
-Loads in other directions and applied moments are currently not supported.
+
+
+[picture]
+
 
 Each load type requires user to specify its load point(s). This is achieved by a namedTuple `LoadPoint(x,y,z,p)` where `x`,`y`,`z` are the coordinates of the load point
 and `p` is the magnitude of the vertical loading. Note, `p` is a unit magnitude which is interpreted differently based on the load type - this will be later explained.
 
-The coordinates are generally in the global coordinate system with respect to the created grillage model.
-However, a user-defined local coordinate system may also be used to assist in then creating `Compound load`_ loads.
+.. code-block:: python
 
-Depending on the load type, a minimum number of LoadPoint namedTuple
-are required. These are defined used the `point` variable for the load type class for the global coordinate system,
-or else `localpoint` variable for a user-defined local coordinate system, where # is a digit from 1 to 9.
-Below are examples of creating different load types.
+    point_load_location = ospg.create_load_vertices(x=5, y=0, z=2, p=20)  # create load point
+
+
+Depending on the load type, a minimum number of LoadPoint namedTuple are required.
+These are set to each load type's `point#=` variable for the load type class for the global coordinate system,
+or else `local_point_#=` variable for a user-defined local coordinate system, where # is a digit from 1 to 9.
+
+
+Loads are generally in the global coordinate system with respect to the created grillage model.
+However, a user-defined local coordinate system may also be used to assist in then creating `Compound load`_ later on.
 
 .. _Point:
 
 Point Loads
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 Point load is a force applied on a single infinitesmal point of the grillage model.
 Point loads are used represent a large range of loads, such as concentrated load of a car axle.
 
-Point loads are instantiated with the interface function ``create_point_load`` or directly with the :class:`PointLoad` class.
+
+[picture]
+
+
 Point load takes only a single `LoadPoint` tuple. `p` in the tuple should have units of force (eg. N, kN, kips, etc).
 
 The following example code creates a 20 force unit point load located at (5,0,2) in the global coordinate system.
@@ -58,6 +70,8 @@ Line Loads
 Line loads are loads exerted along a line. Line loads are useful to represent loads such as self weight of longitudinal beams or
 distributed load on beam elements along the span direction.
 
+[picture]
+
 Line loads are instantied with the :class:`LineLoading` and required at least two :class:`LoadPoint` tuple (corresponds to the start and end of the line load).
 Using more than two tuples allows a curve line loading profile.
 `p` in the :class:`LoadPoint` tuple should have units of force per distance (eg. kN/m, kips/ft, etc).
@@ -78,6 +92,8 @@ As before, to position the load instead in a user defined local coordinate syste
 Patch loads
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Patch loads are useful to represent loads distributed uniformly over a certain area such as traffic lanes.
+
+[picture]
 
 Patch loads are instantiated with the interface function ``create_load(type="patch)``, or directly
 using :class:`PatchLoading` and required at least four :class:`LoadPoint` tuple (corresponds to the vertices of the patch load).
@@ -100,7 +116,10 @@ To position the load instead in a user defined local coordinate system, the vari
 
 Compound loads
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Two or more groups of load objects can be compounded into a compound load. 
+Two or more of these load types can be combined to form `Compound load`_ loads. All load types are applied in the direction of the global `y`-axis.
+Loads in other directions and applied moments are currently not supported.
+
+[picture]
 
 To create a compound load, use the ``create_compound_load()`` function or the
 :class:`CompoundLoad` class - passing load objects for compounding as input parameters.
@@ -210,12 +229,12 @@ For moving load analysis, users create moving load objects using :class:`MovingL
 through a path points described by a :class:`Path` object and obtained by the ``get_path_points()`` method. 
 Path are defined using two namedTuple :class:`Point(x,y,z)` to describe its start and end position.
 
-The following example code is a line load is defined as a moving load travelling a path from 2 to 4 distance units in the global coordinate system.
+The following example code is two point loads defined as a moving load travelling a path from 2 to 4 distance units in the global coordinate system.
 
 .. code-block:: python
 
-    front_wheel = ospg.LoadPoint(0, 0, 0, 6)   # Local
-    back_wheel = ospg.LoadPoint(-1, 0, 0, 6)   # Local
+    front_wheel = ospg.LoadPoint(0, 0, 0, 6)   # load point 1
+    back_wheel = ospg.LoadPoint(-1, 0, 0, 6)   # load point 2
     tandem = ospg.create_compound_load("Two wheel vehicle")
 
     single_path = ospg.create_moving_path(start_point=ospg.Point(2,0,2), end_point= ospg.Point(4,0,2))  # create path object
