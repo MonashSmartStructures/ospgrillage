@@ -203,8 +203,18 @@
 <span class="sig-prename descclassname"><span class="pre">ospgrillage.osp_grillage.</span></span><span class="sig-name descname"><span class="pre">create_grillage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.create_grillage" title="Permalink to this definition">¶</a></dt>
 <dd><p>User interface for creating grillage model / OspGrilage object.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Keyword</dt>
-<dd class="field-odd"><p></p></dd>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bridge_name</strong> (<em>str</em>) – Name of bridge model and output .py file</p></li>
+<li><p><strong>long_dim</strong> (<em>int</em><em> or </em><em>float</em>) – Length of the model in the longitudinal direction (default: x axis)</p></li>
+<li><p><strong>width</strong> (<em>int</em><em> or </em><em>float</em>) – Width of the model in the transverse direction (default: z axis)</p></li>
+<li><p><strong>skew</strong> (<em>int</em><em> or </em><em>float</em>) – Skew angle of the start and end edges of model</p></li>
+<li><p><strong>num_long_grid</strong> (<em>int</em>) – Number of grid lines in longitudinal direction</p></li>
+<li><p><strong>num_trans_grid</strong> (<em>int</em>) – Number of  grid lines in the transverse direction</p></li>
+<li><p><strong>edge_beam_dist</strong> (<em>int</em><em> or </em><em>float</em>) – Distance of edge beam node lines to exterior main beam node lines</p></li>
+<li><p><strong>mesh_type</strong> (<em>string</em>) – Type of mesh either “Ortho” for orthogonal mesh or “Oblique” for oblique mesh</p></li>
+</ul>
+</dd>
 </dl>
 <p>Parameters for <a class="reference internal" href="../OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a>. See <span class="xref std std-ref">OpsGrillage</span> for information of parameters.</p>
 </dd></dl>
