@@ -109,9 +109,10 @@
 <li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_compound_load.html">ospgrillage.load.create_compound_load</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_moving_path.html">ospgrillage.load.create_moving_path</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_moving_load.html">ospgrillage.load.create_moving_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.mesh.create_point.html">ospgrillage.mesh.create_point</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#opsgrillage-class">OpsGrillage class</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#ospgrillage-class">OspGrillage class</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#analysis-class">Analysis class</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#result-class">Result class</a></li>
 </ul>
@@ -131,7 +132,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#movingload">MovingLoad</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#loadcase">LoadCase</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#misc">Misc</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id2">LoadCase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">LoadCase</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#shape-functions">Shape functions</a></li>
 </ul>
 </li>
@@ -212,9 +213,9 @@
 <p>This page outlines <em>ospgrillage</em>’s API. For detail regarding module design and algorithms, refer to <a class="reference internal" href="ModuleDoc.html"><span class="doc">Module design</span></a>.</p>
 <div class="section" id="uml-diagram-overview">
 <h2>UML diagram overview<a class="headerlink" href="#uml-diagram-overview" title="Permalink to this headline">¶</a></h2>
-<div class="figure align-center" id="id3">
+<div class="figure align-center" id="id4">
 <a class="reference internal image-reference" href="../_images/draftUML.PNG"><img alt="../_images/draftUML.PNG" src="../_images/draftUML.PNG" style="width: 546.5px; height: 372.0px;" /></a>
-<p class="caption"><span class="caption-text">Figure 1: UML diagram - draft version 1.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 1: UML diagram - draft version 1.</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 <div class="section" id="user-interface-functions-and-public-api">
@@ -231,7 +232,7 @@ Here is a summary of these functions.</p>
 <td><p>User interface for creating grillage model / OspGrilage object.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.material.create_material.html#ospgrillage.material.create_material" title="ospgrillage.material.create_material"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.material.create_material</span></code></a>(**kwargs)</p></td>
-<td><p>User interface function to create material/ <cite>Material</cite> object :keyword: For kwargs, see <span class="xref std std-ref">Module description</span> for more information on the available inputs.</p></td>
+<td><p>User interface function to create material/ <cite>Material</cite> object :keyword: For kwargs, see <span class="xref std std-ref">Material</span> for more information on the available inputs.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.members.create_section.html#ospgrillage.members.create_section" title="ospgrillage.members.create_section"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.members.create_section</span></code></a>(**kwargs)</p></td>
 <td><p>User interface for section creation.</p></td>
@@ -257,11 +258,14 @@ Here is a summary of these functions.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_moving_load.html#ospgrillage.load.create_moving_load" title="ospgrillage.load.create_moving_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.load.create_moving_load</span></code></a>(**kwargs)</p></td>
 <td><p>User interface function to create Moving Load object. :return MovingLoad: :keyword: * common_path(<cite>Path</cite>): Path object for all load groups added to the Moving load object to traverse * global_increment(<cite>float</cite> or <cite>int</cite>): Number of increments to discretize Path object. This keyword is only used in         advance usage where Moving Load contains multiple load groups each with unique path objects.</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.mesh.create_point.html#ospgrillage.mesh.create_point" title="ospgrillage.mesh.create_point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.mesh.create_point</span></code></a>(**kwargs)</p></td>
+<td><p>User interface function to create a point named tuple :keyword:</p></td>
+</tr>
 </tbody>
 </table>
 </div>
-<div class="section" id="opsgrillage-class">
-<h2>OpsGrillage class<a class="headerlink" href="#opsgrillage-class" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="ospgrillage-class">
+<h2>OspGrillage class<a class="headerlink" href="#ospgrillage-class" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.osp_grillage.OspGrillage">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.osp_grillage.</span></span><span class="sig-name descname"><span class="pre">OspGrillage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bridge_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">long_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skew</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_long_grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_trans_grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_beam_dist</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Ortho'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'3D'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OspGrillage" title="Permalink to this definition">¶</a></dt>
@@ -477,7 +481,42 @@ Class object is accessed within OspGrillage class object.</p>
 <dt class="sig sig-object py" id="ospgrillage.material.Material">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.material.</span></span><span class="sig-name descname"><span class="pre">Material</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.material.Material" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Base class for Material objects.</p>
+<p>This class stores information and provides methods to parse input material properties into Openseespy Material()
+commands. Openseespy consist of two types of material objects, namely UniaxialMaterial() and NDMaterial().</p>
+<p><a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html">Here</a> for information about Opensees
+Material objects.</p>
+<p>For the intended modelling objects of <em>ospgrillage</em> (bridge decks), concrete and steel makes up the primary
+materials. In turn, UniAxialMaterial object of Openseespy is wrapped and used by Material class since it contains
+options for Concrete and Steel.</p>
+<p>The Material class also allow users to create codified material properties (e.g. AS5100).
+These material properties are stored in a material library file (mat_lib.json) for which is to the users to pass in
+the appropriate keyword arguments to create the code defined materials.</p>
+<p>Additionally, Material class provides method to create the mat_lib.json file, if file is not found in directory.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Current version of mat_lib.json is 0.1.0</p>
+</div>
+<p>The constructor of Material takes in three types of keyword arguments:
+#. Keyword for looking up the <em>ospgrillage</em> material library i.e. mat_lib.json.
+#. General material properties - such as E, and G
+#. Material arguments of Openseespy. E.g. Opensees’s Steel01 material takes isotropic hardening parameters a1</p>
+<blockquote>
+<div><p>to a4.</p>
+</div></blockquote>
+<p>The following keywords are for item (1):
+:keyword:
+* code (<cite>str</cite>): name string of code according to mat_lib.json
+* type (<cite>str</cite>): Either “concrete” or “steel”
+* grade(<cite>str</cite>): Grade of material according to code</p>
+<p>The following keywords are examples of general material properties:
+:keyword:
+* E (<cite>float</cite>): Elastic modulus
+* G (<cite>float</cite>): Shear modulus</p>
+<p>For developers wishing to add more material properties:</p>
+<p>#. if the material is a codified material, modify mat_lib.json file by adding the material according
+to the file format.
+#. if the material is a Opensees Material that wasn’t added previously, add properties under <code class="docutils literal notranslate"><span class="pre">get_mat_args()</span></code>
+function. Then check the commands in _write_material() of OspGrillage class.</p>
 </dd></dl>
 
 </div>
@@ -503,7 +542,7 @@ in Opensees model space.</p>
 </li>
 <li><p>Openseespy section arguments - i.e. specific keyword for a specific ops.section() type.</p></li>
 </ol>
-<p><a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/section.html">Here</a> is a list of Opensees</p>
+<p><a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/section.html">Here</a> is information on Opensees Section()</p>
 <p>Here are the main input for the constructor to properly parse the inputs to Openseespy sections.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -544,8 +583,8 @@ and section information into its corresponding Openseespy Element() command.</p>
 Element definition.</p>
 <p>For developers wishing to expand the library of elements, introduce in this class:</p>
 <ol class="arabic simple">
-<li><p>The Openseespy section() command for the desire section - under the get_ops_section_command() method</p></li>
-<li><p>The Openseespy element() command for the element - under the get_element_command_str() method</p></li>
+<li><p>The Openseespy section() command for the desire section - under <code class="docutils literal notranslate"><span class="pre">get_ops_section_command()</span></code> method</p></li>
+<li><p>The Openseespy element() command for the element - under <code class="docutils literal notranslate"><span class="pre">get_element_command_str()</span></code> method</p></li>
 </ol>
 <p>Constructor takes two input object. A Material, and Section object.</p>
 <dl class="field-list simple">
@@ -566,7 +605,7 @@ Element definition.</p>
 <dt class="sig sig-object py" id="ospgrillage.mesh.Mesh">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.mesh.</span></span><span class="sig-name descname"><span class="pre">Mesh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">long_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trans_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_dist_a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_dist_b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_trans_beam</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_long_beam</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skew_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skew_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ext_to_int_a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ext_to_int_b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orthogonal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pt1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Point(x=0,</span> <span class="pre">y=0,</span> <span class="pre">z=0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pt2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Point(x=0,</span> <span class="pre">y=0,</span> <span class="pre">z=0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pt3</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">element_counter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_counter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform_counter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_x_grid_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_edge_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quad_ele</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.mesh.Mesh" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Class for mesh groups. The class holds information pertaining the mesh group such as element connectivity and nodes
+<p>Main class for grid mesh. The class holds information pertaining the mesh group such as element connectivity and nodes
 of the mesh object. Positional arguments are handled by OspGrillage class.</p>
 </dd></dl>
 
@@ -849,8 +888,8 @@ load group.</p>
 </div>
 <div class="section" id="misc">
 <h2>Misc<a class="headerlink" href="#misc" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id2">
-<h3>LoadCase<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id3">
+<h3>LoadCase<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.load.Path">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">Path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_point</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">ospgrillage.mesh.Point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_point</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">ospgrillage.mesh.Point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">increments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid_point</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ospgrillage.mesh.Point</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.Path" title="Permalink to this definition">¶</a></dt>

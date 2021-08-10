@@ -50,7 +50,7 @@ Here are some more examples of what you can do with *ops-grillage* module.
     end_transverse_slab = og.create_member(member_name="edge transverse", section=end_transverse_slab_section,
                                            material=concrete)
 
-    bridge_28 = og.OpsGrillage(bridge_name="SuperT_28m", long_dim=L, width=H, skew=edge_skew,
+    bridge_28 = og.create_grillage(bridge_name="SuperT_28m", long_dim=L, width=H, skew=edge_skew,
                             num_long_grid=long_grid_lines, num_trans_grid=trans_grid_lines, edge_beam_dist=edge_dist, mesh_type="Ortho")
 
     # set grillage member to element groups of grillage model
@@ -80,7 +80,8 @@ Adding basic load cases, i.e.
 
 .. code-block:: python
 
-    dead_load = create_line_load("DL",point1=point1,point2=point2)
+    dead_load = create_load("DL",point1=point1,point2=point2)
+    dead_load = create_load("DL",point1=point1,point2=point2)
 
 Adding a load combination for SDL and DL
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
