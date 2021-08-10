@@ -350,9 +350,8 @@ class OspGrillage:
     def __write_material(self, member: GrillageMember = None,
                          material: Material = None) -> int:
         """
-        Sub-abstracted procedure to write uniaxialMaterial command for the material properties of the grillage model.
+        Sub-abstracted procedure to write Material command for the material properties of the grillage model.
 
-        :return: Output py file with uniaxialMaterial() command
         """
 
         material_obj = None
@@ -1056,19 +1055,25 @@ class OspGrillage:
     def assign_beam_ele_line_load(self, line_load_obj: LineLoading):
         load_str_line = []
         ele_group = []
+        width_dict = None
         if line_load_obj.long_beam_ele_load_flag:
             ele_group = self.Mesh_obj.long_ele
+            width_dict = self.Mesh_obj.node_width_z_dict
         elif line_load_obj.trans_beam_ele_load_flag:
             ele_group = self.Mesh_obj.trans_ele
+            width_dict = self.Mesh_obj.node_width_x_dict
         for ele in ele_group:
             if ele[3] != 0:  # exclude edge beams
-                p1 = ele[1]
-                p2 = ele[2]
-                L = get_distance(p1, p2)
-                w1 = line_load_obj.load_point_1.p
-                w2 = line_load_obj.line_end_point.p
-                W = (w1 + w2) / 2
-                mag = W * L
+                p1 = ele[1]  # node i
+                p2 = ele[2]  # node j
+                L = get_distance(p1, p2)  # distance between two points of ele
+                w1 = line_load_obj.load_point_1.p  # magnitude at vertex 1
+                w2 = line_load_obj.line_end_point.p  # magnitude at vertex 2
+                d1 = np.sum(width_dict.get(p1))  # width of node j
+                d2 = np.sum(width_dict.get(p2))  # width of node j
+                d = (d1 + d2) / 2   # average width
+                W = (w1 + w2) / 2   # average mag
+                mag = W * L * d  # convert UDL (N/m2) to point load, q * Length * width
                 # get mid point of line
                 x_bar = ((2 * w1 + w2) / (w1 + w2)) * L / 3  # from p2
                 load_point = line_load_obj.get_point_given_distance(xbar=x_bar,
@@ -1390,7 +1395,7 @@ class OspGrillage:
         * save_file_name (`str`): Name string of file name. Saves to NetCDF.
         * load_case (`str`): str or list of name string of specific load case to extract. Returned DataSet with the specified Load cases only
 
-        :return results: xarray DataSet of analysis results - extracted based on keyword option specified.
+        :returns results: xarray DataSet of analysis results - extracted based on keyword option specified.
                             If get_combination is True, returns a list of DataSet, with each element correspond to
                             a load combination.
 

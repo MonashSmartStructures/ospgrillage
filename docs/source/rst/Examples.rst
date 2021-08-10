@@ -77,6 +77,7 @@ Figure 1 shows the plotted model in Opensees model space.
 Adding DL and SDL to analysis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Adding basic load cases, i.e.
+
 .. code-block:: python
 
     dead_load = create_line_load("DL",point1=point1,point2=point2)

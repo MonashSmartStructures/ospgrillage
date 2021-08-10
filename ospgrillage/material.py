@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Module contains the wrapper for the definitions of the OpenSeesPy materials.
+This module manages the information for material properties that are used to define grillage elements.
+ The module contains methods that wraps Openseespy material object creation.
 """
 
 import json
@@ -17,7 +18,9 @@ def create_material(**kwargs):
 
 class Material:
     """
-    Base class for Material objects
+    Base class for Material objects.
+
+
     """
 
     def __init__(self, **kwargs):

@@ -9,21 +9,38 @@ the section and material properties.
 
 def create_section(**kwargs):
     """
-    User interface for section creation
+    User interface for section creation.
+    :keyword:
+    * takes in keyword arguments of Openseespy.
+
+    :returns Section: Section object
     """
     return Section(**kwargs)
 
 
 def create_member(**kwargs):
     """
-    User interface for member creation
+    User interface for member creation.
+    :keyword:
+    * material (`Material`): Material object
+    * section (`Section`): Section object
+
+    :returns GrillageMember: Grillage member object
     """
     return GrillageMember(**kwargs)
 
 
 class Section:
     """
-    Class to wrap Openseespy command to create sections.
+    Class for structural cross sections.Stores geometric properties related to Openseespy command in creating sections
+    in Opensees model space.
+
+    This class does not provide methods which wraps Openseespy Section() commands - this is done by GrillageMember class
+
+    For developers wishing to expand the library of sections, introduce in this class:
+
+    #. The keywrod arguments for the new sections.
+
     """
 
     def __init__(
@@ -36,6 +53,16 @@ class Section:
         **kwargs
     ):
         """
+        The constructor takes in two types of keyword arguments.
+
+        #. General section properties - such as A, I, J for example. These properties are parses into the appropriate
+            Opensees section arguments.
+        #. Openseespy section arguments - i.e. specific keyword for a specific ops.section() type.
+
+        `Here <https://openseespydoc.readthedocs.io/en/latest/src/section.html>`_ is a list of Opensees
+
+        Here are the main input for the constructor to properly parse the inputs to Openseespy sections.
+
         :param op_ele_type: Opensees element type
         :type op_ele_type: str
         :param op_section_type: Opensees section type
@@ -43,8 +70,7 @@ class Section:
         :param unit_width: Flag for unit width properties
         :type unit_width: bool
 
-        Here are some basic keywords for Section. Section accepts Openseespy keyword arguments for various element
-        properties as well - see Openseespy section() and element()
+        Here are the common keyword arguments for defining a section.
 
         :keyword:
         * A (``float``): Cross sectional area
@@ -55,10 +81,10 @@ class Section:
         * Ay (``float``): Cross sectional area in the local y direction
 
         """
-        # sections
-        self.op_section_type = op_section_type  # section tag based on Openseespy
-        self.section_command_flag = False  # default False
-        # section geometry properties variables
+        # Opensees py section type
+        self.op_section_type = op_section_type  # section tag based on Openseespy - default is elastic
+        self.section_command_flag = False  # flag for parsing , check if section() command is needed. default False
+        # Openseespy section arguments
 
         self.A = kwargs.get("A", None)
         self.Iz = kwargs.get("Iz", None)
@@ -87,12 +113,27 @@ class Section:
 # ----------------------------------------------------------------------------------------------------------------
 class GrillageMember:
     """
-    Main class for Grillage member definition. Class requires two objects as input parameters: a Section object and a
-    Material object.
+    Parent class for defining a Grillage member. Provides methods to wrap Openseespy Element() command.
+
+    Some Opensees element() command takes in directly both material and section properties, while some requires
+    first defining an Openseepy material, or Opensees section object. The role of this class is to parse the material
+    and section information into its corresponding Openseespy Element() command.
+
+    `Here <https://openseespydoc.readthedocs.io/en/latest/src/element.html>`_ is more information about Openseespy
+    Element definition.
+
+    For developers wishing to expand the library of elements, introduce in this class:
+
+    #. The Openseespy section() command for the desire section - under the get_ops_section_command() method
+    #. The Openseespy element() command for the element - under the get_element_command_str() method
+
+
     """
 
     def __init__(self, section: Section, material, member_name="Undefined", quad_ele_flag=False, tri_ele_flag=False):
         """
+        Constructor takes two input object. A Material, and Section object.
+
         :param section: Section class object
         :type section: :class:`Section`
         :param material: Material class object

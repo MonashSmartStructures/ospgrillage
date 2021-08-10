@@ -933,7 +933,7 @@ class MovingLoad:
                              "individual loads having individual paths")
         self.load_case_dict_list.append(load_pair_path)
 
-    # function to sort moving loads into multiple load cases - automatically called by Ops-grillage
+    # function to create incremental load cases for each step of the moving loads. Function handled by OspGrillage
     def parse_moving_load_cases(self):
         # loop through all load-path pairs and identify static loads
         for load_pair_dict in self.load_case_dict_list:
