@@ -18,14 +18,17 @@ def create_material(**kwargs):
     #. Material arguments of Openseespy. E.g. Opensees's Steel01 material takes isotropic hardening parameters a1
        to a4.
 
-    The following keywords are for item (1):
-    :keyword:
+
+    :parameter:
+
     * code (`str`): name string of code according to mat_lib.json
     * type (`str`): Either "concrete" or "steel"
     * grade(`str`): Grade of material according to code
 
     The following keywords are examples of general material properties:
+
     :keyword:
+
     * E (`float`): Elastic modulus
     * G (`float`): Shear modulus
 

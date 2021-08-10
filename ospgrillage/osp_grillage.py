@@ -22,7 +22,23 @@ def create_grillage(**kwargs):
     """
     User interface for creating grillage model / OspGrilage object.
 
-    :keyword:
+    :param bridge_name: Name of bridge model and output .py file
+    :type bridge_name: str
+    :param long_dim: Length of the model in the longitudinal direction (default: x axis)
+    :type long_dim: int or float
+    :param width: Width of the model in the transverse direction (default: z axis)
+    :type width: int or float
+    :param skew: Skew angle of the start and end edges of model
+    :type skew: int or float
+    :param num_long_grid: Number of grid lines in longitudinal direction
+    :type num_long_grid: int
+    :param num_trans_grid: Number of  grid lines in the transverse direction
+    :type num_trans_grid: int
+    :param edge_beam_dist: Distance of edge beam node lines to exterior main beam node lines
+    :type edge_beam_dist: int or float
+    :param mesh_type: Type of mesh either "Ortho" for orthogonal mesh or "Oblique" for oblique mesh
+    :type mesh_type: string
+
     Parameters for :class:`OspGrillage`. See :ref:`OpsGrillage` for information of parameters.
     """
     return OspGrillage(**kwargs)
