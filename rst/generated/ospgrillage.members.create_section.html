@@ -202,7 +202,29 @@
 <dt class="sig sig-object py" id="ospgrillage.members.create_section">
 <span class="sig-prename descclassname"><span class="pre">ospgrillage.members.</span></span><span class="sig-name descname"><span class="pre">create_section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.members.create_section" title="Permalink to this definition">¶</a></dt>
 <dd><p>User interface for section creation.
-:keyword:</p>
+Here are the main input for the constructor to properly parse the inputs to Openseespy sections.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>op_ele_type</strong> (<em>str</em>) – Opensees element type</p></li>
+<li><p><strong>op_section_type</strong> (<em>str</em>) – Opensees section type</p></li>
+<li><p><strong>unit_width</strong> (<em>bool</em>) – Flag for unit width properties</p></li>
+</ul>
+</dd>
+</dl>
+<p>Here are the common keyword arguments for defining a section.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+<ul class="simple">
+<li><p>A (<code class="docutils literal notranslate"><span class="pre">float</span></code>): Cross sectional area</p></li>
+<li><p>Iz (<code class="docutils literal notranslate"><span class="pre">float</span></code>): Moment of inertia about local z axis</p></li>
+<li><p>Iy (<code class="docutils literal notranslate"><span class="pre">float</span></code>): Moment of inertia about local y axis</p></li>
+<li><p>J (<code class="docutils literal notranslate"><span class="pre">float</span></code>): Torsional inertia - about local x axis</p></li>
+<li><p>Az (<code class="docutils literal notranslate"><span class="pre">float</span></code>): Cross sectional area in the local z direction</p></li>
+<li><p>Ay (<code class="docutils literal notranslate"><span class="pre">float</span></code>): Cross sectional area in the local y direction</p></li>
+</ul>
 <dl class="field-list simple">
 <dt class="field-odd">Return Section</dt>
 <dd class="field-odd"><p>Section object</p>

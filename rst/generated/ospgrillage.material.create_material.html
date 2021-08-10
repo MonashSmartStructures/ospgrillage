@@ -201,9 +201,24 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="ospgrillage.material.create_material">
 <span class="sig-prename descclassname"><span class="pre">ospgrillage.material.</span></span><span class="sig-name descname"><span class="pre">create_material</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.material.create_material" title="Permalink to this definition">¶</a></dt>
-<dd><p>User interface function to create material/ <cite>Material</cite> object
+<dd><p>User interface function to create material/ <cite>Material</cite> object</p>
+<p>The constructor of <a class="reference internal" href="../APIdoc.html#ospgrillage.material.Material" title="ospgrillage.material.Material"><code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code></a> takes in three types of keyword arguments:
+#. Keyword for looking up the <em>ospgrillage</em> material library i.e. mat_lib.json.
+#. General material properties - such as E, and G
+#. Material arguments of Openseespy. E.g. Opensees’s Steel01 material takes isotropic hardening parameters a1</p>
+<blockquote>
+<div><p>to a4.</p>
+</div></blockquote>
+<p>The following keywords are for item (1):
 :keyword:
-For kwargs, see <span class="xref std std-ref">Material</span> for more information on the available inputs.</p>
+* code (<cite>str</cite>): name string of code according to mat_lib.json
+* type (<cite>str</cite>): Either “concrete” or “steel”
+* grade(<cite>str</cite>): Grade of material according to code</p>
+<p>The following keywords are examples of general material properties:
+:keyword:
+* E (<cite>float</cite>): Elastic modulus
+* G (<cite>float</cite>): Shear modulus</p>
+<p>For more information- see <cite>Material</cite>.</p>
 </dd></dl>
 
 </div>
