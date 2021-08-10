@@ -122,7 +122,7 @@ Creating the rest of the sections for the aforementioned grillage elements:
 
 .. note::
 
-    For release 0.0.1, Non-prismatic members are currently not supported.
+    For release 0.1.0, Non-prismatic members are currently not supported.
 
 
 Creating the grillage model

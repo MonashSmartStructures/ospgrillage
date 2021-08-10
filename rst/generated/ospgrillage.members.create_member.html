@@ -98,7 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../Running_analysis.html">Performing analysis</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../APIdoc.html">API reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../APIdoc.html#uml-diagram-overview">UML diagram overview</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../APIdoc.html#what-functions-are-considered-public-api">What functions are considered public API?</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../APIdoc.html#user-interface-functions-and-public-api">User interface functions and public API</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.osp_grillage.create_grillage.html">ospgrillage.osp_grillage.create_grillage</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.material.create_material.html">ospgrillage.material.create_material</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.members.create_section.html">ospgrillage.members.create_section</a></li>
@@ -200,7 +200,15 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="ospgrillage.members.create_member">
 <span class="sig-prename descclassname"><span class="pre">ospgrillage.members.</span></span><span class="sig-name descname"><span class="pre">create_member</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.members.create_member" title="Permalink to this definition">¶</a></dt>
-<dd><p>User interface for member creation</p>
+<dd><p>User interface for member creation.
+:keyword:
+* material (<cite>Material</cite>): Material object
+* section (<cite>Section</cite>): Section object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns GrillageMember</dt>
+<dd class="field-odd"><p>Grillage member object</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>

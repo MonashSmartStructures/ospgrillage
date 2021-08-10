@@ -13,7 +13,7 @@ Required dependencies
 
 Instructions
 --------------------
-The easiest way to install is to use `pip`.
+The easiest way to install is to use python package index `pip`.
 
 .. code-block:: python
 
