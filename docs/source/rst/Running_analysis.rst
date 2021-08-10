@@ -40,7 +40,7 @@ Point Loads
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Point load is a force applied on a single infinitesmal point of the grillage model.
-Point loads are used represent a large range of loads, such as concentrated load of a car axle.
+Point loads are used represent a large range of loads, such as truck axle, or superimposed dead load on a deck.
 
 
 [picture]
@@ -83,7 +83,7 @@ in the global coordinate system from -1 to 11 distance units in the `x`-axis and
 
     barrier_point_1 = ospg.LoadPoint(-1, 0, 3, 2)
     barrier_point_2 = ospg.LoadPoint(11, 0, 3, 2)
-    Barrier = ospg.LineLoading("Barrier curb load", point1=barrier_point_1, point2=barrier_point_2)
+    Barrier = ospg.create_load(type="line", name="Barrier curb", point1=barrier_point_1, point2=barrier_point_2)
 
 As before, to position the load instead in a user defined local coordinate system to later create a `Compound load`_ loads, the variable `localpoint` instead of `point` is used.
 
@@ -96,11 +96,11 @@ Patch loads are useful to represent loads distributed uniformly over a certain a
 [picture]
 
 Patch loads are instantiated with the interface function ``create_load(type="patch)``, or directly
-using :class:`PatchLoading` and required at least four :class:`LoadPoint` tuple (corresponds to the vertices of the patch load).
-Using more than four tuples allows a curve surface loading profile.
+using :class:`PatchLoading`. Patch load requires at least four :class:`LoadPoint` tuple (corresponds to the vertices of the patch load).
+Using eight tuples allows a curve surface loading profile.
 `p` in the :class:`LoadPoint` tuple should have units of force per area.
 
-The following example code is constant 5 force per area unit patch load 
+The following example code creates a constant 5 force per area unit patch load
 in the global coordinate system. 
 To position the load instead in a user defined local coordinate system, the variable `localpoint` instead of `point` is used.
 
@@ -110,7 +110,7 @@ To position the load instead in a user defined local coordinate system, the vari
     lane_point_2 = ospg.LoadPoint(8, 0, 3, 5)
     lane_point_3 = ospg.LoadPoint(8, 0, 5, 5)
     lane_point_4 = ospg.LoadPoint(0, 0, 5, 5)
-    Lane = PatchLoading("Lane 1", point1=lane_point_1, point2=lane_point_2, point3=lane_point_3, point4=lane_point_4)
+    Lane = ospg.create_load(type="patch",name="Lane 1", point1=lane_point_1, point2=lane_point_2, point3=lane_point_3, point4=lane_point_4)
 
 .. _Compound load:
 
@@ -128,19 +128,20 @@ The following code creates and add a point and line load to the :class:`Compound
 
 .. code-block:: python
 
-    # compound load
-    wheel_1 = ospg.PointLoad(ospg.LoadPoint(0, 0, 3, 5))
-    wheel_2 = ospg.PointLoad(ospg.LoadPoint(0, 0, 3, 5))
-    C_Load = ospg.CompoundLoad("Axle tandem")
+    # components in a compound load
+    wheel_1 = ospg.create_load(type="point", point1= ospg.LoadPoint(0, 0, 3, 5))  # point load 1
+    wheel_2 = ospg.create_load(type="point", point1= ospg.LoadPoint(0, 0, 3, 5))  # point load 2
 
 After creating a compound load, users will have to add :class:`~Loads` objects (Point, Line, Patch) to the Compound load object:
 
 .. code-block:: python
 
+    C_Load = ospg.create_compound_load(name = "Axle tandem")  # constructor of compound load
     C_Load.add_load(load_obj=wheel_1)
     C_Load.add_load(load_obj=wheel_2)
 
-After defining all required load objects, :class:`~CompoundLoad` requires users to define the global coordinate which to map the user-defined local coordinates.
+After defining all required load objects, :class:`~CompoundLoad` requires users to define the global coordinate to map the origin of user-defined local coordinates
+to the global coordinate space. This is done using ``set_global_coord()`` function, passing a Point namedTuple
 If not specified, the mapping's reference point is default to the **Origin** of coordinate system i.e. (0,0,0)
 
 For example, this code line sets the **Origin** as well as load points for all load objects of **C_load**  by x + 4, y + 0 , and z + 3.

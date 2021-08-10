@@ -1,8 +1,29 @@
-# ----------------------------------------------------------------------------------------------------------------
-# Mesh class
-# ----------------------------------------------------------------------------------------------------------------
+# -*- coding: utf-8 -*-
+"""
+This module contains the Mesh class which controls the meshing procedure of *ospgrillage*. The mesh class stores
+information about the grillage mesh such as nodes, elements, and grids. Additionally, Mesh class provides methods to
+mesh grillages, either orthogonal or oblique. Unlike other modules, the constructor of Mesh class is handled exclusively
+by OspGrillage class.
+"""
 from ospgrillage.static import *
 from collections import namedtuple
+
+
+def create_point(**kwargs):
+    """
+    User interface function to create a point named tuple
+    :keyword:
+
+    * x (`float` or `int`): x coordinate
+    * y (`float` or `int`): y coordinate. Default = 0 for model plane of grillage
+    * z (`float` or `int`): z coordinate
+
+    :return: Point namedTuple
+    """
+    x=kwargs.get("x",None)
+    y=kwargs.get("y",0)
+    z=kwargs.get("z",None)
+    return Point(x,y,z)
 
 # named tuple definition
 Point = namedtuple("Point", ['x', 'y', 'z'])
@@ -10,7 +31,7 @@ Point = namedtuple("Point", ['x', 'y', 'z'])
 
 class Mesh:
     """
-    Class for mesh groups. The class holds information pertaining the mesh group such as element connectivity and nodes
+    Main class for grid mesh. The class holds information pertaining the mesh group such as element connectivity and nodes
     of the mesh object. Positional arguments are handled by OspGrillage class.
 
     """

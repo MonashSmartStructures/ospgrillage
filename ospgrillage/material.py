@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-This module manages the information for material properties that are used to define grillage elements.
- The module contains methods that wraps Openseespy material object creation.
+This module contains the user interface function and class to manage
+ material properties that allow definition offine grillage elements.
+ The module also contains methods that wraps Openseespy material object creation.
 """
 
 import json
@@ -11,19 +12,62 @@ def create_material(**kwargs):
     """
     User interface function to create material/ `Material` object
     :keyword:
-    For kwargs, see :ref:`Module description` for more information on the available inputs.
+    For kwargs, see :ref:`Material` for more information on the available inputs.
     """
     return Material(**kwargs)
 
 
 class Material:
     """
-    Base class for Material objects.
+    This class stores information and provides methods to parse input material properties into Openseespy Material()
+    commands. Openseespy consist of two types of material objects, namely UniaxialMaterial() and NDMaterial().
 
+    `Here <https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html>`_ for information about Opensees
+    Material objects.
 
+    For the intended modelling objects of *ospgrillage* (bridge decks), concrete and steel makes up the primary
+    materials. In turn, UniAxialMaterial object of Openseespy is wrapped and used by Material class since it contains
+    options for Concrete and Steel.
+
+    The Material class also allow users to create codified material properties (e.g. AS5100).
+    These material properties are stored in a material library file (mat_lib.json) for which is to the users to pass in
+    the appropriate keyword arguments to create the code defined materials.
+
+    Additionally, Material class provides method to create the mat_lib.json file, if file is not found in directory.
+
+    .. note::
+
+        Current version of mat_lib.json is 0.1.0
     """
 
     def __init__(self, **kwargs):
+        """
+        The constructor of Material takes in three types of keyword arguments:
+        #. Keyword for looking up the *ospgrillage* material library i.e. mat_lib.json.
+        #. General material properties - such as E, and G
+        #. Material arguments of Openseespy. E.g. Opensees's Steel01 material takes isotropic hardening parameters a1
+           to a4.
+
+        The following keywords are for item (1):
+        :keyword:
+        * code (`str`): name string of code according to mat_lib.json
+        * type (`str`): Either "concrete" or "steel"
+        * grade(`str`): Grade of material according to code
+
+        The following keywords are examples of general material properties:
+        :keyword:
+        * E (`float`): Elastic modulus
+        * G (`float`): Shear modulus
+
+
+        For developers wishing to add more material properties:
+
+        #. if the material is a codified material, modify mat_lib.json file by adding the material according
+        to the file format.
+        #. if the material is a Opensees Material that wasn't added previously, add properties under ``get_mat_args()``
+        function. Then check the commands in _write_material() of OspGrillage class.
+
+        """
         self.mat_type = None  # this is the os convention for materials e.g. Concrete01
         self.op_mat_arg = None
         # assigns variables for all kwargs for specific material types , else sets None

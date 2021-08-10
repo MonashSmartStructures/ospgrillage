@@ -11,9 +11,9 @@ def create_section(**kwargs):
     """
     User interface for section creation.
     :keyword:
-    * takes in keyword arguments of Openseespy.
 
-    :returns Section: Section object
+
+    :return Section: Section object
     """
     return Section(**kwargs)
 
@@ -21,7 +21,9 @@ def create_section(**kwargs):
 def create_member(**kwargs):
     """
     User interface for member creation.
+
     :keyword:
+
     * material (`Material`): Material object
     * section (`Section`): Section object
 
@@ -59,7 +61,7 @@ class Section:
             Opensees section arguments.
         #. Openseespy section arguments - i.e. specific keyword for a specific ops.section() type.
 
-        `Here <https://openseespydoc.readthedocs.io/en/latest/src/section.html>`_ is a list of Opensees
+        `Here <https://openseespydoc.readthedocs.io/en/latest/src/section.html>`_ is information on Opensees Section()
 
         Here are the main input for the constructor to properly parse the inputs to Openseespy sections.
 
@@ -124,8 +126,8 @@ class GrillageMember:
 
     For developers wishing to expand the library of elements, introduce in this class:
 
-    #. The Openseespy section() command for the desire section - under the get_ops_section_command() method
-    #. The Openseespy element() command for the element - under the get_element_command_str() method
+    #. The Openseespy section() command for the desire section - under ``get_ops_section_command()`` method
+    #. The Openseespy element() command for the element - under ``get_element_command_str()`` method
 
 
     """

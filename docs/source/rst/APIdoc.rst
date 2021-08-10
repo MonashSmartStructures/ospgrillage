@@ -34,10 +34,11 @@ Here is a summary of these functions.
     ospgrillage.load.create_compound_load
     ospgrillage.load.create_moving_path
     ospgrillage.load.create_moving_load
+    ospgrillage.mesh.create_point
 
 
 
-OpsGrillage class
+OspGrillage class
 ---------------------------
 
 .. autoclass:: ospgrillage.osp_grillage.OspGrillage
@@ -106,21 +107,21 @@ PointLoad
 ^^^^^^^^^^^^^^^^
 
 .. autoclass:: ospgrillage.load.PointLoad
-    :members:
+
 
 
 LineLoading
 ^^^^^^^^^^^^^^^^
 
 .. autoclass:: ospgrillage.load.LineLoading
-    :members:
+
 
 
 PatchLoading
 ^^^^^^^^^^^^^^^^
 
 .. autoclass:: ospgrillage.load.PatchLoading
-    :members:
+
 
 
 CompoundLoad
