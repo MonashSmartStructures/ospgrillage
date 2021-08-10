@@ -10,7 +10,24 @@ the section and material properties.
 def create_section(**kwargs):
     """
     User interface for section creation.
+    Here are the main input for the constructor to properly parse the inputs to Openseespy sections.
+
+    :param op_ele_type: Opensees element type
+    :type op_ele_type: str
+    :param op_section_type: Opensees section type
+    :type op_section_type: str
+    :param unit_width: Flag for unit width properties
+    :type unit_width: bool
+
+    Here are the common keyword arguments for defining a section.
+
     :keyword:
+    * A (``float``): Cross sectional area
+    * Iz (``float``): Moment of inertia about local z axis
+    * Iy (``float``): Moment of inertia about local y axis
+    * J (``float``): Torsional inertia - about local x axis
+    * Az (``float``): Cross sectional area in the local z direction
+    * Ay (``float``): Cross sectional area in the local y direction
 
 
     :return Section: Section object
@@ -22,10 +39,12 @@ def create_member(**kwargs):
     """
     User interface for member creation.
 
-    :keyword:
-
-    * material (`Material`): Material object
-    * section (`Section`): Section object
+    :param section: Section class object
+    :type section: :class:`Section`
+    :param material: Material class object
+    :type material: :class:`Material`
+    :param member_name: Name of the grillage member (Optional)
+    :type member_name: str
 
     :returns GrillageMember: Grillage member object
     """

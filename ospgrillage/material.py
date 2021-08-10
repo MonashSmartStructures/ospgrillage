@@ -11,8 +11,26 @@ import json
 def create_material(**kwargs):
     """
     User interface function to create material/ `Material` object
+
+    The constructor of :class:`Material` takes in three types of keyword arguments:
+    #. Keyword for looking up the *ospgrillage* material library i.e. mat_lib.json.
+    #. General material properties - such as E, and G
+    #. Material arguments of Openseespy. E.g. Opensees's Steel01 material takes isotropic hardening parameters a1
+       to a4.
+
+    The following keywords are for item (1):
     :keyword:
-    For kwargs, see :ref:`Material` for more information on the available inputs.
+    * code (`str`): name string of code according to mat_lib.json
+    * type (`str`): Either "concrete" or "steel"
+    * grade(`str`): Grade of material according to code
+
+    The following keywords are examples of general material properties:
+    :keyword:
+    * E (`float`): Elastic modulus
+    * G (`float`): Shear modulus
+
+    For more information- see `Material`.
+
     """
     return Material(**kwargs)
 
