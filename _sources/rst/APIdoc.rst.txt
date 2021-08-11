@@ -15,7 +15,7 @@ UML diagram overview
     Figure 1: UML diagram - draft version 1.
 
 
-User interface functions and public API
+User interface functions - API
 ------------------------------------------
 This module comprised of user interface functions to take user inputs and returns its corresponding object creation.
 Here is a summary of these functions.

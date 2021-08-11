@@ -98,12 +98,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../Running_analysis.html">Performing analysis</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../APIdoc.html">API reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../APIdoc.html#uml-diagram-overview">UML diagram overview</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../APIdoc.html#user-interface-functions-and-public-api">User interface functions and public API</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../APIdoc.html#user-interface-functions-api">User interface functions - API</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.osp_grillage.create_grillage.html">ospgrillage.osp_grillage.create_grillage</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.material.create_material.html">ospgrillage.material.create_material</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.members.create_section.html">ospgrillage.members.create_section</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.members.create_member.html">ospgrillage.members.create_member</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_load_vertices.html">ospgrillage.load.create_load_vertices</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_load.html">ospgrillage.load.create_load</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">ospgrillage.load.create_load_case</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_compound_load.html">ospgrillage.load.create_compound_load</a></li>
@@ -201,7 +200,8 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="ospgrillage.load.create_load_case">
 <span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">create_load_case</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.create_load_case" title="Permalink to this definition">¶</a></dt>
-<dd><p>User interface function to create load case/ LoadCase objects</p>
+<dd><p>User interface function to create load case/ LoadCase objects. This function creates the Load case object, users
+are to add loads to LoadCase object via <code class="docutils literal notranslate"><span class="pre">add_load_groups()</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Keyword</dt>
 <dd class="field-odd"><p></p></dd>

@@ -167,7 +167,9 @@
             
   <div class="section" id="module-ospgrillage.osp_grillage">
 <span id="opsgrillage"></span><h1>OpsGrillage<a class="headerlink" href="#module-ospgrillage.osp_grillage" title="Permalink to this headline">¶</a></h1>
-<p>Module description</p>
+<p>This module contain the parent class OspGrillage which handles input information and outputs the grillage model instance
+or executable py file. This is done by wrapping <cite>OpenSeesPy</cite> commands for creating models (nodes/elements).
+This module also handles all load case assignment, analysis, and results by wrapping <cite>OpenSeesPy</cite> command for analysis</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="ospgrillage.osp_grillage.create_grillage">
 <span class="sig-prename descclassname"><span class="pre">ospgrillage.osp_grillage.</span></span><span class="sig-name descname"><span class="pre">create_grillage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.create_grillage" title="Permalink to this definition">¶</a></dt>
@@ -186,15 +188,20 @@
 </ul>
 </dd>
 </dl>
-<p>Parameters for <a class="reference internal" href="#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a>. See <span class="xref std std-ref">OpsGrillage</span> for information of parameters.</p>
+<p>Parameters for <a class="reference internal" href="#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a>. See <span class="xref std std-ref">OspGrillage</span> for information of parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><cite>OspGrillage</cite> object</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.osp_grillage.OspGrillage">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.osp_grillage.</span></span><span class="sig-name descname"><span class="pre">OspGrillage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bridge_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">long_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skew</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_long_grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_trans_grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_beam_dist</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Ortho'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'3D'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OspGrillage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Main class of Openseespy grillage model wrapper. Outputs an executable py file which generates the prescribed
-Opensees grillage model based on user input.</p>
+<p>Main class of OpenSeesPy grillage model wrapper. Outputs an executable py file which generates the prescribed
+OpenSees grillage model based on user input.</p>
 <p>The class provides an interface for the user to specify the geometry of the grillage model. A keyword argument
 allows for users to select between skew/oblique or orthogonal mesh. Methods in this class allows users to input
 properties for various elements in the grillage model.</p>
@@ -215,11 +222,11 @@ properties for various elements in the grillage model.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ospgrillage.osp_grillage.OspGrillage.create_ops">
 <span class="sig-name descname"><span class="pre">create_ops</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OspGrillage.create_ops" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to create model instance in Opensees model space. If pyfile input is True, function creates an
-executable pyfile for generating the grillage model in Opensees model space.</p>
+<dd><p>Function to create model instance in OpenSees model space. If pyfile input is True, function creates an
+executable pyfile for generating the grillage model in OpenSees model space.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>pyfile</strong> (<em>bool</em>) – if True returns an executable py file instead of creating Opensees instance of model.</p>
+<dd class="field-odd"><p><strong>pyfile</strong> (<em>bool</em>) – if True returns an executable py file instead of creating OpenSees instance of model.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -246,7 +253,7 @@ executable pyfile for generating the grillage model in Opensees model space.</p>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>ValueError</strong> – If missing argument for member=</p>
+<dd class="field-even"><p>ValueError If missing argument for member=</p>
 </dd>
 </dl>
 </dd></dl>
@@ -266,7 +273,7 @@ executable pyfile for generating the grillage model in Opensees model space.</p>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p><strong>ValueError</strong> – If GrillageMember object was not specified for quad or shell element. Also raises this error
 if components of GrillageMember object (e.g. section or material) is not a valid property
-for the specific shell element type in accordance with Opensees conventions.</p>
+for the specific shell element type in accordance with OpenSees conventions.</p>
 </dd>
 </dl>
 <div class="admonition note">
@@ -280,7 +287,7 @@ for the specific shell element type in accordance with Opensees conventions.</p>
 <span class="sig-name descname"><span class="pre">set_material</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">material_obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OspGrillage.set_material" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to define a global material model. This function proceeds to write write the material() command to
 output file. By default, function is only called and handled within set_member function. When called by user,
-function creates a material object instance to be set for the Opensees instance.</p>
+function creates a material object instance to be set for the OpenSees instance.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Currently, function does not have overwriting feature yet.</p>

@@ -98,12 +98,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../Running_analysis.html">Performing analysis</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../APIdoc.html">API reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../APIdoc.html#uml-diagram-overview">UML diagram overview</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../APIdoc.html#user-interface-functions-and-public-api">User interface functions and public API</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../APIdoc.html#user-interface-functions-api">User interface functions - API</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.osp_grillage.create_grillage.html">ospgrillage.osp_grillage.create_grillage</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">ospgrillage.material.create_material</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.members.create_section.html">ospgrillage.members.create_section</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.members.create_member.html">ospgrillage.members.create_member</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_load_vertices.html">ospgrillage.load.create_load_vertices</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_load.html">ospgrillage.load.create_load</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_load_case.html">ospgrillage.load.create_load_case</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_compound_load.html">ospgrillage.load.create_compound_load</a></li>
@@ -202,13 +201,13 @@
 <dt class="sig sig-object py" id="ospgrillage.material.create_material">
 <span class="sig-prename descclassname"><span class="pre">ospgrillage.material.</span></span><span class="sig-name descname"><span class="pre">create_material</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.material.create_material" title="Permalink to this definition">¶</a></dt>
 <dd><p>User interface function to create material/ <cite>Material</cite> object</p>
-<p>The constructor of <a class="reference internal" href="../APIdoc.html#ospgrillage.material.Material" title="ospgrillage.material.Material"><code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code></a> takes in three types of keyword arguments:
-#. Keyword for looking up the <em>ospgrillage</em> material library i.e. mat_lib.json.
-#. General material properties - such as E, and G
-#. Material arguments of Openseespy. E.g. Opensees’s Steel01 material takes isotropic hardening parameters a1</p>
-<blockquote>
-<div><p>to a4.</p>
-</div></blockquote>
+<p>The constructor of <a class="reference internal" href="../APIdoc.html#ospgrillage.material.Material" title="ospgrillage.material.Material"><code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code></a> takes in three types of keyword arguments:</p>
+<ol class="arabic simple">
+<li><p>Keyword for looking up the <em>ospgrillage</em> material library i.e. mat_lib.json.</p></li>
+<li><p>General material properties - such as E, and G</p></li>
+<li><p>Material arguments of OpenSeesPy. E.g. OpenSees’s Steel01 material takes isotropic hardening parameters a1
+to a4.</p></li>
+</ol>
 <dl class="field-list simple">
 <dt class="field-odd">Parameter</dt>
 <dd class="field-odd"><p></p></dd>
@@ -227,7 +226,7 @@
 <li><p>E (<cite>float</cite>): Elastic modulus</p></li>
 <li><p>G (<cite>float</cite>): Shear modulus</p></li>
 </ul>
-<p>For more information- see <cite>Material</cite>.</p>
+<p>For more information - see <cite>Material</cite>.</p>
 </dd></dl>
 
 </div>

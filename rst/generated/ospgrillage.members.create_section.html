@@ -98,12 +98,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../Running_analysis.html">Performing analysis</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../APIdoc.html">API reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../APIdoc.html#uml-diagram-overview">UML diagram overview</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../APIdoc.html#user-interface-functions-and-public-api">User interface functions and public API</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../APIdoc.html#user-interface-functions-api">User interface functions - API</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.osp_grillage.create_grillage.html">ospgrillage.osp_grillage.create_grillage</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.material.create_material.html">ospgrillage.material.create_material</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">ospgrillage.members.create_section</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.members.create_member.html">ospgrillage.members.create_member</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_load_vertices.html">ospgrillage.load.create_load_vertices</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_load.html">ospgrillage.load.create_load</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_load_case.html">ospgrillage.load.create_load_case</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_compound_load.html">ospgrillage.load.create_compound_load</a></li>
@@ -202,12 +201,12 @@
 <dt class="sig sig-object py" id="ospgrillage.members.create_section">
 <span class="sig-prename descclassname"><span class="pre">ospgrillage.members.</span></span><span class="sig-name descname"><span class="pre">create_section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.members.create_section" title="Permalink to this definition">¶</a></dt>
 <dd><p>User interface for section creation.
-Here are the main input for the constructor to properly parse the inputs to Openseespy sections.</p>
+Here are the main input for the constructor to properly parse the inputs to OpenSeesPy sections.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>op_ele_type</strong> (<em>str</em>) – Opensees element type</p></li>
-<li><p><strong>op_section_type</strong> (<em>str</em>) – Opensees section type</p></li>
+<li><p><strong>op_ele_type</strong> (<em>str</em>) – OpenSees element type - if none provided default to “elasticBeamColumn”</p></li>
+<li><p><strong>op_section_type</strong> (<em>str</em>) – OpenSees section type - if none is provided default to “Elastic”</p></li>
 <li><p><strong>unit_width</strong> (<em>bool</em>) – Flag for unit width properties</p></li>
 </ul>
 </dd>
