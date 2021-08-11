@@ -286,8 +286,8 @@ properties for various elements in the grillage model.</p>
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="ospgrillage.osp_grillage.OspGrillage.create_ops">
-<span class="sig-name descname"><span class="pre">create_ops</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OspGrillage.create_ops" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ospgrillage.osp_grillage.OspGrillage.create_osp_model">
+<span class="sig-name descname"><span class="pre">create_osp_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OspGrillage.create_osp_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to create model instance in OpenSees model space. If pyfile input is True, function creates an
 executable pyfile for generating the grillage model in OpenSees model space.</p>
 <dl class="field-list simple">
@@ -522,10 +522,10 @@ function. Then check the commands in _write_material() of <cite>OspGrillage</cit
 <dt class="sig sig-object py" id="ospgrillage.members.Section">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.members.</span></span><span class="sig-name descname"><span class="pre">Section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">op_ele_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'elasticBeamColumn'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_mass_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_section_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Elastic'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.members.Section" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Class for structural cross sections.Stores geometric properties related to OpenSeesPy command in creating sections
+<p>Class for structural cross sections.Stores geometric properties related to <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> command in creating sections
 in OpenSees model space.</p>
-<p>In addition, this class stores user input for element types - which correspond to OpenSeesPy element command.
-This class does not provide methods which wraps OpenSeesPy Section() commands - this is done by GrillageMember class</p>
+<p>In addition, this class stores user input for element types - which correspond to <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> element command.
+This class does not provide methods which wraps <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> Section() commands - this is done by GrillageMember class</p>
 <p>For developers wishing to expand the library of sections, introduce in this class:</p>
 <ol class="arabic simple">
 <li><p>The keyword arguments for the new sections.</p></li>
@@ -538,10 +538,10 @@ This class does not provide methods which wraps OpenSeesPy Section() commands - 
 </dd>
 </dl>
 </li>
-<li><p><cite>OpenSeespy</cite> section arguments - i.e. specific keyword for a specific ops.section() type.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">`OpenSeespy`</span></code> section arguments - i.e. specific keyword for a specific ops.section() type.</p></li>
 </ol>
 <p><a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/section.html">Here</a> is information on OpenSees Section()</p>
-<p>Here are the main input for the constructor to properly parse the inputs to <cite>OpenSeesPy</cite> sections.</p>
+<p>Here are the main input for the constructor to properly parse the inputs to <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> sections.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -573,16 +573,16 @@ This class does not provide methods which wraps OpenSeesPy Section() commands - 
 <dt class="sig sig-object py" id="ospgrillage.members.GrillageMember">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.members.</span></span><span class="sig-name descname"><span class="pre">GrillageMember</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">section</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#ospgrillage.members.Section" title="ospgrillage.members.Section"><span class="pre">ospgrillage.members.Section</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">material</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">member_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Undefined'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quad_ele_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tri_ele_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.members.GrillageMember" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Parent class for defining a Grillage member. Provides methods to wrap OpenSeesPy Element() command.</p>
-<p>Some <cite>OpenSeesPy</cite> element() command takes in directly both material and section properties, while some requires
-first defining an <cite>OpenSeesPy</cite> material, or OpenSees section object. The role of this class is to parse the material
-and section information into its corresponding <cite>OpenSeesPy</cite> Element() command.</p>
-<p><a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/element.html">Here</a> is more information about Openseespy
+<p>Parent class for defining a Grillage member. Provides methods to wrap <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> Element() command.</p>
+<p>Some <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> element() command takes in directly both material and section properties, while some requires
+first defining an <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> material, or OpenSees section object. The role of this class is to parse the material
+and section information into its corresponding <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> Element() command.</p>
+<p><a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/element.html">Here</a> is more information about <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code>
 Element definition.</p>
 <p>For developers wishing to expand the library of elements, introduce in this class:</p>
 <ol class="arabic simple">
-<li><p>The <cite>OpenSeesPy</cite> section() command for the desire section - under <code class="docutils literal notranslate"><span class="pre">get_ops_section_command()</span></code> method</p></li>
-<li><p>The <cite>OpenSeesPy</cite> element() command for the element - under <code class="docutils literal notranslate"><span class="pre">get_element_command_str()</span></code> method</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> section() command for the desire section - under <code class="docutils literal notranslate"><span class="pre">get_ops_section_command()</span></code> method</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> element() command for the element - under <code class="docutils literal notranslate"><span class="pre">get_element_command_str()</span></code> method</p></li>
 </ol>
 <p>Constructor takes two input object. A Material, and Section object.</p>
 <dl class="field-list simple">

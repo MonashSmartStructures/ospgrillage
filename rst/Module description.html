@@ -195,10 +195,15 @@ Alternatively, users can directly interact with the module objects without using
 <li><p>Creating the grillage model instance (the nodes and mesh).</p></li>
 <li><p>Assigning the defined grillage members to the elements of grillage model instance.</p></li>
 </ol>
-<p>We will detail these main steps by creating a grillage model of a bridge deck as shown in Figure 1.</p>
+<p>Figure 1 outlines the process of creating a grillage model.</p>
 <div class="figure align-center" id="id1">
-<span id="figure-1"></span><a class="reference internal image-reference" href="../_images/42degnegative10m.png"><img alt="../_images/42degnegative10m.png" src="../_images/42degnegative10m.png" /></a>
-<p class="caption"><span class="caption-text">Figure 1: Grillage model created using OpenSeesPy</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+<span id="figure-1"></span><a class="reference internal image-reference" href="../_images/create_grillage.png"><img alt="../_images/create_grillage.png" src="../_images/create_grillage.png" /></a>
+<p class="caption"><span class="caption-text">Figure 1: Structure of creating a grillage model.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
+<p>We will detail these main steps by creating a grillage model of a bridge deck as shown in Figure 1.</p>
+<div class="figure align-center" id="id2">
+<span id="figure-2"></span><a class="reference internal image-reference" href="../_images/42degnegative10m.png"><img alt="../_images/42degnegative10m.png" src="../_images/42degnegative10m.png" /></a>
+<p class="caption"><span class="caption-text">Figure 2: Grillage model created using OpenSeesPy</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
 <p>To begin, do import <code class="docutils literal notranslate"><span class="pre">ospgrillage</span></code> as either <code class="docutils literal notranslate"><span class="pre">ospg</span></code> or <code class="docutils literal notranslate"><span class="pre">og</span></code>.
 As will be needed later, we also prepared the unit convention of variables for this example as shown in the same code block.</p>
@@ -293,10 +298,10 @@ beam-and-slab bridge deck. The model comprises of standard grillage members of:<
 <li><p>Two transverse edge slabs</p></li>
 <li><p>Remaining transverse slabs</p></li>
 </ul>
-<p>Figure 2 illustrates the standard grillage members and their position on an exemplar orthogonal grillage mesh.</p>
-<div class="figure align-center" id="id2">
+<p>Figure 3 illustrates the standard grillage members and their position on an exemplar orthogonal grillage mesh.</p>
+<div class="figure align-center" id="id3">
 <a class="reference internal image-reference" href="../_images/Standard_elements.PNG"><img alt="../_images/Standard_elements.PNG" src="../_images/Standard_elements.PNG" /></a>
-<p class="caption"><span class="caption-text">Figure 2: Standard elements supported by <em>ospgrillage</em></span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 3: Standard elements supported by <em>ospgrillage</em></span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </div>
 <p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> class takes the following keyword arguments:</p>
 <ul class="simple">
@@ -310,11 +315,11 @@ beam-and-slab bridge deck. The model comprises of standard grillage members of:<
 <li><p><code class="docutils literal notranslate"><span class="pre">mesh_type</span></code>: Mesh type of grillage model. Must take a <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> input of either “Ortho” or “Oblique”. The default is “Ortho” (an orthogonal mesh). However, “Ortho” is not accepted for certain skew angles.</p></li>
 </ul>
 <p>Figure 3 shows how the grid numbers and skew angles affects the output mesh of grillage model.</p>
-<div class="figure align-center" id="id3">
+<div class="figure align-center" id="id4">
 <a class="reference internal image-reference" href="../_images/edge_angles.PNG"><img alt="../_images/edge_angles.PNG" src="../_images/edge_angles.PNG" /></a>
-<p class="caption"><span class="caption-text">Figure 3: Grid numbers and edge angles</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 3: Grid numbers and edge angles</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
 </div>
-<p>For the example bridge in Figure 1, the following code line with the prescribed variables creates its inherit <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> object i.e. <em>example_bridge</em>:</p>
+<p>For the example bridge in Figure 2, the following code line creates its <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> object i.e. <em>example_bridge</em>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_grillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;SuperT_10m&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">skew</span><span class="o">=-</span><span class="mi">21</span><span class="p">,</span>
                      <span class="n">num_long_grid</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">edge_beam_dist</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mesh_type</span><span class="o">=</span><span class="s2">&quot;Ortho&quot;</span><span class="p">)</span>
 </pre></div>
@@ -330,8 +335,8 @@ Vertical (normal to grid) loads are applied in the <span class="math notranslate
 <p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">GrillageMember</span></code> objects are assigned to the grillage model using the <code class="docutils literal notranslate"><span class="pre">set_member()</span></code> interface function. The function takes a <code class="xref py py-class docutils literal notranslate"><span class="pre">GrillageMember</span></code> class
 object, and a member string tag as arguments.</p>
 <p>The member string tag specifies the standard grillage element to assign the <code class="xref py py-class docutils literal notranslate"><span class="pre">GrillageMember</span></code> object.</p>
-<table class="colwidths-given docutils align-default" id="id4">
-<caption><span class="caption-text">Table: 1 Current supported member string and tags</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
+<table class="colwidths-given docutils align-default" id="id5">
+<caption><span class="caption-text">Table: 1 Current supported member string and tags</span><a class="headerlink" href="#id5" title="Permalink to this table">¶</a></caption>
 <colgroup>
 <col style="width: 50%" />
 <col style="width: 50%" />
@@ -394,10 +399,10 @@ input.</p>
 <li><p>an executable python file that can be edited and used for a more complex analysis.</p></li>
 </ol>
 <p>These are achieved by calling the <code class="docutils literal notranslate"><span class="pre">create_ops()</span></code> function.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">create_ops()</span></code> function takes a boolean for <cite>pyfile=</cite> parameter which by default is <cite>False</cite>.
+<p>The <code class="docutils literal notranslate"><span class="pre">create_osp_model()</span></code> function takes a boolean for <cite>pyfile=</cite> parameter which by default is <cite>False</cite>.
 Setting False creates the
 grillage model in OpenSees model space to immediately perform further analysis (see more in documentation).</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span><span class="o">.</span><span class="n">create_ops</span><span class="p">(</span><span class="n">pyfile</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span><span class="o">.</span><span class="n">create_osp_model</span><span class="p">(</span><span class="n">pyfile</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Up to this point, users can run any <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> command (e.g. <cite>ops_vis</cite> commands) within the interface to interact with
@@ -410,7 +415,7 @@ Note that in doing so, the model instance in OpenSees space is not created.</p>
 <h3>Visualize grillage model<a class="headerlink" href="#visualize-grillage-model" title="Permalink to this headline">¶</a></h3>
 <p>To check that we created the model in OpenSees space, we can plot the model using <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code>’s visualization module <cite>ops_vis</cite>.
 The <em>ospgrillage</em> module already wraps and import <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code>’s <cite>ops_vis</cite> module. Therefore, one can run access <cite>ops_vis</cite> by running
-the following code line and a plot like in <a class="reference internal" href="#figure-1">Figure 1</a> will be returned:</p>
+the following code line and a plot like in <a class="reference internal" href="#figure-2">Figure 2</a> will be returned:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ospg</span><span class="o">.</span><span class="n">opsplt</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="s2">&quot;nodes&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
