@@ -106,7 +106,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#assigning-grillage-members">Assigning grillage members</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#creating-grillage-in-opensees-model-space-or-as-an-executable-py-file">Creating grillage in Opensees model space or as an executable py file</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#creating-grillage-in-opensees-model-space-or-as-an-executable-py-file">Creating grillage in OpenSees model space or as an executable py file</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#visualize-grillage-model">Visualize grillage model</a></li>
 </ul>
 </li>
@@ -186,9 +186,9 @@
             
   <div class="section" id="creating-grillage-models">
 <h1>Creating grillage models<a class="headerlink" href="#creating-grillage-models" title="Permalink to this headline">¶</a></h1>
-<p>The <em>ospgrillage</em> module contains <strong>interface functions</strong> which can be called after the module syntax. These interface function
+<p>The <em>ospgrillage</em> module contains user <strong>interface functions</strong> which can be called after the module syntax. These interface function
 has  <code class="docutils literal notranslate"><span class="pre">set_</span></code>, <code class="docutils literal notranslate"><span class="pre">create_</span></code> or <code class="docutils literal notranslate"><span class="pre">get_</span></code> in their syntax. For example, users create a material with <code class="docutils literal notranslate"><span class="pre">create_material()</span></code>.
-Alternatively, users can directly interact with the objects without using interface functions.</p>
+Alternatively, users can directly interact with the module objects without using interface functions - we recommend the more pythonic interface functions.</p>
 <p>In general, there are three main steps to create a grillage model with <em>ospgrillage</em>:</p>
 <ol class="arabic simple">
 <li><p>Creating elements of a grillage model i.e. members.</p></li>
@@ -198,9 +198,9 @@ Alternatively, users can directly interact with the objects without using interf
 <p>We will detail these main steps by creating a grillage model of a bridge deck as shown in Figure 1.</p>
 <div class="figure align-center" id="id1">
 <span id="figure-1"></span><a class="reference internal image-reference" href="../_images/42degnegative10m.png"><img alt="../_images/42degnegative10m.png" src="../_images/42degnegative10m.png" /></a>
-<p class="caption"><span class="caption-text">Figure 1: Grillage model created using Openseespy</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 1: Grillage model created using OpenSeesPy</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </div>
-<p>To begin, do import <code class="docutils literal notranslate"><span class="pre">ospgrillage</span></code> as either <code class="docutils literal notranslate"><span class="pre">ospg</span></code> or <code class="docutils literal notranslate"><span class="pre">og</span></code>. Following code line shows the import process.
+<p>To begin, do import <code class="docutils literal notranslate"><span class="pre">ospgrillage</span></code> as either <code class="docutils literal notranslate"><span class="pre">ospg</span></code> or <code class="docutils literal notranslate"><span class="pre">og</span></code>.
 As will be needed later, we also prepared the unit convention of variables for this example as shown in the same code block.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ospgrillage</span> <span class="k">as</span> <span class="nn">ospg</span>
 <span class="c1"># create unit signs for variables of example</span>
@@ -249,9 +249,9 @@ The following code shows how a concrete material can be created using keyword ar
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">concrete</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_material</span><span class="p">(</span><span class="n">E</span><span class="o">=</span><span class="mi">30</span><span class="o">*</span><span class="n">Giga</span><span class="o">*</span><span class="n">Pa</span><span class="p">,</span> <span class="n">G</span> <span class="o">=</span> <span class="mi">20</span><span class="o">*</span><span class="n">Giga</span><span class="o">*</span><span class="n">Pa</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span> <span class="mf">0.2</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This command wraps Opensees material commands and chooses the appropriate material model in Opensees to represent the material.
-For example, <em>Concrete01</em> and <em>Steel01</em> of Opensees library is used to represent most concrete and steel material.</p>
-<p>These material model can be found in <a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html#steel-reinforcing-steel-materials">Opensees database for concrete and steel</a>.
+<p>This command wraps Opensees material commands and chooses the appropriate material model in OpenSees to represent the material.
+For example, <em>Concrete01</em> and <em>Steel01</em> of OpenSees library is used to represent most concrete and steel material.</p>
+<p>These material model can be found in <a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html#steel-reinforcing-steel-materials">OpenSees database for concrete and steel</a>.
 Being a module wrapper, users familiar with this database can directly input the keywords of exact material models to <code class="docutils literal notranslate"><span class="pre">create_material()</span></code> function.</p>
 </div>
 <div class="section" id="creating-section-objects">
@@ -263,10 +263,10 @@ Being a module wrapper, users familiar with this database can directly input the
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">I_beam_section</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_section</span><span class="p">(</span><span class="n">A</span><span class="o">=</span><span class="mf">0.896</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">J</span><span class="o">=</span><span class="mf">0.133</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">4</span><span class="p">,</span> <span class="n">Iy</span><span class="o">=</span><span class="mf">0.213</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">4</span><span class="p">,</span> <span class="n">Iz</span><span class="o">=</span><span class="mf">0.259</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">4</span><span class="p">,</span> <span class="n">Ay</span><span class="o">=</span><span class="mf">0.233</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">Az</span><span class="o">=</span><span class="mf">0.58</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The module’s <code class="xref py py-class docutils literal notranslate"><span class="pre">Section</span></code> object wraps Opensees’s <cite>element()</cite> command.
-Similar to <code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code>, users familiar with certain Opensees element can pass its input parameters as keyword arguments
-based on Opensees definition of element types.
-Heres a link to <a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/element.html">Opensees element command</a> for specifics on the
+<p>The module’s <code class="xref py py-class docutils literal notranslate"><span class="pre">Section</span></code> object wraps OpenSees’s <cite>element()</cite> command.
+Similar to <code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code>, users familiar with certain OpenSees element can pass its input parameters as keyword arguments
+based on OpenSees definition of element types.
+Heres a link to <a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/element.html">OpenSees element command</a> for specifics on the
 element types and inputs.</p>
 <p>Creating the rest of the sections for the aforementioned grillage elements:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">slab_section</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_section</span><span class="p">(</span><span class="n">A</span><span class="o">=</span><span class="mf">0.04428</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">J</span><span class="o">=</span><span class="mf">2.6e-4</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">4</span><span class="p">,</span> <span class="n">Iy</span><span class="o">=</span><span class="mf">1.1e-4</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">4</span><span class="p">,</span> <span class="n">Iz</span><span class="o">=</span><span class="mf">2.42e-4</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">4</span><span class="p">,</span><span class="n">Ay</span><span class="o">=</span><span class="mf">3.69e-1</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">Az</span><span class="o">=</span><span class="mf">3.69e-1</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">unit_width</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -387,29 +387,29 @@ input.</p>
 <p>This is a useful tool for switching all grillage members to the same material after previously defining with perhaps a different material.</p>
 </div>
 <div class="section" id="creating-grillage-in-opensees-model-space-or-as-an-executable-py-file">
-<h2>Creating grillage in Opensees model space or as an executable py file<a class="headerlink" href="#creating-grillage-in-opensees-model-space-or-as-an-executable-py-file" title="Permalink to this headline">¶</a></h2>
+<h2>Creating grillage in OpenSees model space or as an executable py file<a class="headerlink" href="#creating-grillage-in-opensees-model-space-or-as-an-executable-py-file" title="Permalink to this headline">¶</a></h2>
 <p>Only once the object of grillage model is created and members are assigned, we can either:</p>
 <ol class="lowerroman simple">
-<li><p>create the model in Opensees software space for further grillage analysis, or;</p></li>
+<li><p>create the model in OpenSees software space for further grillage analysis, or;</p></li>
 <li><p>an executable python file that can be edited and used for a more complex analysis.</p></li>
 </ol>
 <p>These are achieved by calling the <code class="docutils literal notranslate"><span class="pre">create_ops()</span></code> function.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">create_ops()</span></code> function takes a boolean for <cite>pyfile=</cite> parameter which by default is <cite>False</cite>.
 Setting False creates the
-grillage model in Opensees model space to immediately perform further analysis (see more in documentation).</p>
+grillage model in OpenSees model space to immediately perform further analysis (see more in documentation).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span><span class="o">.</span><span class="n">create_ops</span><span class="p">(</span><span class="n">pyfile</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Up to this point, users can run any Openseespy command (e.g. <cite>ops_vis</cite> commands) within the interface to interact with
-the grillage model in Opensees.</p>
+<p>Up to this point, users can run any <cite>OpenSeesPy</cite> command (e.g. <cite>ops_vis</cite> commands) within the interface to interact with
+the grillage model in OpenSees.</p>
 <p>Alternatively, when <cite>pyfile=</cite> parameter is set to <cite>True</cite>, an executable py file will be generated instead.
-The executable py file contains all relevent Opensees command from which when executed,
-creates the model instance in Opensees which can edited and later used to perform more complex analysis.
-Note that in doing so, the model instance in Opensees space is not created.</p>
+The executable py file contains all relevant OpenSees command from which when executed,
+creates the model instance in OpenSees which can edited and later used to perform more complex analysis.
+Note that in doing so, the model instance in OpenSees space is not created.</p>
 <div class="section" id="visualize-grillage-model">
 <h3>Visualize grillage model<a class="headerlink" href="#visualize-grillage-model" title="Permalink to this headline">¶</a></h3>
-<p>To check that we created the model in Opensees space, we can plot the model using Openseespy’s visualization module <cite>ops_vis</cite>.
-The <em>ospgrillage</em> module already wraps and import Openseespy’s <cite>ops_vis</cite> module. Therefore, one can run access <cite>ops_vis</cite> by running
+<p>To check that we created the model in OpenSees space, we can plot the model using <cite>OpenSeesPy</cite>’s visualization module <cite>ops_vis</cite>.
+The <em>ospgrillage</em> module already wraps and import <cite>OpenSeesPy</cite>’s <cite>ops_vis</cite> module. Therefore, one can run access <cite>ops_vis</cite> by running
 the following code line and a plot like in <a class="reference internal" href="#figure-1">Figure 1</a> will be returned:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ospg</span><span class="o">.</span><span class="n">opsplt</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="s2">&quot;nodes&quot;</span><span class="p">)</span>
 </pre></div>
