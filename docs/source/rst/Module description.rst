@@ -1,9 +1,9 @@
 ========================
 Creating grillage models
 ========================
-The *ospgrillage* module contains **interface functions** which can be called after the module syntax. These interface function
+The *ospgrillage* module contains user **interface functions** which can be called after the module syntax. These interface function
 has  ``set_``, ``create_`` or ``get_`` in their syntax. For example, users create a material with ``create_material()``.
-Alternatively, users can directly interact with the objects without using interface functions.
+Alternatively, users can directly interact with the module objects without using interface functions - we recommend the more pythonic interface functions.
 
 In general, there are three main steps to create a grillage model with *ospgrillage*:
 
@@ -19,10 +19,10 @@ We will detail these main steps by creating a grillage model of a bridge deck as
     :align: center
     :scale: 25 %
 
-    Figure 1: Grillage model created using Openseespy
+    Figure 1: Grillage model created using OpenSeesPy
 
 
-To begin, do import ``ospgrillage`` as either ``ospg`` or ``og``. Following code line shows the import process.
+To begin, do import ``ospgrillage`` as either ``ospg`` or ``og``.
 As will be needed later, we also prepared the unit convention of variables for this example as shown in the same code block.
 
 .. code-block:: python
@@ -86,10 +86,10 @@ The following code shows how a concrete material can be created using keyword ar
 
     concrete = ospg.create_material(E=30*Giga*Pa, G = 20*Giga*Pa, v= 0.2)
 
-This command wraps Opensees material commands and chooses the appropriate material model in Opensees to represent the material.
-For example, *Concrete01* and *Steel01* of Opensees library is used to represent most concrete and steel material.
+This command wraps Opensees material commands and chooses the appropriate material model in OpenSees to represent the material.
+For example, *Concrete01* and *Steel01* of OpenSees library is used to represent most concrete and steel material.
 
-These material model can be found in `Opensees database for concrete and steel <https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html#steel-reinforcing-steel-materials>`_.
+These material model can be found in `OpenSees database for concrete and steel <https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html#steel-reinforcing-steel-materials>`_.
 Being a module wrapper, users familiar with this database can directly input the keywords of exact material models to ``create_material()`` function.
 
 Creating section objects
@@ -105,10 +105,10 @@ The following code line creates a :class:`Section` object called *I_beam_section
 
     I_beam_section = ospg.create_section(A=0.896*m**2, J=0.133*m**4, Iy=0.213*m**4, Iz=0.259*m**4, Ay=0.233*m**2, Az=0.58*m**2)
 
-The module's :class:`Section` object wraps Opensees's `element()` command.
-Similar to :class:`Material`, users familiar with certain Opensees element can pass its input parameters as keyword arguments
-based on Opensees definition of element types.
-Heres a link to `Opensees element command <https://openseespydoc.readthedocs.io/en/latest/src/element.html>`_ for specifics on the
+The module's :class:`Section` object wraps OpenSees's `element()` command.
+Similar to :class:`Material`, users familiar with certain OpenSees element can pass its input parameters as keyword arguments
+based on OpenSees definition of element types.
+Heres a link to `OpenSees element command <https://openseespydoc.readthedocs.io/en/latest/src/element.html>`_ for specifics on the
 element types and inputs.
 
 Creating the rest of the sections for the aforementioned grillage elements:
@@ -245,35 +245,35 @@ input.
 
 This is a useful tool for switching all grillage members to the same material after previously defining with perhaps a different material.
 
-Creating grillage in Opensees model space or as an executable py file
+Creating grillage in OpenSees model space or as an executable py file
 -----------------------------------------------------------
 Only once the object of grillage model is created and members are assigned, we can either: 
 
-(i) create the model in Opensees software space for further grillage analysis, or;
+(i) create the model in OpenSees software space for further grillage analysis, or;
 (ii) an executable python file that can be edited and used for a more complex analysis.
 
 These are achieved by calling the ``create_ops()`` function.
 
 The ``create_ops()`` function takes a boolean for `pyfile=` parameter which by default is `False`.
 Setting False creates the
-grillage model in Opensees model space to immediately perform further analysis (see more in documentation). 
+grillage model in OpenSees model space to immediately perform further analysis (see more in documentation).
 
 .. code-block:: python
 
     example_bridge.create_ops(pyfile=False)
 
-Up to this point, users can run any Openseespy command (e.g. `ops_vis` commands) within the interface to interact with
-the grillage model in Opensees.
+Up to this point, users can run any `OpenSeesPy` command (e.g. `ops_vis` commands) within the interface to interact with
+the grillage model in OpenSees.
 
 Alternatively, when `pyfile=` parameter is set to `True`, an executable py file will be generated instead. 
-The executable py file contains all relevent Opensees command from which when executed, 
-creates the model instance in Opensees which can edited and later used to perform more complex analysis.
-Note that in doing so, the model instance in Opensees space is not created.
+The executable py file contains all relevant OpenSees command from which when executed,
+creates the model instance in OpenSees which can edited and later used to perform more complex analysis.
+Note that in doing so, the model instance in OpenSees space is not created.
 
 Visualize grillage model
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-To check that we created the model in Opensees space, we can plot the model using Openseespy's visualization module `ops_vis`.
-The *ospgrillage* module already wraps and import Openseespy's `ops_vis` module. Therefore, one can run access `ops_vis` by running
+To check that we created the model in OpenSees space, we can plot the model using `OpenSeesPy`'s visualization module `ops_vis`.
+The *ospgrillage* module already wraps and import `OpenSeesPy`'s `ops_vis` module. Therefore, one can run access `ops_vis` by running
 the following code line and a plot like in `Figure 1`_ will be returned:
 
 .. code-block:: python

@@ -7,7 +7,7 @@
 Openseespy Grillage wizard
 ================================================
 
-The `ospgrillage` module is a python module wrapper for the `Openseespy` python package. `ospgrillage` can be used to:
+The `ospgrillage` module is a python module wrapper for the `OpenSeesPy` python package. `ospgrillage` can be used to:
 
 1) Output an executable python scripts containing commands to create a specified grillage model for use in Open System for Earthquake Engineering Simulation (OpenSees) software framework.
 
