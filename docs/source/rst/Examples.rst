@@ -15,7 +15,9 @@ Here are some more examples of what you can do with *ops-grillage* module.
     meter = 1.0
     N = 1.0
     sec = 1.0
-    MPa = 1e9*N/m**2
+    m2 = meter**2
+    m4 = meter**4
+    MPa = 1e9*N/m2
     g = 9.81*m/sec**2  # 9.81 m/s2
 
     # variables
@@ -33,15 +35,15 @@ Here are some more examples of what you can do with *ops-grillage* module.
     # Create materials
     concrete = og.create_material(type="concrete", code="AS5100-2017", grade="50MPa")
     # Define sections
-    super_t_beam_section = og.create_section(A=1.0447*m**2,J=0.230698*m**4, Iy=0.231329*m**4, Iz=0.533953*m**4,Ay=0.397032*m**2, Az=0.434351*m**2)
+    super_t_beam_section = og.create_section(A=1.0447*m2,J=0.230698*m4, Iy=0.231329*m4, Iz=0.533953*m4,Ay=0.397032*m2, Az=0.434351*m2)
 
 
-    transverse_slab_section = og.create_section(A=0.5372*m**2,J=2.79e-3*m**4, Iy=0.3988 / 2 *m**4, Iz=1.45e-3 / 2*m**4,Ay=0.447 / 2*m**2, Az=0.447 / 2*m**2, unit_width=True)
+    transverse_slab_section = og.create_section(A=0.5372*m2,J=2.79e-3*m4, Iy=0.3988 / 2 *m4, Iz=1.45e-3 / 2*m4,Ay=0.447 / 2*m2, Az=0.447 / 2*m2, unit_width=True)
 
 
-    end_tranverse_slab_section = og.create_section(A=0.5372 / 2*m**2,J=2.68e-3*m**4, Iy=0.04985*m**4,Iz=0.725e-3*m**4,Ay=0.223*m**2, Az=0.223*m**2)
+    end_tranverse_slab_section = og.create_section(A=0.5372 / 2*m2,J=2.68e-3*m4, Iy=0.04985*m4,Iz=0.725e-3*m4,Ay=0.223*m2, Az=0.223*m2)
 
-    edge_beam_section = og.create_section(A=0.039375*m**2,J=0.21e-3*m**4, Iy=0.1e-3*m**4,Iz=0.166e-3*m**4,Ay=0.0328*m**2, Az=0.0328*m**2)
+    edge_beam_section = og.create_section(A=0.039375*m2,J=0.21e-3*m4, Iy=0.1e-3*m4,Iz=0.166e-3*m4,Ay=0.0328*m2, Az=0.0328*m2)
 
     # define grillage members
     super_t_beam = og.create_member(member_name="Intermediate I-beams", section=super_t_beam_section, material=concrete)
@@ -113,7 +115,7 @@ Here we add a moving load analysis to the 28 m bridge model
     results = bridge_28.get_results()
 
 
-Result acquisition
+Processing results
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 The following lines of code shows how we can process the output data array - demonstrated for the Moving load results.
 

@@ -10,11 +10,11 @@ the section and material properties.
 def create_section(**kwargs):
     """
     User interface for section creation.
-    Here are the main input for the constructor to properly parse the inputs to Openseespy sections.
+    Here are the main input for the constructor to properly parse the inputs to OpenSeesPy sections.
 
-    :param op_ele_type: Opensees element type
+    :param op_ele_type: OpenSees element type - if none provided default to "elasticBeamColumn"
     :type op_ele_type: str
-    :param op_section_type: Opensees section type
+    :param op_section_type: OpenSees section type - if none is provided default to "Elastic"
     :type op_section_type: str
     :param unit_width: Flag for unit width properties
     :type unit_width: bool
@@ -54,14 +54,16 @@ def create_member(**kwargs):
 
 class Section:
     """
-    Class for structural cross sections.Stores geometric properties related to Openseespy command in creating sections
-    in Opensees model space.
+    Class for structural cross sections.Stores geometric properties related to OpenSeesPy command in creating sections
+    in OpenSees model space.
 
-    This class does not provide methods which wraps Openseespy Section() commands - this is done by GrillageMember class
+    In addition, this class stores user input for element types - which correspond to OpenSeesPy element command.
+    This class does not provide methods which wraps OpenSeesPy Section() commands - this is done by GrillageMember class
 
     For developers wishing to expand the library of sections, introduce in this class:
 
-    #. The keywrod arguments for the new sections.
+    #. The keyword arguments for the new sections.
+    #. The keyword arguments for the new element - for which the Section() object is tied to if any.
 
     """
 
@@ -78,16 +80,16 @@ class Section:
         The constructor takes in two types of keyword arguments.
 
         #. General section properties - such as A, I, J for example. These properties are parses into the appropriate
-            Opensees section arguments.
-        #. Openseespy section arguments - i.e. specific keyword for a specific ops.section() type.
+            OpenSees section arguments.
+        #. `OpenSeespy` section arguments - i.e. specific keyword for a specific ops.section() type.
 
-        `Here <https://openseespydoc.readthedocs.io/en/latest/src/section.html>`_ is information on Opensees Section()
+        `Here <https://openseespydoc.readthedocs.io/en/latest/src/section.html>`_ is information on OpenSees Section()
 
-        Here are the main input for the constructor to properly parse the inputs to Openseespy sections.
+        Here are the main input for the constructor to properly parse the inputs to `OpenSeesPy` sections.
 
-        :param op_ele_type: Opensees element type
+        :param op_ele_type: OpenSees element type
         :type op_ele_type: str
-        :param op_section_type: Opensees section type
+        :param op_section_type: OpenSees section type
         :type op_section_type: str
         :param unit_width: Flag for unit width properties
         :type unit_width: bool
@@ -103,10 +105,10 @@ class Section:
         * Ay (``float``): Cross sectional area in the local y direction
 
         """
-        # Opensees py section type
-        self.op_section_type = op_section_type  # section tag based on Openseespy - default is elastic
+        # OpenSees py section type
+        self.op_section_type = op_section_type  # section tag based on OpenSeesPy - default is elastic
         self.section_command_flag = False  # flag for parsing , check if section() command is needed. default False
-        # Openseespy section arguments
+        # OpenSeesPy section arguments
 
         self.A = kwargs.get("A", None)
         self.Iz = kwargs.get("Iz", None)
@@ -135,19 +137,19 @@ class Section:
 # ----------------------------------------------------------------------------------------------------------------
 class GrillageMember:
     """
-    Parent class for defining a Grillage member. Provides methods to wrap Openseespy Element() command.
+    Parent class for defining a Grillage member. Provides methods to wrap OpenSeesPy Element() command.
 
-    Some Opensees element() command takes in directly both material and section properties, while some requires
-    first defining an Openseepy material, or Opensees section object. The role of this class is to parse the material
-    and section information into its corresponding Openseespy Element() command.
+    Some `OpenSeesPy` element() command takes in directly both material and section properties, while some requires
+    first defining an `OpenSeesPy` material, or OpenSees section object. The role of this class is to parse the material
+    and section information into its corresponding `OpenSeesPy` Element() command.
 
     `Here <https://openseespydoc.readthedocs.io/en/latest/src/element.html>`_ is more information about Openseespy
     Element definition.
 
     For developers wishing to expand the library of elements, introduce in this class:
 
-    #. The Openseespy section() command for the desire section - under ``get_ops_section_command()`` method
-    #. The Openseespy element() command for the element - under ``get_element_command_str()`` method
+    #. The `OpenSeesPy` section() command for the desire section - under ``get_ops_section_command()`` method
+    #. The `OpenSeesPy` element() command for the element - under ``get_element_command_str()`` method
 
 
     """

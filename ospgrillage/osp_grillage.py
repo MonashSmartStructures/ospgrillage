@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Module description
+This module contain the parent class OspGrillage which handles input information and outputs the grillage model instance
+or executable py file. This is done by wrapping `OpenSeesPy` commands for creating models (nodes/elements).
+This module also handles all load case assignment, analysis, and results by wrapping `OpenSeesPy` command for analysis
 """
 
 import math
@@ -39,15 +41,17 @@ def create_grillage(**kwargs):
     :param mesh_type: Type of mesh either "Ortho" for orthogonal mesh or "Oblique" for oblique mesh
     :type mesh_type: string
 
-    Parameters for :class:`OspGrillage`. See :ref:`OpsGrillage` for information of parameters.
+    Parameters for :class:`OspGrillage`. See :ref:`OspGrillage` for information of parameters.
+
+    :returns: `OspGrillage` object
     """
     return OspGrillage(**kwargs)
 
 
 class OspGrillage:
     """
-    Main class of Openseespy grillage model wrapper. Outputs an executable py file which generates the prescribed
-    Opensees grillage model based on user input.
+    Main class of OpenSeesPy grillage model wrapper. Outputs an executable py file which generates the prescribed
+    OpenSees grillage model based on user input.
 
     The class provides an interface for the user to specify the geometry of the grillage model. A keyword argument
     allows for users to select between skew/oblique or orthogonal mesh. Methods in this class allows users to input
@@ -204,10 +208,10 @@ class OspGrillage:
 
     def create_ops(self, pyfile=False):
         """
-        Function to create model instance in Opensees model space. If pyfile input is True, function creates an
-        executable pyfile for generating the grillage model in Opensees model space.
+        Function to create model instance in OpenSees model space. If pyfile input is True, function creates an
+        executable pyfile for generating the grillage model in OpenSees model space.
 
-        :param pyfile: if True returns an executable py file instead of creating Opensees instance of model.
+        :param pyfile: if True returns an executable py file instead of creating OpenSees instance of model.
         :type pyfile: bool
 
         """
@@ -294,7 +298,7 @@ class OspGrillage:
 
     def __write_op_model(self):
         """
-        Sub-abstracted procedure handled by create_nodes() function. This function instantiates the Opensees model
+        Sub-abstracted procedure handled by create_nodes() function. This function instantiates the OpenSees model
         space. If pyfile flagged as True, this function writes the instantiating commands e.g. ops.model() to the
         output py file.
 
@@ -405,7 +409,7 @@ class OspGrillage:
     def __write_section(self, grillage_member_obj: GrillageMember) -> int:
         """
         Abstracted procedure handled by set_member() function to write section() command for the elements. This method
-        is ran only when GrillageMember object requires section() definition following convention of Openseespy.
+        is ran only when GrillageMember object requires section() definition following convention of `OpenSeesPy`.
 
         """
         # checks if grillage member's element type requires the generation of ops.section()
@@ -447,22 +451,19 @@ class OspGrillage:
 
 
          =====================================    ======================================
-         Standard                                 Description
+         Standard grillage elements name str      Description
          =====================================    ======================================
-          edge_beam                               Elements along x axis at top and
-                                                  bottom edges of mesh (z = 0, z = width)
+          edge_beam                               Elements along x axis at top and bottom edges of mesh (z = 0, z = width)
           exterior_main_beam_1                    Elements along first grid line after bottom edge (z = 0)
-          interior_main_beam                      For all elements in x direction between grid lines of
-                                                  exterior_main_beam_1 and exterior_main_beam_2
+          interior_main_beam                      For all elements in x direction between grid lines of exterior_main_beam_1 and exterior_main_beam_2
           exterior_main_beam_1                    Elements along first grid line after top edge (z = width)
           start_edge                     	      Elements along z axis where longitudinal grid line x = 0
           end_edge                                Elements along z axis where longitudinal grid line x = Length
-          transverse_slab                         For all elements in transverse direction
-                                                  between start_edge and end_edge
+          transverse_slab                         For all elements in transverse direction between start_edge and end_edge
          =====================================    ======================================
 
 
-        :raises ValueError: If missing argument for member=
+        :raises: ValueError If missing argument for member=
         """
         print("Setting member: {} of model".format(member))
         if member is None:
@@ -596,7 +597,7 @@ class OspGrillage:
         :type grillage_member_obj: GrillageMember
         :raises ValueError: If GrillageMember object was not specified for quad or shell element. Also raises this error
                             if components of GrillageMember object (e.g. section or material) is not a valid property
-                            for the specific shell element type in accordance with Opensees conventions.
+                            for the specific shell element type in accordance with OpenSees conventions.
 
         .. note::
             Feature coming in development for shell element definition
@@ -629,7 +630,7 @@ class OspGrillage:
         """
         Function to define a global material model. This function proceeds to write write the material() command to
         output file. By default, function is only called and handled within set_member function. When called by user,
-        function creates a material object instance to be set for the Opensees instance.
+        function creates a material object instance to be set for the OpenSees instance.
 
         .. note::
             Currently, function does not have overwriting feature yet.
@@ -1430,13 +1431,11 @@ class OspGrillage:
         if isinstance(specific_load_case, str):
             specific_load_case = [specific_load_case]
 
-        # filter basic_da for specific load case
-
-        # check from basic load case
+        # filter extract specific load case
         if specific_load_case:
             storing_da = None
             for load_case_name in specific_load_case:
-                # lookup basic load case
+                # lookup in basic load cases
                 namelist = [a['name'] for a in self.load_case_list]
                 for name in namelist:
                     if load_case_name == name:
@@ -1446,7 +1445,7 @@ class OspGrillage:
                         else:  # storing_da is not none, concat in "loadcase" dimension
                             storing_da = xr.concat([storing_da, extract_da], dim="Loadcase")
                         print("Extracted load case data for : {}".format(name))
-                # lookup moving load case
+                # lookup in moving load cases
                 for moving_name in self.moving_load_case_dict.keys():
                     if load_case_name == moving_name:
                         # get all string of moving name, then slice
@@ -1459,6 +1458,7 @@ class OspGrillage:
                                 storing_da = xr.concat([storing_da, extract_da], dim="Loadcase")
                         print("Extracted moving load case results : {}".format(moving_name))
             basic_da = storing_da  # Overwrite basic_da, proceed to check/evaluate combinations
+
         # check if combinations
         if comb:
             output_load_comb_dict = dict()  # {name: datarray, .... name: dataarray}

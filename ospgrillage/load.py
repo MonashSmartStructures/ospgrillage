@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Load module consist of class/methods which wraps Openseespy to create and run load analysis. First part of the module
+Load module consist of class/methods which wraps `OpenSeesPy` to create and run load analysis. First part of the module
 comprise the user interface functions. Following are the classes of various load types, compound load, load case,
 moving load and moving load path.
 """
@@ -16,18 +16,18 @@ from scipy import interpolate
 from ospgrillage.mesh import *
 
 
-def create_load_vertices(**kwargs):
+def create_load_vertex(**kwargs):
     """
-    User interface function to create load vertices of various load types.
+    User interface function to create load vertex of various load types.
 
-    :returns LoadPoint(x,y,z,p): namedTuple
+    :returns: namedTuple LoadPoint(x,y,z,p)
     :except: ValueError if missing one or more keyword arguments.
     :keyword:
 
-    * x: Value of x coordinate
-    * y: Value of y coordinate. Default is model plane y = 0
-    * z: Value of z coordinate
-    * p: Magnitude of vertical load in y direction.
+    * x (`float` or `int`): Value of x coordinate
+    * y (`float` or `int`): Value of y coordinate. Default is model plane y = 0
+    * z (`float` or `int`): Value of z coordinate
+    * p (`float` or `int`): Magnitude of vertical load in y direction.
 
     """
     x = kwargs.get("x",None)
@@ -43,7 +43,8 @@ def create_load_vertices(**kwargs):
 
 def create_load_case(**kwargs):
     """
-    User interface function to create load case/ LoadCase objects
+    User interface function to create load case/ LoadCase objects. This function creates the Load case object, users
+    are to add loads to LoadCase object via ``add_load_groups()``.
 
     :keyword:
     * name(`str`): Name string of Load case object
@@ -69,11 +70,12 @@ def create_load(**kwargs):
     User interface function to create load types.
 
     :keyword:
+
     * type(`str`): type of load. Choose either ["point","line","patch","nodal"]
     * point# (`LoadPoint` namedTuple): LoadPoint for load type in global coordinate. Note different load type requires a
-            different minimum LoadPoint.
+        different minimum LoadPoint.
     * local_load_point_# (`LoadPoint` namedTuple): LoadPoint for load type in local coordinate. Note different load type
-            requires a different minimum LoadPoint.
+        requires a different minimum LoadPoint.
 
     :return: PointLoad, LineLoading, PatchLoading, or NodalForces
     """
@@ -102,8 +104,11 @@ def create_load(**kwargs):
 def create_moving_load(**kwargs):
     """
     User interface function to create Moving Load object.
-    :return MovingLoad:
+
+    :return: `MovingLoad` object
+
     :keyword:
+
     * common_path(`Path`): Path object for all load groups added to the Moving load object to traverse
     * global_increment(`float` or `int`): Number of increments to discretize Path object. This keyword is only used in
             advance usage where Moving Load contains multiple load groups each with unique path objects.
@@ -116,11 +121,14 @@ def create_moving_load(**kwargs):
 def create_moving_path(**kwargs):
     """
     User interface function to create Path object for moving load.
+
     :keyword:
+
     * start_point (`Point`): Start point of path
     * end_point (`Point`): End point of path
     * increments (`int`): Increment of path steps. Default is 50
     * mid_point (`Point`): Default = None
+
     :returns Path:
     """
     return Path(**kwargs)
@@ -848,10 +856,6 @@ class LoadCase:
                     ind_load_obj.move_load(self.position)
             else:
                 load_obj.move_load(self.position)
-
-    # # function handled by ops_grillage to set load commands (ops.load()) of current load case
-    # def set_load_case_load_command(self, load_str: list):
-    #     self.load_command_list += load_str
 
 
 # ---------------------------------------------------------------------------------------------------------------

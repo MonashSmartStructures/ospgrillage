@@ -234,14 +234,15 @@ The following example code is two point loads defined as a moving load travellin
 
 .. code-block:: python
 
-    front_wheel = ospg.LoadPoint(0, 0, 0, 6)   # load point 1
-    back_wheel = ospg.LoadPoint(-1, 0, 0, 6)   # load point 2
+    front_wheel = ospg.create_load_vertices(x=0, y=0, z=0, p=6)   # load point 1
+    back_wheel = ospg.create_load_vertices(x=-1, y=0, z=0, p=6)   # load point 2
+    Line = ospg.create_load(type="line",local_point_1=front_wheel,local_point_2=back_wheel)
     tandem = ospg.create_compound_load("Two wheel vehicle")
 
     single_path = ospg.create_moving_path(start_point=ospg.Point(2,0,2), end_point= ospg.Point(4,0,2))  # create path object
-    move_line = ospg.MovingLoad(name="Line Load moving")
-    move_line.set_path(single_path)
-    move_line.add_loads(load_obj=Line)
+    move_line = ospg.create_moving_load(name="Line Load moving") # moving load obj
+    move_line.set_path(single_path)   # set path
+    move_line.add_loads(load_obj=Line)  # add compound load to moving load
 
 
 From here, use the ``add_load_case()`` function of the :class:`OspGrillage` to add the moving load. Here, the function automatically
@@ -309,12 +310,15 @@ Here is an example of how the data array looks like in practice:
 
 From here, users can use xarray's function for data array to extract 'slices' of data
 
-For load combinations, users flag the `get_combination=` keyword as *True*.
+Obtaining load combinations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For load combinations, users passes `get_combination=` argument as *True* to ``get_results()``.
 
 .. code-block:: python
 
     load_combination_dict = example_bridge.get_results(get_combinations=True)
 
-Instead of two data arrays, the function returns a single dict with names of load combinations as key, paired with a data array
-of the load combination as its value. The data array has the same dimensions as those from basic_load_case_result and
-moving_load_results, only this time the arrays are modified by load factors defined for the load combinations.
+Instead of a single data set, the function returns a single dict with names of load combinations as key, paired with a data array
+of the load combination as its value. The data array has the same dimensions as those from standard
+load case data set, only this time the arrays are modified by load factors defined for the load combinations.

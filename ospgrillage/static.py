@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Module description
+This module holds all static methods used in the other modules.
 """
 
 import numpy as np

@@ -2,7 +2,7 @@
 """
 This module contains the user interface function and class to manage
  material properties that allow definition offine grillage elements.
- The module also contains methods that wraps Openseespy material object creation.
+ The module also contains methods that wraps OpenSeesPy material object creation.
 """
 
 import json
@@ -13,9 +13,10 @@ def create_material(**kwargs):
     User interface function to create material/ `Material` object
 
     The constructor of :class:`Material` takes in three types of keyword arguments:
+
     #. Keyword for looking up the *ospgrillage* material library i.e. mat_lib.json.
     #. General material properties - such as E, and G
-    #. Material arguments of Openseespy. E.g. Opensees's Steel01 material takes isotropic hardening parameters a1
+    #. Material arguments of OpenSeesPy. E.g. OpenSees's Steel01 material takes isotropic hardening parameters a1
        to a4.
 
 
@@ -32,7 +33,7 @@ def create_material(**kwargs):
     * E (`float`): Elastic modulus
     * G (`float`): Shear modulus
 
-    For more information- see `Material`.
+    For more information - see `Material`.
 
     """
     return Material(**kwargs)
@@ -40,14 +41,14 @@ def create_material(**kwargs):
 
 class Material:
     """
-    This class stores information and provides methods to parse input material properties into Openseespy Material()
-    commands. Openseespy consist of two types of material objects, namely UniaxialMaterial() and NDMaterial().
+    This class stores information and provides methods to parse input material properties into OpenSeesPy Material()
+    commands. OpenSeesPy consist of two types of material objects, namely UniaxialMaterial() and NDMaterial().
 
-    `Here <https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html>`_ for information about Opensees
+    `Here <https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html>`_ for information about OpenSees
     Material objects.
 
     For the intended modelling objects of *ospgrillage* (bridge decks), concrete and steel makes up the primary
-    materials. In turn, UniAxialMaterial object of Openseespy is wrapped and used by Material class since it contains
+    materials. In turn, UniAxialMaterial object of OpenSeesPy is wrapped and used by Material class since it contains
     options for Concrete and Steel.
 
     The Material class also allow users to create codified material properties (e.g. AS5100).
@@ -66,7 +67,7 @@ class Material:
         The constructor of Material takes in three types of keyword arguments:
         #. Keyword for looking up the *ospgrillage* material library i.e. mat_lib.json.
         #. General material properties - such as E, and G
-        #. Material arguments of Openseespy. E.g. Opensees's Steel01 material takes isotropic hardening parameters a1
+        #. Material arguments of `OpenSeesPy`. E.g. Opensees's Steel01 material takes isotropic hardening parameters a1
            to a4.
 
         The following keywords are for item (1):
@@ -85,8 +86,8 @@ class Material:
 
         #. if the material is a codified material, modify mat_lib.json file by adding the material according
         to the file format.
-        #. if the material is a Opensees Material that wasn't added previously, add properties under ``get_mat_args()``
-        function. Then check the commands in _write_material() of OspGrillage class.
+        #. if the material is a `OpenSees` Material that wasn't added previously, add properties under ``get_mat_args()``
+        function. Then check the commands in _write_material() of `OspGrillage` class.
 
         """
         self.mat_type = None  # this is the os convention for materials e.g. Concrete01
@@ -232,8 +233,13 @@ class Material:
 
 class UniAxialElasticMaterial(Material):
     """
-    Main class for Opensees UniAxialElasticMaterial objects. This class acts as a wrapper to parse input parameters
-    and returns command lines to generate the prescribe materials in Opensees material library.
+    .. note::
+        This class is to be deprecated in Beta release
+
+    Main class for OpenSees UniAxialElasticMaterial objects. This class acts as a wrapper to parse input parameters
+    and returns command lines to generate the prescribe materials in OpenSees material library.
+
+
     """
 
     def __init__(self, mat_type, **kwargs):
@@ -275,7 +281,10 @@ class UniAxialElasticMaterial(Material):
 
 class NDmaterial(Material):
     """
-    Main class for Opensees ND material object. This class wraps the ND material object by sorting input parameters and
+    .. note::
+        This class is to be deprecated in Beta release
+
+    Main class for OpenSees ND material object. This class wraps the ND material object by sorting input parameters and
     parse into input commands for ops commands.
     """
 
