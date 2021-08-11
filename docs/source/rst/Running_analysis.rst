@@ -254,17 +254,22 @@ creates multiple `load cases`_ which corresponds to the load condition as the lo
 
 Defining load combination
 ------------------------
-Load combinations analysis are performed by using the :class:`OspGrillage` function ``add_load_combination()``.
 Load combinations are defined by passing an input dictionary of basic load case name as keys with load factors as
-values. An example dictionary is shown as follows:
+values. An example dictionary is shown as follows, here we create a combination where `Dead Load` and `Live Load` Load
+Cases are multiplied by 1.2 and 1.7 respectively.
 
 .. code-block:: python
 
     load_combinations = {'Dead Load':1.2,'Live traffic':1.7}
+
+After defining the load combination input, users add the input to analysis using the function ``add_load_combination()``.
+
+.. code-block:: python
+
     example_bridge.add_load_combination(name = "ULS", input_dict = load_combinations )
 
-Load combinations are automatically calculated from the analysis results at the end after analysing all load cases.
-The following section on Running Analysis will explain how these load combinations are extracted.
+Load combinations are automatically calculated from analysis results at the end after all load cases were analyzed.
+The following **Obtaining results** section will explain how these load combinations are extracted.
 
 Running analysis
 ------------------------
@@ -274,6 +279,7 @@ Once all defined load cases (static and moving) have been added to the grillage 
 To analyse loadcase(s), users run the class function ``analyze()``. This function takes either keyword arguments
 ``all=`` or ``loadcase=``. When ``all=True``, ``analyze()`` will run all defined load cases. If users wish to run only
 a specific set of load cases, pass a list of load case name str to ``loadcase=``  keyword. This will analyse all load cases of the list.
+Here are a few interface examples of ``analyze()``.
 
 .. code-block:: python
     # run either one
@@ -287,20 +293,32 @@ a specific set of load cases, pass a list of load case name str to ``loadcase=``
 
 
 Obtaining results
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Results are returned as `data arrays <http://xarray.pydata.org/en/stable/user-guide/data-structures.html#>`_ (python's Xarray module).
-To this, run the ``get_results()`` function and an output tuple of two objects will be returned:
+__________________________________
+Results are returned by running ``get_results()`` function.
+The results are returned as `an xarray's DataSet <http://xarray.pydata.org/en/stable/user-guide/data-structures.html#>`_ (python's ```Xarray``` module).
+
 
 .. code-block:: python
 
-    results =  example_bridge.get_results()
+    results =  example_bridge.get_results(all=True)
 
+The *results* dataset contains array variables with dimensions in brackets:
 
-The *result* data array contains dimensions of:
+* displacement (Loadcase, Node, Component)
+* forces (Loadcase, Element, Component)
 
-* load case : listing all load case
-* Node : listing all nodes within mesh of grillage model
+For elements, an additional array variable contains information on element nodes.
+
+* ele_nodes (Element, Nodes)
+
+where Nodes is a 2-D array
+
+The *results* dataset contains dimensions of:
+
 * Component: Node responses ordered in this manner - dx,dy,dz,theta_x,theta_y,theta_z,Vx,Vy,Vz,Mx,My,Mz
+* Loadcase: name string of load case - list of str
+* Node: Node numbers of model- list of int
+
 
 Here is an example of how the data array looks like in practice:
 
@@ -308,7 +326,9 @@ Here is an example of how the data array looks like in practice:
     :align: center
     :scale: 75 %
 
-From here, users can use xarray's function for data array to extract 'slices' of data
+Additionally,
+
+From here, users can use xarray's function for data array to extract 'slices' of data.
 
 Obtaining load combinations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -322,3 +342,20 @@ For load combinations, users passes `get_combination=` argument as *True* to ``g
 Instead of a single data set, the function returns a single dict with names of load combinations as key, paired with a data array
 of the load combination as its value. The data array has the same dimensions as those from standard
 load case data set, only this time the arrays are modified by load factors defined for the load combinations.
+
+Here is how the structure of a `load_combination_dict` looks like:
+
+[picture]
+
+Obtaining specific load case results
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+By default, ```get_results()``` returns results of all defined load cases (be it basic or moving).
+If users wish to extract results of a specific load case (e.g. moving load), users pass in a single or a `list`
+of name string(s) of the specific load cases to keyword argument `load_case =`
+
+.. code-block:: python
+
+    moving_load_results = example_bridge.get_results(load_case="M1600")
+
+The above code will return a data set containing only the incremental load cases for each position of the "M1600" moving load.
+

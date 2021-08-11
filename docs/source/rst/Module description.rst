@@ -11,15 +11,26 @@ In general, there are three main steps to create a grillage model with *ospgrill
 #. Creating the grillage model instance (the nodes and mesh).
 #. Assigning the defined grillage members to the elements of grillage model instance.
 
-We will detail these main steps by creating a grillage model of a bridge deck as shown in Figure 1.
+Figure 1 outlines the process of creating a grillage model.
 
 .. _Figure 1:
+
+..  figure:: ../../_images/create_grillage.png
+    :align: center
+    :scale: 25 %
+
+    Figure 1: Structure of creating a grillage model.
+
+
+We will detail these main steps by creating a grillage model of a bridge deck as shown in Figure 1.
+
+.. _Figure 2:
 
 ..  figure:: ../../_images/42degnegative10m.png
     :align: center
     :scale: 25 %
 
-    Figure 1: Grillage model created using OpenSeesPy
+    Figure 2: Grillage model created using OpenSeesPy
 
 
 To begin, do import ``ospgrillage`` as either ``ospg`` or ``og``.
@@ -139,13 +150,13 @@ beam-and-slab bridge deck. The model comprises of standard grillage members of:
 - Two transverse edge slabs
 - Remaining transverse slabs
 
-Figure 2 illustrates the standard grillage members and their position on an exemplar orthogonal grillage mesh.
+Figure 3 illustrates the standard grillage members and their position on an exemplar orthogonal grillage mesh.
 
 ..  figure:: ../../_images/Standard_elements.PNG
     :align: center
     :scale: 75 %
 
-    Figure 2: Standard elements supported by *ospgrillage*
+    Figure 3: Standard elements supported by *ospgrillage*
 
 The :class:`~OpsGrillage` class takes the following keyword arguments:
 
@@ -167,7 +178,7 @@ Figure 3 shows how the grid numbers and skew angles affects the output mesh of g
     Figure 3: Grid numbers and edge angles
 
 
-For the example bridge in Figure 1, the following code line with the prescribed variables creates its inherit :class:`~OpsGrillage` object i.e. *example_bridge*:
+For the example bridge in Figure 2, the following code line creates its :class:`~OpsGrillage` object i.e. *example_bridge*:
 
 .. code-block:: python
 
@@ -254,13 +265,13 @@ Only once the object of grillage model is created and members are assigned, we c
 
 These are achieved by calling the ``create_ops()`` function.
 
-The ``create_ops()`` function takes a boolean for `pyfile=` parameter which by default is `False`.
+The ``create_osp_model()`` function takes a boolean for `pyfile=` parameter which by default is `False`.
 Setting False creates the
 grillage model in OpenSees model space to immediately perform further analysis (see more in documentation).
 
 .. code-block:: python
 
-    example_bridge.create_ops(pyfile=False)
+    example_bridge.create_osp_model(pyfile=False)
 
 Up to this point, users can run any ```OpenSeesPy``` command (e.g. `ops_vis` commands) within the interface to interact with
 the grillage model in OpenSees.
@@ -274,7 +285,7 @@ Visualize grillage model
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 To check that we created the model in OpenSees space, we can plot the model using ```OpenSeesPy```'s visualization module `ops_vis`.
 The *ospgrillage* module already wraps and import ```OpenSeesPy```'s `ops_vis` module. Therefore, one can run access `ops_vis` by running
-the following code line and a plot like in `Figure 1`_ will be returned:
+the following code line and a plot like in `Figure 2`_ will be returned:
 
 .. code-block:: python
 

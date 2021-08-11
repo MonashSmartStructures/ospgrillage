@@ -48,7 +48,7 @@ def ref_28m_bridge():
     bridge_28.set_member(end_tranverse_slab, member="start_edge")
     bridge_28.set_member(end_tranverse_slab, member="end_edge")
 
-    bridge_28.create_ops(pyfile=pyfile)
+    bridge_28.create_osp_model(pyfile=pyfile)
 
     return bridge_28
 
@@ -95,7 +95,7 @@ def bridge_model_42_negative(ref_bridge_properties):
     example_bridge.set_member(exterior_I_beam, member="end_edge")
 
     pyfile = False
-    example_bridge.create_ops(pyfile=pyfile)
+    example_bridge.create_osp_model(pyfile=pyfile)
     return example_bridge
 
 
@@ -117,7 +117,7 @@ def bridge_42_0_angle_mesh(ref_bridge_properties):
     example_bridge.set_member(exterior_I_beam, member="end_edge")
 
     pyfile = False
-    example_bridge.create_ops(pyfile=pyfile)
+    example_bridge.create_osp_model(pyfile=pyfile)
 
     return example_bridge
 
@@ -141,7 +141,7 @@ def bridge_model_42_positive(ref_bridge_properties):
     example_bridge.set_member(exterior_I_beam, member="start_edge")
     example_bridge.set_member(exterior_I_beam, member="end_edge")
     pyfile = False
-    example_bridge.create_ops(pyfile=pyfile)
+    example_bridge.create_osp_model(pyfile=pyfile)
     return example_bridge
 
 
@@ -817,7 +817,7 @@ def test_simple_grid():
     simply_grid.set_member(end_tranverse_slab, member="end_edge")
 
     pyfile = False
-    simply_grid.create_ops(pyfile=False)
+    simply_grid.create_osp_model(pyfile=False)
     # opsv.plot_model("nodes")
     # plt.show()
 
@@ -850,6 +850,7 @@ def test_simple_grid():
     minY, maxY = og.opsv.section_force_diagram_3d('Mz', {}, 1)
     og.plt.show()
     results = simply_grid.get_results(get_combinations=False)
-    print(results.sel(Node=12))
+    print(results)
+    #print(results.sel(Node=12))
     print(maxY, minY)
     pass

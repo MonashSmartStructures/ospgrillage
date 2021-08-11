@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Load module consist of class/methods which wraps `OpenSeesPy` to create and run load analysis. First part of the module
+Load module consist of class/methods which wraps ```OpenSeesPy``` to create and run load analysis. First part of the module
 comprise the user interface functions. Following are the classes of various load types, compound load, load case,
 moving load and moving load path.
 """

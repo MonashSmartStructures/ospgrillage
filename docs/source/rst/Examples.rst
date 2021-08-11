@@ -1,74 +1,91 @@
 ========================
 Examples
 ========================
-Here are some more examples of what you can do with *ops-grillage* module.
-
+Here are some examples of what you can do with *ospgrillage* module.
 
 28 m super T bridge model with orthogonal mesh
 --------------------
+This example reproduces a numerical model constructed in commercial software i.e. LUSAS. Following, analysis are performed on the OpenSees model
+and results are compared with those from LUSAS model.
 
+Creating the grillage
+^^^^^^^^^^^^^^^^^^^^^^^^
 .. code-block:: python
 
-    import ospgrillage as og
+    import numpy as np
+    import openseespy.postprocessing.ops_vis as opsv
+    import sys
+    sys.path.append("E:\PostPhD\~Code\Python\Public\ops-grillage trials\ops-grillage")
+    import ospgrillage as ospg
 
-    # Units
-    meter = 1.0
-    N = 1.0
-    sec = 1.0
-    m2 = meter**2
-    m4 = meter**4
-    MPa = 1e9*N/m2
-    g = 9.81*m/sec**2  # 9.81 m/s2
+    # Adopted units: N and m
+    kilo = 1e3
+    milli = 1e-3
+    N = 1
+    m = 1
+    mm = milli*m
+    m2 = m**2
+    m3 = m**3
+    m4 = m**4
+    kN = kilo*N
+    MPa = N/((mm)**2)
+    GPa = kilo*MPa
 
-    # variables
-    E = 34.7*MPa
-    G = 20e9*MPa # Pa
-    v = 0.3
-    # bridge geometric properties
-    L = 28*m
-    H = 7*m
-    edge_skew = 0   # both edge orthogonal
-    edge_dist = 1.0875  # distance between edge beam and exterior beams
-    trans_grid_lines = 14
-    long_grid_lines = 7
+    # define material
+    concrete = ospg.create_material(type="concrete", code="AS5100-2017", grade="50MPa")
 
-    # Create materials
-    concrete = og.create_material(type="concrete", code="AS5100-2017", grade="50MPa")
-    # Define sections
-    super_t_beam_section = og.create_section(A=1.0447*m2,J=0.230698*m4, Iy=0.231329*m4, Iz=0.533953*m4,Ay=0.397032*m2, Az=0.434351*m2)
+    # define sectons (lusas parameters)
 
+    longitudinal_section = ospg.create_section(A=0.866937*m2, E=34.8*GPa, G=20*GPa,
+                                        J=0.154806*m3, Iz=0.215366*m4, Iy=0.213602*m4,
+                                        Az=0.444795*m2, Ay=0.258704*m2)
+    edge_longitudinal_section = ospg.create_section(A=0.044625*m2, E=34.8*GPa, G=20*GPa,
+                                             J=0.26253e-3*m3, Iz=0.241812e-3*m4,Iy=0.113887e-3*m4,
+                                             Az=0.0371929*m2, Ay=0.0371902*m2)
 
-    transverse_slab_section = og.create_section(A=0.5372*m2,J=2.79e-3*m4, Iy=0.3988 / 2 *m4, Iz=1.45e-3 / 2*m4,Ay=0.447 / 2*m2, Az=0.447 / 2*m2, unit_width=True)
+    transverse_section = ospg.create_section(A=0.504*m2, E=34.8*GPa, G=20*GPa,
+                                      J=5.22303e-3*m3, Iy=0.32928*m4, Iz=1.3608e-3*m4,
+                                      Ay=0.42*m2, Az=0.42*m2)
+    end_tranverse_section = ospg.create_section(A=0.504/2*m2, E=34.8*GPa, G=20*GPa,
+                                         J=2.5012e-3*m3, Iy=0.04116*m4, Iz=0.6804e-3*m4,
+                                         Ay=0.21*m2, Az=0.21*m2)
 
+     # define grillage members
+    longitudinal_beam = ospg.create_member(section=longitudinal_section, material=concrete)
+    edge_longitudinal_beam = ospg.create_member(section=edge_longitudinal_section, material=concrete)
+    transverse_slab = ospg.create_member(section=transverse_section, material=concrete)
+    end_tranverse_slab = ospg.create_member(section=end_tranverse_section, material=concrete)
 
-    end_tranverse_slab_section = og.create_section(A=0.5372 / 2*m2,J=2.68e-3*m4, Iy=0.04985*m4,Iz=0.725e-3*m4,Ay=0.223*m2, Az=0.223*m2)
+     # create the grillage
+     # Parameters for grid
+    L = 28*m # span
+    w = 10.175*m # width
+    n_l = 7 # number of longitidnal members
+    n_t = 11 # number of transverse members
+    edge_dist = 1.0875*m # distance between edge beam and first exterior beam
+    angle = 0 # skew angle
 
-    edge_beam_section = og.create_section(A=0.039375*m2,J=0.21e-3*m4, Iy=0.1e-3*m4,Iz=0.166e-3*m4,Ay=0.0328*m2, Az=0.0328*m2)
+    # Create grid
+    simple_grid = ospg.create_grillage(bridge_name="Super-T 28m", long_dim=L, width=w, skew=angle,
+                                   num_long_grid=n_l, num_trans_grid=n_t, edge_beam_dist=edge_dist)
 
-    # define grillage members
-    super_t_beam = og.create_member(member_name="Intermediate I-beams", section=super_t_beam_section, material=concrete)
-    transverse_slab = og.create_member(member_name="concrete slab", section=transverse_slab_section, material=concrete)
-    edge_beam = og.create_member(member_name="exterior I beams", section=edge_beam_section, material=concrete)
-    end_transverse_slab = og.create_member(member_name="edge transverse", section=end_transverse_slab_section,
-                                           material=concrete)
+    # assign grillage member to element groups of grillage model
 
-    bridge_28 = og.create_grillage(bridge_name="SuperT_28m", long_dim=L, width=H, skew=edge_skew,
-                            num_long_grid=long_grid_lines, num_trans_grid=trans_grid_lines, edge_beam_dist=edge_dist, mesh_type="Ortho")
+    simple_grid.set_member(longitudinal_beam, member="interior_main_beam")
+    simple_grid.set_member(longitudinal_beam, member="exterior_main_beam_1")
+    simple_grid.set_member(longitudinal_beam, member="exterior_main_beam_2")
 
-    # set grillage member to element groups of grillage model
-    bridge_28.set_member(super_t_beam, member="interior_main_beam")
-    bridge_28.set_member(super_t_beam, member="exterior_main_beam_1")
-    bridge_28.set_member(super_t_beam, member="exterior_main_beam_2")
-    bridge_28.set_member(edge_beam, member="edge_beam")
-    bridge_28.set_member(transverse_slab, member="transverse_slab")
-    bridge_28.set_member(end_tranverse_slab, member="start_edge")
-    bridge_28.set_member(end_tranverse_slab, member="end_edge")
+    simple_grid.set_member(edge_longitudinal_beam, member="edge_beam")
 
-    bridge_28.create_ops(pyfile=False)
-    # plot model
-    og.opsplt.plot_model("nodes")
+    simple_grid.set_member(transverse_slab, member="transverse_slab")
+    simple_grid.set_member(end_tranverse_slab, member="start_edge")
+    simple_grid.set_member(end_tranverse_slab, member="end_edge")
 
-Figure 1 shows the plotted model in Opensees model space.
+    # create the model in OpenSees
+    simple_grid.create_osp_model(pyfile=False) # pyfile will not (False) be generated for further analysis (should be create_osp?)
+    opsv.plot_model("nodes") # plotting of grid for visualisation
+
+Figure 1 shows the plotted model in OpenSees model space.
 
 ..  figure:: ../../_images/28m_bridge.png
     :align: center
@@ -76,25 +93,105 @@ Figure 1 shows the plotted model in Opensees model space.
 
     Figure 1: Grillage model of the exemplar 28 m bridge.
 
-Adding DL and SDL to analysis
+Adding Loads for analysis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Adding basic load cases, i.e.
+Here are a few examples on creating/adding loads and load cases to the `simple_grid` model.
+
+Adding a line load in the mid span across its width.
 
 .. code-block:: python
 
-    dead_load = create_load("DL",point1=point1,point2=point2)
-    dead_load = create_load("DL",point1=point1,point2=point2)
+    P = 1*kN
 
-Adding a load combination for SDL and DL
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-To define load combinations, users provide a python dictionary with key being the name string of the defined load cases
-and value being the load factor to be applied for load combination.
+    static_cases_names = ["Line Test Case","Points Test Case (Global)","Points Test Case (Local in Point)",
+                         "Points Test Case (Local in Compound)","Patch Test Case"]
+
+    # Create vertical load points in global coordinate system
+
+    # Line load running along midspan width (P is kN/m)
+    line_point_1 = ospg.create_load_vertex(x=L/2, y=0, z=0, p=P)
+    line_point_2 = ospg.create_load_vertex(x=L/2, y=0, z=w, p=P)
+    test_line_load = ospg.create_load(type='line',name="Test Load", point1=line_point_1, point2=line_point_2)
+
+    # Create load case, add loads, and assign
+    line_case = ospg.create_load_case(name=static_cases_names[0])
+    line_case.add_load_groups(test_line_load)
+
+    simple_grid.add_load_case(line_case)
+
+Adding Compounded point loads
 
 .. code-block:: python
-    uls_dict = {"DL":1.2,"SDL":1.5}
-    sls_dict = {}
-    bridge_28.add_load_combination(load_combination_name="ULS", load_case_and_factor_dict=uls_dict) # add ULS combination
-    bridge_28.add_load_combination(load_combination_name="SLS", load_case_and_factor_dict=sls_dict) # add SLS combination
+
+    # Componound point loads along midspan width (P is kN)
+    # working in global coordinate system
+
+    p_list = [0,edge_dist,edge_dist+2*m,edge_dist+4*m,edge_dist+6*m,w-edge_dist,w]
+
+    test_points_load = ospg.create_compound_load(name="Points Test Case (Global)")
+
+    for p in p_list:
+        point = ospg.create_load(type='point',name="Point",point1=ospg.create_load_vertex(x=L/2, y=0, z=p, p=P))
+        test_points_load.add_load(load_obj = point)
+
+    # Create load case, add loads, and assign
+    points_case = ospg.create_load_case(name=static_cases_names[1])
+    points_case.add_load_groups(test_points_load)
+
+    simple_grid.add_load_case(points_case)
+
+Adding Compound load, but this time defining Compound loads in Local coordinates
+
+.. code-block:: python
+
+    # Componound point loads along midspan width
+    # working in user-defined local coordinate (in point load)
+
+    test_points_load = ospg.create_compound_load(name="Points Test Case (Local in Point)")
+
+    for p in p_list:
+        point = ospg.create_load(type='point',name="Point",localpoint1=ospg.create_load_vertex(x=0, y=0, z=p, p=P))
+        # maybe local point is useless?
+        test_points_load.add_load(load_obj = point)
+
+    test_points_load.set_global_coord(ospg.Point(L/2,0,0)) # shift from local to global
+
+    # Create load case, add loads, and assign
+    points_case = ospg.create_load_case(name=static_cases_names[2])
+    points_case.add_load_groups(test_points_load)
+
+    simple_grid.add_load_case(points_case)
+
+Adding patch loads (surface load)
+
+.. code-block:: python
+
+    # Patch load over entire bridge deck (P is kN/m2)
+    patch_point_1 = ospg.create_load_vertex(x=0, y=0, z=0, p=P)
+    patch_point_2 = ospg.create_load_vertex(x=L, y=0, z=0, p=P)
+    patch_point_3 = ospg.create_load_vertex(x=L, y=0, z=w, p=P)
+    patch_point_4 = ospg.create_load_vertex(x=0, y=0, z=w, p=P)
+    test_patch_load = ospg.create_load(type='patch',name="Test Load",
+                                       point1=patch_point_1, point2=patch_point_2,
+                                       point3=patch_point_3, point4=patch_point_4)
+
+    # Create load case, add loads, and assign
+    patch_case = ospg.create_load_case(name=static_cases_names[4])
+    patch_case.add_load_groups(test_patch_load)
+
+    simple_grid.add_load_case(patch_case)
+
+
+
+Adding a load combination
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    l_factor = 2.3
+    p_factor = 0.5
+    load_combinations = {static_cases_names[0]:l_factor,static_cases_names[-1]:p_factor} # checks load cases exists?
+    simple_grid.add_load_combination(load_combination_name = "Load Combo", load_case_and_factor_dict = load_combinations )
 
 
 Adding a moving load analysis
@@ -103,47 +200,159 @@ Here we add a moving load analysis to the 28 m bridge model
 
 .. code-block:: python
 
-    front_wheel = og.create_point_load(name="front wheel", point1=LoadPoint(2, 0, 2, 50))  # Single point load 50 N
+    # 2 axle truck (equal loads, 2x2 spacing centre line running)
 
-    single_path = og.create_moving_path(start_point=Point(0, 0, 2), end_point=Point(29, 0, 3))  # create path object
-    move_point = og.create_moving_load(name="single_moving_point")
-    move_point.set_path(single_path)
-    move_point.add_loads(load_obj=front_wheel)
-    bridge_28.add_load_case(move_point)
+    # create truck in local coordinate system
+    two_axle_truck = ospg.create_compound_load(name="Two Axle Truck")
+    point = ospg.create_load(type="point",name="Point",point1=ospg.LoadPoint(x=0, y=0, z=0, p=P))
 
-    bridge_28.analyze()
-    results = bridge_28.get_results()
+    axl_w = 2*m # axle width
+    axl_s = 2*m # axle spacing
+    veh_l = axl_s # vehicle length
+
+    two_axle_truck.add_load(load_obj = point, local_coord = ospg.Point(0,0,0))
+    two_axle_truck.add_load(load_obj = point, local_coord = ospg.Point(0,0,axl_w))
+    two_axle_truck.add_load(load_obj = point, local_coord = ospg.Point(axl_s,0,axl_w))
+    two_axle_truck.add_load(load_obj = point, local_coord = ospg.Point(axl_s,0,0))
+
+    # move to global?
+
+    # create path object in global coordinate system - centre line running of entire span
+    # when local coord: the path describes where the moving load *origin* is to start and end
+    single_path = ospg.create_moving_path(start_point=ospg.Point(0-axl_w,0,w/2-axl_w/2),
+                                          end_point=ospg.Point(L,0,w/2-axl_w/2),
+                                          increments=L+veh_l+1)
 
 
-Processing results
+    # create moving load (and case)
+    moving_truck = ospg.create_moving_load(name="Moving Two Axle Truck")
+
+    # Set path and loads
+    moving_truck.set_path(single_path)
+    # note: it is possible to set different paths for different compound loads in one moving load object
+    moving_truck.add_loads(two_axle_truck)
+
+    # Assign
+    simple_grid.add_load_case(moving_truck)
+
+
+Analysis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The following lines of code shows how we can process the output data array - demonstrated for the Moving load results.
+The following lines of code shows how we can process the output data array. Uncomment each line to test out the ways to
+run ``analyze()`` function.
 
 .. code-block:: python
 
-    # Here we can slice data to get a reduced data array for the outputs
-    # query mid point shear force during truck movement
-    results.sel(Node=63,Component='dy')
-    # query max of slice
-    results.sel(Node=63,Component='dy').idxmax()
-    # query max and min envelopes of displacement for all nodes - this is done by max/min function across the 'Loadcase' dimension.
-    max_dY = results.sel(Component='dy').max(dim='Loadcase')
-    min_dY = results.sel(Component='dy').max(dim='Loadcase')
+    # Run analysis
+    simple_grid.analyze(all=True) # all load cases
+    #simple_grid.analyze(load_case=static_cases_names[-1]) # specific load case
+    #simple_grid.analyze(load_case="Moving Two Axle Truck") # specific moving load case
 
-    # See which nodes are i and j for each element
-    print(results['ele_nodes'].sel(Element=ele_set,Nodes="i"))
 
-    np.array(results['forces'].sel(Element=ele_set,Component="Mz_i"))
+Getting results
+^^^^^^^^^^^^^^^^^^^
+Here is how to ``get_results()``. Also shown are a a few ways to get output results with differnt arguments.
 
+.. code-block:: python
+    results = simple_grid.get_results()
+    #results = simple_grid.get_results(all=True)
+    #results = simple_grid.get_results(load_case=static_cases_names[-1]) # specific load case
+    results # Print out all results as xarray (returns nothing if blank!)
+
+Data processing
+^^^^^^^^^^^^^^^^^^^
+Having the results be in Xarray's DataSet format, we can do many things with it such as slicing and query its data.
+
+The following example shows how to extract bending moments in midspan - the critical location for the defined load cases.
+
+Extracting only the static loads. We can extract moments in global z for each `i` node of grillage member (since `i` node correspond to the nodes in the mid span).
+
+.. code-block:: python
+
+    results['forces'].sel(Loadcase=static_cases_names,Element=ele_set,Component="Mz_i")
+
+`results` variable now holds the load case for 'Line Test Case', 'Point Test Case(Global)', 'Points Test Case (Local in Point)',
+       'Points Test Case (Local in Compound)', 'Patch Test Case'.
+
+Should we sum the nodal forces from members on one side, we expect approximate equal PL/4 (similar) or sum of the following
+lusas plot
+
+
+.. code-block:: python
+
+    np.sum(np.array(results['forces'].sel(Loadcase=static_cases_names,Element=ele_set,Component="Mz_i")),axis=1)
+
+
+[ Picture of lusas plots]
+
+Extract load combinations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    # load combination case (outputs as dictionary with keys as the load combination name)
+    combo_results = simple_grid.get_results(get_combinations=True)
+    combo_results['Load Combo']
     # sum the nodal forces from the members on one side
-    print(np.sum(np.array(results['forces'].sel(Element=ele_set,Component="Mz_i"))))
-    # sum should be approximate equal to PL/4 or sum of lusas plot
-    # PL/4 = 49000.00
+    np.sum(np.array(combo_results['Load Combo']['forces'].sel(Element=ele_set,Component="Mz_i")))
+    # sum should be approximate equal to above.
 
-Testing various mesh types for bridge dimensions
+Extract and process moving load results
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    move_results = simple_grid.get_results(load_case="Moving Two Axle Truck")
+    move_results # Print out all results as xarray (returns nothing if blank!)
+
+One can query results at specific position of the moving load by looking up the index of load case.
+
+.. code-block:: python
+
+    # selecting specific position based on integrer
+    integer = int(L/2 - 1 + 2)
+    move_results['forces'].isel(Loadcase=integer).sel(Element=ele_set,Component="Mz_i")
+    # Midspan positioning is where origin is located at L/2 + axl_s/2
+
+Finally, comparing with theoretical:
+
+.. code-block:: python
+
+    np.sum(np.array(move_results['forces'].isel(Loadcase=integer).sel(Element=ele_set,Component="Mz_i")))
+
+    # Hand calc:
+    2*P*(L/2-axl_s/2)
+
+
+Oblique vs Orthogonal Mesh
 --------------------
-Here is a version of the aforementioned grillage model with different dimensions and varied edge skew angles - left edge is 42 degrees, right edge is 0 degrees (orthogonal).
-Material and section properties follows those of aforementioned model.
+Here are more examples showing the various mesh types.
+
+1) 10 m bridge with "Oblique" mesh
+
+..  figure:: ../../_images/standard_oblique.png
+    :align: center
+    :scale: 75 %
+
+    Figure 2: Oblique mesh
+
+
+2) 10 m bridge with "Ortho" mesh
+
+..  figure:: ../../_images/standard_ortho.png
+    :align: center
+    :scale: 75 %
+
+    Figure 3: Orthogonal
+
+
+Skew edges of mesh
+--------------------
+Here is an example showing the types of edge skew you can produce with *ospgrillage*.
+A version the aforementioned 28m grillage model example is given but
+with different parameters for its grillage object i.e. ``create_grillage()``.
+This time we have varied span to 10 m, and edge skew angles - left edge is 42 degrees, right edge is 0 degrees (orthogonal).
+
 
 .. code-block:: python
 
@@ -158,4 +367,4 @@ Material and section properties follows those of aforementioned model.
     :align: center
     :scale: 75 %
 
-    Figure 2: Grillage model of the exemplar 28 m bridge.
+    Figure 4: Left angle 42, right angle 0 (orthogonal).

@@ -96,7 +96,7 @@ bridge_28.set_member(end_tranverse_slab, member="start_edge")
 bridge_28.set_member(end_tranverse_slab, member="end_edge")
 
 # create the model instance
-bridge_28.create_ops(pyfile=pyfile)
+bridge_28.create_osp_model(pyfile=pyfile)
 
 # Moving Load Analysis
 front_wheel = og.PointLoad(name="front wheel", point1=og.LoadPoint(2, 0, 2, 50))  # Single point load 50 N

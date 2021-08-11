@@ -206,7 +206,7 @@ class OspGrillage:
                              skew_1=self.skew_a, edge_dist_a=self.edge_width_a, edge_dist_b=self.edge_width_b,
                              skew_2=self.skew_b, orthogonal=self.ortho_mesh)
 
-    def create_ops(self, pyfile=False):
+    def create_osp_model(self, pyfile=False):
         """
         Function to create model instance in OpenSees model space. If pyfile input is True, function creates an
         executable pyfile for generating the grillage model in OpenSees model space.

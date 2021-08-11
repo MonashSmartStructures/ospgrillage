@@ -10,7 +10,7 @@ the section and material properties.
 def create_section(**kwargs):
     """
     User interface for section creation.
-    Here are the main input for the constructor to properly parse the inputs to OpenSeesPy sections.
+    Here are the main input for the constructor to properly parse the inputs to ```OpenSeesPy``` sections.
 
     :param op_ele_type: OpenSees element type - if none provided default to "elasticBeamColumn"
     :type op_ele_type: str
@@ -54,11 +54,11 @@ def create_member(**kwargs):
 
 class Section:
     """
-    Class for structural cross sections.Stores geometric properties related to OpenSeesPy command in creating sections
+    Class for structural cross sections.Stores geometric properties related to ```OpenSeesPy``` command in creating sections
     in OpenSees model space.
 
-    In addition, this class stores user input for element types - which correspond to OpenSeesPy element command.
-    This class does not provide methods which wraps OpenSeesPy Section() commands - this is done by GrillageMember class
+    In addition, this class stores user input for element types - which correspond to ```OpenSeesPy``` element command.
+    This class does not provide methods which wraps ```OpenSeesPy``` Section() commands - this is done by GrillageMember class
 
     For developers wishing to expand the library of sections, introduce in this class:
 
@@ -81,11 +81,11 @@ class Section:
 
         #. General section properties - such as A, I, J for example. These properties are parses into the appropriate
             OpenSees section arguments.
-        #. `OpenSeespy` section arguments - i.e. specific keyword for a specific ops.section() type.
+        #. ```OpenSeespy``` section arguments - i.e. specific keyword for a specific ops.section() type.
 
         `Here <https://openseespydoc.readthedocs.io/en/latest/src/section.html>`_ is information on OpenSees Section()
 
-        Here are the main input for the constructor to properly parse the inputs to `OpenSeesPy` sections.
+        Here are the main input for the constructor to properly parse the inputs to ```OpenSeesPy``` sections.
 
         :param op_ele_type: OpenSees element type
         :type op_ele_type: str
@@ -137,19 +137,19 @@ class Section:
 # ----------------------------------------------------------------------------------------------------------------
 class GrillageMember:
     """
-    Parent class for defining a Grillage member. Provides methods to wrap OpenSeesPy Element() command.
+    Parent class for defining a Grillage member. Provides methods to wrap ```OpenSeesPy``` Element() command.
 
-    Some `OpenSeesPy` element() command takes in directly both material and section properties, while some requires
-    first defining an `OpenSeesPy` material, or OpenSees section object. The role of this class is to parse the material
-    and section information into its corresponding `OpenSeesPy` Element() command.
+    Some ```OpenSeesPy``` element() command takes in directly both material and section properties, while some requires
+    first defining an ```OpenSeesPy``` material, or OpenSees section object. The role of this class is to parse the material
+    and section information into its corresponding ```OpenSeesPy``` Element() command.
 
-    `Here <https://openseespydoc.readthedocs.io/en/latest/src/element.html>`_ is more information about Openseespy
+    `Here <https://openseespydoc.readthedocs.io/en/latest/src/element.html>`_ is more information about ```OpenSeesPy```
     Element definition.
 
     For developers wishing to expand the library of elements, introduce in this class:
 
-    #. The `OpenSeesPy` section() command for the desire section - under ``get_ops_section_command()`` method
-    #. The `OpenSeesPy` element() command for the element - under ``get_element_command_str()`` method
+    #. The ```OpenSeesPy``` section() command for the desire section - under ``get_ops_section_command()`` method
+    #. The ```OpenSeesPy``` element() command for the element - under ``get_element_command_str()`` method
 
 
     """

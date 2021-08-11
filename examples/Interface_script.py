@@ -1,7 +1,6 @@
 # Example module interface for ops-grillage
 # import modules
 import ospgrillage as og
-from og.PlotWizard import *
 
 # define material
 concrete = og.UniAxialElasticMaterial(
@@ -82,7 +81,7 @@ example_bridge.set_member(slab, member="transverse_slab")
 example_bridge.set_member(exterior_I_beam, member="start_edge")  # proxy
 example_bridge.set_member(exterior_I_beam, member="end_edge")  # proxy
 pyfile = False
-example_bridge.create_ops(pyfile=pyfile)
+example_bridge.create_osp_model(pyfile=pyfile)
 if not pyfile:
     opsplt.plot_model("nodes")
     pass
