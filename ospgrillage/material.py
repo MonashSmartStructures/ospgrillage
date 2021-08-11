@@ -2,7 +2,7 @@
 """
 This module contains the user interface function and class to manage
  material properties that allow definition offine grillage elements.
- The module also contains methods that wraps OpenSeesPy material object creation.
+ The module also contains methods that wraps ```OpenSeesPy``` material object creation.
 """
 
 import json
@@ -16,7 +16,7 @@ def create_material(**kwargs):
 
     #. Keyword for looking up the *ospgrillage* material library i.e. mat_lib.json.
     #. General material properties - such as E, and G
-    #. Material arguments of OpenSeesPy. E.g. OpenSees's Steel01 material takes isotropic hardening parameters a1
+    #. Material arguments of ```OpenSeesPy```. E.g. OpenSees's Steel01 material takes isotropic hardening parameters a1
        to a4.
 
 
@@ -41,14 +41,14 @@ def create_material(**kwargs):
 
 class Material:
     """
-    This class stores information and provides methods to parse input material properties into OpenSeesPy Material()
-    commands. OpenSeesPy consist of two types of material objects, namely UniaxialMaterial() and NDMaterial().
+    This class stores information and provides methods to parse input material properties into ```OpenSeesPy``` Material()
+    commands. ```OpenSeesPy``` has two types of material objects, namely UniaxialMaterial() and NDMaterial().
 
-    `Here <https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html>`_ for information about OpenSees
+    `Here <https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html>`_ are the information about OpenSees
     Material objects.
 
     For the intended modelling objects of *ospgrillage* (bridge decks), concrete and steel makes up the primary
-    materials. In turn, UniAxialMaterial object of OpenSeesPy is wrapped and used by Material class since it contains
+    materials. In turn, UniAxialMaterial object of ```OpenSeesPy``` is wrapped and used by Material class since it contains
     options for Concrete and Steel.
 
     The Material class also allow users to create codified material properties (e.g. AS5100).
@@ -67,7 +67,7 @@ class Material:
         The constructor of Material takes in three types of keyword arguments:
         #. Keyword for looking up the *ospgrillage* material library i.e. mat_lib.json.
         #. General material properties - such as E, and G
-        #. Material arguments of `OpenSeesPy`. E.g. Opensees's Steel01 material takes isotropic hardening parameters a1
+        #. Material arguments of ```OpenSeesPy```. E.g. Opensees's Steel01 material takes isotropic hardening parameters a1
            to a4.
 
         The following keywords are for item (1):
