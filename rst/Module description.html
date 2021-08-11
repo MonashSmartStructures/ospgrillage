@@ -405,7 +405,7 @@ grillage model in OpenSees model space to immediately perform further analysis (
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span><span class="o">.</span><span class="n">create_osp_model</span><span class="p">(</span><span class="n">pyfile</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Up to this point, users can run any <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> command (e.g. <cite>ops_vis</cite> commands) within the interface to interact with
+<p>Up to this point, users can run any <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code> command (e.g. <cite>ops_vis</cite> commands) within the interface to interact with
 the grillage model in OpenSees.</p>
 <p>Alternatively, when <cite>pyfile=</cite> parameter is set to <cite>True</cite>, an executable py file will be generated instead.
 The executable py file contains all relevant OpenSees command from which when executed,
@@ -413,8 +413,8 @@ creates the model instance in OpenSees which can edited and later used to perfor
 Note that in doing so, the model instance in OpenSees space is not created.</p>
 <div class="section" id="visualize-grillage-model">
 <h3>Visualize grillage model<a class="headerlink" href="#visualize-grillage-model" title="Permalink to this headline">¶</a></h3>
-<p>To check that we created the model in OpenSees space, we can plot the model using <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code>’s visualization module <cite>ops_vis</cite>.
-The <em>ospgrillage</em> module already wraps and import <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code>’s <cite>ops_vis</cite> module. Therefore, one can run access <cite>ops_vis</cite> by running
+<p>To check that we created the model in OpenSees space, we can plot the model using <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code>’s visualization module <cite>ops_vis</cite>.
+The <em>ospgrillage</em> module already wraps and import <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code>’s <cite>ops_vis</cite> module. Therefore, one can run access <cite>ops_vis</cite> by running
 the following code line and a plot like in <a class="reference internal" href="#figure-2">Figure 2</a> will be returned:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ospg</span><span class="o">.</span><span class="n">opsplt</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="s2">&quot;nodes&quot;</span><span class="p">)</span>
 </pre></div>
