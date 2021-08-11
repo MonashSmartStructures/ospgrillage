@@ -86,7 +86,7 @@ The following code shows how a concrete material can be created using keyword ar
 
     concrete = ospg.create_material(E=30*Giga*Pa, G = 20*Giga*Pa, v= 0.2)
 
-This command wraps Opensees material commands and chooses the appropriate material model in OpenSees to represent the material.
+This command wraps OpenSees material commands and chooses the appropriate material model in OpenSees to represent the material.
 For example, *Concrete01* and *Steel01* of OpenSees library is used to represent most concrete and steel material.
 
 These material model can be found in `OpenSees database for concrete and steel <https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html#steel-reinforcing-steel-materials>`_.
@@ -262,7 +262,7 @@ grillage model in OpenSees model space to immediately perform further analysis (
 
     example_bridge.create_ops(pyfile=False)
 
-Up to this point, users can run any `OpenSeesPy` command (e.g. `ops_vis` commands) within the interface to interact with
+Up to this point, users can run any ```OpenSeesPy``` command (e.g. `ops_vis` commands) within the interface to interact with
 the grillage model in OpenSees.
 
 Alternatively, when `pyfile=` parameter is set to `True`, an executable py file will be generated instead. 
@@ -272,8 +272,8 @@ Note that in doing so, the model instance in OpenSees space is not created.
 
 Visualize grillage model
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-To check that we created the model in OpenSees space, we can plot the model using `OpenSeesPy`'s visualization module `ops_vis`.
-The *ospgrillage* module already wraps and import `OpenSeesPy`'s `ops_vis` module. Therefore, one can run access `ops_vis` by running
+To check that we created the model in OpenSees space, we can plot the model using ```OpenSeesPy```'s visualization module `ops_vis`.
+The *ospgrillage* module already wraps and import ```OpenSeesPy```'s `ops_vis` module. Therefore, one can run access `ops_vis` by running
 the following code line and a plot like in `Figure 1`_ will be returned:
 
 .. code-block:: python

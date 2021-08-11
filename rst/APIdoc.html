@@ -477,12 +477,12 @@ Class object is accessed within OspGrillage class object.</p>
 <dt class="sig sig-object py" id="ospgrillage.material.Material">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.material.</span></span><span class="sig-name descname"><span class="pre">Material</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.material.Material" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>This class stores information and provides methods to parse input material properties into OpenSeesPy Material()
-commands. OpenSeesPy consist of two types of material objects, namely UniaxialMaterial() and NDMaterial().</p>
-<p><a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html">Here</a> for information about OpenSees
+<p>This class stores information and provides methods to parse input material properties into <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> Material()
+commands. <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> has two types of material objects, namely UniaxialMaterial() and NDMaterial().</p>
+<p><a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html">Here</a> are the information about OpenSees
 Material objects.</p>
 <p>For the intended modelling objects of <em>ospgrillage</em> (bridge decks), concrete and steel makes up the primary
-materials. In turn, UniAxialMaterial object of OpenSeesPy is wrapped and used by Material class since it contains
+materials. In turn, UniAxialMaterial object of <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> is wrapped and used by Material class since it contains
 options for Concrete and Steel.</p>
 <p>The Material class also allow users to create codified material properties (e.g. AS5100).
 These material properties are stored in a material library file (mat_lib.json) for which is to the users to pass in
@@ -495,7 +495,7 @@ the appropriate keyword arguments to create the code defined materials.</p>
 <p>The constructor of Material takes in three types of keyword arguments:
 #. Keyword for looking up the <em>ospgrillage</em> material library i.e. mat_lib.json.
 #. General material properties - such as E, and G
-#. Material arguments of <cite>OpenSeesPy</cite>. E.g. Opensees’s Steel01 material takes isotropic hardening parameters a1</p>
+#. Material arguments of <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code>. E.g. Opensees’s Steel01 material takes isotropic hardening parameters a1</p>
 <blockquote>
 <div><p>to a4.</p>
 </div></blockquote>

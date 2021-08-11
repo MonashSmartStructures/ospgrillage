@@ -194,7 +194,7 @@
 the developers welcome any improvements to its procedures via pull requests.</p>
 <div class="section" id="grillage-model">
 <h2>Grillage model<a class="headerlink" href="#grillage-model" title="Permalink to this headline">¶</a></h2>
-<p>The <em>ospgrillage</em> module generates a two-dimensional (2D) grillage model of a bridge deck in Opensees - see Figure 1.</p>
+<p>The <em>ospgrillage</em> module generates a two-dimensional (2D) grillage model of a bridge deck in OpenSees - see Figure 1.</p>
 <div class="figure align-center" id="id1">
 <a class="reference internal image-reference" href="../_images/Figure_1.png"><img alt="../_images/Figure_1.png" src="../_images/Figure_1.png" /></a>
 <p class="caption"><span class="caption-text">Figure 1: Typical grillage model nodes.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
@@ -215,7 +215,7 @@ For a 2-D model space, the model plane is the x-y plane.</p>
 <li><p>global y direction is the vertical axis - typically the direction of loads</p></li>
 </ul>
 <p>Two reasons behind selecting the coordinate system are as such:
-# To be consistent with geometric transformation (from local to global) of Opensees. The geometric transformation is used in Section definition, with local X being the axial direction
+# To be consistent with geometric transformation (from local to global) of OpenSees. The geometric transformation is used in Section definition, with local X being the axial direction
 of beam/truss members; where y and z axes being the vertical and horizontal axis of the local coordinate system respectively.</p>
 <p># To be consistent with 1D problems where the working axis for 1-D models is typically <em>x</em> (horizontal axis) and <em>y</em> (vertical axis).</p>
 </div>
@@ -350,7 +350,7 @@ the module raises an Error regarding its point/vertices values.</p>
 <p>Use the following links for more on:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="http://bridgedesign.org.uk/tutorial/bs-grillage.php">Grillage modelling</a></p></li>
-<li><p><a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/">Openseespy documentation</a></p></li>
+<li><p><a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/">OpenSeesPy documentation</a></p></li>
 </ul>
 </div>
 <div class="section" id="further-development">
@@ -367,7 +367,7 @@ edge construction lines. This is done by developing the <cite>EdgeConstructionLi
 this requires a bit more development as current edge construction lines are only recognized as end
 supports - catering meshing procedures for one span.</p>
 <p>The developers also acknowledges that there is minor conflict between the coordinate system of <em>ospgrillage</em> and the default
-coordinate system for the <cite>ops_vis</cite> module of <cite>Openseespy</cite>. The <cite>ops_vis</cite> module default isotropic angle is x - y with z axis plane
+coordinate system for the <cite>ops_vis</cite> module of <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code>. The <cite>ops_vis</cite> module default isotropic angle is x - y with z axis plane
 being the model plane of a 2-D model in 3-D space. Currently the easiest solution is to further develop <cite>ops_vis</cite> to allow
 multi isotropic views of the model space. If developers were to program <em>ospgrillage</em> to fit <cite>ops_vis</cite> current default axis,
 it would require substantial rework of the entire module - since the module assume the model plane of the 2D grillage is the

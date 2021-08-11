@@ -249,7 +249,7 @@ The following code shows how a concrete material can be created using keyword ar
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">concrete</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_material</span><span class="p">(</span><span class="n">E</span><span class="o">=</span><span class="mi">30</span><span class="o">*</span><span class="n">Giga</span><span class="o">*</span><span class="n">Pa</span><span class="p">,</span> <span class="n">G</span> <span class="o">=</span> <span class="mi">20</span><span class="o">*</span><span class="n">Giga</span><span class="o">*</span><span class="n">Pa</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span> <span class="mf">0.2</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This command wraps Opensees material commands and chooses the appropriate material model in OpenSees to represent the material.
+<p>This command wraps OpenSees material commands and chooses the appropriate material model in OpenSees to represent the material.
 For example, <em>Concrete01</em> and <em>Steel01</em> of OpenSees library is used to represent most concrete and steel material.</p>
 <p>These material model can be found in <a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html#steel-reinforcing-steel-materials">OpenSees database for concrete and steel</a>.
 Being a module wrapper, users familiar with this database can directly input the keywords of exact material models to <code class="docutils literal notranslate"><span class="pre">create_material()</span></code> function.</p>
@@ -400,7 +400,7 @@ grillage model in OpenSees model space to immediately perform further analysis (
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span><span class="o">.</span><span class="n">create_ops</span><span class="p">(</span><span class="n">pyfile</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Up to this point, users can run any <cite>OpenSeesPy</cite> command (e.g. <cite>ops_vis</cite> commands) within the interface to interact with
+<p>Up to this point, users can run any <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> command (e.g. <cite>ops_vis</cite> commands) within the interface to interact with
 the grillage model in OpenSees.</p>
 <p>Alternatively, when <cite>pyfile=</cite> parameter is set to <cite>True</cite>, an executable py file will be generated instead.
 The executable py file contains all relevant OpenSees command from which when executed,
@@ -408,8 +408,8 @@ creates the model instance in OpenSees which can edited and later used to perfor
 Note that in doing so, the model instance in OpenSees space is not created.</p>
 <div class="section" id="visualize-grillage-model">
 <h3>Visualize grillage model<a class="headerlink" href="#visualize-grillage-model" title="Permalink to this headline">¶</a></h3>
-<p>To check that we created the model in OpenSees space, we can plot the model using <cite>OpenSeesPy</cite>’s visualization module <cite>ops_vis</cite>.
-The <em>ospgrillage</em> module already wraps and import <cite>OpenSeesPy</cite>’s <cite>ops_vis</cite> module. Therefore, one can run access <cite>ops_vis</cite> by running
+<p>To check that we created the model in OpenSees space, we can plot the model using <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code>’s visualization module <cite>ops_vis</cite>.
+The <em>ospgrillage</em> module already wraps and import <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code>’s <cite>ops_vis</cite> module. Therefore, one can run access <cite>ops_vis</cite> by running
 the following code line and a plot like in <a class="reference internal" href="#figure-1">Figure 1</a> will be returned:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ospg</span><span class="o">.</span><span class="n">opsplt</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="s2">&quot;nodes&quot;</span><span class="p">)</span>
 </pre></div>

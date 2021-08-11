@@ -9,7 +9,7 @@ the developers welcome any improvements to its procedures via pull requests.
 Grillage model
 ====================
 
-The *ospgrillage* module generates a two-dimensional (2D) grillage model of a bridge deck in Opensees - see Figure 1.
+The *ospgrillage* module generates a two-dimensional (2D) grillage model of a bridge deck in OpenSees - see Figure 1.
 
 ..  figure:: ../../_images/Figure_1.png
     :align: center
@@ -38,7 +38,7 @@ The module adopts the following coordinate system for grillage models:
 * global y direction is the vertical axis - typically the direction of loads
 
 Two reasons behind selecting the coordinate system are as such:
-# To be consistent with geometric transformation (from local to global) of Opensees. The geometric transformation is used in Section definition, with local X being the axial direction
+# To be consistent with geometric transformation (from local to global) of OpenSees. The geometric transformation is used in Section definition, with local X being the axial direction
 of beam/truss members; where y and z axes being the vertical and horizontal axis of the local coordinate system respectively.
 
 # To be consistent with 1D problems where the working axis for 1-D models is typically *x* (horizontal axis) and *y* (vertical axis).
@@ -196,7 +196,7 @@ Use the following links for more on:
 
 * `Grillage modelling <http://bridgedesign.org.uk/tutorial/bs-grillage.php>`_
 
-* `Openseespy documentation <https://openseespydoc.readthedocs.io/en/latest/>`_
+* `OpenSeesPy documentation <https://openseespydoc.readthedocs.io/en/latest/>`_
 
 ====================
 Further development
@@ -216,7 +216,7 @@ this requires a bit more development as current edge construction lines are only
 supports - catering meshing procedures for one span.
 
 The developers also acknowledges that there is minor conflict between the coordinate system of *ospgrillage* and the default
-coordinate system for the `ops_vis` module of `Openseespy`. The `ops_vis` module default isotropic angle is x - y with z axis plane
+coordinate system for the `ops_vis` module of ```OpenSeesPy```. The `ops_vis` module default isotropic angle is x - y with z axis plane
 being the model plane of a 2-D model in 3-D space. Currently the easiest solution is to further develop `ops_vis` to allow
 multi isotropic views of the model space. If developers were to program *ospgrillage* to fit `ops_vis` current default axis,
 it would require substantial rework of the entire module - since the module assume the model plane of the 2D grillage is the
