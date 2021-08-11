@@ -363,7 +363,7 @@ This time we have varied span to 10 m, and edge skew angles - left edge is 42 de
     og.opsplt.plot_model("nodes")
 
 
-..  figure:: ../../images/42_0_mesh.png
+..  figure:: ../../images/42_0_mesh.PNG
     :align: center
     :scale: 75 %
 

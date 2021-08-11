@@ -273,7 +273,7 @@ grillage model in OpenSees model space to immediately perform further analysis (
 
     example_bridge.create_osp_model(pyfile=False)
 
-Up to this point, users can run any ```OpenSeesPy``` command (e.g. `ops_vis` commands) within the interface to interact with
+Up to this point, users can run any ``OpenSeesPy`` command (e.g. `ops_vis` commands) within the interface to interact with
 the grillage model in OpenSees.
 
 Alternatively, when `pyfile=` parameter is set to `True`, an executable py file will be generated instead. 
@@ -283,8 +283,8 @@ Note that in doing so, the model instance in OpenSees space is not created.
 
 Visualize grillage model
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-To check that we created the model in OpenSees space, we can plot the model using ```OpenSeesPy```'s visualization module `ops_vis`.
-The *ospgrillage* module already wraps and import ```OpenSeesPy```'s `ops_vis` module. Therefore, one can run access `ops_vis` by running
+To check that we created the model in OpenSees space, we can plot the model using ``OpenSeesPy``'s visualization module `ops_vis`.
+The *ospgrillage* module already wraps and import ``OpenSeesPy``'s `ops_vis` module. Therefore, one can run access `ops_vis` by running
 the following code line and a plot like in `Figure 2`_ will be returned:
 
 .. code-block:: python

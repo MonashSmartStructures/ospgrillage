@@ -3,7 +3,7 @@ Performing analysis
 ========================
 
 Having created the grillage model, users can proceed with grillage analysis.
-The *ospgrillage* module contains grillage analysis utilities which wraps ```OpenSeesPy``` commands to perform load analysis.
+The *ospgrillage* module contains grillage analysis utilities which wraps ``OpenSeesPy`` commands to perform load analysis.
 This allow users to specify load cases comprising of multiple loads types and then run load case analysis.
 Furthermore, *ospgrillage* module also options for moving load analysis.
 
