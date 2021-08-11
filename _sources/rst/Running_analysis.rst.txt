@@ -196,7 +196,7 @@ input conditions
 .. _load cases:
 
 Load cases
-______________________
+------------------------
 Load cases are a set of load types (`Point`_, `Line`_, `Patch`_, `Compound load`_) used to define a particular loading condition. Compound loads are treated as a single load group within a load case
 having same reference points (e.g. tandem axle) and properties (e.g. load factor)
 
