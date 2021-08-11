@@ -328,22 +328,22 @@ Oblique vs Orthogonal Mesh
 --------------------
 Here are more examples showing the various mesh types.
 
-1) 10 m bridge with "Oblique" mesh
+1) 28 m bridge with "Oblique" mesh
 
-..  figure:: ../../_images/standard_oblique.png
+..  figure:: ../../_images/standard_oblique.PNG
     :align: center
     :scale: 75 %
 
     Figure 2: Oblique mesh
 
 
-2) 10 m bridge with "Ortho" mesh
+2) 28 m bridge with "Ortho" mesh
 
-..  figure:: ../../_images/standard_ortho.png
+..  figure:: ../../_images/standard_ortho.PNG
     :align: center
     :scale: 75 %
 
-    Figure 3: Orthogonal
+    Figure 3: Orthogonal mesh
 
 
 Skew edges of mesh
