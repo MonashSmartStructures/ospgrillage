@@ -1,13 +1,13 @@
 
 # Overview
 
-The `ospgrillage` module is a python wrapper to create structural grillage models for ```Openseespy``` module. ```Openseespy``` 
+The `ospgrillage` module is a python wrapper to create structural grillage models for ```OpenSeesPy``` module. ```OpenSeesPy``` 
 is a Python interpreter of Open System for Earthquake Engineering Simulation (OpenSees) software framework.
-`ospgrillage` allow python users to generate grillage model in ```Openseespy``` model space or create an output executable py file 
-which on execute, creates the prescribed ```Openseespy``` model instead.
+`ospgrillage` allow python users to generate grillage model in ```OpenSeesPy``` model space or create an output executable py file 
+which on execute, creates the prescribed ```OpenSeesPy``` model instead.
 
-A typical output py file from the wizard contains relevant ```Openseespy``` commands for constructing a 
-model in Opensees domain. The wrapper allows quick generation of py file with few basic command lines in Python 
+A typical output py file from the wizard contains relevant ```OpenSeesPy``` commands for constructing a 
+model in OpenSees domain. The wrapper allows quick generation of py file with few basic command lines in Python 
 interface. This module lowers the bar for research, education, and training of the software for structural
 analysis purposes.
 
@@ -41,7 +41,7 @@ See :ref:Structure description page for more information of inputs.
 - [x] Autodetect edge of spans as supporting nodes
 
 ### Element types
-The following Opensees element types are supported by ops-grillage
+The following OpenSees element types are supported by ops-grillage
 - [x] elasticBeamColumn
 - [x] TimoshenkoBeamColumn  
 - [ ] nonlinearBeamColumn
