@@ -399,7 +399,7 @@ are to add loads to LoadCase object via <code class="docutils literal notranslat
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.load.NodalLoad">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">NodalLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_tag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_force</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.NodalLoad" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">NodalLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_tag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.NodalLoad" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ospgrillage.load.Loads" title="ospgrillage.load.Loads"><code class="xref py py-class docutils literal notranslate"><span class="pre">ospgrillage.load.Loads</span></code></a></p>
 <p>Main class for nodal load. Derived from Loads base class</p>
 <p>Nodal load takes a node tag and namedtuple NodalForce(Fx,Fy,Fz,Mx,My,Mz) as input.</p>
@@ -468,23 +468,11 @@ are to add loads to LoadCase object via <code class="docutils literal notranslat
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> – Name of load</p></li>
-<li><p><strong>Fx</strong> – Axis force in x axis</p></li>
-<li><p><strong>Fy</strong> – Axis force in y axis</p></li>
-<li><p><strong>Fz</strong> – Axis force in z axis</p></li>
-<li><p><strong>Mx</strong> – Moment about x axis</p></li>
-<li><p><strong>My</strong> – Moment about y axis</p></li>
-<li><p><strong>Mz</strong> – Moment about z axis</p></li>
-<li><p><strong>kwargs</strong> – see below</p></li>
+<li><p><strong>name</strong> – </p></li>
+<li><p><strong>kwargs</strong> – </p></li>
 </ul>
 </dd>
-<dt class="field-even">Keyword</dt>
-<dd class="field-even"><p></p></dd>
 </dl>
-<ul class="simple">
-<li><p><strong>point1</strong>, <strong>point2</strong>, …, <strong>point8</strong> : (LoadPoint namedTuple) coordinate points with force magnitude describing the load type</p></li>
-<li><p><strong>localpoint1</strong>, <strong>localpoint2</strong>, …, <strong>localpoint8</strong>: (LoadPoint namedTuple) local coordinate points with force magnitude describing the load type</p></li>
-</ul>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ospgrillage.load.PointLoad.load_point_1">
 <span class="sig-name descname"><span class="pre">load_point_1</span></span><em class="property"><span class="pre">:</span> <span class="pre">ospgrillage.load.Point</span></em><a class="headerlink" href="#ospgrillage.load.PointLoad.load_point_1" title="Permalink to this definition">¶</a></dt>
@@ -535,23 +523,11 @@ are to add loads to LoadCase object via <code class="docutils literal notranslat
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> – Name of load</p></li>
-<li><p><strong>Fx</strong> – Axis force in x axis</p></li>
-<li><p><strong>Fy</strong> – Axis force in y axis</p></li>
-<li><p><strong>Fz</strong> – Axis force in z axis</p></li>
-<li><p><strong>Mx</strong> – Moment about x axis</p></li>
-<li><p><strong>My</strong> – Moment about y axis</p></li>
-<li><p><strong>Mz</strong> – Moment about z axis</p></li>
-<li><p><strong>kwargs</strong> – see below</p></li>
+<li><p><strong>name</strong> – </p></li>
+<li><p><strong>kwargs</strong> – </p></li>
 </ul>
 </dd>
-<dt class="field-even">Keyword</dt>
-<dd class="field-even"><p></p></dd>
 </dl>
-<ul class="simple">
-<li><p><strong>point1</strong>, <strong>point2</strong>, …, <strong>point8</strong> : (LoadPoint namedTuple) coordinate points with force magnitude describing the load type</p></li>
-<li><p><strong>localpoint1</strong>, <strong>localpoint2</strong>, …, <strong>localpoint8</strong>: (LoadPoint namedTuple) local coordinate points with force magnitude describing the load type</p></li>
-</ul>
 <dl class="py method">
 <dt class="sig sig-object py" id="ospgrillage.load.LineLoading.interpolate_udl_magnitude">
 <span class="sig-name descname"><span class="pre">interpolate_udl_magnitude</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point_coordinate</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LineLoading.interpolate_udl_magnitude" title="Permalink to this definition">¶</a></dt>
@@ -623,23 +599,11 @@ are to add loads to LoadCase object via <code class="docutils literal notranslat
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> – Name of load</p></li>
-<li><p><strong>Fx</strong> – Axis force in x axis</p></li>
-<li><p><strong>Fy</strong> – Axis force in y axis</p></li>
-<li><p><strong>Fz</strong> – Axis force in z axis</p></li>
-<li><p><strong>Mx</strong> – Moment about x axis</p></li>
-<li><p><strong>My</strong> – Moment about y axis</p></li>
-<li><p><strong>Mz</strong> – Moment about z axis</p></li>
-<li><p><strong>kwargs</strong> – see below</p></li>
+<li><p><strong>name</strong> – </p></li>
+<li><p><strong>kwargs</strong> – </p></li>
 </ul>
 </dd>
-<dt class="field-even">Keyword</dt>
-<dd class="field-even"><p></p></dd>
 </dl>
-<ul class="simple">
-<li><p><strong>point1</strong>, <strong>point2</strong>, …, <strong>point8</strong> : (LoadPoint namedTuple) coordinate points with force magnitude describing the load type</p></li>
-<li><p><strong>localpoint1</strong>, <strong>localpoint2</strong>, …, <strong>localpoint8</strong>: (LoadPoint namedTuple) local coordinate points with force magnitude describing the load type</p></li>
-</ul>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ospgrillage.load.PatchLoading.load_point_1">
 <span class="sig-name descname"><span class="pre">load_point_1</span></span><em class="property"><span class="pre">:</span> <span class="pre">ospgrillage.load.Point</span></em><a class="headerlink" href="#ospgrillage.load.PatchLoading.load_point_1" title="Permalink to this definition">¶</a></dt>

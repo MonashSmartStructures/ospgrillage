@@ -34,6 +34,33 @@ or else `local_point_#=` variable for a user-defined local coordinate system, wh
 Loads are generally in the global coordinate system with respect to the created grillage model.
 However, a user-defined local coordinate system may also be used to assist in then creating `Compound load`_ later on.
 
+Nodal loads
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Nodal loads are defined by using ``create_load()``, specifying `type=` as "nodal". There are six degrees-of-freedom (DOFs) for
+acting loads in each node.
+
+The following example creates a nodal load on Node 13 of a model with 10 unit force in both transverse X and Y directions.
+
+.. code-block:: python
+
+    node13force = ospg.create_load(type="nodal",name="nodal 13", Fx=10, Fy=10) # load values in other dofs default to 0
+
+Following are keyword arguments for creating nodal load using the interface function:
+
+#. node_tag (`int`): node tag number of model
+#. Fx (`float`): Force value in global x axis
+#. Fy (`float`): Force value in global y axis
+#. Fz (`float`): Force value in global z axis
+#. Mx (`float`): Moment value about global x axis
+#. My (`float`): Moment value about global y axis
+#. Mz (`float`): Moment value about global z axis
+#. name (`str`): name string of nodal load (optional)
+
+.. note::
+
+    Users only have to specify non-zero load values for the desire DOFs. Load values for non-specified DOFs are defaulted to zero.
+
 .. _Point:
 
 Point Loads

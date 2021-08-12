@@ -97,6 +97,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Module%20description.html">Creating grillage models</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Performing analysis</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#defining-loads">Defining loads</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#nodal-loads">Nodal loads</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#point-loads">Point Loads</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#line-loads">Line Loads</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#patch-loads">Patch loads</a></li>
@@ -205,6 +206,30 @@ These are set to each load type’s <cite>point#=</cite> variable for the load t
 or else <cite>local_point_#=</cite> variable for a user-defined local coordinate system, where # is a digit from 1 to 9.</p>
 <p>Loads are generally in the global coordinate system with respect to the created grillage model.
 However, a user-defined local coordinate system may also be used to assist in then creating <a class="reference internal" href="#compound-load">Compound load</a> later on.</p>
+<div class="section" id="nodal-loads">
+<h3>Nodal loads<a class="headerlink" href="#nodal-loads" title="Permalink to this headline">¶</a></h3>
+<p>Nodal loads are defined by using <code class="docutils literal notranslate"><span class="pre">create_load()</span></code>, specifying <cite>type=</cite> as “nodal”. There are six degrees-of-freedom (DOFs) for
+acting loads in each node.</p>
+<p>The following example creates a nodal load on Node 13 of a model with 10 unit force in both transverse X and Y directions.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">node13force</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_load</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;nodal&quot;</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;nodal 13&quot;</span><span class="p">,</span> <span class="n">Fx</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">Fy</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span> <span class="c1"># load values in other dofs default to 0</span>
+</pre></div>
+</div>
+<p>Following are keyword arguments for creating nodal load using the interface function:</p>
+<ol class="arabic simple">
+<li><p>node_tag (<cite>int</cite>): node tag number of model</p></li>
+<li><p>Fx (<cite>float</cite>): Force value in global x axis</p></li>
+<li><p>Fy (<cite>float</cite>): Force value in global y axis</p></li>
+<li><p>Fz (<cite>float</cite>): Force value in global z axis</p></li>
+<li><p>Mx (<cite>float</cite>): Moment value about global x axis</p></li>
+<li><p>My (<cite>float</cite>): Moment value about global y axis</p></li>
+<li><p>Mz (<cite>float</cite>): Moment value about global z axis</p></li>
+<li><p>name (<cite>str</cite>): name string of nodal load (optional)</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Users only have to specify non-zero load values for the desire DOFs. Load values for non-specified DOFs are defaulted to zero.</p>
+</div>
+</div>
 <div class="section" id="point-loads">
 <span id="point"></span><h3>Point Loads<a class="headerlink" href="#point-loads" title="Permalink to this headline">¶</a></h3>
 <p>Point load is a force applied on a single infinitesmal point of the grillage model.
