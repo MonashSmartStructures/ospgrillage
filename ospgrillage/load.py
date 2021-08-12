@@ -35,7 +35,7 @@ def create_load_vertex(**kwargs):
     z = kwargs.get("z",None)
     p = kwargs.get("p",None)
 
-    if not any([x is None, y is None, z is None]):
+    if not any([x is None, y is None, z is None, p is None]):
         return LoadPoint(x,y,z,p)
     else:
         raise ValueError("Missing one or more keyword arguments for x=, y=, z=, or p=")
@@ -87,16 +87,19 @@ def create_load(**kwargs):
     elif type == "patch":
         return PatchLoading(**kwargs)
     elif type == "nodal":
-        fx = kwargs.get("Fx", None)
-        fy = kwargs.get("Fy", None)
-        fz = kwargs.get("Fz", None)
-        mx = kwargs.get("Mx", None)
-        my = kwargs.get("My", None)
-        mz = kwargs.get("Mz", None)
+        fx = kwargs.get("Fx", 0)
+        fy = kwargs.get("Fy", 0)
+        fz = kwargs.get("Fz", 0)
+        mx = kwargs.get("Mx", 0)
+        my = kwargs.get("My", 0)
+        mz = kwargs.get("Mz", 0)
+        tag = kwargs.get("node_tag", None)
+        name = kwargs.get("name", None)
         if any([fx is None, fy is None, fz is None, mx is None, my is None, mz is None]):
             raise ValueError(
                 "Missing arguments for nodal force definition : Hint check if all required keywords are given")
-        return NodeForces(fx, fy, fz, mx, my, mz)
+        force = NodeForces(fx, fy, fz, mx, my, mz)
+        return NodalLoad(name=name, node_tag=tag, node_force=force)
     else:
         raise TypeError("load type not specified. hint: specify kwarg type= for create_load()")
 
@@ -380,7 +383,7 @@ class NodalLoad(Loads):
     Main class for nodal load. Derived from Loads base class
     """
 
-    def __init__(self, name, node_tag, node_force):
+    def __init__(self, node_tag, node_force, name=None):
         """
         Nodal load takes a node tag and namedtuple NodalForce(Fx,Fy,Fz,Mx,My,Mz) as input.
 
@@ -391,7 +394,7 @@ class NodalLoad(Loads):
         :param node_force: Named tuple of node forces
         :type node_force: NodalForces(Fx,Fy,Fz,Mx,My,Mz)
         """
-        super().__init__(name, node_tag=node_tag)
+        super().__init__(name=name, node_tag=node_tag)
         self.Fx = node_force.Fx
         self.Fy = node_force.Fy
         self.Fz = node_force.Fz
@@ -423,6 +426,11 @@ class PointLoad(Loads):
     """
 
     def __init__(self, name, **kwargs):
+        """
+
+        :param name:
+        :param kwargs:
+        """
         super().__init__(name, **kwargs)
 
 
@@ -432,7 +440,13 @@ class LineLoading(Loads):
     """
 
     def __init__(self, name, **kwargs):
+        """
+
+        :param name:
+        :param kwargs:
+        """
         super().__init__(name, **kwargs)
+
         self.long_beam_ele_load_flag = kwargs.get("long_beam_element_load",False)
         self.trans_beam_ele_load_flag = kwargs.get("trans_beam_element_load",False)
 
@@ -564,6 +578,11 @@ class PatchLoading(Loads):
     """
 
     def __init__(self, name, **kwargs):
+        """
+
+        :param name:
+        :param kwargs:
+        """
         super().__init__(name, **kwargs)
         if not all(v is None for v in self.point_list):
             a, _ = sort_vertices([self.load_point_2, self.load_point_3, self.load_point_1, self.load_point_4])

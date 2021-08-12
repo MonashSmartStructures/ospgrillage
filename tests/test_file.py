@@ -416,14 +416,6 @@ def test_patch_load_using_linear_shape_function(bridge_model_42_negative):
 # ----------------------------------------------------------------------------------------------------------------------
 # test sub functions
 # ----------------------------------------------------------------------------------------------------------------------
-# test if sort vertice function returns a clockwise
-def test_sort_vertices():
-    point_list = [og.LoadPoint(x=8, y=0, z=3, p=5), og.LoadPoint(x=8, y=0, z=5, p=5), og.LoadPoint(x=5, y=0, z=3, p=5),
-                  og.LoadPoint(x=5, y=0, z=5, p=5)]
-    ref_ans = [og.LoadPoint(x=5, y=0, z=3, p=5), og.LoadPoint(x=8, y=0, z=3, p=5),
-               og.LoadPoint(x=8, y=0, z=5, p=5), og.LoadPoint(x=5, y=0, z=5, p=5)]
-    actual, _ = og.sort_vertices(point_list)
-    assert actual == ref_ans
 
 
 # ----------------------------------------------------------------------------------------------------------------------

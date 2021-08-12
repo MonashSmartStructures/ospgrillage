@@ -605,8 +605,8 @@ class OspGrillage:
         """
         # this function creates shell elements out of the node grids of Mesh object
         shell_counter = 1
-        if self.Mesh_obj is None:
-            raise ValueError("Model instance not created. Run ops.create_ops() function before setting members")
+        # if self.Mesh_obj is None:  # checks if
+        #     raise ValueError("Model instance not created. Run ops.create_ops() function before setting members")
         # check and write member's section command if any
         section_tag = self.__write_section(grillage_member_obj)
         # check and write member's material command if any
