@@ -5,21 +5,20 @@ The *ospgrillage* module contains user **interface functions** which can be call
 has  ``set_``, ``create_`` or ``get_`` in their syntax. For example, users create a material with ``create_material()``.
 Alternatively, users can directly interact with the module objects without using interface functions - we recommend the more pythonic interface functions.
 
+Figure 1 summarizes the process of creating grillage models using *ospgrillage*.
+
+..  figure:: ../../_images/flowchart1.PNG
+    :align: center
+    :scale: 75 %
+
+    Figure 1: Grillage model creation flow chart
+
+
 In general, there are three main steps to create a grillage model with *ospgrillage*:
 
 #. Creating elements of a grillage model i.e. members.
 #. Creating the grillage model instance (the nodes and mesh).
 #. Assigning the defined grillage members to the elements of grillage model instance.
-
-Figure 1 outlines the process of creating a grillage model.
-
-.. _Figure 1:
-
-..  figure:: ../../_images/create_grillage.png
-    :align: center
-    :scale: 25 %
-
-    Figure 1: Structure of creating a grillage model.
 
 
 We will detail these main steps by creating a grillage model of a bridge deck as shown in Figure 1.

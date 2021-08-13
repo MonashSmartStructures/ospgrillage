@@ -189,17 +189,17 @@
 <p>The <em>ospgrillage</em> module contains user <strong>interface functions</strong> which can be called after the module syntax. These interface function
 has  <code class="docutils literal notranslate"><span class="pre">set_</span></code>, <code class="docutils literal notranslate"><span class="pre">create_</span></code> or <code class="docutils literal notranslate"><span class="pre">get_</span></code> in their syntax. For example, users create a material with <code class="docutils literal notranslate"><span class="pre">create_material()</span></code>.
 Alternatively, users can directly interact with the module objects without using interface functions - we recommend the more pythonic interface functions.</p>
+<p>Figure 1 summarizes the process of creating grillage models using <em>ospgrillage</em>.</p>
+<div class="figure align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/flowchart1.PNG"><img alt="../_images/flowchart1.PNG" src="../_images/flowchart1.PNG" /></a>
+<p class="caption"><span class="caption-text">Figure 1: Grillage model creation flow chart</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
 <p>In general, there are three main steps to create a grillage model with <em>ospgrillage</em>:</p>
 <ol class="arabic simple">
 <li><p>Creating elements of a grillage model i.e. members.</p></li>
 <li><p>Creating the grillage model instance (the nodes and mesh).</p></li>
 <li><p>Assigning the defined grillage members to the elements of grillage model instance.</p></li>
 </ol>
-<p>Figure 1 outlines the process of creating a grillage model.</p>
-<div class="figure align-center" id="id1">
-<span id="figure-1"></span><a class="reference internal image-reference" href="../_images/create_grillage.png"><img alt="../_images/create_grillage.png" src="../_images/create_grillage.png" /></a>
-<p class="caption"><span class="caption-text">Figure 1: Structure of creating a grillage model.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
-</div>
 <p>We will detail these main steps by creating a grillage model of a bridge deck as shown in Figure 1.</p>
 <div class="figure align-center" id="id2">
 <span id="figure-2"></span><a class="reference internal image-reference" href="../_images/42degnegative10m.png"><img alt="../_images/42degnegative10m.png" src="../_images/42degnegative10m.png" /></a>

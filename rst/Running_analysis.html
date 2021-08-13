@@ -191,21 +191,25 @@
 The <em>ospgrillage</em> module contains grillage analysis utilities which wraps <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code> commands to perform load analysis.
 This allow users to specify load cases comprising of multiple loads types and then run load case analysis.
 Furthermore, <em>ospgrillage</em> module also options for moving load analysis.</p>
+<p>Figure 1 shows the flowchart for the load analysis utilities of <em>ospgrillage</em>.</p>
+<div class="figure align-center" id="id2">
+<a class="reference internal image-reference" href="../_images/flowchart2.PNG"><img alt="../_images/flowchart2.PNG" src="../_images/flowchart2.PNG" /></a>
+<p class="caption"><span class="caption-text">Figure 1: Load analysis utility flow chart</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+</div>
 <div class="section" id="defining-loads">
 <h2>Defining loads<a class="headerlink" href="#defining-loads" title="Permalink to this headline">¶</a></h2>
 <p>Loads are created with the interface function <code class="docutils literal notranslate"><span class="pre">create_load()</span></code>. Users pass argument for <cite>type=</cite> to specify the load type.
 Available loads types include <a class="reference internal" href="#point">Point</a>, <a class="reference internal" href="#line">Line</a>, and <a class="reference internal" href="#patch">Patch</a> loads.</p>
-<p>[picture]</p>
 <p>Each load type requires user to specify its load point(s). This is achieved by a namedTuple <cite>LoadPoint(x,y,z,p)</cite> where <cite>x</cite>,`y`,`z` are the coordinates of the load point
 and <cite>p</cite> is the magnitude of the vertical loading. Note, <cite>p</cite> is a unit magnitude which is interpreted differently based on the load type - this will be later explained.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">point_load_location</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_load_vertices</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>  <span class="c1"># create load point</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">point_load_location</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_load_vertices</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>  <span class="c1"># create load point</span>
 </pre></div>
 </div>
 <p>Depending on the load type, a minimum number of LoadPoint namedTuple are required.
 These are set to each load type’s <cite>point#=</cite> variable for the load type class for the global coordinate system,
 or else <cite>local_point_#=</cite> variable for a user-defined local coordinate system, where # is a digit from 1 to 9.</p>
 <p>Loads are generally in the global coordinate system with respect to the created grillage model.
-However, a user-defined local coordinate system may also be used to assist in then creating <a class="reference internal" href="#compound-load">Compound load</a> later on.</p>
+However, a user-defined local coordinate system is required when defining <a class="reference internal" href="#compound-load">Compound load</a> later on.</p>
 <div class="section" id="nodal-loads">
 <h3>Nodal loads<a class="headerlink" href="#nodal-loads" title="Permalink to this headline">¶</a></h3>
 <p>Nodal loads are defined by using <code class="docutils literal notranslate"><span class="pre">create_load()</span></code>, specifying <cite>type=</cite> as “nodal”. There are six degrees-of-freedom (DOFs) for
@@ -214,7 +218,7 @@ acting loads in each node.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">node13force</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_load</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;nodal&quot;</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;nodal 13&quot;</span><span class="p">,</span> <span class="n">Fx</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">Fy</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span> <span class="c1"># load values in other dofs default to 0</span>
 </pre></div>
 </div>
-<p>Following are keyword arguments for creating nodal load using the interface function:</p>
+<p>Following are keyword arguments for creating nodal load:</p>
 <ol class="arabic simple">
 <li><p>node_tag (<cite>int</cite>): node tag number of model</p></li>
 <li><p>Fx (<cite>float</cite>): Force value in global x axis</p></li>
@@ -234,16 +238,15 @@ acting loads in each node.</p>
 <span id="point"></span><h3>Point Loads<a class="headerlink" href="#point-loads" title="Permalink to this headline">¶</a></h3>
 <p>Point load is a force applied on a single infinitesmal point of the grillage model.
 Point loads are used represent a large range of loads, such as truck axle, or superimposed dead load on a deck.</p>
-<p>[picture]</p>
-<p>Point load takes only a single <cite>LoadPoint</cite> tuple. <cite>p</cite> in the tuple should have units of force (eg. N, kN, kips, etc).</p>
+<p>Point load takes only a single <cite>LoadPoint</cite> tuple. <cite>p</cite> in the tuple should have units of force (eg. N, kN, kips, etc)
+- see Figure 2.</p>
+<div class="figure align-center" id="id3">
+<a class="reference internal image-reference" href="../_images/pointload.PNG"><img alt="../_images/pointload.PNG" src="../_images/pointload.PNG" /></a>
+<p class="caption"><span class="caption-text">Figure 2: Point load</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+</div>
 <p>The following example code creates a 20 force unit point load located at (5,0,2) in the global coordinate system.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">point_load_location</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_load_vertices</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>  <span class="c1"># create load point</span>
 <span class="n">Single</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_load</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;point&quot;</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;single point&quot;</span><span class="p">,</span> <span class="n">point1</span><span class="o">=</span><span class="n">point_load_location</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>To position the load instead in a user defined local coordinate system to later create a <a class="reference internal" href="#compound-load">Compound Load</a>, the variable <cite>localpoint1</cite> instead of <cite>point1</cite> is used.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">point_load_location</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_load_vertices</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>  <span class="c1"># create load point</span>
-<span class="n">Single</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_load</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;point&quot;</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;single point&quot;</span><span class="p">,</span> <span class="n">localpoint1</span><span class="o">=</span><span class="n">point_load_location</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -251,10 +254,13 @@ Point loads are used represent a large range of loads, such as truck axle, or su
 <span id="line"></span><h3>Line Loads<a class="headerlink" href="#line-loads" title="Permalink to this headline">¶</a></h3>
 <p>Line loads are loads exerted along a line. Line loads are useful to represent loads such as self weight of longitudinal beams or
 distributed load on beam elements along the span direction.</p>
-<p>[picture]</p>
-<p>Line loads are instantiated with the interface function <code class="docutils literal notranslate"><span class="pre">create_load(type=&quot;line)</span></code> and required at least two <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadPoint</span></code> tuple (corresponds to the start and end of the line load).
+<p>Line loads are instantiated with the interface function <code class="docutils literal notranslate"><span class="pre">create_load(type=&quot;line)</span></code> and required at least two <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadPoint</span></code> tuple (corresponds to the start and end of the line load) - see Figure 3.
 Using more than two tuples allows a curve line loading profile.
 <cite>p</cite> in the <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadPoint</span></code> tuple should have units of force per distance (eg. kN/m, kips/ft, etc).</p>
+<div class="figure align-center" id="id4">
+<a class="reference internal image-reference" href="../_images/lineload.PNG"><img alt="../_images/lineload.PNG" src="../_images/lineload.PNG" /></a>
+<p class="caption"><span class="caption-text">Figure 3: Line load</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+</div>
 <p>The following example code is a constant 2 force per distance unit line load (UDL)
 in the global coordinate system from -1 to 11 distance units in the <cite>x</cite>-axis and along the position in the <cite>z</cite>-axis at 3 distance units.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">barrier_point_1</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">LoadPoint</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
@@ -262,16 +268,18 @@ in the global coordinate system from -1 to 11 distance units in the <cite>x</cit
 <span class="n">Barrier</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_load</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;line&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Barrier curb&quot;</span><span class="p">,</span> <span class="n">point1</span><span class="o">=</span><span class="n">barrier_point_1</span><span class="p">,</span> <span class="n">point2</span><span class="o">=</span><span class="n">barrier_point_2</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>As before, to position the load instead in a user defined local coordinate system to later create a <a class="reference internal" href="#compound-load">Compound load</a> loads, the variable <cite>localpoint</cite> instead of <cite>point</cite> is used.</p>
 </div>
 <div class="section" id="patch-loads">
 <span id="patch"></span><h3>Patch loads<a class="headerlink" href="#patch-loads" title="Permalink to this headline">¶</a></h3>
 <p>Patch loads are useful to represent loads distributed uniformly over a certain area such as traffic lanes.</p>
-<p>[picture]</p>
 <p>Patch loads are instantiated with the interface function <code class="docutils literal notranslate"><span class="pre">create_load(type=&quot;patch)</span></code>, or directly
-using <code class="xref py py-class docutils literal notranslate"><span class="pre">PatchLoading</span></code>. Patch load requires at least four <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadPoint</span></code> tuple (corresponds to the vertices of the patch load).
+using <code class="xref py py-class docutils literal notranslate"><span class="pre">PatchLoading</span></code>. Patch load requires at least four <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadPoint</span></code> tuple (corresponds to the vertices of the patch load) - see Figure 4.
 Using eight tuples allows a curve surface loading profile.
 <cite>p</cite> in the <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadPoint</span></code> tuple should have units of force per area.</p>
+<div class="figure align-center" id="id5">
+<a class="reference internal image-reference" href="../_images/patchload.PNG"><img alt="../_images/patchload.PNG" src="../_images/patchload.PNG" /></a>
+<p class="caption"><span class="caption-text">Figure 4: Patch load</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
+</div>
 <p>The following example code creates a constant 5 force per area unit patch load
 in the global coordinate system.
 To position the load instead in a user defined local coordinate system, the variable <cite>localpoint</cite> instead of <cite>point</cite> is used.</p>
@@ -285,12 +293,15 @@ To position the load instead in a user defined local coordinate system, the vari
 </div>
 <div class="section" id="compound-loads">
 <span id="compound-load"></span><h3>Compound loads<a class="headerlink" href="#compound-loads" title="Permalink to this headline">¶</a></h3>
-<p>Two or more of these load types can be combined to form <a class="reference internal" href="#compound-load">Compound load</a> loads. All load types are applied in the direction of the global <cite>y</cite>-axis.
+<p>Two or more of the basic load types can be combined to form a Compound load. All load types are applied in the direction of the global <cite>y</cite>-axis.
 Loads in other directions and applied moments are currently not supported.</p>
-<p>[picture]</p>
 <p>To create a compound load, use the <code class="docutils literal notranslate"><span class="pre">create_compound_load()</span></code> function or the
 <code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundLoad</span></code> class - passing load objects for compounding as input parameters.</p>
-<p>The following code creates and add a point and line load to the <code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundLoad</span></code> object.</p>
+<div class="figure align-center" id="id6">
+<a class="reference internal image-reference" href="../_images/compoundload.PNG"><img alt="../_images/compoundload.PNG" src="../_images/compoundload.PNG" /></a>
+<p class="caption"><span class="caption-text">Figure 5: Compound load</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
+</div>
+<p>The following code creates and adds a point and line load of a Compound load.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># components in a compound load</span>
 <span class="n">wheel_1</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_load</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;point&quot;</span><span class="p">,</span> <span class="n">point1</span><span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">LoadPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>  <span class="c1"># point load 1</span>
 <span class="n">wheel_2</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_load</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;point&quot;</span><span class="p">,</span> <span class="n">point1</span><span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">LoadPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>  <span class="c1"># point load 2</span>
@@ -303,15 +314,15 @@ Loads in other directions and applied moments are currently not supported.</p>
 </pre></div>
 </div>
 <p>After defining all required load objects, <code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundLoad</span></code> requires users to define the global coordinate to map the origin of user-defined local coordinates
-to the global coordinate space. This is done using <code class="docutils literal notranslate"><span class="pre">set_global_coord()</span></code> function, passing a Point namedTuple
+to the global coordinate space. This is done using <code class="docutils literal notranslate"><span class="pre">set_global_coord()</span></code> function as seen in Figure 5, passing a Point namedTuple
 If not specified, the mapping’s reference point is default to the <strong>Origin</strong> of coordinate system i.e. (0,0,0)</p>
 <p>For example, this code line sets the <strong>Origin</strong> of the compound load, including all load points for all load objects of <strong>C_load</strong>  by x + 4, y + 0 , and z + 3.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">C_Load</span><span class="o">.</span><span class="n">set_global_coord</span><span class="p">(</span><span class="n">Point</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>Here are the valid input types for which CompoundLoad accepts:</p>
-<table class="colwidths-given docutils align-default" id="id2">
-<caption><span class="caption-text">Table: 1 Valid combinations for CompoundLoad object</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<table class="colwidths-given docutils align-default" id="id7">
+<caption><span class="caption-text">Table: 1 Valid combinations for CompoundLoad object</span><a class="headerlink" href="#id7" title="Permalink to this table">¶</a></caption>
 <colgroup>
 <col style="width: 25%" />
 <col style="width: 25%" />
@@ -386,7 +397,12 @@ function of <code class="xref py py-class docutils literal notranslate"><span cl
 <h2>Moving loads<a class="headerlink" href="#moving-loads" title="Permalink to this headline">¶</a></h2>
 <p>For moving load analysis, users create moving load objects using <code class="xref py py-class docutils literal notranslate"><span class="pre">MovingLoad</span></code> class. The moving load class takes a load type object (<a class="reference internal" href="#point">Point</a>, <a class="reference internal" href="#line">Line</a>, <a class="reference internal" href="#patch">Patch</a>, <a class="reference internal" href="#compound-load">Compound load</a>) and moves the load
 through a path points described by a <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code> object and obtained by the <code class="docutils literal notranslate"><span class="pre">get_path_points()</span></code> method.
-Path are defined using two namedTuple <code class="xref py py-class docutils literal notranslate"><span class="pre">Point(x,y,z)</span></code> to describe its start and end position.</p>
+Path are defined using two namedTuple <code class="xref py py-class docutils literal notranslate"><span class="pre">Point(x,y,z)</span></code> to describe its start and end position. Figure 6 summarizes the relationship between moving loads
+, paths and the position of the loads on the grillage model.</p>
+<div class="figure align-center" id="id8">
+<a class="reference internal image-reference" href="../_images/movingload.PNG"><img alt="../_images/movingload.PNG" src="../_images/movingload.PNG" /></a>
+<p class="caption"><span class="caption-text">Figure 6: Moving load</span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
+</div>
 <p>The following example code is two point loads defined as a moving load travelling a path from 2 to 4 distance units in the global coordinate system.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">front_wheel</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_load_vertices</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>   <span class="c1"># load point 1</span>
 <span class="n">back_wheel</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_load_vertices</span><span class="p">(</span><span class="n">x</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>   <span class="c1"># load point 2</span>
