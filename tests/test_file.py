@@ -419,27 +419,6 @@ def test_patch_load_using_linear_shape_function(bridge_model_42_negative):
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-# tests for Loadcase, compound load, and moving load objects
-# test to check if compound load gives correct coordinates for different load objects
-def test_compound_load_correct_position():
-    location = og.create_load_vertex(x=5, y=0, z=-2, p=20)  # create load point
-    Single = og.create_load(type="point",name="single point", point1=location)
-    # front_wheel = PointLoad(name="front wheel", localpoint1=LoadPoint(2, 0, 2, 50))
-    # Line load
-    barrierpoint_1 = og.create_load_vertex(x=-1, y=0, z=0, p=2)
-    barrierpoint_2 = og.create_load_vertex(x=11, y=0, z=0, p=2)
-    Barrier = og.LineLoading("Barrier curb load", point1=barrierpoint_1, point2=barrierpoint_2)
-
-    M1600 = og.create_compound_load(name="Lane and Barrier")
-    M1600.add_load(load_obj=Single)
-    M1600.add_load(load_obj=Barrier)  # this overwrites the current global pos of line load
-    # the expected midpoint (reference point initial is 6,0,0) is now at 9,0,5 (6+3, 0+0, 5+0)
-    # when setting the global coordinate, the global coordinate is added with respect to ref point (9,0,5)
-    # therefore (3+4, 0+0, 3+5) = (13,0,8)
-    #M1600.set_global_coord(og.Point(4, 0, 3))
-    a = 2
-    assert M1600.compound_load_obj_list[1].load_point_2 == og.LoadPoint(x=13.0, y=0, z=8.0, p=2)  # test if last point
-    # of line load obj within compounded load moves to correct position
 
 
 # test for when compound load does not received a local_coord input parameter, checks if returned coordinates are
@@ -466,8 +445,8 @@ def test_compound_load_distribution_to_nodes(bridge_model_42_negative):
     back_wheel = og.create_load(type="point", name="single point", point1=og.LoadPoint(5, 0, 2, 20))  # Single point load 20 N
     front_wheel = og.create_load(type="point",name="front wheel", point1=og.LoadPoint(2, 0, 2, 50))  # Single point load 50 N
     # compound the point loads
-    M1600.add_load(load_obj=back_wheel, local_coord=og.Point(6, 0, 5))
-    M1600.add_load(load_obj=front_wheel, local_coord=og.Point(5, 0, 5))
+    M1600.add_load(load_obj=back_wheel)
+    M1600.add_load(load_obj=front_wheel)
     M1600.set_global_coord(og.Point(0, 0, 0))
 
     static_truck = og.create_load_case(name="static M1600")
@@ -662,7 +641,7 @@ def test_28m_bridge_compound_point_load_midspan(ref_28m_bridge):
     p_list = [0,edge_dist,edge_dist+2,edge_dist+4,edge_dist+6,bridge_28.width-edge_dist,bridge_28.width]
     for p in p_list:
         point = og.create_load(type="point",name="compound point",point1=og.LoadPoint(bridge_28.long_dim/2,0,p,P))
-        test_point_load.add_load(load_obj=point,local_coord=og.Point(1,0,1))
+        test_point_load.add_load(load_obj=point)
     point_case = og.LoadCase(name="Compound point load case")
     point_case.add_load_groups(test_point_load)
 
@@ -746,10 +725,10 @@ def test_28m_bridge_moving_compound_load(ref_28m_bridge):
     back_wheel = og.create_load(type="point",name="single point", point1=og.LoadPoint(5, 0, 2, 20))  # Single point load 20 N
     front_wheel = og.create_load(type="point",name="front wheel", point1=og.LoadPoint(2, 0, 2, 50))  # Single point load 50 N
     # compound the point loads
-    M1600.add_load(load_obj=front_wheel, local_coord=og.Point(5, 0, 5))
-    M1600.add_load(load_obj=back_wheel, local_coord=og.Point(3, 0, 5))
-    M1600.add_load(load_obj=back_wheel, local_coord=og.Point(3, 0, 3))
-    M1600.add_load(load_obj=front_wheel, local_coord=og.Point(5, 0, 3))
+    M1600.add_load(load_obj=front_wheel)
+    M1600.add_load(load_obj=back_wheel)
+    M1600.add_load(load_obj=back_wheel)
+    M1600.add_load(load_obj=front_wheel)
     M1600.set_global_coord(og.Point(-6, 0, 0))
 
     truck = og.create_moving_load(name="4 wheel truck")

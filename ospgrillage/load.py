@@ -41,6 +41,17 @@ def create_load_vertex(**kwargs):
         raise ValueError("Missing one or more keyword arguments for x=, y=, z=, or p=")
 
 
+def create_point(**kwargs):
+    """
+    User interface function to create a Point namedTuple.
+    :param kwargs:
+    :return: Point namedTuple
+    """
+    x = kwargs.get("x",None)
+    y = kwargs.get("y",0)
+    z = kwargs.get("z",None)
+    return Point(x,y,z)
+
 def create_load_case(**kwargs):
     """
     User interface function to create load case/ LoadCase objects. This function creates the Load case object, users
@@ -673,7 +684,7 @@ class CompoundLoad:
         self.centroid = Point(0, 0, 0)  # named tuple Point
         self.global_coord = self.centroid
 
-    def add_load(self, load_obj: Loads, local_coord: Point = None):
+    def add_load(self, load_obj: Loads):
         """
         Function to add load object to compound load group. If a local_coord parameter is given, this new local_coord overwrites the coordinates (either local or global) of the load object.
 
@@ -713,7 +724,7 @@ class CompoundLoad:
         #     load_obj_copy.move_load(self.global_coord)
 
         self.compound_load_obj_list.append(load_obj_copy)  # after update, append to list
-        self.local_coord_list.append(local_coord)
+        # self.local_coord_list.append(local_coord)
 
     def set_global_coord(self, global_coord: Point):
         """
