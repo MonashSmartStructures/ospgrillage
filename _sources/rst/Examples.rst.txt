@@ -109,8 +109,8 @@ Adding a line load in the mid span across its width.
     # Create vertical load points in global coordinate system
 
     # Line load running along midspan width (P is kN/m)
-    line_point_1 = ospg.create_load_vertex(x=L/2, y=0, z=0, p=P)
-    line_point_2 = ospg.create_load_vertex(x=L/2, y=0, z=w, p=P)
+    line_point_1 = ospg.create_load_vertex(x=L/2, z=0, p=P)
+    line_point_2 = ospg.create_load_vertex(x=L/2, z=w, p=P)
     test_line_load = ospg.create_load(type='line',name="Test Load", point1=line_point_1, point2=line_point_2)
 
     # Create load case, add loads, and assign
@@ -131,7 +131,7 @@ Adding Compounded point loads
     test_points_load = ospg.create_compound_load(name="Points Test Case (Global)")
 
     for p in p_list:
-        point = ospg.create_load(type='point',name="Point",point1=ospg.create_load_vertex(x=L/2, y=0, z=p, p=P))
+        point = ospg.create_load(type='point',name="Point",point1=ospg.create_load_vertex(x=L/2, z=p, p=P))
         test_points_load.add_load(load_obj = point)
 
     # Create load case, add loads, and assign
@@ -150,7 +150,7 @@ Adding Compound load, but this time defining Compound loads in Local coordinates
     test_points_load = ospg.create_compound_load(name="Points Test Case (Local in Point)")
 
     for p in p_list:
-        point = ospg.create_load(type='point',name="Point",localpoint1=ospg.create_load_vertex(x=0, y=0, z=p, p=P))
+        point = ospg.create_load(type='point',name="Point",localpoint1=ospg.create_load_vertex(x=0, z=p, p=P))
         # maybe local point is useless?
         test_points_load.add_load(load_obj = point)
 
@@ -204,16 +204,19 @@ Here we add a moving load analysis to the 28 m bridge model
 
     # create truck in local coordinate system
     two_axle_truck = ospg.create_compound_load(name="Two Axle Truck")
-    point = ospg.create_load(type="point",name="Point",point1=ospg.LoadPoint(x=0, y=0, z=0, p=P))
+    point1 = ospg.create_load(type="point",name="Point",point1=ospg.LoadPoint(x=0, y=0, z=0, p=P))
+    point2 = ospg.create_load(type="point",name="Point",point1=ospg.LoadPoint(x=0, y=0, z=axl_w, p=P))
+    point3 = ospg.create_load(type="point",name="Point",point1=ospg.LoadPoint(x=axl_s, y=0, z=axl_w, p=P))
+    point4 = ospg.create_load(type="point",name="Point",point1=ospg.LoadPoint(x=axl_s, y=0, z=0, p=P))
 
     axl_w = 2*m # axle width
     axl_s = 2*m # axle spacing
     veh_l = axl_s # vehicle length
 
-    two_axle_truck.add_load(load_obj = point, local_coord = ospg.Point(0,0,0))
-    two_axle_truck.add_load(load_obj = point, local_coord = ospg.Point(0,0,axl_w))
-    two_axle_truck.add_load(load_obj = point, local_coord = ospg.Point(axl_s,0,axl_w))
-    two_axle_truck.add_load(load_obj = point, local_coord = ospg.Point(axl_s,0,0))
+    two_axle_truck.add_load(load_obj = point1)
+    two_axle_truck.add_load(load_obj = point2)
+    two_axle_truck.add_load(load_obj = point3)
+    two_axle_truck.add_load(load_obj = point4)
 
     # move to global?
 

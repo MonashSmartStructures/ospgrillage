@@ -171,7 +171,7 @@ After defining all required load objects, :class:`~CompoundLoad` requires users 
 to the global coordinate space. This is done using ``set_global_coord()`` function, passing a Point namedTuple
 If not specified, the mapping's reference point is default to the **Origin** of coordinate system i.e. (0,0,0)
 
-For example, this code line sets the **Origin** as well as load points for all load objects of **C_load**  by x + 4, y + 0 , and z + 3.
+For example, this code line sets the **Origin** of the compound load, including all load points for all load objects of **C_load**  by x + 4, y + 0 , and z + 3.
 
 .. code-block:: python
 

@@ -305,7 +305,7 @@ Loads in other directions and applied moments are currently not supported.</p>
 <p>After defining all required load objects, <code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundLoad</span></code> requires users to define the global coordinate to map the origin of user-defined local coordinates
 to the global coordinate space. This is done using <code class="docutils literal notranslate"><span class="pre">set_global_coord()</span></code> function, passing a Point namedTuple
 If not specified, the mapping’s reference point is default to the <strong>Origin</strong> of coordinate system i.e. (0,0,0)</p>
-<p>For example, this code line sets the <strong>Origin</strong> as well as load points for all load objects of <strong>C_load</strong>  by x + 4, y + 0 , and z + 3.</p>
+<p>For example, this code line sets the <strong>Origin</strong> of the compound load, including all load points for all load objects of <strong>C_load</strong>  by x + 4, y + 0 , and z + 3.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">C_Load</span><span class="o">.</span><span class="n">set_global_coord</span><span class="p">(</span><span class="n">Point</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
 </pre></div>
 </div>
