@@ -31,3 +31,11 @@ def bridge_model_42_negative(ref_bridge_properties):
 
 # --------------------------------
 # Tests here
+# test if model instance run is successful
+def test_model_instance(bridge_model_42_negative):
+    example_bridge = bridge_model_42_negative
+    # og.opsplt.plot_model("nodes")
+
+    print(og.ops.nodeCoord(18))
+    print("pass")
+    og.ops.wipe()
