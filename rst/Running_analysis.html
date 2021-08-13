@@ -193,7 +193,7 @@ This allow users to specify load cases comprising of multiple loads types and th
 Furthermore, <em>ospgrillage</em> module also options for moving load analysis.</p>
 <p>Figure 1 shows the flowchart for the load analysis utilities of <em>ospgrillage</em>.</p>
 <div class="figure align-center" id="id2">
-<a class="reference internal image-reference" href="../_images/flowchart2.PNG"><img alt="../_images/flowchart2.PNG" src="../_images/flowchart2.PNG" /></a>
+<a class="reference internal image-reference" href="../_images/flowchart2.png"><img alt="../_images/flowchart2.png" src="../_images/flowchart2.png" /></a>
 <p class="caption"><span class="caption-text">Figure 1: Load analysis utility flow chart</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
 <div class="section" id="defining-loads">
@@ -241,7 +241,7 @@ Point loads are used represent a large range of loads, such as truck axle, or su
 <p>Point load takes only a single <cite>LoadPoint</cite> tuple. <cite>p</cite> in the tuple should have units of force (eg. N, kN, kips, etc)
 - see Figure 2.</p>
 <div class="figure align-center" id="id3">
-<a class="reference internal image-reference" href="../_images/pointload.PNG"><img alt="../_images/pointload.PNG" src="../_images/pointload.PNG" /></a>
+<a class="reference internal image-reference" href="../_images/pointload.png"><img alt="../_images/pointload.png" src="../_images/pointload.png" /></a>
 <p class="caption"><span class="caption-text">Figure 2: Point load</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </div>
 <p>The following example code creates a 20 force unit point load located at (5,0,2) in the global coordinate system.</p>
@@ -258,7 +258,7 @@ distributed load on beam elements along the span direction.</p>
 Using more than two tuples allows a curve line loading profile.
 <cite>p</cite> in the <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadPoint</span></code> tuple should have units of force per distance (eg. kN/m, kips/ft, etc).</p>
 <div class="figure align-center" id="id4">
-<a class="reference internal image-reference" href="../_images/lineload.PNG"><img alt="../_images/lineload.PNG" src="../_images/lineload.PNG" /></a>
+<a class="reference internal image-reference" href="../_images/lineload.png"><img alt="../_images/lineload.png" src="../_images/lineload.png" /></a>
 <p class="caption"><span class="caption-text">Figure 3: Line load</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
 </div>
 <p>The following example code is a constant 2 force per distance unit line load (UDL)
@@ -277,7 +277,7 @@ using <code class="xref py py-class docutils literal notranslate"><span class="p
 Using eight tuples allows a curve surface loading profile.
 <cite>p</cite> in the <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadPoint</span></code> tuple should have units of force per area.</p>
 <div class="figure align-center" id="id5">
-<a class="reference internal image-reference" href="../_images/patchload.PNG"><img alt="../_images/patchload.PNG" src="../_images/patchload.PNG" /></a>
+<a class="reference internal image-reference" href="../_images/patchload.png"><img alt="../_images/patchload.png" src="../_images/patchload.png" /></a>
 <p class="caption"><span class="caption-text">Figure 4: Patch load</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
 </div>
 <p>The following example code creates a constant 5 force per area unit patch load
@@ -298,7 +298,7 @@ Loads in other directions and applied moments are currently not supported.</p>
 <p>To create a compound load, use the <code class="docutils literal notranslate"><span class="pre">create_compound_load()</span></code> function or the
 <code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundLoad</span></code> class - passing load objects for compounding as input parameters.</p>
 <div class="figure align-center" id="id6">
-<a class="reference internal image-reference" href="../_images/compoundload.PNG"><img alt="../_images/compoundload.PNG" src="../_images/compoundload.PNG" /></a>
+<a class="reference internal image-reference" href="../_images/compoundload.png"><img alt="../_images/compoundload.png" src="../_images/compoundload.png" /></a>
 <p class="caption"><span class="caption-text">Figure 5: Compound load</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
 </div>
 <p>The following code creates and adds a point and line load of a Compound load.</p>
@@ -400,7 +400,7 @@ through a path points described by a <code class="xref py py-class docutils lite
 Path are defined using two namedTuple <code class="xref py py-class docutils literal notranslate"><span class="pre">Point(x,y,z)</span></code> to describe its start and end position. Figure 6 summarizes the relationship between moving loads
 , paths and the position of the loads on the grillage model.</p>
 <div class="figure align-center" id="id8">
-<a class="reference internal image-reference" href="../_images/movingload.PNG"><img alt="../_images/movingload.PNG" src="../_images/movingload.PNG" /></a>
+<a class="reference internal image-reference" href="../_images/movingload.png"><img alt="../_images/movingload.png" src="../_images/movingload.png" /></a>
 <p class="caption"><span class="caption-text">Figure 6: Moving load</span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
 </div>
 <p>The following example code is two point loads defined as a moving load travelling a path from 2 to 4 distance units in the global coordinate system.</p>
@@ -466,10 +466,9 @@ The results are returned as <a class="reference external" href="http://xarray.py
 </ul>
 <p>Here is an example of how the data array looks like in practice:</p>
 <div class="figure align-center">
-<a class="reference internal image-reference" href="../_images/stucture_dataarray.PNG"><img alt="../_images/stucture_dataarray.PNG" src="../_images/stucture_dataarray.PNG" style="width: 670.5px; height: 122.25px;" /></a>
+<a class="reference internal image-reference" href="images/stucture_dataarray.png"><img alt="images/stucture_dataarray.png" src="images/stucture_dataarray.png" /></a>
 </div>
-<p>Additionally,</p>
-<p>From here, users can use xarray’s function for data array to extract ‘slices’ of data.</p>
+<p>From here, users can use xarray’s function for data array to query data.</p>
 <div class="section" id="obtaining-load-combinations">
 <h3>Obtaining load combinations<a class="headerlink" href="#obtaining-load-combinations" title="Permalink to this headline">¶</a></h3>
 <p>For load combinations, users passes <cite>get_combination=</cite> argument as <em>True</em> to <code class="docutils literal notranslate"><span class="pre">get_results()</span></code>.</p>

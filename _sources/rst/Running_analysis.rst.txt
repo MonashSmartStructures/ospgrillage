@@ -9,7 +9,7 @@ Furthermore, *ospgrillage* module also options for moving load analysis.
 
 Figure 1 shows the flowchart for the load analysis utilities of *ospgrillage*.
 
-..  figure:: ../../_images/flowchart2.PNG
+..  figure:: ../../_images/flowchart2.png
     :align: center
     :scale: 75 %
 
@@ -76,7 +76,7 @@ Point loads are used represent a large range of loads, such as truck axle, or su
 Point load takes only a single `LoadPoint` tuple. `p` in the tuple should have units of force (eg. N, kN, kips, etc)
 - see Figure 2.
 
-..  figure:: ../../_images/pointload.PNG
+..  figure:: ../../_images/pointload.png
     :align: center
     :scale: 75 %
 
@@ -102,7 +102,7 @@ Line loads are instantiated with the interface function ``create_load(type="line
 Using more than two tuples allows a curve line loading profile.
 `p` in the :class:`LoadPoint` tuple should have units of force per distance (eg. kN/m, kips/ft, etc).
 
-..  figure:: ../../_images/lineload.PNG
+..  figure:: ../../_images/lineload.png
     :align: center
     :scale: 75 %
 
@@ -131,7 +131,7 @@ Using eight tuples allows a curve surface loading profile.
 `p` in the :class:`LoadPoint` tuple should have units of force per area.
 
 
-..  figure:: ../../_images/patchload.PNG
+..  figure:: ../../_images/patchload.png
     :align: center
     :scale: 75 %
 
@@ -160,7 +160,7 @@ Loads in other directions and applied moments are currently not supported.
 To create a compound load, use the ``create_compound_load()`` function or the
 :class:`CompoundLoad` class - passing load objects for compounding as input parameters.
 
-..  figure:: ../../_images/compoundload.PNG
+..  figure:: ../../_images/compoundload.png
     :align: center
     :scale: 75 %
 
@@ -273,7 +273,7 @@ through a path points described by a :class:`Path` object and obtained by the ``
 Path are defined using two namedTuple :class:`Point(x,y,z)` to describe its start and end position. Figure 6 summarizes the relationship between moving loads
 , paths and the position of the loads on the grillage model.
 
-..  figure:: ../../_images/movingload.PNG
+..  figure:: ../../_images/movingload.png
     :align: center
     :scale: 75 %
 
@@ -372,13 +372,12 @@ The *results* dataset contains dimensions of:
 
 Here is an example of how the data array looks like in practice:
 
-..  figure:: ../images/stucture_dataarray.PNG
+..  figure:: ../images/stucture_dataarray.png
     :align: center
     :scale: 75 %
 
-Additionally,
 
-From here, users can use xarray's function for data array to extract 'slices' of data.
+From here, users can use xarray's function for data array to query data.
 
 Obtaining load combinations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
