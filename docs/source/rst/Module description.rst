@@ -7,7 +7,7 @@ Alternatively, users can directly interact with the module objects without using
 
 Figure 1 summarizes the process of creating grillage models using *ospgrillage*.
 
-..  figure:: ../../_images/flowchart1.PNG
+..  figure:: ../../_images/flowchart1.png
     :align: center
     :scale: 75 %
 
@@ -106,7 +106,7 @@ Creating section objects
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Similar to :class:`Material`, a :class:`Section` class object is needed when `defining Grillage member`_.
 
-To create sections, users call the ``create_section()`` function which returns a :class:`Section` class object. Similarily, users can interact with
+To create sections, users call the ``create_section()`` function which returns a :class:`Section` class object. Similarly, users can interact with
 :class:`Section` class directly.
 
 The following code line creates a :class:`Section` object called *I_beam_section*, which is earlier passed as input for its corresponding grillage element, *I_beam*:
