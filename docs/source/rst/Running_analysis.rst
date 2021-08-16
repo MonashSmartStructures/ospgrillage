@@ -160,6 +160,9 @@ Loads in other directions and applied moments are currently not supported.
 To create a compound load, use the ``create_compound_load()`` function or the
 :class:`CompoundLoad` class - passing load objects for compounding as input parameters.
 
+Compound load are defined in a local coordinate system and then set to global coordinate system of the grillage. Figure 5
+shows the relationship and process of mapping local to global system of a compound load.
+
 ..  figure:: ../../_images/compoundload.png
     :align: center
     :scale: 75 %

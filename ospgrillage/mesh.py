@@ -950,3 +950,24 @@ class SweepPath:
         else:
             # TODO for curve line
             pass
+
+
+class OrthogonalMesh(Mesh):
+    def __init__(self, long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
+                 skew_2, ext_to_int_a, ext_to_int_b):
+        super().__init__(long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
+                         skew_2, ext_to_int_a, ext_to_int_b)
+
+        pass
+
+
+class ObliqueMesh(Mesh):
+    def __init__(self, long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
+                 skew_2, ext_to_int_a, ext_to_int_b):
+        super().__init__(long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
+                         skew_2, ext_to_int_a, ext_to_int_b)
+
+        pass
+
+
+

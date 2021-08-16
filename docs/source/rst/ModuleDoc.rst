@@ -198,6 +198,8 @@ Use the following links for more on:
 
 * `OpenSeesPy documentation <https://openseespydoc.readthedocs.io/en/latest/>`_
 
+* `Example bridge with skew edges <https://www.researchgate.net/publication/289736527_Effect_of_skew_angle_on_behavior_of_simply_supported_R_C_T-beam_bridge_decks>`_
+
 ====================
 Further development
 ====================
