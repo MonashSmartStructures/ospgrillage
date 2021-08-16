@@ -297,6 +297,8 @@ To position the load instead in a user defined local coordinate system, the vari
 Loads in other directions and applied moments are currently not supported.</p>
 <p>To create a compound load, use the <code class="docutils literal notranslate"><span class="pre">create_compound_load()</span></code> function or the
 <code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundLoad</span></code> class - passing load objects for compounding as input parameters.</p>
+<p>Compound load are defined in a local coordinate system and then set to global coordinate system of the grillage. Figure 5
+shows the relationship and process of mapping local to global system of a compound load.</p>
 <div class="figure align-center" id="id6">
 <a class="reference internal image-reference" href="../_images/compoundload.png"><img alt="../_images/compoundload.png" src="../_images/compoundload.png" /></a>
 <p class="caption"><span class="caption-text">Figure 5: Compound load</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
