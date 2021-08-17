@@ -39,10 +39,17 @@ As will be needed later, we also prepared the unit convention of variables for t
 
     import ospgrillage as ospg
     # create unit signs for variables of example
+    kilo = 1e3
+    milli = 1e-3
     N = 1
     m = 1
-    Giga = 1e9
-    Pa = N/m**2
+    mm = milli * m
+    m2 = m ** 2
+    m3 = m ** 3
+    m4 = m ** 4
+    kN = kilo * N
+    MPa = N / ((mm) ** 2)
+    GPa = kilo * MPa
 
 .. _defining Grillage member:
 
@@ -222,19 +229,19 @@ The member string tag specifies the standard grillage element to assign the :cla
 Heres the codeline that assigns interior main beams of the grillage model with the earlier object of intermediate concrete *I-beam*:
 
 .. code-block:: python
-    
-	example_bridge.set_member(I_beam, member="interior_main_beam")
+
+    example_bridge.set_member(I_beam, member="interior_main_beam")
 
 And the rest of grillage elements are assigned as such
 
 .. code-block:: python
 
-	example_bridge.set_member(I_beam, member="interior_main_beam")
-	example_bridge.set_member(I_beam, member="exterior_main_beam_1")
-	example_bridge.set_member(I_beam, member="exterior_main_beam_1")
-	example_bridge.set_member(edge_beam, member="edge_beam")
-	example_bridge.set_member(slab, member="transverse_slab")
-	example_bridge.set_member(edge_slab, member="edge_slab")
+    example_bridge.set_member(I_beam, member="interior_main_beam")
+    example_bridge.set_member(I_beam, member="exterior_main_beam_1")
+    example_bridge.set_member(I_beam, member="exterior_main_beam_1")
+    example_bridge.set_member(edge_beam, member="edge_beam")
+    example_bridge.set_member(slab, member="transverse_slab")
+    example_bridge.set_member(edge_slab, member="edge_slab")
 
 
 For orthogonal meshes, nodes in the transverse direction have varied spacing based on the skew edge region.
@@ -289,7 +296,7 @@ the following code line and a plot like in `Figure 2`_ will be returned:
 .. code-block:: python
 
     ospg.opsplt.plot_model("nodes")
-	
+
 Whilst all nodes will be visualized, only the assigned members are visualized. This is a good way to check if desired members are assigned
 and hence, shown on the plot. Failure to not have all members assigned will affect subsequent analysis.
 

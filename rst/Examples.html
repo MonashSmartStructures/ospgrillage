@@ -475,8 +475,12 @@ lusas plot</p>
 <h2>Oblique vs Orthogonal Mesh<a class="headerlink" href="#oblique-vs-orthogonal-mesh" title="Permalink to this headline">¶</a></h2>
 <p>Here are more examples showing the various mesh types.</p>
 <ol class="arabic simple">
-<li><p>28 m bridge with “Oblique” mesh</p></li>
+<li><p>28 m bridge with “Oblique” mesh - positive 20 degree</p></li>
 </ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_grillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;SuperT_10m&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">skew</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+                         <span class="n">num_long_grid</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">edge_beam_dist</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mesh_type</span><span class="o">=</span><span class="s2">&quot;Oblique&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 <div class="figure align-center" id="id2">
 <a class="reference internal image-reference" href="../_images/standard_oblique.PNG"><img alt="../_images/standard_oblique.PNG" src="../_images/standard_oblique.PNG" /></a>
 <p class="caption"><span class="caption-text">Figure 2: Oblique mesh</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
@@ -484,6 +488,10 @@ lusas plot</p>
 <ol class="arabic simple" start="2">
 <li><p>28 m bridge with “Ortho” mesh</p></li>
 </ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_grillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;SuperT_10m&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">skew</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+                         <span class="n">num_long_grid</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">edge_beam_dist</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mesh_type</span><span class="o">=</span><span class="s2">&quot;Ortho&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 <div class="figure align-center" id="id3">
 <a class="reference internal image-reference" href="../_images/standard_ortho.PNG"><img alt="../_images/standard_ortho.PNG" src="../_images/standard_ortho.PNG" /></a>
 <p class="caption"><span class="caption-text">Figure 3: Orthogonal mesh</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
