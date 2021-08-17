@@ -926,7 +926,7 @@ class OspGrillage:
         return bounded_node, bounded_grids
 
     # Setter for Point loads
-    def assign_point_to_four_node(self, point, mag, shape_func="hermite"):
+    def assign_point_to_four_node(self, point, mag, shape_func="linear"):
 
         node_mx = []
         node_mz = []
@@ -1375,9 +1375,9 @@ class OspGrillage:
                                             corresponding load factor as value.
         :type load_case_and_factor_dict: str
 
-        Example format:
+        Example format of input dict for add_load_combination
 
-        load_comb = {DL:1.2, LL: 1.5}
+        load_comb = {"name_of_load_case_1":1.2, "name_of_load_case_2": 1.5}
 
         """
         load_case_dict_list = []  # list of dict: structure of dict See line

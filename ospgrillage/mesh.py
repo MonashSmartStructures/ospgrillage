@@ -956,6 +956,23 @@ class SweepPath:
 class OrthogonalMesh(Mesh):
     def __init__(self, long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
                  skew_2, ext_to_int_a, ext_to_int_b):
+        """
+
+        :param long_dim:
+        :param width:
+        :param trans_dim:
+        :param edge_dist_a:
+        :param edge_dist_b:
+        :param num_trans_beam:
+        :param num_long_beam:
+        :param skew_1:
+        :param skew_2:
+        :param ext_to_int_a:
+        :param ext_to_int_b:
+        """
+        # super init will create
+        # - 2 x edge construction lines
+        # - sweep path
         super().__init__(long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
                          skew_2, ext_to_int_a, ext_to_int_b)
 

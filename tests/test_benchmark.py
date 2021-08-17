@@ -4,18 +4,18 @@ import pytest
 import pickle
 import json
 import numpy as np
+import pandas
 # import openseespy.postprocessing.ops_vis as opsv
 
 # importing ospgrillage
 import sys
 
-sys.path.append("E:\PostPhD\~Code\Python\Public\ops-grillage trials\ops-grillage")
 import ospgrillage as ospg
+
 
 @pytest.fixture()
 def create_grillage():
     # Units #
-
     kilo = 1e3
     milli = 1e-3
     N = 1
@@ -25,14 +25,14 @@ def create_grillage():
     m3 = m ** 3
     m4 = m ** 4
     kN = kilo * N
-    MPa = N / ((mm) ** 2)
+    MPa = N / (mm ** 2)
     GPa = kilo * MPa
 
     # read json file for model inputs
     with open('super_t_28.json') as f:
         bridge = json.load(f)
 
-    # material
+    # material #
     material_prop = bridge["material"]
 
     # sections (lusas parameters)
@@ -41,7 +41,7 @@ def create_grillage():
     trans_prop = bridge["transverse"]
     end_trans_prop = bridge["end_slab"]
 
-    ## grid
+    # grid #
     grid_prop = bridge["grid"]
 
     grid_name = grid_prop["name"]
@@ -52,17 +52,17 @@ def create_grillage():
     edge_dist = grid_prop["edge_dist"] * m  # distance between edge beam and first exterior beam
     angle = grid_prop["angle"]  # skew angle
 
-    ## loading
+    # loading #
     P = bridge["load"] * kN
 
-    ## load case names (also used as load names)
+    # load case names (also used as load names) #
     load_name = ["Line Test",
                  "Points Test (Global)",
                  "Points Test (Local)",
                  "Patch Test",
                  "Moving Two Axle Truck"]
 
-    ## load combos (line with patch)
+    # load combos (line with patch) #
     load_combo = {"name": "Load Combo",
                   "factor_1": bridge["load factors"][0],
                   "factor_2": bridge["load factors"][1]}
@@ -142,7 +142,8 @@ def create_grillage():
     return simple_grid
 
 
-def test_analysis_simple_grid(create_grillage):
+@pytest.fixture()
+def add_analysis_to_simple_grid(create_grillage):
     kilo = 1e3
     milli = 1e-3
     N = 1
@@ -165,7 +166,7 @@ def test_analysis_simple_grid(create_grillage):
     angle = grid_prop["angle"]  # skew angle
 
     ## loading
-    P = bridge["load"] * kN
+    P = - bridge["load"] * kN
 
     ## load case names (also used as load names)
     load_name = ["Line Test",
@@ -179,12 +180,11 @@ def test_analysis_simple_grid(create_grillage):
                   "factor_1": bridge["load factors"][0],
                   "factor_2": bridge["load factors"][1]}
     simple_grid = create_grillage
-    # pyfile will not be generated for further analysis
     # opsv.plot_model("nodes") # plotting of grid for visualisation
 
     # Loading #
 
-    ## Line load running along midspan width (P is kN/m)
+    # Line load running along midspan width (P is kN/m)
     line_point_1 = ospg.create_load_vertex(x=L / 2, z=0, p=P)
     line_point_2 = ospg.create_load_vertex(x=L / 2, z=w, p=P)
     test_line_load = ospg.create_load(type='line',
@@ -195,7 +195,7 @@ def test_analysis_simple_grid(create_grillage):
     line_case.add_load_groups(test_line_load)
     simple_grid.add_load_case(line_case)
 
-    ## Compound Point loads running along midspan at node points
+    # Compound Point loads running along midspan at node points
 
     n_int = n_l - 4  # number of interior members
     space = (w - 2 * edge_dist) / n_int  # spacing of interior members
@@ -205,7 +205,7 @@ def test_analysis_simple_grid(create_grillage):
         p_list.append(edge_dist + space * (s + 1) * m)
     p_list += [w - edge_dist, w]  # include other members nodes
 
-    ### in global
+    # in global
     test_points_load = ospg.create_compound_load(name=load_name[1])
 
     for p in p_list:
@@ -218,7 +218,7 @@ def test_analysis_simple_grid(create_grillage):
     points_case.add_load_groups(test_points_load)
     simple_grid.add_load_case(points_case)
 
-    ### in local
+    # in local
     test_points_load = ospg.create_compound_load(name=load_name[2])
 
     for p in p_list:
@@ -234,7 +234,7 @@ def test_analysis_simple_grid(create_grillage):
     points_case.add_load_groups(test_points_load)
     simple_grid.add_load_case(points_case)
 
-    ## Patch load over entire bridge deck (P is kN/m2)
+    # Patch load over entire bridge deck (P is kN/m2)
     patch_point_1 = ospg.create_load_vertex(x=0, z=0, p=P)
     patch_point_2 = ospg.create_load_vertex(x=L, z=0, p=P)
     patch_point_3 = ospg.create_load_vertex(x=L, z=w, p=P)
@@ -247,7 +247,7 @@ def test_analysis_simple_grid(create_grillage):
     patch_case.add_load_groups(test_patch_load)
     simple_grid.add_load_case(patch_case)
 
-    ## moving load  2 axle truck (equal loads, 2x2 spacing centre line running)
+    # moving load  2 axle truck (equal loads, 2x2 spacing centre line running)
 
     # create truck in local coordinate system
     two_axle_truck = ospg.create_compound_load(name=load_name[4])
@@ -298,13 +298,59 @@ def test_analysis_simple_grid(create_grillage):
     move_results = simple_grid.get_results(load_case=load_name[-1])  # specific moving load case
     combo_results = simple_grid.get_results(get_combinations=True)  # get combination
 
+    return all_results, move_results, combo_results
+
+
+def test_line_load_results(add_analysis_to_simple_grid):
+    kilo = 1e3
+    milli = 1e-3
+    N = 1
+    m = 1
+    mm = milli * m
+    m2 = m ** 2
+    m3 = m ** 3
+    m4 = m ** 4
+    kN = kilo * N
+    MPa = N / ((mm) ** 2)
+    GPa = kilo * MPa
+    with open('super_t_28.json') as f:
+        bridge = json.load(f)
+    grid_prop = bridge["grid"]
+    L = grid_prop["span"] * m  # span
+    w = grid_prop["width"] * m  # width
+    n_l = grid_prop["n_longit"]  # number of longitudinal members
+    n_t = grid_prop["n_trans"]  # number of transverse members
+    edge_dist = grid_prop["edge_dist"] * m  # distance between edge beam and first exterior beam
+    angle = grid_prop["angle"]  # skew angle
+
+    ## loading
+    P = bridge["load"] * kN
+
+    ## load case names (also used as load names)
+    load_name = ["Line Test",
+                 "Points Test (Global)",
+                 "Points Test (Local)",
+                 "Patch Test",
+                 "Moving Two Axle Truck"]
+
+    ## load combos (line with patch)
+    load_combo = {"name": "Load Combo",
+                  "factor_1": bridge["load factors"][0],
+                  "factor_2": bridge["load factors"][1]}
+
+    axl_w = 2 * m  # axle width
+    axl_s = 2 * m  # axle spacing
+    veh_l = axl_s  # vehicle length
+
+    # ospg get results
+    all_results, move_results, combo_results = add_analysis_to_simple_grid
+
     ### Hand calculatioon checks ###
 
     hand_calcs = [-w * P * L / 4] + [-n_l * P * L / 4] * 2 + [-w * P * L ** 2 / 8, -2 * P * (L / 2 - axl_s / 2),
                                                               -load_combo["factor_1"] * w * P * L / 4 - load_combo[
                                                                   "factor_2"] * w * P * L ** 2 / 8]
     # line, point, patch x 3, moving load, combination
-
 
     ele_set = list(range(84, 90 + 1))  # midspan members, i is the midspan node
     # static cases
@@ -322,7 +368,7 @@ def test_analysis_simple_grid(create_grillage):
 
     comp_calcs = list(mid_sta) + [mid_mov] + [mid_comb]
 
-    diff = np.array(hand_calcs) - np.array(comp_calcs)
+    diff = np.array(hand_calcs) - np.array(comp_calcs)  # diff between hand calcs and ospg
 
     print(hand_calcs)
     print(comp_calcs)
@@ -331,14 +377,62 @@ def test_analysis_simple_grid(create_grillage):
     # read pickle
     var = pickle.load(open("Lusas_Outputs_cleaned.p", "rb"))
 
+    # HARD CODE MAPPING - here specific for test_benchmark bridge and its ospg counterpart only
+    # create mapping for nodes between LUSAS and ospg
+    node_lusas = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 33, 35, 37, 39, 41, 43, 45, 47, 49, 51, 53, 65, 67, 69, 71, 73,
+                  75, 77, 79, 81, 83, 85, 97, 99, 101, 103, 105, 107, 109, 111, 113, 115, 117, 129, 131, 133, 135, 137,
+                  139, 141, 143, 145, 147, 149, 161, 163, 165, 167, 169, 171, 173, 175, 177, 179, 181, 193, 195, 197,
+                  199, 201, 203, 205, 207, 209, 211, 213]
+    node_ospg = [1, 15, 22, 29, 36, 43, 50, 57, 64, 71, 8, 2, 16, 23, 30, 37, 44, 51, 58, 65, 72, 9, 3, 17, 24, 31, 38,
+                 45, 52, 59, 66, 73, 10, 4, 18, 25, 32, 39, 46, 53, 60, 67, 74, 11, 5, 19, 26, 33, 40, 47, 54, 61, 68,
+                 75, 12, 6, 20, 27, 34, 41, 48, 55, 62, 69, 76, 13, 7, 21, 28, 35, 42, 49, 56, 63, 70, 77, 14]
     # create long ele matching dict for long ele , a is LUSAS, b is ospg
-    a = [127, 106, 85, 64, 43, 22, 1, 128, 107, 86, 65, 44, 23, 2, 129, 108, 87, 66, 45, 24, 3, 130, 109, 88, 67, 46, 25, 4, 131, 110, 89, 68, 47, 26, 5, 132, 111, 90, 69, 48, 27, 6, 133, 112, 91, 70, 49, 28, 7, 134, 113, 92, 71, 50, 29, 8, 135, 114, 93, 72, 51, 30, 9, 136, 115, 94, 73, 52, 31, 10]
-    b = [25, 24, 23, 22, 21, 20, 19, 38, 37, 36, 35, 34, 33, 32, 51, 50, 49, 48, 47, 46, 45, 64, 63, 62, 61, 60, 59, 58, 77, 76, 75, 74, 73, 72, 71, 90, 89, 88, 87, 86, 85, 84, 103, 102, 101, 100, 99, 98, 97, 116, 115, 114, 113, 112, 111, 110, 129, 128, 127, 126, 125, 124, 123, 137, 136, 135, 134, 133, 132, 131]
-
-
-    match_long_ele = {a[i]:b[i] for i in range(len(a))}
+    a = [127, 106, 85, 64, 43, 22, 1, 128, 107, 86, 65, 44, 23, 2, 129, 108, 87, 66, 45, 24, 3, 130, 109, 88, 67, 46,
+         25, 4, 131, 110, 89, 68, 47, 26, 5, 132, 111, 90, 69, 48, 27, 6, 133, 112, 91, 70, 49, 28, 7, 134, 113, 92, 71,
+         50, 29, 8, 135, 114, 93, 72, 51, 30, 9, 136, 115, 94, 73, 52, 31, 10]
+    b = [25, 24, 23, 22, 21, 20, 19, 38, 37, 36, 35, 34, 33, 32, 51, 50, 49, 48, 47, 46, 45, 64, 63, 62, 61, 60, 59, 58,
+         77, 76, 75, 74, 73, 72, 71, 90, 89, 88, 87, 86, 85, 84, 103, 102, 101, 100, 99, 98, 97, 116, 115, 114, 113,
+         112, 111, 110, 129, 128, 127, 126, 125, 124, 123, 137, 136, 135, 134, 133, 132, 131]
+    match_long_ele = {a[i]: b[i] for i in range(len(a))}  # dict matching key (lusas ele) to value (ospg ele)
 
     # extract line load test LUSAS
     line_load_result = var['3 Line Test Case']
     # extract line load test ospg
     all_results["forces"].sel(Loadcase='Line Test')
+
+    # read from 28m result folder
+    line_load_disp_lusas = pandas.read_csv(r'28m results\28m_super_t_displacement\3_Line_Test_Case.csv')
+    line_load_force_lusas = pandas.read_csv(r'28m results\28m_super_t_forces\3_Line_Test_Case.csv')
+
+    # disp of line load case
+    line_load_disp_ospg = all_results["displacements"].sel(Loadcase='Line Test',
+                                                           Component=['dx', 'dy', 'dz', 'theta_x', 'theta_y',
+                                                                      'theta_z'])
+
+    lusas_def = reduce_lusas_node_result(pd_data=line_load_disp_lusas['DZ[m]'], node_to_extract_list=node_lusas)
+    # sorted_zip_lusas_node = sort_array_by_node_mapping(list_of_node=node_lusas,data_of_node=lusas_def )
+    sorted_zip_ospg_node = sort_array_by_node_mapping(list_of_node=node_ospg,
+                                                      data_of_node=line_load_disp_ospg.sel(Component='dy').values)
+
+    # np.isclose(sorted_zip_lusas_node,sorted_zip_ospg_node)
+
+
+# ---------------------------------------------
+# static methods of test
+
+def sort_array_by_node_mapping(list_of_node, data_of_node, numbering=True):
+    # note: list_of_node.size == data_of_node.size
+    if numbering: # numbering starts from 1
+        list_of_node = [d-1 for d in list_of_node]
+        zip_element = zip(list_of_node, data_of_node)
+    else:
+        zip_element = zip(list_of_node, data_of_node)
+    sorted_zip_element = sorted(zip_element)
+
+    return [element for _, element in sorted_zip_element]
+
+
+# function to extract data at node points corresponding to end nodes of element - this function is for model with
+# beam elements having 3 or more nodes.
+def reduce_lusas_node_result(pd_data, node_to_extract_list):
+    return [element for counter, element in enumerate(pd_data) if counter + 1 in node_to_extract_list]

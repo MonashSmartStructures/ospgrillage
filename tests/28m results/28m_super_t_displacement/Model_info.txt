@@ -1,0 +1,15 @@
+Model title,
+User interface,Structural
+Units,"N,m,kg,s,C"
+LUSAS version,19.0-3c5
+Date,17/08/21
+Time,14:10
+Analysis category,3D
+Vertical axis,Z
+Transformation,None
+Results file 1,
+  Name,Super_T_28_m_Bridge~Analysis 1.mys
+  Path,\\ad.monash.edu\home\User001\mayermam\Documents\Associated Model Data\Super T 28 m Bridge
+  Created,17/08/21 14:08
+  Solver version,19.0-3
+Notes,

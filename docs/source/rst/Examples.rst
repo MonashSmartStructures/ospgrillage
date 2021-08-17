@@ -331,7 +331,13 @@ Oblique vs Orthogonal Mesh
 --------------------
 Here are more examples showing the various mesh types.
 
-1) 28 m bridge with "Oblique" mesh
+1) 28 m bridge with "Oblique" mesh - positive 20 degree
+
+.. code-block:: python
+
+    example_bridge = og.create_grillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=20,
+                             num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Oblique")
+
 
 ..  figure:: ../../_images/standard_oblique.PNG
     :align: center
@@ -341,6 +347,12 @@ Here are more examples showing the various mesh types.
 
 
 2) 28 m bridge with "Ortho" mesh
+
+.. code-block:: python
+
+    example_bridge = og.create_grillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=20,
+                             num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
+
 
 ..  figure:: ../../_images/standard_ortho.PNG
     :align: center
