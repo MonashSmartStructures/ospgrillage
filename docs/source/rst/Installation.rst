@@ -48,5 +48,5 @@ The module comes with a pytest protocol named `test_file.py` which users can run
 
 .. code-block:: python
 
-    python -m pytest test_file.py
+    python -m pytest
 

@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 ================================================
-Openseespy Grillage wizard
+OpenSeesPy Grillage wizard
 ================================================
 
 The `ospgrillage` module is a python module wrapper for the `OpenSeesPy` python package. `ospgrillage` can be used to:

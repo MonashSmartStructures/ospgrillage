@@ -1,5 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
+"""
+This pytest pertains model validation of a LUSAS model built in ospgrillage. Note the test portion of this file are
+specific to the comparison i.e. 28m model between LUSAS model outputs and ospg outputs - hence is not advisable to copy-paste
+the tests herein to for another new pytest (say another model). However it is reasonable to replicate the fixtures of this pytest i.e.
+the model creation and running analysis portion of the pytest.
+"""
 import pytest
 import pickle
 import json
@@ -75,8 +81,6 @@ def create_grillage():
     # define sectons #
 
     longitudinal_section = ospg.create_section(A=longit_prop["A"] * m2,
-                                               E=material_prop["E"] * GPa,
-                                               G=material_prop["G"] * GPa,
                                                J=longit_prop["J"] * m3,
                                                Iz=longit_prop["Iz"] * m4,
                                                Iy=longit_prop["Iy"] * m4,
@@ -84,8 +88,6 @@ def create_grillage():
                                                Ay=longit_prop["Ay"] * m2)
 
     edge_longitudinal_section = ospg.create_section(A=edge_prop["A"] * m2,
-                                                    E=material_prop["E"] * GPa,
-                                                    G=material_prop["G"] * GPa,
                                                     J=edge_prop["J"] * m3,
                                                     Iz=edge_prop["Iz"] * m4,
                                                     Iy=edge_prop["Iy"] * m4,
@@ -93,8 +95,6 @@ def create_grillage():
                                                     Ay=edge_prop["Ay"] * m2)
 
     transverse_section = ospg.create_section(A=trans_prop["A"] * m2,
-                                             E=material_prop["E"] * GPa,
-                                             G=material_prop["G"] * GPa,
                                              J=trans_prop["J"] * m3,
                                              Iz=trans_prop["Iz"] * m4,
                                              Iy=trans_prop["Iy"] * m4,
@@ -102,8 +102,6 @@ def create_grillage():
                                              Ay=trans_prop["Ay"] * m2)
 
     end_tranverse_section = ospg.create_section(A=end_trans_prop["A"] * m2,
-                                                E=material_prop["E"] * GPa,
-                                                G=material_prop["G"] * GPa,
                                                 J=end_trans_prop["J"] * m3,
                                                 Iz=end_trans_prop["Iz"] * m4,
                                                 Iy=end_trans_prop["Iy"] * m4,
@@ -138,7 +136,7 @@ def create_grillage():
     simple_grid.set_member(end_tranverse_slab, member="end_edge")
 
     simple_grid.create_osp_model(pyfile=False)
-    ospg.opsplt.plot_model("element")
+    # ospg.opsplt.plot_model("element")
     return simple_grid
 
 
@@ -167,6 +165,7 @@ def add_analysis_to_simple_grid(create_grillage):
 
     ## loading
     P = - bridge["load"] * kN
+    # P = - 0.5 * kN
 
     ## load case names (also used as load names)
     load_name = ["Line Test",
@@ -375,7 +374,7 @@ def test_line_load_results(add_analysis_to_simple_grid):
     print(diff)
 
     # read pickle
-    var = pickle.load(open("Lusas_Outputs_cleaned.p", "rb"))
+    # var = pickle.load(open("Lusas_Outputs_cleaned.p", "rb"))
 
     # HARD CODE MAPPING - here specific for test_benchmark bridge and its ospg counterpart only
     # create mapping for nodes between LUSAS and ospg
@@ -392,47 +391,78 @@ def test_line_load_results(add_analysis_to_simple_grid):
          50, 29, 8, 135, 114, 93, 72, 51, 30, 9, 136, 115, 94, 73, 52, 31, 10]
     b = [25, 24, 23, 22, 21, 20, 19, 38, 37, 36, 35, 34, 33, 32, 51, 50, 49, 48, 47, 46, 45, 64, 63, 62, 61, 60, 59, 58,
          77, 76, 75, 74, 73, 72, 71, 90, 89, 88, 87, 86, 85, 84, 103, 102, 101, 100, 99, 98, 97, 116, 115, 114, 113,
-         112, 111, 110, 129, 128, 127, 126, 125, 124, 123, 137, 136, 135, 134, 133, 132, 131]
+         112, 111, 110, 129, 128, 127, 126, 125, 124, 123, 136, 135, 134, 133, 132, 131, 130]
     match_long_ele = {a[i]: b[i] for i in range(len(a))}  # dict matching key (lusas ele) to value (ospg ele)
 
     # extract line load test LUSAS
-    line_load_result = var['3 Line Test Case']
+    # line_load_result = var['3 Line Test Case']
     # extract line load test ospg
     all_results["forces"].sel(Loadcase='Line Test')
 
     # read from 28m result folder
     line_load_disp_lusas = pandas.read_csv(r'28m results\28m_super_t_displacement\3_Line_Test_Case.csv')
-    line_load_force_lusas = pandas.read_csv(r'28m results\28m_super_t_forces\3_Line_Test_Case.csv')
 
-    # disp of line load case
+    # ospg line load case
     line_load_disp_ospg = all_results["displacements"].sel(Loadcase='Line Test',
                                                            Component=['dx', 'dy', 'dz', 'theta_x', 'theta_y',
                                                                       'theta_z'])
 
+    # lusas elements are 3 noded beam elemnt, this function extracts only the end nodes (first and third) of the model.
+    # user to provide node_lusas variable - a list containing the node number correspond to end nodes of beam elements
     lusas_def = reduce_lusas_node_result(pd_data=line_load_disp_lusas['DZ[m]'], node_to_extract_list=node_lusas)
-    # sorted_zip_lusas_node = sort_array_by_node_mapping(list_of_node=node_lusas,data_of_node=lusas_def )
+
     sorted_zip_ospg_node = sort_array_by_node_mapping(list_of_node=node_ospg,
                                                       data_of_node=line_load_disp_ospg.sel(Component='dy').values)
 
     # np.isclose(sorted_zip_lusas_node,sorted_zip_ospg_node)
+    ospg.plt.plot(lusas_def)
+    ospg.plt.plot(sorted_zip_ospg_node)
 
 
+    # lusas bending z
+    line_load_force_lusas = pandas.read_csv(r'28m results\28m_super_t_forces\3_Line_Test_Case.csv')
+    single_component_line_lusas = extract_lusas_ele_forces(list_of_ele = a, df_force=line_load_force_lusas,component="My[N.m]")
+    # ospg bending z
+    line_load_bendingz_ospg = all_results["forces"].sel(Loadcase='Line Test',Component=['Mz_i','Mz_j'],Element=b)
+    # filter only the longitudinal members
+
+    # sort bending z ospg
+    sorted_line_load_bendingz_ospg = sort_array_by_node_mapping(list_of_node=b,data_of_node=line_load_bendingz_ospg)
+    pass
 # ---------------------------------------------
 # static methods of test
-
+# function to sort array of nodes based on a provided list of index / numbering. specify if list is either
+# index or numbering
 def sort_array_by_node_mapping(list_of_node, data_of_node, numbering=True):
     # note: list_of_node.size == data_of_node.size
-    if numbering: # numbering starts from 1
-        list_of_node = [d-1 for d in list_of_node]
+    if numbering:  # numbering starts from 1
+        list_of_node = [d - 1 for d in list_of_node]
         zip_element = zip(list_of_node, data_of_node)
     else:
         zip_element = zip(list_of_node, data_of_node)
     sorted_zip_element = sorted(zip_element)
 
-    return [element for _, element in sorted_zip_element]
+    return [data_of_node[i] for i in list_of_node]
 
 
 # function to extract data at node points corresponding to end nodes of element - this function is for model with
 # beam elements having 3 or more nodes.
 def reduce_lusas_node_result(pd_data, node_to_extract_list):
     return [element for counter, element in enumerate(pd_data) if counter + 1 in node_to_extract_list]
+
+
+def extract_lusas_ele_forces(list_of_ele, df_force,component:str):
+    output = []
+    for ele_num in list_of_ele:
+        ele_output = []
+        for index,row in df_force.iterrows():
+            if row.Element == ele_num:
+                # check if its intermediate node, if true, continue
+                if all([index!=0,index!=len(df_force)-1]):
+                    if not df_force.loc[index-1].Element == df_force.loc[index+1].Element:
+                        ele_output.append(row[component])
+        output.append(ele_output)
+
+    return output
+
+

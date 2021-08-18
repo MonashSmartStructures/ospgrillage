@@ -1060,6 +1060,7 @@ class OspGrillage:
                 w2 = line_load_obj.interpolate_udl_magnitude([p2.x, p2.y, p2.z])
                 W = (w1 + w2) / 2
                 mag = W * L
+                #mag = W
                 # get mid point of line
                 x_bar = ((2 * w1 + w2) / (w1 + w2)) * L / 3  # from p2
                 load_point = line_load_obj.get_point_given_distance(xbar=x_bar,
