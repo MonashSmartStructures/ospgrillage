@@ -355,29 +355,22 @@ The results are returned as `an xarray's DataSet <http://xarray.pydata.org/en/st
 
     results =  example_bridge.get_results(all=True)
 
-The *results* dataset contains array variables with dimensions in brackets:
+The *results* dataset contains dataarray **variables** with dimensions in brackets:
 
 * displacement (Loadcase, Node, Component)
 * forces (Loadcase, Element, Component)
 
-For elements, an additional array variable contains information on element nodes.
+To read element forces at nodes, an additional array **variable** contains information on element nodes.
 
 * ele_nodes (Element, Nodes)
 
-where Nodes is a 2-D array
+where Nodes is a 2-D array of node connectivity of beam element e.g. [[1, 2], [2, 3], ... [n , j]]
 
-The *results* dataset contains dimensions of:
+The coordinates of *results* dataset contains:
 
 * Component: Node responses ordered in this manner - dx,dy,dz,theta_x,theta_y,theta_z,Vx,Vy,Vz,Mx,My,Mz
 * Loadcase: name string of load case - list of str
 * Node: Node numbers of model- list of int
-
-
-Here is an example of how the data array looks like in practice:
-
-..  figure:: ../images/stucture_dataarray.png
-    :align: center
-    :scale: 75 %
 
 
 From here, users can use xarray's function for data array to query data.

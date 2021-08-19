@@ -34,7 +34,6 @@ Creating the grillage
     concrete = ospg.create_material(type="concrete", code="AS5100-2017", grade="50MPa")
 
     # define sectons (lusas parameters)
-
     longitudinal_section = ospg.create_section(A=0.866937*m2, E=34.8*GPa, G=20*GPa,
                                         J=0.154806*m3, Iz=0.215366*m4, Iy=0.213602*m4,
                                         Az=0.444795*m2, Ay=0.258704*m2)
@@ -242,8 +241,6 @@ run ``analyze()`` function.
 
     # Run analysis
     simple_grid.analyze(all=True) # all load cases
-    # simple_grid.analyze(load_case=static_cases_names[-1]) # specific load case
-    # simple_grid.analyze(load_case="Moving Two Axle Truck") # specific moving load case
 
 
 Getting results
@@ -252,9 +249,6 @@ Here is how to ``get_results()``. Also shown are a a few ways to get output resu
 
 .. code-block:: python
     results = simple_grid.get_results()
-    # results = simple_grid.get_results(all=True)
-    # results = simple_grid.get_results(load_case=static_cases_names[-1]) # specific load case
-    results # Print out all results as xarray (returns nothing if blank!)
 
 Data processing
 ^^^^^^^^^^^^^^^^^^^
@@ -267,6 +261,7 @@ Extracting only the static loads. We can extract moments in global z for each `i
 .. code-block:: python
 
     results['forces'].sel(Loadcase=static_cases_names, Element=ele_set, Component="Mz_i")
+
 
 `results` variable now holds the load case for 'Line Test Case', 'Point Test Case(Global)', 'Points Test Case (Local in Point)',
        'Points Test Case (Local in Compound)', 'Patch Test Case'.
@@ -316,10 +311,10 @@ Finally, comparing with theoretical:
 
 .. code-block:: python
 
-    np.sum(np.array(move_results['forces'].isel(Loadcase=integer).sel(Element=ele_set,Component="Mz_i")))
+    bending_z = np.sum(np.array(move_results['forces'].isel(Loadcase=integer).sel(Element=ele_set,Component="Mz_i")))
 
     # Hand calc:
-    2*P*(L/2-axl_s/2)
+    bending_z_theoretical = 2*P*(L/2-axl_s/2)
 
 
 Oblique vs Orthogonal Mesh

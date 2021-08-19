@@ -214,7 +214,6 @@ and results are compared with those from LUSAS model.</p>
 <span class="n">concrete</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_material</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;concrete&quot;</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="s2">&quot;AS5100-2017&quot;</span><span class="p">,</span> <span class="n">grade</span><span class="o">=</span><span class="s2">&quot;50MPa&quot;</span><span class="p">)</span>
 
 <span class="c1"># define sectons (lusas parameters)</span>
-
 <span class="n">longitudinal_section</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_section</span><span class="p">(</span><span class="n">A</span><span class="o">=</span><span class="mf">0.866937</span><span class="o">*</span><span class="n">m2</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="mf">34.8</span><span class="o">*</span><span class="n">GPa</span><span class="p">,</span> <span class="n">G</span><span class="o">=</span><span class="mi">20</span><span class="o">*</span><span class="n">GPa</span><span class="p">,</span>
                                     <span class="n">J</span><span class="o">=</span><span class="mf">0.154806</span><span class="o">*</span><span class="n">m3</span><span class="p">,</span> <span class="n">Iz</span><span class="o">=</span><span class="mf">0.215366</span><span class="o">*</span><span class="n">m4</span><span class="p">,</span> <span class="n">Iy</span><span class="o">=</span><span class="mf">0.213602</span><span class="o">*</span><span class="n">m4</span><span class="p">,</span>
                                     <span class="n">Az</span><span class="o">=</span><span class="mf">0.444795</span><span class="o">*</span><span class="n">m2</span><span class="p">,</span> <span class="n">Ay</span><span class="o">=</span><span class="mf">0.258704</span><span class="o">*</span><span class="n">m2</span><span class="p">)</span>
@@ -406,8 +405,6 @@ system of compound load to global of grillage.</p>
 run <code class="docutils literal notranslate"><span class="pre">analyze()</span></code> function.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run analysis</span>
 <span class="n">simple_grid</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span><span class="nb">all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># all load cases</span>
-<span class="c1"># simple_grid.analyze(load_case=static_cases_names[-1]) # specific load case</span>
-<span class="c1"># simple_grid.analyze(load_case=&quot;Moving Two Axle Truck&quot;) # specific moving load case</span>
 </pre></div>
 </div>
 </div>
@@ -460,10 +457,10 @@ lusas plot</p>
 </pre></div>
 </div>
 <p>Finally, comparing with theoretical:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">move_results</span><span class="p">[</span><span class="s1">&#39;forces&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">Loadcase</span><span class="o">=</span><span class="n">integer</span><span class="p">)</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Element</span><span class="o">=</span><span class="n">ele_set</span><span class="p">,</span><span class="n">Component</span><span class="o">=</span><span class="s2">&quot;Mz_i&quot;</span><span class="p">)))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">bending_z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">move_results</span><span class="p">[</span><span class="s1">&#39;forces&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">Loadcase</span><span class="o">=</span><span class="n">integer</span><span class="p">)</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Element</span><span class="o">=</span><span class="n">ele_set</span><span class="p">,</span><span class="n">Component</span><span class="o">=</span><span class="s2">&quot;Mz_i&quot;</span><span class="p">)))</span>
 
 <span class="c1"># Hand calc:</span>
-<span class="mi">2</span><span class="o">*</span><span class="n">P</span><span class="o">*</span><span class="p">(</span><span class="n">L</span><span class="o">/</span><span class="mi">2</span><span class="o">-</span><span class="n">axl_s</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">bending_z_theoretical</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">P</span><span class="o">*</span><span class="p">(</span><span class="n">L</span><span class="o">/</span><span class="mi">2</span><span class="o">-</span><span class="n">axl_s</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

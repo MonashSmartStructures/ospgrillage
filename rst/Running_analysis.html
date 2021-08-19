@@ -450,26 +450,22 @@ The results are returned as <a class="reference external" href="http://xarray.py
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span>  <span class="n">example_bridge</span><span class="o">.</span><span class="n">get_results</span><span class="p">(</span><span class="nb">all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The <em>results</em> dataset contains array variables with dimensions in brackets:</p>
+<p>The <em>results</em> dataset contains dataarray <strong>variables</strong> with dimensions in brackets:</p>
 <ul class="simple">
 <li><p>displacement (Loadcase, Node, Component)</p></li>
 <li><p>forces (Loadcase, Element, Component)</p></li>
 </ul>
-<p>For elements, an additional array variable contains information on element nodes.</p>
+<p>To read element forces at nodes, an additional array <strong>variable</strong> contains information on element nodes.</p>
 <ul class="simple">
 <li><p>ele_nodes (Element, Nodes)</p></li>
 </ul>
-<p>where Nodes is a 2-D array</p>
-<p>The <em>results</em> dataset contains dimensions of:</p>
+<p>where Nodes is a 2-D array of node connectivity of beam element e.g. [[1, 2], [2, 3], … [n , j]]</p>
+<p>The coordinates of <em>results</em> dataset contains:</p>
 <ul class="simple">
 <li><p>Component: Node responses ordered in this manner - dx,dy,dz,theta_x,theta_y,theta_z,Vx,Vy,Vz,Mx,My,Mz</p></li>
 <li><p>Loadcase: name string of load case - list of str</p></li>
 <li><p>Node: Node numbers of model- list of int</p></li>
 </ul>
-<p>Here is an example of how the data array looks like in practice:</p>
-<div class="figure align-center">
-<a class="reference internal image-reference" href="images/stucture_dataarray.png"><img alt="images/stucture_dataarray.png" src="images/stucture_dataarray.png" /></a>
-</div>
 <p>From here, users can use xarray’s function for data array to query data.</p>
 <div class="section" id="obtaining-load-combinations">
 <h3>Obtaining load combinations<a class="headerlink" href="#obtaining-load-combinations" title="Permalink to this headline">¶</a></h3>
