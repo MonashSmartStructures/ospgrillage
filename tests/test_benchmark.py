@@ -197,7 +197,7 @@ def add_analysis_to_simple_grid(create_grillage):
     # Compound Point loads running along midspan at node points
 
     n_int = n_l - 4  # number of interior members
-    space = (w - 2 * edge_dist) / n_int  # spacing of interior members
+    space = (w - 2 * edge_dist) / (n_int+1)  # spacing of interior members
 
     p_list = [0, edge_dist]
     for s in range(0, n_int):
@@ -397,37 +397,46 @@ def test_line_load_results(add_analysis_to_simple_grid):
     # extract line load test LUSAS
     # line_load_result = var['3 Line Test Case']
     # extract line load test ospg
-    all_results["forces"].sel(Loadcase='Line Test')
 
     # read from 28m result folder
     line_load_disp_lusas = pandas.read_csv(r'28m results\28m_super_t_displacement\3_Line_Test_Case.csv')
+    point_load_disp_lusas = pandas.read_csv(r'28m results\28m_super_t_displacement\2_Points_Test_Case.csv')
 
     # ospg line load case
     line_load_disp_ospg = all_results["displacements"].sel(Loadcase='Line Test',
+                                                           Component=['dx', 'dy', 'dz', 'theta_x', 'theta_y',
+                                                                      'theta_z'])
+    point_load_disp_ospg = all_results["displacements"].sel(Loadcase='Points Test (Global)',
                                                            Component=['dx', 'dy', 'dz', 'theta_x', 'theta_y',
                                                                       'theta_z'])
 
     # lusas elements are 3 noded beam elemnt, this function extracts only the end nodes (first and third) of the model.
     # user to provide node_lusas variable - a list containing the node number correspond to end nodes of beam elements
     lusas_def = reduce_lusas_node_result(pd_data=line_load_disp_lusas['DZ[m]'], node_to_extract_list=node_lusas)
+    lusas_def = reduce_lusas_node_result(pd_data=point_load_disp_lusas['DZ[m]'], node_to_extract_list=node_lusas)
 
     sorted_zip_ospg_node = sort_array_by_node_mapping(list_of_node=node_ospg,
                                                       data_of_node=line_load_disp_ospg.sel(Component='dy').values)
+    sorted_zip_ospg_node = sort_array_by_node_mapping(list_of_node=node_ospg,
+                                                      data_of_node=point_load_disp_ospg.sel(Component='dy').values)
 
     # np.isclose(sorted_zip_lusas_node,sorted_zip_ospg_node)
     ospg.plt.plot(lusas_def)
     ospg.plt.plot(sorted_zip_ospg_node)
+    ospg.plt.xlabel("ospg-lusas node pairs")
+    ospg.plt.ylabel("vertical deflection (m)")
+    ospg.plt.legend(["LUSAS", "ospg"])
 
 
     # lusas bending z
     line_load_force_lusas = pandas.read_csv(r'28m results\28m_super_t_forces\3_Line_Test_Case.csv')
     single_component_line_lusas = extract_lusas_ele_forces(list_of_ele = a, df_force=line_load_force_lusas,component="My[N.m]")
     # ospg bending z
-    line_load_bendingz_ospg = all_results["forces"].sel(Loadcase='Line Test',Component=['Mz_i','Mz_j'],Element=b)
+    line_load_bendingz_ospg = all_results["forces"].sel(Loadcase='Line Test',Component=['Mz_i','Mz_j'],Element=b).values
     # filter only the longitudinal members
 
     # sort bending z ospg
-    sorted_line_load_bendingz_ospg = sort_array_by_node_mapping(list_of_node=b,data_of_node=line_load_bendingz_ospg)
+    # sorted_line_load_bendingz_ospg = sort_array_by_node_mapping(list_of_node=b,data_of_node=line_load_bendingz_ospg)
     pass
 # ---------------------------------------------
 # static methods of test

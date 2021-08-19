@@ -207,6 +207,12 @@ class GrillageMember:
                                                                                        self.section.Iy * width,
                                                                                        self.section.Iz * width)
 
+            asterisk_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.section.A * width, self.material.E,
+                                                                                       self.material.G,
+                                                                                       self.section.J * width,
+                                                                                       self.section.Iy * width,
+                                                                                       self.section.Iz * width)
+
         elif self.section.op_ele_type == "ModElasticBeam2d":
             if None in [self.section.A, self.material.E, self.section.Iz * width, self.section.K11, self.section.K33,
                         self.section.K44]:

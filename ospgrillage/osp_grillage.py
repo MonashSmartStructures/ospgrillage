@@ -1177,7 +1177,7 @@ class OspGrillage:
             A = self.get_node_area(inside_point=inside_point, p_list=p_list)
             mag = A * sum([point.p for point in p_list]) / len(p_list)
             # assign point and mag to 4 nodes of grid
-            load_str = self.assign_point_to_four_node(point=[xc, yc, zc], mag=mag)
+            load_str = self.assign_point_to_four_node(point=[xc, yc, zc], mag=mag,shape_func=patch_load_obj.shape_function)
             self.global_load_str += load_str
         return self.global_load_str
 

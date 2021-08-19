@@ -215,7 +215,7 @@ class Loads:
         # self.local_load_point_8 = kwargs.get('localpoint8', None)
 
         # shape function
-        self.shape_function = kwargs.get("shape_function", "hermite")
+        self.shape_function = kwargs.get("shape_function", "linear")
         # check if user skipped point 1 and defined point1 as point 2 instead
         if all([self.load_point_1 is None, self.load_point_2 is not None]):
             raise Exception("Load point 1 is not defined")
