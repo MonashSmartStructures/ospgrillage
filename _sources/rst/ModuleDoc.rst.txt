@@ -37,10 +37,10 @@ The module adopts the following coordinate system for grillage models:
 
 * global y direction is the vertical axis - typically the direction of loads
 
-Two reasons behind selecting the coordinate system are as such:
+Two reasons behind selecting the coordinate system:
 
 #. To be consistent with geometric transformation (from local to global) of OpenSees. The geometric transformation is used in Section definition, with local X being the axial direction
-  of beam/truss members; where y and z axes being the vertical and horizontal axis of the local coordinate system respectively.
+   of beam/truss members; where y and z axes being the vertical and horizontal axis of the local coordinate system respectively.
 
 #. To be consistent with 1D problems where the working axis for 1-D models is typically *x* (horizontal axis) and *y* (vertical axis).
 
@@ -72,16 +72,16 @@ Meshing algorithm is controlled by the :class:`~Mesh` class object. The followin
 define the nodes and elements of the mesh:
 
 #. **Construction line at edge of model @ the start of the span (start_span_edge)**
-    A construction line consisting of the edge of the model is first defined. Construction line consist of nodes that
-    coincide with the number and position of longitudinal beams in the model. The angle of the construction line is based on skew angle
-    (skew_1). By default, the reference point of the construction line coincide with the origin [0,0,0] of the model space.
+   A construction line consisting of the edge of the model is first defined. Construction line consist of nodes that
+   coincide with the number and position of longitudinal beams in the model. The angle of the construction line is based on skew angle
+   (skew_1). By default, the reference point of the construction line coincide with the origin [0,0,0] of the model space.
 
 #. **Construction line at edge of model @ the end of the span (end_span_edge)**
-    Similar to (1), the construction line at the end of the span is created based on number of longitudinal beam. The
-    spacing of the nodes in the z direction is identical to that of the first construction line. By default the skew angle
-    of this second construction (skew_2) can be different. In constrast, the reference point of second construction line
-    is [L, 0 ,f(L)] where L is the length of the model, and f(L) is the z coordinate of the reference node based on
-    the defined sweep path of the model - this is next explained
+   Similar to (1), the construction line at the end of the span is created based on number of longitudinal beam. The
+   spacing of the nodes in the z direction is identical to that of the first construction line. By default the skew angle
+   of this second construction (skew_2) can be different. In constrast, the reference point of second construction line
+   is [L, 0 ,f(L)] where L is the length of the model, and f(L) is the z coordinate of the reference node based on
+   the defined sweep path of the model - this is next explained
 
 #. **Sweep Path** By default, the sweep path of the model is a straight line of y = 0 which starts at the origin [0,0,0] of model space.
 A few option
@@ -101,15 +101,15 @@ In grillages, transverse members are often arranged orthogonally to longitudinal
 Meshing steps
 ---------------------
 #. Starting at first construction line, algorithm checks the angle of the construction line relative to the tangent/slope
-    of the sweep line at the first position (i.e. @ [0,0,0])
+ of the sweep line at the first position (i.e. @ [0,0,0])
 
 #. If mesh type for the given angle of construction line is permitted, a for loop procedure is initiated.
-    The iteration: (1) goes through every point in the construction line, (2) find the point on the sweep path whose normal vector
-    intersects the current point of the construction line, (3) create the nodes bounded between the current point and the intersection
-    point on the sweep line - see figure below. If mesh type is not valid, the process skips to step 3.
+   The iteration: (1) goes through every point in the construction line, (2) find the point on the sweep path whose normal vector
+   intersects the current point of the construction line, (3) create the nodes bounded between the current point and the intersection
+   point on the sweep line - see figure below. If mesh type is not valid, the process skips to step 3.
 
 #. If angle is not permitted, the construction line is taken as the sweep node line. An iteration goes
-    through all points on construction line and assigns them as nodes. Then the process move to the step 4.
+   through all points on construction line and assigns them as nodes. Then the process move to the step 4.
 
 #. Similar to step 2, step 4 comprise the process of step 2 but conducted for the second construction line instead.
 
@@ -142,7 +142,7 @@ Mesh variables
 * Nodes information are stored as dictionaries
 
 * Elements are specified by list. A typical element list is like this [2, 2, 3, 0, 2]
-    The entries are the element tag, node_i, node_j, grouping (based on list), and geometric transformation tag.
+  The entries are the element tag, node_i, node_j, grouping (based on list), and geometric transformation tag.
 
 Dictionaries are used to store information of mesh:
 
