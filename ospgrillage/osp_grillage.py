@@ -57,6 +57,10 @@ class OspGrillage:
     allows for users to select between skew/oblique or orthogonal mesh. Methods in this class allows users to input
     properties for various elements in the grillage model.
 
+    For developers, this class handles the mesh class inputs. In future releases, new mesh types are introduced into
+    mesh.py module as child class of a base Mesh class. In turn, developers need to provide the information of the
+    new mesh type and algorithm to parse mesh paraemters to OspGrillage class.
+
     """
 
     def __init__(self, bridge_name, long_dim, width, skew: Union[list, float, int], num_long_grid: int,

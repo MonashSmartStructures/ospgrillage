@@ -28,7 +28,7 @@ Here is a summary of these functions.
     ospgrillage.material.create_material
     ospgrillage.members.create_section
     ospgrillage.members.create_member
-    ospgrillage.load.create_load_vertices
+    ospgrillage.load.create_load_vertex
     ospgrillage.load.create_load
     ospgrillage.load.create_load_case
     ospgrillage.load.create_compound_load

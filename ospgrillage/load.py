@@ -84,9 +84,9 @@ def create_load(**kwargs):
 
     * type(`str`): type of load. Choose either ["point","line","patch","nodal"]
     * point# (`LoadPoint` namedTuple): LoadPoint for load type in global coordinate. Note different load type requires a
-        different minimum LoadPoint.
+    different minimum LoadPoint.
     * local_load_point_# (`LoadPoint` namedTuple): LoadPoint for load type in local coordinate. Note different load type
-        requires a different minimum LoadPoint.
+    requires a different minimum LoadPoint.
 
     :return: PointLoad, LineLoading, PatchLoading, or NodalForces
     """
@@ -125,7 +125,7 @@ def create_moving_load(**kwargs):
 
     * common_path(`Path`): Path object for all load groups added to the Moving load object to traverse
     * global_increment(`float` or `int`): Number of increments to discretize Path object. This keyword is only used in
-            advance usage where Moving Load contains multiple load groups each with unique path objects.
+    advance usage where Moving Load contains multiple load groups each with unique path objects.
 
     See :ref:`Loads` or :ref:`Running_analysis` for more information on this.
     """

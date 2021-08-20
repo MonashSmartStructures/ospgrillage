@@ -35,6 +35,12 @@ class Mesh:
     Main class for grid mesh. The class holds information pertaining the mesh group such as element connectivity and nodes
     of the mesh object. Positional arguments are handled by OspGrillage class.
 
+    .. note::
+
+        As of beta version 0.1.0, the default mesh is a straight mesh with either Orthogonal and Oblique grids. For developers
+        mesh module needs a new structure where the mesh class will have mesh types segregated into a base Mesh class
+        and child class e.g. OrthogonalMesh(Mesh) class.
+
     """
 
     def __init__(self, long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
