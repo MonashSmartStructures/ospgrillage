@@ -2,7 +2,8 @@
 Creating grillage models
 ========================
 The *ospgrillage* module contains user **interface functions** which can be called after the module syntax. These interface function
-has  ``set_``, ``create_`` or ``get_`` in their syntax. For example, users create a material with ``create_material()``.
+has  ``set_``, ``create_`` or ``get_`` in their syntax. For example, users create a material with ``create_material()``. Refer here
+ :doc:`APIdoc` for all interface functions.
 Alternatively, users can directly interact with the module objects without using interface functions - we recommend the more pythonic interface functions.
 
 Figure 1 summarizes the process of creating grillage models using *ospgrillage*.
@@ -14,7 +15,7 @@ Figure 1 summarizes the process of creating grillage models using *ospgrillage*.
     Figure 1: Grillage model creation flow chart
 
 
-In general, there are three main steps to create a grillage model with *ospgrillage*:
+In general, there are three steps to create a grillage model with *ospgrillage*:
 
 #. Creating elements of a grillage model i.e. members.
 #. Creating the grillage model instance (the nodes and mesh).
@@ -164,6 +165,16 @@ Figure 3 illustrates the standard grillage members and their position on an exem
 
     Figure 3: Standard elements supported by *ospgrillage*
 
+
+.. note::
+
+    For supports, nodes along start and end edges are fixated with pinned supports at start edges (restrained global x, y and z axis)
+    and rollers at end edges (restrained global y and z axis).
+    In addition, nodes that coincide edge beams and edge slabs are not supported.
+    In other words, Nodes B to F on transverse grid I and J of Figure 3 are supported; Nodes on grid line pairs A-I, G-I, A-J, G-J
+    are not supported
+
+
 The :class:`~OpsGrillage` class takes the following keyword arguments:
 
 - ``bridge_name``: A :py:class:`str` of the grillage model name.
@@ -173,15 +184,15 @@ The :class:`~OpsGrillage` class takes the following keyword arguments:
 - ``num_long_grid``: An :py:class:`int` of the number of grid lines along the longitudinal direction - each grid line represents the total number of longitduinal members. Lines are evenly spaced, except for the spacing between the edge beam and exterior beam
 - ``num_trans_grid``: An :py:class:`int` of the number of grid lines to be uniformly spaced along the transverse direction - each grid line represents the total number of transverse members.
 - ``edge_beam_dist``: A :py:class:`float` of the distance between exterior longitudinal beams to edge beam.
-- ``mesh_type``: Mesh type of grillage model. Must take a :py:class:`str` input of either "Ortho" or "Oblique". The default is "Ortho" (an orthogonal mesh). However, "Ortho" is not accepted for certain skew angles.
+- ``mesh_type``: Mesh type of grillage model. Must take a :py:class:`str` input of either "Ortho" or "Oblique". The default is "Ortho" (an orthogonal mesh). However, "Ortho" is not accepted for certain skew angles. The threshold for orthogonal mesh is greater than 11 degree- less than 11 degree the mesh will change to Oblique
 
-Figure 3 shows how the grid numbers and skew angles affects the output mesh of grillage model.
+Figure 4 shows how the grid numbers and skew angles affects the output mesh of grillage model.
 
 ..  figure:: ../../_images/edge_angles.PNG
     :align: center
     :scale: 75 %
 
-    Figure 3: Grid numbers and edge angles
+    Figure 4: Grid numbers and edge angles
 
 
 For the example bridge in Figure 2, the following code line creates its :class:`~OpsGrillage` object i.e. *example_bridge*:

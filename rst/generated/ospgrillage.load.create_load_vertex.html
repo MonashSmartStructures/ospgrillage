@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>ospgrillage.load.create_moving_load &mdash; ospgrillage module 0.1.0 documentation</title>
+  <title>ospgrillage.load.create_load_vertex &mdash; ospgrillage module 0.1.0 documentation</title>
   
 
   
@@ -41,8 +41,8 @@
     
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="ospgrillage.mesh.create_point" href="ospgrillage.mesh.create_point.html" />
-    <link rel="prev" title="ospgrillage.load.create_moving_path" href="ospgrillage.load.create_moving_path.html" /> 
+    <link rel="next" title="ospgrillage.load.create_load" href="ospgrillage.load.create_load.html" />
+    <link rel="prev" title="ospgrillage.members.create_member" href="ospgrillage.members.create_member.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -103,12 +103,12 @@
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.material.create_material.html">ospgrillage.material.create_material</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.members.create_section.html">ospgrillage.members.create_section</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.members.create_member.html">ospgrillage.members.create_member</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_load_vertex.html">ospgrillage.load.create_load_vertex</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">ospgrillage.load.create_load_vertex</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_load.html">ospgrillage.load.create_load</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_load_case.html">ospgrillage.load.create_load_case</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_compound_load.html">ospgrillage.load.create_compound_load</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_moving_path.html">ospgrillage.load.create_moving_path</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">ospgrillage.load.create_moving_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_moving_load.html">ospgrillage.load.create_moving_load</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.mesh.create_point.html">ospgrillage.mesh.create_point</a></li>
 </ul>
 </li>
@@ -177,13 +177,13 @@
         
           <li><a href="../APIdoc.html">API reference</a> &raquo;</li>
         
-      <li>ospgrillage.load.create_moving_load</li>
+      <li>ospgrillage.load.create_load_vertex</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../../_sources/rst/generated/ospgrillage.load.create_moving_load.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/rst/generated/ospgrillage.load.create_load_vertex.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -196,25 +196,28 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="ospgrillage-load-create-moving-load">
-<h1>ospgrillage.load.create_moving_load<a class="headerlink" href="#ospgrillage-load-create-moving-load" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="ospgrillage-load-create-load-vertex">
+<h1>ospgrillage.load.create_load_vertex<a class="headerlink" href="#ospgrillage-load-create-load-vertex" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="ospgrillage.load.create_moving_load">
-<span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">create_moving_load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.create_moving_load" title="Permalink to this definition">¶</a></dt>
-<dd><p>User interface function to create Moving Load object.</p>
+<dt class="sig sig-object py" id="ospgrillage.load.create_load_vertex">
+<span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">create_load_vertex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.create_load_vertex" title="Permalink to this definition">¶</a></dt>
+<dd><p>User interface function to create load vertex of various load types.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><cite>MovingLoad</cite> object</p>
+<dd class="field-odd"><p>namedTuple LoadPoint(x,y,z,p)</p>
 </dd>
-<dt class="field-even">Keyword</dt>
-<dd class="field-even"><p></p></dd>
+<dt class="field-even">Except</dt>
+<dd class="field-even"><p>ValueError if missing one or more keyword arguments.</p>
+</dd>
+<dt class="field-odd">Keyword</dt>
+<dd class="field-odd"><p></p></dd>
 </dl>
 <ul class="simple">
-<li><p>common_path(<cite>Path</cite>): Path object for all load groups added to the Moving load object to traverse</p></li>
-<li><p>global_increment(<cite>float</cite> or <cite>int</cite>): Number of increments to discretize Path object. This keyword is only used in</p></li>
+<li><p>x (<cite>float</cite> or <cite>int</cite>): Value of x coordinate</p></li>
+<li><p>y (<cite>float</cite> or <cite>int</cite>): Value of y coordinate. Default is model plane y = 0</p></li>
+<li><p>z (<cite>float</cite> or <cite>int</cite>): Value of z coordinate</p></li>
+<li><p>p (<cite>float</cite> or <cite>int</cite>): Magnitude of vertical load in y direction.</p></li>
 </ul>
-<p>advance usage where Moving Load contains multiple load groups each with unique path objects.</p>
-<p>See <span class="xref std std-ref">Loads</span> or <span class="xref std std-ref">Running_analysis</span> for more information on this.</p>
 </dd></dl>
 
 </div>
@@ -225,8 +228,8 @@
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="ospgrillage.mesh.create_point.html" class="btn btn-neutral float-right" title="ospgrillage.mesh.create_point" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="ospgrillage.load.create_moving_path.html" class="btn btn-neutral float-left" title="ospgrillage.load.create_moving_path" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ospgrillage.load.create_load.html" class="btn btn-neutral float-right" title="ospgrillage.load.create_load" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="ospgrillage.members.create_member.html" class="btn btn-neutral float-left" title="ospgrillage.members.create_member" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

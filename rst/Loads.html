@@ -240,17 +240,11 @@ are to add loads to LoadCase object via <code class="docutils literal notranslat
 </dl>
 <ul class="simple">
 <li><p>type(<cite>str</cite>): type of load. Choose either [“point”,”line”,”patch”,”nodal”]</p></li>
-<li><dl class="simple">
-<dt>point# (<cite>LoadPoint</cite> namedTuple): LoadPoint for load type in global coordinate. Note different load type requires a</dt><dd><p>different minimum LoadPoint.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>local_load_point_# (<cite>LoadPoint</cite> namedTuple): LoadPoint for load type in local coordinate. Note different load type</dt><dd><p>requires a different minimum LoadPoint.</p>
-</dd>
-</dl>
-</li>
+<li><p>point# (<cite>LoadPoint</cite> namedTuple): LoadPoint for load type in global coordinate. Note different load type requires a</p></li>
 </ul>
+<p>different minimum LoadPoint.
+* local_load_point_# (<cite>LoadPoint</cite> namedTuple): LoadPoint for load type in local coordinate. Note different load type
+requires a different minimum LoadPoint.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>PointLoad, LineLoading, PatchLoading, or NodalForces</p>
@@ -271,12 +265,9 @@ are to add loads to LoadCase object via <code class="docutils literal notranslat
 </dl>
 <ul class="simple">
 <li><p>common_path(<cite>Path</cite>): Path object for all load groups added to the Moving load object to traverse</p></li>
-<li><dl class="simple">
-<dt>global_increment(<cite>float</cite> or <cite>int</cite>): Number of increments to discretize Path object. This keyword is only used in</dt><dd><p>advance usage where Moving Load contains multiple load groups each with unique path objects.</p>
-</dd>
-</dl>
-</li>
+<li><p>global_increment(<cite>float</cite> or <cite>int</cite>): Number of increments to discretize Path object. This keyword is only used in</p></li>
 </ul>
+<p>advance usage where Moving Load contains multiple load groups each with unique path objects.</p>
 <p>See <span class="xref std std-ref">Loads</span> or <span class="xref std std-ref">Running_analysis</span> for more information on this.</p>
 </dd></dl>
 

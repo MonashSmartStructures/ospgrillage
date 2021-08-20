@@ -205,6 +205,9 @@ OpenSees grillage model based on user input.</p>
 <p>The class provides an interface for the user to specify the geometry of the grillage model. A keyword argument
 allows for users to select between skew/oblique or orthogonal mesh. Methods in this class allows users to input
 properties for various elements in the grillage model.</p>
+<p>For developers, this class handles the mesh class inputs. In future releases, new mesh types are introduced into
+mesh.py module as child class of a base Mesh class. In turn, developers need to provide the information of the
+new mesh type and algorithm to parse mesh paraemters to OspGrillage class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">

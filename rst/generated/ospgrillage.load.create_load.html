@@ -42,7 +42,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="ospgrillage.load.create_load_case" href="ospgrillage.load.create_load_case.html" />
-    <link rel="prev" title="ospgrillage.members.create_member" href="ospgrillage.members.create_member.html" /> 
+    <link rel="prev" title="ospgrillage.load.create_load_vertex" href="ospgrillage.load.create_load_vertex.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -103,6 +103,7 @@
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.material.create_material.html">ospgrillage.material.create_material</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.members.create_section.html">ospgrillage.members.create_section</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.members.create_member.html">ospgrillage.members.create_member</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_load_vertex.html">ospgrillage.load.create_load_vertex</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">ospgrillage.load.create_load</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_load_case.html">ospgrillage.load.create_load_case</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_compound_load.html">ospgrillage.load.create_compound_load</a></li>
@@ -207,17 +208,11 @@
 </dl>
 <ul class="simple">
 <li><p>type(<cite>str</cite>): type of load. Choose either [“point”,”line”,”patch”,”nodal”]</p></li>
-<li><dl class="simple">
-<dt>point# (<cite>LoadPoint</cite> namedTuple): LoadPoint for load type in global coordinate. Note different load type requires a</dt><dd><p>different minimum LoadPoint.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>local_load_point_# (<cite>LoadPoint</cite> namedTuple): LoadPoint for load type in local coordinate. Note different load type</dt><dd><p>requires a different minimum LoadPoint.</p>
-</dd>
-</dl>
-</li>
+<li><p>point# (<cite>LoadPoint</cite> namedTuple): LoadPoint for load type in global coordinate. Note different load type requires a</p></li>
 </ul>
+<p>different minimum LoadPoint.
+* local_load_point_# (<cite>LoadPoint</cite> namedTuple): LoadPoint for load type in local coordinate. Note different load type
+requires a different minimum LoadPoint.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>PointLoad, LineLoading, PatchLoading, or NodalForces</p>
@@ -234,7 +229,7 @@
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="ospgrillage.load.create_load_case.html" class="btn btn-neutral float-right" title="ospgrillage.load.create_load_case" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="ospgrillage.members.create_member.html" class="btn btn-neutral float-left" title="ospgrillage.members.create_member" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ospgrillage.load.create_load_vertex.html" class="btn btn-neutral float-left" title="ospgrillage.load.create_load_vertex" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
