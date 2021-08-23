@@ -94,14 +94,14 @@ class Material:
         self.op_mat_arg = None
         # assigns variables for all kwargs for specific material types , else sets None
         #
-        self.code = kwargs.get("code", "AS5100-2017")
+        self.code = kwargs.get("code", None)
         self.material_type = kwargs.get("type", None)
         self.material_grade = kwargs.get("grade", None)
 
         self.E = kwargs.get("E", None)
         self.G = kwargs.get("G", None)
         self.poisson = kwargs.get("v", None)
-
+        self.density = kwargs.get("rho",None)
         # properties for Concrete
         self.fpc = kwargs.get("fpc", None)
         self.epsc0 = kwargs.get("epsc0", None)

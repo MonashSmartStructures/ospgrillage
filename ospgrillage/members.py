@@ -68,13 +68,13 @@ class Section:
     """
 
     def __init__(
-        self,
-        op_ele_type="elasticBeamColumn",
-        mass=0,
-        c_mass_flag=False,
-        unit_width=False,
-        op_section_type="Elastic",
-        **kwargs
+            self,
+            op_ele_type="elasticBeamColumn",
+            mass=0,
+            c_mass_flag=False,
+            unit_width=False,
+            op_section_type="Elastic",
+            **kwargs
     ):
         """
         The constructor takes in two types of keyword arguments.
@@ -109,19 +109,22 @@ class Section:
         self.op_section_type = op_section_type  # section tag based on OpenSeesPy - default is elastic
         self.section_command_flag = False  # flag for parsing , check if section() command is needed. default False
         # OpenSeesPy section arguments
-
+        # standard geometric properties
         self.A = kwargs.get("A", None)
         self.Iz = kwargs.get("Iz", None)
         self.Iy = kwargs.get("Iy", None)
-
+        # for 3D sections
         self.Ay = kwargs.get("Ay", None)
         self.Az = kwargs.get("Az", None)
         self.J = kwargs.get("J", None)
+        # for non-linear properties
         self.alpha_y = kwargs.get("alpha_y", None)
         self.alpha_z = kwargs.get("alpha_z", None)
         self.K11 = kwargs.get("K11", None)
         self.K33 = kwargs.get("K33", None)
         self.K44 = kwargs.get("K44", None)
+        # for quad elements
+        self.h_depth = kwargs.get("h", None)
         # types for element definition and unit width properties
         self.op_ele_type = op_ele_type
         self.unit_width = unit_width
@@ -132,6 +135,7 @@ class Section:
         self.integration_type = kwargs.get("integration_type", None)
         # quad/tri element parameters
         self.thick = kwargs.get("thick", None)
+        # for quad elements
 
 
 # ----------------------------------------------------------------------------------------------------------------
@@ -170,10 +174,12 @@ class GrillageMember:
         self.material = material
         self.quad_flag = quad_ele_flag
         self.tri_ele_flag = tri_ele_flag
-
+        self.section_command_flag = True
+        self.material_commadn_flag = True
         if any([self.section.op_ele_type == "ElasticTimoshenkoBeam", self.section.op_ele_type == "elasticBeamColumn"]):
             self.material_command_flag = False
             self.section_command_flag = False  #
+
 
     def get_member_prop_arguments(self, width=1):
         # """
@@ -207,7 +213,8 @@ class GrillageMember:
                                                                                        self.section.Iy * width,
                                                                                        self.section.Iz * width)
 
-            asterisk_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.section.A * width, self.material.E,
+            asterisk_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.section.A * width,
+                                                                                       self.material.E,
                                                                                        self.material.G,
                                                                                        self.section.J * width,
                                                                                        self.section.Iy * width,
@@ -244,10 +251,21 @@ class GrillageMember:
         if section_type == "Elastic":
             # section type, section tag, argument entries from self.get_asterisk_input()
             sec_arg = self.get_section_arguments(ele_width=ele_width)
-            sec_str = "ops.section(\"{type}\", {tag}, *{arg})\n".format(type=section_type, tag=section_tag, arg=repr(sec_arg))
+            sec_str = "ops.section(\"{type}\", {tag}, *{arg})\n".format(type=section_type, tag=section_tag,
+                                                                        arg=repr(sec_arg))
         elif section_type == "ElasticMembranePlateSection":
             # section type, section tag, E_mod, nu, h, rho
-            sec_str = "ops.section(\"{}\", {}, {}, {}, {}, {})\n"
+            sec_str = "ops.section(\"{type}\", {tag}, {E_mod}, {nu}, {h}, {rho})\n".format(type=section_type,
+                                                                                           tag=section_tag,
+                                                                                           E_mod=self.material.E,
+                                                                                           nu=self.material.poisson,
+                                                                                           h=self.section.h_depth,
+                                                                                           rho=self.material.density)
+        elif section_type == "PlateFiber":
+            # section type, section tag, E_mod, nu, h, rho
+            sec_str = "ops.section(\"{type}\", {tag}, {mat_tag}, {h})\n".format(type=section_type, tag=section_tag,
+                                                                                           h=self.section.h_depth,
+                                                                                            mat_tag=material_tag)
 
         return sec_str
 
@@ -286,6 +304,7 @@ class GrillageMember:
                 num_int_pt=self.section.num_int_pt,
                 sectag=sectiontag, transftag=transf_tag, mass=self.section.mass)
 
+        # for shell element option
         elif self.section.op_ele_type == "ShellMITC4":
             ele_str = "ops.element(\"{type}\", {tag}, *{node_tag_list}, {sectag}})\n".format(
                 type=self.section.op_ele_type, tag=ele_tag, node_tag_list=node_tag_list, sectag=sectiontag)
