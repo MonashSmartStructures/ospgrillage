@@ -84,7 +84,7 @@ define the nodes and elements of the mesh:
    the defined sweep path of the model - this is next explained
 
 #. **Sweep Path** By default, the sweep path of the model is a straight line of y = 0 which starts at the origin [0,0,0] of model space.
-A few option
+   A few option
 
 
 Meshing Rules
