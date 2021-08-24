@@ -59,16 +59,16 @@ def shell_bridge(ref_bridge_properties):
     I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
 
     # create material of slab shell
-    slab_shell_mat = og.create_material(E=50e9, v=0.3, rho=2400)
+    slab_shell_mat = og.create_material(type="concrete", code="AS5100-2017", grade="50MPa", rho=2400)
 
     # create section of slab shell
-    slab_shell_section = og.create_section(op_ele_type="ShellMITC4",op_section_type="ElasticMembranePlateSection", h=0.2)
+    slab_shell_section = og.create_section(h=0.2)
     # shell elements for slab
     slab_shell = og.create_member(section=slab_shell_section, material=slab_shell_mat)
 
     # construct grillage model
     example_bridge = og.OspGrillage(bridge_name="Shell_10m", long_dim=10, width=7, skew=12,
-                                    num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Orth")
+                                    num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
 
 
     example_bridge.set_member(I_beam, member="interior_main_beam")

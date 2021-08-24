@@ -125,6 +125,7 @@ class Section:
         self.K44 = kwargs.get("K44", None)
         # for quad elements
         self.h_depth = kwargs.get("h", None)
+
         # types for element definition and unit width properties
         self.op_ele_type = op_ele_type
         self.unit_width = unit_width
@@ -136,8 +137,24 @@ class Section:
         # quad/tri element parameters
         self.thick = kwargs.get("thick", None)
         # for quad elements
+        # here check and overwrite element if  h_depth is given, default to quad shell element
+        if self.h_depth:
+            self.op_section_type = "ElasticMembranePlateSection"
+            self.op_ele_type = "ShellDKGQ"
 
+        self.parse_section_properties()
 
+    def parse_section_properties(self):
+        # function to parse input properties
+        # mainly, this is used to define less essential properties (e.g. Ay, Az) which user may not specify
+        # but is required for the model commands
+        # for developers, add here the section properties which needs to be parse for model command
+        if self.Ay is None and self.A is not None:
+            self.Ay = 0.5 * self.A
+        if self.Az is None and self.A is not None:
+            self.Az = 0.2 * self.A
+        if self.Iy is None and self.Iz is not None:
+            self.Iy = 0.2 * self.Iz
 # ----------------------------------------------------------------------------------------------------------------
 class GrillageMember:
     """
@@ -179,7 +196,7 @@ class GrillageMember:
         if any([self.section.op_ele_type == "ElasticTimoshenkoBeam", self.section.op_ele_type == "elasticBeamColumn"]):
             self.material_command_flag = False
             self.section_command_flag = False  #
-        elif self.section.op_ele_type == 'ShellMITC4':
+        elif any([self.section.op_ele_type == 'ShellMITC4',self.section.op_ele_type == 'ShellDKGQ']):
             self.material_command_flag = False
 
     def get_member_prop_arguments(self, width=1):
@@ -313,9 +330,20 @@ class GrillageMember:
             ele_str = "ops.element(\"{type}\", {tag}, *{node_tag_list}, {sectag})\n".format(
                 type=self.section.op_ele_type, tag=ele_tag, node_tag_list=node_tag_list, sectag=sectiontag)
 
-        elif self.sectoin.op_ele_type == 'Tri31':
-            # TODO
-            ele_str = "element(\"{type}\", {tag},  *{node_tag_list}, {thick}, {type}, {matTag}, <pressure, rho, b1, b2>)"
+        elif self.section.op_ele_type == "ShellDKGQ":
+            if len(node_tag_list) == 3:
+                ele_type = "ShellDKGT"
+            else:  # 4 node
+                ele_type = "ShellDKGQ"
+
+            ele_str = "ops.element(\"{type}\", {tag}, *{node_tag_list}, {sectag})\n".format(
+                type=ele_type, tag=ele_tag, node_tag_list=node_tag_list, sectag=sectiontag)
+
+        elif self.section.op_ele_type == "ShellDKGT":
+            ele_str = "ops.element(\"{type}\", {tag}, *{node_tag_list}, {sectag})\n".format(
+                type=self.section.op_ele_type, tag=ele_tag, node_tag_list=node_tag_list, sectag=sectiontag)
+
+
         # HERE TO POPULATE WITH MORE ELEMENT TYPES
 
         return ele_str
