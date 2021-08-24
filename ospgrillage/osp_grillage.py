@@ -141,6 +141,7 @@ class OspGrillage:
         self.element_command_list = []  # list of str for ops.element() commands
         self.section_command_list = []  # list of str for ops.section() commands
         self.material_command_list = []
+        self.shell_element_command_list = []  # list of str for ops.element() shell command
         # dict
         self.ele_group_assigned_list = []  # list recording assigned ele groups in grillage model
         self.section_dict = {}  # dictionary of section tags
@@ -199,8 +200,7 @@ class OspGrillage:
         self.results = None
 
         # kwargs for rigid link modelling option
-        self.rigid_type = kwargs.get("rigid_1", None)
-        # TODO feature for rigid link + offset beam elements to added after release
+        self.rigid_type = kwargs.get("rigid_type", None)  # accepts int type 1 or 2
 
         # create mesh object
         self.Mesh_obj = Mesh(long_dim=self.long_dim, width=self.width, trans_dim=self.trans_dim,
@@ -246,7 +246,13 @@ class OspGrillage:
                             file_handle.write(ele_str)
                     else:
                         eval(ele_str)
-
+        # create shell element commands
+        for ele_str in self.shell_element_command_list:
+            if self.pyfile:
+                with open(self.filename, 'a') as file_handle:
+                    file_handle.write(ele_str)
+            else:
+                eval(ele_str)
         # create the result file for the Mesh object
         self.results = Results(self.Mesh_obj)
 
@@ -299,6 +305,9 @@ class OspGrillage:
                         type=transform_type, tag=v, vxz=eval(k)))
             else:
                 ops.geomTransf(transform_type, v, *eval(k))
+
+        # loop to add geom transf obj for additional transformation i.e. element with rigid links
+
 
     def __write_op_model(self):
         """
@@ -608,26 +617,19 @@ class OspGrillage:
 
         """
         # this function creates shell elements out of the node grids of Mesh object
-        shell_counter = 1
+        shell_counter = self.Mesh_obj.element_counter
         # if self.Mesh_obj is None:  # checks if
         #     raise ValueError("Model instance not created. Run ops.create_ops() function before setting members")
         # check and write member's section command if any
         section_tag = self.__write_section(grillage_member_obj)
         # check and write member's material command if any
         material_tag = self.__write_material(member=grillage_member_obj)
-        # instantiate shell element list
-        shell_element_list = []
-        shell_element_dict = dict()
 
         for grid_nodes_list in self.Mesh_obj.grid_number_dict.values():
             ele_str = grillage_member_obj.get_element_command_str(ele_tag=shell_counter, node_tag_list=grid_nodes_list,
                                                                   materialtag=material_tag, sectiontag=section_tag)
-            shell_element_list.append(ele_str)
-            if self.pyfile:
-                with open(self.filename, 'a') as file_handle:
-                    file_handle.write(ele_str)
-            else:
-                eval(ele_str)
+            self.shell_element_command_list.append(ele_str)
+            shell_counter += 1
 
     # function to set material obj of grillage model.
     def set_material(self, material_obj):
@@ -1064,7 +1066,7 @@ class OspGrillage:
                 w2 = line_load_obj.interpolate_udl_magnitude([p2.x, p2.y, p2.z])
                 W = (w1 + w2) / 2
                 mag = W * L
-                #mag = W
+                # mag = W
                 # get mid point of line
                 x_bar = ((2 * w1 + w2) / (w1 + w2)) * L / 3  # from p2
                 load_point = line_load_obj.get_point_given_distance(xbar=x_bar,
@@ -1093,8 +1095,8 @@ class OspGrillage:
                 w2 = line_load_obj.line_end_point.p  # magnitude at vertex 2
                 d1 = np.sum(width_dict.get(p1))  # width of node j
                 d2 = np.sum(width_dict.get(p2))  # width of node j
-                d = (d1 + d2) / 2   # average width
-                W = (w1 + w2) / 2   # average mag
+                d = (d1 + d2) / 2  # average width
+                W = (w1 + w2) / 2  # average mag
                 mag = W * L * d  # convert UDL (N/m2) to point load, q * Length * width
                 # get mid point of line
                 x_bar = ((2 * w1 + w2) / (w1 + w2)) * L / 3  # from p2
@@ -1181,7 +1183,8 @@ class OspGrillage:
             A = self.get_node_area(inside_point=inside_point, p_list=p_list)
             mag = A * sum([point.p for point in p_list]) / len(p_list)
             # assign point and mag to 4 nodes of grid
-            load_str = self.assign_point_to_four_node(point=[xc, yc, zc], mag=mag,shape_func=patch_load_obj.shape_function)
+            load_str = self.assign_point_to_four_node(point=[xc, yc, zc], mag=mag,
+                                                      shape_func=patch_load_obj.shape_function)
             self.global_load_str += load_str
         return self.global_load_str
 
@@ -1217,7 +1220,8 @@ class OspGrillage:
                                                                    mag=nested_list_of_load.load_point_1.p,
                                                                    shape_func=nested_list_of_load.shape_function)
                     elif isinstance(nested_list_of_load, LineLoading):
-                        if any([nested_list_of_load.long_beam_ele_load_flag,nested_list_of_load.trans_beam_ele_load_flag]):
+                        if any([nested_list_of_load.long_beam_ele_load_flag,
+                                nested_list_of_load.trans_beam_ele_load_flag]):
                             load_str += self.assign_beam_ele_line_load(line_load_obj=nested_list_of_load)
                         else:
                             line_grid_intersect, line_ele_colinear = self.get_line_load_nodes(

@@ -175,18 +175,22 @@ class GrillageMember:
         self.quad_flag = quad_ele_flag
         self.tri_ele_flag = tri_ele_flag
         self.section_command_flag = True
-        self.material_commadn_flag = True
+        self.material_command_flag = True
         if any([self.section.op_ele_type == "ElasticTimoshenkoBeam", self.section.op_ele_type == "elasticBeamColumn"]):
             self.material_command_flag = False
             self.section_command_flag = False  #
-
+        elif self.section.op_ele_type == 'ShellMITC4':
+            self.material_command_flag = False
 
     def get_member_prop_arguments(self, width=1):
         # """
+        #
         # Function to output list of arguments for element type requiring an argument list (with preceding asterisk).
-        # This is needed for element types ElasticTimoshenkoBeam, elasticBeamColumn - where no section is required as
+        # ElasticTimoshenkoBeam, elasticBeamColumn - where no section and material tags are required
+        # for developers, add OpenSees elements here that does not require section and material tag
+        # i.e. the element command directly takes in both geometrical and material properties as arguments
         # inputs
-        # :return: str containing member properties in accordance with convention of Opensees element type
+        # :return: str containing member properties in accordance with convention of OpenSees element type
         # """
         asterisk_input = None
 
@@ -264,8 +268,8 @@ class GrillageMember:
         elif section_type == "PlateFiber":
             # section type, section tag, E_mod, nu, h, rho
             sec_str = "ops.section(\"{type}\", {tag}, {mat_tag}, {h})\n".format(type=section_type, tag=section_tag,
-                                                                                           h=self.section.h_depth,
-                                                                                            mat_tag=material_tag)
+                                                                                h=self.section.h_depth,
+                                                                                mat_tag=material_tag)
 
         return sec_str
 
@@ -306,9 +310,12 @@ class GrillageMember:
 
         # for shell element option
         elif self.section.op_ele_type == "ShellMITC4":
-            ele_str = "ops.element(\"{type}\", {tag}, *{node_tag_list}, {sectag}})\n".format(
+            ele_str = "ops.element(\"{type}\", {tag}, *{node_tag_list}, {sectag})\n".format(
                 type=self.section.op_ele_type, tag=ele_tag, node_tag_list=node_tag_list, sectag=sectiontag)
 
+        elif self.sectoin.op_ele_type == 'Tri31':
+            # TODO
+            ele_str = "element(\"{type}\", {tag},  *{node_tag_list}, {thick}, {type}, {matTag}, <pressure, rho, b1, b2>)"
         # HERE TO POPULATE WITH MORE ELEMENT TYPES
 
         return ele_str

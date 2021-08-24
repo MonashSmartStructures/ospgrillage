@@ -1300,4 +1300,53 @@ class ObliqueMesh(Mesh):
         super().__init__(long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
                          skew_2, ext_to_int_a, ext_to_int_b)
 
-        pass
+    def __fixed_sweep_node_meshing(self):
+        assigned_node_tag = []
+        previous_node_tag = []
+        for x_count, x_inc in enumerate(self.nox):
+            for z_count, ref_point in enumerate(self.sweeping_nodes):
+                # offset x and y in all points in ref points
+                z_inc = np.round(
+                    select_segment_function(curve_flag=self.curve, d=self.d, m=self.m, c=self.m, x=x_inc, r=self.r),
+                    self.decimal_lim)
+                node_coordinate = [ref_point[0] + x_inc, ref_point[1], ref_point[2] + z_inc]
+                self.node_spec.setdefault(self.node_counter,
+                                          {'tag': self.node_counter, 'coordinate': node_coordinate,
+                                           'x_group': x_count, 'z_group': z_count})
+                assigned_node_tag.append(self.node_counter)
+                self.node_counter += 1
+                # link transverse elements
+                if z_count > 0:
+                    # element list [element tag, node i, node j, x/z group]
+                    tag = self.__get_geo_transform_tag([assigned_node_tag[z_count - 1], assigned_node_tag[z_count]])
+                    self.trans_ele.append([self.element_counter, assigned_node_tag[z_count - 1],
+                                           assigned_node_tag[z_count], x_count, tag])
+                    self.element_counter += 1
+
+            # link longitudinal elements
+            if x_count == 0:
+                previous_node_tag = assigned_node_tag
+                # record
+                for nodes in previous_node_tag:
+                    self.edge_node_recorder.setdefault(nodes, self.global_edge_count)
+                self.global_edge_count += 1
+            elif x_count > 0:
+                for pre_node in previous_node_tag:
+                    for cur_node in assigned_node_tag:
+                        cur_z_group = self.node_spec[cur_node]['z_group']
+                        prev_z_group = self.node_spec[pre_node]['z_group']
+                        if cur_z_group == prev_z_group:
+                            tag = self.__get_geo_transform_tag([pre_node, cur_node])
+                            self.long_ele.append([self.element_counter, pre_node, cur_node, cur_z_group, tag])
+                            self.element_counter += 1
+                            break  # break assign long ele loop (cur node)
+                # update record for previous node tag step
+                previous_node_tag = assigned_node_tag
+                if x_count == len(self.nox) - 1:
+                    for nodes in previous_node_tag:
+                        self.edge_node_recorder.setdefault(nodes, self.global_edge_count)
+                    self.global_edge_count += 1
+            # reset counter for next loop
+
+            assigned_node_tag = []
+        print("Meshing completed....")
