@@ -47,7 +47,7 @@ class Mesh:
                  skew_2, ext_to_int_a, ext_to_int_b,
                  orthogonal=False, pt1=Point(0, 0, 0), pt2=Point(0, 0, 0), pt3=None, element_counter=1, node_counter=1,
                  transform_counter=0, global_x_grid_count=0, global_edge_count=0, mesh_origin=[0, 0, 0],
-                 quad_ele=False):
+                 quad_ele=False,**kwargs):
         # inputs from OspGrillage required to create mesh
         self.long_dim = long_dim
         self.trans_dim = trans_dim
@@ -108,6 +108,10 @@ class Mesh:
         # quad elements flag
         self.quad_ele = quad_ele
         self.max_grid_dim = None  #
+        # rigid link parameters - to be assigned to beam elements representing longitudinal beams
+        self.rigid_dist_y = kwargs.get("rigid_dist_y")
+        self.rigid_dist_z = kwargs.get("rigid_dist_z")
+        self.rigid_dist_x = kwargs.get("rigid_dist_x")
         # ------------------------------------------------------------------------------------------
 
         # Create sweep path obj
@@ -762,13 +766,15 @@ class Mesh:
                         subdict['left'] = neighbour
             self.grid_vicinity_dict.setdefault(k, subdict)
 
-    def __get_geo_transform_tag(self, ele_nodes):
+    def __get_geo_transform_tag(self, ele_nodes,offset=None):
+        if offset is None:
+            offset = []
         # function called for each element, assign
         node_i = self.node_spec[ele_nodes[0]]['coordinate']
         node_j = self.node_spec[ele_nodes[1]]['coordinate']
         vxz = self.__get_vector_xz(node_i, node_j)
         vxz = [np.round(num, decimals=self.decimal_lim) for num in vxz]
-        tag_value = self.transform_dict.setdefault(repr(vxz), self.transform_counter + 1)
+        tag_value = self.transform_dict.setdefault(repr(vxz)+"|"+repr(offset), self.transform_counter + 1)
         if tag_value > self.transform_counter:
             self.transform_counter = tag_value
         return tag_value
@@ -1291,6 +1297,7 @@ class OrthogonalMesh(Mesh):
                     self.__assign_longitudinal_members(pre_node=pre_node, cur_node=cur_node,
                                                        cur_z_group=cur_z_group)
                     break
+
         print("orthogonal meshing complete")
 
 

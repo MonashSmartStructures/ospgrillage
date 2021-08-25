@@ -298,13 +298,15 @@ class OspGrillage:
         """
 
         for k, v in mesh_obj.transform_dict.items():
+            vxz = k.split("|")[0]  # first substring is vector xz
+            offset = k.split("|")[1]  # second substring is offset - to be assigned at both element end nodes
             if self.pyfile:
                 with open(self.filename, 'a') as file_handle:
                     file_handle.write("# create transformation {}\n".format(v))
-                    file_handle.write("ops.geomTransf(\"{type}\", {tag}, *{vxz})\n".format(
-                        type=transform_type, tag=v, vxz=eval(k)))
+                    file_handle.write("ops.geomTransf(\"{type}\", {tag}, {vxz})\n".format(
+                        type=transform_type, tag=v, vxz=eval(vxz)))
             else:
-                ops.geomTransf(transform_type, v, *eval(k))
+                ops.geomTransf(transform_type, v, *eval(vxz))
 
         # loop to add geom transf obj for additional transformation i.e. element with rigid links
 

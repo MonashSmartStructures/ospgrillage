@@ -67,9 +67,8 @@ def shell_bridge(ref_bridge_properties):
     slab_shell = og.create_member(section=slab_shell_section, material=slab_shell_mat)
 
     # construct grillage model
-    example_bridge = og.OspGrillage(bridge_name="Shell_10m", long_dim=10, width=7, skew=12,
+    example_bridge = og.create_grillage(bridge_name="Shell_10m", long_dim=10, width=7, skew=12,
                                     num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
-
 
     example_bridge.set_member(I_beam, member="interior_main_beam")
     example_bridge.set_shell_members(slab_shell)
@@ -82,24 +81,24 @@ def shell_bridge(ref_bridge_properties):
     example_bridge.set_member(exterior_I_beam, member="start_edge")
     example_bridge.set_member(exterior_I_beam, member="end_edge")
 
-
     pyfile = False
     example_bridge.create_osp_model(pyfile=pyfile)
     return example_bridge
 
 
 # --------------------------------
-# Tests here
-# test if model instance run is successful
+# test basic model instance run is successful
 def test_model_instance(bridge_model_42_negative):
     example_bridge = bridge_model_42_negative
     # og.opsplt.plot_model("nodes")
 
-    print(og.ops.nodeCoord(18))
-    print("pass")
+    assert og.ops.nodeCoord(18)  # check if model node exist in OpenSees model space
     og.ops.wipe()
 
 
+#  test creating shell model procedure successful
 def test_create_shell_model(shell_bridge):
     example_shell_bridge = shell_bridge
     og.opsplt.plot_model("nodes")
+    print(og.ops.eleNodes(195))
+    assert og.ops.eleNodes(195)  # if element exist

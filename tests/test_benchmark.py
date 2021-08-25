@@ -164,7 +164,7 @@ def add_analysis_to_simple_grid(create_grillage):
     angle = grid_prop["angle"]  # skew angle
 
     ## loading
-    P = bridge["load"] * kN
+    P = - bridge["load"] * kN
     # P = - 0.5 * kN
 
     ## load case names (also used as load names)
@@ -323,7 +323,7 @@ def test_line_load_results(add_analysis_to_simple_grid):
     angle = grid_prop["angle"]  # skew angle
 
     ## loading
-    P = - bridge["load"] * kN
+    P = bridge["load"] * kN
 
     ## load case names (also used as load names)
     load_name = ["Line Test",
@@ -412,11 +412,11 @@ def test_line_load_results(add_analysis_to_simple_grid):
                                                       data_of_node=point_load_disp_ospg.sel(Component='dy').values)
 
     # Plotting for visual
-    # ospg.plt.plot(lusas_def)
-    # ospg.plt.plot(sorted_zip_ospg_node)
-    # ospg.plt.xlabel("ospg-lusas node pairs")
-    # ospg.plt.ylabel("vertical deflection (m)")
-    # ospg.plt.legend(["LUSAS", "ospg"])
+    ospg.plt.plot(lusas_def)
+    ospg.plt.plot(sorted_zip_ospg_node)
+    ospg.plt.xlabel("ospg-lusas node pairs")
+    ospg.plt.ylabel("vertical deflection (m)")
+    ospg.plt.legend(["LUSAS", "ospg"])
 
     line_load_disp_lusas = pandas.read_csv(r'28m results\28m_super_t_displacement\3_Line_Test_Case.csv')
     lusas_def = reduce_lusas_node_result(pd_data=line_load_disp_lusas['DZ[m]'], node_to_extract_list=node_lusas)
