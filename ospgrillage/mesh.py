@@ -45,7 +45,7 @@ class Mesh:
 
     def __init__(self, long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
                  skew_2, ext_to_int_a, ext_to_int_b,
-                 orthogonal=False, pt1=Point(0, 0, 0), pt2=Point(0, 0, 0), pt3=None, element_counter=1, node_counter=1,
+                 pt1=Point(0, 0, 0), pt2=Point(0, 0, 0), pt3=None, element_counter=1, node_counter=1,
                  transform_counter=0, global_x_grid_count=0, global_edge_count=0, mesh_origin=[0, 0, 0],
                  quad_ele=False,**kwargs):
         # inputs from OspGrillage required to create mesh
@@ -59,7 +59,7 @@ class Mesh:
         # angle and mesh type
         self.skew_1 = skew_1
         self.skew_2 = skew_2
-        self.orthogonal = orthogonal
+        #self.orthogonal = orthogonal
         # sweep path properties
         self.pt1 = pt1
         self.pt2 = pt2
@@ -119,10 +119,10 @@ class Mesh:
         self.zeta, self.m, self.c = self.sweep_path.get_sweep_line_properties()  # properties m,c,zeta angle
         # ------------------------------------------------------------------------------------------
         # check condition for orthogonal mesh
-        if self.skew_1 != 0:
-            self.__check_skew(self.skew_1, self.zeta)
-        elif self.skew_2 != 0:
-            self.__check_skew(self.skew_2, self.zeta)
+        # if self.skew_1 != 0:
+        #     self.__check_skew(self.skew_1, self.zeta)
+        # elif self.skew_2 != 0:
+        #     self.__check_skew(self.skew_2, self.zeta)
 
         # check if angle between construction line and sweep path is sufficiently small - if greater meshing will
         # result in overlapping edges (between start and end edge) or edge construction line creating extra nodes on
@@ -159,27 +159,27 @@ class Mesh:
         self.sweeping_nodes = []
         # z coordinate of ref sweep nodes (relative to origin)
         self.noz = self.start_edge_line.noz
-        if orthogonal:
-            self.sweeping_nodes = self.__rotate_sweep_nodes(self.zeta / 180 * np.pi)  # zeta in rad
-        else:  # skew
-            # sweep line of skew mesh == edge_construction line
-            self.sweeping_nodes = self.start_edge_line.node_list
+        # if orthogonal:
+        #     self.sweeping_nodes = self.__rotate_sweep_nodes(self.zeta / 180 * np.pi)  # zeta in rad
+        # else:  # skew
+        #     # sweep line of skew mesh == edge_construction line
+        #     self.sweeping_nodes = self.start_edge_line.node_list
         self.nox = np.linspace(0, self.long_dim, self.num_trans_beam)
         # ------------------------------------------------------------------------------------------
         # create nodes and elements
         # if orthogonal, orthogonal mesh only be slayed onto a curve mesh, if skew mesh curved/arc line segment must be
         # false
-        if self.orthogonal:
-            # mesh start span construction line region
-            self.__orthogonal_meshing()
-
-        elif not self.curve:  # Skew mesh + angle
-            self.__fixed_sweep_node_meshing()
+        # if self.orthogonal:
+        #     # mesh start span construction line region
+        #     self.__orthogonal_meshing()
+        #
+        # elif not self.curve:  # Skew mesh + angle
+        #     self.__fixed_sweep_node_meshing()
 
         # run section grouping for longitudinal and transverse members
-        self.__identify_member_groups()
+        #self.__identify_member_groups()
 
-    def __fixed_sweep_node_meshing(self):
+    def _fixed_sweep_node_meshing(self):
         assigned_node_tag = []
         previous_node_tag = []
         for x_count, x_inc in enumerate(self.nox):
@@ -197,7 +197,7 @@ class Mesh:
                 # link transverse elements
                 if z_count > 0:
                     # element list [element tag, node i, node j, x/z group]
-                    tag = self.__get_geo_transform_tag([assigned_node_tag[z_count - 1], assigned_node_tag[z_count]])
+                    tag = self._get_geo_transform_tag([assigned_node_tag[z_count - 1], assigned_node_tag[z_count]])
                     self.trans_ele.append([self.element_counter, assigned_node_tag[z_count - 1],
                                            assigned_node_tag[z_count], x_count, tag])
                     self.element_counter += 1
@@ -215,7 +215,7 @@ class Mesh:
                         cur_z_group = self.node_spec[cur_node]['z_group']
                         prev_z_group = self.node_spec[pre_node]['z_group']
                         if cur_z_group == prev_z_group:
-                            tag = self.__get_geo_transform_tag([pre_node, cur_node])
+                            tag = self._get_geo_transform_tag([pre_node, cur_node])
                             self.long_ele.append([self.element_counter, pre_node, cur_node, cur_z_group, tag])
                             self.element_counter += 1
                             break  # break assign long ele loop (cur node)
@@ -261,9 +261,9 @@ class Mesh:
                     #                                  cur_node=self.assigned_node_tag[z_count_int])
 
                     if len(self.assigned_node_tag) >= 1:
-                        self.__assign_edge_trans_members(self.assigned_node_tag[z_count_int - 1],
-                                                         self.assigned_node_tag[z_count_int],
-                                                         self.global_edge_count)
+                        self._assign_edge_trans_members(self.assigned_node_tag[z_count_int - 1],
+                                                        self.assigned_node_tag[z_count_int],
+                                                        self.global_edge_count)
                         # get and link edge nodes from previous and current as skewed edge member
                         self.edge_node_recorder.setdefault(self.assigned_node_tag[z_count_int - 1],
                                                            self.global_edge_count)
@@ -278,7 +278,7 @@ class Mesh:
             # loop for each intersection point of edge line with sweep nodes
             for z_count, int_point in enumerate(self.start_edge_line.node_list):
                 # search point on sweep path line whose normal intersects int_point.
-                ref_point_x, ref_point_z = self.__search_x_point(int_point, start_point_x)
+                ref_point_x, ref_point_z = self._search_x_point(int_point, start_point_x)
                 # record points
                 self.sweep_path_points.append([ref_point_x, self.y_elevation, ref_point_z])
                 # find m' of line between intersect int_point and ref point on sweep path
@@ -290,7 +290,7 @@ class Mesh:
                     angle = np.arctan(self.zeta / 180 * np.pi)
                 else:
                     angle = np.pi / 2 - np.abs(phi)
-                current_sweep_nodes = self.__rotate_sweep_nodes(angle)
+                current_sweep_nodes = self._rotate_sweep_nodes(angle)
                 # get z group of first node in current_sweep_nodes - for correct assignment in loop
                 z_group = self.start_edge_line.get_node_group_z(int_point)
                 # check
@@ -316,8 +316,8 @@ class Mesh:
                     # if loop assigned more than two nodes, link nodes as a transverse member
                     if z_count_int > 0:
                         # run sub procedure to assign
-                        self.__assign_transverse_members(pre_node=self.assigned_node_tag[z_count_int - 1],
-                                                         cur_node=self.assigned_node_tag[z_count_int])
+                        self._assign_transverse_members(pre_node=self.assigned_node_tag[z_count_int - 1],
+                                                        cur_node=self.assigned_node_tag[z_count_int])
 
                 # if loop is in first step, there is only one column of nodes, skip longitudinal assignment
                 if z_count == 0:
@@ -328,21 +328,21 @@ class Mesh:
                             cur_z_group = self.node_spec[cur_node]['z_group']
                             prev_z_group = self.node_spec[pre_node]['z_group']
                             if cur_z_group == prev_z_group:
-                                self.__assign_longitudinal_members(pre_node=pre_node, cur_node=cur_node,
-                                                                   cur_z_group=cur_z_group)
+                                self._assign_longitudinal_members(pre_node=pre_node, cur_node=cur_node,
+                                                                  cur_z_group=cur_z_group)
                                 break  # break assign long ele loop (cur node)
 
                     # if angle is positive (slope negative), edge nodes located at the first element of list
                     if len(self.assigned_node_tag) >= 1:
                         if 90 + self.skew_1 + self.zeta > 90:
-                            self.__assign_edge_trans_members(self.previous_node_tag[0], self.assigned_node_tag[0],
-                                                             self.global_edge_count)
+                            self._assign_edge_trans_members(self.previous_node_tag[0], self.assigned_node_tag[0],
+                                                            self.global_edge_count)
                             # get and link edge nodes from previous and current as skewed edge member
                             self.edge_node_recorder.setdefault(self.previous_node_tag[0], self.global_edge_count)
                             self.edge_node_recorder.setdefault(self.assigned_node_tag[0], self.global_edge_count)
                         elif 90 + self.skew_1 + self.zeta < 90:
-                            self.__assign_edge_trans_members(self.previous_node_tag[-1], self.assigned_node_tag[-1],
-                                                             self.global_edge_count)
+                            self._assign_edge_trans_members(self.previous_node_tag[-1], self.assigned_node_tag[-1],
+                                                            self.global_edge_count)
                             # get and link edge nodes from previous and current as skewed edge member
                             self.edge_node_recorder.setdefault(self.previous_node_tag[-1], self.global_edge_count)
                             self.edge_node_recorder.setdefault(self.assigned_node_tag[-1], self.global_edge_count)
@@ -384,9 +384,9 @@ class Mesh:
                     # self.__assign_transverse_members(pre_node=self.assigned_node_tag[z_count_int - 1],
                     #                                  cur_node=self.assigned_node_tag[z_count_int])
                     if len(self.assigned_node_tag) >= 1:
-                        self.__assign_edge_trans_members(self.assigned_node_tag[z_count_int - 1],
-                                                         self.assigned_node_tag[z_count_int],
-                                                         self.global_edge_count)
+                        self._assign_edge_trans_members(self.assigned_node_tag[z_count_int - 1],
+                                                        self.assigned_node_tag[z_count_int],
+                                                        self.global_edge_count)
                         # get and link edge nodes from previous and current as skewed edge member
                         self.edge_node_recorder.setdefault(self.assigned_node_tag[z_count_int - 1],
                                                            self.global_edge_count)
@@ -398,13 +398,13 @@ class Mesh:
         else:
             for z_count, int_point in enumerate(self.end_edge_line.node_list):
                 # search point on sweep path line whose normal intersects int_point.
-                ref_point_x, ref_point_z = self.__search_x_point(int_point, start_point_x)
+                ref_point_x, ref_point_z = self._search_x_point(int_point, start_point_x)
                 # record points
                 self.sweep_path_points.append([ref_point_x, self.y_elevation, ref_point_z])
                 # find m' of line between intersect int_point and ref point on sweep path
                 m_prime, phi = get_slope([ref_point_x, self.y_elevation, ref_point_z], int_point)
                 # rotate sweep line such that parallel to m' line
-                current_sweep_nodes = self.__rotate_sweep_nodes(np.pi / 2 - np.abs(phi))
+                current_sweep_nodes = self._rotate_sweep_nodes(np.pi / 2 - np.abs(phi))
                 # get z group of first node in current_sweep_nodes - for correct assignment in loop
                 z_group = self.end_edge_line.get_node_group_z(int_point)  # extract from class EdgeConstructionLine
                 # check
@@ -429,8 +429,8 @@ class Mesh:
                     # if loop assigned more than two nodes, link nodes as a transverse member
                     if z_count_int > 0:
                         # run sub procedure to assign
-                        self.__assign_transverse_members(pre_node=self.assigned_node_tag[z_count_int - 1],
-                                                         cur_node=self.assigned_node_tag[z_count_int])
+                        self._assign_transverse_members(pre_node=self.assigned_node_tag[z_count_int - 1],
+                                                        cur_node=self.assigned_node_tag[z_count_int])
 
                 # if loop is in first step, there is only one column of nodes, skip longitudinal assignment
                 if z_count == 0:
@@ -441,20 +441,20 @@ class Mesh:
                             cur_z_group = self.node_spec[cur_node]['z_group']
                             prev_z_group = self.node_spec[pre_node]['z_group']
                             if cur_z_group == prev_z_group:
-                                self.__assign_longitudinal_members(pre_node=pre_node, cur_node=cur_node,
-                                                                   cur_z_group=cur_z_group)
+                                self._assign_longitudinal_members(pre_node=pre_node, cur_node=cur_node,
+                                                                  cur_z_group=cur_z_group)
                                 break  # break assign long ele loop (cur node)
 
                     # if angle is positive (slope negative), edge nodes located at the first element of list
                     if len(self.assigned_node_tag) >= 1:
                         if 90 + self.skew_2 + self.zeta > 90:
-                            self.__assign_edge_trans_members(self.previous_node_tag[-1], self.assigned_node_tag[-1],
-                                                             self.global_edge_count)
+                            self._assign_edge_trans_members(self.previous_node_tag[-1], self.assigned_node_tag[-1],
+                                                            self.global_edge_count)
                             self.edge_node_recorder.setdefault(self.previous_node_tag[-1], self.global_edge_count)
                             self.edge_node_recorder.setdefault(self.assigned_node_tag[-1], self.global_edge_count)
                         elif 90 + self.skew_2 + self.zeta < 90:
-                            self.__assign_edge_trans_members(self.previous_node_tag[0], self.assigned_node_tag[0],
-                                                             self.global_edge_count)
+                            self._assign_edge_trans_members(self.previous_node_tag[0], self.assigned_node_tag[0],
+                                                            self.global_edge_count)
                             self.edge_node_recorder.setdefault(self.previous_node_tag[0], self.global_edge_count)
                             self.edge_node_recorder.setdefault(self.assigned_node_tag[0], self.global_edge_count)
                     # update recorder for previous node tag step
@@ -485,7 +485,7 @@ class Mesh:
             # z = line_func(m=self.m, c=self.c, x=x)
             z = self.sweep_path.get_line_function(x)
             # z = line_func(self.sweep_path.m, self.sweep_path.c, x)
-            current_sweep_nodes = self.__rotate_sweep_nodes(self.zeta / 180 * np.pi)  # rotating sweep nodes @ origin
+            current_sweep_nodes = self._rotate_sweep_nodes(self.zeta / 180 * np.pi)  # rotating sweep nodes @ origin
             # if angle less than threshold, assign nodes of edge member as it is
             for (z_count_int, nodes) in enumerate(current_sweep_nodes):
                 x_inc = x
@@ -500,8 +500,8 @@ class Mesh:
                 # if loop assigned more than two nodes, link nodes as a transverse member
                 if z_count_int > 0:
                     # run sub procedure to assign
-                    self.__assign_transverse_members(pre_node=self.assigned_node_tag[z_count_int - 1],
-                                                     cur_node=self.assigned_node_tag[z_count_int])
+                    self._assign_transverse_members(pre_node=self.assigned_node_tag[z_count_int - 1],
+                                                    cur_node=self.assigned_node_tag[z_count_int])
             if z_count == 0:
                 self.previous_node_tag = self.first_connecting_region_nodes
             elif z_count > 0 and z_count != len(self.uniform_region_x[1:-1]) - 1:
@@ -511,8 +511,8 @@ class Mesh:
                     cur_z_group = self.node_spec[cur_node]['z_group']
                     prev_z_group = self.node_spec[pre_node]['z_group']
                     if cur_z_group == prev_z_group:
-                        self.__assign_longitudinal_members(pre_node=pre_node, cur_node=cur_node,
-                                                           cur_z_group=cur_z_group)
+                        self._assign_longitudinal_members(pre_node=pre_node, cur_node=cur_node,
+                                                          cur_z_group=cur_z_group)
                         break  # break assign long ele loop (cur node)
             # update and reset recorders for next column of sweep nodes
             self.global_x_grid_count += 1
@@ -530,31 +530,31 @@ class Mesh:
                 cur_z_group = self.node_spec[cur_node]['z_group']
                 prev_z_group = self.node_spec[pre_node]['z_group']
                 if cur_z_group == prev_z_group:
-                    self.__assign_longitudinal_members(pre_node=pre_node, cur_node=cur_node,
-                                                       cur_z_group=cur_z_group)
+                    self._assign_longitudinal_members(pre_node=pre_node, cur_node=cur_node,
+                                                      cur_z_group=cur_z_group)
                     break
         print("orthogonal meshing complete")
 
     # ------------------------------------------------------------------------------------------
     # ------------------------------------------------------------------------------------------
-    def __assign_transverse_members(self, pre_node, cur_node):
-        tag = self.__get_geo_transform_tag([pre_node, cur_node])
+    def _assign_transverse_members(self, pre_node, cur_node):
+        tag = self._get_geo_transform_tag([pre_node, cur_node])
         self.trans_ele.append([self.element_counter, pre_node, cur_node, self.global_x_grid_count, tag])
         self.element_counter += 1
 
-    def __assign_longitudinal_members(self, pre_node, cur_node, cur_z_group):
-        tag = self.__get_geo_transform_tag([pre_node, cur_node])
+    def _assign_longitudinal_members(self, pre_node, cur_node, cur_z_group):
+        tag = self._get_geo_transform_tag([pre_node, cur_node])
         self.long_ele.append([self.element_counter, pre_node, cur_node, cur_z_group, tag])
         self.element_counter += 1
 
-    def __assign_edge_trans_members(self, previous_node_tag, assigned_node_tag, edge_counter):
-        tag = self.__get_geo_transform_tag([previous_node_tag, assigned_node_tag])
+    def _assign_edge_trans_members(self, previous_node_tag, assigned_node_tag, edge_counter):
+        tag = self._get_geo_transform_tag([previous_node_tag, assigned_node_tag])
         self.edge_span_ele.append([self.element_counter, previous_node_tag, assigned_node_tag
                                       , edge_counter, tag])
         self.element_counter += 1
 
     # ------------------------------------------------------------------------------------------
-    def __identify_member_groups(self):
+    def _identify_member_groups(self):
         """
         Abstracted method handled by either orthogonal_mesh() or skew_mesh() function
         to identify member groups based on node spacings in orthogonal directions.
@@ -766,20 +766,20 @@ class Mesh:
                         subdict['left'] = neighbour
             self.grid_vicinity_dict.setdefault(k, subdict)
 
-    def __get_geo_transform_tag(self, ele_nodes,offset=None):
+    def _get_geo_transform_tag(self, ele_nodes, offset=None):
         if offset is None:
             offset = []
         # function called for each element, assign
         node_i = self.node_spec[ele_nodes[0]]['coordinate']
         node_j = self.node_spec[ele_nodes[1]]['coordinate']
-        vxz = self.__get_vector_xz(node_i, node_j)
+        vxz = self._get_vector_xz(node_i, node_j)
         vxz = [np.round(num, decimals=self.decimal_lim) for num in vxz]
         tag_value = self.transform_dict.setdefault(repr(vxz)+"|"+repr(offset), self.transform_counter + 1)
         if tag_value > self.transform_counter:
             self.transform_counter = tag_value
         return tag_value
 
-    def __check_skew(self, edge_skew_angle, zeta):
+    def _check_skew(self, edge_skew_angle, zeta):
         # zeta in DEGREES
         # if mesh type is beyond default allowance threshold of 11 degree and 30 degree, return exception
         if np.abs(edge_skew_angle - zeta) <= self.skew_threshold[0] and self.orthogonal:
@@ -796,7 +796,7 @@ class Mesh:
 
     # ------------------------------------------------------------------------------------------
     @staticmethod
-    def __get_vector_xz(node_i, node_j):
+    def _get_vector_xz(node_i, node_j):
         """
         Encapsulated function to identify a vector parallel to the plane of local x and z axis of the element. The
         vector is required for geomTransf() command
@@ -821,7 +821,7 @@ class Mesh:
         z1 = z / length
         return [x1, 0, z1]  # here y axis is normal to model plane
 
-    def __rotate_sweep_nodes(self, zeta):
+    def _rotate_sweep_nodes(self, zeta):
         sweep_nodes_x = [0] * len(self.noz)  # line is orthogonal at the start of sweeping path
         # rotate for inclination at origin
         sweep_nodes_x = [x * np.cos(zeta) - y * np.sin(zeta) for x, y in zip(sweep_nodes_x, self.noz)]
@@ -833,7 +833,7 @@ class Mesh:
 
         return sweeping_nodes
 
-    def __search_x_point(self, int_point, start_point_y=0, line_function=None):
+    def _search_x_point(self, int_point, start_point_y=0, line_function=None):
         start_point_x = int_point[0]
         min_found = False
         max_loop = 1000
@@ -969,6 +969,7 @@ class OrthogonalMesh(Mesh):
     def __init__(self, long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
                  skew_2, ext_to_int_a, ext_to_int_b):
         """
+        Subclass for Mesh with beam
 
         :param long_dim:
         :param width:
@@ -987,6 +988,15 @@ class OrthogonalMesh(Mesh):
         # - sweep path
         super().__init__(long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
                          skew_2, ext_to_int_a, ext_to_int_b)
+        self.orthogonal = True
+
+        self.sweeping_nodes = self._rotate_sweep_nodes(self.zeta / 180 * np.pi)
+        if self.skew_1 != 0:
+            self._check_skew(self.skew_1, self.zeta)
+        elif self.skew_2 != 0:
+            self._check_skew(self.skew_2, self.zeta)
+        self.__orthogonal_meshing()  # main procedure
+        self._identify_member_groups()  # process additional member information
 
     def __orthogonal_meshing(self):
         global sweep_nodes, z_group_recorder
@@ -1020,9 +1030,9 @@ class OrthogonalMesh(Mesh):
                     #                                  cur_node=self.assigned_node_tag[z_count_int])
 
                     if len(self.assigned_node_tag) >= 1:
-                        self.__assign_edge_trans_members(self.assigned_node_tag[z_count_int - 1],
-                                                         self.assigned_node_tag[z_count_int],
-                                                         self.global_edge_count)
+                        self._assign_edge_trans_members(self.assigned_node_tag[z_count_int - 1],
+                                                        self.assigned_node_tag[z_count_int],
+                                                        self.global_edge_count)
                         # get and link edge nodes from previous and current as skewed edge member
                         self.edge_node_recorder.setdefault(self.assigned_node_tag[z_count_int - 1],
                                                            self.global_edge_count)
@@ -1038,7 +1048,7 @@ class OrthogonalMesh(Mesh):
             # loop for each intersection point of edge line with sweep nodes
             for z_count, int_point in enumerate(self.start_edge_line.node_list):
                 # search point on sweep path line whose normal intersects int_point.
-                ref_point_x, ref_point_z = self.__search_x_point(int_point, start_point_x)
+                ref_point_x, ref_point_z = self._search_x_point(int_point, start_point_x)
                 # record points
                 self.sweep_path_points.append([ref_point_x, self.y_elevation, ref_point_z])
                 # find m' of line between intersect int_point and ref point on sweep path
@@ -1050,7 +1060,7 @@ class OrthogonalMesh(Mesh):
                     angle = np.arctan(self.zeta / 180 * np.pi)
                 else:
                     angle = np.pi / 2 - np.abs(phi)
-                current_sweep_nodes = self.__rotate_sweep_nodes(angle)
+                current_sweep_nodes = self._rotate_sweep_nodes(angle)
                 # get z group of first node in current_sweep_nodes - for correct assignment in loop
                 z_group = self.start_edge_line.get_node_group_z(int_point)
                 # check
@@ -1076,7 +1086,7 @@ class OrthogonalMesh(Mesh):
                     # if loop assigned more than two nodes, link nodes as a transverse member
                     if z_count_int > 0:
                         # run sub procedure to assign
-                        self.__assign_transverse_members(pre_node=self.assigned_node_tag[z_count_int - 1],
+                        self._assign_transverse_members(pre_node=self.assigned_node_tag[z_count_int - 1],
                                                          cur_node=self.assigned_node_tag[z_count_int])
 
                 # if loop is in first step, there is only one column of nodes, skip longitudinal assignment
@@ -1088,20 +1098,20 @@ class OrthogonalMesh(Mesh):
                             cur_z_group = self.node_spec[cur_node]['z_group']
                             prev_z_group = self.node_spec[pre_node]['z_group']
                             if cur_z_group == prev_z_group:
-                                self.__assign_longitudinal_members(pre_node=pre_node, cur_node=cur_node,
+                                self._assign_longitudinal_members(pre_node=pre_node, cur_node=cur_node,
                                                                    cur_z_group=cur_z_group)
                                 break  # break assign long ele loop (cur node)
 
                     # if angle is positive (slope negative), edge nodes located at the first element of list
                     if len(self.assigned_node_tag) >= 1:
                         if 90 + self.skew_1 + self.zeta > 90:
-                            self.__assign_edge_trans_members(self.previous_node_tag[0], self.assigned_node_tag[0],
+                            self._assign_edge_trans_members(self.previous_node_tag[0], self.assigned_node_tag[0],
                                                              self.global_edge_count)
                             # get and link edge nodes from previous and current as skewed edge member
                             self.edge_node_recorder.setdefault(self.previous_node_tag[0], self.global_edge_count)
                             self.edge_node_recorder.setdefault(self.assigned_node_tag[0], self.global_edge_count)
                         elif 90 + self.skew_1 + self.zeta < 90:
-                            self.__assign_edge_trans_members(self.previous_node_tag[-1], self.assigned_node_tag[-1],
+                            self._assign_edge_trans_members(self.previous_node_tag[-1], self.assigned_node_tag[-1],
                                                              self.global_edge_count)
                             # get and link edge nodes from previous and current as skewed edge member
                             self.edge_node_recorder.setdefault(self.previous_node_tag[-1], self.global_edge_count)
@@ -1145,7 +1155,7 @@ class OrthogonalMesh(Mesh):
                     # self.__assign_transverse_members(pre_node=self.assigned_node_tag[z_count_int - 1],
                     #                                  cur_node=self.assigned_node_tag[z_count_int])
                     if len(self.assigned_node_tag) >= 1:
-                        self.__assign_edge_trans_members(self.assigned_node_tag[z_count_int - 1],
+                        self._assign_edge_trans_members(self.assigned_node_tag[z_count_int - 1],
                                                          self.assigned_node_tag[z_count_int],
                                                          self.global_edge_count)
                         # get and link edge nodes from previous and current as skewed edge member
@@ -1160,13 +1170,13 @@ class OrthogonalMesh(Mesh):
         else:
             for z_count, int_point in enumerate(self.end_edge_line.node_list):
                 # search point on sweep path line whose normal intersects int_point.
-                ref_point_x, ref_point_z = self.__search_x_point(int_point, start_point_x)
+                ref_point_x, ref_point_z = self._search_x_point(int_point, start_point_x)
                 # record points
                 self.sweep_path_points.append([ref_point_x, self.y_elevation, ref_point_z])
                 # find m' of line between intersect int_point and ref point on sweep path
                 m_prime, phi = get_slope([ref_point_x, self.y_elevation, ref_point_z], int_point)
                 # rotate sweep line such that parallel to m' line
-                current_sweep_nodes = self.__rotate_sweep_nodes(np.pi / 2 - np.abs(phi))
+                current_sweep_nodes = self._rotate_sweep_nodes(np.pi / 2 - np.abs(phi))
                 # get z group of first node in current_sweep_nodes - for correct assignment in loop
                 z_group = self.end_edge_line.get_node_group_z(int_point)  # extract from class EdgeConstructionLine
                 # check
@@ -1191,7 +1201,7 @@ class OrthogonalMesh(Mesh):
                     # if loop assigned more than two nodes, link nodes as a transverse member
                     if z_count_int > 0:
                         # run sub procedure to assign
-                        self.__assign_transverse_members(pre_node=self.assigned_node_tag[z_count_int - 1],
+                        self._assign_transverse_members(pre_node=self.assigned_node_tag[z_count_int - 1],
                                                          cur_node=self.assigned_node_tag[z_count_int])
 
                 # if loop is in first step, there is only one column of nodes, skip longitudinal assignment
@@ -1203,19 +1213,19 @@ class OrthogonalMesh(Mesh):
                             cur_z_group = self.node_spec[cur_node]['z_group']
                             prev_z_group = self.node_spec[pre_node]['z_group']
                             if cur_z_group == prev_z_group:
-                                self.__assign_longitudinal_members(pre_node=pre_node, cur_node=cur_node,
+                                self._assign_longitudinal_members(pre_node=pre_node, cur_node=cur_node,
                                                                    cur_z_group=cur_z_group)
                                 break  # break assign long ele loop (cur node)
 
                     # if angle is positive (slope negative), edge nodes located at the first element of list
                     if len(self.assigned_node_tag) >= 1:
                         if 90 + self.skew_2 + self.zeta > 90:
-                            self.__assign_edge_trans_members(self.previous_node_tag[-1], self.assigned_node_tag[-1],
+                            self._assign_edge_trans_members(self.previous_node_tag[-1], self.assigned_node_tag[-1],
                                                              self.global_edge_count)
                             self.edge_node_recorder.setdefault(self.previous_node_tag[-1], self.global_edge_count)
                             self.edge_node_recorder.setdefault(self.assigned_node_tag[-1], self.global_edge_count)
                         elif 90 + self.skew_2 + self.zeta < 90:
-                            self.__assign_edge_trans_members(self.previous_node_tag[0], self.assigned_node_tag[0],
+                            self._assign_edge_trans_members(self.previous_node_tag[0], self.assigned_node_tag[0],
                                                              self.global_edge_count)
                             self.edge_node_recorder.setdefault(self.previous_node_tag[0], self.global_edge_count)
                             self.edge_node_recorder.setdefault(self.assigned_node_tag[0], self.global_edge_count)
@@ -1247,7 +1257,7 @@ class OrthogonalMesh(Mesh):
             # z = line_func(m=self.m, c=self.c, x=x)
             z = self.sweep_path.get_line_function(x)
             # z = line_func(self.sweep_path.m, self.sweep_path.c, x)
-            current_sweep_nodes = self.__rotate_sweep_nodes(
+            current_sweep_nodes = self._rotate_sweep_nodes(
                 self.zeta / 180 * np.pi)  # rotating sweep nodes @ origin
             # if angle less than threshold, assign nodes of edge member as it is
             for (z_count_int, nodes) in enumerate(current_sweep_nodes):
@@ -1264,7 +1274,7 @@ class OrthogonalMesh(Mesh):
                 # if loop assigned more than two nodes, link nodes as a transverse member
                 if z_count_int > 0:
                     # run sub procedure to assign
-                    self.__assign_transverse_members(pre_node=self.assigned_node_tag[z_count_int - 1],
+                    self._assign_transverse_members(pre_node=self.assigned_node_tag[z_count_int - 1],
                                                      cur_node=self.assigned_node_tag[z_count_int])
             if z_count == 0:
                 self.previous_node_tag = self.first_connecting_region_nodes
@@ -1275,7 +1285,7 @@ class OrthogonalMesh(Mesh):
                     cur_z_group = self.node_spec[cur_node]['z_group']
                     prev_z_group = self.node_spec[pre_node]['z_group']
                     if cur_z_group == prev_z_group:
-                        self.__assign_longitudinal_members(pre_node=pre_node, cur_node=cur_node,
+                        self._assign_longitudinal_members(pre_node=pre_node, cur_node=cur_node,
                                                            cur_z_group=cur_z_group)
                         break  # break assign long ele loop (cur node)
             # update and reset recorders for next column of sweep nodes
@@ -1294,7 +1304,7 @@ class OrthogonalMesh(Mesh):
                 cur_z_group = self.node_spec[cur_node]['z_group']
                 prev_z_group = self.node_spec[pre_node]['z_group']
                 if cur_z_group == prev_z_group:
-                    self.__assign_longitudinal_members(pre_node=pre_node, cur_node=cur_node,
+                    self._assign_longitudinal_members(pre_node=pre_node, cur_node=cur_node,
                                                        cur_z_group=cur_z_group)
                     break
 
@@ -1304,10 +1314,28 @@ class OrthogonalMesh(Mesh):
 class ObliqueMesh(Mesh):
     def __init__(self, long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
                  skew_2, ext_to_int_a, ext_to_int_b):
+        """
+        Subclass for Oblique mesh
+
+        :param long_dim:
+        :param width:
+        :param trans_dim:
+        :param edge_dist_a:
+        :param edge_dist_b:
+        :param num_trans_beam:
+        :param num_long_beam:
+        :param skew_1:
+        :param skew_2:
+        :param ext_to_int_a:
+        :param ext_to_int_b:
+        """
         super().__init__(long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
                          skew_2, ext_to_int_a, ext_to_int_b)
-
-    def __fixed_sweep_node_meshing(self):
+        # sweep line of skew mesh == edge_construction line
+        self.sweeping_nodes = self.start_edge_line.node_list
+        self._fixed_sweep_node_meshing()
+        self._identify_member_groups()
+    def _fixed_sweep_node_meshing(self):
         assigned_node_tag = []
         previous_node_tag = []
         for x_count, x_inc in enumerate(self.nox):
@@ -1325,7 +1353,7 @@ class ObliqueMesh(Mesh):
                 # link transverse elements
                 if z_count > 0:
                     # element list [element tag, node i, node j, x/z group]
-                    tag = self.__get_geo_transform_tag([assigned_node_tag[z_count - 1], assigned_node_tag[z_count]])
+                    tag = self._get_geo_transform_tag([assigned_node_tag[z_count - 1], assigned_node_tag[z_count]])
                     self.trans_ele.append([self.element_counter, assigned_node_tag[z_count - 1],
                                            assigned_node_tag[z_count], x_count, tag])
                     self.element_counter += 1
@@ -1343,7 +1371,7 @@ class ObliqueMesh(Mesh):
                         cur_z_group = self.node_spec[cur_node]['z_group']
                         prev_z_group = self.node_spec[pre_node]['z_group']
                         if cur_z_group == prev_z_group:
-                            tag = self.__get_geo_transform_tag([pre_node, cur_node])
+                            tag = self._get_geo_transform_tag([pre_node, cur_node])
                             self.long_ele.append([self.element_counter, pre_node, cur_node, cur_z_group, tag])
                             self.element_counter += 1
                             break  # break assign long ele loop (cur node)
@@ -1357,3 +1385,34 @@ class ObliqueMesh(Mesh):
 
             assigned_node_tag = []
         print("Meshing completed....")
+
+
+class OrthoMeshBeamLink(OrthogonalMesh):
+    def __init__(self):
+        super(OrthoMeshBeamLink, self).__init__()
+
+        # instantiate dict to record link properties
+        self.r_c_node_dict = dict()  # key slave node tag (cNode), value master node (rNode)
+        # initiate list for nodes and elements
+        self.long_ele_offset = []
+
+        # procedures here
+        # self._orthogonal_mesh()
+        self._create_link_elements()
+
+        self._mesh_beam_elements()
+        self._identify_member_groups()
+
+    def _create_link_elements(self):
+
+        link_str = "ops.rigidLink(\"beam\",{mastertag},{slavetag})"
+
+        pass
+
+    def _mesh_beam_elements(self):
+        # function to mesh offset beam elements. Typically, model plane of grillage is y = 0. This function
+        # creates beam elements located outside of model plane - which are then linked to grillage using link elements
+
+        pass
+
+

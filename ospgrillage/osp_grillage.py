@@ -203,12 +203,26 @@ class OspGrillage:
         self.rigid_type = kwargs.get("rigid_type", None)  # accepts int type 1 or 2
 
         # create mesh object
-        self.Mesh_obj = Mesh(long_dim=self.long_dim, width=self.width, trans_dim=self.trans_dim,
+        # self.Mesh_obj = Mesh(long_dim=self.long_dim, width=self.width, trans_dim=self.trans_dim,
+        #                      num_trans_beam=self.num_trans_grid,
+        #                      num_long_beam=self.num_long_gird, ext_to_int_a=self.ext_to_int_a,
+        #                      ext_to_int_b=self.ext_to_int_b,
+        #                      skew_1=self.skew_a, edge_dist_a=self.edge_width_a, edge_dist_b=self.edge_width_b,
+        #                      skew_2=self.skew_b, orthogonal=self.ortho_mesh)
+
+        self.Mesh_obj = self.create_mesh(long_dim=self.long_dim, width=self.width, trans_dim=self.trans_dim,
                              num_trans_beam=self.num_trans_grid,
                              num_long_beam=self.num_long_gird, ext_to_int_a=self.ext_to_int_a,
                              ext_to_int_b=self.ext_to_int_b,
                              skew_1=self.skew_a, edge_dist_a=self.edge_width_a, edge_dist_b=self.edge_width_b,
-                             skew_2=self.skew_b, orthogonal=self.ortho_mesh)
+                             skew_2=self.skew_b)
+    def create_mesh(self,**kwargs):
+
+        if self.ortho_mesh:
+            mesh_obj= OrthogonalMesh(**kwargs)
+        else:
+            mesh_obj = ObliqueMesh(**kwargs)
+        return mesh_obj
 
     def create_osp_model(self, pyfile=False):
         """
@@ -1795,3 +1809,41 @@ class Results:
         else:
             result = None
         return result
+
+
+class OspGrillageShell(OspGrillage):
+    def __init__(self):
+        super(OspGrillageShell, self).__init__()
+
+    # function to set shell members
+    def set_shell_members(self, grillage_member_obj: GrillageMember, quad=True, tri=False):
+        """
+        Function to set shell/quad members across entire mesh grid.
+
+        :param quad: Boolean to flag setting quad shell members
+        :param tri: Boolean to flag setting triangular shell members
+        :param grillage_member_obj: GrillageMember object
+        :type grillage_member_obj: GrillageMember
+        :raises ValueError: If GrillageMember object was not specified for quad or shell element. Also raises this error
+                            if components of GrillageMember object (e.g. section or material) is not a valid property
+                            for the specific shell element type in accordance with OpenSees conventions.
+
+        .. note::
+            Feature coming in development for shell element definition
+
+        """
+        # this function creates shell elements out of the node grids of Mesh object
+        shell_counter = self.Mesh_obj.element_counter
+        # if self.Mesh_obj is None:  # checks if
+        #     raise ValueError("Model instance not created. Run ops.create_ops() function before setting members")
+        # check and write member's section command if any
+        section_tag = self.__write_section(grillage_member_obj)
+        # check and write member's material command if any
+        material_tag = self.__write_material(member=grillage_member_obj)
+
+        for grid_nodes_list in self.Mesh_obj.grid_number_dict.values():
+            ele_str = grillage_member_obj.get_element_command_str(ele_tag=shell_counter,
+                                                                  node_tag_list=grid_nodes_list,
+                                                                  materialtag=material_tag, sectiontag=section_tag)
+            self.shell_element_command_list.append(ele_str)
+            shell_counter += 1

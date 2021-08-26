@@ -90,7 +90,7 @@ def shell_bridge(ref_bridge_properties):
 # test basic model instance run is successful
 def test_model_instance(bridge_model_42_negative):
     example_bridge = bridge_model_42_negative
-    # og.opsplt.plot_model("nodes")
+    og.opsplt.plot_model("nodes")
 
     assert og.ops.nodeCoord(18)  # check if model node exist in OpenSees model space
     og.ops.wipe()
@@ -101,4 +101,4 @@ def test_create_shell_model(shell_bridge):
     example_shell_bridge = shell_bridge
     og.opsplt.plot_model("nodes")
     print(og.ops.eleNodes(195))
-    assert og.ops.eleNodes(195)  # if element exist
+    assert og.ops.eleNodes(195)  # if element exist - for orthogonal mesh only
