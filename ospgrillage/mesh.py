@@ -771,8 +771,9 @@ class Mesh:
             self.grid_vicinity_dict.setdefault(k, subdict)
 
     def _get_geo_transform_tag(self, ele_nodes, offset=None):
+        # offset is not used in version 0.1.0
         if offset is None:
-            offset = []
+            offset = []  #
         # function called for each element, assign
         node_i = self.node_spec[ele_nodes[0]]['coordinate']
         node_j = self.node_spec[ele_nodes[1]]['coordinate']
@@ -973,7 +974,8 @@ class BeamLinkMesh(Mesh):
     def __init__(self, long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
                  skew_2, ext_to_int_a, ext_to_int_b,link_type="beam",**kwargs):
         """
-        Subclass for Mesh with beam
+        Subclass for Mesh with beam. This class creates elements where-
+        - long beam elements are
 
         :param long_dim:
         :param width:
@@ -987,11 +989,7 @@ class BeamLinkMesh(Mesh):
         :param ext_to_int_a:
         :param ext_to_int_b:
         """
-        # super init will create mesh of grillage - model plane = 0
-        # - 2 x edge construction lines
-        # - default sweep path
-        super().__init__(long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
-                         skew_2, ext_to_int_a, ext_to_int_b,**kwargs)
+
         # get variables of links
         self.offset_y_dist = None
         self.offset_z_dist = None
@@ -1000,23 +998,42 @@ class BeamLinkMesh(Mesh):
         self.link_list = []
         self.link_type = link_type
 
-    def create_offset_nodes(self):
-        # proposed steps
+        # super init will create mesh of grillage - model plane = 0
+        # - 2 x edge construction lines
+        # - default sweep path
+        super().__init__(long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
+                         skew_2, ext_to_int_a, ext_to_int_b,**kwargs)
 
-        # identify if mesh type is beam link or shell link
+    # overwrite method to get geom transf of beam element
+    def _get_geo_transform_tag(self, ele_nodes, offset=None,flange_spacing=None):
+        # offset is not used in version 0.1.0
+        if offset is None:
+            offset = []  #
+        if flange_spacing is None:
+            flange_spacing = 0  #
+        # function called for each element, assign
+        node_i = self.node_spec[ele_nodes[0]]['coordinate']
+        node_j = self.node_spec[ele_nodes[1]]['coordinate']
+        vxz = self._get_vector_xz(node_i, node_j)
+        # subclass method variant
+        # check for z group
+        # if element is a longitudinal, set global y offset (for longitudinal beam)
+        if self.node_spec[ele_nodes[1]]['z_group'] == self.node_spec[ele_nodes[0]]['z_group']:
+            # check if not an edge beam
+            if self.node_spec[ele_nodes[1]]['z_group'] != 0 or self.node_spec[ele_nodes[1]]['z_group'] != len(self.noz):
+                offset = [0,self.offset_y_dist,0]  # shift beam element by global y
+        # if element is a transverse member,
+        elif self.node_spec[ele_nodes[1]]['x_group'] == self.node_spec[ele_nodes[0]]['x_group']:
+            # considering angle from northing i.e. orthogonal to self.zeta
+            offset_z = np.cos(self.zeta/180 * np.pi)*flange_spacing  # z == cos
+            offset_x = np.sin(self.zeta/180 * np.pi)*flange_spacing
+            offset = [offset_x, self.y_elevation, offset_z]
 
-        # if beam link, create node by offset node of beam +y offset
-
-        # if shell link, create node by identifying position of beam offset (wrt noz)
-        # then offset the nodes by +z +y offset
-
-        pass
-
-    def create_link_element(self,rNode,cNode):
-        # user mp constraint object
-        # function to create ops rigid link command and store to variable
-        link_str = "ops.rigidLink({linktype},{rNodetag},{cNodetag})"
-        self.link_list.append(link_str)
+        vxz = [np.round(num, decimals=self.decimal_lim) for num in vxz]
+        tag_value = self.transform_dict.setdefault(repr(vxz)+"|"+repr(offset), self.transform_counter + 1)
+        if tag_value > self.transform_counter:
+            self.transform_counter = tag_value
+        return tag_value
 
 
 class ShellLinkMesh(Mesh):
@@ -1042,5 +1059,9 @@ class ShellLinkMesh(Mesh):
 
         # class to create the
 
-
+        def create_link_element(self, rNode, cNode):
+            # user mp constraint object
+            # function to create ops rigid link command and store to variable
+            link_str = "ops.rigidLink({linktype},{rNodetag},{cNodetag})"
+            self.link_list.append(link_str)
 
