@@ -141,7 +141,11 @@ class Section:
         if self.h_depth:
             self.op_section_type = "ElasticMembranePlateSection"
             self.op_ele_type = "ShellDKGQ"
-
+        # warning checks
+        E = kwargs.get("E",None)
+        G = kwargs.get("G",None)
+        if any([E,G]):
+            raise ValueError("E or G is provided to Section object. Hint: E and G are attributes of Material Object")
         self.parse_section_properties()
 
     def parse_section_properties(self):
@@ -156,6 +160,7 @@ class Section:
         if self.Iy is None and self.Iz is not None:
             self.Iy = 0.2 * self.Iz
 # ----------------------------------------------------------------------------------------------------------------
+
 class GrillageMember:
     """
     Parent class for defining a Grillage member. Provides methods to wrap ```OpenSeesPy``` Element() command.

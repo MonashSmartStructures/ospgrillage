@@ -203,25 +203,26 @@ class OspGrillage:
         self.rigid_type = kwargs.get("rigid_type", None)  # accepts int type 1 or 2
 
         # create mesh object
-        # self.Mesh_obj = Mesh(long_dim=self.long_dim, width=self.width, trans_dim=self.trans_dim,
-        #                      num_trans_beam=self.num_trans_grid,
-        #                      num_long_beam=self.num_long_gird, ext_to_int_a=self.ext_to_int_a,
-        #                      ext_to_int_b=self.ext_to_int_b,
-        #                      skew_1=self.skew_a, edge_dist_a=self.edge_width_a, edge_dist_b=self.edge_width_b,
-        #                      skew_2=self.skew_b, orthogonal=self.ortho_mesh)
-
-        self.Mesh_obj = self.create_mesh(long_dim=self.long_dim, width=self.width, trans_dim=self.trans_dim,
+        self.Mesh_obj = Mesh(long_dim=self.long_dim, width=self.width, trans_dim=self.trans_dim,
                              num_trans_beam=self.num_trans_grid,
                              num_long_beam=self.num_long_gird, ext_to_int_a=self.ext_to_int_a,
                              ext_to_int_b=self.ext_to_int_b,
                              skew_1=self.skew_a, edge_dist_a=self.edge_width_a, edge_dist_b=self.edge_width_b,
-                             skew_2=self.skew_b)
+                             skew_2=self.skew_b, orthogonal=self.ortho_mesh)
+
+        # self.Mesh_obj = self.create_mesh(long_dim=self.long_dim, width=self.width, trans_dim=self.trans_dim,
+        #                      num_trans_beam=self.num_trans_grid,
+        #                      num_long_beam=self.num_long_gird, ext_to_int_a=self.ext_to_int_a,
+        #                      ext_to_int_b=self.ext_to_int_b,
+        #                      skew_1=self.skew_a, edge_dist_a=self.edge_width_a, edge_dist_b=self.edge_width_b,
+        #                      skew_2=self.skew_b)
+
     def create_mesh(self,**kwargs):
 
         if self.ortho_mesh:
-            mesh_obj= OrthogonalMesh(**kwargs)
+            mesh_obj= Mesh(**kwargs)
         else:
-            mesh_obj = ObliqueMesh(**kwargs)
+            mesh_obj = ShellLinkMesh(**kwargs)
         return mesh_obj
 
     def create_osp_model(self, pyfile=False):
@@ -1829,7 +1830,7 @@ class OspGrillageShell(OspGrillage):
                             for the specific shell element type in accordance with OpenSees conventions.
 
         .. note::
-            Feature coming in development for shell element definition
+            Feature to be updated with class segregation later on 0.1.1
 
         """
         # this function creates shell elements out of the node grids of Mesh object
