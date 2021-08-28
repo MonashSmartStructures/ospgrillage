@@ -972,7 +972,7 @@ class SweepPath:
 
 class BeamLinkMesh(Mesh):
     def __init__(self, long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
-                 skew_2, ext_to_int_a, ext_to_int_b,link_type="beam",**kwargs):
+                 skew_2, ext_to_int_a, ext_to_int_b,**kwargs):
         """
         Subclass for Mesh with beam. This class creates elements where-
         - long beam elements are
@@ -989,14 +989,17 @@ class BeamLinkMesh(Mesh):
         :param ext_to_int_a:
         :param ext_to_int_b:
         """
+        # beam width for links calculation
+        self.beam_width = kwargs.get("beam_width",None)
+        self.web_thick = kwargs.get("web_thick",None)
+        self.centroid_dist_y = kwargs.get("centroid_dist_y",0)
+        if any([self.beam_width is None and self.web_thick is None]):
+            self.offset_z_dist = 0
+        else:
+            self.offset_z_dist = self.beam_width/2 - self.web_thick/2
 
         # get variables of links
-        self.offset_y_dist = None
-        self.offset_z_dist = None
-        # instantiate variables
-        self.long_ele_offset = []
-        self.link_list = []
-        self.link_type = link_type
+
 
         # super init will create mesh of grillage - model plane = 0
         # - 2 x edge construction lines
@@ -1005,15 +1008,14 @@ class BeamLinkMesh(Mesh):
                          skew_2, ext_to_int_a, ext_to_int_b,**kwargs)
 
     # overwrite method to get geom transf of beam element
-    def _get_geo_transform_tag(self, ele_nodes, offset=None,flange_spacing=None):
-        # offset is not used in version 0.1.0
-        if offset is None:
-            offset = []  #
-        if flange_spacing is None:
-            flange_spacing = 0  #
+    def _get_geo_transform_tag(self, ele_nodes, offset=None):
+
+        global_offset = []  #
+        local_offset= [] #
         # function called for each element, assign
         node_i = self.node_spec[ele_nodes[0]]['coordinate']
         node_j = self.node_spec[ele_nodes[1]]['coordinate']
+        def_l = find_min_x_dist([node_i], [node_j]).tolist()[0][0]  # distance between i and j, returned as 2D array
         vxz = self._get_vector_xz(node_i, node_j)
         # subclass method variant
         # check for z group
@@ -1021,16 +1023,25 @@ class BeamLinkMesh(Mesh):
         if self.node_spec[ele_nodes[1]]['z_group'] == self.node_spec[ele_nodes[0]]['z_group']:
             # check if not an edge beam
             if self.node_spec[ele_nodes[1]]['z_group'] != 0 or self.node_spec[ele_nodes[1]]['z_group'] != len(self.noz):
-                offset = [0,self.offset_y_dist,0]  # shift beam element by global y
+                local_offset = [0,self.centroid_dist_y,0]  # shift beam element by global y
+
+
         # if element is a transverse member,
         elif self.node_spec[ele_nodes[1]]['x_group'] == self.node_spec[ele_nodes[0]]['x_group']:
-            # considering angle from northing i.e. orthogonal to self.zeta
-            offset_z = np.cos(self.zeta/180 * np.pi)*flange_spacing  # z == cos
-            offset_x = np.sin(self.zeta/180 * np.pi)*flange_spacing
-            offset = [offset_x, self.y_elevation, offset_z]
-
+            # calculate local offset
+            offset_z = np.cos(self.zeta/180 * np.pi)*self.offset_z_dist  # z == cos
+            offset_x = np.sin(self.zeta/180 * np.pi)*self.offset_z_dist
+            local_offset = [offset_x, self.y_elevation, offset_z]
+        if local_offset:
+            if find_min_x_dist([[a - b for a, b in zip(node_i, local_offset)]],[node_j]).tolist()[0][0] < def_l:
+                global_offset_i = [a + b for a, b in zip(node_i, local_offset)]
+                global_offset_j = [a - b for a, b in zip(node_j, local_offset)]
+            else: # reciprocal , node i has to minus local offset
+                global_offset_i = [a - b for a, b in zip(node_i, local_offset)]
+                global_offset_j = [a + b for a, b in zip(node_j, local_offset)]
+            global_offset = repr([global_offset_i,global_offset_j])
         vxz = [np.round(num, decimals=self.decimal_lim) for num in vxz]
-        tag_value = self.transform_dict.setdefault(repr(vxz)+"|"+repr(offset), self.transform_counter + 1)
+        tag_value = self.transform_dict.setdefault(repr(vxz)+"|"+repr(global_offset), self.transform_counter + 1)
         if tag_value > self.transform_counter:
             self.transform_counter = tag_value
         return tag_value
@@ -1038,7 +1049,7 @@ class BeamLinkMesh(Mesh):
 
 class ShellLinkMesh(Mesh):
     def __init__(self, long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
-                 skew_2, ext_to_int_a, ext_to_int_b):
+                 skew_2, ext_to_int_a, ext_to_int_b,link_type="beam"):
         """
         Subclass for Oblique mesh
 
@@ -1054,6 +1065,12 @@ class ShellLinkMesh(Mesh):
         :param ext_to_int_a:
         :param ext_to_int_b:
         """
+        # instantiate variables
+        self.long_ele_offset = []
+        self.link_list = []
+        self.link_type = link_type
+
+
         super().__init__(long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
                          skew_2, ext_to_int_a, ext_to_int_b)
 

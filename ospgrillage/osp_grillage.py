@@ -201,28 +201,27 @@ class OspGrillage:
 
         # kwargs for rigid link modelling option
         self.rigid_type = kwargs.get("rigid_type", None)  # accepts int type 1 or 2
-
+        self.beam_width = kwargs.get("beam_width", None)
+        self.web_thick = kwargs.get("web_thick", None)
+        self.centroid_dist_y = kwargs.get("centroid_dist_y", None)
         # create mesh object
-        self.Mesh_obj = Mesh(long_dim=self.long_dim, width=self.width, trans_dim=self.trans_dim,
-                             num_trans_beam=self.num_trans_grid,
-                             num_long_beam=self.num_long_gird, ext_to_int_a=self.ext_to_int_a,
-                             ext_to_int_b=self.ext_to_int_b,
-                             skew_1=self.skew_a, edge_dist_a=self.edge_width_a, edge_dist_b=self.edge_width_b,
-                             skew_2=self.skew_b, orthogonal=self.ortho_mesh)
+        self.Mesh_obj = self.create_mesh(long_dim=self.long_dim, width=self.width, trans_dim=self.trans_dim,
+                                         num_trans_beam=self.num_trans_grid,
+                                         num_long_beam=self.num_long_gird, ext_to_int_a=self.ext_to_int_a,
+                                         ext_to_int_b=self.ext_to_int_b,
+                                         skew_1=self.skew_a, edge_dist_a=self.edge_width_a,
+                                         edge_dist_b=self.edge_width_b,
+                                         skew_2=self.skew_b, orthogonal=self.ortho_mesh, beam_width=self.beam_width,
+                                         web_thick=self.web_thick, centroid_dist_y=self.centroid_dist_y)
 
-        # self.Mesh_obj = self.create_mesh(long_dim=self.long_dim, width=self.width, trans_dim=self.trans_dim,
-        #                      num_trans_beam=self.num_trans_grid,
-        #                      num_long_beam=self.num_long_gird, ext_to_int_a=self.ext_to_int_a,
-        #                      ext_to_int_b=self.ext_to_int_b,
-        #                      skew_1=self.skew_a, edge_dist_a=self.edge_width_a, edge_dist_b=self.edge_width_b,
-        #                      skew_2=self.skew_b)
-
-    def create_mesh(self,**kwargs):
-
-        if self.ortho_mesh:
-            mesh_obj= Mesh(**kwargs)
-        else:
+    def create_mesh(self, **kwargs):
+        if self.rigid_type == 1:
+            mesh_obj = BeamLinkMesh(**kwargs)
+        elif self.rigid_type == 2:
             mesh_obj = ShellLinkMesh(**kwargs)
+        else:
+            mesh_obj = Mesh(**kwargs)
+
         return mesh_obj
 
     def create_osp_model(self, pyfile=False):
@@ -324,7 +323,6 @@ class OspGrillage:
                 ops.geomTransf(transform_type, v, *eval(vxz))
 
         # loop to add geom transf obj for additional transformation i.e. element with rigid links
-
 
     def __write_op_model(self):
         """
