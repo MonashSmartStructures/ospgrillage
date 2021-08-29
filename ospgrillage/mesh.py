@@ -65,7 +65,6 @@ class Mesh:
         self.pt1 = pt1
         self.pt2 = pt2
         self.pt3 = pt3
-
         # counters to keep track of variables
         self.node_counter = node_counter
         self.element_counter = element_counter
@@ -84,7 +83,6 @@ class Mesh:
         self.long_ele = []
         self.trans_ele = []
         self.edge_span_ele = []
-
         self.y_elevation = 0
         self.mesh_design_line = []
         # dict for node and ele transform
@@ -93,7 +91,7 @@ class Mesh:
         # variables for curve mesh
         self.curve_center = []
         self.curve_radius = []
-        # line / circle equation variables
+        # line / circle equation variables - instantiate
         self.m = 0
         self.c = 0
         self.r = 0
@@ -117,7 +115,6 @@ class Mesh:
         self.rigid_dist_z = kwargs.get("rigid_dist_z")
         self.rigid_dist_x = kwargs.get("rigid_dist_x")
         # ------------------------------------------------------------------------------------------
-
         # Create sweep path obj
         self.sweep_path = SweepPath(self.pt1, self.pt2, self.pt3)
         self.zeta, self.m, self.c = self.sweep_path.get_sweep_line_properties()  # properties m,c,zeta angle
@@ -149,7 +146,6 @@ class Mesh:
         # ------------------------------------------------------------------------------------------
         # edge construction line 2
         end_point_z = self.sweep_path.get_line_function(self.long_dim)
-
         self.end_edge_line = EdgeConstructionLine(edge_ref_point=[self.long_dim, 0, end_point_z], width_z=self.width,
                                                   edge_width_a=self.edge_width_a, edge_width_b=self.edge_width_b,
                                                   edge_angle=self.skew_2,
@@ -1034,12 +1030,12 @@ class BeamLinkMesh(Mesh):
             local_offset = [offset_x, self.y_elevation, offset_z]
         if local_offset:
             if find_min_x_dist([[a - b for a, b in zip(node_i, local_offset)]],[node_j]).tolist()[0][0] < def_l:
-                global_offset_i = [a + b for a, b in zip(node_i, local_offset)]
-                global_offset_j = [a - b for a, b in zip(node_j, local_offset)]
-            else: # reciprocal , node i has to minus local offset
                 global_offset_i = [a - b for a, b in zip(node_i, local_offset)]
                 global_offset_j = [a + b for a, b in zip(node_j, local_offset)]
-            global_offset = repr([global_offset_i,global_offset_j])
+            else: # reciprocal , node i has to minus local offset
+                global_offset_i = [a + b for a, b in zip(node_i, local_offset)]
+                global_offset_j = [a - b for a, b in zip(node_j, local_offset)]
+            global_offset = [global_offset_i,global_offset_j]
         vxz = [np.round(num, decimals=self.decimal_lim) for num in vxz]
         tag_value = self.transform_dict.setdefault(repr(vxz)+"|"+repr(global_offset), self.transform_counter + 1)
         if tag_value > self.transform_counter:

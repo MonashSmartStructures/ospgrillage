@@ -5,6 +5,7 @@ import sys, os
 sys.path.insert(0, os.path.abspath('../'))
 
 
+# Fixtures
 @pytest.fixture
 def ref_bridge_properties():
     concrete = og.create_material(type="concrete", code="AS5100-2017", grade="50MPa")
@@ -27,7 +28,6 @@ def ref_bridge_properties():
     return I_beam, slab, exterior_I_beam, concrete
 
 
-# Fixtures
 @pytest.fixture
 def bridge_model_42_negative(ref_bridge_properties):
     # reference bridge 10m long, 7m wide with common skew angle at both ends
@@ -68,7 +68,7 @@ def shell_bridge(ref_bridge_properties):
 
     # construct grillage model
     example_bridge = og.create_grillage(bridge_name="Shell_10m", long_dim=10, width=7, skew=12,
-                                    num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
+                                        num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
 
     example_bridge.set_member(I_beam, member="interior_main_beam")
     example_bridge.set_shell_members(slab_shell)
@@ -85,6 +85,7 @@ def shell_bridge(ref_bridge_properties):
     example_bridge.create_osp_model(pyfile=pyfile)
     return example_bridge
 
+
 @pytest.fixture
 def beam_link_bridge(ref_bridge_properties):
     # reference bridge 10m long, 7m wide with common skew angle at both ends
@@ -100,12 +101,13 @@ def beam_link_bridge(ref_bridge_properties):
     slab_shell = og.create_member(section=slab_shell_section, material=slab_shell_mat)
 
     # construct grillage model
-    example_bridge = og.create_grillage(bridge_name="Shell_10m", long_dim=10, width=7, skew=12,
-                                    num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho",rigid_type=1,
-                                        beam_width=1,web_thick=0.02,centroid_dist_y=0.499)
+    example_bridge = og.create_grillage(bridge_name="beamlink_10m", long_dim=10, width=7, skew=12,
+                                        num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho",
+                                        rigid_type=1,
+                                        beam_width=1, web_thick=0.02, centroid_dist_y=0.499)
 
     example_bridge.set_member(I_beam, member="interior_main_beam")
-    #example_bridge.set_shell_members(slab_shell)
+    # example_bridge.set_shell_members(slab_shell)
     # set grillage member to element groups of grillage model
 
     example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_1")
@@ -118,8 +120,10 @@ def beam_link_bridge(ref_bridge_properties):
     pyfile = False
     example_bridge.create_osp_model(pyfile=pyfile)
     return example_bridge
+
+
 # --------------------------------
-# test basic model instance run is successful
+# test creating a basic beam grillage model
 def test_model_instance(bridge_model_42_negative):
     example_bridge = bridge_model_42_negative
     og.opsplt.plot_model("nodes")
@@ -136,7 +140,7 @@ def test_create_shell_model(shell_bridge):
     assert og.ops.eleNodes(195)  # if element exist - for orthogonal mesh only
 
 
-#  test creating shell model procedure successful
+#  test creating beam model with rigid links
 def test_create_beam_link_model(beam_link_bridge):
     example_shell_bridge = beam_link_bridge
     og.opsplt.plot_model("nodes")
