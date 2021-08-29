@@ -34,19 +34,19 @@ Creating the grillage
     concrete = ospg.create_material(type="concrete", code="AS5100-2017", grade="50MPa")
 
     # define sectons (lusas parameters)
-    longitudinal_section = ospg.create_section(A=0.866937*m2, E=34.8*GPa, G=20*GPa,
-                                        J=0.154806*m3, Iz=0.215366*m4, Iy=0.213602*m4,
-                                        Az=0.444795*m2, Ay=0.258704*m2)
-    edge_longitudinal_section = ospg.create_section(A=0.044625*m2, E=34.8*GPa, G=20*GPa,
-                                             J=0.26253e-3*m3, Iz=0.241812e-3*m4,Iy=0.113887e-3*m4,
-                                             Az=0.0371929*m2, Ay=0.0371902*m2)
+    longitudinal_section = ospg.create_section(A=0.866937*m2,J=0.154806*m3, Iz=0.215366*m4, Iy=0.213602*m4,
+                                               Az=0.444795*m2, Ay=0.258704*m2)
 
-    transverse_section = ospg.create_section(A=0.504*m2, E=34.8*GPa, G=20*GPa,
-                                      J=5.22303e-3*m3, Iy=0.32928*m4, Iz=1.3608e-3*m4,
-                                      Ay=0.42*m2, Az=0.42*m2)
-    end_transverse_section = ospg.create_section(A=0.504/2*m2, E=34.8*GPa, G=20*GPa,
-                                         J=2.5012e-3*m3, Iy=0.04116*m4, Iz=0.6804e-3*m4,
-                                         Ay=0.21*m2, Az=0.21*m2)
+    edge_longitudinal_section = ospg.create_section(A=0.044625*m2, J=0.26253e-3*m3, Iz=0.241812e-3*m4,Iy=0.113887e-3*m4,
+                                                    Az=0.0371929*m2, Ay=0.0371902*m2)
+
+
+    transverse_section = ospg.create_section(A=0.504*m2, J=5.22303e-3*m3, Iy=0.32928*m4, Iz=1.3608e-3*m4,
+                                             Ay=0.42*m2, Az=0.42*m2)
+
+    end_transverse_section = ospg.create_section(A=0.504/2*m2, J=2.5012e-3*m3, Iy=0.04116*m4, Iz=0.6804e-3*m4,
+                                                 Ay=0.21*m2, Az=0.21*m2)
+
 
      # define grillage members
     longitudinal_beam = ospg.create_member(section=longitudinal_section, material=concrete)
@@ -54,8 +54,7 @@ Creating the grillage
     transverse_slab = ospg.create_member(section=transverse_section, material=concrete)
     end_transverse_slab = ospg.create_member(section=end_transverse_section, material=concrete)
 
-     # create the grillage
-     # Parameters for grid
+    # create the grillage parameters
     L = 28*m # span
     w = 10.175*m # width
     n_l = 7 # number of longitidnal members
@@ -63,12 +62,11 @@ Creating the grillage
     edge_dist = 1.0875*m # distance between edge beam and first exterior beam
     angle = 0 # skew angle
 
-    # Create grid
+    # create grillage
     simple_grid = ospg.create_grillage(bridge_name="Super-T 28m", long_dim=L, width=w, skew=angle,
                                    num_long_grid=n_l, num_trans_grid=n_t, edge_beam_dist=edge_dist)
 
     # assign grillage member to element groups of grillage model
-
     simple_grid.set_member(longitudinal_beam, member="interior_main_beam")
     simple_grid.set_member(longitudinal_beam, member="exterior_main_beam_1")
     simple_grid.set_member(longitudinal_beam, member="exterior_main_beam_2")
@@ -119,10 +117,9 @@ Adding Compounded point loads
 
 .. code-block:: python
 
-    # Componound point loads along midspan width (P is kN)
+    # Compound point loads along midspan width (P is kN)
     # working in global coordinate system
-
-    p_list = [0,edge_dist,edge_dist+2*m,edge_dist+4*m,edge_dist+6*m,w-edge_dist,w]
+    p_list = [0,edge_dist,edge_dist+2*m,edge_dist+4*m,edge_dist+6*m,w-edge_dist,w] # creating list of load position
 
     test_points_load = ospg.create_compound_load(name="Points Test Case (Global)")
 
@@ -141,9 +138,8 @@ system of compound load to global of grillage.
 
 .. code-block:: python
 
-    # Componound point loads along midspan width
+    # Compound point loads along midspan width
     # working in user-defined local coordinate (in point load)
-
     test_points_load = ospg.create_compound_load(name="Points Test Case (Local in Point)")
 
     for p in p_list:
