@@ -201,15 +201,14 @@ class GrillageMember:
         if any([self.section.op_ele_type == "ElasticTimoshenkoBeam", self.section.op_ele_type == "elasticBeamColumn"]):
             self.material_command_flag = False
             self.section_command_flag = False  #
-        elif any([self.section.op_ele_type == 'ShellMITC4',self.section.op_ele_type == 'ShellDKGQ']):
+        elif any([self.section.op_ele_type == 'ShellMITC4', self.section.op_ele_type == 'ShellDKGQ']):
             self.material_command_flag = False
 
     def get_member_prop_arguments(self, width=1):
         # """
-        #
-        # Function to output list of arguments for element type requiring an argument list (with preceding asterisk).
-        # ElasticTimoshenkoBeam, elasticBeamColumn - where no section and material tags are required
-        # for developers, add OpenSees elements here that does not require section and material tag
+        # Function to output list of arguments for element type requiring list of arguments (with preceding asterisk).
+        # specifically for ElasticTimoshenkoBeam, elasticBeamColumn - which no section and material tag are required
+        # for developers, add the inputs for OpenSees elements here that does not require section and material tag
         # i.e. the element command directly takes in both geometrical and material properties as arguments
         # inputs
         # :return: str containing member properties in accordance with convention of OpenSees element type
@@ -308,7 +307,7 @@ class GrillageMember:
         # 2) OpsGrillage calls get_element_command_str of GrillageMember, then it takes in material section and returns
         #  the element command ops.element() for the respective grillage member
 
-        # format for ele
+        # format of each ele sublist
         # [node i, node j, ele group, ele tag, transtag]
         section_input = None
         ele_str = None
@@ -340,14 +339,12 @@ class GrillageMember:
                 ele_type = "ShellDKGT"
             else:  # 4 node
                 ele_type = "ShellDKGQ"
-
             ele_str = "ops.element(\"{type}\", {tag}, *{node_tag_list}, {sectag})\n".format(
                 type=ele_type, tag=ele_tag, node_tag_list=node_tag_list, sectag=sectiontag)
 
         elif self.section.op_ele_type == "ShellDKGT":
             ele_str = "ops.element(\"{type}\", {tag}, *{node_tag_list}, {sectag})\n".format(
                 type=self.section.op_ele_type, tag=ele_tag, node_tag_list=node_tag_list, sectag=sectiontag)
-
 
         # HERE TO POPULATE WITH MORE ELEMENT TYPES
 

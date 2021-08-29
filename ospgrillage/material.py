@@ -157,6 +157,7 @@ class Material:
                 "One or more missing/non-numeric parameters for Material: {} ".format(self.mat_type))
         return self.mat_type, self.op_mat_arg
 
+
     def _create_default_dict(self):
         """
         Function to create the default mat_lib.js file. The default version is 0.0.1.

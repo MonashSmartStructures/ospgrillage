@@ -86,6 +86,8 @@ def shell_bridge(ref_bridge_properties):
     return example_bridge
 
 
+# This creates space gass model - see Influence of transverse member spacing to torsion and torsionless designs
+# of Super-T decks T.M.T.Lui, C. Caprani, S. Zhang
 @pytest.fixture
 def beam_link_bridge(ref_bridge_properties):
     # reference bridge 10m long, 7m wide with common skew angle at both ends
