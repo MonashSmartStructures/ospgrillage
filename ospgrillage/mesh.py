@@ -47,7 +47,7 @@ class Mesh:
                  skew_2, ext_to_int_a, ext_to_int_b,
                  pt1=Point(0, 0, 0), pt2=Point(0, 0, 0), pt3=None, element_counter=1, node_counter=1,
                  transform_counter=0, global_x_grid_count=0, global_edge_count=0, mesh_origin=None,
-                 quad_ele=False,**kwargs):
+                 quad_ele=False, **kwargs):
 
         # inputs from OspGrillage required to create mesh
         self.long_dim = long_dim
@@ -60,7 +60,7 @@ class Mesh:
         # angle and mesh type
         self.skew_1 = skew_1
         self.skew_2 = skew_2
-        self.orthogonal = kwargs.get("orthogonal",False)
+        self.orthogonal = kwargs.get("orthogonal", False)
         # sweep path properties
         self.pt1 = pt1
         self.pt2 = pt2
@@ -99,7 +99,7 @@ class Mesh:
         self.d = None  # list of circle centre and circle radius [ c, r]
         # meshing properties
         if mesh_origin is None:
-            self.mesh_origin = [0,0,0]
+            self.mesh_origin = [0, 0, 0]
         else:
             self.mesh_origin = mesh_origin  # default origin
         # meshing variables
@@ -775,7 +775,7 @@ class Mesh:
         node_j = self.node_spec[ele_nodes[1]]['coordinate']
         vxz = self._get_vector_xz(node_i, node_j)
         vxz = [np.round(num, decimals=self.decimal_lim) for num in vxz]
-        tag_value = self.transform_dict.setdefault(repr(vxz)+"|"+repr(offset), self.transform_counter + 1)
+        tag_value = self.transform_dict.setdefault(repr(vxz) + "|" + repr(offset), self.transform_counter + 1)
         if tag_value > self.transform_counter:
             self.transform_counter = tag_value
         return tag_value
@@ -873,7 +873,7 @@ class EdgeConstructionLine:
     """
 
     def __init__(self, edge_ref_point, width_z, edge_width_a, edge_width_b, edge_angle, num_long_beam, model_plane_y,
-                 feature="start", ext_to_int_a=None, ext_to_int_b=None,):
+                 feature="start", ext_to_int_a=None, ext_to_int_b=None, ):
         # TODO add feature for edge const line to consider varying distance between nodes of exterior and interior beam
         # set variables
         self.edge_ref_point = edge_ref_point
@@ -968,10 +968,11 @@ class SweepPath:
 
 class BeamLinkMesh(Mesh):
     def __init__(self, long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
-                 skew_2, ext_to_int_a, ext_to_int_b,**kwargs):
+                 skew_2, ext_to_int_a, ext_to_int_b, **kwargs):
         """
-        Subclass for Mesh with beam. This class creates elements where-
-        - long beam elements are
+        Subclass for Mesh with beam. This class creates elements where:
+        - nodes of longitudinal beams are offset in global y direction
+        - nodes of transverse slab are offset in direction of element axial direction
 
         :param long_dim:
         :param width:
@@ -985,29 +986,25 @@ class BeamLinkMesh(Mesh):
         :param ext_to_int_a:
         :param ext_to_int_b:
         """
-        # beam width for links calculation
-        self.beam_width = kwargs.get("beam_width",None)
-        self.web_thick = kwargs.get("web_thick",None)
-        self.centroid_dist_y = kwargs.get("centroid_dist_y",0)
+        # instantiate variables specific for current mesh subclass
+        self.beam_width = kwargs.get("beam_width", None)
+        self.web_thick = kwargs.get("web_thick", None)
+        self.centroid_dist_y = kwargs.get("centroid_dist_y", 0)
         if any([self.beam_width is None and self.web_thick is None]):
             self.offset_z_dist = 0
         else:
-            self.offset_z_dist = self.beam_width/2 - self.web_thick/2
+            self.offset_z_dist = self.beam_width / 2 - self.web_thick / 2
 
-        # get variables of links
-
-
-        # super init will create mesh of grillage - model plane = 0
-        # - 2 x edge construction lines
-        # - default sweep path
+        # super init to create mesh of grillage @ model plane = 0 using base class init
         super().__init__(long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
-                         skew_2, ext_to_int_a, ext_to_int_b,**kwargs)
+                         skew_2, ext_to_int_a, ext_to_int_b, **kwargs)
 
-    # overwrite method to get geom transf of beam element
     def _get_geo_transform_tag(self, ele_nodes, offset=None):
-
+        """
+        overwrite base class method to get geom transf of beam element
+        """
         global_offset = []  #
-        local_offset= [] #
+        local_offset = []  #
         # function called for each element, assign
         node_i = self.node_spec[ele_nodes[0]]['coordinate']
         node_j = self.node_spec[ele_nodes[1]]['coordinate']
@@ -1019,25 +1016,24 @@ class BeamLinkMesh(Mesh):
         if self.node_spec[ele_nodes[1]]['z_group'] == self.node_spec[ele_nodes[0]]['z_group']:
             # check if not an edge beam
             if self.node_spec[ele_nodes[1]]['z_group'] != 0 or self.node_spec[ele_nodes[1]]['z_group'] != len(self.noz):
-                local_offset = [0,self.centroid_dist_y,0]  # shift beam element by global y
+                local_offset = [0, self.centroid_dist_y, 0]  # shift beam element by global y
 
-
-        # if element is a transverse member,
+        # if element is a transverse member, calculate local offset based on member orientation
         elif self.node_spec[ele_nodes[1]]['x_group'] == self.node_spec[ele_nodes[0]]['x_group']:
             # calculate local offset
-            offset_z = np.cos(self.zeta/180 * np.pi)*self.offset_z_dist  # z == cos
-            offset_x = np.sin(self.zeta/180 * np.pi)*self.offset_z_dist
+            offset_z = np.cos(self.zeta / 180 * np.pi) * self.offset_z_dist  # z == cos
+            offset_x = np.sin(self.zeta / 180 * np.pi) * self.offset_z_dist
             local_offset = [offset_x, self.y_elevation, offset_z]
         if local_offset:
-            if find_min_x_dist([[a - b for a, b in zip(node_i, local_offset)]],[node_j]).tolist()[0][0] < def_l:
+            if find_min_x_dist([[a - b for a, b in zip(node_i, local_offset)]], [node_j]).tolist()[0][0] < def_l:
                 global_offset_i = [a - b for a, b in zip(node_i, local_offset)]
                 global_offset_j = [a + b for a, b in zip(node_j, local_offset)]
-            else: # reciprocal , node i has to minus local offset
+            else:  # reciprocal , node i has to minus local offset
                 global_offset_i = [a + b for a, b in zip(node_i, local_offset)]
                 global_offset_j = [a - b for a, b in zip(node_j, local_offset)]
-            global_offset = [global_offset_i,global_offset_j]
+            global_offset = [global_offset_i, global_offset_j]
         vxz = [np.round(num, decimals=self.decimal_lim) for num in vxz]
-        tag_value = self.transform_dict.setdefault(repr(vxz)+"|"+repr(global_offset), self.transform_counter + 1)
+        tag_value = self.transform_dict.setdefault(repr(vxz) + "|" + repr(global_offset), self.transform_counter + 1)
         if tag_value > self.transform_counter:
             self.transform_counter = tag_value
         return tag_value
@@ -1045,9 +1041,9 @@ class BeamLinkMesh(Mesh):
 
 class ShellLinkMesh(Mesh):
     def __init__(self, long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
-                 skew_2, ext_to_int_a, ext_to_int_b,link_type="beam"):
+                 skew_2, ext_to_int_a, ext_to_int_b, link_type="beam"):
         """
-        Subclass for Oblique mesh
+        Subclass for mesh with offset beam members linked to grillage consisting of shell elements
 
         :param long_dim:
         :param width:
@@ -1061,20 +1057,23 @@ class ShellLinkMesh(Mesh):
         :param ext_to_int_a:
         :param ext_to_int_b:
         """
-        # instantiate variables
+        # instantiate variables specific for current mesh subclass
         self.long_ele_offset = []
         self.link_list = []
         self.link_type = link_type
 
+        # replace variables
 
+        # create grillage mesh @ model plane y=0 using base class init
         super().__init__(long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
                          skew_2, ext_to_int_a, ext_to_int_b)
 
-        # class to create the
+    def _create_link_element(self, rNode, cNode):
+        # user mp constraint object
+        # function to create ops rigid link command and store to variable
+        link_str = "ops.rigidLink({linktype},{rNodetag},{cNodetag})"
+        self.link_list.append(link_str)
 
-        def create_link_element(self, rNode, cNode):
-            # user mp constraint object
-            # function to create ops rigid link command and store to variable
-            link_str = "ops.rigidLink({linktype},{rNodetag},{cNodetag})"
-            self.link_list.append(link_str)
-
+    def _create_offset_beam_element(self):
+        # function to create beam elements based on offset nodes
+        pass

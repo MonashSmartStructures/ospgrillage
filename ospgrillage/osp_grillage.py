@@ -310,7 +310,7 @@ class OspGrillage:
         :type transform_type: str
 
         """
-
+        # loop all transform dict items,
         for k, v in mesh_obj.transform_dict.items():
             vxz = k.split("|")[0]  # first substring is vector xz
             offset = k.split("|")[1]  # second substring is global offset of node i and j of element
@@ -343,7 +343,7 @@ class OspGrillage:
             For 3-D model, the default model dimension and node degree-of-freedoms are 3 and 6 respectively.
             This method automatically sets the aforementioned parameters to 2 and 4 respectively, for a 2-D problem.
         """
-        # write model() command
+        # check if write or eval command
         if self.pyfile:
             with open(self.filename, 'a') as file_handle:
                 file_handle.write("ops.wipe()\n")
@@ -360,11 +360,12 @@ class OspGrillage:
         instead.
 
         """
-        # write node() command
+        # check if write mode, write header for node commands
         if self.pyfile:
             with open(self.filename, 'a') as file_handle:
                 file_handle.write("# Model nodes\n")
 
+        # loop all node in dict, write or eval node command
         for k, nested_v, in mesh_obj.node_spec.items():
             coordinate = nested_v['coordinate']
             if self.pyfile:
@@ -373,7 +374,7 @@ class OspGrillage:
                                                                                             x=coordinate[0],
                                                                                             y=coordinate[1],
                                                                                             z=coordinate[2]))
-            else:  # indices correspondance . 0 - x , 1 - y, 2 - z
+            else:  # indices correspondence . 0 - x , 1 - y, 2 - z
                 ops.node(nested_v['tag'], coordinate[0], coordinate[1], coordinate[2])
 
     def __write_op_fix(self, mesh_obj):
@@ -421,7 +422,6 @@ class OspGrillage:
             material_obj = member.material
             if not member.material_command_flag:
                 return 1  # placeholder num
-
         material_type, op_mat_arg = member.material.get_material_args()  # get the material arguments
 
         # - write unique material tag and input argument to store as key for dict
