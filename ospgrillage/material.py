@@ -101,7 +101,7 @@ class Material:
 
         self.E = kwargs.get("E", None)
         self.G = kwargs.get("G", None)
-        self.poisson = kwargs.get("poissons_ratio", None)
+        self.v = kwargs.get("v", None)
         self.density = kwargs.get("rho",None)
         # properties for Concrete
         self.fpc = kwargs.get("fpc", None)
@@ -129,7 +129,7 @@ class Material:
         """
         # check if code material is selected, if yes read from material library json
         if self.code:
-            self.poisson = self._mat_lib[self.material_type][self.code][self.material_grade]['v']
+            self.v = self._mat_lib[self.material_type][self.code][self.material_grade]['v']
             self.E = self._mat_lib[self.material_type][self.code][self.material_grade]['E']
             self.fpc = self._mat_lib[self.material_type][self.code][self.material_grade]['fc']
             self.density = self._mat_lib[self.material_type][self.code][self.material_grade]['rho']
@@ -144,7 +144,7 @@ class Material:
 
         # if G not defined, calculate using formula E/(2(1+v))
         if self.G is None:
-            self.G = self.E / (2 * (1 + self.poisson))
+            self.G = self.E / (2 * (1 + self.v))
 
         if self.material_type == "concrete":
             self.mat_type = "Concrete01"  # default opensees material type to represent concrete

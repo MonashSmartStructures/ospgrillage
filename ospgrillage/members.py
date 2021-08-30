@@ -283,7 +283,7 @@ class GrillageMember:
             sec_str = "ops.section(\"{type}\", {tag}, {E_mod}, {nu}, {h}, {rho})\n".format(type=section_type,
                                                                                            tag=section_tag,
                                                                                            E_mod=self.material.E,
-                                                                                           nu=self.material.poisson,
+                                                                                           nu=self.material.v,
                                                                                            h=self.section.h_depth,
                                                                                            rho=self.material.density)
         elif section_type == "PlateFiber":
