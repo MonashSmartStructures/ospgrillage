@@ -103,8 +103,8 @@ def beam_link_bridge(ref_bridge_properties):
     slab_shell = og.create_member(section=slab_shell_section, material=slab_shell_mat)
 
     # construct grillage model
-    example_bridge = og.create_grillage(bridge_name="beamlink_10m", long_dim=10, width=7, skew=12,
-                                        num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho",
+    example_bridge = og.create_grillage(bridge_name="beamlink_10m", long_dim=10, width=7, skew=-12,
+                                        num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Orth",
                                         rigid_type=1,
                                         beam_width=1, web_thick=0.02, centroid_dist_y=0.499)
 

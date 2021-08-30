@@ -94,33 +94,32 @@ class Material:
         self.op_mat_arg = None
         self.units = None  # default SI units
         # assigns variables for all kwargs for specific material types , else sets None
-        #
         self.code = kwargs.get("code", None)
         self.material_type = kwargs.get("type", None)
         self.material_grade = kwargs.get("grade", None)
-
-        self.E = kwargs.get("E", None)
-        self.G = kwargs.get("G", None)
-        self.v = kwargs.get("v", None)
+        # generic material properties
+        self.elastic_modulus = kwargs.get("E", None)
+        self.shear_modulus = kwargs.get("G", None)
+        self.poisson_ratio = kwargs.get("v", None)
         self.density = kwargs.get("rho",None)
-        # properties for Concrete
+        # properties for Concrete - symbols according to OpenSees uniaxialMaterial/Concrete
         self.fpc = kwargs.get("fpc", None)
         self.epsc0 = kwargs.get("epsc0", None)
         self.fpcu = kwargs.get("fpcu", None)
         self.epsU = kwargs.get("epsU", None)
 
-        # properties for Steel
+        # properties for Steel - symbols according to OpenSees uniaxialMaterial/Steel
         self.Fy = kwargs.get("Fy", None)
         self.E0 = kwargs.get("E0", None)
         self.b = kwargs.get("b", None)  # strain -hardening ratio.
         self.a1 = kwargs.get("a1", None)
-        self.a2 = kwargs.get(
-            "a2", None
-        )  # isotropic hardening parameter , see Ops Steel01
+        self.a2 = kwargs.get("a2", None)  # isotropic hardening parameter , see Ops Steel01
         self.a3 = kwargs.get("a3", None)
         self.a4 = kwargs.get("a4", None)
 
+        # get mat lib file
         self._mat_lib = self._read_mat_lib()
+        # process generic material inputs into relevant inputs for OpenSees material command
         self.parse_material_command()
 
     def parse_material_command(self):
@@ -129,8 +128,8 @@ class Material:
         """
         # check if code material is selected, if yes read from material library json
         if self.code:
-            self.v = self._mat_lib[self.material_type][self.code][self.material_grade]['v']
-            self.E = self._mat_lib[self.material_type][self.code][self.material_grade]['E']
+            self.poisson_ratio = self._mat_lib[self.material_type][self.code][self.material_grade]['v']
+            self.elastic_modulus = self._mat_lib[self.material_type][self.code][self.material_grade]['E']
             self.fpc = self._mat_lib[self.material_type][self.code][self.material_grade]['fc']
             self.density = self._mat_lib[self.material_type][self.code][self.material_grade]['rho']
             self.units = self._mat_lib[self.material_type][self.code]['units']
@@ -139,12 +138,12 @@ class Material:
 
         # perform conversion for units
         if self.units == "SI":
-            self.E = self.E * 1e9
+            self.elastic_modulus = self.elastic_modulus * 1e9
             self.fpc = self.fpc * 1e6
 
         # if G not defined, calculate using formula E/(2(1+v))
-        if self.G is None:
-            self.G = self.E / (2 * (1 + self.v))
+        if self.shear_modulus is None:
+            self.shear_modulus = self.elastic_modulus / (2 * (1 + self.poisson_ratio))
 
         if self.material_type == "concrete":
             self.mat_type = "Concrete01"  # default opensees material type to represent concrete

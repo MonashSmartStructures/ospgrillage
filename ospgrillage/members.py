@@ -217,11 +217,11 @@ class GrillageMember:
 
         # if elastic Beam column elements, return str of section input
         if self.section.op_ele_type == "ElasticTimoshenkoBeam":
-            if None in [self.material.E, self.material.G, self.section.A, self.section.J, self.section.Iy,
+            if None in [self.material.elastic_modulus, self.material.shear_modulus, self.section.A, self.section.J, self.section.Iy,
                         self.section.Iz, self.section.Ay, self.section.Az]:
                 raise ValueError("One or more missing arguments for Section: {}".format(self.section.op_ele_type))
-            asterisk_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.material.E,
-                                                                                                       self.material.G,
+            asterisk_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.material.elastic_modulus,
+                                                                                                       self.material.shear_modulus,
                                                                                                        self.section.A * width,
                                                                                                        self.section.J * width,
                                                                                                        self.section.Iy * width,
@@ -229,28 +229,28 @@ class GrillageMember:
                                                                                                        self.section.Ay * width,
                                                                                                        self.section.Az * width)
         elif self.section.op_ele_type == "elasticBeamColumn":  # eleColumn
-            if None in [self.material.E, self.material.G, self.section.A, self.section.J, self.section.Iy,
+            if None in [self.material.elastic_modulus, self.material.shear_modulus, self.section.A, self.section.J, self.section.Iy,
                         self.section.Iz]:
                 raise ValueError("One or more missing arguments for Section: {}".format(self.section.op_ele_type))
-            asterisk_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.material.E, self.material.G,
+            asterisk_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.material.elastic_modulus, self.material.shear_modulus,
                                                                                        self.section.A * width,
                                                                                        self.section.J * width,
                                                                                        self.section.Iy * width,
                                                                                        self.section.Iz * width)
 
             asterisk_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.section.A * width,
-                                                                                       self.material.E,
-                                                                                       self.material.G,
+                                                                                       self.material.elastic_modulus,
+                                                                                       self.material.shear_modulus,
                                                                                        self.section.J * width,
                                                                                        self.section.Iy * width,
                                                                                        self.section.Iz * width)
 
         elif self.section.op_ele_type == "ModElasticBeam2d":
-            if None in [self.section.A, self.material.E, self.section.Iz * width, self.section.K11, self.section.K33,
+            if None in [self.section.A, self.material.elastic_modulus, self.section.Iz * width, self.section.K11, self.section.K33,
                         self.section.K44]:
                 raise ValueError("One or more missing arguments for Section: {}".format(self.section.op_section_type))
             asterisk_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(
-                self.section.A * width, self.material.E, self.section.Iz * width, self.section.K11, self.section.K33,
+                self.section.A * width, self.material.elastic_modulus, self.section.Iz * width, self.section.K11, self.section.K33,
                 self.section.K44)
 
         # TO be populated with more inputs for various element types
@@ -262,7 +262,7 @@ class GrillageMember:
         section_args = None
 
         if self.section.op_section_type == "Elastic":
-            section_args = [self.material.E, self.section.A, self.section.Iz, self.section.Iy, self.material.G,
+            section_args = [self.material.elastic_modulus, self.section.A, self.section.Iz, self.section.Iy, self.material.shear_modulus,
                             self.section.J, self.section.alpha_y, self.section.alpha_z]
 
         return section_args
@@ -282,8 +282,8 @@ class GrillageMember:
             # section type, section tag, E_mod, nu, h, rho
             sec_str = "ops.section(\"{type}\", {tag}, {E_mod}, {nu}, {h}, {rho})\n".format(type=section_type,
                                                                                            tag=section_tag,
-                                                                                           E_mod=self.material.E,
-                                                                                           nu=self.material.v,
+                                                                                           E_mod=self.material.elastic_modulus,
+                                                                                           nu=self.material.poisson_ratio,
                                                                                            h=self.section.h_depth,
                                                                                            rho=self.material.density)
         elif section_type == "PlateFiber":

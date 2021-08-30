@@ -130,7 +130,7 @@ class Mesh:
         # opposite construction lines.
         if self.long_dim < self.width * np.tan(self.skew_1 / 180 * np.pi):
             raise ValueError(
-                "insufficent length of grillage resulted in overlapping edge with extra longitudinal members"
+                "insufficent length of grillage - causes one or more overlapping edge with extra longitudinal members"
                 "due to skew angle at start edge- try using a smaller angle or larger long_dim")
         elif self.long_dim < self.width * np.tan(self.skew_2 / 180 * np.pi):
             raise ValueError(
@@ -1009,26 +1009,29 @@ class BeamLinkMesh(Mesh):
         node_i = self.node_spec[ele_nodes[0]]['coordinate']
         node_j = self.node_spec[ele_nodes[1]]['coordinate']
         def_l = find_min_x_dist([node_i], [node_j]).tolist()[0][0]  # distance between i and j, returned as 2D array
+        mid_node = [(node_i[0]+node_j[0])/2,(node_i[1]+node_j[1])/2,(node_i[2]+node_j[2])/2]
         vxz = self._get_vector_xz(node_i, node_j)
-        # subclass method variant
-        # check for z group
+
+        # determine local offset of node based on element groups, get global offset for node i and j of geomtransf
         # if element is a longitudinal, set global y offset (for longitudinal beam)
         if self.node_spec[ele_nodes[1]]['z_group'] == self.node_spec[ele_nodes[0]]['z_group']:
             # check if not an edge beam
             if self.node_spec[ele_nodes[1]]['z_group'] != 0 or self.node_spec[ele_nodes[1]]['z_group'] != len(self.noz):
-                local_offset = [0, self.centroid_dist_y, 0]  # shift beam element by global y
+                local_offset = [0, - self.centroid_dist_y, 0]  # shift beam element by global y
 
         # if element is a transverse member, calculate local offset based on member orientation
         elif self.node_spec[ele_nodes[1]]['x_group'] == self.node_spec[ele_nodes[0]]['x_group']:
             # calculate local offset
-            offset_z = np.cos(self.zeta / 180 * np.pi) * self.offset_z_dist  # z == cos
-            offset_x = np.sin(self.zeta / 180 * np.pi) * self.offset_z_dist
+            offset_z = self.offset_z_dist  # z == cos
+            offset_x = (node_i[0]+node_j[0])/(node_i[2]+node_j[2]) * self.offset_z_dist
             local_offset = [offset_x, self.y_elevation, offset_z]
         if local_offset:
             if find_min_x_dist([[a - b for a, b in zip(node_i, local_offset)]], [node_j]).tolist()[0][0] < def_l:
+
                 global_offset_i = [a - b for a, b in zip(node_i, local_offset)]
                 global_offset_j = [a + b for a, b in zip(node_j, local_offset)]
             else:  # reciprocal , node i has to minus local offset
+
                 global_offset_i = [a + b for a, b in zip(node_i, local_offset)]
                 global_offset_j = [a - b for a, b in zip(node_j, local_offset)]
             global_offset = [global_offset_i, global_offset_j]
