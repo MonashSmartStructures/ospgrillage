@@ -1044,7 +1044,7 @@ class BeamLinkMesh(Mesh):
 
 class ShellLinkMesh(Mesh):
     def __init__(self, long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
-                 skew_2, ext_to_int_a, ext_to_int_b, link_type="beam"):
+                 skew_2, ext_to_int_a, ext_to_int_b, link_type="beam",**kwargs):
         """
         Subclass for mesh with offset beam members linked to grillage consisting of shell elements
 
@@ -1065,8 +1065,11 @@ class ShellLinkMesh(Mesh):
         self.link_list = []
         self.link_type = link_type
 
-        # replace variables
-
+        # get variables from keyword arguments
+        self.num_grid_btw_external_master_node = kwargs.get("external_grids_between_master")
+        self.num_grid_btw_internal_master_node = kwargs.get("internal_grids_between_master")
+        self.num_grid_btw_master_node = kwargs.get("grids_between_master")
+        self.num_grid_btw_master_node = kwargs.get("grids_between_master")
         # create grillage mesh @ model plane y=0 using base class init
         super().__init__(long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
                          skew_2, ext_to_int_a, ext_to_int_b)
