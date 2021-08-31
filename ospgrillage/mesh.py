@@ -138,18 +138,18 @@ class Mesh:
                 "due to skew angle at end edge- try using a smaller angle or larger long_dim")
         # ------------------------------------------------------------------------------------------
         # edge construction line 1
-        self.start_edge_line = EdgeConstructionLine(edge_ref_point=self.mesh_origin, width_z=self.width,
-                                                    edge_width_a=self.edge_width_a, edge_width_b=self.edge_width_b,
-                                                    edge_angle=self.skew_1,
-                                                    num_long_beam=self.num_long_beam, model_plane_y=self.y_elevation)
+        self.start_edge_line = EdgeControlLine(edge_ref_point=self.mesh_origin, width_z=self.width,
+                                               edge_width_a=self.edge_width_a, edge_width_b=self.edge_width_b,
+                                               edge_angle=self.skew_1,
+                                               num_long_beam=self.num_long_beam, model_plane_y=self.y_elevation)
 
         # ------------------------------------------------------------------------------------------
         # edge construction line 2
         end_point_z = self.sweep_path.get_line_function(self.long_dim)
-        self.end_edge_line = EdgeConstructionLine(edge_ref_point=[self.long_dim, 0, end_point_z], width_z=self.width,
-                                                  edge_width_a=self.edge_width_a, edge_width_b=self.edge_width_b,
-                                                  edge_angle=self.skew_2,
-                                                  num_long_beam=self.num_long_beam, model_plane_y=self.y_elevation)
+        self.end_edge_line = EdgeControlLine(edge_ref_point=[self.long_dim, 0, end_point_z], width_z=self.width,
+                                             edge_width_a=self.edge_width_a, edge_width_b=self.edge_width_b,
+                                             edge_angle=self.skew_2,
+                                             num_long_beam=self.num_long_beam, model_plane_y=self.y_elevation)
         # ------------------------------------------------------------------------------------------
         # Sweep nodes
         # nodes to be swept across sweep path varies based
@@ -867,13 +867,13 @@ class Mesh:
         return start_point_x, z0
 
 
-class EdgeConstructionLine:
+class EdgeControlLine:
     """
     edge node class
     """
 
     def __init__(self, edge_ref_point, width_z, edge_width_a, edge_width_b, edge_angle, num_long_beam, model_plane_y,
-                 feature="start", ext_to_int_a=None, ext_to_int_b=None, ):
+                 feature="standard", ext_to_int_a=None, ext_to_int_b=None, **kwargs):
         # TODO add feature for edge const line to consider varying distance between nodes of exterior and interior beam
         # set variables
         self.edge_ref_point = edge_ref_point
@@ -883,14 +883,33 @@ class EdgeConstructionLine:
         self.num_long_beam = num_long_beam
         self.edge_angle = edge_angle
         self.feature = feature
+        # get kwargs
+        self.shell_internal_grid_num = kwargs.get("shell_internal_grid_num",2)
+        self.shell_internal_spacing = kwargs.get("shell_internal_spacing",2)
+        self.shell_external_grid_num = kwargs.get("shell_external_grid_num",2)
+        self.shell_external_spacing = kwargs.get("shell_external_spacing",2)
+
         # calculations
+        # array containing z coordinate of edge construction line
         last_girder = (self.width_z - self.edge_width_b)  # coord of exterior
         nox_girder = np.linspace(start=self.edge_width_a, stop=last_girder, num=self.num_long_beam - 2)
-        # array containing z coordinate of edge construction line
-        self.noz = np.hstack((np.hstack((0, nox_girder)), self.width_z))
-        # if negative angle, create edge_node_x based on negative angle algorithm, else, do for positive angle algorithm
+        if self.feature == "standard":
+            self.noz = np.hstack((np.hstack((0, nox_girder)), self.width_z))
+        elif self.feature == "shell_link":
+            self.noz = np.hstack((np.hstack((0, nox_girder)), self.width_z)) # default noz representing beam position
+            shell_noz = [self.edge_ref_point[2]]  # first and last node z
+            for beam_node_z in self.noz[1:-1]:
+                local_list = []
+                local_list += np.linspace(0, beam_node_z - self.shell_internal_spacing, 2).tolist()
+                local_list.append(beam_node_z + self.shell_internal_spacing)
+                shell_noz+= local_list
+            shell_noz += np.linspace(shell_noz[-1], self.width_z, 2).tolist()
+            shell_noz.sort()
+
+
+        # if negative angle, create edge_node_x based on negative angle algorithm, else positive angle algorithm
         if self.edge_angle <= 0:
-            edge_node_x = [-(z * np.tan(self.edge_angle / 180 * np.pi)) for z in self.noz]
+            edge_node_x = [-(z * np.tan(self.edge_angle / 180 * np.pi)) for z in self.noz]  # rotate z by edge angle
             self.node_list = [[x + self.edge_ref_point[0], y + self.edge_ref_point[1], z + self.edge_ref_point[2]] for
                               x, y, z in
                               zip(edge_node_x, [model_plane_y] * len(self.noz), self.noz)]
@@ -1066,10 +1085,9 @@ class ShellLinkMesh(Mesh):
         self.link_type = link_type
 
         # get variables from keyword arguments
-        self.num_grid_btw_external_master_node = kwargs.get("external_grids_between_master")
-        self.num_grid_btw_internal_master_node = kwargs.get("internal_grids_between_master")
-        self.num_grid_btw_master_node = kwargs.get("grids_between_master")
-        self.num_grid_btw_master_node = kwargs.get("grids_between_master")
+        self.num_grid_external_master_node = kwargs.get("external_grids_between_master",1)
+        self.num_grid_internal_master_node = kwargs.get("internal_grids_between_master",1)
+
         # create grillage mesh @ model plane y=0 using base class init
         super().__init__(long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
                          skew_2, ext_to_int_a, ext_to_int_b)
