@@ -36,8 +36,8 @@ def ref_28m_bridge():
     end_tranverse_slab = og.create_member(member_name="edge transverse", section=end_tranverse_slab_section,
                                            material=concrete)
 
-    bridge_28 = og.OspGrillage(bridge_name="SuperT_28m", long_dim=28, width=7, skew=0,
-                               num_long_grid=7, num_trans_grid=14, edge_beam_dist=1.0875, mesh_type="Ortho")
+    bridge_28 = og.OspGrillage(bridge_name="SuperT_28m", long_dim=28, width=7, skew=25,
+                               num_long_grid=7, num_trans_grid=14, edge_beam_dist=1.0875, mesh_type="Orth")
 
     # set grillage member to element groups of grillage model
     bridge_28.set_member(super_t_beam, member="interior_main_beam")
@@ -679,7 +679,7 @@ def test_28m_bridge(ref_28m_bridge):
     point_load_case.add_load_groups(p6)
     point_load_case.add_load_groups(p7)
 
-    bridge_28.add_load_case(point_load_case)
+    bridge_28.add_load_case(line_load_case)
     # add a load combination
     bridge_28.add_load_combination(load_combination_name="factored_point",
                                    load_case_and_factor_dict={"point_load_case": 1.5})

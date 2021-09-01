@@ -5,7 +5,7 @@ This module holds all static methods used in the other modules.
 
 import numpy as np
 from scipy.spatial import distance
-from sympy import symbols, Eq, solve
+from sympy import symbols, Eq, solve,linsolve
 from decimal import *
 
 
@@ -220,7 +220,19 @@ def solve_zeta_eta(xp, zp, x1, z1, x2, z2, x3, z3, x4, z4):
     eq2 = Eq(
         4 * xp - ((1 - x) * (1 - z) * x1 + (1 + x) * (1 - z) * x2 + (1 + x) * (1 + z) * x3 + (1 - x) * (1 + z) * x4), 0)
     sol = solve((eq1, eq2), (x, z))
-    return sol[x], sol[z]  # sol[x] = eta, sol[z] = zeta
+    if type(sol) is list:
+        sol_extract= sol[0]
+        if isinstance(sol_extract,tuple):
+            eta = sol_extract[0]
+            zeta = sol_extract[1]
+        elif sol_extract is dict:
+            eta = sol_extract[x]
+            zeta = sol_extract[z]
+    elif type(sol) is dict:
+        sol_extract = sol
+        eta = sol_extract[x]
+        zeta = sol_extract[z]
+    return eta, zeta  # sol[x] = eta, sol[z] = zeta
 
 
 #
