@@ -5,16 +5,14 @@ This module holds all static methods used in the other modules.
 
 import numpy as np
 from scipy.spatial import distance
-from sympy import symbols, Eq, solve,linsolve
-from decimal import *
+from scipy.optimize import fsolve
 
 
 def diff(li1, li2):
     """
-        Static method to determine the difference between two list. Called in set_member() function to check member
-        assignment
-
-        """
+    Static method to determine the difference between two list. used in OspGrillage.set_member() function to check member
+    assignment
+    """
     return list(list(set(li1) - set(li2)) + list(set(li2) - set(li1)))
 
 
@@ -212,26 +210,38 @@ def get_slope(pt1, pt2):
 
 def solve_zeta_eta(xp, zp, x1, z1, x2, z2, x3, z3, x4, z4):
     # function to solve for eta and zeta of point in grid after mapping grid nodes (4) to four coordinate in
-    # a reference quadrilateral
-    x, z = symbols('x,z')
+    # a reference isoparametric quadrilateral
+    # note: sympy version to be deprecated
+    # x, z = symbols('x,z')
+    #
+    # eq1 = Eq(
+    #     4 * zp - ((1 - x) * (1 - z) * z1 + (1 + x) * (1 - z) * z2 + (1 + x) * (1 + z) * z3 + (1 - x) * (1 + z) * z4), 0)
+    # eq2 = Eq(
+    #     4 * xp - ((1 - x) * (1 - z) * x1 + (1 + x) * (1 - z) * x2 + (1 + x) * (1 + z) * x3 + (1 - x) * (1 + z) * x4), 0)
+    # sol = solve((eq1, eq2), (x, z))
+    # if type(sol) is list:
+    #     sol_extract= sol[0]
+    #     if isinstance(sol_extract,tuple):
+    #         eta = sol_extract[0]
+    #         zeta = sol_extract[1]
+    #     elif sol_extract is dict:
+    #         eta = sol_extract[x]
+    #         zeta = sol_extract[z]
+    # elif type(sol) is dict:
+    #     sol_extract = sol
+    #     eta = sol_extract[x]
+    #     zeta = sol_extract[z]
 
-    eq1 = Eq(
-        4 * zp - ((1 - x) * (1 - z) * z1 + (1 + x) * (1 - z) * z2 + (1 + x) * (1 + z) * z3 + (1 - x) * (1 + z) * z4), 0)
-    eq2 = Eq(
-        4 * xp - ((1 - x) * (1 - z) * x1 + (1 + x) * (1 - z) * x2 + (1 + x) * (1 + z) * x3 + (1 - x) * (1 + z) * x4), 0)
-    sol = solve((eq1, eq2), (x, z))
-    if type(sol) is list:
-        sol_extract= sol[0]
-        if isinstance(sol_extract,tuple):
-            eta = sol_extract[0]
-            zeta = sol_extract[1]
-        elif sol_extract is dict:
-            eta = sol_extract[x]
-            zeta = sol_extract[z]
-    elif type(sol) is dict:
-        sol_extract = sol
-        eta = sol_extract[x]
-        zeta = sol_extract[z]
+    # create function to solve for eta and zeta - dynamically for varying parameters x1-x4, z1-z4, zp,xp
+    a = """def function_mapping(x):
+        return [4 * {zp} - ((1 - x[0]) * (1 - x[1]) * {z1} + (1 + x[0]) * (1 - x[1]) * {z2} + (1 + x[0]) * (1 + x[1]) * {z3} + (1 - x[0]) * (1 + x[1]) * {z4})
+                , 4 * {xp} - ((1 - x[0]) * (1 - x[1]) * {x1} + (1 + x[0]) * (1 - x[1]) * {x2} + (1 + x[0]) * (1 + x[1]) * {x3} + (1 - x[0]) * (1 + x[1]) * {x4})]
+                """.format(zp=zp, xp=xp, x1=x1, x2=x2, x3=x3, x4=x4, z1=z1, z2=z2, z3=z3, z4=z4)
+    scope = {}
+    exec(a, scope)
+    root = fsolve(scope['function_mapping'], np.array([1, 1]))
+    eta = root[0]
+    zeta = root[1]
     return eta, zeta  # sol[x] = eta, sol[z] = zeta
 
 

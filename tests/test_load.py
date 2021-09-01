@@ -176,6 +176,7 @@ def test_compound_load_positions():
     assert M1600.compound_load_obj_list[1].load_point_1 == og.LoadPoint(x=3, y=0, z=3, p=2)
     assert M1600.compound_load_obj_list[1].load_point_2 == og.LoadPoint(x=15.0, y=0, z=3, p=2)
 
+
 def test_point_load_getter(bridge_model_42_negative):  # test get_point_load_nodes() function
     # test if setter and getter is correct              # and assign_point_to_node() function
 

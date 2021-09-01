@@ -138,7 +138,7 @@ class Mesh:
                 "due to skew angle at end edge- try using a smaller angle or larger long_dim")
         # ------------------------------------------------------------------------------------------
         # edge construction line 1
-        self.start_edge_line = EdgeControlLine(edge_ref_point=self.mesh_origin, width_z=self.width,
+        self.start_edge_line = self.create_control_points(edge_ref_point=self.mesh_origin, width_z=self.width,
                                                edge_width_a=self.edge_width_a, edge_width_b=self.edge_width_b,
                                                edge_angle=self.skew_1,
                                                num_long_beam=self.num_long_beam, model_plane_y=self.y_elevation)
@@ -146,7 +146,7 @@ class Mesh:
         # ------------------------------------------------------------------------------------------
         # edge construction line 2
         end_point_z = self.sweep_path.get_line_function(self.long_dim)
-        self.end_edge_line = EdgeControlLine(edge_ref_point=[self.long_dim, 0, end_point_z], width_z=self.width,
+        self.end_edge_line = self.create_control_points(edge_ref_point=[self.long_dim, 0, end_point_z], width_z=self.width,
                                              edge_width_a=self.edge_width_a, edge_width_b=self.edge_width_b,
                                              edge_angle=self.skew_2,
                                              num_long_beam=self.num_long_beam, model_plane_y=self.y_elevation)
@@ -178,6 +178,11 @@ class Mesh:
 
         # run section grouping for longitudinal and transverse members
         self._identify_member_groups()
+
+    def create_control_points(self,**kwargs):
+        # base version creating standard node points of control points - either start or end edge -
+        # standard correspond to base model technique - grillage with beam element
+        return EdgeControlLine(**kwargs)
 
     def _fixed_sweep_node_meshing(self):
         assigned_node_tag = []
@@ -900,12 +905,12 @@ class EdgeControlLine:
             shell_noz = [self.edge_ref_point[2]]  # first and last node z
             for beam_node_z in self.noz[1:-1]:
                 local_list = []
-                local_list += np.linspace(0, beam_node_z - self.shell_internal_spacing, 2).tolist()
-                local_list.append(beam_node_z + self.shell_internal_spacing)
-                shell_noz+= local_list
-            shell_noz += np.linspace(shell_noz[-1], self.width_z, 2).tolist()
+                local_list += np.linspace(shell_noz[-1], beam_node_z - 0.445, 2).tolist()
+                local_list.append(beam_node_z +  0.445)
+                shell_noz+= local_list[1:]
+            shell_noz += np.linspace(shell_noz[-1], self.width_z, 2).tolist()[1:]
             shell_noz.sort()
-
+            self.noz = shell_noz  # overwrite self.noz
 
         # if negative angle, create edge_node_x based on negative angle algorithm, else positive angle algorithm
         if self.edge_angle <= 0:
@@ -1091,6 +1096,12 @@ class ShellLinkMesh(Mesh):
         # create grillage mesh @ model plane y=0 using base class init
         super().__init__(long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
                          skew_2, ext_to_int_a, ext_to_int_b)
+        pass
+    # overwrite base class to create control points
+    def create_control_points(self,**kwargs):
+        feature = "shell_link"
+        return EdgeControlLine(**kwargs,feature=feature)
+        pass
 
     def _create_link_element(self, rNode, cNode):
         # user mp constraint object
