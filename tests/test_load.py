@@ -204,7 +204,7 @@ def test_point_load_outside_straight_mesh(bridge_model_42_negative):
     ULS_DL = og.create_load_case(name="Point")
     ULS_DL.add_load_groups(Single)  # ch
     example_bridge.add_load_case(ULS_DL)
-    grid_nodes, _ = example_bridge.get_point_load_nodes(point=location)
+    grid_nodes, _ = example_bridge._get_point_load_nodes(point=location)
     assert grid_nodes is None
 
 

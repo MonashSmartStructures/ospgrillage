@@ -200,12 +200,12 @@ class OspGrillage:
         self.results = None
 
         # kwargs for rigid link modelling option
-        self.rigid_type = kwargs.get("rigid_type", None)  # accepts int type 1 or 2
+        self.model_type = kwargs.get("model_type", None)  # accepts int type 1 or 2
         self.beam_width = kwargs.get("beam_width", None)
         self.web_thick = kwargs.get("web_thick", None)
         self.centroid_dist_y = kwargs.get("centroid_dist_y", None)
         # create mesh object
-        self.Mesh_obj = self.create_mesh(long_dim=self.long_dim, width=self.width, trans_dim=self.trans_dim,
+        self.Mesh_obj = self._create_mesh(long_dim=self.long_dim, width=self.width, trans_dim=self.trans_dim,
                                          num_trans_beam=self.num_trans_grid,
                                          num_long_beam=self.num_long_gird, ext_to_int_a=self.ext_to_int_a,
                                          ext_to_int_b=self.ext_to_int_b,
@@ -214,10 +214,10 @@ class OspGrillage:
                                          skew_2=self.skew_b, orthogonal=self.ortho_mesh, beam_width=self.beam_width,
                                          web_thick=self.web_thick, centroid_dist_y=self.centroid_dist_y)
 
-    def create_mesh(self, **kwargs):
-        if self.rigid_type == 1:
+    def _create_mesh(self, **kwargs):
+        if self.model_type == "beam_link":
             mesh_obj = BeamLinkMesh(**kwargs)
-        elif self.rigid_type == 2:
+        elif self.model_type == "shell":
             mesh_obj = ShellLinkMesh(**kwargs)
         else:
             mesh_obj = Mesh(**kwargs)
@@ -477,6 +477,37 @@ class OspGrillage:
                   .format(section_type, sectiontagcounter))
         return sectiontagcounter
 
+    def _lookup_member_group(self,namestring:str):
+        z_flag = False
+        x_flag = False
+        edge_flag = False
+        common_member_tag = []
+        if namestring == "interior_main_beam":
+            common_member_tag = 2
+            z_flag = True
+        elif namestring == "exterior_main_beam_1":
+            common_member_tag = 1
+            z_flag = True
+        elif namestring == "exterior_main_beam_2":
+            common_member_tag = 3
+            z_flag = True
+        elif namestring == "edge_beam":
+            common_member_tag = 0
+            z_flag = True
+        elif namestring == "start_edge":
+            common_member_tag = 0
+            edge_flag = True
+        elif namestring == "end_edge":
+            common_member_tag = 1
+            edge_flag = True
+        elif namestring == "transverse_slab":
+            common_member_tag = "slab"
+            x_flag = True
+        else:
+            raise ValueError("Member str not a standard grillage element - refer to documentation/Module Description"
+                             "for valid member and input string")
+
+        return z_flag,x_flag,edge_flag,common_member_tag
     # Function to set grillage elements
     def set_member(self, grillage_member_obj: GrillageMember, member=None):
         """
@@ -517,35 +548,8 @@ class OspGrillage:
         if self.pyfile:
             with open(self.filename, 'a') as file_handle:
                 file_handle.write("# Element generation for member: {}\n".format(member))
-        z_flag = False
-        x_flag = False
-        edge_flag = False
-        common_member_tag = []
-        # get common element member tags based on input string
-        if member == "interior_main_beam":
-            common_member_tag = 2
-            z_flag = True
-        elif member == "exterior_main_beam_1":
-            common_member_tag = 1
-            z_flag = True
-        elif member == "exterior_main_beam_2":
-            common_member_tag = 3
-            z_flag = True
-        elif member == "edge_beam":
-            common_member_tag = 0
-            z_flag = True
-        elif member == "start_edge":
-            common_member_tag = 0
-            edge_flag = True
-        elif member == "end_edge":
-            common_member_tag = 1
-            edge_flag = True
-        elif member == "transverse_slab":
-            common_member_tag = "slab"
-            x_flag = True
-        else:
-            raise ValueError("Member str not a standard grillage element - refer to documentation/Module Description"
-                             "for valid member and input string")
+        # lookup member grouping
+        z_flag, x_flag, edge_flag, common_member_tag = self._lookup_member_group(namestring=member)
 
         ele_width = 1
         # if member properties is based on unit width (e.g. slab elements), get width of element and assign properties
@@ -593,7 +597,6 @@ class OspGrillage:
                                                                               sectiontag=section_tag)
                         ele_command_list.append(ele_str)
                     self.ele_group_assigned_list.append("edge: {}".format(common_member_tag))
-
 
         else:  # non-unit width member assignment
             if z_flag:
@@ -712,8 +715,10 @@ class OspGrillage:
             record_edge = record_edge + edge_mem_index
         return record_long, record_trans, record_edge
 
+
+
     # Getter for Points Loads nodes
-    def get_point_load_nodes(self, point):
+    def _get_point_load_nodes(self, point):
         # procedure
         # 1 find the closest node 2 find the respective grid within the closest node
         # extract points
@@ -742,7 +747,7 @@ class OspGrillage:
         return node_list, grid  # grid = grid number
 
     # Getter for Line loads nodes
-    def get_line_load_nodes(self, line_load_obj):
+    def _get_line_load_nodes(self, line_load_obj):
         # from starting point of line load
         # initiate variables
         next_grid = []
@@ -757,8 +762,8 @@ class OspGrillage:
         # sub_dict has the following keys:
         # {bound: , long_intersect: , trans_intersect, edge_intersect, ends:}
         # find grids where start point of line load lies in
-        start_nd, start_grid = self.get_point_load_nodes(line_load_obj.load_point_1)
-        last_nd, last_grid = self.get_point_load_nodes(line_load_obj.line_end_point)
+        start_nd, start_grid = self._get_point_load_nodes(line_load_obj.load_point_1)
+        last_nd, last_grid = self._get_point_load_nodes(line_load_obj.line_end_point)
 
         line_grid_intersect = dict()
         # loop each grid check if line segment lies in grid
@@ -773,12 +778,12 @@ class OspGrillage:
             element_combi = combinations(grid_nodes, 2)
             long_ele_index, trans_ele_index, edge_ele_index = self.__get_elements(element_combi)
 
-            Rz, Rx, Redge, R_z_col, R_x_col, R_edge_col = self.get_intersecting_elements(grid_tag, start_grid,
-                                                                                         last_grid,
-                                                                                         line_load_obj,
-                                                                                         long_ele_index,
-                                                                                         trans_ele_index,
-                                                                                         edge_ele_index)
+            Rz, Rx, Redge, R_z_col, R_x_col, R_edge_col = self._get_intersecting_elements(grid_tag, start_grid,
+                                                                                          last_grid,
+                                                                                          line_load_obj,
+                                                                                          long_ele_index,
+                                                                                          trans_ele_index,
+                                                                                          edge_ele_index)
             # if colinear, assign to colinear_spec
             if any([R_z_col, R_x_col, R_edge_col]):
                 if R_z_col:
@@ -843,8 +848,8 @@ class OspGrillage:
         return edited_dict, colinear_spec
 
     # private function to find intersection points of line/patch edge within grid
-    def get_intersecting_elements(self, current_grid, line_start_grid, line_end_grid, line_load_obj, long_ele_index,
-                                  trans_ele_index, edge_ele_index):
+    def _get_intersecting_elements(self, current_grid, line_start_grid, line_end_grid, line_load_obj, long_ele_index,
+                                   trans_ele_index, edge_ele_index):
         # instantiate variables
         R_z = []  # variables with _ are elements of the main variable without _ i.e. R_z is an element of Rz
         Rz = []
@@ -953,7 +958,7 @@ class OspGrillage:
         return Rz, Rx, Redge, R_z_col, R_x_col, R_edge_col
 
     # Getter for Patch loads
-    def get_bounded_nodes(self, patch_load_obj):
+    def _get_bounded_nodes(self, patch_load_obj):
         # function to return nodes bounded by patch load
         point_list = [patch_load_obj.load_point_1, patch_load_obj.load_point_2, patch_load_obj.load_point_3,
                       patch_load_obj.load_point_4]
@@ -974,12 +979,12 @@ class OspGrillage:
         return bounded_node, bounded_grids
 
     # Setter for Point loads
-    def assign_point_to_four_node(self, point, mag, shape_func="linear"):
+    def _assign_point_to_four_node(self, point, mag, shape_func="linear"):
 
         node_mx = []
         node_mz = []
         # search grid where the point lies in
-        grid_nodes, _ = self.get_point_load_nodes(point=point)
+        grid_nodes, _ = self._get_point_load_nodes(point=point)
         if grid_nodes is None:
             load_str = []
             return load_str
@@ -1034,7 +1039,7 @@ class OspGrillage:
         return load_str
 
     # Setter for Line loads and above
-    def assign_line_to_four_node(self, line_load_obj, line_grid_intersect, line_ele_colinear) -> list:
+    def _assign_line_to_four_node(self, line_load_obj, line_grid_intersect, line_ele_colinear) -> list:
 
         # Function to assign line load to mesh. Procedure to assign line load is as follows:
         # . get properties of line on the grid
@@ -1091,7 +1096,7 @@ class OspGrillage:
                                                                 point_coordinate=[p2[0], self.y_elevation, p2[2]])
 
             # uses point load assignment function to assign load point and mag to four nodes in grid
-            load_str = self.assign_point_to_four_node(point=load_point, mag=W, shape_func=line_load_obj.shape_function)
+            load_str = self._assign_point_to_four_node(point=load_point, mag=W, shape_func=line_load_obj.shape_function)
             load_str_line += load_str  # append to major list for line load
 
         # loop through all colinear elements
@@ -1113,12 +1118,12 @@ class OspGrillage:
                 x_bar = ((2 * w1 + w2) / (w1 + w2)) * L / 3  # from p2
                 load_point = line_load_obj.get_point_given_distance(xbar=x_bar,
                                                                     point_coordinate=[p2.x, p2.y, p2.z])
-                load_str = self.assign_point_to_four_node(point=load_point, mag=mag)
+                load_str = self._assign_point_to_four_node(point=load_point, mag=mag)
                 load_str_line += load_str  # append to major list for line load
                 assigned_ele.append(ele[0])
         return load_str_line
 
-    def assign_beam_ele_line_load(self, line_load_obj: LineLoading):
+    def _assign_beam_ele_line_load(self, line_load_obj: LineLoading):
         load_str_line = []
         ele_group = []
         width_dict = None
@@ -1144,17 +1149,17 @@ class OspGrillage:
                 x_bar = ((2 * w1 + w2) / (w1 + w2)) * L / 3  # from p2
                 load_point = line_load_obj.get_point_given_distance(xbar=x_bar,
                                                                     point_coordinate=[p2.x, p2.y, p2.z])
-                load_str = self.assign_point_to_four_node(point=load_point, mag=mag)
+                load_str = self._assign_point_to_four_node(point=load_point, mag=mag)
                 load_str_line += load_str  # append to major list for line load
 
         return load_str_line
 
     # setter for patch loads
-    def assign_patch_load(self, patch_load_obj: PatchLoading) -> list:
+    def _assign_patch_load(self, patch_load_obj: PatchLoading) -> list:
         # searches grid that encompass the patch load
         # use getter for line load, 4 times for each point
         # between 4 dictionaries record the common grids as having the corners of the patch - to be evaluated different
-        bound_node, bound_grid = self.get_bounded_nodes(patch_load_obj)
+        bound_node, bound_grid = self._get_bounded_nodes(patch_load_obj)
         # assign patch for grids fully bounded by patch
         for grid in bound_grid:
             nodes = self.Mesh_obj.grid_number_dict[grid]  # read grid nodes
@@ -1168,20 +1173,20 @@ class OspGrillage:
             xc, yc, zc = get_patch_centroid(p_list)
             inside_point = Point(xc, yc, zc)
             # volume = area of base x average height
-            A = self.get_node_area(inside_point=inside_point, p_list=p_list)
+            A = self._get_node_area(inside_point=inside_point, p_list=p_list)
             # _, A = calculate_area_given_four_points(inside_point, p_list[0], p_list[1], p_list[2], p_list[3])
             mag = A * sum([point.p for point in p_list]) / len(p_list)
             # assign point and mag to 4 nodes of grid
-            load_str = self.assign_point_to_four_node(point=[xc, yc, zc], mag=mag,
-                                                      shape_func=patch_load_obj.shape_function)
+            load_str = self._assign_point_to_four_node(point=[xc, yc, zc], mag=mag,
+                                                       shape_func=patch_load_obj.shape_function)
             self.global_load_str += load_str
         # apply patch for full bound grids completed
 
         # search the intersecting grids using line load function
-        intersect_grid_1, _ = self.get_line_load_nodes(patch_load_obj.line_1)
-        intersect_grid_2, _ = self.get_line_load_nodes(patch_load_obj.line_2)
-        intersect_grid_3, _ = self.get_line_load_nodes(patch_load_obj.line_3)
-        intersect_grid_4, _ = self.get_line_load_nodes(patch_load_obj.line_4)
+        intersect_grid_1, _ = self._get_line_load_nodes(patch_load_obj.line_1)
+        intersect_grid_2, _ = self._get_line_load_nodes(patch_load_obj.line_2)
+        intersect_grid_3, _ = self._get_line_load_nodes(patch_load_obj.line_3)
+        intersect_grid_4, _ = self._get_line_load_nodes(patch_load_obj.line_4)
         # merging process of the intersect grid dicts
         merged = check_dict_same_keys(intersect_grid_1, intersect_grid_2)
         merged = check_dict_same_keys(merged, intersect_grid_3)
@@ -1222,22 +1227,22 @@ class OspGrillage:
             inside_point = Point(xc, yc, zc)
             # volume = area of base x average height
             # _, A = calculate_area_given_four_points(inside_point, p_list[0], p_list[1], p_list[2], p_list[3])
-            A = self.get_node_area(inside_point=inside_point, p_list=p_list)
+            A = self._get_node_area(inside_point=inside_point, p_list=p_list)
             mag = A * sum([point.p for point in p_list]) / len(p_list)
             # assign point and mag to 4 nodes of grid
-            load_str = self.assign_point_to_four_node(point=[xc, yc, zc], mag=mag,
-                                                      shape_func=patch_load_obj.shape_function)
+            load_str = self._assign_point_to_four_node(point=[xc, yc, zc], mag=mag,
+                                                       shape_func=patch_load_obj.shape_function)
             self.global_load_str += load_str
         return self.global_load_str
 
     @staticmethod
-    def get_node_area(inside_point, p_list) -> float:
+    def _get_node_area(inside_point, p_list) -> float:
         A = calculate_area_given_vertices(p_list)
         return A
 
     # ----------------------------------------------------------------------------------------------------------
     #  functions to add load case and load combination
-    def distribute_load_types_to_model(self, load_case_obj: Union[LoadCase, CompoundLoad]) -> list:
+    def _distribute_load_types_to_model(self, load_case_obj: Union[LoadCase, CompoundLoad]) -> list:
 
         global load_groups
         load_str = []
@@ -1258,42 +1263,42 @@ class OspGrillage:
                     if isinstance(nested_list_of_load, NodalLoad):
                         load_str += nested_list_of_load.get_nodal_load_str()
                     elif isinstance(nested_list_of_load, PointLoad):
-                        load_str += self.assign_point_to_four_node(point=list(nested_list_of_load.load_point_1)[:-1],
-                                                                   mag=nested_list_of_load.load_point_1.p,
-                                                                   shape_func=nested_list_of_load.shape_function)
+                        load_str += self._assign_point_to_four_node(point=list(nested_list_of_load.load_point_1)[:-1],
+                                                                    mag=nested_list_of_load.load_point_1.p,
+                                                                    shape_func=nested_list_of_load.shape_function)
                     elif isinstance(nested_list_of_load, LineLoading):
                         if any([nested_list_of_load.long_beam_ele_load_flag,
                                 nested_list_of_load.trans_beam_ele_load_flag]):
-                            load_str += self.assign_beam_ele_line_load(line_load_obj=nested_list_of_load)
+                            load_str += self._assign_beam_ele_line_load(line_load_obj=nested_list_of_load)
                         else:
-                            line_grid_intersect, line_ele_colinear = self.get_line_load_nodes(
+                            line_grid_intersect, line_ele_colinear = self._get_line_load_nodes(
                                 nested_list_of_load)  # returns self.line_grid_intersect
                             self.global_line_int_dict.append(line_grid_intersect)
-                            load_str += self.assign_line_to_four_node(nested_list_of_load,
-                                                                      line_grid_intersect=line_grid_intersect,
-                                                                      line_ele_colinear=line_ele_colinear)
+                            load_str += self._assign_line_to_four_node(nested_list_of_load,
+                                                                       line_grid_intersect=line_grid_intersect,
+                                                                       line_ele_colinear=line_ele_colinear)
                     elif isinstance(nested_list_of_load, PatchLoading):
-                        load_str += self.assign_patch_load(nested_list_of_load)
+                        load_str += self._assign_patch_load(nested_list_of_load)
             # else, a single load type, assign it as it is
             else:
                 # run single assignment of load type (load_obj is a load class)
                 if isinstance(load_obj, NodalLoad):
                     load_str += [load_obj.get_nodal_load_str()]  # here return load_str as list with single element
                 elif isinstance(load_obj, PointLoad):
-                    load_str += self.assign_point_to_four_node(point=list(load_obj.load_point_1)[:-1],
-                                                               mag=load_obj.load_point_1.p,
-                                                               shape_func=load_obj.shape_function)
+                    load_str += self._assign_point_to_four_node(point=list(load_obj.load_point_1)[:-1],
+                                                                mag=load_obj.load_point_1.p,
+                                                                shape_func=load_obj.shape_function)
                 elif isinstance(load_obj, LineLoading):
                     if any([load_obj.long_beam_ele_load_flag, load_obj.trans_beam_ele_load_flag]):
-                        load_str += self.assign_beam_ele_line_load(line_load_obj=load_obj)
+                        load_str += self._assign_beam_ele_line_load(line_load_obj=load_obj)
                     else:
-                        line_grid_intersect, line_ele_colinear = self.get_line_load_nodes(
+                        line_grid_intersect, line_ele_colinear = self._get_line_load_nodes(
                             load_obj)  # returns self.line_grid_intersect
                         self.global_line_int_dict.append(line_grid_intersect)
-                        load_str += self.assign_line_to_four_node(load_obj, line_grid_intersect=line_grid_intersect,
-                                                                  line_ele_colinear=line_ele_colinear)
+                        load_str += self._assign_line_to_four_node(load_obj, line_grid_intersect=line_grid_intersect,
+                                                                   line_ele_colinear=line_ele_colinear)
                 elif isinstance(load_obj, PatchLoading):
-                    load_str += self.assign_patch_load(load_obj)
+                    load_str += self._assign_patch_load(load_obj)
 
         return load_str
 
@@ -1309,7 +1314,7 @@ class OspGrillage:
 
         if isinstance(load_case_obj, LoadCase):
             # update the load command list of load case object
-            load_str = self.distribute_load_types_to_model(load_case_obj=load_case_obj)
+            load_str = self._distribute_load_types_to_model(load_case_obj=load_case_obj)
             # store load case + load command in dict and add to load_case_list
             load_case_dict = {'name': load_case_obj.name, 'loadcase': load_case_obj, 'load_command': load_str,
                               'load_factor': load_factor}  # FORMATTING HERE
@@ -1326,7 +1331,7 @@ class OspGrillage:
             # for each load case, find the load commands of load distribution
             for moving_load_case_list in moving_load_obj.moving_load_case:
                 for increment_load_case in moving_load_case_list:
-                    load_str = self.distribute_load_types_to_model(load_case_obj=increment_load_case)
+                    load_str = self._distribute_load_types_to_model(load_case_obj=increment_load_case)
                     increment_load_case_dict = {'name': increment_load_case.name, 'loadcase': increment_load_case,
                                                 'load_command': load_str,
                                                 'load_factor': load_factor}
@@ -1542,6 +1547,35 @@ class OspGrillage:
                 basic_da.to_netcdf(save_filename)
             return basic_da
 
+    def get_element(self,**kwargs):
+        """
+        Function ot query element and nodes of grillage model
+
+        :return:
+        """
+        # get query member details
+        namestring = kwargs.get("member",None)
+        select_z_group = kwargs.get("z_group_num",None) # optional z_group number for internal beam members
+        select_x_group = kwargs.get("x_group_num",None)
+        select_edge_group = kwargs.get("edge_group_num",None)
+
+        # options
+        options = kwargs.get("options",None)
+        z_flag, x_flag, edge_flag, common_member_tag = self._lookup_member_group(namestring=namestring)
+
+        if z_flag:
+            if select_z_group in self.Mesh_obj.common_z_group_element[common_member_tag]:
+                extracted_ele = self.Mesh_obj.z_group_to_ele[select_z_group]
+
+        elif x_flag:
+            if select_x_group in self.Mesh_obj.common_z_group_element[common_member_tag]:
+                extracted_ele = self.Mesh_obj.z_group_to_ele[select_z_group]
+        elif edge_flag:
+            if select_edge_group in self.Mesh_obj.common_z_group_element[common_member_tag]:
+                extracted_ele = self.Mesh_obj.z_group_to_ele[select_z_group]
+
+        # parse options on extracted ele
+        # TODO
 
 # ---------------------------------------------------------------------------------------------------------------------
 class Analysis:

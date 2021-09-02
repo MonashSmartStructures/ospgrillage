@@ -233,16 +233,21 @@ def solve_zeta_eta(xp, zp, x1, z1, x2, z2, x3, z3, x4, z4):
     #     zeta = sol_extract[z]
 
     # create function to solve for eta and zeta - dynamically for varying parameters x1-x4, z1-z4, zp,xp
-    a = """def function_mapping(x):
-        return [4 * {zp} - ((1 - x[0]) * (1 - x[1]) * {z1} + (1 + x[0]) * (1 - x[1]) * {z2} + (1 + x[0]) * (1 + x[1]) * {z3} + (1 - x[0]) * (1 + x[1]) * {z4})
-                , 4 * {xp} - ((1 - x[0]) * (1 - x[1]) * {x1} + (1 + x[0]) * (1 - x[1]) * {x2} + (1 + x[0]) * (1 + x[1]) * {x3} + (1 - x[0]) * (1 + x[1]) * {x4})]
-                """.format(zp=zp, xp=xp, x1=x1, x2=x2, x3=x3, x4=x4, z1=z1, z2=z2, z3=z3, z4=z4)
-    scope = {}
-    exec(a, scope)
-    root = fsolve(scope['function_mapping'], np.array([1, 1]))
+
+    def obj_func(x, xp, zp, x1, x2, x3, x4, z1, z2, z3, z4):
+        eta = 4 * zp - (
+                    (1 - x[0]) * (1 - x[1]) * z1 + (1 + x[0]) * (1 - x[1]) * z2 + (1 + x[0]) * (1 + x[1]) * z3 + (
+                        1 - x[0]) * (1 + x[1]) * z4)
+        zeta = 4 * xp - (
+                    (1 - x[0]) * (1 - x[1]) * x1 + (1 + x[0]) * (1 - x[1]) * x2 + (1 + x[0]) * (1 + x[1]) * x3 + (
+                        1 - x[0]) * (1 + x[1]) * x4)
+        return eta, zeta
+
+    root = fsolve(obj_func, np.array([1, 1]), args=(xp, zp, x1, x2, x3, x4, z1, z2, z3, z4))
+
     eta = root[0]
     zeta = root[1]
-    return eta, zeta  # sol[x] = eta, sol[z] = zeta
+    return eta, zeta
 
 
 #
