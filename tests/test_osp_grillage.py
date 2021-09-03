@@ -102,7 +102,7 @@ def beam_link_bridge(ref_bridge_properties):
 
     # construct grillage model
     example_bridge = og.create_grillage(bridge_name="beamlink_10m", long_dim=10, width=7, skew=-12,
-                                        num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Orth",
+                                        num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho",
                                         model_type="beam_link",
                                         beam_width=1, web_thick=0.02, centroid_dist_y=0.499)
 
@@ -167,7 +167,7 @@ def test_model_instance(bridge_model_42_negative):
 
 #  test creating shell model procedure successful
 def test_create_shell_model(shell_bridge):
-    example_shell_bridge = shell_bridge
+    shell_model = shell_bridge
     og.opsplt.plot_model("nodes")
     print(og.ops.eleNodes(195))
     assert og.ops.eleNodes(195)  # if element exist - for orthogonal mesh only
@@ -175,12 +175,12 @@ def test_create_shell_model(shell_bridge):
 
 #  test creating beam model with rigid links
 def test_create_beam_link_model(beam_link_bridge):
-    example_shell_bridge = beam_link_bridge
+    beam_link_model = beam_link_bridge
     og.opsplt.plot_model("nodes")
     # print(og.ops.eleNodes(195))
     assert og.ops.eleNodes(195)
 
 
 def test_create_shell_link_model(shell_link_bridge):
-    example_shell_bridge = shell_link_bridge
+    shell_link_model = shell_link_bridge
     og.opsplt.plot_model("nodes")

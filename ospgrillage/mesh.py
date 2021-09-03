@@ -1103,26 +1103,25 @@ class ShellLinkMesh(Mesh):
         """
         # instantiate variables specific for current mesh subclass
         self.long_ele_offset = []
-        self.link_list = []
+        self.link_str_list = []
         self.link_type = link_type
-
+        self.link_dict = dict() # key is node tag c, val is list of master node r
+        self.offset_node_group_dict = dict() # key is node tag of offset node, val is beam group
         # get variables from keyword arguments
         self.num_grid_external_master_node = kwargs.get("external_grids_between_master",1)
         self.num_grid_internal_master_node = kwargs.get("internal_grids_between_master",1)
 
         # create grillage mesh @ model plane y=0 using base class init
         super().__init__(long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
-                         skew_2, ext_to_int_a, ext_to_int_b)
+                         skew_2, ext_to_int_a, ext_to_int_b,**kwargs)
+        # variables to store assignment counters after meshing of main model plane grid y = 0
+        self.x_grid_to_x_dict = dict()  # key is x value, value is x grid number (for offset nodes)
+        self.z_grid_to_z_dict = dict()
 
         # identify links and groups (overwritten procedure of Mesh base class)
         self._identify_member_groups()
-        # lookup z group to ele
-
-        # create storing information
-
-        # create offset elements
-
-        # idea is get paired nodes - find midpoint, offset midpoint,
+        # meshing procedure to create beam offset element and tie it with rigid links to master nodes of model plane y=0
+        self._create_offset_beam_element()
 
         pass
 
@@ -1163,22 +1162,69 @@ class ShellLinkMesh(Mesh):
         self.common_z_group_element[3] = exterior_beam_2_group  # exterior 2
 
     # ----------------------------------------------------------------------------------------------------------------
+    # sub procedures specific to shell meshes
+    def _create_offset_beam_element(self):
+        # sub procedure function to create beam elements based on offset nodes
+        self._create_offset_nodes(ele_list=self.trans_ele)
+        self._create_offset_nodes(ele_list=self.edge_span_ele)
+
+        # create offset elements commands
+        for cNode,rNode_list in self.link_dict.items():
+            for rNode in rNode_list:
+                self._create_link_element(rNode=rNode,cNode=cNode)
+
+        # get z group counter
+        z_group_counter = max(self.z_group_to_ele.keys()) + 1
+
+        # create beam elements from offset nodes
+        for beam_group in range(0,len(self.start_edge_line.node_z_pair_list)):
+            offset_node_tag = [k for k,v in self.offset_node_group_dict.items() if v == beam_group]
+            # sort offset node tag based on x longitudinal position
+            x_coord_list = [self.node_spec[tag]['coordinate'][0] for tag in offset_node_tag]
+            sorted_offset_tag = [x for _, x in sorted(zip(x_coord_list, offset_node_tag))]
+            # assign long beam element to node
+            for ind,node_tag in enumerate(sorted_offset_tag[:-1]):
+                n1 = node_tag
+                n2 = sorted_offset_tag[ind+1]
+                transf_tag = self._get_geo_transform_tag(ele_nodes=[n1,n2])
+                self.long_ele.append([self.element_counter, n1, n2, beam_group+z_group_counter, transf_tag])
+                self.element_counter += 1
+
+    def _create_offset_nodes(self,ele_list):
+        # sub procedure function
+        # TODO
+        offset = 0.449  # TEst
+        x_count = 1  # proxy
+        z_count = 1  # proxy
+        # get groups of node master pairs
+        z_pair = self.start_edge_line.node_z_pair_list
+        for ele in ele_list:
+            n1 = self.node_spec[ele[1]]['coordinate']
+            n2 = self.node_spec[ele[2]]['coordinate']
+            n1_z = self.node_spec[ele[1]]['z_group']
+            n2_z = self.node_spec[ele[2]]['z_group']
+            if any([a and b for (a, b) in zip([n1_z in z for z in z_pair], [n2_z in z for z in z_pair])]):
+                # create offset node
+                mid_pt = [(a + b) / 2 for a, b in zip(n1, n2)]
+                node_coordinate = [mid_pt[0], mid_pt[1] + offset, mid_pt[2]]
+                self.node_spec.setdefault(self.node_counter,
+                                          {'tag': self.node_counter, 'coordinate': node_coordinate,
+                                           'x_group': x_count, 'z_group': z_count})
+
+                # store offset node rigid details
+                master_node_list = [ele[1], ele[2]]  # list of list
+                self.link_dict.setdefault(self.node_counter, master_node_list)
+
+                # store node - beam group detail
+                beam_group = [ind for ind,i in enumerate([n1_z in z for z in z_pair]) if i][0]
+                self.offset_node_group_dict.setdefault(self.node_counter,beam_group)
+
+                self.node_counter += 1
+
     def _create_link_element(self, rNode, cNode):
+        # sub procedure function
         # user mp constraint object
         # function to create ops rigid link command and store to variable
-        link_str = "ops.rigidLink({linktype},{rNodetag},{cNodetag})"
-        self.link_list.append(link_str)
-
-    def _create_offset_beam_element(self):
-        # function to create beam elements based on offset nodes
-
-        # dict format
-
-        # key - cNode tag, value - rNode tags (r is master)
-        pass
-
-    def _identify_links(self):
-        # get nodes of beam position
-        self.start_edge_line.beam_position
-        # determine which meshed
-        pass
+        link_str = "ops.rigidLink(\"{linktype}\",{rNodetag},{cNodetag})".format(linktype=self.link_type,
+                                                                                rNodetag=rNode,cNodetag=cNode)
+        self.link_str_list.append(link_str)
