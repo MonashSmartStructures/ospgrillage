@@ -70,6 +70,7 @@ class Mesh:
         self.element_counter = element_counter
         self.transform_counter = transform_counter
         self.global_x_grid_count = global_x_grid_count
+        self.global_z_grid_count = None
         # edge construction line variables
         self.global_edge_count = global_edge_count
         self.edge_node_recorder = dict()  # key: node tag, val: unique tag for edge
@@ -629,6 +630,7 @@ class Mesh:
         for count, node in enumerate(self.noz):
             self.z_group_to_ele[count] = [ele for ele in self.long_ele if ele[3] == count]
 
+        self.global_z_grid_count = max(self.z_group_to_ele.keys()) + 1
         # dict x to trans ele
         self.x_group_to_ele = dict()
         for count in range(0, self.global_x_grid_count):
@@ -1110,18 +1112,21 @@ class ShellLinkMesh(Mesh):
         # get variables from keyword arguments
         self.num_grid_external_master_node = kwargs.get("external_grids_between_master",1)
         self.num_grid_internal_master_node = kwargs.get("internal_grids_between_master",1)
+        self.y_offset = kwargs.get("y_offset",0.449)
 
         # create grillage mesh @ model plane y=0 using base class init
         super().__init__(long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
                          skew_2, ext_to_int_a, ext_to_int_b,**kwargs)
         # variables to store assignment counters after meshing of main model plane grid y = 0
-        self.x_grid_to_x_dict = dict()  # key is x value, value is x grid number (for offset nodes)
-        self.z_grid_to_z_dict = dict()
+        self.x_grid_to_x_dict = dict()  # key is x value (m), value is x grid number (for offset nodes)
+        self.z_grid_to_z_dict = dict()  # key is z value (m), value is z grid number (for offset nodes)
 
-        # identify links and groups (overwritten procedure of Mesh base class)
+        # identify member groups of grillage model plane y = 0
         self._identify_member_groups()
         # meshing procedure to create beam offset element and tie it with rigid links to master nodes of model plane y=0
         self._create_offset_beam_element()
+
+        # identify member groups of offset beam model plane
 
         pass
 
@@ -1161,6 +1166,8 @@ class ShellLinkMesh(Mesh):
         self.common_z_group_element[2] = interior_beam_group  # interior
         self.common_z_group_element[3] = exterior_beam_2_group  # exterior 2
 
+        # add groupings of offset beam elements
+
     # ----------------------------------------------------------------------------------------------------------------
     # sub procedures specific to shell meshes
     def _create_offset_beam_element(self):
@@ -1173,29 +1180,29 @@ class ShellLinkMesh(Mesh):
             for rNode in rNode_list:
                 self._create_link_element(rNode=rNode,cNode=cNode)
 
-        # get z group counter
-        z_group_counter = max(self.z_group_to_ele.keys()) + 1
-
-        # create beam elements from offset nodes
+        # loop each beam group and create beam elements from these offset nodes
         for beam_group in range(0,len(self.start_edge_line.node_z_pair_list)):
-            offset_node_tag = [k for k,v in self.offset_node_group_dict.items() if v == beam_group]
+            offset_node_tag = [k for k,v in self.offset_node_group_dict.items() if v == beam_group] # key is offset node
             # sort offset node tag based on x longitudinal position
             x_coord_list = [self.node_spec[tag]['coordinate'][0] for tag in offset_node_tag]
             sorted_offset_tag = [x for _, x in sorted(zip(x_coord_list, offset_node_tag))]
-            # assign long beam element to node
+            # assign long beam element between two nodes
             for ind,node_tag in enumerate(sorted_offset_tag[:-1]):
                 n1 = node_tag
                 n2 = sorted_offset_tag[ind+1]
                 transf_tag = self._get_geo_transform_tag(ele_nodes=[n1,n2])
-                self.long_ele.append([self.element_counter, n1, n2, beam_group+z_group_counter, transf_tag])
+                self.long_ele.append([self.element_counter, n1, n2, beam_group+self.global_z_grid_count, transf_tag])
                 self.element_counter += 1
+
+            # add to grouping dict data
+            self.z_group_to_ele[beam_group+self.global_z_grid_count] = [ele for ele in self.long_ele if ele[3] ==
+                                                                        beam_group+self.global_z_grid_count]
 
     def _create_offset_nodes(self,ele_list):
         # sub procedure function
-        # TODO
-        offset = 0.449  # TEst
-        x_count = 1  # proxy
-        z_count = 1  # proxy
+
+        x_count = "offset_beam"  # proxy
+        z_count = "offset_beam"  # proxy
         # get groups of node master pairs
         z_pair = self.start_edge_line.node_z_pair_list
         for ele in ele_list:
@@ -1203,10 +1210,11 @@ class ShellLinkMesh(Mesh):
             n2 = self.node_spec[ele[2]]['coordinate']
             n1_z = self.node_spec[ele[1]]['z_group']
             n2_z = self.node_spec[ele[2]]['z_group']
+            # check
             if any([a and b for (a, b) in zip([n1_z in z for z in z_pair], [n2_z in z for z in z_pair])]):
                 # create offset node
                 mid_pt = [(a + b) / 2 for a, b in zip(n1, n2)]
-                node_coordinate = [mid_pt[0], mid_pt[1] + offset, mid_pt[2]]
+                node_coordinate = [mid_pt[0], mid_pt[1] + self.y_offset, mid_pt[2]]
                 self.node_spec.setdefault(self.node_counter,
                                           {'tag': self.node_counter, 'coordinate': node_coordinate,
                                            'x_group': x_count, 'z_group': z_count})
@@ -1216,9 +1224,8 @@ class ShellLinkMesh(Mesh):
                 self.link_dict.setdefault(self.node_counter, master_node_list)
 
                 # store node - beam group detail
-                beam_group = [ind for ind,i in enumerate([n1_z in z for z in z_pair]) if i][0]
-                self.offset_node_group_dict.setdefault(self.node_counter,beam_group)
-
+                beam_group = [ind for ind,i in enumerate([n1_z in z for z in z_pair]) if i][0] # numbering of beam group
+                self.offset_node_group_dict.setdefault(self.node_counter,beam_group) # c node is key, group num is val
                 self.node_counter += 1
 
     def _create_link_element(self, rNode, cNode):
