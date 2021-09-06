@@ -3,8 +3,49 @@ import ospgrillage as og
 import sys, os
 sys.path.insert(0, os.path.abspath('../'))
 
+"""
+Alpha test module - to be deprecated from CI purposes
+"""
 # ------------------------------------------------------------------------------------------------------------------
 # create reference bridge model
+
+@pytest.fixture
+def shell_link_bridge(ref_bridge_properties):
+    # reference bridge 10m long, 7m wide with common skew angle at both ends
+
+    I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
+
+    # create material of slab shell
+    slab_shell_mat = og.create_material(type="concrete", code="AS5100-2017", grade="50MPa", rho=2400)
+
+    # create section of slab shell
+    slab_shell_section = og.create_section(h=0.2)
+    # shell elements for slab
+    slab_shell = og.create_member(section=slab_shell_section, material=slab_shell_mat)
+
+    # construct grillage model
+    example_bridge = og.create_grillage(bridge_name="shelllink_10m", long_dim=10, width=7, skew=-12,
+                                        num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Orth",
+                                        model_type="shell",
+                                        beam_width=1, web_thick=0.02, centroid_dist_y=0.499)
+
+    example_bridge.set_member(I_beam, member="interior_main_beam")
+    example_bridge.set_shell_members(slab_shell)
+    # set grillage member to element groups of grillage model
+
+    #example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_1")
+    #example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_2")
+    #example_bridge.set_member(exterior_I_beam, member="edge_beam")
+    #example_bridge.set_member(slab, member="transverse_slab")
+    #example_bridge.set_member(exterior_I_beam, member="start_edge")
+    #example_bridge.set_member(exterior_I_beam, member="end_edge")
+
+    example_bridge.set_member(I_beam,member="offset_beam")
+    example_bridge.create_osp_model(pyfile=False)
+    return example_bridge
+
+
+
 @pytest.fixture
 def ref_28m_bridge():
     pyfile = False
@@ -827,3 +868,22 @@ def test_simple_grid():
     #print(results.sel(Node=12))
     print(maxY, minY)
     pass
+
+def test_create_shell_link_model(shell_link_bridge):
+    shell_link_model = shell_link_bridge
+    point_1 = og.create_load_vertex(x=2, z=3, p=1e3)
+    point_2 = og.create_load_vertex(x=5, z=4, p=1e3)
+    # test_load = opsg.LineLoading("Test Load", point1=point_1, point2=point_2)
+    test_load = og.create_load(type="point",name="Test Load", point1=point_1, point2=point_2)  #
+    #test_load = og.PointLoad("Test Point", point1=og.LoadPoint(L / 2, 0, w / 2, 1e3))
+
+    # Load case creating and assign
+    test_case = og.create_load_case(name="Test Case")
+    test_case.add_load_groups(test_load)
+
+    shell_link_model.add_load_case(test_case)
+    shell_link_model.analyze(all=True)
+    og.opsv.plot_defo()
+    og.plt.show()
+    minY, maxY = og.opsv.section_force_diagram_3d('Mz', {}, 1)
+    og.plt.show()

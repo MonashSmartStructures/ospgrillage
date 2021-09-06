@@ -1107,7 +1107,7 @@ class ShellLinkMesh(Mesh):
         self.long_ele_offset = []
         self.link_str_list = []
         self.link_type = link_type
-        self.link_dict = dict() # key is node tag c, val is list of master node r
+        self.link_dict = dict()  # key is node tag c, val is list of master node r
         self.offset_node_group_dict = dict() # key is node tag of offset node, val is beam group
         # get variables from keyword arguments
         self.num_grid_external_master_node = kwargs.get("external_grids_between_master",1)

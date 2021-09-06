@@ -22,7 +22,8 @@ import xarray as xr
 
 def create_grillage(**kwargs):
     """
-    User interface for creating grillage model / OspGrilage object.
+    User interface for creating grillage model / OspGrilage object. Takes user input for grillage and redirects
+    grillage generation to the respective concrete class
 
     :param bridge_name: Name of bridge model and output .py file
     :type bridge_name: str
@@ -45,16 +46,28 @@ def create_grillage(**kwargs):
 
     :returns: `OspGrillage` object
     """
-    model_type = kwargs.get("model_type",None)
-    if model_type == "shell":
+    model_type = kwargs.get("model_type", None)
+    if model_type == "shell":  # if shell, create shell grillage type
         return OspGrillageShell(**kwargs)
-    else:
-        return OspGrillage(**kwargs)
+    else:  # creates default model type - beam elements
+        return OspGrillageBeam(**kwargs)
+
+
+class GrillageElement:
+    """
+    class to store grillage element data pertaining to generating ops.element() command. This class is handled by
+    OspGrillage class to transfer information between GrillageMember, Mesh, and OspGrillage classes.
+    """
+
+    def __init__(self):
+        # instantiate variables of elements
+        self.ele_node_list = []
+        # TODO trial with set_member() function
 
 
 class OspGrillage:
     """
-    Main class of OpenSeesPy grillage model wrapper. Outputs an executable py file which generates the prescribed
+    Base class of grillage model. Outputs an executable py file which generates the prescribed
     OpenSees grillage model based on user input.
 
     The class provides an interface for the user to specify the geometry of the grillage model. A keyword argument
@@ -481,7 +494,8 @@ class OspGrillage:
                   .format(section_type, sectiontagcounter))
         return sectiontagcounter
 
-    def _lookup_member_group(self, namestring: str):
+    def _create_standard_element_list(self, namestring: str):
+        # TODO
         z_flag = False
         x_flag = False
         edge_flag = False
@@ -554,9 +568,9 @@ class OspGrillage:
             with open(self.filename, 'a') as file_handle:
                 file_handle.write("# Element generation for member: {}\n".format(member))
         # lookup member grouping
-        z_flag, x_flag, edge_flag, common_member_tag = self._lookup_member_group(namestring=member)
+        z_flag, x_flag, edge_flag, common_member_tag = self._create_standard_element_list(namestring=member)
 
-        ele_width = 1
+        ele_width = 1  # set default ele width 1
         # if member properties is based on unit width (e.g. slab elements), get width of element and assign properties
         if grillage_member_obj.section.unit_width:
             if common_member_tag == "slab":
@@ -607,10 +621,11 @@ class OspGrillage:
                 for z_groups in self.Mesh_obj.common_z_group_element[common_member_tag]:
                     # assign properties to elements in z group
 
-                    ele_command_list += self._assign_member_to_group(grillage_member_obj=grillage_member_obj,
-                                                                    list_of_ele=self.Mesh_obj.z_group_to_ele[z_groups],
-                                                                    material_tag=material_tag,
-                                                                    section_tag=section_tag)
+                    ele_command_list += self._get_element_command_list(grillage_member_obj=grillage_member_obj,
+                                                                       list_of_ele=self.Mesh_obj.z_group_to_ele[
+                                                                           z_groups],
+                                                                       material_tag=material_tag,
+                                                                       section_tag=section_tag)
 
                     # for ele in self.Mesh_obj.z_group_to_ele[z_groups]:
                     #     node_tag_list = [ele[1], ele[2]]
@@ -626,8 +641,6 @@ class OspGrillage:
             elif edge_flag:
                 for ele in self.Mesh_obj.edge_span_ele:
                     if ele[3] == common_member_tag:
-
-
                         node_tag_list = [ele[1], ele[2]]
                         ele_str = grillage_member_obj.get_element_command_str(ele_tag=ele[0],
                                                                               node_tag_list=node_tag_list,
@@ -650,19 +663,20 @@ class OspGrillage:
                 #                                                           transf_tag=ele[4], ele_width=ele_width,
                 #                                                           materialtag=material_tag,
                 #                                                           sectiontag=section_tag)
-                ele_command_list = self._assign_member_to_group(grillage_member_obj=grillage_member_obj,
-                                                 list_of_ele=self.Mesh_obj.trans_ele,material_tag=material_tag,
-                                                 section_tag=section_tag)
-                    #ele_command_list.append(ele_str)
+                ele_command_list = self._get_element_command_list(grillage_member_obj=grillage_member_obj,
+                                                                  list_of_ele=self.Mesh_obj.trans_ele,
+                                                                  material_tag=material_tag,
+                                                                  section_tag=section_tag)
+                # ele_command_list.append(ele_str)
         ele_command_dict[common_member_tag] = ele_command_list
         self.element_command_list.append(ele_command_dict)
 
     # subfunction for setting member of groups
 
     @staticmethod
-    def _assign_member_to_group(grillage_member_obj,list_of_ele,material_tag,section_tag):
+    def _get_element_command_list(grillage_member_obj, list_of_ele, material_tag, section_tag):
         """
-
+        Function to get list of element command string
         :param grillage_member_obj:
         :param list_of_ele:
         :param material_tag:
@@ -681,38 +695,6 @@ class OspGrillage:
                                                                   sectiontag=section_tag)
             ele_command_list.append(ele_str)
         return ele_command_list
-
-    # function to set shell members
-    def set_shell_members(self, grillage_member_obj: GrillageMember, quad=True, tri=False):
-        """
-        Function to set shell/quad members across entire mesh grid.
-
-        :param quad: Boolean to flag setting quad shell members
-        :param tri: Boolean to flag setting triangular shell members
-        :param grillage_member_obj: GrillageMember object
-        :type grillage_member_obj: GrillageMember
-        :raises ValueError: If GrillageMember object was not specified for quad or shell element. Also raises this error
-                            if components of GrillageMember object (e.g. section or material) is not a valid property
-                            for the specific shell element type in accordance with OpenSees conventions.
-
-        .. note::
-            Feature coming in development for shell element definition
-
-        """
-        # this function creates shell elements out of the node grids of Mesh object
-        shell_counter = self.Mesh_obj.element_counter
-        # if self.Mesh_obj is None:  # checks if
-        #     raise ValueError("Model instance not created. Run ops.create_ops() function before setting members")
-        # check and write member's section command if any
-        section_tag = self._write_section(grillage_member_obj)
-        # check and write member's material command if any
-        material_tag = self._write_material(member=grillage_member_obj)
-
-        for grid_nodes_list in self.Mesh_obj.grid_number_dict.values():
-            ele_str = grillage_member_obj.get_element_command_str(ele_tag=shell_counter, node_tag_list=grid_nodes_list,
-                                                                  materialtag=material_tag, sectiontag=section_tag)
-            self.shell_element_command_list.append(ele_str)
-            shell_counter += 1
 
     # function to set material obj of grillage model.
     def set_material(self, material_obj):
@@ -1513,7 +1495,11 @@ class OspGrillage:
 
         """
 
-        basic_da = self.results.compile_data_array()
+        local_force_flag = kwargs.get("local_forces", True)
+        if local_force_flag:
+            basic_da = self.results.compile_data_array()
+        else:
+            basic_da = self.results.compile_data_array(local_option=False)
 
         # get kwargs
         comb = kwargs.get("get_combinations", False)  # if Boolean true
@@ -1587,7 +1573,7 @@ class OspGrillage:
         """
         Function ot query element and nodes of grillage model
 
-        :return:
+        :return: List of element data
         """
         # get query member details
         namestring = kwargs.get("member", None)
@@ -1595,9 +1581,10 @@ class OspGrillage:
         select_x_group = kwargs.get("x_group_num", None)
         select_edge_group = kwargs.get("edge_group_num", None)
 
+        return_list = []
         # options
-        options = kwargs.get("options", None)
-        z_flag, x_flag, edge_flag, common_member_tag = self._lookup_member_group(namestring=namestring)
+        options = kwargs.get("options", None)  # similar to ops_vis, "nodes","element","node_i","node_j"
+        z_flag, x_flag, edge_flag, common_member_tag = self._create_standard_element_list(namestring=namestring)
 
         if z_flag:
             if select_z_group in self.Mesh_obj.common_z_group_element[common_member_tag]:
@@ -1612,6 +1599,12 @@ class OspGrillage:
 
         # parse options on extracted ele
         # TODO
+        if options == "nodes":
+            return_list = [i for i in extracted_ele]
+        elif options == "node_i":
+            return_list = [i for i in extracted_ele]
+        elif options == "node_j":
+            return_list = [i for i in extracted_ele]
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -1649,6 +1642,7 @@ class Analysis:
         # Variables recording results of analysis
         self.node_disp = dict()  # key node tag, val list of dof
         self.ele_force = dict()  # key ele tag, val list of forces on nodes of ele[ order according to ele tag]
+        self.global_ele_force = dict()  # key ele tag, val list of forces on nodes of ele[ order according to ele tag]
         # preset ops analysis commands
         self.wipe_command = "ops.wipeAnalysis()\n"
         self.numberer_command = "ops.numberer('Plain')\n"  # default plain
@@ -1677,12 +1671,12 @@ class Analysis:
                 file_handle.write("import numpy as np\nimport math\nimport openseespy.opensees as ops"
                                   "\nimport openseespy.postprocessing.Get_Rendering as opsplt\n")
 
-    def time_series_command(self, load_factor):
+    def _time_series_command(self, load_factor):
         time_series = "ops.timeSeries('Constant', {}, '-factor',{})\n".format(self.time_series_counter, load_factor)
         self.time_series_counter += 1  # update counter by 1
         return time_series
 
-    def pattern_command(self):
+    def _pattern_command(self):
         pattern_command = "ops.pattern('Plain', {}, {})\n".format(self.plain_counter, self.time_series_counter - 1)
         # minus 1 to time series counter for time_series_command() precedes pattern_command() and incremented the time
         # series counter
@@ -1691,8 +1685,8 @@ class Analysis:
 
     def add_load_command(self, load_str: list, load_factor):
         # create time series for added load case
-        time_series = self.time_series_command(load_factor)  # get time series command - LF default 1
-        pattern_command = self.pattern_command()  # get pattern command
+        time_series = self._time_series_command(load_factor)  # get time series command - LF default 1
+        pattern_command = self._pattern_command()  # get pattern command
         time_series_dict = {'time_series': time_series, 'pattern': pattern_command, 'load_command': load_str}
         self.load_cases_dict_list.append(time_series_dict)  # add dict to list
 
@@ -1732,9 +1726,9 @@ class Analysis:
 
         print("Analysis: {} completed".format(self.analysis_name))
         # extract results
-        node_disp, ele_force = self.extract_grillage_responses()
+        self.extract_grillage_responses()
         # return time series and plain counter to update global time series and plain counter by by OspGrillage
-        return self.time_series_counter, self.plain_counter, node_disp, ele_force
+        return self.time_series_counter, self.plain_counter, self.node_disp, self.ele_force
 
     # function to extract grillage model responses (dx,dy,dz,rotx,roty,rotz,N,Vy,Vz,Mx,My,Mz) and store to Result class
     def extract_grillage_responses(self):
@@ -1744,27 +1738,16 @@ class Analysis:
                 disp_list = ops.nodeDisp(node_tag)
                 self.node_disp.setdefault(node_tag, disp_list)
 
+            # loop through all elements in Mesh, extract local forces
             for ele_tag in range(1, self.mesh_ele_counter):
-                ele_force = ops.eleResponse(ele_tag, 'forces')
-                # get ele's x y and z list
-                nd1, nd2 = ops.eleNodes(ele_tag)
-                ex = np.array([ops.nodeCoord(nd1)[0],
-                               ops.nodeCoord(nd2)[0]])
-                ey = np.array([ops.nodeCoord(nd1)[1],
-                               ops.nodeCoord(nd2)[1]])
-                ez = np.array([ops.nodeCoord(nd1)[2],
-                               ops.nodeCoord(nd2)[2]])
-                # here we use opsv's built section force distribution to get force components in element (beam for now)
-                # a bett
-                s_all, xl = opsv.section_force_distribution_3d(ex, ey, ez, ele_force, nep=2,
-                                                               ele_load_data=['-beamUniform', 0., 0., 0.])
-
-                self.ele_force.setdefault(ele_tag, np.hstack([s_all[0], s_all[1]]))
+                ele_force = ops.eleResponse(ele_tag, 'localForces')
+                self.ele_force.setdefault(ele_tag, ele_force)
+                global_ele_force = ops.eleResponse(ele_tag, 'Forces')
+                self.global_ele_force.setdefault(ele_tag,global_ele_force)
         else:
             print("OspGrillage is at output mode, pyfile = True. No results are extracted")
 
         print("Extraction of results completed for Analysis:{} ".format(self.analysis_name))
-        return self.node_disp, self.ele_force
 
 
 class Results:
@@ -1774,11 +1757,13 @@ class Results:
     """
 
     def __init__(self, mesh_obj: Mesh):
-        # static single analysis load cases
+        # instantiate variables
         self.basic_load_case_record = dict()
+        self.basic_load_case_record_global_forces = dict()
         self.moving_load_case_record = []
+        self.moving_load_case_record_global_forces = []
         self.moving_load_counter = 0
-        # dynamic moving load (incremental) load cases
+        # store variables specific to model being analyzed
         self.mesh_obj = mesh_obj
 
     def insert_analysis_results(self, analysis_obj: Analysis = None, list_of_inc_analysis: list = None):
@@ -1788,6 +1773,7 @@ class Results:
             node_disp = analysis_obj.node_disp
             node_force = dict.fromkeys(analysis_obj.node_disp.keys(), [0, 0, 0, 0, 0, 0])  # copy the dict keys
             ele_force_dict = dict.fromkeys(list(ops.getEleTags()))  # dict key is element tag, value is ele force from
+            global_ele_force_dict = dict.fromkeys(list(ops.getEleTags()))  # dict key is element tag, value is ele force from
             ele_nodes_dict = dict.fromkeys(list(ops.getEleTags()))
             # analysis_obj.ele_force
             # extract element forces and sort them to according to nodes - summing in the process
@@ -1796,26 +1782,28 @@ class Results:
                 # get ele nodes
                 ele_nodes = ops.eleNodes(ele_num)
                 ele_nodes_dict.update({ele_num: ele_nodes})
-                # for node i
-                force_i = ele_forces[:6]  # list 6:
-                # for node j
-                force_j = ele_forces[6:]  # list 6:
-                # update first node
-                sum_force_i = [a + b for (a, b) in zip(force_i, node_force[ele_nodes[0]])]
-                node_force.update({ele_nodes[0]: sum_force_i})
-                # update second node
-                sum_force_j = [a + b for (a, b) in zip(force_j, node_force[ele_nodes[1]])]
-                node_force.update({ele_nodes[1]: sum_force_j})
             self.basic_load_case_record.setdefault(analysis_obj.analysis_name,
                                                    [node_disp, ele_force_dict, ele_nodes_dict])
-        # if
+
+            # repeat to extract global forces instead
+            # extract element forces and sort them to according to nodes - summing in the process
+            for ele_num, ele_forces in analysis_obj.global_ele_force.items():
+                global_ele_force_dict.update({ele_num: ele_forces})
+                ele_nodes = ops.eleNodes(ele_num)                 # get ele nodes
+                ele_nodes_dict.update({ele_num: ele_nodes})
+            self.basic_load_case_record_global_forces.setdefault(analysis_obj.analysis_name,
+                                                   [node_disp, global_ele_force_dict, ele_nodes_dict])
+        # if moving load, input is a list of analysis obj
         elif list_of_inc_analysis:
             inc_load_case_record = dict()
+            inc_load_case_global_force_record = dict()  # inc_load_case_record but with forces in global
+
             for inc_analysis_obj in list_of_inc_analysis:
                 # compile ele forces for each node
                 node_disp = inc_analysis_obj.node_disp
                 node_force = dict.fromkeys(inc_analysis_obj.node_disp.keys(), [0, 0, 0, 0, 0, 0])  # copy the dict keys
                 ele_force_dict = dict.fromkeys(list(ops.getEleTags()))
+                ele_force_global_dict = dict.fromkeys(list(ops.getEleTags()))
                 ele_nodes_dict = dict.fromkeys(list(ops.getEleTags()))
                 # extract element forces and sort them to according to nodes - summing in the process
                 for ele_num, ele_forces in inc_analysis_obj.ele_force.items():
@@ -1823,22 +1811,27 @@ class Results:
                     # get ele nodes
                     ele_nodes = ops.eleNodes(ele_num)
                     ele_nodes_dict.update({ele_num: ele_nodes})
-                    # for node i
-                    force_i = ele_forces[:6]  # list 6:
-                    # for node j
-                    force_j = ele_forces[6:]  # list 6:
-                    # update first node
-                    sum_force_i = [a + b for (a, b) in zip(force_i, node_force[ele_nodes[0]])]
-                    node_force.update({ele_nodes[0]: sum_force_i})
-                    # update second node
-                    sum_force_j = [a + b for (a, b) in zip(force_j, node_force[ele_nodes[1]])]
-                    node_force.update({ele_nodes[1]: sum_force_j})
+                    # # for node i
+                    # force_i = ele_forces[:6]  # list 6:
+                    # # for node j
+                    # force_j = ele_forces[6:]  # list 6:
+                    # # update first node
+                    # sum_force_i = [a + b for (a, b) in zip(force_i, node_force[ele_nodes[0]])]
+                    # node_force.update({ele_nodes[0]: sum_force_i})
+                    # # update second node
+                    # sum_force_j = [a + b for (a, b) in zip(force_j, node_force[ele_nodes[1]])]
+                    # node_force.update({ele_nodes[1]: sum_force_j})
                 inc_load_case_record.setdefault(inc_analysis_obj.analysis_name,
                                                 [node_disp, ele_force_dict, ele_nodes_dict])
+                for ele_num, ele_forces in inc_analysis_obj.ele_force.items():
+                    ele_force_global_dict.update({ele_num: ele_forces})
+                inc_load_case_global_force_record.setdefault(inc_analysis_obj.analysis_name,
+                                                [node_disp, ele_force_global_dict, ele_nodes_dict])
 
             self.moving_load_case_record.append(inc_load_case_record)
+            self.moving_load_case_record_global_forces.append(inc_load_case_global_force_record)
 
-    def compile_data_array(self):
+    def compile_data_array(self, local_force_option=True):
         # Final function called to compile all inserted analyses into xarray dataArray format
         # Dimension names
         dim = ["Loadcase", "Node", "Component"]
@@ -1859,7 +1852,16 @@ class Results:
         basic_ele_force_list = []
         extracted_ele_nodes_list = False  # a 2D array of ele node i and ele node j
         ele_nodes_list = []
-        for load_case_name, resp_list_of_2_dict in self.basic_load_case_record.items():
+
+        # check if force option is global or local
+        if local_force_option:
+            basic_dict = self.basic_load_case_record
+            moving_dict = self.moving_load_case_record
+        else:  # global forces
+            basic_dict = self.basic_load_case_record_global_forces
+            moving_dict = self.moving_load_case_record_global_forces
+
+        for load_case_name, resp_list_of_2_dict in basic_dict.items():
             # for displacements of each node
             basic_array_list.append([a for a in list(resp_list_of_2_dict[0].values())])
             basic_ele_force_list.append([a for a in list(resp_list_of_2_dict[1].values())])
@@ -1871,7 +1873,7 @@ class Results:
             basic_load_case_coord.append(load_case_name)
             # combine disp and force with respect to Component axis : size 12
 
-        for moving_load_case_inc_dict in self.moving_load_case_record:  # for each moving load, loop thru increment LC
+        for moving_load_case_inc_dict in moving_dict:  # for each moving load, loop thru increment LC
             inc_moving_load_case_coord = []
             inc_moving_array_list = []
             # for each load case increment in ML
@@ -1909,17 +1911,32 @@ class Results:
 
 
 # ---------------------------------------------------------------------------------------------------------------------
+# concrete classes
+
+class OspGrillageBeam(OspGrillage):
+    def __init__(self, bridge_name, long_dim, width, skew: Union[list, float, int], num_long_grid: int,
+                 num_trans_grid: int, edge_beam_dist: Union[list, float, int],
+                 mesh_type="Ortho", model="3D", **kwargs):
+        # create mesh and model
+        super().__init__(bridge_name, long_dim, width, skew, num_long_grid,
+                         num_trans_grid, edge_beam_dist, mesh_type, model="3D", **kwargs)
+
+
 class OspGrillageShell(OspGrillage):
-    def __init__(self,bridge_name, long_dim, width, skew: Union[list, float, int], num_long_grid: int,
+    def __init__(self, bridge_name, long_dim, width, skew: Union[list, float, int], num_long_grid: int,
                  num_trans_grid: int, edge_beam_dist: Union[list, float, int],
                  mesh_type="Ortho", model="3D", **kwargs):
 
+        # create mesh and model
         super().__init__(bridge_name, long_dim, width, skew, num_long_grid,
-                 num_trans_grid, edge_beam_dist,mesh_type="Ortho", model="3D", **kwargs)
+                         num_trans_grid, edge_beam_dist, mesh_type, model="3D", **kwargs)
+        # create rigid link command
+        self._write_rigid_link()
 
     # ----------------------------------------------------------------------------------------------------------------
     # overwrite functions of base Mesh class - specific for
-    def _lookup_member_group(self, namestring: str):
+    def _create_standard_element_list(self, namestring: str):
+        # TODO
         z_flag = False
         x_flag = False
         edge_flag = False
@@ -2027,7 +2044,7 @@ class OspGrillageShell(OspGrillage):
             with open(self.filename, 'a') as file_handle:
                 file_handle.write("# Element generation for member: {}\n".format(member))
         # lookup member grouping
-        z_flag, x_flag, edge_flag, common_member_tag = self._lookup_member_group(namestring=member)
+        z_flag, x_flag, edge_flag, common_member_tag = self._create_standard_element_list(namestring=member)
 
         ele_width = 1
         # if member properties is based on unit width (e.g. slab elements), get width of element and assign properties
@@ -2077,30 +2094,29 @@ class OspGrillageShell(OspGrillage):
 
         else:  # non-unit width member assignment
             if z_flag:
-                if isinstance(common_member_tag,int):
+                if isinstance(common_member_tag, int):
 
                     for z_groups in self.Mesh_obj.common_z_group_element[common_member_tag]:
                         # assign properties to elements in z group
 
-                        ele_command_list += self._assign_member_to_group(grillage_member_obj=grillage_member_obj,
-                                                                        list_of_ele=self.Mesh_obj.z_group_to_ele[z_groups],
-                                                                        material_tag=material_tag,
-                                                                        section_tag=section_tag)
+                        ele_command_list += self._get_element_command_list(grillage_member_obj=grillage_member_obj,
+                                                                           list_of_ele=self.Mesh_obj.z_group_to_ele[
+                                                                               z_groups],
+                                                                           material_tag=material_tag,
+                                                                           section_tag=section_tag)
                         self.ele_group_assigned_list.append(z_groups)
-                else: # Offset beam
+                else:  # Offset beam
                     # TODO CHECK
-                    start = self.Mesh_obj.global_z_grid_count
-                    for z_group in range(start,max(self.Mesh_obj.z_group_to_ele.keys())+1):
-                        ele_command_list += self._assign_member_to_group(grillage_member_obj=grillage_member_obj,
-                                                                         list_of_ele=self.Mesh_obj.z_group_to_ele[
-                                                                             z_group],
-                                                                         material_tag=material_tag,
-                                                                         section_tag=section_tag)
+                    first_group_offset_beam = self.Mesh_obj.global_z_grid_count
+                    for z_group in range(first_group_offset_beam, max(self.Mesh_obj.z_group_to_ele.keys()) + 1):
+                        ele_command_list += self._get_element_command_list(grillage_member_obj=grillage_member_obj,
+                                                                           list_of_ele=self.Mesh_obj.z_group_to_ele[
+                                                                               z_group],
+                                                                           material_tag=material_tag,
+                                                                           section_tag=section_tag)
             elif edge_flag:
                 for ele in self.Mesh_obj.edge_span_ele:
                     if ele[3] == common_member_tag:
-
-
                         node_tag_list = [ele[1], ele[2]]
                         ele_str = grillage_member_obj.get_element_command_str(ele_tag=ele[0],
                                                                               node_tag_list=node_tag_list,
@@ -2123,13 +2139,19 @@ class OspGrillageShell(OspGrillage):
                 #                                                           transf_tag=ele[4], ele_width=ele_width,
                 #                                                           materialtag=material_tag,
                 #                                                           sectiontag=section_tag)
-                ele_command_list += self._assign_member_to_group(grillage_member_obj=grillage_member_obj,
-                                                 list_of_ele=self.Mesh_obj.trans_ele,material_tag=material_tag,
-                                                 section_tag=section_tag)
-                    #ele_command_list.append(ele_str)
+                ele_command_list += self._get_element_command_list(grillage_member_obj=grillage_member_obj,
+                                                                   list_of_ele=self.Mesh_obj.trans_ele,
+                                                                   material_tag=material_tag,
+                                                                   section_tag=section_tag)
+                # ele_command_list.append(ele_str)
         ele_command_dict[common_member_tag] = ele_command_list
         self.element_command_list.append(ele_command_dict)
 
     def _write_rigid_link(self):
-        # TODO
-        pass
+        # loop all rigidLink command, write or eval rigid link command. note link_str is already formatted
+        for link_str in self.Mesh_obj.link_str_list:
+            if self.pyfile:
+                with open(self.filename, 'a') as file_handle:
+                    file_handle.write(link_str)
+            else:
+                eval(link_str)
