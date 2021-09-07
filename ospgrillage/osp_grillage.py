@@ -1376,20 +1376,22 @@ class OspGrillage:
         # analyze all load case defined in self.load_case_dict for OspGrillage instance
         # loop each load case dict
         # get run options from kwargs
-        all_flag = kwargs.get("all", True)  # Default Boolean
+        all_flag = kwargs.get("all", True)  # Default true when run
         selected_load_case: list = kwargs.get("load_case", None)  #
         selected_moving_load_lc_list = None
         # if selected_load_case kwargs given, filter and select load case from load case list to run
-        # if given selected load case as a list, select for all load case matching the list
+        # if given selected load case as a list, select load cases matching names in list
         if isinstance(selected_load_case, list):
-            selected_basic_lc = [lc for lc in self.load_case_list if lc['loadcase'].name in selected_load_case]
+            selected_basic_lc = [lc for lc in self.load_case_list if lc['name'] in selected_load_case]
             selected_moving_load_lc_list = [lc for ml_name, lc in self.moving_load_case_dict.items() if
-                                            ml_name in selected_load_case]
-        # else if single string of load case name
+                                            ml_name in selected_load_case] # list of load case
+            all_flag = False
+        # if single string of load case name
         elif isinstance(selected_load_case, str):
-            selected_basic_lc = [lc for lc in self.load_case_list if lc['loadcase'].name == selected_load_case]
+            selected_basic_lc = [lc for lc in self.load_case_list if lc['name'] == selected_load_case]
             selected_moving_load_lc_list = [lc for (ml_name, lc) in self.moving_load_case_dict.items() if
                                             ml_name == selected_load_case]
+            all_flag = False
         elif all_flag:  # else, run all load case in list
             selected_basic_lc = self.load_case_list
             selected_moving_load_lc_list = list(self.moving_load_case_dict.values())
@@ -1509,12 +1511,12 @@ class OspGrillage:
         if isinstance(specific_load_case, str):
             specific_load_case = [specific_load_case]
 
-        # filter extract specific load case
+        # filter extract specific load case, overwriting basic da
         if specific_load_case:
             storing_da = None
             for load_case_name in specific_load_case:
                 # lookup in basic load cases
-                namelist = [a['name'] for a in self.load_case_list]
+                namelist = [lc['name'] for lc in self.load_case_list]
                 for name in namelist:
                     if load_case_name == name:
                         extract_da = basic_da.sel(Loadcase=name)
@@ -1930,11 +1932,59 @@ class OspGrillageShell(OspGrillage):
         # create mesh and model
         super().__init__(bridge_name, long_dim, width, skew, num_long_grid,
                          num_trans_grid, edge_beam_dist, mesh_type, model="3D", **kwargs)
-        # create rigid link command
-        self._write_rigid_link()
+
 
     # ----------------------------------------------------------------------------------------------------------------
     # overwrite functions of base Mesh class - specific for
+
+    def create_osp_model(self, pyfile=False):
+        """
+        Function to create model instance in OpenSees model space. If pyfile input is True, function creates an
+        executable pyfile for generating the grillage model in OpenSees model space.
+
+        :param pyfile: if True returns an executable py file instead of creating OpenSees instance of model.
+        :type pyfile: bool
+
+        """
+        self.pyfile = pyfile
+
+        if self.pyfile:
+            with open(self.filename, 'w') as file_handle:
+                # create py file or overwrite existing
+                # writing headers and description at top of file
+                file_handle.write("# Grillage generator wizard\n# Model name: {}\n".format(self.model_name))
+                # time
+                now = datetime.now()
+                dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+                file_handle.write("# Constructed on:{}\n".format(dt_string))
+                # write imports
+                file_handle.write("import numpy as np\nimport math\nimport openseespy.opensees as ops"
+                                  "\nimport openseespy.postprocessing.Get_Rendering as opsplt\n")
+        # model() command
+        self._write_op_model()
+        # create grillage mesh object
+        self._run_mesh_generation()
+        # create element commands of grillage model
+        for ele_dict in self.element_command_list:
+            for ele_list in ele_dict.values():
+                for ele_str in ele_list:
+                    if self.pyfile:
+                        with open(self.filename, 'a') as file_handle:
+                            file_handle.write(ele_str)
+                    else:
+                        eval(ele_str)
+        # create shell element commands
+        for ele_str in self.shell_element_command_list:
+            if self.pyfile:
+                with open(self.filename, 'a') as file_handle:
+                    file_handle.write(ele_str)
+            else:
+                eval(ele_str)
+        # create rigid link command
+        self._write_rigid_link()
+        # create the result file for the Mesh object
+        self.results = Results(self.Mesh_obj)
+
     def _create_standard_element_list(self, namestring: str):
         # TODO
         z_flag = False
