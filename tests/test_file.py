@@ -174,7 +174,7 @@ def test_point_load_getter(bridge_model_42_negative):  # test get_point_load_nod
     location = og.create_load_vertex(x=5, y=0, z=2, p=20)
     Single = og.create_load(type="point",name="single point", point1=location)
     ULS_DL = og.create_load_case(name="Point")
-    ULS_DL.add_load_groups(Single)  # ch
+    ULS_DL.add_load(Single)  # ch
     example_bridge.add_load_case(ULS_DL)
     og.ops.wipe()
 
@@ -191,7 +191,7 @@ def test_point_load_outside_straight_mesh(bridge_model_42_negative):
     location = og.create_load_vertex(x=5, y=0, z=-2, p=20)
     Single = og.create_load(type="point",name="single point", point1=location)
     ULS_DL = og.create_load_case(name="Point")
-    ULS_DL.add_load_groups(Single)  # ch
+    ULS_DL.add_load(Single)  # ch
     example_bridge.add_load_case(ULS_DL)
     grid_nodes, _ = example_bridge._get_point_load_nodes(point=location)
     assert grid_nodes is None
@@ -205,7 +205,7 @@ def test_line_load(bridge_model_42_negative):
     barrierpoint_2 = og.create_load_vertex(x=10, y=0, z=3, p=2)
     Barrier = og.create_load(type="line",name="Barrier curb load", point1=barrierpoint_1, point2=barrierpoint_2)
     ULS_DL = og.create_load_case(name="Barrier")
-    ULS_DL.add_load_groups(Barrier)  # ch
+    ULS_DL.add_load(Barrier)  # ch
     example_bridge.add_load_case(ULS_DL)
     example_bridge.analyze(all=True)
     example_bridge.get_results()
@@ -249,7 +249,7 @@ def test_line_load_vertical_and_cross_outside_mesh(bridge_model_42_negative):
     barrierpoint_2 = og.create_load_vertex(x=2, y=0, z=8, p=2)
     Barrier = og.create_load(type="line",name="Barrier curb load", point1=barrierpoint_1, point2=barrierpoint_2)
     ULS_DL = og.create_load_case(name="Barrier")
-    ULS_DL.add_load_groups(Barrier)  # ch
+    ULS_DL.add_load(Barrier)  # ch
     example_bridge.add_load_case(ULS_DL)
     ref_ans = {
         1: {'long_intersect': [[2, 0, 0.0], [2, 0, 1.0]], 'trans_intersect': [], 'edge_intersect': [], 'ends': []},
@@ -267,7 +267,7 @@ def test_line_load_coincide_long_edge(bridge_model_42_negative):
     barrierpoint_2 = og.create_load_vertex(x=10, y=0, z=1, p=2)
     Barrier = og.create_load(type="line",name="Barrier curb load", point1=barrierpoint_1, point2=barrierpoint_2)
     ULS_DL = og.create_load_case(name="Barrier")
-    ULS_DL.add_load_groups(Barrier)  # ch
+    ULS_DL.add_load(Barrier)  # ch
     example_bridge.add_load_case(ULS_DL)
 
     assert example_bridge.global_line_int_dict == [{}]
@@ -284,7 +284,7 @@ def test_line_load_coincide_transverse_member(bridge_42_0_angle_mesh):
     barrierpoint_2 = og.create_load_vertex(x=7.5, y=0, z=6, p=2)
     Barrier = og.create_load(type="line",name="Barrier curb load", point1=barrierpoint_1, point2=barrierpoint_2)
     ULS_DL = og.create_load_case(name="Barrier")
-    ULS_DL.add_load_groups(Barrier)  # ch
+    ULS_DL.add_load(Barrier)  # ch
     example_bridge.add_load_case(ULS_DL)
 
     assert example_bridge.load_case_list[0]['load_command'] == ['ops.load(51, *[0, 2.00000000000000, 0, 0, 0, 0])\n',
@@ -322,7 +322,7 @@ def test_line_load_coincide_edge_beam(bridge_model_42_negative):
     barrierpoint_2 = og.create_load_vertex(x=10, y=0, z=1, p=2)
     Barrier = og.create_load(type="line",name="Barrier curb load", point1=barrierpoint_1, point2=barrierpoint_2)
     ULS_DL = og.create_load_case(name="Barrier")
-    ULS_DL.add_load_groups(Barrier)  # ch
+    ULS_DL.add_load(Barrier)  # ch
     example_bridge.add_load_case(ULS_DL)
 
     assert example_bridge.global_line_int_dict == [{}]
@@ -337,7 +337,7 @@ def test_line_load_outside_of_mesh(bridge_model_42_negative):
     barrierpoint_2 = og.create_load_vertex(x=10, y=0, z=-1, p=2)
     Barrier = og.LineLoading("Barrier curb load", point1=barrierpoint_1, point2=barrierpoint_2)
     ULS_DL = og.LoadCase(name="Barrier")
-    ULS_DL.add_load_groups(Barrier)  # ch
+    ULS_DL.add_load(Barrier)  # ch
     example_bridge.add_load_case(ULS_DL)
     assert example_bridge.global_line_int_dict == [{}]
 
@@ -352,7 +352,7 @@ def test_patch_load(bridge_model_42_negative):
     lane_point_4 = og.create_load_vertex(x=5, y=0, z=5, p=5)
     Lane = og.PatchLoading("Lane 1", point1=lane_point_1, point2=lane_point_2, point3=lane_point_3, point4=lane_point_4)
     ULS_DL = og.LoadCase(name="Lane")
-    ULS_DL.add_load_groups(Lane)  # ch
+    ULS_DL.add_load(Lane)  # ch
     example_bridge.add_load_case(ULS_DL)
     example_bridge.analyze(all=True)
 
@@ -417,7 +417,7 @@ def test_patch_load_using_linear_shape_function(bridge_model_42_negative):
     Lane = og.PatchLoading("Lane 1", point1=lane_point_1, point2=lane_point_2, point3=lane_point_3,
                            point4=lane_point_4, shape_function="linear")
     ULS_DL = og.LoadCase(name="Lane")
-    ULS_DL.add_load_groups(Lane)  # ch
+    ULS_DL.add_load(Lane)  # ch
     example_bridge.add_load_case(ULS_DL)
     example_bridge.analyze(all=True)
 # ----------------------------------------------------------------------------------------------------------------------
@@ -457,7 +457,7 @@ def test_compound_load_distribution_to_nodes(bridge_model_42_negative):
     M1600.set_global_coord(og.Point(0, 0, 0))
 
     static_truck = og.create_load_case(name="static M1600")
-    static_truck.add_load_groups(M1600)
+    static_truck.add_load(M1600)
     example_bridge.add_load_case(static_truck)
     example_bridge.analyze(all=True)
     results = example_bridge.get_results()
@@ -514,11 +514,11 @@ def test_moving_load_and_basic_load_together(bridge_model_42_negative):
     # create basic load case
     barrier_load_case = og.create_load_case(name="Barrier")
     #barrier_load_case.add_load_groups(Barrier)  # ch
-    barrier_load_case.add_load_groups(Patch1)  # ch
+    barrier_load_case.add_load(Patch1)  # ch
     # 2nd
     barrier_load_case2 = og.create_load_case(name="Barrier2")
     #barrier_load_case2.add_load_groups(Barrier2)
-    barrier_load_case2.add_load_groups(Patch2)
+    barrier_load_case2.add_load(Patch2)
     # 3rd
     #barrier_load_case3 = og.create_load_case(name="Barrier3")
     #barrier_load_case3.add_load_groups(Barrier3)
@@ -608,7 +608,7 @@ def test_patch_partially_outside_mesh(bridge_model_42_negative):
     lane_point_4 = og.create_load_vertex(x=-5, y=0, z=5, p=5)
     Lane = og.create_load(type="patch",name="Lane 1", point1=lane_point_1, point2=lane_point_2, point3=lane_point_3, point4=lane_point_4)
     ULS_DL = og.create_load_case(name="Lane")
-    ULS_DL.add_load_groups(Lane)  # ch
+    ULS_DL.add_load(Lane)  # ch
     example_bridge.add_load_case(ULS_DL)
     example_bridge.analyze(all=True)
     results = example_bridge.get_results()
@@ -683,7 +683,7 @@ def test_28m_bridge_compound_point_load_midspan(ref_28m_bridge):
         point = og.create_load(type="point",name="compound point",point1=og.LoadPoint(bridge_28.long_dim/2,0,p,P))
         test_point_load.add_load(load_obj=point)
     point_case = og.LoadCase(name="Compound point load case")
-    point_case.add_load_groups(test_point_load)
+    point_case.add_load(test_point_load)
 
     bridge_28.add_load_case(point_case)
     bridge_28.load_case_list
@@ -702,7 +702,7 @@ def test_28m_bridge(ref_28m_bridge):
     # 57 to 63
     point_load_case = og.create_load_case(name="point_load_case")
     line_load_case = og.create_load_case(name="line_load_case")
-    line_load_case.add_load_groups(line_load_middle)
+    line_load_case.add_load(line_load_middle)
     ref_node_force = og.NodeForces(0, -1000, 0, 0, 0, 0)
     p1 = og.NodalLoad(name="point", node_tag=57, node_force=ref_node_force)
     p2 = og.NodalLoad(name="point", node_tag=58, node_force=ref_node_force)
@@ -711,13 +711,13 @@ def test_28m_bridge(ref_28m_bridge):
     p5 = og.NodalLoad(name="point", node_tag=61, node_force=ref_node_force)
     p6 = og.NodalLoad(name="point", node_tag=62, node_force=ref_node_force)
     p7 = og.NodalLoad(name="point", node_tag=63, node_force=ref_node_force)
-    point_load_case.add_load_groups(p1)
-    point_load_case.add_load_groups(p2)
-    point_load_case.add_load_groups(p3)
-    point_load_case.add_load_groups(p4)
-    point_load_case.add_load_groups(p5)
-    point_load_case.add_load_groups(p6)
-    point_load_case.add_load_groups(p7)
+    point_load_case.add_load(p1)
+    point_load_case.add_load(p2)
+    point_load_case.add_load(p3)
+    point_load_case.add_load(p4)
+    point_load_case.add_load(p5)
+    point_load_case.add_load(p6)
+    point_load_case.add_load(p7)
 
     bridge_28.add_load_case(line_load_case)
     # add a load combination
@@ -844,7 +844,7 @@ def test_simple_grid():
 
     # Load case creating and assign
     test_case = og.create_load_case(name="Test Case")
-    test_case.add_load_groups(test_load)
+    test_case.add_load(test_load)
     #test_load2 = og.PointLoad("Test Point", point1=og.LoadPoint(L / 2, 0, 1.7, 1e3))
     # test_load3 = PointLoad("Test Point", point1 = LoadPoint(L/2,0,w,1e3))
     #test_load4 = og.PointLoad("Test Point", point1=og.LoadPoint(L / 2, 0, 0.3, 1e3))

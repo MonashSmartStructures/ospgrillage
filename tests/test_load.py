@@ -185,7 +185,7 @@ def test_point_load_getter(bridge_model_42_negative):  # test get_point_load_nod
     location = og.create_load_vertex(x=5, y=0, z=2, p=20)
     Single = og.create_load(type="point",name="single point", point1=location,shape_function="hermite")
     ULS_DL = og.create_load_case(name="Point")
-    ULS_DL.add_load_groups(Single)  # ch
+    ULS_DL.add_load(Single)  # ch
     example_bridge.add_load_case(ULS_DL)
     og.ops.wipe()
 
@@ -202,7 +202,7 @@ def test_point_load_outside_straight_mesh(bridge_model_42_negative):
     location = og.create_load_vertex(x=5, y=0, z=-2, p=20)
     Single = og.create_load(type="point",name="single point", point1=location)
     ULS_DL = og.create_load_case(name="Point")
-    ULS_DL.add_load_groups(Single)  # ch
+    ULS_DL.add_load(Single)  # ch
     example_bridge.add_load_case(ULS_DL)
     grid_nodes, _ = example_bridge._get_point_load_nodes(point=location)
     assert grid_nodes is None
@@ -216,7 +216,7 @@ def test_line_load(bridge_model_42_negative):
     barrierpoint_2 = og.create_load_vertex(x=10, y=0, z=3, p=2)
     Barrier = og.create_load(type="line",name="Barrier curb load", point1=barrierpoint_1, point2=barrierpoint_2)
     ULS_DL = og.create_load_case(name="Barrier")
-    ULS_DL.add_load_groups(Barrier)  # ch
+    ULS_DL.add_load(Barrier)  # ch
     example_bridge.add_load_case(ULS_DL)
     example_bridge.analyze(all=True)
     example_bridge.get_results()
@@ -260,7 +260,7 @@ def test_line_load_vertical_and_cross_outside_mesh(bridge_model_42_negative):
     barrierpoint_2 = og.create_load_vertex(x=2, y=0, z=8, p=2)
     Barrier = og.create_load(type="line",name="Barrier curb load", point1=barrierpoint_1, point2=barrierpoint_2,shape_function="hermite")
     ULS_DL = og.create_load_case(name="Barrier")
-    ULS_DL.add_load_groups(Barrier)  # ch
+    ULS_DL.add_load(Barrier)  # ch
     example_bridge.add_load_case(ULS_DL)
     ref_ans = {
         1: {'long_intersect': [[2, 0, 0.0], [2, 0, 1.0]], 'trans_intersect': [], 'edge_intersect': [], 'ends': []},
@@ -278,7 +278,7 @@ def test_line_load_coincide_long_edge(bridge_model_42_negative):
     barrierpoint_2 = og.create_load_vertex(x=10, y=0, z=1, p=2)
     Barrier = og.create_load(type="line",name="Barrier curb load", point1=barrierpoint_1, point2=barrierpoint_2)
     ULS_DL = og.create_load_case(name="Barrier")
-    ULS_DL.add_load_groups(Barrier)  # ch
+    ULS_DL.add_load(Barrier)  # ch
     example_bridge.add_load_case(ULS_DL)
 
     assert example_bridge.global_line_int_dict == [{}]
@@ -295,7 +295,7 @@ def test_line_load_coincide_transverse_member(bridge_42_0_angle_mesh):
     barrierpoint_2 = og.create_load_vertex(x=7.5, y=0, z=6, p=2)
     Barrier = og.create_load(type="line",name="Barrier curb load", point1=barrierpoint_1, point2=barrierpoint_2,shape_function="hermite")
     ULS_DL = og.create_load_case(name="Barrier")
-    ULS_DL.add_load_groups(Barrier)  # ch
+    ULS_DL.add_load(Barrier)  # ch
     example_bridge.add_load_case(ULS_DL)
 
     assert example_bridge.load_case_list[0]['load_command'] == ['ops.load(51, *[0, 2.00000000000000, 0, 0, 0, 0])\n',
@@ -333,7 +333,7 @@ def test_line_load_coincide_edge_beam(bridge_model_42_negative):
     barrierpoint_2 = og.create_load_vertex(x=10, y=0, z=1, p=2)
     Barrier = og.create_load(type="line",name="Barrier curb load", point1=barrierpoint_1, point2=barrierpoint_2,shape_function="hermite")
     ULS_DL = og.create_load_case(name="Barrier")
-    ULS_DL.add_load_groups(Barrier)  # ch
+    ULS_DL.add_load(Barrier)  # ch
     example_bridge.add_load_case(ULS_DL)
 
     assert example_bridge.global_line_int_dict == [{}]
@@ -348,7 +348,7 @@ def test_line_load_outside_of_mesh(bridge_model_42_negative):
     barrierpoint_2 = og.create_load_vertex(x=10, y=0, z=-1, p=2)
     Barrier = og.LineLoading("Barrier curb load", point1=barrierpoint_1, point2=barrierpoint_2,shape_function="hermite")
     ULS_DL = og.LoadCase(name="Barrier")
-    ULS_DL.add_load_groups(Barrier)  # ch
+    ULS_DL.add_load(Barrier)  # ch
     example_bridge.add_load_case(ULS_DL)
     assert example_bridge.global_line_int_dict == [{}]
 
@@ -363,7 +363,7 @@ def test_patch_load(bridge_model_42_negative):
     lane_point_4 = og.create_load_vertex(x=5, y=0, z=5, p=5)
     Lane = og.PatchLoading("Lane 1", point1=lane_point_1, point2=lane_point_2, point3=lane_point_3, point4=lane_point_4,shape_function="hermite")
     ULS_DL = og.LoadCase(name="Lane")
-    ULS_DL.add_load_groups(Lane)  # ch
+    ULS_DL.add_load(Lane)  # ch
     example_bridge.add_load_case(ULS_DL)
     example_bridge.analyze(all=True)
 
@@ -428,7 +428,7 @@ def test_patch_load_using_linear_shape_function(bridge_model_42_negative):
     Lane = og.PatchLoading("Lane 1", point1=lane_point_1, point2=lane_point_2, point3=lane_point_3,
                            point4=lane_point_4, shape_function="linear")
     ULS_DL = og.LoadCase(name="Lane")
-    ULS_DL.add_load_groups(Lane)  # ch
+    ULS_DL.add_load(Lane)  # ch
     example_bridge.add_load_case(ULS_DL)
     example_bridge.analyze(all=True)
     assert example_bridge.load_case_list[0]['load_command'] == ['ops.load(19, *[0, 1.40688131921541, 0, 0, 0, 0])\n', 'ops.load(25, *[0, 1.40688131921534, 0, 0, 0, 0])\n', 'ops.load(26, *[0, 1.40688131921534, 0, 0, 0, 0])\n', 'ops.load(20, *[0, 1.40688131921541, 0, 0, 0, 0])\n', 'ops.load(25, *[0, 1.44420769137308, 0, 0, 0, 0])\n', 'ops.load(60, *[0, 1.44420769137311, 0, 0, 0, 0])\n', 'ops.load(61, *[0, 1.44420769137311, 0, 0, 0, 0])\n', 'ops.load(26, *[0, 1.44420769137308, 0, 0, 0, 0])\n', 'ops.load(13, *[0, 0.00883644799442276, 0, 0.00543781415041401, 0, 0.00549241204442737])\n', 'ops.load(18, *[0, 0.0957938611102078, 0, 0.0589500683755124, 0, -0.0252300768696094])\n', 'ops.load(19, *[0, 0.825300957257174, 0, -0.235800273502050, 0, -0.217366816107404])\n', 'ops.load(14, *[0, 0.0761293981057961, 0, -0.0217512566016560, 0, 0.0473192422289127])\n', 'ops.load(18, *[0, 0.117052525758723, 0, 0.0720323235438296, 0, 0.0585262628793609])\n', 'ops.load(24, *[0, 0.117052525758715, 0, 0.0720323235438248, 0, -0.0585262628793583])\n', 'ops.load(25, *[0, 1.00845252961355, 0, -0.288129294175299, 0, -0.504226264806779])\n', 'ops.load(19, *[0, 1.00845252961361, 0, -0.288129294175319, 0, 0.504226264806802])\n', 'ops.load(24, *[0, 0.120158079922239, 0, 0.0739434337983010, 0, 0.0600790399611199])\n', 'ops.load(59, *[0, 0.120158079922243, 0, 0.0739434337983034, 0, -0.0600790399611212])\n', 'ops.load(60, *[0, 1.03520807317625, 0, -0.295773735193214, 0, -0.517604036588121])\n', 'ops.load(25, *[0, 1.03520807317621, 0, -0.295773735193204, 0, 0.517604036588110])\n', 'ops.load(59, *[0, 0.124942353209710, 0, 0.0768876019752063, 0, 0.0568977744108762])\n', 'ops.load(66, *[0, 0.0760061263237388, 0, 0.0467730008146085, 0, -0.0408801640107090])\n', 'ops.load(67, *[0, 0.654822011404518, 0, -0.187092003258434, 0, -0.352198336092262])\n', 'ops.load(60, *[0, 1.07642642765289, 0, -0.307550407900825, 0, 0.490196210309087])\n', 'ops.load(60, *[0, 1.50171097607824, 0, 0.750855488039121, 0, 0.683867480899951])\n', 'ops.load(67, *[0, 0.913535172160317, 0, 0.456767586080159, 0, -0.491348125128712])\n', 'ops.load(68, *[0, 0.913535172160317, 0, -0.456767586080159, 0, -0.491348125128712])\n', 'ops.load(61, *[0, 1.50171097607824, 0, -0.750855488039121, 0, 0.683867480899951])\n', 'ops.load(61, *[0, 0.583865227499220, 0, 0.0973108712498700, 0, 0.265887676573901])\n', 'ops.load(68, *[0, 0.355182474935931, 0, 0.0591970791559885, 0, -0.191036151050043])\n', 'ops.load(69, *[0, 0.0102315939281955, 0, -0.00657745323955428, 0, -0.00550309900144156])\n', 'ops.load(62, *[0, 0.0168191629320763, 0, -0.0108123190277633, 0, 0.00765931578607944])\n', 'ops.load(15, *[0, 0.08992923272602986, 0, 0.0, 0, 0.0])\n', 'ops.load(20, *[0, 0.36279806628438993, 0, 0.0, 0, 0.0])\n', 'ops.load(21, *[0, 0.05030303322337963, 0, 0.0, 0, 0.0])\n', 'ops.load(20, *[0, 0.546995456910950, 0, 0.0911659094851582, 0, 0.273497728455472])\n', 'ops.load(26, *[0, 0.546995456910913, 0, 0.0911659094851522, 0, -0.273497728455460])\n', 'ops.load(27, *[0, 0.0157570707752115, 0, -0.0101295454983502, 0, -0.00787853538760582])\n', 'ops.load(21, *[0, 0.0157570707752125, 0, -0.0101295454983509, 0, 0.00787853538760616])\n', 'ops.load(26, *[0, 0.561507950405852, 0, 0.0935846584009754, 0, 0.280753975202928])\n', 'ops.load(61, *[0, 0.561507950405871, 0, 0.0935846584009784, 0, -0.280753975202934])\n', 'ops.load(62, *[0, 0.0161751261433790, 0, -0.0103982953778865, 0, -0.00808756307168943])\n', 'ops.load(27, *[0, 0.0161751261433784, 0, -0.0103982953778861, 0, 0.00808756307168926])\n', 'ops.load(14, *[0, 0.106207307625274, 0, 0.0531036538126368, 0, 0.0660145678416751])\n', 'ops.load(19, *[0, 1.15136852295923, 0, 0.575684261479614, 0, -0.303246116221267])\n', 'ops.load(20, *[0, 1.15136852295923, 0, -0.575684261479614, 0, -0.303246116221267])\n', 'ops.load(15, *[0, 0.106207307625274, 0, -0.0531036538126368, 0, 0.0660145678416751])\n']
@@ -477,7 +477,7 @@ def test_moving_load_and_basic_load_together(bridge_model_42_negative):
     barrierpoint_2 = og.create_load_vertex(x=10, y=0, z=1, p=2)
     Barrier = og.create_load(type="line",name="Barrier curb load", point1=barrierpoint_1, point2=barrierpoint_2,shape_function="hermite")
     barrier_load_case = og.create_load_case(name="Barrier")
-    barrier_load_case.add_load_groups(Barrier)  # ch
+    barrier_load_case.add_load(Barrier)  # ch
     example_bridge.add_load_case(barrier_load_case)
     # add moving load case
     front_wheel = og.PointLoad(name="front wheel", point1=og.LoadPoint(2, 0, 2, 50),shape_function="hermite")  # Single point load 50 N
@@ -528,7 +528,7 @@ def test_patch_partially_outside_mesh(bridge_model_42_negative):
     lane_point_4 = og.create_load_vertex(x=-5, z=5, p=5)
     Lane = og.create_load(type="patch",name="Lane 1", point1=lane_point_1, point2=lane_point_2, point3=lane_point_3, point4=lane_point_4,shape_function="hermite")
     ULS_DL = og.create_load_case(name="Lane")
-    ULS_DL.add_load_groups(Lane)  # ch
+    ULS_DL.add_load(Lane)  # ch
     example_bridge.add_load_case(ULS_DL)
     example_bridge.analyze(all=True)
     results = example_bridge.get_results()

@@ -777,7 +777,7 @@ class LoadCase:
         # preset load factor for
         self.load_command_list = []
 
-    def add_load_groups(self, load_obj: Union[Loads, CompoundLoad], **kwargs):
+    def add_load(self, load_obj: Union[Loads, CompoundLoad], **kwargs):
         """
 
         :param load_obj: Load or Compound load object
@@ -917,14 +917,14 @@ class MovingLoad:
                     name="load: {} at [{:.2f},{:.2f},{:.2f}]".format(load_obj.name, steps[0], steps[1],
                                                                      steps[2]))  # _lc in name stands for load case
                 load_obj_copy = deepcopy(load_obj)  # Use deepcopy module to copy instance of load
-                load_step_lc.add_load_groups(load_obj_copy)  # and add load to newly created load case
+                load_step_lc.add_load(load_obj_copy)  # and add load to newly created load case
                 # add entries of static load to load groups
                 step_point = Point(steps[0], steps[1], steps[2])  # convert increment position into Point tuple
                 load_step_lc.move_load_group(step_point)  # increment the load groups by step point
                 # static load not used
                 for static_load in self.static_load_case:  # add static load portions to each incremental load case
                     static_load_copy = deepcopy(static_load)
-                    load_step_lc.add_load_groups(static_load_copy)
+                    load_step_lc.add_load(static_load_copy)
                 load_case_list.append(load_step_lc)
             self.moving_load_case.append(load_case_list)
         return self.moving_load_case

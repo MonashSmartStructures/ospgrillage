@@ -1735,8 +1735,7 @@ class Analysis:
             eval(self.analyze_command)
 
         print("Analysis: {} completed".format(self.analysis_name))
-        # TODO
-        print(ops.nodeDisp(25)[1])
+
         # extract results
         self.extract_grillage_responses()
         # return time series and plain counter to update global time series and plain counter by by OspGrillage

@@ -191,7 +191,7 @@ def add_analysis_to_simple_grid(create_grillage):
                                       point1=line_point_1, point2=line_point_2)
 
     line_case = ospg.create_load_case(name=load_name[0])
-    line_case.add_load_groups(test_line_load)
+    line_case.add_load(test_line_load)
     simple_grid.add_load_case(line_case)
 
     # Compound Point loads running along midspan at node points
@@ -214,7 +214,7 @@ def add_analysis_to_simple_grid(create_grillage):
         test_points_load.add_load(load_obj=point)
 
     points_case = ospg.create_load_case(name=load_name[1])
-    points_case.add_load_groups(test_points_load)
+    points_case.add_load(test_points_load)
     simple_grid.add_load_case(points_case)
 
     # in local
@@ -230,7 +230,7 @@ def add_analysis_to_simple_grid(create_grillage):
     # shift from local to global
 
     points_case = ospg.create_load_case(name=load_name[2])
-    points_case.add_load_groups(test_points_load)
+    points_case.add_load(test_points_load)
     simple_grid.add_load_case(points_case)
 
     # Patch load over entire bridge deck (P is kN/m2)
@@ -243,7 +243,7 @@ def add_analysis_to_simple_grid(create_grillage):
                                        point3=patch_point_3, point4=patch_point_4)
 
     patch_case = ospg.create_load_case(name=load_name[3])
-    patch_case.add_load_groups(test_patch_load)
+    patch_case.add_load(test_patch_load)
     simple_grid.add_load_case(patch_case)
 
     # moving load  2 axle truck (equal loads, 2x2 spacing centre line running)

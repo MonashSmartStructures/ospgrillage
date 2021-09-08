@@ -129,13 +129,13 @@ move_point.parse_moving_load_cases()
 # if load added directly into load case - treat the coordinates as global
 # if load is added to a compound load - the coordinates is treated as a local coordinate
 ULS_DL = og.LoadCase(name="ULS-DL")
-ULS_DL.add_load_groups(Lane)  # change here
+ULS_DL.add_load(Lane)  # change here
 example_bridge.add_load_case(ULS_DL)
 example_bridge.analyze()
 
 
 SLS_LL = og.LoadCase(name="Live traffic")
-SLS_LL.add_load_groups(Single)
+SLS_LL.add_load(Single)
 example_bridge.add_load_case(SLS_LL)
 
 example_bridge.add_moving_load_case(move_point)
