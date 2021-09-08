@@ -1233,8 +1233,9 @@ class ShellLinkMesh(Mesh):
         # user mp constraint object
         # function to create ops rigid link command and store to variable
 
-        #link_str = "ops.element(\"twoNodeLink\",{eletag},{eleNodes},1,1,2,3,4,5,6}".format(eletag=self.element_counter,eleNodes=[rNode,cNode])
+        #link_str = "ops.element(\"twoNodeLink\",{eletag},*{eleNodes},'-mat',*[1,2,3,4,5,6],'-dir',*[1,2,3,4,5,6])\n"\
+        #    .format(eletag=self.element_counter,eleNodes=[rNode,cNode])
         #self.element_counter += 1
         link_str = "ops.rigidLink(\"{linktype}\",{rNodetag},{cNodetag})\n".format(linktype=self.link_type,
-                                                                                rNodetag=rNode,cNodetag=cNode)
+                                                                                rNodetag=cNode,cNodetag=rNode)
         self.link_str_list.append(link_str)

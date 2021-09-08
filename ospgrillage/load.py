@@ -170,7 +170,7 @@ class Loads:
     load_point_7: LoadPoint
     load_point_8: LoadPoint
 
-    def __init__(self, name, **kwargs):
+    def __init__(self, **kwargs):
         """
 
         :param name: Name of load
@@ -190,7 +190,7 @@ class Loads:
 
         """
         #
-        self.name = name
+        self.name = kwargs.get('name',None)
 
         # Initialise dict for key load points of line UDL and patch load definitions
         self.load_point_data = dict()
@@ -379,6 +379,10 @@ class Loads:
         self.load_point_8 = self.load_point_8._replace(p=factor * self.load_point_8.p) if self.load_point_8 is \
                                                                                           not None else self.load_point_8
 
+    def get_magnitude(self):
+        #TODO
+        pass
+
     def __str__(self):
         return "Load object {} \n".format(self.name) + pprint.pformat(self.spec)
 
@@ -430,13 +434,13 @@ class PointLoad(Loads):
     Class for Point loads. Derived from based :py:class:`Loads` class
     """
 
-    def __init__(self, name, **kwargs):
+    def __init__(self, **kwargs):
         """
 
         :param name:
         :param kwargs:
         """
-        super().__init__(name, **kwargs)
+        super().__init__( **kwargs)
 
 
 class LineLoading(Loads):
@@ -444,13 +448,13 @@ class LineLoading(Loads):
     Class for line loading. Derived from based Loads class
     """
 
-    def __init__(self, name, **kwargs):
+    def __init__(self, **kwargs):
         """
 
         :param name:
         :param kwargs:
         """
-        super().__init__(name, **kwargs)
+        super().__init__(**kwargs)
 
         self.long_beam_ele_load_flag = kwargs.get("long_beam_element_load",False)
         self.trans_beam_ele_load_flag = kwargs.get("trans_beam_element_load",False)
@@ -582,22 +586,19 @@ class PatchLoading(Loads):
     Patch load can take up to 8 load points. By default requires at least 4 load point for patch (quadrilateral)
     """
 
-    def __init__(self, name, **kwargs):
+    def __init__(self, **kwargs):
         """
 
         :param name:
         :param kwargs:
         """
-        super().__init__(name, **kwargs)
+        super().__init__(**kwargs)
         if not all(v is None for v in self.point_list):
             a, _ = sort_vertices([self.load_point_2, self.load_point_3, self.load_point_1, self.load_point_4])
             match = [self.load_point_1, self.load_point_2, self.load_point_3, self.load_point_4]
             # if len(self.point_list) < 4:
             #     raise ValueError("invalid number of vertices. Hint:  either 4 or 8 is accepted for patch")
-        elif not all(v is None for v in self.local_point_list):
-            a, _ = sort_vertices(
-                [self.local_load_point_2, self.local_load_point_3, self.local_load_point_1, self.local_load_point_4])
-            match = [self.local_load_point_1, self.local_load_point_2, self.local_load_point_3, self.local_load_point_4]
+
         else:
             raise ValueError("vertices missing.hint: patch load must have either 4  or 8 vertices  ")
         if a != match:
@@ -608,13 +609,14 @@ class PatchLoading(Loads):
         self.patch_min_dim = None  # instantiate
 
         # create each line
-        self.line_1 = LineLoading("Patch load line 1", point1=self.load_point_1, point2=self.load_point_2)
-        self.line_2 = LineLoading("Patch load line 2", point1=self.load_point_2, point2=self.load_point_3)
-        self.line_3 = LineLoading("Patch load line 3", point1=self.load_point_3, point2=self.load_point_4)
+        self.line_1 = LineLoading( point1=self.load_point_1, point2=self.load_point_2)
+        self.line_2 = LineLoading( point1=self.load_point_2, point2=self.load_point_3)
+        self.line_3 = LineLoading(point1=self.load_point_3, point2=self.load_point_4)
+
         # if only four point is define , patch load is a four point straight line quadrilateral
         if self.load_point_5 is None:
             # create fourth line
-            self.line_4 = LineLoading("Patch load line 4", point1=self.load_point_4, point2=self.load_point_1)
+            self.line_4 = LineLoading( point1=self.load_point_4, point2=self.load_point_1)
 
             # create equation of plane from four straight lines
 
@@ -631,7 +633,7 @@ class PatchLoading(Loads):
                  if all([p1 is not None, p2 is not None])])
         elif self.load_point_4 is None:
             # update line 3
-            self.line_3 = LineLoading("Patch load line 3", point1=self.load_point_3, point2=self.load_point_1)
+            self.line_3 = LineLoading( point1=self.load_point_3, point2=self.load_point_1)
 
             # TODO create equation of plane from 3 points
             # create interpolate object f

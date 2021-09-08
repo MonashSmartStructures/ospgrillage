@@ -1178,6 +1178,7 @@ class OspGrillage:
         # use getter for line load, 4 times for each point
         # between 4 dictionaries record the common grids as having the corners of the patch - to be evaluated different
         bound_node, bound_grid = self._get_bounded_nodes(patch_load_obj)
+        patch_load_str = [] # final return str list
         # assign patch for grids fully bounded by patch
         for grid in bound_grid:
             nodes = self.Mesh_obj.grid_number_dict[grid]  # read grid nodes
@@ -1197,7 +1198,7 @@ class OspGrillage:
             # assign point and mag to 4 nodes of grid
             load_str = self._assign_point_to_four_node(point=[xc, yc, zc], mag=mag,
                                                        shape_func=patch_load_obj.shape_function)
-            self.global_load_str += load_str
+            patch_load_str += load_str
         # apply patch for full bound grids completed
 
         # search the intersecting grids using line load function
@@ -1250,8 +1251,8 @@ class OspGrillage:
             # assign point and mag to 4 nodes of grid
             load_str = self._assign_point_to_four_node(point=[xc, yc, zc], mag=mag,
                                                        shape_func=patch_load_obj.shape_function)
-            self.global_load_str += load_str
-        return self.global_load_str
+            patch_load_str += load_str
+        return patch_load_str
 
     @staticmethod
     def _get_node_area(inside_point, p_list) -> float:
@@ -1334,7 +1335,7 @@ class OspGrillage:
             # update the load command list of load case object
             load_str = self._distribute_load_types_to_model(load_case_obj=load_case_obj)
             # store load case + load command in dict and add to load_case_list
-            load_case_dict = {'name': load_case_obj.name, 'loadcase': load_case_obj, 'load_command': load_str,
+            load_case_dict = {'name': load_case_obj.name, 'loadcase': deepcopy(load_case_obj), 'load_command': load_str,
                               'load_factor': load_factor}  # FORMATTING HERE
 
             self.load_case_list.append(load_case_dict)
@@ -1376,27 +1377,32 @@ class OspGrillage:
         # analyze all load case defined in self.load_case_dict for OspGrillage instance
         # loop each load case dict
         # get run options from kwargs
-        all_flag = kwargs.get("all", True)  # Default true when run
+        all_flag = True  # Default true
         selected_load_case: list = kwargs.get("load_case", None)  #
+        if selected_load_case:
+            all_flag = False # overwrite all flag to be false
         selected_moving_load_lc_list = None
+        # check if kwargs other than load_case are specified
+        if all([kwargs,selected_load_case is None]):
+            raise Exception("Error in analyze(options): only accepts load_case= ")
+
         # if selected_load_case kwargs given, filter and select load case from load case list to run
         # if given selected load case as a list, select load cases matching names in list
         if isinstance(selected_load_case, list):
             selected_basic_lc = [lc for lc in self.load_case_list if lc['name'] in selected_load_case]
             selected_moving_load_lc_list = [lc for ml_name, lc in self.moving_load_case_dict.items() if
                                             ml_name in selected_load_case] # list of load case
-            all_flag = False
+
         # if single string of load case name
         elif isinstance(selected_load_case, str):
             selected_basic_lc = [lc for lc in self.load_case_list if lc['name'] == selected_load_case]
             selected_moving_load_lc_list = [lc for (ml_name, lc) in self.moving_load_case_dict.items() if
                                             ml_name == selected_load_case]
-            all_flag = False
         elif all_flag:  # else, run all load case in list
             selected_basic_lc = self.load_case_list
             selected_moving_load_lc_list = list(self.moving_load_case_dict.values())
         else:
-            raise Exception("missing kwargs for run options: hint: requires input for either `load_case=`, `all=`, `")
+            raise Exception("missing kwargs for run options: hint: requires input for `load_case=`")
 
         # run basic load case
         for load_case_dict in selected_basic_lc:
@@ -1656,7 +1662,7 @@ class Analysis:
         self.intergrator_command = "ops.integrator('LoadControl', 1)\n"
         self.mesh_node_counter = node_counter
         self.mesh_ele_counter = ele_counter
-        self.remove_pattern_command = "ops.remove('loadPattern',{})\n".format(self.plain_counter - 1)
+        self.remove_pattern_command = "ops.remove('loadPattern',{})\n"
         # if true for pyfile, create pyfile for analysis command
         if self.pyfile:
             with open(self.analysis_file_name, 'w') as file_handle:
@@ -1712,7 +1718,9 @@ class Analysis:
         else:
             eval(self.wipe_command)
             if self.plain_counter - 1 != 1:  # plain counter increments by 1 upon self.pattern_command function, so -1 here
-                eval(self.remove_pattern_command)  # remove previous load pattern if any
+                for count in range(1,self.plain_counter-1):
+                    remove_command = self.remove_pattern_command.format(count)
+                    eval(remove_command)  # remove previous load pattern if any
             for load_dict in self.load_cases_dict_list:
                 eval(load_dict['time_series'])
                 eval(load_dict['pattern'])
@@ -1727,6 +1735,8 @@ class Analysis:
             eval(self.analyze_command)
 
         print("Analysis: {} completed".format(self.analysis_name))
+        # TODO
+        print(ops.nodeDisp(25)[1])
         # extract results
         self.extract_grillage_responses()
         # return time series and plain counter to update global time series and plain counter by by OspGrillage

@@ -489,32 +489,44 @@ def test_moving_load_and_basic_load_together(bridge_model_42_negative):
     example_bridge = bridge_model_42_negative
 
     # create reference line load
-    p = 0
+    p = 10000
     p2 = 20000
-    barrierpoint_1 = og.create_load_vertex(x=5, y=0, z=1, p=p)
-    barrierpoint_2 = og.create_load_vertex(x=10, y=0, z=7, p=p)
-    barrierpoint_3 = og.create_load_vertex(x=5, y=0, z=1, p=p2)
-    barrierpoint_4 = og.create_load_vertex(x=10, y=0, z=7, p=p2)
+    p3 = 30000   # duplicate of 2nd but with different mag
+    barrierpoint_1 = og.create_load_vertex(x=5,z=1, p=p)
+    barrierpoint_2 = og.create_load_vertex(x=10,z=7, p=p)
+    barrierpoint_3 = og.create_load_vertex(x=10, z=2, p=p2)
+    barrierpoint_4 = og.create_load_vertex(x=5, z=5, p=p2)
+    barrierpoint_5 = og.create_load_vertex(x=10,  z=2, p=p3)
+    barrierpoint_6 = og.create_load_vertex(x=5, z=5, p=p3)
     # add moving load case
     front_wheel = og.PointLoad(name="front wheel", point1=og.LoadPoint(2, 0, 2, 50))  # Single point load 50 N
     Barrier = og.create_load(type="line",name="Barrier curb load", point1=barrierpoint_1, point2=barrierpoint_2)
     Barrier2 = og.create_load(type="line",name="Barrieload", point1=barrierpoint_3, point2=barrierpoint_4)
+    Barrier3 = og.create_load(type="line",name="Barrieload", point1=barrierpoint_5, point2=barrierpoint_6)
+    Patch1 = og.create_load(type="patch",point1 = barrierpoint_1,point2 = barrierpoint_3,point3=barrierpoint_2,point4=barrierpoint_4)
 
+    barrierpoint_1 = og.create_load_vertex(x=6,z=2, p=0)
+    barrierpoint_2 = og.create_load_vertex(x=11,z=8, p=0)
+    barrierpoint_3 = og.create_load_vertex(x=11, z=3, p=0)
+    barrierpoint_4 = og.create_load_vertex(x=6, z=6, p=0)
+
+    Patch2 = og.create_load(type="patch",point1 = barrierpoint_1,point2 = barrierpoint_3,point3=barrierpoint_2,point4=barrierpoint_4)
     # create basic load case
     barrier_load_case = og.create_load_case(name="Barrier")
-    barrier_load_case.add_load_groups(Barrier)  # ch
-
-
+    #barrier_load_case.add_load_groups(Barrier)  # ch
+    barrier_load_case.add_load_groups(Patch1)  # ch
+    # 2nd
     barrier_load_case2 = og.create_load_case(name="Barrier2")
-    barrier_load_case2.add_load_groups(Barrier2)
+    #barrier_load_case2.add_load_groups(Barrier2)
+    barrier_load_case2.add_load_groups(Patch2)
+    # 3rd
+    #barrier_load_case3 = og.create_load_case(name="Barrier3")
+    #barrier_load_case3.add_load_groups(Barrier3)
 
-    barrier_load_case3 = og.create_load_case(name="Barrier3")
-    barrier_load_case3.add_load_groups(Barrier)
-    barrier_load_case3.add_load_groups(Barrier2)
-
-    example_bridge.add_load_case(barrier_load_case2)
+    # adding load cases to model
     example_bridge.add_load_case(barrier_load_case)
-    example_bridge.add_load_case(barrier_load_case3,load_factor=10)
+    example_bridge.add_load_case(barrier_load_case2)
+    #example_bridge.add_load_case(barrier_load_case3)
 
     single_path = og.create_moving_path(start_point=og.Point(2, 0, 2), end_point=og.Point(4, 0, 3))  # create path object
     move_point = og.create_moving_load(name="single_moving_point")
@@ -523,12 +535,13 @@ def test_moving_load_and_basic_load_together(bridge_model_42_negative):
     #example_bridge.add_load_case(move_point)
 
     # example_bridge.analyze(all=True)
-    example_bridge.analyze(load_case="Barrier")
-    #og.opsv.plot_defo()
-    #og.plt.show()
-    results = example_bridge.get_results()
-    #results = example_bridge.get_results()
+    example_bridge.analyze()
+    og.opsv.plot_defo()
+    og.plt.show()
+    results = example_bridge.get_results(load_case="Barrier2")
+    #maxY = results.sel(Component='dy').max()
     print(results)
+    print(og.ops.nodeDisp(25)[1])
 
 
 # test moving compound load, test pass if no errors are returned
