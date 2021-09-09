@@ -158,12 +158,13 @@ class OspGrillage:
         self.element_command_list = []  # list of str for ops.element() commands
         self.section_command_list = []  # list of str for ops.section() commands
         self.material_command_list = []
-        self.shell_element_command_list = []  # list of str for ops.element() shell command
+
         # dict
         self.ele_group_assigned_list = []  # list recording assigned ele groups in grillage model
         self.section_dict = {}  # dictionary of section tags
         self.material_dict = {}  # dictionary of material tags
-
+        # variables related to analysis - which can be unique to element/material/ types
+        self.constraint_type = "Plain"
         # collect mesh groups
         self.mesh_group = []  # for future release
         if self.mesh_type == "Ortho":
@@ -218,9 +219,7 @@ class OspGrillage:
 
         # kwargs for rigid link modelling option
         self.model_type = kwargs.get("model_type", None)  # accepts int type 1 or 2
-        self.beam_width = kwargs.get("beam_width", None)
-        self.web_thick = kwargs.get("web_thick", None)
-        self.centroid_dist_y = kwargs.get("centroid_dist_y", None)
+
         # create mesh object
         self.Mesh_obj = self._create_mesh(long_dim=self.long_dim, width=self.width, trans_dim=self.trans_dim,
                                           num_trans_beam=self.num_trans_grid,
@@ -228,8 +227,7 @@ class OspGrillage:
                                           ext_to_int_b=self.ext_to_int_b,
                                           skew_1=self.skew_a, edge_dist_a=self.edge_width_a,
                                           edge_dist_b=self.edge_width_b,
-                                          skew_2=self.skew_b, orthogonal=self.ortho_mesh, beam_width=self.beam_width,
-                                          web_thick=self.web_thick, centroid_dist_y=self.centroid_dist_y)
+                                          skew_2=self.skew_b, orthogonal=self.ortho_mesh)
 
     def _create_mesh(self, **kwargs):
         if self.model_type == "beam_link":
@@ -266,7 +264,7 @@ class OspGrillage:
                                   "\nimport openseespy.postprocessing.Get_Rendering as opsplt\n")
         # model() command
         self._write_op_model()
-        # create grillage mesh object
+        # create grillage mesh object Mesh_obj
         self._run_mesh_generation()
         # create element commands of grillage model
         for ele_dict in self.element_command_list:
@@ -277,13 +275,7 @@ class OspGrillage:
                             file_handle.write(ele_str)
                     else:
                         eval(ele_str)
-        # create shell element commands
-        for ele_str in self.shell_element_command_list:
-            if self.pyfile:
-                with open(self.filename, 'a') as file_handle:
-                    file_handle.write(ele_str)
-            else:
-                eval(ele_str)
+
         # create the result file for the Mesh object
         self.results = Results(self.Mesh_obj)
 
@@ -1415,7 +1407,8 @@ class OspGrillage:
                                           time_series_counter=self.global_time_series_counter,
                                           pattern_counter=self.global_pattern_counter,
                                           node_counter=self.Mesh_obj.node_counter,
-                                          ele_counter=self.Mesh_obj.element_counter)
+                                          ele_counter=self.Mesh_obj.element_counter,
+                                          constraint_type=self.constraint_type)
             load_case_analysis.add_load_command(load_command, load_factor=load_factor)
             # run the Analysis object, collect results, and store Analysis object in the list for Analysis load case
             self.global_time_series_counter, self.global_pattern_counter, node_disp, ele_force \
@@ -1437,7 +1430,8 @@ class OspGrillage:
                                                 time_series_counter=self.global_time_series_counter,
                                                 pattern_counter=self.global_pattern_counter,
                                                 node_counter=self.Mesh_obj.node_counter,
-                                                ele_counter=self.Mesh_obj.element_counter)
+                                                ele_counter=self.Mesh_obj.element_counter,
+                                                constraint_type=self.constraint_type)
                 incremental_analysis.add_load_command(load_command, load_factor=load_factor)
                 self.global_time_series_counter, self.global_pattern_counter, node_disp, ele_force \
                     = incremental_analysis.evaluate_analysis()
@@ -1557,17 +1551,18 @@ class OspGrillage:
                 # check and add load cases to load combinations for basic non moving load cases
                 for load_case_dict in load_case_dict_list:  # [{'loadcase':LoadCase object, 'load_command': list of str}.]
                     load_case_name = load_case_dict['loadcase'].name
+                    # if first load case, the first extracted array becomes the summation array
                     if summation_array is None:
                         summation_array = basic_da.sel(Loadcase=load_case_name) * load_case_dict['load_factor']
-                    else:
+                    else: # add to summation array
                         summation_array += basic_da.sel(Loadcase=load_case_name) * load_case_dict['load_factor']
                     # check and add load cases to load combinations for moving load cases
                     # get the list of increm load case correspond to matching moving load case of load combination
                     list_of_load_case_dict = self.moving_load_case_dict.get(load_case_name, [])
                     for incremental_load_case in list_of_load_case_dict:
                         # apply load factor to all incremental load cases, then write to placeholder variable new_ma_list
-                        new_ma_list.append(
-                            basic_da.sel(Loadcase=incremental_load_case["name"]) * load_case_dict['load_factor'])
+                        # new_ma_list.append(
+                        summation_array += basic_da.sel(Loadcase=incremental_load_case["name"]) * load_case_dict['load_factor']
 
                 output_load_comb_dict[load_comb_name] = summation_array
             return output_load_comb_dict
@@ -1634,7 +1629,7 @@ class Analysis:
 
     def __init__(self, analysis_name: str, ops_grillage_name: str, pyfile: bool, node_counter, ele_counter,
                  analysis_type='Static',
-                 time_series_counter=1, pattern_counter=1):
+                 time_series_counter=1, pattern_counter=1,**kwargs):
         self.analysis_name = analysis_name
         self.ops_grillage_name = ops_grillage_name
         self.time_series_tag = None
@@ -1647,6 +1642,8 @@ class Analysis:
         # counters
         self.time_series_counter = time_series_counter
         self.plain_counter = pattern_counter
+        # variables from keyword args
+        self.constraint_type = kwargs.get("constraint_type","Plain") # Default plain
         # Variables recording results of analysis
         self.node_disp = dict()  # key node tag, val list of dof
         self.ele_force = dict()  # key ele tag, val list of forces on nodes of ele[ order according to ele tag]
@@ -1655,7 +1652,7 @@ class Analysis:
         self.wipe_command = "ops.wipeAnalysis()\n"
         self.numberer_command = "ops.numberer('Plain')\n"  # default plain
         self.system_command = "ops.system('BandGeneral')\n"  # default band general
-        self.constraint_command = "ops.constraints('Plain')\n"  # default plain
+        self.constraint_command = "ops.constraints(\"{type}\")\n".format(type=self.constraint_type)  # default plain
         self.algorithm_command = "ops.algorithm('Linear')\n"  # default linear
         self.analyze_command = "ops.analyze(1)\n"  # default 1 step
         self.analysis_command = "ops.analysis(\"{}\")\n".format(analysis_type)
@@ -1937,15 +1934,20 @@ class OspGrillageShell(OspGrillage):
     def __init__(self, bridge_name, long_dim, width, skew: Union[list, float, int], num_long_grid: int,
                  num_trans_grid: int, edge_beam_dist: Union[list, float, int],
                  mesh_type="Ortho", model="3D", **kwargs):
+        # input variables specific to shell model - see default parameters if not specified
+        self.offset_beam_y_dist = kwargs.get("offset_beam_y_dist",0)  # default 0
+        self.mesh_size_x = kwargs.get("mesh_size_x",1)  # default 1 unit meter
+        self.mesh_size_z = kwargs.get("mesh_size_z",1)  # default 1 unit meter
 
+        # model variables specific to Shell type
+        self.shell_element_command_list = []  # list of str for ops.element() shell command
+        self.constraint_type = "Transformation"  # constraint type to allow MP constraint objects
         # create mesh and model
         super().__init__(bridge_name, long_dim, width, skew, num_long_grid,
                          num_trans_grid, edge_beam_dist, mesh_type, model="3D", **kwargs)
 
-
     # ----------------------------------------------------------------------------------------------------------------
     # overwrite functions of base Mesh class - specific for
-
     def create_osp_model(self, pyfile=False):
         """
         Function to create model instance in OpenSees model space. If pyfile input is True, function creates an
@@ -2205,6 +2207,32 @@ class OspGrillageShell(OspGrillage):
                 # ele_command_list.append(ele_str)
         ele_command_dict[common_member_tag] = ele_command_list
         self.element_command_list.append(ele_command_dict)
+
+    # overwrite fix procedure
+    def _write_op_fix(self, mesh_obj):
+        """
+        Overwritten sub procedure to create ops.fix() command for
+        boundary condition definition in the grillage model. If pyfile is flagged true, writes
+        the ops.fix() command to py file instead.
+
+        """
+        if self.pyfile:
+            with open(self.filename, 'a') as file_handle:
+                file_handle.write("# Boundary condition implementation\n")
+        for node_tag, edge_group_num in mesh_obj.edge_support_nodes.items():
+
+            if edge_group_num == 0:  # 0 is edge of start of span
+                if self.pyfile:  # if writing py file
+                    with open(self.filename, 'a') as file_handle:
+                        file_handle.write("ops.fix({}, *{})\n".format(node_tag, self.fix_val_pin))
+                else:  # run instance
+                    ops.fix(node_tag, *self.fix_val_pin)
+            elif edge_group_num == 1:  # 1 is edge of end of span
+                if self.pyfile:  # if writing py file
+                    with open(self.filename, 'a') as file_handle:
+                        file_handle.write("ops.fix({}, *{})\n".format(node_tag, self.fix_val_roller_x))
+                else:  # run instance
+                    ops.fix(node_tag, *self.fix_val_roller_x)
 
     def _write_rigid_link(self):
         # loop all rigidLink command, write or eval rigid link command. note link_str is already formatted

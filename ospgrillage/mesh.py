@@ -5,6 +5,8 @@ information about the grillage mesh such as nodes, elements, and grids. Addition
 mesh grillages, either orthogonal or oblique. Unlike other modules, the constructor of Mesh class is handled exclusively
 by OspGrillage class.
 """
+import math
+
 from ospgrillage.static import *
 from collections import namedtuple
 
@@ -140,17 +142,21 @@ class Mesh:
         # ------------------------------------------------------------------------------------------
         # edge construction line 1
         self.start_edge_line = self.create_control_points(edge_ref_point=self.mesh_origin, width_z=self.width,
-                                               edge_width_a=self.edge_width_a, edge_width_b=self.edge_width_b,
-                                               edge_angle=self.skew_1,
-                                               num_long_beam=self.num_long_beam, model_plane_y=self.y_elevation)
+                                                          edge_width_a=self.edge_width_a,
+                                                          edge_width_b=self.edge_width_b,
+                                                          edge_angle=self.skew_1,
+                                                          num_long_beam=self.num_long_beam,
+                                                          model_plane_y=self.y_elevation)
 
         # ------------------------------------------------------------------------------------------
         # edge construction line 2
         end_point_z = self.sweep_path.get_line_function(self.long_dim)
-        self.end_edge_line = self.create_control_points(edge_ref_point=[self.long_dim, 0, end_point_z], width_z=self.width,
-                                             edge_width_a=self.edge_width_a, edge_width_b=self.edge_width_b,
-                                             edge_angle=self.skew_2,
-                                             num_long_beam=self.num_long_beam, model_plane_y=self.y_elevation)
+        self.end_edge_line = self.create_control_points(edge_ref_point=[self.long_dim, 0, end_point_z],
+                                                        width_z=self.width,
+                                                        edge_width_a=self.edge_width_a, edge_width_b=self.edge_width_b,
+                                                        edge_angle=self.skew_2,
+                                                        num_long_beam=self.num_long_beam,
+                                                        model_plane_y=self.y_elevation)
         # ------------------------------------------------------------------------------------------
         # Sweep nodes
         # nodes to be swept across sweep path varies based
@@ -180,7 +186,7 @@ class Mesh:
         # run section grouping for longitudinal and transverse members
         self._identify_member_groups()
 
-    def create_control_points(self,**kwargs):
+    def create_control_points(self, **kwargs):
         # base version creating standard node points of control points - either start or end edge -
         # standard correspond to base model technique - grillage with beam element
         return EdgeControlLine(**kwargs)
@@ -898,29 +904,35 @@ class EdgeControlLine:
         self.node_z_pair_list = []
         self.node_z_pair_list_value = []
         # get kwargs
-        self.shell_internal_grid_num = kwargs.get("shell_internal_grid_num",2)
-        self.shell_internal_spacing = kwargs.get("shell_internal_spacing",2)
-        self.shell_external_grid_num = kwargs.get("shell_external_grid_num",2)
-        self.shell_external_spacing = kwargs.get("shell_external_spacing",2)
 
         # calculations
-        # TESTING VARIABLES
         z_spacing = 0.445
+        mesh_z_spacing = 0.7
+        mesh_num_z = mesh_z_spacing
         # array containing z coordinate of edge construction line
         last_girder = (self.width_z - self.edge_width_b)  # coord of exterior
         nox_girder = np.linspace(start=self.edge_width_a, stop=last_girder, num=self.num_long_beam - 2)
         if self.feature == "standard":
             self.noz = np.hstack((np.hstack((0, nox_girder)), self.width_z))
         elif self.feature == "shell_link":
-            self.beam_position = np.hstack((np.hstack((0, nox_girder)), self.width_z)) # default noz representing beam position
+            self.beam_position = np.hstack(
+                (np.hstack((0, nox_girder)), self.width_z))  # default noz representing beam position
             shell_noz = [self.edge_ref_point[2]]  # first and last node z
             for beam_node_z in self.beam_position[1:-1]:
-                local_list = []
-                local_list += np.linspace(shell_noz[-1], beam_node_z - z_spacing, 2).tolist() # external
-                local_list += np.linspace(beam_node_z - z_spacing, beam_node_z + z_spacing, 2).tolist()[1:]
+                local_list = [] # create local list of control points (local to each beam group)
+                # create external control points between beam groups
+
+                num_points_external = math.ceil((beam_node_z - z_spacing - shell_noz[-1]) / mesh_z_spacing)
+                local_list += np.linspace(shell_noz[-1], beam_node_z - z_spacing, num_points_external+1).tolist()
+                # local_list += np.linspace(shell_noz[-1], beam_node_z - z_spacing, 2).tolist()  # external
+                # create internal control points within the beam group
+                num_points_internal = math.ceil(z_spacing * 2 / mesh_z_spacing)
+                local_list += np.linspace(beam_node_z - z_spacing, beam_node_z + z_spacing, num_points_internal+1).tolist()[1:]
                 self.node_z_pair_list_value.append([beam_node_z - z_spacing, beam_node_z + z_spacing])
                 shell_noz += local_list[1:]
-            shell_noz += np.linspace(shell_noz[-1], self.width_z, 2).tolist()[1:]
+            # create points between exterior beam to outer edge beam
+            num_points_external = math.ceil((self.width_z - shell_noz[-1]) / mesh_z_spacing)
+            shell_noz += np.linspace(shell_noz[-1], self.width_z, num_points_external+1).tolist()[1:]
             shell_noz.sort()
             self.noz = shell_noz  #
             self._get_shell_z_group_pair()
@@ -950,7 +962,7 @@ class EdgeControlLine:
     def _get_shell_z_group_pair(self):
         for node_z_pair in self.node_z_pair_list_value:
             # get first and second z group of paired z group corresponding to links to offset line element
-            list_index = [self.noz.index(node_z_pair[0]),self.noz.index(node_z_pair[1])]
+            list_index = [self.noz.index(node_z_pair[0]), self.noz.index(node_z_pair[1])]
             self.node_z_pair_list.append(list_index)
 
 
@@ -1009,6 +1021,35 @@ class SweepPath:
             pass
 
 
+# ---------------------------------------------------------------------------------------------------------------------
+# concrete classes of Mesh
+class BeamMesh(Mesh):
+    def __init__(self, long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
+                 skew_2, ext_to_int_a, ext_to_int_b, **kwargs):
+        """
+        Subclass for Mesh with beam. This class creates elements where:
+        - nodes of longitudinal beams are offset in global y direction
+        - nodes of transverse slab are offset in direction of element axial direction
+
+        :param long_dim:
+        :param width:
+        :param trans_dim:
+        :param edge_dist_a:
+        :param edge_dist_b:
+        :param num_trans_beam:
+        :param num_long_beam:
+        :param skew_1:
+        :param skew_2:
+        :param ext_to_int_a:
+        :param ext_to_int_b:
+        """
+        # instantiate variables specific for current mesh subclass
+
+        # super init to create mesh of grillage @ model plane = 0 using base class init
+        super().__init__(long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
+                         skew_2, ext_to_int_a, ext_to_int_b, **kwargs)
+
+
 class BeamLinkMesh(Mesh):
     def __init__(self, long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
                  skew_2, ext_to_int_a, ext_to_int_b, **kwargs):
@@ -1052,7 +1093,7 @@ class BeamLinkMesh(Mesh):
         node_i = self.node_spec[ele_nodes[0]]['coordinate']
         node_j = self.node_spec[ele_nodes[1]]['coordinate']
         def_l = find_min_x_dist([node_i], [node_j]).tolist()[0][0]  # distance between i and j, returned as 2D array
-        mid_node = [(node_i[0]+node_j[0])/2,(node_i[1]+node_j[1])/2,(node_i[2]+node_j[2])/2]
+        mid_node = [(node_i[0] + node_j[0]) / 2, (node_i[1] + node_j[1]) / 2, (node_i[2] + node_j[2]) / 2]
         vxz = self._get_vector_xz(node_i, node_j)
 
         # determine local offset of node based on element groups, get global offset for node i and j of geomtransf
@@ -1066,7 +1107,7 @@ class BeamLinkMesh(Mesh):
         elif self.node_spec[ele_nodes[1]]['x_group'] == self.node_spec[ele_nodes[0]]['x_group']:
             # calculate local offset
             offset_z = self.offset_z_dist  # z == cos
-            offset_x = (node_i[0]+node_j[0])/(node_i[2]+node_j[2]) * self.offset_z_dist
+            offset_x = (node_i[0] + node_j[0]) / (node_i[2] + node_j[2]) * self.offset_z_dist
             local_offset = [offset_x, self.y_elevation, offset_z]
         if local_offset:
             if find_min_x_dist([[a - b for a, b in zip(node_i, local_offset)]], [node_j]).tolist()[0][0] < def_l:
@@ -1087,7 +1128,7 @@ class BeamLinkMesh(Mesh):
 
 class ShellLinkMesh(Mesh):
     def __init__(self, long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
-                 skew_2, ext_to_int_a, ext_to_int_b, link_type="beam",**kwargs):
+                 skew_2, ext_to_int_a, ext_to_int_b, link_type="beam", **kwargs):
         """
         Subclass for mesh with offset beam members linked to grillage consisting of shell elements
 
@@ -1103,20 +1144,23 @@ class ShellLinkMesh(Mesh):
         :param ext_to_int_a:
         :param ext_to_int_b:
         """
-        # instantiate variables specific for current mesh subclass
+        # instantiate variables specific for shell mesh subclass
         self.long_ele_offset = []
         self.link_str_list = []
         self.link_type = link_type
         self.link_dict = dict()  # key is node tag c, val is list of master node r
-        self.offset_node_group_dict = dict() # key is node tag of offset node, val is beam group
+        self.offset_node_group_dict = dict()  # key is node tag of offset node, val is beam group
+        self.edge_support_nodes = dict()
+        # variables for support - the ends of beam offset elements
+        self.pinned_node_group = 0
+        self.roller_node_group = 1
         # get variables from keyword arguments
-        self.num_grid_external_master_node = kwargs.get("external_grids_between_master",1)
-        self.num_grid_internal_master_node = kwargs.get("internal_grids_between_master",1)
-        self.y_offset = kwargs.get("y_offset",0.449)
+
+        self.y_offset = kwargs.get("y_offset", 0.449)
 
         # create grillage mesh @ model plane y=0 using base class init
         super().__init__(long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
-                         skew_2, ext_to_int_a, ext_to_int_b,**kwargs)
+                         skew_2, ext_to_int_a, ext_to_int_b, **kwargs)
         # variables to store assignment counters after meshing of main model plane grid y = 0
         self.x_grid_to_x_dict = dict()  # key is x value (m), value is x grid number (for offset nodes)
         self.z_grid_to_z_dict = dict()  # key is z value (m), value is z grid number (for offset nodes)
@@ -1126,15 +1170,13 @@ class ShellLinkMesh(Mesh):
         # meshing procedure to create beam offset element and tie it with rigid links to master nodes of model plane y=0
         self._create_offset_beam_element()
 
-        # identify member groups of offset beam model plane
-
         pass
 
     # -----------------------------------------------------------------------------------------------------------------
     # Functions which are overwritten of that from base class to for specific shell type model
-    def create_control_points(self,**kwargs):
+    def create_control_points(self, **kwargs):
         feature = "shell_link"
-        return EdgeControlLine(**kwargs,feature=feature)
+        return EdgeControlLine(**kwargs, feature=feature)
 
     def _identify_common_z_group(self):
         """
@@ -1171,36 +1213,41 @@ class ShellLinkMesh(Mesh):
     # ----------------------------------------------------------------------------------------------------------------
     # sub procedures specific to shell meshes
     def _create_offset_beam_element(self):
+
         # sub procedure function to create beam elements based on offset nodes
         self._create_offset_nodes(ele_list=self.trans_ele)
         self._create_offset_nodes(ele_list=self.edge_span_ele)
 
         # create offset elements commands
-        for cNode,rNode_list in self.link_dict.items():
+        for cNode, rNode_list in self.link_dict.items():
             for rNode in rNode_list:
-                self._create_link_element(rNode=rNode,cNode=cNode)
+                self._create_link_element(rNode=rNode, cNode=cNode)
 
         # loop each beam group and create beam elements from these offset nodes
-        for beam_group in range(0,len(self.start_edge_line.node_z_pair_list)):
-            offset_node_tag = [k for k,v in self.offset_node_group_dict.items() if v == beam_group] # key is offset node
+        for beam_group in range(0, len(self.start_edge_line.node_z_pair_list)):
+            offset_node_tag = [k for k, v in self.offset_node_group_dict.items() if
+                               v == beam_group]  # key is offset node
             # sort offset node tag based on x longitudinal position
             x_coord_list = [self.node_spec[tag]['coordinate'][0] for tag in offset_node_tag]
             sorted_offset_tag = [x for _, x in sorted(zip(x_coord_list, offset_node_tag))]
+            # store first and last node tag as supports
+            self.edge_support_nodes.setdefault(sorted_offset_tag[0], self.pinned_node_group)  #
+            self.edge_support_nodes.setdefault(sorted_offset_tag[-1], self.roller_node_group)
             # assign long beam element between two nodes
-            for ind,node_tag in enumerate(sorted_offset_tag[:-1]):
+            for ind, node_tag in enumerate(sorted_offset_tag[:-1]):
                 n1 = node_tag
-                n2 = sorted_offset_tag[ind+1]
-                transf_tag = self._get_geo_transform_tag(ele_nodes=[n1,n2])
-                self.long_ele.append([self.element_counter, n1, n2, beam_group+self.global_z_grid_count, transf_tag])
+                n2 = sorted_offset_tag[ind + 1]
+                transf_tag = self._get_geo_transform_tag(ele_nodes=[n1, n2])
+                self.long_ele.append([self.element_counter, n1, n2, beam_group + self.global_z_grid_count, transf_tag])
                 self.element_counter += 1
 
             # add to grouping dict data
-            self.z_group_to_ele[beam_group+self.global_z_grid_count] = [ele for ele in self.long_ele if ele[3] ==
-                                                                        beam_group+self.global_z_grid_count]
+            self.z_group_to_ele[beam_group + self.global_z_grid_count] = [ele for ele in self.long_ele if ele[3] ==
+                                                                          beam_group + self.global_z_grid_count]
 
-    def _create_offset_nodes(self,ele_list):
+    def _create_offset_nodes(self, ele_list):
         # sub procedure function
-
+        # TODO fix
         x_count = "offset_beam"  # proxy
         z_count = "offset_beam"  # proxy
         # get groups of node master pairs
@@ -1224,8 +1271,9 @@ class ShellLinkMesh(Mesh):
                 self.link_dict.setdefault(self.node_counter, master_node_list)
 
                 # store node - beam group detail
-                beam_group = [ind for ind,i in enumerate([n1_z in z for z in z_pair]) if i][0] # numbering of beam group
-                self.offset_node_group_dict.setdefault(self.node_counter,beam_group) # c node is key, group num is val
+                beam_group = [ind for ind, i in enumerate([n1_z in z for z in z_pair]) if i][
+                    0]  # numbering of beam group
+                self.offset_node_group_dict.setdefault(self.node_counter, beam_group)  # c node is key, group num is val
                 self.node_counter += 1
 
     def _create_link_element(self, rNode, cNode):
@@ -1233,9 +1281,18 @@ class ShellLinkMesh(Mesh):
         # user mp constraint object
         # function to create ops rigid link command and store to variable
 
-        #link_str = "ops.element(\"twoNodeLink\",{eletag},*{eleNodes},'-mat',*[1,2,3,4,5,6],'-dir',*[1,2,3,4,5,6])\n"\
+        # link_str = "ops.element(\"twoNodeLink\",{eletag},*{eleNodes},'-mat',*[1,2,3,4,5,6],'-dir',*[1,2,3,4,5,6])\n"\
         #    .format(eletag=self.element_counter,eleNodes=[rNode,cNode])
-        #self.element_counter += 1
+        # self.element_counter += 1
         link_str = "ops.rigidLink(\"{linktype}\",{rNodetag},{cNodetag})\n".format(linktype=self.link_type,
-                                                                                rNodetag=cNode,cNodetag=rNode)
+                                                                                  rNodetag=cNode, cNodetag=rNode)
+
         self.link_str_list.append(link_str)
+
+# -----------------------------------------------------------------------------------------------------------------
+# concrete classes for mesh elements
+
+class ShellEdgeControlLine(EdgeControlLine):
+    def __init__(self):
+        # TODO
+        pass
