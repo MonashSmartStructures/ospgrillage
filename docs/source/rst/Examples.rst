@@ -236,7 +236,7 @@ run ``analyze()`` function.
 .. code-block:: python
 
     # Run analysis
-    simple_grid.analyze(all=True) # all load cases
+    simple_grid.analyze() # by default analyzes all load cases
 
 
 Getting results
@@ -244,7 +244,8 @@ Getting results
 Here is how to ``get_results()``. Also shown are a a few ways to get output results with differnt arguments.
 
 .. code-block:: python
-    results = simple_grid.get_results()
+    results = simple_grid.get_results() # gets basic results
+    combination_results = simple_grid.get_results(get_combination=True) # gets load combination results
 
 Data processing
 ^^^^^^^^^^^^^^^^^^^

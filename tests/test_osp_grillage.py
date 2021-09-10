@@ -159,7 +159,8 @@ def test_model_instance(bridge_model_42_negative):
     og.plt.show()
     assert og.ops.nodeCoord(18)  # check if model node exist in OpenSees model space
     og.ops.wipe()
-
+    a = example_bridge.get_element(member="exterior_main_beam_2",options="nodes")
+    print(a)
 
 #  test creating shell model procedure successful
 def test_create_shell_model(shell_bridge):

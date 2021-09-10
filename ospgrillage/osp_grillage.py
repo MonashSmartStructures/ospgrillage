@@ -1594,31 +1594,63 @@ class OspGrillage:
         select_edge_group = kwargs.get("edge_group_num", None)
 
         return_list = []
+        sorted_return_list = []
+        extracted_ele = []
         # options
         options = kwargs.get("options", None)  # similar to ops_vis, "nodes","element","node_i","node_j"
         z_flag, x_flag, edge_flag, common_member_tag = self._create_standard_element_list(namestring=namestring)
 
+        # get z_group num from common member tag
+
+        if isinstance(common_member_tag,int):
+            select_z_group = self.Mesh_obj.common_z_group_element[common_member_tag]
+
+
         if z_flag:
-            if select_z_group in self.Mesh_obj.common_z_group_element[common_member_tag]:
-                extracted_ele = self.Mesh_obj.z_group_to_ele[select_z_group]
+            if len(select_z_group)==1: # get specific elements of group number
+                extracted_ele = self.Mesh_obj.z_group_to_ele[select_z_group[0]]
+            else:
+                raise Exception("Query beam group has more than 1 z group: Hint specify target group integer via kwarg-"
+                                " \"z_group_num\" :{}"
+                                .format(repr(self.Mesh_obj.common_z_group_element[common_member_tag])))
+            # else: # for interior beams, get list of
+            #     for interior_beam_ele_z_group in self.Mesh_obj.common_z_group_element[common_member_tag]:
+            #         extracted_ele = self.Mesh_obj.z_group_to_ele[interior_beam_ele_z_group]
 
         elif x_flag:
+            # TODO check if edge and trans member necessary
+            if select_x_group:
+                extracted_ele = self.Mesh_obj.x_group_to_ele[select_z_group]
+            else:
+                extracted_ele = [trans_ele for trans_ele in self.Mesh_obj.trans_ele ]
             if select_x_group in self.Mesh_obj.common_z_group_element[common_member_tag]:
                 extracted_ele = self.Mesh_obj.z_group_to_ele[select_z_group]
         elif edge_flag:
-            if select_edge_group in self.Mesh_obj.common_z_group_element[common_member_tag]:
+            if select_edge_group:
+                # check if ele[3] (the edge group number) matches select_edge_group
+                extracted_ele = [ele for ele in self.Mesh_obj.edge_span_ele if ele[3] is select_edge_group] # ele[3]
+            else: # extract all edge ele
+
                 extracted_ele = self.Mesh_obj.z_group_to_ele[select_z_group]
 
-        # parse options on extracted ele
-        # TODO
+        # parse options on extracted ele - and sort according to node position
         if options == "nodes":
-            return_list = [i for i in extracted_ele]
+            first_list = [i[1] for i in extracted_ele]
+            second_list = [i[2] for i in extracted_ele]
+            return_list = first_list + list(set(second_list) - set(first_list))
+            # sort based on x coordinate
+            node_x = [self.Mesh_obj.node_spec[tag]['coordinate'][0] for tag in return_list]
+            sorted_return_list = [x for _,x in sorted(zip(node_x,return_list))]
         elif options == "node_i":
-            return_list = [i for i in extracted_ele]
+            return_list = [i[1] for i in extracted_ele]
         elif options == "node_j":
-            return_list = [i for i in extracted_ele]
+            return_list = [i[2] for i in extracted_ele]
+        elif options =="element":
+            return_list = [i[0] for i in extracted_ele]
+        else:
+            raise Exception("Options not defined: Hint pass option=  \"nodes\",\"element\",\"node_i\",\"node_j\"")
 
-
+        return sorted_return_list
 # ---------------------------------------------------------------------------------------------------------------------
 class Analysis:
     """

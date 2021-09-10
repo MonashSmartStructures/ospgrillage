@@ -725,9 +725,9 @@ def test_28m_bridge(ref_28m_bridge):
     # add a load combination
     bridge_28.add_load_combination(load_combination_name="factored_point",
                                    load_case_and_factor_dict={"point_load_case": 1.5})
-    bridge_28.analyze(all=True)
+    bridge_28.analyze()
 
-    results = bridge_28.get_results(get_combinations=False)
+    results = bridge_28.get_results(get_combinations=True)
     # extract points along mid span, compare dY with those from Lusas model
     print(og.ops.nodeDisp(57))
     print(og.ops.nodeDisp(63))
