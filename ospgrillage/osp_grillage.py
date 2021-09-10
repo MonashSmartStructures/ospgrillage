@@ -1170,7 +1170,7 @@ class OspGrillage:
         # use getter for line load, 4 times for each point
         # between 4 dictionaries record the common grids as having the corners of the patch - to be evaluated different
         bound_node, bound_grid = self._get_bounded_nodes(patch_load_obj)
-        patch_load_str = [] # final return str list
+        patch_load_str = []  # final return str list
         # assign patch for grids fully bounded by patch
         for grid in bound_grid:
             nodes = self.Mesh_obj.grid_number_dict[grid]  # read grid nodes
@@ -1372,10 +1372,10 @@ class OspGrillage:
         all_flag = True  # Default true
         selected_load_case: list = kwargs.get("load_case", None)  #
         if selected_load_case:
-            all_flag = False # overwrite all flag to be false
+            all_flag = False  # overwrite all flag to be false
         selected_moving_load_lc_list = None
         # check if kwargs other than load_case are specified
-        if all([kwargs,selected_load_case is None]):
+        if all([kwargs, selected_load_case is None]):
             raise Exception("Error in analyze(options): only accepts load_case= ")
 
         # if selected_load_case kwargs given, filter and select load case from load case list to run
@@ -1383,7 +1383,7 @@ class OspGrillage:
         if isinstance(selected_load_case, list):
             selected_basic_lc = [lc for lc in self.load_case_list if lc['name'] in selected_load_case]
             selected_moving_load_lc_list = [lc for ml_name, lc in self.moving_load_case_dict.items() if
-                                            ml_name in selected_load_case] # list of load case
+                                            ml_name in selected_load_case]  # list of load case
 
         # if single string of load case name
         elif isinstance(selected_load_case, str):
@@ -1456,24 +1456,26 @@ class OspGrillage:
         load_comb = {"name_of_load_case_1":1.2, "name_of_load_case_2": 1.5}
 
         """
+        ind = None
         load_case_dict_list = []  # list of dict: structure of dict See line
         # create dict with key (combination name) and val (list of dict of load cases)
-        for load_case_name, load_factor in load_case_and_factor_dict.items():
-            # lookup the defined load cases for load_case_name
+        for load_case_name, combination_load_factor in load_case_and_factor_dict.items():
+            # lookup basic load cases for load_case_name
             a = [index for (index, val) in enumerate(self.load_case_list) if val['name'] == load_case_name]
+            # check if a placeholder variable exist, if yes, ind is a load case
             if a:
                 ind = a[0]
-            else:
-                ind = None
-                continue
+                load_case_dict = deepcopy(self.load_case_list[ind])
+                load_case_dict['load_factor'] = combination_load_factor
+                load_case_dict_list.append(load_case_dict)
+            # else look up moving load cases
+            elif load_case_name in self.moving_load_case_dict.keys():
+                for inc_load_case_dict in self.moving_load_case_dict[load_case_name]:
+                    inc_load_case_dict['load_factor'] = combination_load_factor
+                    load_case_dict_list.append(inc_load_case_dict)
+
             # get the dict from self.load_case_list
             # self.load_case_list has this format [{'loadcase':LoadCase object, 'load_command': list of str}...]
-            load_case_dict = deepcopy(self.load_case_list[ind])
-
-            # update load factor of load_case
-            load_case_dict['load_factor'] = load_factor
-            # add load case dict to new list for load combination
-            load_case_dict_list.append(load_case_dict)
 
         self.load_combination_dict.setdefault(load_combination_name, load_case_dict_list)
         print("Load Combination: {} created".format(load_combination_name))
@@ -1548,23 +1550,30 @@ class OspGrillage:
             for load_comb_name, load_case_dict_list in self.load_combination_dict.items():  # {0:[{'loadcase':LoadCase object, 'load_command': list of str}
                 print("Obtaining load combinations for {}....".format(load_comb_name))
                 summation_array = None  # instantiate
+                factored_array = None  # instantiate
                 # check and add load cases to load combinations for basic non moving load cases
                 for load_case_dict in load_case_dict_list:  # [{'loadcase':LoadCase object, 'load_command': list of str}.]
                     load_case_name = load_case_dict['loadcase'].name
                     # if first load case, the first extracted array becomes the summation array
                     if summation_array is None:
                         summation_array = basic_da.sel(Loadcase=load_case_name) * load_case_dict['load_factor']
-                    else: # add to summation array
+                        factored_array = basic_da.sel(Loadcase=load_case_name) * load_case_dict['load_factor']
+
+                    else:  # add to summation array
                         summation_array += basic_da.sel(Loadcase=load_case_name) * load_case_dict['load_factor']
+                        factored_array = xr.concat([factored_array,
+                                                    basic_da.sel(Loadcase=load_case_name) * load_case_dict[
+                                                        'load_factor']]
+                                                   , dim="Loadcase")
                     # check and add load cases to load combinations for moving load cases
                     # get the list of increm load case correspond to matching moving load case of load combination
-                    list_of_load_case_dict = self.moving_load_case_dict.get(load_case_name, [])
-                    for incremental_load_case in list_of_load_case_dict:
-                        # apply load factor to all incremental load cases, then write to placeholder variable new_ma_list
-                        # new_ma_list.append(
-                        summation_array += basic_da.sel(Loadcase=incremental_load_case["name"]) * load_case_dict['load_factor']
+                    # list_of_load_case_dict = self.moving_load_case_dict.get(load_case_name, [])
+                    # for incremental_load_case in list_of_load_case_dict:
+                    #     # apply load factor to all incremental load cases, then write to placeholder variable new_ma_list
+                    #     # new_ma_list.append(
+                    #     summation_array += basic_da.sel(Loadcase=incremental_load_case["name"]) * load_case_dict['load_factor']
 
-                output_load_comb_dict[load_comb_name] = summation_array
+                output_load_comb_dict[load_comb_name] = factored_array
             return output_load_comb_dict
         else:
             # return raw data array for manual post processing
@@ -1629,7 +1638,7 @@ class Analysis:
 
     def __init__(self, analysis_name: str, ops_grillage_name: str, pyfile: bool, node_counter, ele_counter,
                  analysis_type='Static',
-                 time_series_counter=1, pattern_counter=1,**kwargs):
+                 time_series_counter=1, pattern_counter=1, **kwargs):
         self.analysis_name = analysis_name
         self.ops_grillage_name = ops_grillage_name
         self.time_series_tag = None
@@ -1643,7 +1652,7 @@ class Analysis:
         self.time_series_counter = time_series_counter
         self.plain_counter = pattern_counter
         # variables from keyword args
-        self.constraint_type = kwargs.get("constraint_type","Plain") # Default plain
+        self.constraint_type = kwargs.get("constraint_type", "Plain")  # Default plain
         # Variables recording results of analysis
         self.node_disp = dict()  # key node tag, val list of dof
         self.ele_force = dict()  # key ele tag, val list of forces on nodes of ele[ order according to ele tag]
@@ -1715,7 +1724,7 @@ class Analysis:
         else:
             eval(self.wipe_command)
             if self.plain_counter - 1 != 1:  # plain counter increments by 1 upon self.pattern_command function, so -1 here
-                for count in range(1,self.plain_counter-1):
+                for count in range(1, self.plain_counter - 1):
                     remove_command = self.remove_pattern_command.format(count)
                     eval(remove_command)  # remove previous load pattern if any
             for load_dict in self.load_cases_dict_list:
@@ -1751,7 +1760,7 @@ class Analysis:
                 ele_force = ops.eleResponse(ele_tag, 'localForces')
                 self.ele_force.setdefault(ele_tag, ele_force)
                 global_ele_force = ops.eleResponse(ele_tag, 'Forces')
-                self.global_ele_force.setdefault(ele_tag,global_ele_force)
+                self.global_ele_force.setdefault(ele_tag, global_ele_force)
         else:
             print("OspGrillage is at output mode, pyfile = True. No results are extracted")
 
@@ -1781,7 +1790,8 @@ class Results:
             node_disp = analysis_obj.node_disp
             node_force = dict.fromkeys(analysis_obj.node_disp.keys(), [0, 0, 0, 0, 0, 0])  # copy the dict keys
             ele_force_dict = dict.fromkeys(list(ops.getEleTags()))  # dict key is element tag, value is ele force from
-            global_ele_force_dict = dict.fromkeys(list(ops.getEleTags()))  # dict key is element tag, value is ele force from
+            global_ele_force_dict = dict.fromkeys(
+                list(ops.getEleTags()))  # dict key is element tag, value is ele force from
             ele_nodes_dict = dict.fromkeys(list(ops.getEleTags()))
             # analysis_obj.ele_force
             # extract element forces and sort them to according to nodes - summing in the process
@@ -1797,10 +1807,10 @@ class Results:
             # extract element forces and sort them to according to nodes - summing in the process
             for ele_num, ele_forces in analysis_obj.global_ele_force.items():
                 global_ele_force_dict.update({ele_num: ele_forces})
-                ele_nodes = ops.eleNodes(ele_num)                 # get ele nodes
+                ele_nodes = ops.eleNodes(ele_num)  # get ele nodes
                 ele_nodes_dict.update({ele_num: ele_nodes})
             self.basic_load_case_record_global_forces.setdefault(analysis_obj.analysis_name,
-                                                   [node_disp, global_ele_force_dict, ele_nodes_dict])
+                                                                 [node_disp, global_ele_force_dict, ele_nodes_dict])
         # if moving load, input is a list of analysis obj
         elif list_of_inc_analysis:
             inc_load_case_record = dict()
@@ -1834,7 +1844,7 @@ class Results:
                 for ele_num, ele_forces in inc_analysis_obj.ele_force.items():
                     ele_force_global_dict.update({ele_num: ele_forces})
                 inc_load_case_global_force_record.setdefault(inc_analysis_obj.analysis_name,
-                                                [node_disp, ele_force_global_dict, ele_nodes_dict])
+                                                             [node_disp, ele_force_global_dict, ele_nodes_dict])
 
             self.moving_load_case_record.append(inc_load_case_record)
             self.moving_load_case_record_global_forces.append(inc_load_case_global_force_record)
@@ -1935,9 +1945,9 @@ class OspGrillageShell(OspGrillage):
                  num_trans_grid: int, edge_beam_dist: Union[list, float, int],
                  mesh_type="Ortho", model="3D", **kwargs):
         # input variables specific to shell model - see default parameters if not specified
-        self.offset_beam_y_dist = kwargs.get("offset_beam_y_dist",0)  # default 0
-        self.mesh_size_x = kwargs.get("mesh_size_x",1)  # default 1 unit meter
-        self.mesh_size_z = kwargs.get("mesh_size_z",1)  # default 1 unit meter
+        self.offset_beam_y_dist = kwargs.get("offset_beam_y_dist", 0)  # default 0
+        self.mesh_size_x = kwargs.get("mesh_size_x", 1)  # default 1 unit meter
+        self.mesh_size_z = kwargs.get("mesh_size_z", 1)  # default 1 unit meter
 
         # model variables specific to Shell type
         self.shell_element_command_list = []  # list of str for ops.element() shell command

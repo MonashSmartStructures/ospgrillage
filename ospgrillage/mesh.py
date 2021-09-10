@@ -901,7 +901,7 @@ class EdgeControlLine:
         self.feature = feature
 
         # for shell
-        self.node_z_pair_list = []
+        self.z_group_master_pair_list = []
         self.node_z_pair_list_value = []
         # get kwargs
 
@@ -963,7 +963,7 @@ class EdgeControlLine:
         for node_z_pair in self.node_z_pair_list_value:
             # get first and second z group of paired z group corresponding to links to offset line element
             list_index = [self.noz.index(node_z_pair[0]), self.noz.index(node_z_pair[1])]
-            self.node_z_pair_list.append(list_index)
+            self.z_group_master_pair_list.append(list_index)
 
 
 class SweepPath:
@@ -1224,7 +1224,7 @@ class ShellLinkMesh(Mesh):
                 self._create_link_element(rNode=rNode, cNode=cNode)
 
         # loop each beam group and create beam elements from these offset nodes
-        for beam_group in range(0, len(self.start_edge_line.node_z_pair_list)):
+        for beam_group in range(0, len(self.start_edge_line.z_group_master_pair_list)):
             offset_node_tag = [k for k, v in self.offset_node_group_dict.items() if
                                v == beam_group]  # key is offset node
             # sort offset node tag based on x longitudinal position
@@ -1251,13 +1251,13 @@ class ShellLinkMesh(Mesh):
         x_count = "offset_beam"  # proxy
         z_count = "offset_beam"  # proxy
         # get groups of node master pairs
-        z_pair = self.start_edge_line.node_z_pair_list
+        z_pair = self.start_edge_line.z_group_master_pair_list
         for ele in ele_list:
             n1 = self.node_spec[ele[1]]['coordinate']
             n2 = self.node_spec[ele[2]]['coordinate']
             n1_z = self.node_spec[ele[1]]['z_group']
             n2_z = self.node_spec[ele[2]]['z_group']
-            # check
+            # check if z group matches element's z group
             if any([a and b for (a, b) in zip([n1_z in z for z in z_pair], [n2_z in z for z in z_pair])]):
                 # create offset node
                 mid_pt = [(a + b) / 2 for a, b in zip(n1, n2)]

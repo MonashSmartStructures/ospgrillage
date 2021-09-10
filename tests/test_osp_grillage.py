@@ -154,8 +154,9 @@ def shell_link_bridge(ref_bridge_properties):
 # test creating a basic beam grillage model
 def test_model_instance(bridge_model_42_negative):
     example_bridge = bridge_model_42_negative
-    og.opsplt.plot_model("nodes")
-
+    #og.opsplt.plot_model("nodes")
+    og.opsv.plot_model(az_el=(-90, 0))
+    og.plt.show()
     assert og.ops.nodeCoord(18)  # check if model node exist in OpenSees model space
     og.ops.wipe()
 

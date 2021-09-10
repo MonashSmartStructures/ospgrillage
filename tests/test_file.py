@@ -563,9 +563,11 @@ def test_moving_compound_load(bridge_model_42_negative):
     truck.add_loads(load_obj=M1600)
 
     example_bridge.add_load_case(truck)
-    example_bridge.analyze(all=True)
-    results = example_bridge.get_results()
-    print("finish test compound moving load")
+    # add load combination
+    example_bridge.add_load_combination(load_combination_name="ULS",load_case_and_factor_dict={"Truck 1":2})
+    example_bridge.analyze()
+    results = example_bridge.get_results(get_combinations=True)
+    print(results)
 
 
 # test when users add a load type defined using local coordinates, and passed as inputs to loadcase without,
