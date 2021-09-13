@@ -930,13 +930,13 @@ def test_simple_grid():
     simply_grid.add_load_case(test_case)  # adding load case to grillage model
     simply_grid.add_load_combination("ULS", {test_case.name: 2})
     print(simply_grid.load_case_list[0]['load_command'])
-    simply_grid.analyze(all=True)
+    simply_grid.analyze()
     og.opsv.plot_defo()
 
     og.plt.show()
     minY, maxY = og.opsv.section_force_diagram_3d('Mz', {}, 1)
     og.plt.show()
-    results = simply_grid.get_results(get_combinations=False)
+    results = simply_grid.get_results(combinations={test_case.name: 2})
     print(results)
     #print(results.sel(Node=12))
     print(maxY, minY)

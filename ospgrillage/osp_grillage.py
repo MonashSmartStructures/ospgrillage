@@ -1583,18 +1583,17 @@ class OspGrillage:
                 summation_array = None  # instantiate
                 factored_array = None  # instantiate
                 # check and add load cases to load combinations for basic non moving load cases
-                for load_case_dict in load_case_dict_list:  # [{'loadcase':LoadCase object, 'load_command': list of str}.]
-                    load_case_name = load_case_dict['loadcase'].name
+                for load_case_name,load_factor in load_case_dict_list.items():  # [{'loadcase':LoadCase object, 'load_command': list of str}.]
+                    #load_case_name = load_case_dict['loadcase'].name
                     # if first load case, the first extracted array becomes the summation array
                     if summation_array is None:
-                        summation_array = basic_da.sel(Loadcase=load_case_name) * load_case_dict['load_factor']
-                        factored_array = basic_da.sel(Loadcase=load_case_name) * load_case_dict['load_factor']
+                        summation_array = basic_da.sel(Loadcase=load_case_name) * load_factor
+                        factored_array = basic_da.sel(Loadcase=load_case_name) * load_factor
 
                     else:  # add to summation array
-                        summation_array += basic_da.sel(Loadcase=load_case_name) * load_case_dict['load_factor']
+                        summation_array += basic_da.sel(Loadcase=load_case_name) * load_factor
                         factored_array = xr.concat([factored_array,
-                                                    basic_da.sel(Loadcase=load_case_name) * load_case_dict[
-                                                        'load_factor']]
+                                                    basic_da.sel(Loadcase=load_case_name)* load_factor]
                                                    , dim="Loadcase")
                     # check and add load cases to load combinations for moving load cases
                     # get the list of increm load case correspond to matching moving load case of load combination
