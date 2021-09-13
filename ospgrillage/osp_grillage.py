@@ -757,7 +757,7 @@ class OspGrillage:
         return node_list, grid  # grid = grid number
 
     # Getter for Line loads nodes
-    def _get_line_load_nodes(self, line_load_obj):
+    def _get_line_load_nodes(self, line_load_obj=None,list_of_load_vertices=None):
         # from starting point of line load
         # initiate variables
         next_grid = []
@@ -769,11 +769,21 @@ class OspGrillage:
         # colinear_spec has the following properties: key (ele number), [point1, point2]
         intersect_spec = dict()  # a sub dict for characterizing the line segment's intersecting points within grid
         grid_inter_points = []
+        # process inputs
+        if line_load_obj is None and list_of_load_vertices is not None:
+            start_load_vertex = list_of_load_vertices[0] # first point is start point
+            end_load_vertex = list_of_load_vertices[1] # second point is end point
+        elif line_load_obj is not None and list_of_load_vertices is None:
+            start_load_vertex = line_load_obj.load_point_1
+            end_load_vertex = line_load_obj.line_end_point
+        else:
+            raise Exception("Error is defining points of line/patch on grillage: hint check load points vertices of "
+                            "load obj")
         # sub_dict has the following keys:
         # {bound: , long_intersect: , trans_intersect, edge_intersect, ends:}
         # find grids where start point of line load lies in
-        start_nd, start_grid = self._get_point_load_nodes(line_load_obj.load_point_1)
-        last_nd, last_grid = self._get_point_load_nodes(line_load_obj.line_end_point)
+        start_nd, start_grid = self._get_point_load_nodes(start_load_vertex)
+        last_nd, last_grid = self._get_point_load_nodes(end_load_vertex)
 
         line_grid_intersect = dict()
         # loop each grid check if line segment lies in grid
@@ -790,7 +800,8 @@ class OspGrillage:
 
             Rz, Rx, Redge, R_z_col, R_x_col, R_edge_col = self._get_intersecting_elements(grid_tag, start_grid,
                                                                                           last_grid,
-                                                                                          line_load_obj,
+                                                                                          start_load_vertex,
+                                                                                          end_load_vertex,
                                                                                           long_ele_index,
                                                                                           trans_ele_index,
                                                                                           edge_ele_index)
@@ -845,17 +856,17 @@ class OspGrillage:
                 # check if both points are in grid
 
 
-            if check_point_in_grid(line_load_obj.load_point_1, point_tuple_list):
+            if check_point_in_grid(start_load_vertex, point_tuple_list):
                 #int_list.setdefault("ends", [[line_load_obj.load_point_1.x, line_load_obj.load_point_1.y,
                                        #       line_load_obj.load_point_1.z]])
-                int_list["ends"].append([line_load_obj.load_point_1.x, line_load_obj.load_point_1.y,
-                                              line_load_obj.load_point_1.z])
+                int_list["ends"].append([start_load_vertex.x, start_load_vertex.y,
+                                              start_load_vertex.z])
 
-            if check_point_in_grid(line_load_obj.line_end_point, point_tuple_list):
+            if check_point_in_grid(end_load_vertex, point_tuple_list):
                 #int_list.setdefault("ends", [[line_load_obj.line_end_point.x, line_load_obj.line_end_point.y,
                             #                  line_load_obj.line_end_point.z]])
-                int_list["ends"].append([line_load_obj.line_end_point.x, line_load_obj.line_end_point.y,
-                                              line_load_obj.line_end_point.z])
+                int_list["ends"].append([end_load_vertex.x, end_load_vertex.y,
+                                              end_load_vertex.z])
             else:
                 int_list.setdefault("ends", [])
         # loop to remove empty entries
@@ -884,7 +895,7 @@ class OspGrillage:
         return edited_dict, colinear_spec
 
     # private function to find intersection points of line/patch edge within grid
-    def _get_intersecting_elements(self, current_grid, line_start_grid, line_end_grid, line_load_obj, long_ele_index,
+    def _get_intersecting_elements(self, current_grid, line_start_grid, line_end_grid, start_point,end_point, long_ele_index,
                                    trans_ele_index, edge_ele_index):
         # instantiate variables
         R_z = []  # variables with _ are elements of the main variable without _ i.e. R_z is an element of Rz
@@ -897,8 +908,8 @@ class OspGrillage:
         R_z_col = []
         R_edge_col = []
         # get line segment - p_1 and p_2 correspond to start and end point of line
-        p_1 = line_load_obj.load_point_1
-        p_2 = line_load_obj.line_end_point
+        p_1 = start_point # start point of line
+        p_2 = end_point
         # get line equation for checking intersections
         L2 = line([p_1.x, p_1.z], [p_2.x, p_2.z])
         # loop through long elements in grid, find intersection points
@@ -1220,10 +1231,10 @@ class OspGrillage:
         # apply patch for full bound grids completed
 
         # search the intersecting grids using line load function
-        intersect_grid_1, _ = self._get_line_load_nodes(patch_load_obj.line_1)
-        intersect_grid_2, _ = self._get_line_load_nodes(patch_load_obj.line_2)
-        intersect_grid_3, _ = self._get_line_load_nodes(patch_load_obj.line_3)
-        intersect_grid_4, _ = self._get_line_load_nodes(patch_load_obj.line_4)
+        intersect_grid_1, _ = self._get_line_load_nodes(list_of_load_vertices=[patch_load_obj.load_point_1,patch_load_obj.load_point_2])
+        intersect_grid_2, _ = self._get_line_load_nodes(list_of_load_vertices=[patch_load_obj.load_point_2,patch_load_obj.load_point_3])
+        intersect_grid_3, _ = self._get_line_load_nodes(list_of_load_vertices=[patch_load_obj.load_point_3,patch_load_obj.load_point_4])
+        intersect_grid_4, _ = self._get_line_load_nodes(list_of_load_vertices=[patch_load_obj.load_point_4,patch_load_obj.load_point_1])
         # merging process of the intersect grid dicts
         merged = check_dict_same_keys(intersect_grid_1, intersect_grid_2)
         merged = check_dict_same_keys(merged, intersect_grid_3)
@@ -1308,7 +1319,7 @@ class OspGrillage:
                                 nested_list_of_load.trans_beam_ele_load_flag]):
                             load_str += self._assign_beam_ele_line_load(line_load_obj=nested_list_of_load)
                         else:
-                            line_grid_intersect, line_ele_colinear = self._get_line_load_nodes(
+                            line_grid_intersect, line_ele_colinear = self._get_line_load_nodes(line_load_obj=
                                 nested_list_of_load)  # returns self.line_grid_intersect
                             self.global_line_int_dict.append(line_grid_intersect)
                             load_str += self._assign_line_to_four_node(nested_list_of_load,
@@ -1329,7 +1340,7 @@ class OspGrillage:
                     if any([load_obj.long_beam_ele_load_flag, load_obj.trans_beam_ele_load_flag]):
                         load_str += self._assign_beam_ele_line_load(line_load_obj=load_obj)
                     else:
-                        line_grid_intersect, line_ele_colinear = self._get_line_load_nodes(
+                        line_grid_intersect, line_ele_colinear = self._get_line_load_nodes(line_load_obj=
                             load_obj)  # returns self.line_grid_intersect
                         self.global_line_int_dict.append(line_grid_intersect)
                         load_str += self._assign_line_to_four_node(load_obj, line_grid_intersect=line_grid_intersect,

@@ -332,31 +332,31 @@ class Loads:
             self.load_point_8 = self.load_point_8._replace(x=self.load_point_8.x + ref_point.x,
                                                            z=self.load_point_8.z + ref_point.z) if self.load_point_8 is \
                                                                                                    not None else self.load_point_8
-        else:  # set global position by movign local coordinates by x (global) and z (global)
-            self.load_point_1 = self.local_load_point_1._replace(x=self.local_load_point_1.x + ref_point.x,
-                                                                 z=self.local_load_point_1.z + ref_point.z) if self.local_load_point_1 is \
-                                                                                                               not None else self.local_load_point_1
-            self.load_point_2 = self.local_load_point_2._replace(x=self.local_load_point_2.x + ref_point.x,
-                                                                 z=self.local_load_point_2.z + ref_point.z) if self.local_load_point_2 is \
-                                                                                                               not None else self.local_load_point_2
-            self.load_point_3 = self.local_load_point_3._replace(x=self.local_load_point_3.x + ref_point.x,
-                                                                 z=self.local_load_point_3.z + ref_point.z) if self.local_load_point_3 is \
-                                                                                                               not None else self.local_load_point_3
-            self.load_point_4 = self.local_load_point_4._replace(x=self.local_load_point_4.x + ref_point.x,
-                                                                 z=self.local_load_point_4.z + ref_point.z) if self.local_load_point_4 is \
-                                                                                                               not None else self.local_load_point_4
-            self.load_point_5 = self.local_load_point_5._replace(x=self.local_load_point_5.x + ref_point.x,
-                                                                 z=self.local_load_point_5.z + ref_point.z) if self.local_load_point_5 is \
-                                                                                                               not None else self.local_load_point_5
-            self.load_point_6 = self.local_load_point_6._replace(x=self.local_load_point_6.x + ref_point.x,
-                                                                 z=self.local_load_point_6.z + ref_point.z) if self.local_load_point_6 is \
-                                                                                                               not None else self.local_load_point_6
-            self.load_point_7 = self.local_load_point_7._replace(x=self.local_load_point_7.x + ref_point.x,
-                                                                 z=self.local_load_point_7.z + ref_point.z) if self.local_load_point_7 is \
-                                                                                                               not None else self.local_load_point_7
-            self.load_point_8 = self.local_load_point_8._replace(x=self.local_load_point_8.x + ref_point.x,
-                                                                 z=self.local_load_point_8.z + ref_point.z) if self.local_load_point_8 is \
-                                                                                                               not None else self.local_load_point_8
+        # else:  # set global position by movign local coordinates by x (global) and z (global)
+        #     self.load_point_1 = self.local_load_point_1._replace(x=self.local_load_point_1.x + ref_point.x,
+        #                                                          z=self.local_load_point_1.z + ref_point.z) if self.local_load_point_1 is \
+        #                                                                                                        not None else self.local_load_point_1
+        #     self.load_point_2 = self.local_load_point_2._replace(x=self.local_load_point_2.x + ref_point.x,
+        #                                                          z=self.local_load_point_2.z + ref_point.z) if self.local_load_point_2 is \
+        #                                                                                                        not None else self.local_load_point_2
+        #     self.load_point_3 = self.local_load_point_3._replace(x=self.local_load_point_3.x + ref_point.x,
+        #                                                          z=self.local_load_point_3.z + ref_point.z) if self.local_load_point_3 is \
+        #                                                                                                        not None else self.local_load_point_3
+        #     self.load_point_4 = self.local_load_point_4._replace(x=self.local_load_point_4.x + ref_point.x,
+        #                                                          z=self.local_load_point_4.z + ref_point.z) if self.local_load_point_4 is \
+        #                                                                                                        not None else self.local_load_point_4
+        #     self.load_point_5 = self.local_load_point_5._replace(x=self.local_load_point_5.x + ref_point.x,
+        #                                                          z=self.local_load_point_5.z + ref_point.z) if self.local_load_point_5 is \
+        #                                                                                                        not None else self.local_load_point_5
+        #     self.load_point_6 = self.local_load_point_6._replace(x=self.local_load_point_6.x + ref_point.x,
+        #                                                          z=self.local_load_point_6.z + ref_point.z) if self.local_load_point_6 is \
+        #                                                                                                        not None else self.local_load_point_6
+        #     self.load_point_7 = self.local_load_point_7._replace(x=self.local_load_point_7.x + ref_point.x,
+        #                                                          z=self.local_load_point_7.z + ref_point.z) if self.local_load_point_7 is \
+        #                                                                                                        not None else self.local_load_point_7
+        #     self.load_point_8 = self.local_load_point_8._replace(x=self.local_load_point_8.x + ref_point.x,
+        #                                                          z=self.local_load_point_8.z + ref_point.z) if self.local_load_point_8 is \
+        #                                                                                                        not None else self.local_load_point_8
 
     def apply_load_factor(self, factor=1):
         """
@@ -607,7 +607,10 @@ class PatchLoading(Loads):
                             "patch load")
         # get patch min dimension
         self.patch_min_dim = None  # instantiate
+        # procedure to define lines of patch
+        self._define_patch_edge_lines()
 
+    def _define_patch_edge_lines(self):
         # create each line
         self.line_1 = LineLoading( point1=self.load_point_1, point2=self.load_point_2)
         self.line_2 = LineLoading( point1=self.load_point_2, point2=self.load_point_3)

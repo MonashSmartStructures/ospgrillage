@@ -698,7 +698,7 @@ def test_1m_wide_bridge(ref_bridge_properties):
 
     # construct grillage model
     example_bridge = og.OspGrillage(bridge_name="SuperT_10m", long_dim=1, width=1, skew=0,
-                                    num_long_grid=5, num_trans_grid=5, edge_beam_dist=0.1, mesh_type="Ortho")
+                                    num_long_grid=7, num_trans_grid=5, edge_beam_dist=0.1, mesh_type="Ortho")
 
     # set grillage member to element groups of grillage model
     example_bridge.set_member(I_beam, member="interior_main_beam")
@@ -712,28 +712,32 @@ def test_1m_wide_bridge(ref_bridge_properties):
     pyfile = False
     example_bridge.create_osp_model(pyfile=pyfile)
     example_bridge.get_element(member="edge_beam",options="nodes")
-    #og.opsv.plot_model(az_el=(-90, 0))
-    #og.plt.show()
+    og.opsv.plot_model(az_el=(-90, 0))
+    og.plt.show()
 
     og.ops.wipeAnalysis()
     p = 50
     #width_a = 2.29375
-    width_a = 0.2
+    width_a = -0.1
+    #width_a = 0.4
     #width_b = 4.70625
-    width_b = 0.4
-    lane_point_3 = og.create_load_vertex(x=0.1, z=width_a, p=p)
-    lane_point_4 = og.create_load_vertex(x=0.9, z=width_a, p=p)
-    lane_point_5 = og.create_load_vertex(x=0.9, z=width_b, p=p)
-    lane_point_6 = og.create_load_vertex(x=0.1, z=width_b, p=p)
+    width_b = 0.1
+    #width_b = 0.6
+    lane_point_3 = og.create_load_vertex(x=-0.1, z=width_a, p=p)
+    lane_point_4 = og.create_load_vertex(x=1.9, z=width_a, p=p)
+    lane_point_5 = og.create_load_vertex(x=1.9, z=width_b, p=p)
+    lane_point_6 = og.create_load_vertex(x=-0.1, z=width_b, p=p)
 
     patch_load_middle = og.create_load(type="patch", point1=lane_point_3, point2=lane_point_4, point3=lane_point_5,
                                        point4=lane_point_6)
-
+    # compound load
     compound_patch = og.create_compound_load(name="patch")
     compound_patch.add_load(patch_load_middle)
+    compound_patch.set_global_coord(og.Point(0,0,0.5))
     # 57 to 63
 
     patch_load_case = og.create_load_case(name="patch_load_case")
+    # add patch directly or compound load
     patch_load_case.add_load(compound_patch)
     example_bridge.add_load_case(patch_load_case)
     example_bridge.analyze()

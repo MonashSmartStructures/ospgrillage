@@ -218,7 +218,7 @@ def test_line_load(bridge_model_42_negative):
     ULS_DL = og.create_load_case(name="Barrier")
     ULS_DL.add_load(Barrier)  # ch
     example_bridge.add_load_case(ULS_DL)
-    example_bridge.analyze(all=True)
+    example_bridge.analyze()
     example_bridge.get_results()
     ref_answer = [{7: {'long_intersect': [], 'trans_intersect': [[3.1514141550424406, 0, 3.0]], 'edge_intersect': [],
                        'ends': [[3, 0, 3]]}, 8: {'long_intersect': [], 'trans_intersect': [[3.1514141550424406, 0, 3.0],
@@ -240,7 +240,7 @@ def test_line_load(bridge_model_42_negative):
                    31: {'long_intersect': [], 'trans_intersect': [[10.0, 0, 3.0]], 'edge_intersect': [],
                         'ends': [[10, 0, 3]]},
                    32: {'long_intersect': [], 'trans_intersect': [[10.0, 0, 3.0], [9.075707077521221, 0, 3.0]],
-                        'edge_intersect': [], 'ends': []}, 56: {'long_intersect': [],
+                        'edge_intersect': [], 'ends': [[10, 0, 3]]}, 56: {'long_intersect': [],
                                                                 'trans_intersect': [[7.227121232563658, 0, 3.0],
                                                                                     [8.15141415504244, 0, 3.0]],
                                                                 'edge_intersect': [], 'ends': []},
@@ -361,13 +361,13 @@ def test_patch_load(bridge_model_42_negative):
     lane_point_2 = og.create_load_vertex(x=8, y=0, z=3, p=5)
     lane_point_3 = og.create_load_vertex(x=8, y=0, z=5, p=5)
     lane_point_4 = og.create_load_vertex(x=5, y=0, z=5, p=5)
-    Lane = og.PatchLoading("Lane 1", point1=lane_point_1, point2=lane_point_2, point3=lane_point_3, point4=lane_point_4,shape_function="hermite")
+    Lane = og.PatchLoading(point1=lane_point_1, point2=lane_point_2, point3=lane_point_3, point4=lane_point_4,shape_function="hermite")
     ULS_DL = og.LoadCase(name="Lane")
     ULS_DL.add_load(Lane)  # ch
     example_bridge.add_load_case(ULS_DL)
-    example_bridge.analyze(all=True)
+    example_bridge.analyze()
 
-    assert example_bridge.global_load_str == [
+    assert example_bridge.load_case_list[0]['load_command'] == [
         'ops.load(19, *[0, 1.40688131921542, 0, 0.703440659607712, 0, 0.703440659607704])\n',
         'ops.load(25, *[0, 1.40688131921533, 0, 0.703440659607665, 0, -0.703440659607672])\n',
         'ops.load(26, *[0, 1.40688131921533, 0, -0.703440659607665, 0, -0.703440659607672])\n',

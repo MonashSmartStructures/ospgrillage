@@ -906,8 +906,9 @@ class EdgeControlLine:
         # get kwargs
 
         # calculations
+        # TODO
         z_spacing = 0.445
-        mesh_z_spacing = 0.7
+        mesh_z_spacing = 0.9
         mesh_num_z = mesh_z_spacing
         # array containing z coordinate of edge construction line
         last_girder = (self.width_z - self.edge_width_b)  # coord of exterior
@@ -1252,29 +1253,37 @@ class ShellLinkMesh(Mesh):
         z_count = "offset_beam"  # proxy
         # get groups of node master pairs
         z_pair = self.start_edge_line.z_group_master_pair_list
-        for ele in ele_list:
-            n1 = self.node_spec[ele[1]]['coordinate']
-            n2 = self.node_spec[ele[2]]['coordinate']
-            n1_z = self.node_spec[ele[1]]['z_group']
-            n2_z = self.node_spec[ele[2]]['z_group']
-            # check if z group matches element's z group
-            if any([a and b for (a, b) in zip([n1_z in z for z in z_pair], [n2_z in z for z in z_pair])]):
+        # loop each z pair
+        # loop each x group
+        for x_group in range(0,self.global_x_grid_count):
+            for beam_group,z_pair_group in enumerate(z_pair):
+                n1 = [key for key,n in self.node_spec.items() if n['x_group']==x_group and n['z_group']==z_pair_group[0]]
+                n2 = [key for key,n in self.node_spec.items() if n['x_group']==x_group and n['z_group']==z_pair_group[1]]
+
+                if not len(n1) == 1 and not len(n2) ==1:
+                    continue
+                n1_coord = self.node_spec[n1[0]]['coordinate']
+                n2_coord = self.node_spec[n2[0]]['coordinate']
+
                 # create offset node
-                mid_pt = [(a + b) / 2 for a, b in zip(n1, n2)]
+                mid_pt = [(a + b) / 2 for a, b in zip(n1_coord, n2_coord)]
                 node_coordinate = [mid_pt[0], mid_pt[1] + self.y_offset, mid_pt[2]]
                 self.node_spec.setdefault(self.node_counter,
                                           {'tag': self.node_counter, 'coordinate': node_coordinate,
                                            'x_group': x_count, 'z_group': z_count})
 
                 # store offset node rigid details
-                master_node_list = [ele[1], ele[2]]  # list of list
+                master_node_list = [n1[0],n2[0]]  # list of list
                 self.link_dict.setdefault(self.node_counter, master_node_list)
 
                 # store node - beam group detail
-                beam_group = [ind for ind, i in enumerate([n1_z in z for z in z_pair]) if i][
-                    0]  # numbering of beam group
+                #beam_group = [ind for ind, i in enumerate([self.node_spec in z for z in z_pair]) if i][0]  # numbering of beam group
                 self.offset_node_group_dict.setdefault(self.node_counter, beam_group)  # c node is key, group num is val
                 self.node_counter += 1
+
+        # generate for edge nodes
+        #if self.orthogonal:
+
 
     def _create_link_element(self, rNode, cNode):
         # sub procedure function
