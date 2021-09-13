@@ -43,7 +43,7 @@ def ref_28m_bridge():
     end_tranverse_slab = og.create_member(member_name="edge transverse", section=end_tranverse_slab_section,
                                            material=concrete)
 
-    bridge_28 = og.OspGrillage(bridge_name="SuperT_28m", long_dim=28, width=7, skew=25,
+    bridge_28 = og.OspGrillage(bridge_name="SuperT_28m", long_dim=28, width=7, skew=0,
                                num_long_grid=7, num_trans_grid=14, edge_beam_dist=1.0875, mesh_type="Orth")
 
     # set grillage member to element groups of grillage model
@@ -691,19 +691,87 @@ def test_28m_bridge_compound_point_load_midspan(ref_28m_bridge):
     bridge_28.load_case_list
 
 
+
+def test_1m_wide_bridge(ref_bridge_properties):
+    # define material
+    I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
+
+    # construct grillage model
+    example_bridge = og.OspGrillage(bridge_name="SuperT_10m", long_dim=1, width=1, skew=0,
+                                    num_long_grid=5, num_trans_grid=5, edge_beam_dist=0.1, mesh_type="Ortho")
+
+    # set grillage member to element groups of grillage model
+    example_bridge.set_member(I_beam, member="interior_main_beam")
+    example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_1")
+    example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_2")
+    example_bridge.set_member(exterior_I_beam, member="edge_beam")
+    example_bridge.set_member(slab, member="transverse_slab")
+    example_bridge.set_member(exterior_I_beam, member="start_edge")
+    example_bridge.set_member(exterior_I_beam, member="end_edge")
+
+    pyfile = False
+    example_bridge.create_osp_model(pyfile=pyfile)
+    example_bridge.get_element(member="edge_beam",options="nodes")
+    #og.opsv.plot_model(az_el=(-90, 0))
+    #og.plt.show()
+
+    og.ops.wipeAnalysis()
+    p = 50
+    #width_a = 2.29375
+    width_a = 0.2
+    #width_b = 4.70625
+    width_b = 0.4
+    lane_point_3 = og.create_load_vertex(x=0.1, z=width_a, p=p)
+    lane_point_4 = og.create_load_vertex(x=0.9, z=width_a, p=p)
+    lane_point_5 = og.create_load_vertex(x=0.9, z=width_b, p=p)
+    lane_point_6 = og.create_load_vertex(x=0.1, z=width_b, p=p)
+
+    patch_load_middle = og.create_load(type="patch", point1=lane_point_3, point2=lane_point_4, point3=lane_point_5,
+                                       point4=lane_point_6)
+
+    compound_patch = og.create_compound_load(name="patch")
+    compound_patch.add_load(patch_load_middle)
+    # 57 to 63
+
+    patch_load_case = og.create_load_case(name="patch_load_case")
+    patch_load_case.add_load(compound_patch)
+    example_bridge.add_load_case(patch_load_case)
+    example_bridge.analyze()
+    #print(og.ops.nodeDisp(25))
+    #print(og.ops.nodeDisp(26))
+
+    # og.opsv.plot_defo(unDefoFlag=0, endDispFlag=0)
+    # og.plt.show()
+    # opsv.section_force_distribution_3d()
+    minY, maxY = og.opsv.section_force_diagram_3d('Mz', {}, 1)
+    og.plt.show()
+    print(maxY)
 # example super t 28 m  ref bridge
 # test for comparing max deflection with a numerical comparison model in Lusas
 def test_28m_bridge(ref_28m_bridge):
     bridge_28 = ref_28m_bridge
-
-    og.opsplt.plot_model("nodes")
+    og.opsv.plot_model(az_el=(-90, 0))
+    #og.plt.show()
+    #og.opsplt.plot_model("nodes")
     og.ops.wipeAnalysis()
+    p = 50
     lane_point_1 = og.create_load_vertex(x=20.89, y=0, z=3, p=5)
     lane_point_2 = og.create_load_vertex(x=20.89, y=0, z=7, p=5)
+    width_a = 2.29375
+    width_a = 3.9
+    width_b = 4.70625
+    width_b = 4
+    lane_point_3 = og.create_load_vertex(x=0, y=0, z=width_a, p=p)
+    lane_point_4 = og.create_load_vertex(x=28, y=0, z=width_a, p=p)
+    lane_point_5 = og.create_load_vertex(x=28, y=0, z=width_b, p=p)
+    lane_point_6 = og.create_load_vertex(x=0, y=0, z=width_b, p=p)
     line_load_middle = og.create_load(type="line",name="Ref mid_point_load", point1=lane_point_1, point2=lane_point_2)
+    patch_load_middle = og.create_load(type="patch",point1 = lane_point_3,point2=lane_point_4,point3=lane_point_5,
+                                       point4 = lane_point_6)
     # 57 to 63
     point_load_case = og.create_load_case(name="point_load_case")
     line_load_case = og.create_load_case(name="line_load_case")
+    patch_load_case = og.create_load_case(name= "patch_load_case")
     line_load_case.add_load(line_load_middle)
     ref_node_force = og.NodeForces(0, -1000, 0, 0, 0, 0)
     p1 = og.NodalLoad(name="point", node_tag=57, node_force=ref_node_force)
@@ -721,19 +789,23 @@ def test_28m_bridge(ref_28m_bridge):
     point_load_case.add_load(p6)
     point_load_case.add_load(p7)
 
-    bridge_28.add_load_case(line_load_case)
+    patch_load_case.add_load(patch_load_middle)
+    #bridge_28.add_load_case(line_load_case)
+    bridge_28.add_load_case(patch_load_case)
     # add a load combination
-    bridge_28.add_load_combination(load_combination_name="factored_point",
-                                   load_case_and_factor_dict={"point_load_case": 1.5})
+    #bridge_28.add_load_combination(load_combination_name="factored_point",
+                                  # load_case_and_factor_dict={"point_load_case": 1.5})
     bridge_28.analyze()
 
-    results = bridge_28.get_results(get_combinations=True)
+    results = bridge_28.get_results()
     # extract points along mid span, compare dY with those from Lusas model
     print(og.ops.nodeDisp(57))
     print(og.ops.nodeDisp(63))
     print(og.ops.nodeDisp(60))
-    # opsv.plot_defo(unDefoFlag=0, endDispFlag=0)
-    # plt.show()
+    print(og.ops.nodeDisp(53))
+    print(og.ops.nodeDisp(40))
+    #og.opsv.plot_defo(unDefoFlag=0, endDispFlag=0)
+    #og.plt.show()
     # opsv.section_force_distribution_3d()
     minY, maxY = og.opsv.section_force_diagram_3d('Mz', {}, 1)
     og.plt.show()

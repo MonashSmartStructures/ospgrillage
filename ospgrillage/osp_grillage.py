@@ -821,22 +821,48 @@ class OspGrillage:
         # grids are returned with same values
         removed_key = []
         edited_dict = line_grid_intersect.copy()
+        # if line does not intersect any grid, overwrite edited_dict
+        if not edited_dict:
+            for key in self.Mesh_obj.grid_number_dict.keys():
+                edited_dict.setdefault(key,{"long_intersect":[],"trans_intersect":[],"edge_intersect":[]})
 
         # update line_grid_intersect adding start and end points of line segment to the dict within grid key
         for grid_key, int_list in edited_dict.items():
-            if not any([n >= 2 for n in [len(val) for val in int_list.values()]]):
-                if grid_key == start_grid or start_grid in self.Mesh_obj.grid_vicinity_dict[grid_key].values():
-                    int_list.setdefault("ends", [[line_load_obj.load_point_1.x, line_load_obj.load_point_1.y,
-                                                  line_load_obj.load_point_1.z]])
+            point_tuple_list = []
+            int_list.setdefault("ends", []) # set the key pair to empty list
+            for node_tag in self.Mesh_obj.grid_number_dict[grid_key]:
+                coord = self.Mesh_obj.node_spec[node_tag]['coordinate']
+                coord_point = Point(coord[0], coord[1], coord[2])
+                point_tuple_list.append(coord_point)
+            #if not any([n >= 2 for n in [len(val) for val in int_list.values()]]):
+                # if grid_key == start_grid or start_grid in self.Mesh_obj.grid_vicinity_dict[grid_key].values():
+                #     int_list.setdefault("ends", [[line_load_obj.load_point_1.x, line_load_obj.load_point_1.y,
+                #                                   line_load_obj.load_point_1.z]])
+                #
+                # elif grid_key == last_grid or last_grid in self.Mesh_obj.grid_vicinity_dict[grid_key].values():
+                #     int_list.setdefault("ends", [[line_load_obj.line_end_point.x, line_load_obj.line_end_point.y,
+                #                                   line_load_obj.line_end_point.z]])
+                # check if both points are in grid
 
-                elif grid_key == last_grid or last_grid in self.Mesh_obj.grid_vicinity_dict[grid_key].values():
-                    int_list.setdefault("ends", [[line_load_obj.line_end_point.x, line_load_obj.line_end_point.y,
-                                                  line_load_obj.line_end_point.z]])
 
-                else:
-                    int_list.setdefault("ends", [])
+            if check_point_in_grid(line_load_obj.load_point_1, point_tuple_list):
+                #int_list.setdefault("ends", [[line_load_obj.load_point_1.x, line_load_obj.load_point_1.y,
+                                       #       line_load_obj.load_point_1.z]])
+                int_list["ends"].append([line_load_obj.load_point_1.x, line_load_obj.load_point_1.y,
+                                              line_load_obj.load_point_1.z])
+
+            if check_point_in_grid(line_load_obj.line_end_point, point_tuple_list):
+                #int_list.setdefault("ends", [[line_load_obj.line_end_point.x, line_load_obj.line_end_point.y,
+                            #                  line_load_obj.line_end_point.z]])
+                int_list["ends"].append([line_load_obj.line_end_point.x, line_load_obj.line_end_point.y,
+                                              line_load_obj.line_end_point.z])
             else:
                 int_list.setdefault("ends", [])
+        # loop to remove empty entries
+        for grid_key, int_list in list(edited_dict.items()):
+            if all([val == [] for val in int_list.values()]):
+                del edited_dict[grid_key]
+
         # last check to remove duplicate grids due to having colinear conditions
         # i.e. where two vicinity grids with same intersection points are stored in edited_dict
 
@@ -1482,23 +1508,23 @@ class OspGrillage:
 
     def get_results(self, **kwargs):
         """
-        Function to get results from load cases. Alternatively, if keyword "get_combinations" is provided
+        Function to get results from load cases. Alternatively, if keyword "combinations" is provided
         with boolean True, returns data array processed based on defined load combinations instead.
 
         :keyword:
-        * get_combinations (`bool`): If true, returns a list of DataSet, each element of list represent a defined load combination
+        * combinations (`bool`): If true, returns a list of DataSet, each element of list represent a defined load combination
         * save_file_name (`str`): Name string of file name. Saves to NetCDF.
         * load_case (`str`): str or list of name string of specific load case to extract. Returned DataSet with the specified Load cases only
 
         :returns results: xarray DataSet of analysis results - extracted based on keyword option specified.
-                            If get_combination is True, returns a list of DataSet, with each element correspond to
+                            If combination is True, returns a list of DataSet, with each element correspond to
                             a load combination.
 
         Alternatively, saves and store a NetCDF format of the DataSet - with filename specified in save_file_name=
         argument.
 
         """
-
+        load_combination_list = [] # instantiate
         local_force_flag = kwargs.get("local_forces", True)
         if local_force_flag:
             basic_da = self.results.compile_data_array()
@@ -1506,7 +1532,7 @@ class OspGrillage:
             basic_da = self.results.compile_data_array(local_option=False)
 
         # get kwargs
-        comb = kwargs.get("get_combinations", False)  # if Boolean true
+        comb = kwargs.get("combinations", False)  # if Boolean true
         save_filename = kwargs.get("save_filename", None)  # str of file name
         specific_load_case = kwargs.get("load_case", None)  # str of fil
 
@@ -1541,14 +1567,19 @@ class OspGrillage:
                         print("Extracted moving load case results : {}".format(moving_name))
             basic_da = storing_da  # Overwrite basic_da, proceed to check/evaluate combinations
 
-        # check if combinations
+        # if combinations
         if comb:
-            output_load_comb_dict = dict()  # {name: datarray, .... name: dataarray}
-            new_ma_list = []  # placeholder for moving load combinations
+            output_load_comb_dict = []  # {name: datarray, .... name: dataarray}
             # load comb name,  load case in load comb
             # this format: self.load_combination_dict.setdefault(load_combination_name, load_case_dict_list)
-            for load_comb_name, load_case_dict_list in self.load_combination_dict.items():  # {0:[{'loadcase':LoadCase object, 'load_command': list of str}
-                print("Obtaining load combinations for {}....".format(load_comb_name))
+            # comb = [{road:1.2, DL: 1.5},{} , {} ]
+            if not isinstance(comb,dict):
+                raise Exception("Combination argument requires a dict or a list of dict: e.g. {'DL':1.2,'SIDL':1.5}")
+            if not isinstance(comb,list):
+                comb = [comb]
+
+            for load_case_dict_list in comb:  # {0:[{'loadcase':LoadCase object, 'load_command': list of str}
+                print("Obtaining load combinations ....")
                 summation_array = None  # instantiate
                 factored_array = None  # instantiate
                 # check and add load cases to load combinations for basic non moving load cases
@@ -1573,8 +1604,8 @@ class OspGrillage:
                     #     # new_ma_list.append(
                     #     summation_array += basic_da.sel(Loadcase=incremental_load_case["name"]) * load_case_dict['load_factor']
 
-                output_load_comb_dict[load_comb_name] = factored_array
-            return output_load_comb_dict
+                output_load_comb_dict.append(factored_array)
+            return output_load_comb_dict # list of data array
         else:
             # return raw data array for manual post processing
             if save_filename:
@@ -1598,6 +1629,9 @@ class OspGrillage:
         extracted_ele = []
         # options
         options = kwargs.get("options", None)  # similar to ops_vis, "nodes","element","node_i","node_j"
+        if not options:
+            raise Exception("Options not defined: Hint pass option=  \"nodes\",\"element\",\"node_i\",\"node_j\"")
+
         z_flag, x_flag, edge_flag, common_member_tag = self._create_standard_element_list(namestring=namestring)
 
         # get z_group num from common member tag
@@ -1607,12 +1641,17 @@ class OspGrillage:
 
 
         if z_flag:
-            if len(select_z_group)==1: # get specific elements of group number
-                extracted_ele = self.Mesh_obj.z_group_to_ele[select_z_group[0]]
-            else:
-                raise Exception("Query beam group has more than 1 z group: Hint specify target group integer via kwarg-"
-                                " \"z_group_num\" :{}"
-                                .format(repr(self.Mesh_obj.common_z_group_element[common_member_tag])))
+            for z_group in select_z_group:
+                extracted_ele = self.Mesh_obj.z_group_to_ele[z_group]
+                if options == "nodes":
+                    first_list = [i[1] for i in extracted_ele]
+                    second_list = [i[2] for i in extracted_ele]
+                    return_list = first_list + list(set(second_list) - set(first_list))
+                    # sort based on x coordinate
+                    node_x = [self.Mesh_obj.node_spec[tag]['coordinate'][0] for tag in return_list]
+                    sorted_return_list.append([x for _, x in sorted(zip(node_x, return_list))])
+
+
             # else: # for interior beams, get list of
             #     for interior_beam_ele_z_group in self.Mesh_obj.common_z_group_element[common_member_tag]:
             #         extracted_ele = self.Mesh_obj.z_group_to_ele[interior_beam_ele_z_group]
@@ -1633,22 +1672,6 @@ class OspGrillage:
 
                 extracted_ele = self.Mesh_obj.z_group_to_ele[select_z_group]
 
-        # parse options on extracted ele - and sort according to node position
-        if options == "nodes":
-            first_list = [i[1] for i in extracted_ele]
-            second_list = [i[2] for i in extracted_ele]
-            return_list = first_list + list(set(second_list) - set(first_list))
-            # sort based on x coordinate
-            node_x = [self.Mesh_obj.node_spec[tag]['coordinate'][0] for tag in return_list]
-            sorted_return_list = [x for _,x in sorted(zip(node_x,return_list))]
-        elif options == "node_i":
-            return_list = [i[1] for i in extracted_ele]
-        elif options == "node_j":
-            return_list = [i[2] for i in extracted_ele]
-        elif options =="element":
-            return_list = [i[0] for i in extracted_ele]
-        else:
-            raise Exception("Options not defined: Hint pass option=  \"nodes\",\"element\",\"node_i\",\"node_j\"")
 
         return sorted_return_list
 # ---------------------------------------------------------------------------------------------------------------------

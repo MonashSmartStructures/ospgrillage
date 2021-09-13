@@ -147,7 +147,7 @@ def shell_link_bridge(ref_bridge_properties):
     # set beams
     example_bridge.set_member(I_beam,member="offset_beam")
     example_bridge.create_osp_model(pyfile=False)
-    return example_bridge
+
 
 
 # --------------------------------

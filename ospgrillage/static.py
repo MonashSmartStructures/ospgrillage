@@ -510,12 +510,17 @@ def check_dict_same_keys(d_1, d_2):
             second_list = d_2[grid]
             updated_list = dict()
             for key, val_1 in first_list.items():
-                if key == 'ends':
-                    val_end = val_1 if val_1 else second_list.get(key)
-                    updated_list.setdefault(key, val_end)
-                else:
-                    val_2 = second_list.get(key)
-                    updated_list.setdefault(key, val_1 + val_2)
+                # if key == 'ends':
+                #     val_end = val_1 if val_1 else second_list.get(key)
+                #     updated_list.setdefault(key, val_end)
+                # else:
+                combine_val = []
+                val_2 = second_list.get(key)
+                for val in val_1 + val_2:
+                    if val not in combine_val:
+                        combine_val.append(val)
+
+                updated_list.setdefault(key, combine_val)
             merged.update({grid: updated_list})
 
     return merged
