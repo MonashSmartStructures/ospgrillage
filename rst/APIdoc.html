@@ -397,21 +397,21 @@ corresponding load factor as value.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="ospgrillage.osp_grillage.OspGrillage.get_results">
 <span class="sig-name descname"><span class="pre">get_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OspGrillage.get_results" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to get results from load cases. Alternatively, if keyword “get_combinations” is provided
+<dd><p>Function to get results from load cases. Alternatively, if keyword “combinations” is provided
 with boolean True, returns data array processed based on defined load combinations instead.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Keyword</dt>
 <dd class="field-odd"><p></p></dd>
 </dl>
 <ul class="simple">
-<li><p>get_combinations (<cite>bool</cite>): If true, returns a list of DataSet, each element of list represent a defined load combination</p></li>
+<li><p>combinations (<cite>bool</cite>): If true, returns a list of DataSet, each element of list represent a defined load combination</p></li>
 <li><p>save_file_name (<cite>str</cite>): Name string of file name. Saves to NetCDF.</p></li>
 <li><p>load_case (<cite>str</cite>): str or list of name string of specific load case to extract. Returned DataSet with the specified Load cases only</p></li>
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Returns results</dt>
 <dd class="field-odd"><p>xarray DataSet of analysis results - extracted based on keyword option specified.
-If get_combination is True, returns a list of DataSet, with each element correspond to
+If combination is True, returns a list of DataSet, with each element correspond to
 a load combination.</p>
 </dd>
 </dl>
