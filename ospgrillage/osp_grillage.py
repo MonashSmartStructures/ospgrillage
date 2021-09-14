@@ -227,7 +227,7 @@ class OspGrillage:
                                           ext_to_int_b=self.ext_to_int_b,
                                           skew_1=self.skew_a, edge_dist_a=self.edge_width_a,
                                           edge_dist_b=self.edge_width_b,
-                                          skew_2=self.skew_b, orthogonal=self.ortho_mesh)
+                                          skew_2=self.skew_b, orthogonal=self.ortho_mesh,**kwargs)
 
     def _create_mesh(self, **kwargs):
         if self.model_type == "beam_link":
@@ -235,7 +235,7 @@ class OspGrillage:
         elif self.model_type == "shell":
             mesh_obj = ShellLinkMesh(**kwargs)
         else:
-            mesh_obj = Mesh(**kwargs)
+            mesh_obj = BeamMesh(**kwargs)
 
         return mesh_obj
 
@@ -1816,12 +1816,12 @@ class Analysis:
     def extract_grillage_responses(self):
         if not self.pyfile:
             # first loop extract node displacements
-            for node_tag in range(1, self.mesh_node_counter):
+            for node_tag in ops.getNodeTags():
                 disp_list = ops.nodeDisp(node_tag)
                 self.node_disp.setdefault(node_tag, disp_list)
 
             # loop through all elements in Mesh, extract local forces
-            for ele_tag in range(1, self.mesh_ele_counter):
+            for ele_tag in ops.getEleTags():
                 ele_force = ops.eleResponse(ele_tag, 'localForces')
                 self.ele_force.setdefault(ele_tag, ele_force)
                 global_ele_force = ops.eleResponse(ele_tag, 'Forces')
@@ -1926,8 +1926,10 @@ class Results:
         # component = ["dx", "dy", "dz", "theta_x", "theta_y", "theta_z", "Vx", "Vy", "Vz", "Mx", "My", "Mz"]
         component = ["dx", "dy", "dz", "theta_x", "theta_y", "theta_z"]
         # force_component = ["Vx", "Vy", "Vz", "Mx", "My", "Mz"]
-        force_component = ["Vx_i", "Vy_i", "Vz_i", "Mx_i", "My_i", "Mz_i", "Vx_j", "Vy_j", "Vz_j", "Mx_j", "My_j",
-                           "Mz_j"]
+        force_component = ["Vx_i", "Vy_i", "Vz_i", "Mx_i", "My_i", "Mz_i", "Vx_j", "Vy_j", "Vz_j", "Mx_j", "My_j","Mz_j"]
+        #TODO
+        #force_component = ["Vx_i", "Vy_i", "Vz_i", "Mx_i", "My_i", "Mz_i", "Vx_j", "Vy_j", "Vz_j", "Mx_j", "My_j",
+                          # "Mz_j","Vx_k", "Vy_k", "Vz_k", "Mx_k", "My_k", "Mz_k","Vx_l", "Vy_l", "Vz_l", "Mx_l", "My_l", "Mz_l"]
         # Sort data for dataArrays
         # for basic load case  {loadcasename:[{1:,2:...},{1:,2:...}], ... , loadcasename:[{1:,2:...},{1:,2:...} }
         basic_array_list = []
@@ -2011,16 +2013,17 @@ class OspGrillageShell(OspGrillage):
                  mesh_type="Ortho", model="3D", **kwargs):
         # input variables specific to shell model - see default parameters if not specified
         self.offset_beam_y_dist = kwargs.get("offset_beam_y_dist", 0)  # default 0
-        self.mesh_size_x = kwargs.get("mesh_size_x", 1)  # default 1 unit meter
-        self.mesh_size_z = kwargs.get("mesh_size_z", 1)  # default 1 unit meter
+        self.mesh_size_x = kwargs.get("max_mesh_size_x", 1)  # default 1 unit meter
+        self.mesh_size_z = kwargs.get("max_mesh_size_z", 1)  # default 1 unit meter
 
         # model variables specific to Shell type
         self.shell_element_command_list = []  # list of str for ops.element() shell command
-        self.constraint_type = "Transformation"  # constraint type to allow MP constraint objects
+
         # create mesh and model
         super().__init__(bridge_name, long_dim, width, skew, num_long_grid,
-                         num_trans_grid, edge_beam_dist, mesh_type, model="3D", **kwargs)
-
+                         num_trans_grid, edge_beam_dist, mesh_type, model="3D",**kwargs)
+        # overwrite/ variables specific to shell mesh
+        self.constraint_type = "Transformation"  # constraint type to allow MP constraint objects
     # ----------------------------------------------------------------------------------------------------------------
     # overwrite functions of base Mesh class - specific for
     def create_osp_model(self, pyfile=False):

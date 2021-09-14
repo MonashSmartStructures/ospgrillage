@@ -59,10 +59,11 @@ class Mesh:
         self.width = width
         self.num_trans_beam = num_trans_beam
         self.num_long_beam = num_long_beam
-        # angle and mesh type
+        # variables on angle and mesh type
         self.skew_1 = skew_1
         self.skew_2 = skew_2
         self.orthogonal = kwargs.get("orthogonal", False)
+        self.beam_element_flag = kwargs.get("create_beam_elements",True) # bool to create beam elements between nodes
         # sweep path properties
         self.pt1 = pt1
         self.pt2 = pt2
@@ -146,7 +147,7 @@ class Mesh:
                                                           edge_width_b=self.edge_width_b,
                                                           edge_angle=self.skew_1,
                                                           num_long_beam=self.num_long_beam,
-                                                          model_plane_y=self.y_elevation)
+                                                          model_plane_y=self.y_elevation,**kwargs)
 
         # ------------------------------------------------------------------------------------------
         # edge construction line 2
@@ -156,7 +157,7 @@ class Mesh:
                                                         edge_width_a=self.edge_width_a, edge_width_b=self.edge_width_b,
                                                         edge_angle=self.skew_2,
                                                         num_long_beam=self.num_long_beam,
-                                                        model_plane_y=self.y_elevation)
+                                                        model_plane_y=self.y_elevation,**kwargs)
         # ------------------------------------------------------------------------------------------
         # Sweep nodes
         # nodes to be swept across sweep path varies based
@@ -209,12 +210,14 @@ class Mesh:
                 # link transverse elements
                 if z_count > 0:
                     # element list [element tag, node i, node j, x/z group]
+                    if not self.beam_element_flag:
+                        continue
                     tag = self._get_geo_transform_tag([assigned_node_tag[z_count - 1], assigned_node_tag[z_count]])
                     self.trans_ele.append([self.element_counter, assigned_node_tag[z_count - 1],
                                            assigned_node_tag[z_count], x_count, tag])
                     self.element_counter += 1
 
-            # link longitudinal elements
+            # create longitudinal ele by linking assigned nodes @ current step with assigned nodes from previous step
             if x_count == 0:
                 previous_node_tag = assigned_node_tag
                 # record
@@ -231,18 +234,21 @@ class Mesh:
                             self.long_ele.append([self.element_counter, pre_node, cur_node, cur_z_group, tag])
                             self.element_counter += 1
                             break  # break assign long ele loop (cur node)
-                # update record for previous node tag step
+                # here updates the record for previous node tag step
                 previous_node_tag = assigned_node_tag
                 if x_count == len(self.nox) - 1:
                     for nodes in previous_node_tag:
                         self.edge_node_recorder.setdefault(nodes, self.global_edge_count)
                     self.global_edge_count += 1
-            # reset counter for next loop
+            # reset counter and recorder for next loop x increment
             self.global_x_grid_count += 1
             assigned_node_tag = []
         print("Meshing completed....")
 
     def _orthogonal_meshing(self):
+        """
+        Main procedure to mesh nodes (and beam elements) of model based on orthogonal meshing
+        """
         global sweep_nodes, z_group_recorder
         self.assigned_node_tag = []
         self.previous_node_tag = []
@@ -252,7 +258,7 @@ class Mesh:
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         start_point_x = self.mesh_origin[0]
         start_point_z = self.mesh_origin[2]
-        # if skew angle of edge line is below threshold for orthogonal,
+        # if skew angle of edge line is below threshold for orthogonal, perform mesh as oblique for edge line
         if np.abs(self.skew_1 + self.zeta) < self.skew_threshold[0]:
             # if angle less than threshold, assign nodes of edge member as it is
             current_sweep_nodes = self.start_edge_line.node_list
@@ -271,7 +277,8 @@ class Mesh:
                     # run sub procedure to assign
                     # self.__assign_transverse_members(pre_node=self.assigned_node_tag[z_count_int - 1],
                     #                                  cur_node=self.assigned_node_tag[z_count_int])
-
+                    if not self.beam_element_flag:
+                        continue
                     if len(self.assigned_node_tag) >= 1:
                         self._assign_edge_trans_members(self.assigned_node_tag[z_count_int - 1],
                                                         self.assigned_node_tag[z_count_int],
@@ -286,8 +293,9 @@ class Mesh:
             self.global_x_grid_count += 1
             self.assigned_node_tag = []  # reset variable
             print("Edge mesh @ start span completed")
-        else:
-            # loop for each intersection point of edge line with sweep nodes
+        else: # perform edge meshing with variable distance between transverse members by looping through all control
+            # points of edgecontrolline
+            # loop for each control point of edge line with sweep nodes
             for z_count, int_point in enumerate(self.start_edge_line.node_list):
                 # search point on sweep path line whose normal intersects int_point.
                 ref_point_x, ref_point_z = self._search_x_point(int_point, start_point_x)
@@ -305,8 +313,7 @@ class Mesh:
                 current_sweep_nodes = self._rotate_sweep_nodes(angle)
                 # get z group of first node in current_sweep_nodes - for correct assignment in loop
                 z_group = self.start_edge_line.get_node_group_z(int_point)
-                # check
-                # condition
+                # check angle condition, if skew + zeta (offset from plane)
                 if 90 + self.skew_1 + self.zeta > 90:
                     sweep_nodes = current_sweep_nodes[z_count:]
                     z_group_recorder = list(range(z_group, len(current_sweep_nodes)))
@@ -314,6 +321,7 @@ class Mesh:
                     sweep_nodes = current_sweep_nodes[0:(z_count + 1)]
                     z_group_recorder = list(range(0, z_group + 1)) if z_group != 0 else [0]
 
+                # on each control point, loop through sweeping nodes to create nodes
                 for (z_count_int, nodes) in enumerate(sweep_nodes):
                     x_inc = ref_point_x
                     z_inc = ref_point_z
@@ -326,11 +334,15 @@ class Mesh:
                     self.assigned_node_tag.append(self.node_counter)
                     self.node_counter += 1
                     # if loop assigned more than two nodes, link nodes as a transverse member
+                    if not self.beam_element_flag:
+                        continue
                     if z_count_int > 0:
                         # run sub procedure to assign
                         self._assign_transverse_members(pre_node=self.assigned_node_tag[z_count_int - 1],
                                                         cur_node=self.assigned_node_tag[z_count_int])
 
+                if not self.beam_element_flag:
+                    continue
                 # if loop is in first step, there is only one column of nodes, skip longitudinal assignment
                 if z_count == 0:
                     self.previous_node_tag = self.assigned_node_tag
@@ -395,6 +407,8 @@ class Mesh:
                     # run sub procedure to assign
                     # self.__assign_transverse_members(pre_node=self.assigned_node_tag[z_count_int - 1],
                     #                                  cur_node=self.assigned_node_tag[z_count_int])
+                    if not self.beam_element_flag:
+                        continue
                     if len(self.assigned_node_tag) >= 1:
                         self._assign_edge_trans_members(self.assigned_node_tag[z_count_int - 1],
                                                         self.assigned_node_tag[z_count_int],
@@ -438,11 +452,16 @@ class Mesh:
 
                     self.assigned_node_tag.append(self.node_counter)
                     self.node_counter += 1
+                    if not self.beam_element_flag:
+                        continue
                     # if loop assigned more than two nodes, link nodes as a transverse member
                     if z_count_int > 0:
                         # run sub procedure to assign
                         self._assign_transverse_members(pre_node=self.assigned_node_tag[z_count_int - 1],
                                                         cur_node=self.assigned_node_tag[z_count_int])
+
+                if not self.beam_element_flag:
+                    continue
 
                 # if loop is in first step, there is only one column of nodes, skip longitudinal assignment
                 if z_count == 0:
@@ -494,7 +513,6 @@ class Mesh:
 
         for z_count, x in enumerate(self.uniform_region_x[1:-1]):
             # get slope, m at current point x
-            # z = line_func(m=self.m, c=self.c, x=x)
             z = self.sweep_path.get_line_function(x)
             # z = line_func(self.sweep_path.m, self.sweep_path.c, x)
             current_sweep_nodes = self._rotate_sweep_nodes(self.zeta / 180 * np.pi)  # rotating sweep nodes @ origin
@@ -509,11 +527,16 @@ class Mesh:
 
                 self.assigned_node_tag.append(self.node_counter)
                 self.node_counter += 1
+                if not self.beam_element_flag:
+                    continue
                 # if loop assigned more than two nodes, link nodes as a transverse member
                 if z_count_int > 0:
                     # run sub procedure to assign
                     self._assign_transverse_members(pre_node=self.assigned_node_tag[z_count_int - 1],
                                                     cur_node=self.assigned_node_tag[z_count_int])
+            if not self.beam_element_flag:
+                continue
+
             if z_count == 0:
                 self.previous_node_tag = self.first_connecting_region_nodes
             elif z_count > 0 and z_count != len(self.uniform_region_x[1:-1]) - 1:
@@ -538,6 +561,8 @@ class Mesh:
 
         # Extra step to connect uniform region with nodes along end span edge region
         for pre_node in self.previous_node_tag:
+            if not self.beam_element_flag:
+                break
             for cur_node in self.assigned_node_tag:
                 cur_z_group = self.node_spec[cur_node]['z_group']
                 prev_z_group = self.node_spec[pre_node]['z_group']
@@ -906,37 +931,17 @@ class EdgeControlLine:
         # get kwargs
 
         # calculations
-        # TODO
-        z_spacing = 0.445
-        mesh_z_spacing = 0.9
-        mesh_num_z = mesh_z_spacing
+
         # array containing z coordinate of edge construction line
         last_girder = (self.width_z - self.edge_width_b)  # coord of exterior
         nox_girder = np.linspace(start=self.edge_width_a, stop=last_girder, num=self.num_long_beam - 2)
-        if self.feature == "standard":
-            self.noz = np.hstack((np.hstack((0, nox_girder)), self.width_z))
-        elif self.feature == "shell_link":
-            self.beam_position = np.hstack(
-                (np.hstack((0, nox_girder)), self.width_z))  # default noz representing beam position
-            shell_noz = [self.edge_ref_point[2]]  # first and last node z
-            for beam_node_z in self.beam_position[1:-1]:
-                local_list = [] # create local list of control points (local to each beam group)
-                # create external control points between beam groups
 
-                num_points_external = math.ceil((beam_node_z - z_spacing - shell_noz[-1]) / mesh_z_spacing)
-                local_list += np.linspace(shell_noz[-1], beam_node_z - z_spacing, num_points_external+1).tolist()
-                # local_list += np.linspace(shell_noz[-1], beam_node_z - z_spacing, 2).tolist()  # external
-                # create internal control points within the beam group
-                num_points_internal = math.ceil(z_spacing * 2 / mesh_z_spacing)
-                local_list += np.linspace(beam_node_z - z_spacing, beam_node_z + z_spacing, num_points_internal+1).tolist()[1:]
-                self.node_z_pair_list_value.append([beam_node_z - z_spacing, beam_node_z + z_spacing])
-                shell_noz += local_list[1:]
-            # create points between exterior beam to outer edge beam
-            num_points_external = math.ceil((self.width_z - shell_noz[-1]) / mesh_z_spacing)
-            shell_noz += np.linspace(shell_noz[-1], self.width_z, num_points_external+1).tolist()[1:]
-            shell_noz.sort()
-            self.noz = shell_noz  #
-            self._get_shell_z_group_pair()
+        #
+        self._create_trans_grid(nox_girder=nox_girder)
+        # if self.feature == "standard":
+        #     self.noz = np.hstack((np.hstack((0, nox_girder)), self.width_z))
+        #elif self.feature == "shell_link":
+
 
         # if negative angle, create edge_node_x based on negative angle algorithm, else positive angle algorithm
         if self.edge_angle <= 0:
@@ -960,12 +965,52 @@ class EdgeControlLine:
         group = self.node_list.index(coordinate)
         return group
 
+
+    def _create_trans_grid(self,nox_girder):
+        self.noz = np.hstack((np.hstack((0, nox_girder)), self.width_z))
+
+
+class ShellEdgeControlLine(EdgeControlLine):
+    def __init__(self,edge_ref_point, width_z, edge_width_a, edge_width_b, edge_angle, num_long_beam, model_plane_y,
+                 feature="standard", ext_to_int_a=None, ext_to_int_b=None, **kwargs):
+        # get properties specific to shell mesh
+        self.link_nodes_width = kwargs.get("link_nodes_width",None)  # information from kwargs of Shellmodel class
+        self.max_mesh_size_z = kwargs.get("max_mesh_size_z") # information from kwargs of Shellmodel class
+        self.max_mesh_size_x = kwargs.get("max_mesh_size_x") # information from kwargs of Shellmodel class
+        super().__init__(edge_ref_point, width_z, edge_width_a, edge_width_b, edge_angle, num_long_beam, model_plane_y,
+                            feature, ext_to_int_a, ext_to_int_b, **kwargs)
+
+    # function specific to shell edge line
     def _get_shell_z_group_pair(self):
         for node_z_pair in self.node_z_pair_list_value:
             # get first and second z group of paired z group corresponding to links to offset line element
             list_index = [self.noz.index(node_z_pair[0]), self.noz.index(node_z_pair[1])]
             self.z_group_master_pair_list.append(list_index)
 
+    def _create_trans_grid(self,nox_girder):
+        z_spacing = self.link_nodes_width / 2
+        mesh_z_spacing = self.max_mesh_size_z
+        self.beam_position = np.hstack(
+            (np.hstack((0, nox_girder)), self.width_z))  # default noz representing beam position
+        shell_noz = [self.edge_ref_point[2]]  # first and last node z
+        for beam_node_z in self.beam_position[1:-1]:
+            local_list = []  # create local list of control points (local to each beam group)
+            # create external control points between beam groups
+            num_points_external = math.ceil((beam_node_z - z_spacing - shell_noz[-1]) / mesh_z_spacing)
+            local_list += np.linspace(shell_noz[-1], beam_node_z - z_spacing, num_points_external + 1).tolist()
+            # local_list += np.linspace(shell_noz[-1], beam_node_z - z_spacing, 2).tolist()  # external
+            # create internal control points within the beam group
+            num_points_internal = math.ceil(z_spacing * 2 / mesh_z_spacing)
+            local_list += np.linspace(beam_node_z - z_spacing, beam_node_z + z_spacing,
+                                      num_points_internal + 1).tolist()[1:]
+            self.node_z_pair_list_value.append([beam_node_z - z_spacing, beam_node_z + z_spacing])
+            shell_noz += local_list[1:]
+        # create points between exterior beam to outer edge beam
+        num_points_external = math.ceil((self.width_z - shell_noz[-1]) / mesh_z_spacing)
+        shell_noz += np.linspace(shell_noz[-1], self.width_z, num_points_external + 1).tolist()[1:]
+        shell_noz.sort()
+        self.noz = shell_noz  #
+        self._get_shell_z_group_pair()
 
 class SweepPath:
     def __init__(self, pt1: Point, pt2: Point, pt3: Point = None):
@@ -1156,8 +1201,10 @@ class ShellLinkMesh(Mesh):
         self.pinned_node_group = 0
         self.roller_node_group = 1
         # get variables from keyword arguments
-
-        self.y_offset = kwargs.get("y_offset", 0.449)
+        self.y_offset = kwargs.get("offset_beam_y_dist", 0.449)  # Here default values
+        self.link_nodes_width = kwargs.get("link_nodes_width",0.445)   # Here default values
+        self.max_mesh_size_z = kwargs.get("max_mesh_size_z",1)  # Here default values
+        self.max_mesh_size_x = kwargs.get("max_mesh_size_x",1)  # Here default values
 
         # create grillage mesh @ model plane y=0 using base class init
         super().__init__(long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
@@ -1176,8 +1223,8 @@ class ShellLinkMesh(Mesh):
     # -----------------------------------------------------------------------------------------------------------------
     # Functions which are overwritten of that from base class to for specific shell type model
     def create_control_points(self, **kwargs):
-        feature = "shell_link"
-        return EdgeControlLine(**kwargs, feature=feature)
+
+        return ShellEdgeControlLine(**kwargs)
 
     def _identify_common_z_group(self):
         """
@@ -1217,7 +1264,6 @@ class ShellLinkMesh(Mesh):
 
         # sub procedure function to create beam elements based on offset nodes
         self._create_offset_nodes(ele_list=self.trans_ele)
-        self._create_offset_nodes(ele_list=self.edge_span_ele)
 
         # create offset elements commands
         for cNode, rNode_list in self.link_dict.items():
@@ -1248,9 +1294,8 @@ class ShellLinkMesh(Mesh):
 
     def _create_offset_nodes(self, ele_list):
         # sub procedure function
-        # TODO fix
-        x_count = "offset_beam"  # proxy
-        z_count = "offset_beam"  # proxy
+        x_count = "offset_beam_x"  # proxy
+        z_count = "offset_beam_group_z{}"  # proxy
         # get groups of node master pairs
         z_pair = self.start_edge_line.z_group_master_pair_list
         # loop each z pair
@@ -1260,7 +1305,7 @@ class ShellLinkMesh(Mesh):
                 n1 = [key for key,n in self.node_spec.items() if n['x_group']==x_group and n['z_group']==z_pair_group[0]]
                 n2 = [key for key,n in self.node_spec.items() if n['x_group']==x_group and n['z_group']==z_pair_group[1]]
 
-                if not len(n1) == 1 and not len(n2) ==1:
+                if not len(n1) == 1 or not len(n2) ==1:
                     continue
                 n1_coord = self.node_spec[n1[0]]['coordinate']
                 n2_coord = self.node_spec[n2[0]]['coordinate']
@@ -1270,7 +1315,7 @@ class ShellLinkMesh(Mesh):
                 node_coordinate = [mid_pt[0], mid_pt[1] + self.y_offset, mid_pt[2]]
                 self.node_spec.setdefault(self.node_counter,
                                           {'tag': self.node_counter, 'coordinate': node_coordinate,
-                                           'x_group': x_count, 'z_group': z_count})
+                                           'x_group': x_count, 'z_group': z_count.format(beam_group)})
 
                 # store offset node rigid details
                 master_node_list = [n1[0],n2[0]]  # list of list
@@ -1281,18 +1326,42 @@ class ShellLinkMesh(Mesh):
                 self.offset_node_group_dict.setdefault(self.node_counter, beam_group)  # c node is key, group num is val
                 self.node_counter += 1
 
-        # generate for edge nodes
-        #if self.orthogonal:
+        # generate for edge nodes - only for orthogonal mesh
+        if self.orthogonal:
+            for edge_group in range(0,self.global_edge_count):
+                for beam_group, z_pair_group in enumerate(z_pair):
+                    n1 = [key for key, n in self.node_spec.items() if
+                          key in self.edge_node_recorder.keys() and n['z_group'] == z_pair_group[0]]
+                    n2 = [key for key, n in self.node_spec.items() if
+                          key in self.edge_node_recorder.keys() and n['z_group'] == z_pair_group[1]]
 
+                    if not len(n1) == 1 or not len(n2) == 1:
+                        continue
+                    n1_coord = self.node_spec[n1[0]]['coordinate']
+                    n2_coord = self.node_spec[n2[0]]['coordinate']
+
+                    # create offset node
+                    mid_pt = [(a + b) / 2 for a, b in zip(n1_coord, n2_coord)]
+                    node_coordinate = [mid_pt[0], mid_pt[1] + self.y_offset, mid_pt[2]]
+                    self.node_spec.setdefault(self.node_counter,
+                                              {'tag': self.node_counter, 'coordinate': node_coordinate,
+                                               'x_group': x_count, 'z_group': z_count.format(beam_group)})
+
+                    # store offset node rigid details
+                    master_node_list = [n1[0], n2[0]]  # list of list
+                    self.link_dict.setdefault(self.node_counter, master_node_list)
+
+                    # store node - beam group detail
+                    # beam_group = [ind for ind, i in enumerate([self.node_spec in z for z in z_pair]) if i][0]  # numbering of beam group
+                    self.offset_node_group_dict.setdefault(self.node_counter,
+                                                           beam_group)  # c node is key, group num is val
+                    self.node_counter += 1
 
     def _create_link_element(self, rNode, cNode):
         # sub procedure function
         # user mp constraint object
         # function to create ops rigid link command and store to variable
 
-        # link_str = "ops.element(\"twoNodeLink\",{eletag},*{eleNodes},'-mat',*[1,2,3,4,5,6],'-dir',*[1,2,3,4,5,6])\n"\
-        #    .format(eletag=self.element_counter,eleNodes=[rNode,cNode])
-        # self.element_counter += 1
         link_str = "ops.rigidLink(\"{linktype}\",{rNodetag},{cNodetag})\n".format(linktype=self.link_type,
                                                                                   rNodetag=cNode, cNodetag=rNode)
 
@@ -1301,7 +1370,3 @@ class ShellLinkMesh(Mesh):
 # -----------------------------------------------------------------------------------------------------------------
 # concrete classes for mesh elements
 
-class ShellEdgeControlLine(EdgeControlLine):
-    def __init__(self):
-        # TODO
-        pass

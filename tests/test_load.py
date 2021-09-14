@@ -489,7 +489,7 @@ def test_moving_load_and_basic_load_together(bridge_model_42_negative):
     example_bridge.add_load_case(move_point)
 
     # example_bridge.analyze(all=True)
-    example_bridge.analyze(all=True)
+    example_bridge.analyze()
     results = example_bridge.get_results(load_case="single_moving_point")
     #results = example_bridge.get_results()
     print(results)

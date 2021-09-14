@@ -10,7 +10,35 @@ Alpha test module - to be deprecated from CI purposes
 # create reference bridge model
 
 
+@pytest.fixture
+def shell_link_bridge(ref_bridge_properties):
+    # reference bridge 10m long, 7m wide with common skew angle at both ends
 
+    I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
+
+    # create material of slab shell
+    slab_shell_mat = og.create_material(type="concrete", code="AS5100-2017", grade="50MPa", rho=2400)
+
+    # create section of slab shell
+    slab_shell_section = og.create_section(h=0.2)
+    # shell elements for slab
+    slab_shell = og.create_member(section=slab_shell_section, material=slab_shell_mat)
+
+    # construct grillage model
+    example_bridge = og.create_grillage(bridge_name="shelllink_10m", long_dim=10, width=7, skew=12,
+                                        num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Orth",
+                                        model_type="shell",max_mesh_size_z=0.9,offset_beam_y_dist=0.6,
+                                        link_nodes_width=0.5)
+
+
+    # set shell
+    #example_bridge.set_member(I_beam, member="interior_main_beam")
+    example_bridge.set_shell_members(slab_shell)
+
+    # set beams
+    example_bridge.set_member(I_beam,member="offset_beam")
+    example_bridge.create_osp_model(pyfile=False)
+    return example_bridge
 
 @pytest.fixture
 def ref_28m_bridge():
@@ -350,7 +378,7 @@ def test_patch_load(bridge_model_42_negative):
     lane_point_2 = og.create_load_vertex(x=8, y=0, z=3, p=5)
     lane_point_3 = og.create_load_vertex(x=8, y=0, z=5, p=5)
     lane_point_4 = og.create_load_vertex(x=5, y=0, z=5, p=5)
-    Lane = og.PatchLoading("Lane 1", point1=lane_point_1, point2=lane_point_2, point3=lane_point_3, point4=lane_point_4)
+    Lane = og.PatchLoading( point1=lane_point_1, point2=lane_point_2, point3=lane_point_3, point4=lane_point_4)
     ULS_DL = og.LoadCase(name="Lane")
     ULS_DL.add_load(Lane)  # ch
     example_bridge.add_load_case(ULS_DL)
@@ -856,7 +884,7 @@ def test_28m_bridge_moving_compound_load(ref_28m_bridge):
 
     bridge_28.add_load_case(truck)
 
-    bridge_28.analyze(all=True)
+    bridge_28.analyze()
     results = bridge_28.get_results()
     results.sel(Node=63, Component='dy')
     maxY = results.sel(Component='Vy_i').max(dim='Loadcase')
@@ -965,3 +993,19 @@ def test_simple_grid():
 #     #og.plt.show()
 #     minY, maxY = og.opsv.section_force_diagram_3d('Mz', {}, 1)
 #     og.plt.show()
+
+def test_loading_shell_link_model(shell_link_bridge):
+    shell_link_model = shell_link_bridge
+    og.opsplt.plot_model("nodes")
+
+    lane_point_1 = og.create_load_vertex(x=5, y=0, z=3, p=5)
+    lane_point_2 = og.create_load_vertex(x=8, y=0, z=3, p=5)
+    lane_point_3 = og.create_load_vertex(x=8, y=0, z=5, p=5)
+    lane_point_4 = og.create_load_vertex(x=5, y=0, z=5, p=5)
+    Lane = og.PatchLoading(point1=lane_point_1, point2=lane_point_2, point3=lane_point_3, point4=lane_point_4)
+    ULS_DL = og.LoadCase(name="Lane")
+    ULS_DL.add_load(Lane)  # ch
+    shell_link_model.add_load_case(ULS_DL)
+    shell_link_model.analyze()
+    results = shell_link_model.get_results()
+

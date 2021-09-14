@@ -136,12 +136,13 @@ def shell_link_bridge(ref_bridge_properties):
 
     # construct grillage model
     example_bridge = og.create_grillage(bridge_name="shelllink_10m", long_dim=10, width=7, skew=12,
-                                        num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho",
-                                        model_type="shell")
+                                        num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Orth",
+                                        model_type="shell",max_mesh_size_z=0.9,offset_beam_y_dist=0.6,
+                                        link_nodes_width=0.5)
 
 
     # set shell
-    example_bridge.set_member(I_beam, member="interior_main_beam")
+    #example_bridge.set_member(I_beam, member="interior_main_beam")
     example_bridge.set_shell_members(slab_shell)
 
     # set beams
