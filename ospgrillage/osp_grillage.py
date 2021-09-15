@@ -1625,6 +1625,7 @@ class OspGrillage:
                             else:
                                 factored_array = xr.concat([factored_array,basic_da.sel(Loadcase=load_case_name) * load_factor + summation_array], dim="Loadcase")
 
+                            # store new coordinate name for load case
 
                     # apply load factor to all incremental load cases, then write to placeholder variable new_ma_list
                     # new_ma_list.append(
@@ -1632,7 +1633,7 @@ class OspGrillage:
                     # factored_array = xr.concat([summation_array,
                     #                             basic_da.sel(Loadcase=load_case_name) * load_factor]
                     #                            , dim="Loadcase")
-                output_load_comb_dict.append(summation_array)
+                output_load_comb_dict.append(factored_array)
             return output_load_comb_dict # list of data array
         else:
             # return raw data array for manual post processing
