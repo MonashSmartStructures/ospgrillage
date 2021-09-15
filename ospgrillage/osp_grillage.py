@@ -1535,6 +1535,7 @@ class OspGrillage:
         argument.
 
         """
+        list_of_moving_load_case = []
         load_combination_list = [] # instantiate
         local_force_flag = kwargs.get("local_forces", True)
         if local_force_flag:
@@ -1591,30 +1592,47 @@ class OspGrillage:
 
             for load_case_dict_list in comb:  # {0:[{'loadcase':LoadCase object, 'load_command': list of str}
                 print("Obtaining load combinations ....")
+
                 summation_array = None  # instantiate
                 factored_array = None  # instantiate
                 # check and add load cases to load combinations for basic non moving load cases
                 for load_case_name,load_factor in load_case_dict_list.items():  # [{'loadcase':LoadCase object, 'load_command': list of str}.]
+                    # if load case is a moving load, skip to next step
+                    if load_case_name in self.moving_load_case_dict.keys():
+                        list_of_moving_load_case.append({load_case_name:load_factor}) # store dict combination for later
+                        continue
+
                     #load_case_name = load_case_dict['loadcase'].name
                     # if first load case, the first extracted array becomes the summation array
                     if summation_array is None:
                         summation_array = basic_da.sel(Loadcase=load_case_name) * load_factor
-                        factored_array = basic_da.sel(Loadcase=load_case_name) * load_factor
+                        #factored_array = basic_da.sel(Loadcase=load_case_name) * load_factor
 
                     else:  # add to summation array
                         summation_array += basic_da.sel(Loadcase=load_case_name) * load_factor
-                        factored_array = xr.concat([factored_array,
-                                                    basic_da.sel(Loadcase=load_case_name)* load_factor]
-                                                   , dim="Loadcase")
+                        #factored_array = xr.concat([factored_array,
+                        #                            basic_da.sel(Loadcase=load_case_name) * load_factor]
+                        #                           , dim="Loadcase")
                     # check and add load cases to load combinations for moving load cases
                     # get the list of increm load case correspond to matching moving load case of load combination
-                    # list_of_load_case_dict = self.moving_load_case_dict.get(load_case_name, [])
-                    # for incremental_load_case in list_of_load_case_dict:
-                    #     # apply load factor to all incremental load cases, then write to placeholder variable new_ma_list
-                    #     # new_ma_list.append(
-                    #     summation_array += basic_da.sel(Loadcase=incremental_load_case["name"]) * load_case_dict['load_factor']
+                    # list_of_moving_load_case.append(self.moving_load_case_dict.get(load_case_name, []))
+                for moving_lc_combo_dict in list_of_moving_load_case:
+                    for moving_lc_name, load_factor in moving_lc_combo_dict.items():
+                        for incremental_load_case_dict in self.moving_load_case_dict[moving_lc_name]:
+                            load_case_name = incremental_load_case_dict['name']
+                            if factored_array is None:
+                                factored_array = basic_da.sel(Loadcase=load_case_name) * load_factor + summation_array
+                            else:
+                                factored_array = xr.concat([factored_array,basic_da.sel(Loadcase=load_case_name) * load_factor + summation_array], dim="Loadcase")
 
-                output_load_comb_dict.append(factored_array)
+
+                    # apply load factor to all incremental load cases, then write to placeholder variable new_ma_list
+                    # new_ma_list.append(
+                    #summation_array += basic_da.sel(Loadcase=incremental_load_case["name"]) * load_case_dict['load_factor']
+                    # factored_array = xr.concat([summation_array,
+                    #                             basic_da.sel(Loadcase=load_case_name) * load_factor]
+                    #                            , dim="Loadcase")
+                output_load_comb_dict.append(summation_array)
             return output_load_comb_dict # list of data array
         else:
             # return raw data array for manual post processing

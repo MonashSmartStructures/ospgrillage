@@ -822,14 +822,14 @@ def test_28m_bridge(ref_28m_bridge):
     point_load_case.add_load(p7)
 
     patch_load_case.add_load(patch_load_middle)
-    #bridge_28.add_load_case(line_load_case)
+    bridge_28.add_load_case(line_load_case)
     bridge_28.add_load_case(patch_load_case)
     # add a load combination
     #bridge_28.add_load_combination(load_combination_name="factored_point",
                                   # load_case_and_factor_dict={"point_load_case": 1.5})
     bridge_28.analyze()
 
-    results = bridge_28.get_results()
+    results = bridge_28.get_results(combinations={"line_load_case":1,"patch_load_case":1})
     # extract points along mid span, compare dY with those from Lusas model
     print(og.ops.nodeDisp(57))
     print(og.ops.nodeDisp(63))
@@ -988,7 +988,7 @@ def test_simple_grid():
 #
 #     shell_link_model.add_load_case(test_case)
 #     shell_link_model.analyze(all=True)
-#     results = shell_link_model.get_results(get_combinations=False)
+#     results = shell_link_model.get_results()
 #     #og.opsv.plot_defo()
 #     #og.plt.show()
 #     minY, maxY = og.opsv.section_force_diagram_3d('Mz', {}, 1)
@@ -1007,5 +1007,7 @@ def test_loading_shell_link_model(shell_link_bridge):
     ULS_DL.add_load(Lane)  # ch
     shell_link_model.add_load_case(ULS_DL)
     shell_link_model.analyze()
+
     results = shell_link_model.get_results()
+    print(results)
 

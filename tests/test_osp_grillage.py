@@ -182,5 +182,3 @@ def test_create_beam_link_model(beam_link_bridge):
 def test_create_shell_link_model(shell_link_bridge):
     shell_link_model = shell_link_bridge
     og.opsplt.plot_model("nodes")
-    #og.opsv.plot_model()
-    #og.plt.show()
