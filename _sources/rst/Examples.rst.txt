@@ -87,22 +87,22 @@ Figure 1 shows the plotted model in OpenSees model space.
 
     Figure 1: Grillage model of the exemplar 28 m bridge.
 
-Adding Loads for analysis
+Adding load cases to model
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Here are a few examples on creating/adding loads and load cases to the `simple_grid` model.
+Here are a few examples on creating/adding load cases to the `simple_grid` model.
 
-Adding a line load in the mid span across its width.
+First load case is a line load running along mid span width.
 
 .. code-block:: python
 
+    # reference unit load for various load types
     P = 1*kN
-
+    # name strings of load cases to be created
     static_cases_names = ["Line Test Case","Points Test Case (Global)","Points Test Case (Local in Point)",
                          "Points Test Case (Local in Compound)","Patch Test Case"]
 
-    # Create vertical load points in global coordinate system
-
     # Line load running along midspan width (P is kN/m)
+    # Create vertical load points in global coordinate system
     line_point_1 = ospg.create_load_vertex(x=L/2, z=0, p=P)
     line_point_2 = ospg.create_load_vertex(x=L/2, z=w, p=P)
     test_line_load = ospg.create_load(type='line',name="Test Load", point1=line_point_1, point2=line_point_2)
@@ -113,7 +113,7 @@ Adding a line load in the mid span across its width.
 
     simple_grid.add_load_case(line_case)
 
-Adding Compounded point loads
+Second load case comprise of Compounded point loads
 
 .. code-block:: python
 
@@ -133,8 +133,8 @@ Adding Compounded point loads
 
     simple_grid.add_load_case(points_case)
 
-Adding Compound load, but this time defining Compound loads in Local coordinates then setting the local coordinate
-system of compound load to global of grillage.
+Third load case is identical to the second load case with Compounded point loads, but this time defining Compound loads
+in Local coordinates then setting the local coordinate system of compound load to global of grillage.
 
 .. code-block:: python
 
@@ -155,7 +155,7 @@ system of compound load to global of grillage.
 
     simple_grid.add_load_case(points_case)
 
-Adding patch loads (surface load)
+Fourth load case entails a patch load
 
 .. code-block:: python
 
@@ -173,20 +173,10 @@ Adding patch loads (surface load)
     patch_case.add_load_groups(test_patch_load)
     simple_grid.add_load_case(patch_case)
 
-Adding a load combination
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. code-block:: python
-
-    l_factor = 2.3
-    p_factor = 0.5
-    load_combinations = {static_cases_names[0]:l_factor,static_cases_names[-1]:p_factor} # checks load cases exists?
-    simple_grid.add_load_combination(load_combination_name = "Load Combo", load_case_and_factor_dict = load_combinations )
-
 
 Adding a moving load analysis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Here we add a moving load analysis to the 28 m bridge model
+Here's how we create and add a moving load analysis to the 28 m bridge model.
 
 .. code-block:: python
 
@@ -238,18 +228,42 @@ run ``analyze()`` function.
     # Run analysis
     simple_grid.analyze() # by default analyzes all load cases
 
+If users wish to ``analyze()``  a specific load case, provide load case's name string as keyword argument - either as a
+`str`, or `list` of `str`.
 
-Getting results
+.. code-block:: python
+
+    simple_grid.analyze(load_case = "line_load_case") # by default analyzes all load cases
+
+
+Getting load case results
 ^^^^^^^^^^^^^^^^^^^
-Here is how to ``get_results()``. Also shown are a a few ways to get output results with differnt arguments.
+Results are obtained via ``get_results()``. The following code lines extracts all load case results. Results are presented
+as `xarray` datasets. See :ref:`Running_analysis` for more information on the `xarray` formats.
 
 .. code-block:: python
     results = simple_grid.get_results() # gets basic results
-    combination_results = simple_grid.get_results(get_combination=True) # gets load combination results
+
+
+Getting load combination results
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Load combinations are computed on the fly in `get_results()` by specifying a keyword argument for combinations.
+Argument takes in a `dict` having load case name strings as key, and corresponding load factor as value. The following
+example code define a load combinations having two load cases.
+
+.. code-block:: python
+
+    l_factor = 2.3
+    p_factor = 0.5
+    # combination with line load case and patch load case
+    load_combinations = {static_cases_names[0]:l_factor,static_cases_names[-1]:p_factor}
+    combination_results = simple_grid.get_results(combinations=load_combinations)
+
+Refer to :ref:`Running_analysis` for more information on the `xarray` formats for load combinations.
 
 Data processing
 ^^^^^^^^^^^^^^^^^^^
-Having the results be in Xarray's DataSet format, we can do many things with it such as slicing and query its data.
+Having the results be in `xarray` DataSet format, we can do many things with it such as slicing and query its data.
 
 The following example shows how to extract bending moments in midspan - the critical location for the defined load cases.
 
@@ -274,7 +288,7 @@ lusas plot
 
 [ Picture of lusas plots]
 
-Extract load combinations
+Process load combinations results
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
@@ -288,6 +302,7 @@ Extract load combinations
 
 Extract and process moving load results
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Here we extract only the moving load case and process its results.
 
 .. code-block:: python
 
@@ -315,8 +330,8 @@ Finally, comparing with theoretical:
 
 
 Oblique vs Orthogonal Mesh
---------------------
-Here are more examples showing the various mesh types available: Oblique mesh - Figure 2; and Orthogonal mesh - Figure 3.
+---------------------------
+Here are some more examples showing the variety of meshes capable of being generated with *ospgrillage* module.
 
 1) 28 m bridge with "Oblique" mesh - positive 20 degree
 

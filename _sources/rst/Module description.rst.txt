@@ -236,7 +236,7 @@ The member string tag specifies the standard grillage element to assign the :cla
      - For all elements in transverse direction between start_edge and end_edge
 
 
-Heres the codeline that assigns interior main beams of the grillage model with the earlier object of intermediate concrete *I-beam*:
+Here's the codeline that assigns interior main beams of the grillage model with the earlier object of intermediate concrete *I-beam*:
 
 .. code-block:: python
 
