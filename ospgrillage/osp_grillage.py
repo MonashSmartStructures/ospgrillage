@@ -1128,6 +1128,7 @@ class OspGrillage:
             else:
                 p1 = [0, 0, 0]
                 p2 = p1
+                continue
 
             # get length of line
             L = np.sqrt((p1[0] - p2[0]) ** 2 + (p1[2] - p2[2]) ** 2)
@@ -1536,7 +1537,7 @@ class OspGrillage:
 
         """
         list_of_moving_load_case = []
-        load_combination_list = [] # instantiate
+        coordinate_name_list = None # instantiate
         local_force_flag = kwargs.get("local_forces", True)
         if local_force_flag:
             basic_da = self.results.compile_data_array()
@@ -1617,6 +1618,7 @@ class OspGrillage:
                     # get the list of increm load case correspond to matching moving load case of load combination
                     # list_of_moving_load_case.append(self.moving_load_case_dict.get(load_case_name, []))
                 for moving_lc_combo_dict in list_of_moving_load_case:
+                    coordinate_name_list = []
                     for moving_lc_name, load_factor in moving_lc_combo_dict.items():
                         for incremental_load_case_dict in self.moving_load_case_dict[moving_lc_name]:
                             load_case_name = incremental_load_case_dict['name']
@@ -1624,7 +1626,7 @@ class OspGrillage:
                                 factored_array = basic_da.sel(Loadcase=load_case_name) * load_factor + summation_array
                             else:
                                 factored_array = xr.concat([factored_array,basic_da.sel(Loadcase=load_case_name) * load_factor + summation_array], dim="Loadcase")
-
+                            coordinate_name_list.append(load_case_name)
                             # store new coordinate name for load case
 
                     # apply load factor to all incremental load cases, then write to placeholder variable new_ma_list
@@ -1633,7 +1635,11 @@ class OspGrillage:
                     # factored_array = xr.concat([summation_array,
                     #                             basic_da.sel(Loadcase=load_case_name) * load_factor]
                     #                            , dim="Loadcase")
-                output_load_comb_dict.append(factored_array)
+                if not factored_array:
+                    combination_array = summation_array
+                else:
+                    combination_array = factored_array.assign_coords(Loadcase= coordinate_name_list)
+                output_load_comb_dict.append(combination_array)
             return output_load_comb_dict # list of data array
         else:
             # return raw data array for manual post processing

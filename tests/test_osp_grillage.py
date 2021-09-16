@@ -135,10 +135,10 @@ def shell_link_bridge(ref_bridge_properties):
     slab_shell = og.create_member(section=slab_shell_section, material=slab_shell_mat)
 
     # construct grillage model
-    example_bridge = og.create_grillage(bridge_name="shelllink_10m", long_dim=10, width=7, skew=12,
+    example_bridge = og.create_grillage(bridge_name="shelllink_10m", long_dim=10, width=7, skew=0,
                                         num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Orth",
-                                        model_type="shell",max_mesh_size_z=0.9,offset_beam_y_dist=0.6,
-                                        link_nodes_width=0.5)
+                                        model_type="shell",max_mesh_size_z=0.5,offset_beam_y_dist=0.499,
+                                        link_nodes_width=0.89)
 
 
     # set shell
@@ -162,13 +162,6 @@ def test_model_instance(bridge_model_42_negative):
     og.ops.wipe()
     a = example_bridge.get_element(member="exterior_main_beam_2",options="nodes")
     print(a)
-
-#  test creating shell model procedure successful
-def test_create_shell_model(shell_bridge):
-    shell_model = shell_bridge
-    og.opsplt.plot_model("nodes")
-    print(og.ops.eleNodes(195))
-    assert og.ops.eleNodes(195)  # if element exist - for orthogonal mesh only
 
 
 #  test creating beam model with rigid links

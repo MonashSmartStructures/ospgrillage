@@ -225,7 +225,7 @@ Here are the valid input types for which CompoundLoad accepts:
 
 **Coordinate System**
 
-When adding each load object, the :class:`~CompoundLoad` class allow users to input a ``load_coord=`` keyworded parameter.
+When adding each load object, the :class:`~CompoundLoad` class allow users to input a ``load_coord=`` keyword argument.
 This relates to the load object - whether it was previously defined in the user-defined *local* or in the *global* coordinate system. The following explains the various
 input conditions
 
@@ -287,8 +287,8 @@ The following example code is two point loads defined as a moving load travellin
 
 .. code-block:: python
 
-    front_wheel = ospg.create_load_vertices(x=0, y=0, z=0, p=6)   # load point 1
-    back_wheel = ospg.create_load_vertices(x=-1, y=0, z=0, p=6)   # load point 2
+    front_wheel = ospg.create_load_vertices(x=0, z=0, p=6)   # load point 1
+    back_wheel = ospg.create_load_vertices(x=-1, z=0, p=6)   # load point 2
     Line = ospg.create_load(type="line",local_point_1=front_wheel,local_point_2=back_wheel)
     tandem = ospg.create_compound_load("Two wheel vehicle")
 

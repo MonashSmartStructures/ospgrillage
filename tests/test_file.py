@@ -560,13 +560,13 @@ def test_moving_load_and_basic_load_together(bridge_model_42_negative):
     move_point = og.create_moving_load(name="single_moving_point")
     move_point.set_path(single_path)
     move_point.add_loads(load_obj=front_wheel)
-    #example_bridge.add_load_case(move_point)
+    example_bridge.add_load_case(move_point)
 
     # example_bridge.analyze(all=True)
     example_bridge.analyze()
     og.opsv.plot_defo()
     og.plt.show()
-    results = example_bridge.get_results(load_case="Barrier2")
+    results = example_bridge.get_results(combinations={"Barrier":1,"single_moving_point":2})
     #maxY = results.sel(Component='dy').max()
     print(results)
     print(og.ops.nodeDisp(25)[1])
@@ -594,7 +594,7 @@ def test_moving_compound_load(bridge_model_42_negative):
     # add load combination
     example_bridge.add_load_combination(load_combination_name="ULS",load_case_and_factor_dict={"Truck 1":2})
     example_bridge.analyze()
-    results = example_bridge.get_results(get_combinations=True)
+    results = example_bridge.get_results()
     print(results)
 
 

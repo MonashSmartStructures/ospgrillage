@@ -237,67 +237,6 @@ class Loads:
                          ref_point=self.ref_point)  # dict {node number: {Fx:val, Fy:val, Fz:val, Mx:val, My:val, Mz:val}}
         self.load_counter = 0  # counter for compound load
 
-    # modify load points if compound load option is present i.e. compound_x_list
-    def form_compound_load(self, **kwargs):
-        # """
-        # Function to set load groups into a compound load group. This function is handled by OpsGrillage.
-        # :param kwargs: see below
-        #
-        # :keyword:
-        # * **ref_point**: (Point namedTuple) Coordinate of the global ref point (grillage model coordinate) to position the ref point of the compound load group
-        # * **compound_dist_x** : (Float) Distance x from ref point of compound load group **in local coordinate** to offset the individual load object
-        # * **compound_dist_z** : (Float) Distance z from ref point of compound load group **in local coordinate** to offset the individual load object
-        # :return:
-        # """
-        # if global coordinates are given, reset global to local by subtracting the centroid, then adding the local coord if any
-        if any(self.point_list):
-            point_list = [i for i in self.point_list if i is not None]
-            centroid = find_plane_centroid(point_list)
-            # get kwargs
-            self.ref_point = kwargs.get('ref_point', Point(0, self.load_point_1.y,
-                                                           0))  # custom ref_point of load_point groups with respect to local coord default = origin of local coord
-            self.compound_dist_x = kwargs.get('compound_dist_x',
-                                              0)  # shift of ref point (and all poinst) in x direction with respect to local coord
-            self.compound_dist_z = kwargs.get('compound_dist_z',
-                                              0)  # shift of ref point (and all points) in z direction with respect to local coord
-
-            # translate points with respect to centroid to origin
-            self.load_point_1 = self.load_point_1._replace(
-                x=self.load_point_1.x - centroid[0] + self.compound_dist_x + self.ref_point.x,
-                z=self.load_point_1.z - centroid[
-                    1] + self.compound_dist_z + self.ref_point.z) if self.load_point_1 is not None else self.load_point_1
-            self.load_point_2 = self.load_point_2._replace(
-                x=self.load_point_2.x - centroid[0] + self.compound_dist_x + self.ref_point.x,
-                z=self.load_point_2.z - centroid[
-                    1] + self.compound_dist_z + self.ref_point.z) if self.load_point_2 is not None else self.load_point_2
-            self.load_point_3 = self.load_point_3._replace(
-                x=self.load_point_3.x - centroid[0] + self.compound_dist_x + self.ref_point.x,
-                z=self.load_point_3.z - centroid[
-                    1] + self.compound_dist_z + self.ref_point.z) if self.load_point_3 is not None else self.load_point_3
-            self.load_point_4 = self.load_point_4._replace(
-                x=self.load_point_4.x - centroid[0] + self.compound_dist_x + self.ref_point.x,
-                z=self.load_point_4.z - centroid[
-                    1] + self.compound_dist_z + self.ref_point.z) if self.load_point_4 is not None else self.load_point_4
-            self.load_point_5 = self.load_point_5._replace(
-                x=self.load_point_5.x - centroid[0] + self.compound_dist_x + self.ref_point.x,
-                z=self.load_point_5.z - centroid[
-                    1] + self.compound_dist_z + self.ref_point.z) if self.load_point_5 is not None else self.load_point_5
-            self.load_point_6 = self.load_point_6._replace(
-                x=self.load_point_6.x - centroid[0] + self.compound_dist_x + self.ref_point.x,
-                z=self.load_point_6.z - centroid[
-                    1] + self.compound_dist_z + self.ref_point.z) if self.load_point_6 is not None else self.load_point_6
-            self.load_point_7 = self.load_point_7._replace(
-                x=self.load_point_7.x - centroid[0] + self.compound_dist_x + self.ref_point.x,
-                z=self.load_point_7.z - centroid[
-                    1] + self.compound_dist_z + self.ref_point.z) if self.load_point_7 is not None else self.load_point_7
-            self.load_point_8 = self.load_point_8._replace(
-                x=self.load_point_8.x - centroid[0] + self.compound_dist_x + self.ref_point.x,
-                z=self.load_point_8.z - centroid[
-                    1] + self.compound_dist_z + self.ref_point.z) if self.load_point_8 is not None else self.load_point_8
-
-        else:  # TODO for local coordinate definition
-            pass
-        # else set points
 
     # function called by Moving load module to move the load group
     def move_load(self, ref_point: Point):
@@ -380,8 +319,12 @@ class Loads:
                                                                                           not None else self.load_point_8
 
     def get_magnitude(self):
-        #TODO
-        pass
+        # TODO
+        magnitude = []
+        for load_point in self.point_list:
+            magnitude.append(load_point.p)
+
+        return magnitude
 
     def __str__(self):
         return "Load object {} \n".format(self.name) + pprint.pformat(self.spec)
