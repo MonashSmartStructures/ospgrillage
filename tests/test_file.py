@@ -568,6 +568,7 @@ def test_moving_load_and_basic_load_together(bridge_model_42_negative):
     og.plt.show()
     results = example_bridge.get_results(combinations={"Barrier":1,"single_moving_point":2})
     #maxY = results.sel(Component='dy').max()
+    envelope = og.Envelope(ds=results,load_effect="dy",array="displacements")
     print(results)
     print(og.ops.nodeDisp(25)[1])
 

@@ -236,11 +236,11 @@ def solve_zeta_eta(xp, zp, x1, z1, x2, z2, x3, z3, x4, z4):
 
     def obj_func(x, xp, zp, x1, x2, x3, x4, z1, z2, z3, z4):
         eta = 4 * zp - (
-                    (1 - x[0]) * (1 - x[1]) * z1 + (1 + x[0]) * (1 - x[1]) * z2 + (1 + x[0]) * (1 + x[1]) * z3 + (
-                        1 - x[0]) * (1 + x[1]) * z4)
+                (1 - x[0]) * (1 - x[1]) * z1 + (1 + x[0]) * (1 - x[1]) * z2 + (1 + x[0]) * (1 + x[1]) * z3 + (
+                1 - x[0]) * (1 + x[1]) * z4)
         zeta = 4 * xp - (
-                    (1 - x[0]) * (1 - x[1]) * x1 + (1 + x[0]) * (1 - x[1]) * x2 + (1 + x[0]) * (1 + x[1]) * x3 + (
-                        1 - x[0]) * (1 + x[1]) * x4)
+                (1 - x[0]) * (1 - x[1]) * x1 + (1 + x[0]) * (1 - x[1]) * x2 + (1 + x[0]) * (1 + x[1]) * x3 + (
+                1 - x[0]) * (1 + x[1]) * x4)
         return eta, zeta
 
     root = fsolve(obj_func, np.array([1, 1]), args=(xp, zp, x1, x2, x3, x4, z1, z2, z3, z4))
@@ -526,9 +526,13 @@ def check_dict_same_keys(d_1, d_2):
     return merged
 
 
+def get_envelope(**kwargs):
+    return Envelope(kwargs)
+
+
 class Envelope:
 
-    def __init__(self,ds,load_effect:str=None,**kwargs):
+    def __init__(self, ds, load_effect: str = None, **kwargs):
         """
 
         :param ds: Data set from `get_results()`
@@ -539,56 +543,52 @@ class Envelope:
             return
 
         # instantiate variables
-        self.load_effect = load_effect # array load effect either displacements or forces
+        self.load_effect = load_effect  # array load effect either displacements or forces
         self.envelope_ds = None
         # main command strings
         self.eval_string = "self.ds.{array}.{xarray_command}(dim=\"Loadcase\").sel({component_command})"
-        self.component_string = "Component={component},"
-        self.element_string = "Element={element},"
+        self.component_string = "Component={},"
+        self.element_string = "Element={},"
         self.load_case_string = ""
-        self.component_command = None #  instantiate command string
+        self.component_command = None  # instantiate command string
         # default xarray function name
-        self.xarray_command = {"query":["idxmax","idxmin"],"minmax value":["max","min"],"arg":["argmax","argmin"]}
+        self.xarray_command = {"query": ["idxmax", "idxmin"], "minmax value": ["max", "min"],
+                               "index": ["argmax", "argmin"]}
         self.selected_xarray_command = []
         # get keyword args
-        self.elements = kwargs.get("elements",None)   # specific elements to query/envelope
-        self.nodes = kwargs.get("nodes",None)  # specific nodes to query/envelope
-        self.array = kwargs.get("array","displacements")
-        self.value_mode = kwargs.get("value_mode",False)
-        self.query_mode = kwargs.get("query_mode",False)
-        self.extrema = kwargs.get("extrema","max")
+        self.elements = kwargs.get("elements", None)  # specific elements to query/envelope
+        self.nodes = kwargs.get("nodes", None)  # specific nodes to query/envelope
+        self.component = kwargs.get("load_effect",None) # specific load effect to query
+        self.array = kwargs.get("array", "displacements")
+        self.value_mode = kwargs.get("value_mode", False)
+        self.query_mode = kwargs.get("query_mode", True)
+        self.extrema = kwargs.get("extrema", "max")
+
         # check variables
         if self.load_effect is None:
             raise Exception("Missing argument for load_effect=: Hint requires a namestring of load effect type based"
                             "on the Component dimension of the ospgrillage data set result format")
-        # if all([self.elements is None, self.nodes is None]):
-        #     raise Exception("")
 
-        self.max = True if self.extrema is "max" else False
-
+        # process variables
+        self.extrema_index = 0 if self.extrema is "max" else 1  # minima
         if self.query_mode:
-            self.selected_xarray_command = self.xarray_command["query"]
+            self.selected_xarray_command = self.xarray_command["query"][self.extrema_index]
         elif self.value_mode:
-            self.selected_xarray_command = self.xarray_command["minmax value"]
-        else: # default to argmax/ argmin
-            self.selected_xarray_command = self.xarray_command["arg"]
+            self.selected_xarray_command = self.xarray_command["minmax value"][self.extrema_index]
+        else:  # default to argmax/ argmin
+            self.selected_xarray_command = self.xarray_command["index"][self.extrema_index]
 
-        if self.elements:
-            pass
-        #TODO
-        # Element, Component, Max/Min
-        # return the load case/ load position
-        # return outputs
-        # e.g. LC where @Ele N Mz is Max/Min
-        # e.g. Element where LC A Component Mz is Max/Min
-        # e.g. LC where
+        if not isinstance(self.elements,list):
+            self.elements = [self.elements]
+        if not isinstance(self.component,list):
+            self.component = [self.component]
 
-        # parse envelope type
+        self.element_string.format(self.elements)
+        self.component_string.format(self.component)
 
-
-
-        # compute envelope
-        self.eval_string.format(array=self.load_effect,xarray_command=self.xarray_command,
+        self.component_command = self.component_string+ self.element_string
+        # format xarray command to be eval()
+        self.eval_string.format(array=self.load_effect, xarray_command=self.xarray_command,
                                 component_command=self.component_command)
 
     def get_elements(self):
