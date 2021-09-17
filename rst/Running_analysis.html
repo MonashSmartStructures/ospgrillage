@@ -106,10 +106,9 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#load-cases">Load cases</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#moving-loads">Moving loads</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#defining-load-combination">Defining load combination</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#running-analysis">Running analysis</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#obtaining-load-combinations">Obtaining load combinations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#obtaining-specific-load-case-results">Obtaining specific load case results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#obtaining-load-combinations">Obtaining load combinations</a></li>
 </ul>
 </li>
 </ul>
@@ -423,31 +422,15 @@ creates multiple <a class="reference internal" href="#load-cases">load cases</a>
 </pre></div>
 </div>
 </div>
-<div class="section" id="defining-load-combination">
-<h2>Defining load combination<a class="headerlink" href="#defining-load-combination" title="Permalink to this headline">¶</a></h2>
-<p>Load combinations are defined by passing an input dictionary of basic load case name as keys with load factors as
-values. An example dictionary is shown as follows, here we create a combination where <cite>Dead Load</cite> and <cite>Live Load</cite> Load
-Cases are multiplied by 1.2 and 1.7 respectively.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">load_combinations</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Dead Load&#39;</span><span class="p">:</span><span class="mf">1.2</span><span class="p">,</span><span class="s1">&#39;Live traffic&#39;</span><span class="p">:</span><span class="mf">1.7</span><span class="p">}</span>
-</pre></div>
-</div>
-<p>After defining the load combination input, users add the input to analysis using the function <code class="docutils literal notranslate"><span class="pre">add_load_combination()</span></code>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span><span class="o">.</span><span class="n">add_load_combination</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;ULS&quot;</span><span class="p">,</span> <span class="n">input_dict</span> <span class="o">=</span> <span class="n">load_combinations</span> <span class="p">)</span>
-</pre></div>
-</div>
-<p>Load combinations are automatically calculated from analysis results at the end after all load cases were analyzed.
-The following <strong>Obtaining results</strong> section will explain how these load combinations are extracted.</p>
-</div>
 <div class="section" id="running-analysis">
 <h2>Running analysis<a class="headerlink" href="#running-analysis" title="Permalink to this headline">¶</a></h2>
-<p>Once all defined load cases (static and moving) have been added to the grillage the analysis can be conducted.</p>
-<p>To analyse loadcase(s), users run the class function <code class="docutils literal notranslate"><span class="pre">analyze()</span></code>. This function takes either keyword arguments
-<code class="docutils literal notranslate"><span class="pre">all=</span></code> or <code class="docutils literal notranslate"><span class="pre">loadcase=</span></code>. When <code class="docutils literal notranslate"><span class="pre">all=True</span></code>, <code class="docutils literal notranslate"><span class="pre">analyze()</span></code> will run all defined load cases. If users wish to run only
-a specific set of load cases, pass a list of load case name str to <code class="docutils literal notranslate"><span class="pre">loadcase=</span></code>  keyword. This will analyse all load cases of the list.
-Here are a few interface examples of <code class="docutils literal notranslate"><span class="pre">analyze()</span></code>.</p>
+<p>Once all defined load cases (static and moving) have been added to the grillage object, analysis can be conducted.</p>
+<p>To analyse load case(s), users run the class function <code class="docutils literal notranslate"><span class="pre">analyze()</span></code>. By default``analyze()`` will run all defined load cases.
+If users wish to run only a specific set of load cases, pass a list of load case name str to <code class="docutils literal notranslate"><span class="pre">loadcase=</span></code>  keyword.
+This will analyse all load cases of the list. Here are a few interface examples of <code class="docutils literal notranslate"><span class="pre">analyze()</span></code>.</p>
 <p>Results are returned by running <code class="docutils literal notranslate"><span class="pre">get_results()</span></code> function.
 The results are returned as <a class="reference external" href="http://xarray.pydata.org/en/stable/user-guide/data-structures.html#">an xarray’s DataSet</a> (python’s <code class="docutils literal notranslate"><span class="pre">`Xarray`</span></code> module).</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span>  <span class="n">example_bridge</span><span class="o">.</span><span class="n">get_results</span><span class="p">(</span><span class="nb">all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span>  <span class="n">example_bridge</span><span class="o">.</span><span class="n">get_results</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>The <em>results</em> dataset contains dataarray <strong>variables</strong> with dimensions in brackets:</p>
@@ -467,18 +450,6 @@ The results are returned as <a class="reference external" href="http://xarray.py
 <li><p>Node: Node numbers of model- list of int</p></li>
 </ul>
 <p>From here, users can use xarray’s function for data array to query data.</p>
-<div class="section" id="obtaining-load-combinations">
-<h3>Obtaining load combinations<a class="headerlink" href="#obtaining-load-combinations" title="Permalink to this headline">¶</a></h3>
-<p>For load combinations, users passes <cite>get_combination=</cite> argument as <em>True</em> to <code class="docutils literal notranslate"><span class="pre">get_results()</span></code>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">load_combination_dict</span> <span class="o">=</span> <span class="n">example_bridge</span><span class="o">.</span><span class="n">get_results</span><span class="p">(</span><span class="n">get_combinations</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Instead of a single data set, the function returns a single dict with names of load combinations as key, paired with a data array
-of the load combination as its value. The data array has the same dimensions as those from standard
-load case data set, only this time the arrays are modified by load factors defined for the load combinations.</p>
-<p>Here is how the structure of a <cite>load_combination_dict</cite> looks like:</p>
-<p>[picture]</p>
-</div>
 <div class="section" id="obtaining-specific-load-case-results">
 <h3>Obtaining specific load case results<a class="headerlink" href="#obtaining-specific-load-case-results" title="Permalink to this headline">¶</a></h3>
 <p>By default, <code class="docutils literal notranslate"><span class="pre">`get_results()`</span></code> returns results of all defined load cases (be it basic or moving).
@@ -488,6 +459,21 @@ of name string(s) of the specific load cases to keyword argument <cite>load_case
 </pre></div>
 </div>
 <p>The above code will return a data set containing only the incremental load cases for each position of the “M1600” moving load.</p>
+</div>
+<div class="section" id="obtaining-load-combinations">
+<h3>Obtaining load combinations<a class="headerlink" href="#obtaining-load-combinations" title="Permalink to this headline">¶</a></h3>
+<p>For load combinations, users passes <cite>combination=</cite> argument as a dict with key matching the defined load cases, and
+values of load factors given as floats or ints.</p>
+<p>Load combinations are automatically calculated from analysis results at the end after all load cases were analyzed.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">load_combinations</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Dead Load&#39;</span><span class="p">:</span><span class="mf">1.2</span><span class="p">,</span><span class="s1">&#39;Live traffic&#39;</span><span class="p">:</span><span class="mf">1.7</span><span class="p">}</span>
+<span class="n">load_combination_results</span> <span class="o">=</span> <span class="n">example_bridge</span><span class="o">.</span><span class="n">get_results</span><span class="p">(</span><span class="n">combinations</span><span class="o">=</span><span class="n">load_combinations</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Instead of a single data set, the function returns a single dict with names of load combinations as key, paired with a data array
+of the load combination as its value. The data array has the same dimensions as those from standard
+load case data set, only this time the arrays are modified by load factors defined for the load combinations.</p>
+<p>Here is how the structure of a <cite>load_combination_dict</cite> looks like:</p>
+<p>[picture]</p>
 </div>
 </div>
 </div>
