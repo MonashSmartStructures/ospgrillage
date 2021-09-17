@@ -524,3 +524,90 @@ def check_dict_same_keys(d_1, d_2):
             merged.update({grid: updated_list})
 
     return merged
+
+
+class Envelope:
+
+    def __init__(self,ds,load_effect:str=None,**kwargs):
+        """
+
+        :param ds: Data set from `get_results()`
+        :param kwargs:
+        """
+        self.ds = ds
+        if ds is None:
+            return
+
+        # instantiate variables
+        self.load_effect = load_effect # array load effect either displacements or forces
+        self.envelope_ds = None
+        # main command strings
+        self.eval_string = "self.ds.{array}.{xarray_command}(dim=\"Loadcase\").sel({component_command})"
+        self.component_string = "Component={component},"
+        self.element_string = "Element={element},"
+        self.load_case_string = ""
+        self.component_command = None #  instantiate command string
+        # default xarray function name
+        self.xarray_command = {"query":["idxmax","idxmin"],"minmax value":["max","min"],"arg":["argmax","argmin"]}
+        self.selected_xarray_command = []
+        # get keyword args
+        self.elements = kwargs.get("elements",None)   # specific elements to query/envelope
+        self.nodes = kwargs.get("nodes",None)  # specific nodes to query/envelope
+        self.array = kwargs.get("array","displacements")
+        self.value_mode = kwargs.get("value_mode",False)
+        self.query_mode = kwargs.get("query_mode",False)
+        self.extrema = kwargs.get("extrema","max")
+        # check variables
+        if self.load_effect is None:
+            raise Exception("Missing argument for load_effect=: Hint requires a namestring of load effect type based"
+                            "on the Component dimension of the ospgrillage data set result format")
+        # if all([self.elements is None, self.nodes is None]):
+        #     raise Exception("")
+
+        self.max = True if self.extrema is "max" else False
+
+        if self.query_mode:
+            self.selected_xarray_command = self.xarray_command["query"]
+        elif self.value_mode:
+            self.selected_xarray_command = self.xarray_command["minmax value"]
+        else: # default to argmax/ argmin
+            self.selected_xarray_command = self.xarray_command["arg"]
+
+        if self.elements:
+            pass
+        #TODO
+        # Element, Component, Max/Min
+        # return the load case/ load position
+        # return outputs
+        # e.g. LC where @Ele N Mz is Max/Min
+        # e.g. Element where LC A Component Mz is Max/Min
+        # e.g. LC where
+
+        # parse envelope type
+
+
+
+        # compute envelope
+        self.eval_string.format(array=self.load_effect,xarray_command=self.xarray_command,
+                                component_command=self.component_command)
+
+    def get_elements(self):
+        """
+        Function to return element properties e.g. nodes and coordinates
+        :return:
+        """
+        pass
+
+    def get_envelope(self):
+        """
+        Function to return specified envelops given data set and enveloping options
+        :return:
+        """
+        self.value = True
+
+        return eval(self.eval_string)
+
+    def get_query(self):
+        self.query = True
+
+        return eval(self.eval_string)

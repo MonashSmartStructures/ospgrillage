@@ -556,7 +556,7 @@ def test_moving_load_and_basic_load_together(bridge_model_42_negative):
     example_bridge.add_load_case(barrier_load_case2)
     #example_bridge.add_load_case(barrier_load_case3)
 
-    single_path = og.create_moving_path(start_point=og.Point(2, 0, 2), end_point=og.Point(4, 0, 3))  # create path object
+    single_path = og.create_moving_path(start_point=og.Point(2, 0, 2), end_point=og.Point(4, 0, 3),increments=3)  # create path object
     move_point = og.create_moving_load(name="single_moving_point")
     move_point.set_path(single_path)
     move_point.add_loads(load_obj=front_wheel)

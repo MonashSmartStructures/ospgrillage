@@ -305,38 +305,19 @@ creates multiple `load cases`_ which corresponds to the load condition as the lo
 
     example_bridge.add_load_case(move_point)
 
-Defining load combination
-------------------------
-Load combinations are defined by passing an input dictionary of basic load case name as keys with load factors as
-values. An example dictionary is shown as follows, here we create a combination where `Dead Load` and `Live Load` Load
-Cases are multiplied by 1.2 and 1.7 respectively.
-
-.. code-block:: python
-
-    load_combinations = {'Dead Load':1.2,'Live traffic':1.7}
-
-After defining the load combination input, users add the input to analysis using the function ``add_load_combination()``.
-
-.. code-block:: python
-
-    example_bridge.add_load_combination(name = "ULS", input_dict = load_combinations )
-
-Load combinations are automatically calculated from analysis results at the end after all load cases were analyzed.
-The following **Obtaining results** section will explain how these load combinations are extracted.
 
 Running analysis
 ------------------------
 
-Once all defined load cases (static and moving) have been added to the grillage the analysis can be conducted.
+Once all defined load cases (static and moving) have been added to the grillage object, analysis can be conducted.
 
-To analyse loadcase(s), users run the class function ``analyze()``. This function takes either keyword arguments
-``all=`` or ``loadcase=``. When ``all=True``, ``analyze()`` will run all defined load cases. If users wish to run only
-a specific set of load cases, pass a list of load case name str to ``loadcase=``  keyword. This will analyse all load cases of the list.
-Here are a few interface examples of ``analyze()``.
+To analyse load case(s), users run the class function ``analyze()``. By default``analyze()`` will run all defined load cases.
+If users wish to run only a specific set of load cases, pass a list of load case name str to ``loadcase=``  keyword.
+This will analyse all load cases of the list. Here are a few interface examples of ``analyze()``.
 
 .. code-block:: python
-    # run either one
-    example_bridge.analyze(all = True)
+    # analyze all
+    example_bridge.analyze()
     # or a single str
     example_bridge.analyze(load_case="DL")
     # or a single element list
@@ -353,7 +334,7 @@ The results are returned as `an xarray's DataSet <http://xarray.pydata.org/en/st
 
 .. code-block:: python
 
-    results =  example_bridge.get_results(all=True)
+    results =  example_bridge.get_results()
 
 The *results* dataset contains dataarray **variables** with dimensions in brackets:
 
@@ -375,22 +356,6 @@ The coordinates of *results* dataset contains:
 
 From here, users can use xarray's function for data array to query data.
 
-Obtaining load combinations
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-For load combinations, users passes `get_combination=` argument as *True* to ``get_results()``.
-
-.. code-block:: python
-
-    load_combination_dict = example_bridge.get_results(get_combinations=True)
-
-Instead of a single data set, the function returns a single dict with names of load combinations as key, paired with a data array
-of the load combination as its value. The data array has the same dimensions as those from standard
-load case data set, only this time the arrays are modified by load factors defined for the load combinations.
-
-Here is how the structure of a `load_combination_dict` looks like:
-
-[picture]
 
 Obtaining specific load case results
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -404,3 +369,23 @@ of name string(s) of the specific load cases to keyword argument `load_case =`
 
 The above code will return a data set containing only the incremental load cases for each position of the "M1600" moving load.
 
+Obtaining load combinations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For load combinations, users passes `combination=` argument as a dict with key matching the defined load cases, and
+values of load factors given as floats or ints.
+
+Load combinations are automatically calculated from analysis results at the end after all load cases were analyzed.
+
+.. code-block:: python
+
+    load_combinations = {'Dead Load':1.2,'Live traffic':1.7}
+    load_combination_results = example_bridge.get_results(combinations=load_combinations)
+
+Instead of a single data set, the function returns a single dict with names of load combinations as key, paired with a data array
+of the load combination as its value. The data array has the same dimensions as those from standard
+load case data set, only this time the arrays are modified by load factors defined for the load combinations.
+
+Here is how the structure of a `load_combination_dict` looks like:
+
+[picture]
