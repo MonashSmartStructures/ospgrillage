@@ -566,10 +566,12 @@ def test_moving_load_and_basic_load_together(bridge_model_42_negative):
     example_bridge.analyze()
     og.opsv.plot_defo()
     og.plt.show()
-    results = example_bridge.get_results(combinations={"Barrier":1,"single_moving_point":2})
+    comb_results = example_bridge.get_results(combinations={"Barrier":1,"single_moving_point":2})
     #maxY = results.sel(Component='dy').max()
-    envelope = og.Envelope(ds=results,load_effect="dy",array="displacements")
-    print(results)
+    envelope = og.Envelope(ds=comb_results[0],load_effect="dy",array="displacements")
+    max_disp = envelope.get()
+    move_point.query(incremental_lc_name='single_moving_point at global position [2.00,0.00,2.00]')
+    print(comb_results)
     print(og.ops.nodeDisp(25)[1])
 
 
@@ -740,7 +742,7 @@ def test_1m_wide_bridge(ref_bridge_properties):
 
     pyfile = False
     example_bridge.create_osp_model(pyfile=pyfile)
-    example_bridge.get_element(member="edge_beam",options="nodes")
+    example_bridge.get_element(member="start_edge",options="nodes")
     og.opsv.plot_model(az_el=(-90, 0))
     og.plt.show()
 

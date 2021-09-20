@@ -545,12 +545,13 @@ class Envelope:
         # instantiate variables
         self.load_effect = load_effect  # array load effect either displacements or forces
         self.envelope_ds = None
+        self.format_string = None
         # main command strings
         self.eval_string = "self.ds.{array}.{xarray_command}(dim=\"Loadcase\").sel({component_command})"
         self.component_string = "Component={},"
         self.element_string = "Element={},"
         self.load_case_string = ""
-        self.component_command = None  # instantiate command string
+        self.component_command = ""  # instantiate command string
         # default xarray function name
         self.xarray_command = {"query": ["idxmax", "idxmin"], "minmax value": ["max", "min"],
                                "index": ["argmax", "argmin"]}
@@ -558,7 +559,7 @@ class Envelope:
         # get keyword args
         self.elements = kwargs.get("elements", None)  # specific elements to query/envelope
         self.nodes = kwargs.get("nodes", None)  # specific nodes to query/envelope
-        self.component = kwargs.get("load_effect",None) # specific load effect to query
+        self.component = kwargs.get("load_effect", None)  # specific load effect to query
         self.array = kwargs.get("array", "displacements")
         self.value_mode = kwargs.get("value_mode", False)
         self.query_mode = kwargs.get("query_mode", True)
@@ -578,36 +579,36 @@ class Envelope:
         else:  # default to argmax/ argmin
             self.selected_xarray_command = self.xarray_command["index"][self.extrema_index]
 
-        if not isinstance(self.elements,list):
+        # convert to lists
+        if not isinstance(self.elements, list):
             self.elements = [self.elements]
-        if not isinstance(self.component,list):
+        if not isinstance(self.component, list):
             self.component = [self.component]
 
-        self.element_string.format(self.elements)
-        self.component_string.format(self.component)
+        # check if empty
+        if not None in self.elements:
+            self.element_string.format(self.elements)
+        if not None in self.component:
+            self.component_string.format(self.component)
 
-        self.component_command = self.component_string+ self.element_string
+        # check the combinations of inputs for query
+        if not ("{" in self.element_string and "{" in self.component_string):
+            self.component_command = self.component_string + self.element_string
+        elif "{" in self.element_string and not "{" in self.component_string:
+            self.component_command = self.component_string
+        elif not ("{" in self.element_string and "{" in self.component_string):
+            self.component_command = self.element_string
+
         # format xarray command to be eval()
-        self.eval_string.format(array=self.load_effect, xarray_command=self.xarray_command,
+        self.format_string = self.eval_string.format(array=self.array, xarray_command=self.selected_xarray_command,
                                 component_command=self.component_command)
 
-    def get_elements(self):
+    def get(self):
         """
-        Function to return element properties e.g. nodes and coordinates
-        :return:
-        """
-        pass
-
-    def get_envelope(self):
-        """
-        Function to return specified envelops given data set and enveloping options
+        Function to return envelope of xarray given data set and enveloping options
         :return:
         """
         self.value = True
 
-        return eval(self.eval_string)
+        return eval(self.format_string)
 
-    def get_query(self):
-        self.query = True
-
-        return eval(self.eval_string)

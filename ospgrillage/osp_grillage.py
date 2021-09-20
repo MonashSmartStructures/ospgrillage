@@ -227,7 +227,7 @@ class OspGrillage:
                                           ext_to_int_b=self.ext_to_int_b,
                                           skew_1=self.skew_a, edge_dist_a=self.edge_width_a,
                                           edge_dist_b=self.edge_width_b,
-                                          skew_2=self.skew_b, orthogonal=self.ortho_mesh,**kwargs)
+                                          skew_2=self.skew_b, orthogonal=self.ortho_mesh, **kwargs)
 
     def _create_mesh(self, **kwargs):
         if self.model_type == "beam_link":
@@ -757,7 +757,7 @@ class OspGrillage:
         return node_list, grid  # grid = grid number
 
     # Getter for Line loads nodes
-    def _get_line_load_nodes(self, line_load_obj=None,list_of_load_vertices=None):
+    def _get_line_load_nodes(self, line_load_obj=None, list_of_load_vertices=None):
         # from starting point of line load
         # initiate variables
         next_grid = []
@@ -771,8 +771,8 @@ class OspGrillage:
         grid_inter_points = []
         # process inputs
         if line_load_obj is None and list_of_load_vertices is not None:
-            start_load_vertex = list_of_load_vertices[0] # first point is start point
-            end_load_vertex = list_of_load_vertices[1] # second point is end point
+            start_load_vertex = list_of_load_vertices[0]  # first point is start point
+            end_load_vertex = list_of_load_vertices[1]  # second point is end point
         elif line_load_obj is not None and list_of_load_vertices is None:
             start_load_vertex = line_load_obj.load_point_1
             end_load_vertex = line_load_obj.line_end_point
@@ -835,38 +835,37 @@ class OspGrillage:
         # if line does not intersect any grid, overwrite edited_dict
         if not edited_dict:
             for key in self.Mesh_obj.grid_number_dict.keys():
-                edited_dict.setdefault(key,{"long_intersect":[],"trans_intersect":[],"edge_intersect":[]})
+                edited_dict.setdefault(key, {"long_intersect": [], "trans_intersect": [], "edge_intersect": []})
 
         # update line_grid_intersect adding start and end points of line segment to the dict within grid key
         for grid_key, int_list in edited_dict.items():
             point_tuple_list = []
-            int_list.setdefault("ends", []) # set the key pair to empty list
+            int_list.setdefault("ends", [])  # set the key pair to empty list
             for node_tag in self.Mesh_obj.grid_number_dict[grid_key]:
                 coord = self.Mesh_obj.node_spec[node_tag]['coordinate']
                 coord_point = Point(coord[0], coord[1], coord[2])
                 point_tuple_list.append(coord_point)
-            #if not any([n >= 2 for n in [len(val) for val in int_list.values()]]):
-                # if grid_key == start_grid or start_grid in self.Mesh_obj.grid_vicinity_dict[grid_key].values():
-                #     int_list.setdefault("ends", [[line_load_obj.load_point_1.x, line_load_obj.load_point_1.y,
-                #                                   line_load_obj.load_point_1.z]])
-                #
-                # elif grid_key == last_grid or last_grid in self.Mesh_obj.grid_vicinity_dict[grid_key].values():
-                #     int_list.setdefault("ends", [[line_load_obj.line_end_point.x, line_load_obj.line_end_point.y,
-                #                                   line_load_obj.line_end_point.z]])
-                # check if both points are in grid
-
+            # if not any([n >= 2 for n in [len(val) for val in int_list.values()]]):
+            # if grid_key == start_grid or start_grid in self.Mesh_obj.grid_vicinity_dict[grid_key].values():
+            #     int_list.setdefault("ends", [[line_load_obj.load_point_1.x, line_load_obj.load_point_1.y,
+            #                                   line_load_obj.load_point_1.z]])
+            #
+            # elif grid_key == last_grid or last_grid in self.Mesh_obj.grid_vicinity_dict[grid_key].values():
+            #     int_list.setdefault("ends", [[line_load_obj.line_end_point.x, line_load_obj.line_end_point.y,
+            #                                   line_load_obj.line_end_point.z]])
+            # check if both points are in grid
 
             if check_point_in_grid(start_load_vertex, point_tuple_list):
-                #int_list.setdefault("ends", [[line_load_obj.load_point_1.x, line_load_obj.load_point_1.y,
-                                       #       line_load_obj.load_point_1.z]])
+                # int_list.setdefault("ends", [[line_load_obj.load_point_1.x, line_load_obj.load_point_1.y,
+                #       line_load_obj.load_point_1.z]])
                 int_list["ends"].append([start_load_vertex.x, start_load_vertex.y,
-                                              start_load_vertex.z])
+                                         start_load_vertex.z])
 
             if check_point_in_grid(end_load_vertex, point_tuple_list):
-                #int_list.setdefault("ends", [[line_load_obj.line_end_point.x, line_load_obj.line_end_point.y,
-                            #                  line_load_obj.line_end_point.z]])
+                # int_list.setdefault("ends", [[line_load_obj.line_end_point.x, line_load_obj.line_end_point.y,
+                #                  line_load_obj.line_end_point.z]])
                 int_list["ends"].append([end_load_vertex.x, end_load_vertex.y,
-                                              end_load_vertex.z])
+                                         end_load_vertex.z])
             else:
                 int_list.setdefault("ends", [])
         # loop to remove empty entries
@@ -895,7 +894,8 @@ class OspGrillage:
         return edited_dict, colinear_spec
 
     # private function to find intersection points of line/patch edge within grid
-    def _get_intersecting_elements(self, current_grid, line_start_grid, line_end_grid, start_point,end_point, long_ele_index,
+    def _get_intersecting_elements(self, current_grid, line_start_grid, line_end_grid, start_point, end_point,
+                                   long_ele_index,
                                    trans_ele_index, edge_ele_index):
         # instantiate variables
         R_z = []  # variables with _ are elements of the main variable without _ i.e. R_z is an element of Rz
@@ -908,7 +908,7 @@ class OspGrillage:
         R_z_col = []
         R_edge_col = []
         # get line segment - p_1 and p_2 correspond to start and end point of line
-        p_1 = start_point # start point of line
+        p_1 = start_point  # start point of line
         p_2 = end_point
         # get line equation for checking intersections
         L2 = line([p_1.x, p_1.z], [p_2.x, p_2.z])
@@ -1232,10 +1232,14 @@ class OspGrillage:
         # apply patch for full bound grids completed
 
         # search the intersecting grids using line load function
-        intersect_grid_1, _ = self._get_line_load_nodes(list_of_load_vertices=[patch_load_obj.load_point_1,patch_load_obj.load_point_2])
-        intersect_grid_2, _ = self._get_line_load_nodes(list_of_load_vertices=[patch_load_obj.load_point_2,patch_load_obj.load_point_3])
-        intersect_grid_3, _ = self._get_line_load_nodes(list_of_load_vertices=[patch_load_obj.load_point_3,patch_load_obj.load_point_4])
-        intersect_grid_4, _ = self._get_line_load_nodes(list_of_load_vertices=[patch_load_obj.load_point_4,patch_load_obj.load_point_1])
+        intersect_grid_1, _ = self._get_line_load_nodes(
+            list_of_load_vertices=[patch_load_obj.load_point_1, patch_load_obj.load_point_2])
+        intersect_grid_2, _ = self._get_line_load_nodes(
+            list_of_load_vertices=[patch_load_obj.load_point_2, patch_load_obj.load_point_3])
+        intersect_grid_3, _ = self._get_line_load_nodes(
+            list_of_load_vertices=[patch_load_obj.load_point_3, patch_load_obj.load_point_4])
+        intersect_grid_4, _ = self._get_line_load_nodes(
+            list_of_load_vertices=[patch_load_obj.load_point_4, patch_load_obj.load_point_1])
         # merging process of the intersect grid dicts
         merged = check_dict_same_keys(intersect_grid_1, intersect_grid_2)
         merged = check_dict_same_keys(merged, intersect_grid_3)
@@ -1321,7 +1325,7 @@ class OspGrillage:
                             load_str += self._assign_beam_ele_line_load(line_load_obj=nested_list_of_load)
                         else:
                             line_grid_intersect, line_ele_colinear = self._get_line_load_nodes(line_load_obj=
-                                nested_list_of_load)  # returns self.line_grid_intersect
+                                                                                               nested_list_of_load)  # returns self.line_grid_intersect
                             self.global_line_int_dict.append(line_grid_intersect)
                             load_str += self._assign_line_to_four_node(nested_list_of_load,
                                                                        line_grid_intersect=line_grid_intersect,
@@ -1342,7 +1346,7 @@ class OspGrillage:
                         load_str += self._assign_beam_ele_line_load(line_load_obj=load_obj)
                     else:
                         line_grid_intersect, line_ele_colinear = self._get_line_load_nodes(line_load_obj=
-                            load_obj)  # returns self.line_grid_intersect
+                                                                                           load_obj)  # returns self.line_grid_intersect
                         self.global_line_int_dict.append(line_grid_intersect)
                         load_str += self._assign_line_to_four_node(load_obj, line_grid_intersect=line_grid_intersect,
                                                                    line_ele_colinear=line_ele_colinear)
@@ -1537,7 +1541,7 @@ class OspGrillage:
 
         """
         list_of_moving_load_case = []
-        coordinate_name_list = None # instantiate
+        coordinate_name_list = None  # instantiate
         local_force_flag = kwargs.get("local_forces", True)
         if local_force_flag:
             basic_da = self.results.compile_data_array()
@@ -1586,9 +1590,9 @@ class OspGrillage:
             # load comb name,  load case in load comb
             # this format: self.load_combination_dict.setdefault(load_combination_name, load_case_dict_list)
             # comb = [{road:1.2, DL: 1.5},{} , {} ]
-            if not isinstance(comb,dict):
+            if not isinstance(comb, dict):
                 raise Exception("Combination argument requires a dict or a list of dict: e.g. {'DL':1.2,'SIDL':1.5}")
-            if not isinstance(comb,list):
+            if not isinstance(comb, list):
                 comb = [comb]
 
             for load_case_dict_list in comb:  # {0:[{'loadcase':LoadCase object, 'load_command': list of str}
@@ -1597,21 +1601,22 @@ class OspGrillage:
                 summation_array = None  # instantiate
                 factored_array = None  # instantiate
                 # check and add load cases to load combinations for basic non moving load cases
-                for load_case_name,load_factor in load_case_dict_list.items():  # [{'loadcase':LoadCase object, 'load_command': list of str}.]
+                for load_case_name, load_factor in load_case_dict_list.items():  # [{'loadcase':LoadCase object, 'load_command': list of str}.]
                     # if load case is a moving load, skip to next step
                     if load_case_name in self.moving_load_case_dict.keys():
-                        list_of_moving_load_case.append({load_case_name:load_factor}) # store dict combination for later
+                        list_of_moving_load_case.append(
+                            {load_case_name: load_factor})  # store dict combination for later
                         continue
 
-                    #load_case_name = load_case_dict['loadcase'].name
+                    # load_case_name = load_case_dict['loadcase'].name
                     # if first load case, the first extracted array becomes the summation array
                     if summation_array is None:
                         summation_array = basic_da.sel(Loadcase=load_case_name) * load_factor
-                        #factored_array = basic_da.sel(Loadcase=load_case_name) * load_factor
+                        # factored_array = basic_da.sel(Loadcase=load_case_name) * load_factor
 
                     else:  # add to summation array
                         summation_array += basic_da.sel(Loadcase=load_case_name) * load_factor
-                        #factored_array = xr.concat([factored_array,
+                        # factored_array = xr.concat([factored_array,
                         #                            basic_da.sel(Loadcase=load_case_name) * load_factor]
                         #                           , dim="Loadcase")
                     # check and add load cases to load combinations for moving load cases
@@ -1625,22 +1630,23 @@ class OspGrillage:
                             if factored_array is None:
                                 factored_array = basic_da.sel(Loadcase=load_case_name) * load_factor + summation_array
                             else:
-                                factored_array = xr.concat([factored_array,basic_da.sel(Loadcase=load_case_name) * load_factor + summation_array], dim="Loadcase")
+                                factored_array = xr.concat([factored_array, basic_da.sel(
+                                    Loadcase=load_case_name) * load_factor + summation_array], dim="Loadcase")
                             coordinate_name_list.append(load_case_name)
                             # store new coordinate name for load case
 
                     # apply load factor to all incremental load cases, then write to placeholder variable new_ma_list
                     # new_ma_list.append(
-                    #summation_array += basic_da.sel(Loadcase=incremental_load_case["name"]) * load_case_dict['load_factor']
+                    # summation_array += basic_da.sel(Loadcase=incremental_load_case["name"]) * load_case_dict['load_factor']
                     # factored_array = xr.concat([summation_array,
                     #                             basic_da.sel(Loadcase=load_case_name) * load_factor]
                     #                            , dim="Loadcase")
                 if not factored_array:
                     combination_array = summation_array
                 else:
-                    combination_array = factored_array.assign_coords(Loadcase= coordinate_name_list)
+                    combination_array = factored_array.assign_coords(Loadcase=coordinate_name_list)
                 output_load_comb_dict.append(combination_array)
-            return output_load_comb_dict # list of data array
+            return output_load_comb_dict  # list of data array
         else:
             # return raw data array for manual post processing
             if save_filename:
@@ -1658,7 +1664,9 @@ class OspGrillage:
         select_z_group = kwargs.get("z_group_num", None)  # optional z_group number for internal beam members
         select_x_group = kwargs.get("x_group_num", None)
         select_edge_group = kwargs.get("edge_group_num", None)
-
+        # prefix namestring variables
+        element_option = "elements"
+        node_option = "nodes"
         return_list = []
         sorted_return_list = []
         extracted_ele = []
@@ -1671,21 +1679,19 @@ class OspGrillage:
 
         # get z_group num from common member tag
 
-        if isinstance(common_member_tag,int):
+        if isinstance(common_member_tag, int):
             select_z_group = self.Mesh_obj.common_z_group_element[common_member_tag]
-
 
         if z_flag:
             for z_group in select_z_group:
-                extracted_ele = self.Mesh_obj.z_group_to_ele[z_group]
-                if options == "nodes":
-                    first_list = [i[1] for i in extracted_ele]
-                    second_list = [i[2] for i in extracted_ele]
-                    return_list = first_list + list(set(second_list) - set(first_list))
-                    # sort based on x coordinate
+                extracted_ele = self.Mesh_obj.z_group_to_ele[z_group]  # extract list of element
+                if options == node_option:
+                    first_list = [i[1] for i in extracted_ele]  # first list of nodes
+                    second_list = [i[2] for i in extracted_ele]  # second list of nodes
+                    return_list = first_list + list(set(second_list) - set(first_list))  # get only unique nodes
+                    # sort nodes based on x coordinate
                     node_x = [self.Mesh_obj.node_spec[tag]['coordinate'][0] for tag in return_list]
                     sorted_return_list.append([x for _, x in sorted(zip(node_x, return_list))])
-
 
             # else: # for interior beams, get list of
             #     for interior_beam_ele_z_group in self.Mesh_obj.common_z_group_element[common_member_tag]:
@@ -1696,19 +1702,21 @@ class OspGrillage:
             if select_x_group:
                 extracted_ele = self.Mesh_obj.x_group_to_ele[select_z_group]
             else:
-                extracted_ele = [trans_ele for trans_ele in self.Mesh_obj.trans_ele ]
+                extracted_ele = [trans_ele for trans_ele in self.Mesh_obj.trans_ele]
             if select_x_group in self.Mesh_obj.common_z_group_element[common_member_tag]:
                 extracted_ele = self.Mesh_obj.z_group_to_ele[select_z_group]
         elif edge_flag:
-            if select_edge_group:
-                # check if ele[3] (the edge group number) matches select_edge_group
-                extracted_ele = [ele for ele in self.Mesh_obj.edge_span_ele if ele[3] is select_edge_group] # ele[3]
-            else: # extract all edge ele
+            select_edge_group_num = common_member_tag  # either 0 or 1 for start or end span edge
+            extracted_ele = [ele for ele in self.Mesh_obj.edge_span_ele if ele[3] is select_edge_group_num]  # ele[3]
+            if options == node_option:
+                sorted_return_list = [key for key, val in self.Mesh_obj.edge_node_recorder.items()
+                                      if val == select_edge_group_num]
+            elif options == element_option:
 
-                extracted_ele = self.Mesh_obj.z_group_to_ele[select_z_group]
-
-
+                sorted_return_list = [ele[0] for ele in extracted_ele]
         return sorted_return_list
+
+
 # ---------------------------------------------------------------------------------------------------------------------
 class Analysis:
     """
@@ -1951,10 +1959,11 @@ class Results:
         # component = ["dx", "dy", "dz", "theta_x", "theta_y", "theta_z", "Vx", "Vy", "Vz", "Mx", "My", "Mz"]
         component = ["dx", "dy", "dz", "theta_x", "theta_y", "theta_z"]
         # force_component = ["Vx", "Vy", "Vz", "Mx", "My", "Mz"]
-        force_component = ["Vx_i", "Vy_i", "Vz_i", "Mx_i", "My_i", "Mz_i", "Vx_j", "Vy_j", "Vz_j", "Mx_j", "My_j","Mz_j"]
-        #TODO
-        #force_component = ["Vx_i", "Vy_i", "Vz_i", "Mx_i", "My_i", "Mz_i", "Vx_j", "Vy_j", "Vz_j", "Mx_j", "My_j",
-                          # "Mz_j","Vx_k", "Vy_k", "Vz_k", "Mx_k", "My_k", "Mz_k","Vx_l", "Vy_l", "Vz_l", "Mx_l", "My_l", "Mz_l"]
+        force_component = ["Vx_i", "Vy_i", "Vz_i", "Mx_i", "My_i", "Mz_i", "Vx_j", "Vy_j", "Vz_j", "Mx_j", "My_j",
+                           "Mz_j"]
+        # TODO
+        # force_component = ["Vx_i", "Vy_i", "Vz_i", "Mx_i", "My_i", "Mz_i", "Vx_j", "Vy_j", "Vz_j", "Mx_j", "My_j",
+        # "Mz_j","Vx_k", "Vy_k", "Vz_k", "Mx_k", "My_k", "Mz_k","Vx_l", "Vy_l", "Vz_l", "Mx_l", "My_l", "Mz_l"]
         # Sort data for dataArrays
         # for basic load case  {loadcasename:[{1:,2:...},{1:,2:...}], ... , loadcasename:[{1:,2:...},{1:,2:...} }
         basic_array_list = []
@@ -2046,9 +2055,10 @@ class OspGrillageShell(OspGrillage):
 
         # create mesh and model
         super().__init__(bridge_name, long_dim, width, skew, num_long_grid,
-                         num_trans_grid, edge_beam_dist, mesh_type, model="3D",**kwargs)
+                         num_trans_grid, edge_beam_dist, mesh_type, model="3D", **kwargs)
         # overwrite/ variables specific to shell mesh
         self.constraint_type = "Transformation"  # constraint type to allow MP constraint objects
+
     # ----------------------------------------------------------------------------------------------------------------
     # overwrite functions of base Mesh class - specific for
     def create_osp_model(self, pyfile=False):

@@ -789,13 +789,13 @@ class MovingLoad:
         """
         self.name = name
         self.load_list = []
-        self.global_path_obj = []
         self.load_case_dict_list = []  # Variable to access
         self.moving_load_case = []  # Variable recording all created load case for all load group's respective path
         self.static_load_case = []
         # get kwargs
         self.common_path = kwargs.get("common_path", None)
         self.global_increment = kwargs.get("global_increment", None)  # for advance use
+        self.parse = False  # flag for if query option is available
 
     def set_path(self, path_obj):
         """
@@ -860,8 +860,8 @@ class MovingLoad:
             load_case_list = []
             for steps in path_list:
                 load_step_lc = LoadCase(
-                    name="load: {} at [{:.2f},{:.2f},{:.2f}]".format(load_obj.name, steps[0], steps[1],
-                                                                     steps[2]))  # _lc in name stands for load case
+                    name="{} at global position [{:.2f},{:.2f},{:.2f}]"
+                        .format(self.name, steps[0], steps[1],steps[2]))  # _lc in name stands for load case
                 load_obj_copy = deepcopy(load_obj)  # Use deepcopy module to copy instance of load
                 load_step_lc.add_load(load_obj_copy)  # and add load to newly created load case
                 # add entries of static load to load groups
@@ -873,7 +873,52 @@ class MovingLoad:
                     load_step_lc.add_load(static_load_copy)
                 load_case_list.append(load_step_lc)
             self.moving_load_case.append(load_case_list)
+            self.parse= True
         return self.moving_load_case
+
+    def query(self,incremental_lc_name,**kwargs):
+        """
+        Function to query properties of moving load
+        :param kwargs:
+        :return:
+        """
+        # get query options
+        if not self.parse:
+            raise Exception("Moving load is not yet set to a grillage model - no information ready for query. hint"
+                            "add moving load to a grillage model via add_load_case()")
+        # specific incremental load case name
+        self.incremental_name = incremental_lc_name
+        # specific load group name
+        load_group_name = kwargs.get("load_group_name",[])
+        index = kwargs.get("index",0)
+        option = kwargs.get("option","position")
+
+        # instantiate variables
+        query_load_case = []
+        # get incremental load cases based on incremental names provided by users
+        for ml in self.moving_load_case:
+            for incremental_lc in ml:
+                if self.incremental_name == incremental_lc.name:
+                    query_load_case = incremental_lc
+                    break
+            break
+        # get load groups within moving load and its respective path
+        if load_group_name:
+            selected_load_groups = [load for load in query_load_case.load_groups if load['load'].name in load_group_name]
+            selected_lc_list = [a for a in self.load_case_dict_list if a['load'].name in load_group_name]
+        else: # select all load groups in
+            selected_load_groups = query_load_case.load_groups
+            selected_lc_list = self.load_case_dict_list
+
+        # TODO add more options* and check if compound or basic
+        if option == "position":
+            return [a['load'].point_list for a in selected_load_groups]
+        elif option == "offset":
+            return [a.point_list - b for (a,b) in zip(selected_load_groups,selected_lc_list)]
+        elif option == "original":
+            return selected_lc_list
+        elif option == "path":
+            return [load['path'] for load in selected_lc_list]
 
 
 class Path:
