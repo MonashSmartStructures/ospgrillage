@@ -185,7 +185,10 @@ class Mesh:
             self._fixed_sweep_node_meshing()
 
         # run section grouping for longitudinal and transverse members
+        self._identify_common_z_group()
         self._identify_member_groups()
+        # model plane
+        self.model_plane_z_groups = list(self.z_group_to_ele.keys())
 
     def create_control_points(self, **kwargs):
         # base version creating standard node points of control points - either start or end edge -
@@ -622,8 +625,6 @@ class Mesh:
 
         :return: Set variable `group_ele_dict` according to
         """
-        # sub procedure
-        self._identify_common_z_group()
 
         # dict node tag to width in z direction , and neighbouring node
         self.node_width_z_dict = dict()
@@ -666,7 +667,10 @@ class Mesh:
         self.x_group_to_ele = dict()
         for count in range(0, self.global_x_grid_count):
             self.x_group_to_ele[count] = [ele for ele in self.trans_ele if ele[3] == count]
-
+        # dict edge counter to ele
+        self.edge_group_to_ele = dict()
+        for count in range(0,self.global_edge_count+1):
+            self.edge_group_to_ele[count] = [ele for ele in self.edge_span_ele if ele[3] == count]
         # dict node tag to width in x direction
         self.node_width_x_dict = dict()
         self.node_connect_x_dict = dict()
@@ -1012,6 +1016,7 @@ class ShellEdgeControlLine(EdgeControlLine):
         self.noz = shell_noz  #
         self._get_shell_z_group_pair()
 
+
 class SweepPath:
     def __init__(self, pt1: Point, pt2: Point, pt3: Point = None):
         """
@@ -1205,20 +1210,24 @@ class ShellLinkMesh(Mesh):
         self.link_nodes_width = kwargs.get("link_nodes_width",0.445)   # Here default values
         self.max_mesh_size_z = kwargs.get("max_mesh_size_z",1)  # Here default values
         self.max_mesh_size_x = kwargs.get("max_mesh_size_x",1)  # Here default values
-
-        # create grillage mesh @ model plane y=0 using base class init
-        super().__init__(long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
-                         skew_2, ext_to_int_a, ext_to_int_b, **kwargs)
         # variables to store assignment counters after meshing of main model plane grid y = 0
         self.x_grid_to_x_dict = dict()  # key is x value (m), value is x grid number (for offset nodes)
         self.z_grid_to_z_dict = dict()  # key is z value (m), value is z grid number (for offset nodes)
 
+        # use meshing procedure of base mesh class
+        super().__init__(long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
+                         skew_2, ext_to_int_a, ext_to_int_b, **kwargs)
+
         # identify member groups of grillage model plane y = 0
-        self._identify_member_groups()
+        # self._identify_member_groups()
         # meshing procedure to create beam offset element and tie it with rigid links to master nodes of model plane y=0
         self._create_offset_beam_element()
 
-        pass
+        # overwrite procedure to identify
+        self._identify_common_z_group()
+        # base class stores node groups as self.model_plane_z_groups, here for offset elements store as new variable
+        self.offset_z_groups = [a for a in list(self.z_group_to_ele.keys()) if a not in self.model_plane_z_groups]
+
 
     # -----------------------------------------------------------------------------------------------------------------
     # Functions which are overwritten of that from base class to for specific shell type model
@@ -1226,44 +1235,14 @@ class ShellLinkMesh(Mesh):
 
         return ShellEdgeControlLine(**kwargs)
 
-    def _identify_common_z_group(self):
-        """
-        For shell type model, common_z_group has key = interior/exterior beam number , value = z_group pairs
-
-        """
-        # dict common element group to z group
-        self.common_z_group_element = dict()
-        self.common_z_group_element[0] = [0, len(self.noz) - 1]  # edge beams top and bottom edge
-
-        # for beam in self.num_long_beam-2: #
-
-        # start with case where only 2 grid line in long dir, no exterior and interior beams
-        exterior_beam_1_group = []
-        exterior_beam_2_group = []
-        interior_beam_group = list(range(2, len(self.noz) - 2))  # default [] when len(self.noz) < 2
-        # if more than 3 grid lines
-        if len(self.noz) > 2:
-            if len(self.noz) == 3:  # 3 grid lines, 2 edge and 1 interior
-                interior_beam_group = [1]  # overwrite interior
-            elif len(self.noz) == 4:  # 4 grid line, 2 edge exterior 1 and exterior 2
-                exterior_beam_1_group = [1]
-                interior_beam_group = []
-                exterior_beam_2_group = [len(self.noz) - 2]
-            else:
-                exterior_beam_1_group = [1]
-                exterior_beam_2_group = [len(self.noz) - 2]
-        self.common_z_group_element[1] = exterior_beam_1_group  # exterior 1
-        self.common_z_group_element[2] = interior_beam_group  # interior
-        self.common_z_group_element[3] = exterior_beam_2_group  # exterior 2
-
-        # add groupings of offset beam elements
+       # add groupings of offset beam elements
 
     # ----------------------------------------------------------------------------------------------------------------
     # sub procedures specific to shell meshes
     def _create_offset_beam_element(self):
 
         # sub procedure function to create beam elements based on offset nodes
-        self._create_offset_nodes(ele_list=self.trans_ele)
+        self._create_offset_nodes()
 
         # create offset elements commands
         for cNode, rNode_list in self.link_dict.items():
@@ -1292,7 +1271,7 @@ class ShellLinkMesh(Mesh):
             self.z_group_to_ele[beam_group + self.global_z_grid_count] = [ele for ele in self.long_ele if ele[3] ==
                                                                           beam_group + self.global_z_grid_count]
 
-    def _create_offset_nodes(self, ele_list):
+    def _create_offset_nodes(self):
         # sub procedure function
         x_count = "offset_beam_x"  # proxy
         z_count = "offset_beam_group_z{}"  # proxy

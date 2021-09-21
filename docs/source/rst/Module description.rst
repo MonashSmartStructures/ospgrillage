@@ -120,7 +120,7 @@ The following code line creates a :class:`Section` object called *I_beam_section
 
 .. code-block:: python
 
-    I_beam_section = ospg.create_section(A=0.896*m**2, J=0.133*m**4, Iy=0.213*m**4, Iz=0.259*m**4, Ay=0.233*m**2, Az=0.58*m**2)
+    I_beam_section = ospg.create_section(A=0.896*m2, J=0.133*m4, Iy=0.213*m4, Iz=0.259*m4, Ay=0.233*m2, Az=0.58*m2)
 
 The module's :class:`Section` object wraps OpenSees's `element()` command.
 Similar to :class:`Material`, users familiar with certain OpenSees element can pass its input parameters as keyword arguments
@@ -132,10 +132,16 @@ Creating the rest of the sections for the aforementioned grillage elements:
 
 .. code-block:: python
 
-    slab_section = ospg.create_section(A=0.04428*m**2, J=2.6e-4*m**4, Iy=1.1e-4*m**4, Iz=2.42e-4*m**4,Ay=3.69e-1*m**2, Az=3.69e-1*m**2, unit_width=True)
-    edge_beam_section = ospg.create_section(A=0.044625*m**2,J=2.28e-3*m**4, Iy=2.23e-1*m**4,Iz=1.2e-3*m**4, Ay=3.72e-2*m**2, Az=3.72e-2*m**2)
-    edge_slab_section = ospg.create_section(A=0.039375*m**2,J=0.21e-3*m**4, Iy=0.1e-3*m**2,Iz=0.166e-3*m**2,Ay=0.0328*m**2, Az=0.0328*m**2))
+    edge_beam_section = ospg.create_section(A=0.044625*m2,J=2.28e-3*m4, Iy=2.23e-1*m4,Iz=1.2e-3*m4, Ay=3.72e-2*m2, Az=3.72e-2*m2)
+    edge_slab_section = ospg.create_section(A=0.039375*m2,J=0.21e-3*m4, Iy=0.1e-3*m2,Iz=0.166e-3*m2,Ay=0.0328*m2, Az=0.0328*m2))
 
+For slabs, a unit width option is available - properties defined as based on unit width. When enabled, *ospgrillage* will automatically
+calculate the properties of slab section based on the spacing of transverse members. This is recommended for orthogonal mesh with skewed
+edges.
+
+.. code-block:: python
+
+    slab_section = ospg.create_section(A=0.04428*m2, J=2.6e-4*m4, Iy=1.1e-4*m4, Iz=2.42e-4*m4,Ay=3.69e-1*m2, Az=3.69e-1*m2, unit_width=True)
 
 .. note::
 

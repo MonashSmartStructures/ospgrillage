@@ -66,6 +66,8 @@ The following OpenSees element types are/will be supported in releases:
 
 #### Result output
 - [x] Utilise python's xarray features i.e. dataArrays
+- [x] Envelope function
+- [x] Query options for load types
 
 ### Development wishlist
 - [ ] Curved meshes

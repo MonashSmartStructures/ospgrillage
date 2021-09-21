@@ -158,8 +158,11 @@ class OspGrillage:
         self.element_command_list = []  # list of str for ops.element() commands
         self.section_command_list = []  # list of str for ops.section() commands
         self.material_command_list = []
-
+        self.common_grillage_element_keys = ["edge_beam","exterior_main_beam_1","interior_main_beam","exterior_main_beam_2"
+            ,"start_edge","end_edge","transverse_slab"]  # standard elements - edit here
+        self.long_member_index = 4
         # dict
+        self.common_grillage_element = dict()  # instantiate
         self.ele_group_assigned_list = []  # list recording assigned ele groups in grillage model
         self.section_dict = {}  # dictionary of section tags
         self.material_dict = {}  # dictionary of material tags
@@ -193,6 +196,7 @@ class OspGrillage:
         self.fix_val_pin = [1, 1, 1, 0, 0, 0]  # pinned
         self.fix_val_roller_x = [0, 1, 1, 0, 0, 0]  # roller
         self.fix_val_fixed = [1, 1, 1, 1, 1, 1]  # rigid /fixed support
+        self.fixity_vector = {"pin":[1,1,1,0,0,0],"roller":[0,1,1,0,0,0],"fixed":[1,1,1,1,1,1]}
         # special rules for grillage - alternative to Properties of grillage definition - use for special dimensions
         self.skew_threshold = [10, 30]  # threshold for grillage to allow option of mesh choices
         self.deci_tol = 4  # tol of decimal places
@@ -228,6 +232,9 @@ class OspGrillage:
                                           skew_1=self.skew_a, edge_dist_a=self.edge_width_a,
                                           edge_dist_b=self.edge_width_b,
                                           skew_2=self.skew_b, orthogonal=self.ortho_mesh, **kwargs)
+
+        #
+        self._create_standard_element_list()
 
     def _create_mesh(self, **kwargs):
         if self.model_type == "beam_link":
@@ -302,13 +309,17 @@ class OspGrillage:
             else:
                 eval(sec_str)
 
-    def set_boundary_condition(self, edge_group_counter=[1], restraint_vector=[0, 1, 0, 0, 0, 0], group_to_exclude=[0]):
+    def set_boundary_condition(self, edge_group_counter=[1], new_restraint_vector=None, group_to_exclude=[0]):
         """
         Function to set or modify customized support conditions.
 
         .. note::
             This feature to be available for future release.
         """
+        if new_restraint_vector:
+            self.fix_val_pin = [1, 1, 1, 0, 0, 0]  # pinned
+            self.fix_val_roller_x = [0, 1, 1, 0, 0, 0]  # roller
+            self.fix_val_fixed = [1, 1, 1, 1, 1, 1]
         pass
 
     # abstracted procedures to write ops commands to output py file. All functions are private and named with "__write"
@@ -405,15 +416,15 @@ class OspGrillage:
             elif edge_group_num == 0:  # 0 is edge of start of span
                 if self.pyfile:  # if writing py file
                     with open(self.filename, 'a') as file_handle:
-                        file_handle.write("ops.fix({}, *{})\n".format(node_tag, self.fix_val_pin))
+                        file_handle.write("ops.fix({}, *{})\n".format(node_tag, self.fixity_vector["pin"]))
                 else:  # run instance
-                    ops.fix(node_tag, *self.fix_val_pin)
+                    ops.fix(node_tag, *self.fixity_vector["pin"])
             elif edge_group_num == 1:  # 1 is edge of end of span
                 if self.pyfile:  # if writing py file
                     with open(self.filename, 'a') as file_handle:
-                        file_handle.write("ops.fix({}, *{})\n".format(node_tag, self.fix_val_roller_x))
+                        file_handle.write("ops.fix({}, *{})\n".format(node_tag, self.fixity_vector["roller"]))
                 else:  # run instance
-                    ops.fix(node_tag, *self.fix_val_roller_x)
+                    ops.fix(node_tag, *self.fixity_vector["roller"])
 
     def _write_material(self, member: GrillageMember = None,
                         material: Material = None) -> int:
@@ -486,38 +497,47 @@ class OspGrillage:
                   .format(section_type, sectiontagcounter))
         return sectiontagcounter
 
-    def _create_standard_element_list(self, namestring: str):
-        # TODO
-        z_flag = False
-        x_flag = False
-        edge_flag = False
-        common_member_tag = []
-        if namestring == "interior_main_beam":
-            common_member_tag = 2
-            z_flag = True
-        elif namestring == "exterior_main_beam_1":
-            common_member_tag = 1
-            z_flag = True
-        elif namestring == "exterior_main_beam_2":
-            common_member_tag = 3
-            z_flag = True
-        elif namestring == "edge_beam":
-            common_member_tag = 0
-            z_flag = True
-        elif namestring == "start_edge":
-            common_member_tag = 0
-            edge_flag = True
-        elif namestring == "end_edge":
-            common_member_tag = 1
-            edge_flag = True
-        elif namestring == "transverse_slab":
-            common_member_tag = "slab"
-            x_flag = True
-        else:
-            raise ValueError("Member str not a standard grillage element - refer to documentation/Module Description"
-                             "for valid member and input string")
+    def _create_standard_element_list(self):
 
-        return z_flag, x_flag, edge_flag, common_member_tag
+        # standard element for beam class
+
+        for key, val in zip(self.common_grillage_element_keys[0:self.long_member_index],
+                            sort_list_into_four_groups(self.Mesh_obj.model_plane_z_groups).values()):
+            self.common_grillage_element.update({key: val})
+        # populate start edge and end edge
+        self.common_grillage_element[self.common_grillage_element_keys[4]]=[0]
+        self.common_grillage_element[self.common_grillage_element_keys[5]]=[1]
+
+        # z_flag = False
+        # x_flag = False
+        # edge_flag = False
+        # common_member_tag = []
+        # if namestring == "interior_main_beam":
+        #     common_member_tag = 2
+        #     z_flag = True
+        # elif namestring == "exterior_main_beam_1":
+        #     common_member_tag = 1
+        #     z_flag = True
+        # elif namestring == "exterior_main_beam_2":
+        #     common_member_tag = 3
+        #     z_flag = True
+        # elif namestring == "edge_beam":
+        #     common_member_tag = 0
+        #     z_flag = True
+        # elif namestring == "start_edge":
+        #     common_member_tag = 0
+        #     edge_flag = True
+        # elif namestring == "end_edge":
+        #     common_member_tag = 1
+        #     edge_flag = True
+        # elif namestring == "transverse_slab":
+        #     common_member_tag = "slab"
+        #     x_flag = True
+        # else:
+        #     raise ValueError("Member str not a standard grillage element - refer to documentation/Module Description"
+        #                      "for valid member and input string")
+        #
+        # return z_flag, x_flag, edge_flag, common_member_tag
 
     # Function to set grillage elements
     def set_member(self, grillage_member_obj: GrillageMember, member=None):
@@ -560,12 +580,12 @@ class OspGrillage:
             with open(self.filename, 'a') as file_handle:
                 file_handle.write("# Element generation for member: {}\n".format(member))
         # lookup member grouping
-        z_flag, x_flag, edge_flag, common_member_tag = self._create_standard_element_list(namestring=member)
+        #z_flag, x_flag, edge_flag, common_member_tag = self._create_standard_element_list(namestring=member)
 
         ele_width = 1  # set default ele width 1
         # if member properties is based on unit width (e.g. slab elements), get width of element and assign properties
         if grillage_member_obj.section.unit_width:
-            if common_member_tag == "slab":
+            if member == self.common_grillage_element_keys[-1]:
                 for ele in self.Mesh_obj.trans_ele:
                     n1 = ele[1]  # node i
                     n2 = ele[2]  # node j
@@ -595,55 +615,77 @@ class OspGrillage:
                                                                           sectiontag=section_tag)
                     ele_command_list.append(ele_str)
             elif member == "start_edge" or member == "end_edge":
-                for ele in self.Mesh_obj.edge_span_ele:
-                    if ele[3] == common_member_tag:
+                for edge_group in self.common_grillage_element[member]:
+                    for edge_ele in self.Mesh_obj.edge_group_to_ele[edge_group]:
                         edge_ele_width = 0.5  # nominal half -m width
-                        node_tag_list = [ele[1], ele[2]]
-                        ele_str = grillage_member_obj.get_element_command_str(ele_tag=ele[0],
+                        node_tag_list = [edge_ele[1], edge_ele[2]]
+                        ele_str = grillage_member_obj.get_element_command_str(ele_tag=edge_ele[0],
                                                                               node_tag_list=node_tag_list,
-                                                                              transf_tag=ele[4],
+                                                                              transf_tag=edge_ele[4],
                                                                               ele_width=edge_ele_width,
                                                                               materialtag=material_tag,
                                                                               sectiontag=section_tag)
                         ele_command_list.append(ele_str)
-                    self.ele_group_assigned_list.append("edge: {}".format(common_member_tag))
+                    self.ele_group_assigned_list.append("edge: {}".format(edge_group))
 
         else:  # non-unit width member assignment
-            if z_flag:
-                for z_groups in self.Mesh_obj.common_z_group_element[common_member_tag]:
-                    # assign properties to elements in z group
-
+            # if start and end edge elements
+            if member == "start_edge" or member == "end_edge":
+                for edge_group in self.common_grillage_element[member]:
+                    ele_command_list += self._get_element_command_list(grillage_member_obj=grillage_member_obj,
+                                                                       list_of_ele=self.Mesh_obj.edge_group_to_ele[
+                                                                           edge_group],
+                                                                       material_tag=material_tag,
+                                                                       section_tag=section_tag)
+            # check if non-unit width transverse slab assigment
+            elif member == self.common_grillage_element_keys[-1]:
+                ele_command_list = self._get_element_command_list(grillage_member_obj=grillage_member_obj,
+                                                                  list_of_ele=self.Mesh_obj.trans_ele,
+                                                                  material_tag=material_tag,
+                                                                  section_tag=section_tag)
+            else: # longitudinal members
+                for z_group in self.common_grillage_element[member]:
                     ele_command_list += self._get_element_command_list(grillage_member_obj=grillage_member_obj,
                                                                        list_of_ele=self.Mesh_obj.z_group_to_ele[
-                                                                           z_groups],
+                                                                           z_group],
                                                                        material_tag=material_tag,
                                                                        section_tag=section_tag)
 
-                    # for ele in self.Mesh_obj.z_group_to_ele[z_groups]:
-                    #     node_tag_list = [ele[1], ele[2]]
-                    #     ele_str = grillage_member_obj.get_element_command_str(ele_tag=ele[0],
-                    #                                                           node_tag_list=node_tag_list,
-                    #                                                           transf_tag=ele[4], ele_width=ele_width,
-                    #                                                           materialtag=material_tag,
-                    #                                                           sectiontag=section_tag)
-                    #
-                    #     ele_command_list.append(ele_str)
-
-                    self.ele_group_assigned_list.append(z_groups)
-            elif edge_flag:
-                for ele in self.Mesh_obj.edge_span_ele:
-                    if ele[3] == common_member_tag:
-                        node_tag_list = [ele[1], ele[2]]
-                        ele_str = grillage_member_obj.get_element_command_str(ele_tag=ele[0],
-                                                                              node_tag_list=node_tag_list,
-                                                                              transf_tag=ele[4], ele_width=ele_width,
-                                                                              materialtag=material_tag,
-                                                                              sectiontag=section_tag)
-                        ele_command_list.append(ele_str)
-                    self.ele_group_assigned_list.append("edge: {}".format(common_member_tag))
+            # if z_flag:
+            #     for z_groups in self.Mesh_obj.common_z_group_element[common_member_tag]:
+            #         # assign properties to elements in z group
+            #
+            #         ele_command_list += self._get_element_command_list(grillage_member_obj=grillage_member_obj,
+            #                                                            list_of_ele=self.Mesh_obj.z_group_to_ele[
+            #                                                                z_groups],
+            #                                                            material_tag=material_tag,
+            #                                                            section_tag=section_tag)
+            #
+            #         # for ele in self.Mesh_obj.z_group_to_ele[z_groups]:
+            #         #     node_tag_list = [ele[1], ele[2]]
+            #         #     ele_str = grillage_member_obj.get_element_command_str(ele_tag=ele[0],
+            #         #                                                           node_tag_list=node_tag_list,
+            #         #                                                           transf_tag=ele[4], ele_width=ele_width,
+            #         #                                                           materialtag=material_tag,
+            #         #                                                           sectiontag=section_tag)
+            #         #
+            #         #     ele_command_list.append(ele_str)
+            #
+            #         self.ele_group_assigned_list.append(z_groups)
+            # elif edge_flag:
+            #     for ele in self.Mesh_obj.edge_span_ele:
+            #         if ele[3] == common_member_tag:
+            #             node_tag_list = [ele[1], ele[2]]
+            #             ele_str = grillage_member_obj.get_element_command_str(ele_tag=ele[0],
+            #                                                                   node_tag_list=node_tag_list,
+            #                                                                   transf_tag=ele[4], ele_width=ele_width,
+            #                                                                   materialtag=material_tag,
+            #                                                                   sectiontag=section_tag)
+            #             ele_command_list.append(ele_str)
+            #         self.ele_group_assigned_list.append("edge: {}".format(common_member_tag))
             # here set the element command list to the common member tag, if previously defined (key exist),
             # overwrite the element command list for that key
-            elif x_flag:
+            #elif x_flag:
                 # assigns all transverse ele (regardless of width)
                 # This option is only for uniform grids
                 # for ele in self.Mesh_obj.trans_ele:
@@ -655,12 +697,9 @@ class OspGrillage:
                 #                                                           transf_tag=ele[4], ele_width=ele_width,
                 #                                                           materialtag=material_tag,
                 #                                                           sectiontag=section_tag)
-                ele_command_list = self._get_element_command_list(grillage_member_obj=grillage_member_obj,
-                                                                  list_of_ele=self.Mesh_obj.trans_ele,
-                                                                  material_tag=material_tag,
-                                                                  section_tag=section_tag)
+
                 # ele_command_list.append(ele_str)
-        ele_command_dict[common_member_tag] = ele_command_list
+        ele_command_dict[member] = ele_command_list
         self.element_command_list.append(ele_command_dict)
 
     # subfunction for setting member of groups
@@ -1675,45 +1714,30 @@ class OspGrillage:
         if not options:
             raise Exception("Options not defined: Hint pass option=  \"nodes\",\"element\",\"node_i\",\"node_j\"")
 
-        z_flag, x_flag, edge_flag, common_member_tag = self._create_standard_element_list(namestring=namestring)
 
         # get z_group num from common member tag
-
-        if isinstance(common_member_tag, int):
-            select_z_group = self.Mesh_obj.common_z_group_element[common_member_tag]
-
-        if z_flag:
-            for z_group in select_z_group:
-                extracted_ele = self.Mesh_obj.z_group_to_ele[z_group]  # extract list of element
-                if options == node_option:
-                    first_list = [i[1] for i in extracted_ele]  # first list of nodes
-                    second_list = [i[2] for i in extracted_ele]  # second list of nodes
-                    return_list = first_list + list(set(second_list) - set(first_list))  # get only unique nodes
-                    # sort nodes based on x coordinate
-                    node_x = [self.Mesh_obj.node_spec[tag]['coordinate'][0] for tag in return_list]
-                    sorted_return_list.append([x for _, x in sorted(zip(node_x, return_list))])
-
-            # else: # for interior beams, get list of
-            #     for interior_beam_ele_z_group in self.Mesh_obj.common_z_group_element[common_member_tag]:
-            #         extracted_ele = self.Mesh_obj.z_group_to_ele[interior_beam_ele_z_group]
-
-        elif x_flag:
-            # TODO check if edge and trans member necessary
-            if select_x_group:
-                extracted_ele = self.Mesh_obj.x_group_to_ele[select_z_group]
-            else:
-                extracted_ele = [trans_ele for trans_ele in self.Mesh_obj.trans_ele]
-            if select_x_group in self.Mesh_obj.common_z_group_element[common_member_tag]:
-                extracted_ele = self.Mesh_obj.z_group_to_ele[select_z_group]
-        elif edge_flag:
-            select_edge_group_num = common_member_tag  # either 0 or 1 for start or end span edge
-            extracted_ele = [ele for ele in self.Mesh_obj.edge_span_ele if ele[3] is select_edge_group_num]  # ele[3]
+        if namestring == "transverse_slab":
+            extracted_ele = self.Mesh_obj.trans_ele
+            # TODO
+        elif namestring == "start_edge" or namestring == "end_edge":
+            for edge_group in self.common_grillage_element[namestring]:
+                extracted_ele = self.Mesh_obj.edge_group_to_ele[edge_group]
             if options == node_option:
                 sorted_return_list = [key for key, val in self.Mesh_obj.edge_node_recorder.items()
-                                      if val == select_edge_group_num]
+                                      if val == self.common_grillage_element[namestring]]
             elif options == element_option:
 
                 sorted_return_list = [ele[0] for ele in extracted_ele]
+        else:
+            extracted_ele = self.Mesh_obj.z_group_to_ele[self.common_grillage_element[namestring]]
+            if options == node_option:
+                first_list = [i[1] for i in extracted_ele]  # first list of nodes
+                second_list = [i[2] for i in extracted_ele]  # second list of nodes
+                return_list = first_list + list(set(second_list) - set(first_list))  # get only unique nodes
+                # sort nodes based on x coordinate
+                node_x = [self.Mesh_obj.node_spec[tag]['coordinate'][0] for tag in return_list]
+                sorted_return_list.append([x for _, x in sorted(zip(node_x, return_list))])
+
         return sorted_return_list
 
 
@@ -2058,7 +2082,8 @@ class OspGrillageShell(OspGrillage):
                          num_trans_grid, edge_beam_dist, mesh_type, model="3D", **kwargs)
         # overwrite/ variables specific to shell mesh
         self.constraint_type = "Transformation"  # constraint type to allow MP constraint objects
-
+        # overwrite standard element list for shell model
+        self._create_standard_element_list()
     # ----------------------------------------------------------------------------------------------------------------
     # overwrite functions of base Mesh class - specific for
     def create_osp_model(self, pyfile=False):
@@ -2109,40 +2134,17 @@ class OspGrillageShell(OspGrillage):
         # create the result file for the Mesh object
         self.results = Results(self.Mesh_obj)
 
-    def _create_standard_element_list(self, namestring: str):
+    # overwrites base class for beam element grillage
+    def _create_standard_element_list(self):
         # TODO
-        z_flag = False
-        x_flag = False
-        edge_flag = False
-        common_member_tag = []
-        if namestring == "interior_main_beam":
-            common_member_tag = 2
-            z_flag = True
-        elif namestring == "exterior_main_beam_1":
-            common_member_tag = 1
-            z_flag = True
-        elif namestring == "exterior_main_beam_2":
-            common_member_tag = 3
-            z_flag = True
-        elif namestring == "edge_beam":
-            common_member_tag = 0
-            z_flag = True
-        elif namestring == "start_edge":
-            common_member_tag = 0
-            edge_flag = True
-        elif namestring == "end_edge":
-            common_member_tag = 1
-            edge_flag = True
-        elif namestring == "transverse_slab":
-            common_member_tag = "slab"
-            x_flag = True
-        elif namestring == "offset_beam":
-            z_flag = True
-            common_member_tag = "offset_beam"
-        else:
-            raise ValueError("Member str not a standard grillage element - refer to documentation/Module Description"
-                             "for valid member and input string")
-        return z_flag, x_flag, edge_flag, common_member_tag
+
+        # standard element for beam class
+        for key,val in zip(self.common_grillage_element_keys[0:self.long_member_index],
+                           sort_list_into_four_groups(self.Mesh_obj.offset_z_groups,option="shell").values()):
+            self.common_grillage_element.update({key:val})
+        # update edge beam groups' value
+        self.common_grillage_element.update({self.common_grillage_element_keys[0]:[self.Mesh_obj.model_plane_z_groups[0],self.Mesh_obj.model_plane_z_groups[-1]]})
+
 
     # functions specific to Shell model class
     def set_shell_members(self, grillage_member_obj: GrillageMember, quad=True, tri=False):
@@ -2177,149 +2179,6 @@ class OspGrillageShell(OspGrillage):
             self.shell_element_command_list.append(ele_str)
             shell_counter += 1
 
-    # overwrite set member
-    def set_member(self, grillage_member_obj: GrillageMember, member=None):
-        """
-        Function to set grillage member class object to elements of grillage members.
-
-        :param grillage_member_obj: `GrillageMember` class object
-        :type grillage_member_obj: GrillageMember
-        :param member: str of member category - see below table for the available name strings
-        :type member: str
-
-
-         =====================================    ======================================
-         Standard grillage elements name str      Description
-         =====================================    ======================================
-          edge_beam                               Elements along x axis at top and bottom edges of mesh (z = 0, z = width)
-          exterior_main_beam_1                    Elements along first grid line after bottom edge (z = 0)
-          interior_main_beam                      For all elements in x direction between grid lines of exterior_main_beam_1 and exterior_main_beam_2
-          exterior_main_beam_1                    Elements along first grid line after top edge (z = width)
-          start_edge                     	      Elements along z axis where longitudinal grid line x = 0
-          end_edge                                Elements along z axis where longitudinal grid line x = Length
-          transverse_slab                         For all elements in transverse direction between start_edge and end_edge
-         =====================================    ======================================
-
-
-        :raises: ValueError If missing argument for member=
-        """
-        print("Setting member: {} of model".format(member))
-        if member is None:
-            raise ValueError("Missing target elements of grillage model to be assigned. Hint, member=")
-        # check and write member's section command
-        section_tag = self._write_section(grillage_member_obj)
-        # check and write member's material command
-        material_tag = self._write_material(member=grillage_member_obj)
-        # dictionary for key = common member tag, val is list of str for ops.element()
-        ele_command_dict = dict()
-        ele_command_list = []
-        # if option for pyfile is True, write the header for element group commands
-        if self.pyfile:
-            with open(self.filename, 'a') as file_handle:
-                file_handle.write("# Element generation for member: {}\n".format(member))
-        # lookup member grouping
-        z_flag, x_flag, edge_flag, common_member_tag = self._create_standard_element_list(namestring=member)
-
-        ele_width = 1
-        # if member properties is based on unit width (e.g. slab elements), get width of element and assign properties
-        if grillage_member_obj.section.unit_width:
-            if common_member_tag == "slab":
-                for ele in self.Mesh_obj.trans_ele:
-                    n1 = ele[1]  # node i
-                    n2 = ele[2]  # node j
-                    node_tag_list = [n1, n2]
-                    # get node width of node_i and node_j
-                    lis_1 = self.Mesh_obj.node_width_x_dict[n1]
-                    lis_2 = self.Mesh_obj.node_width_x_dict[n2]
-                    ele_width = 1
-                    ele_width_record = []
-                    # for the two list of vicinity nodes, find their distance and store in ele_width_record
-                    for lis in [lis_1, lis_2]:
-                        if len(lis) == 1:
-                            ele_width_record.append(np.sqrt(lis[0][0] ** 2 + lis[0][1] ** 2 + lis[0][2] ** 2) / 2)
-                        elif len(lis) == 2:
-                            ele_width_record.append((np.sqrt(lis[0][0] ** 2 + lis[0][1] ** 2 + lis[0][2] ** 2) +
-                                                     np.sqrt(lis[1][0] ** 2 + lis[1][1] ** 2 + lis[1][2] ** 2)) / 2)
-                        else:
-                            #
-                            break  # has assigned element, continue to next check
-                    ele_width = np.mean(
-                        ele_width_record)  # if node lies between a triangular and quadrilateral grid, get mean between
-                    # both width
-                    # here take the average width in x directions
-                    ele_str = grillage_member_obj.get_element_command_str(ele_tag=ele[0], node_tag_list=node_tag_list,
-                                                                          transf_tag=ele[4], ele_width=ele_width,
-                                                                          materialtag=material_tag,
-                                                                          sectiontag=section_tag)
-                    ele_command_list.append(ele_str)
-            elif member == "start_edge" or member == "end_edge":
-                for ele in self.Mesh_obj.edge_span_ele:
-                    if ele[3] == common_member_tag:
-                        edge_ele_width = 0.5  # nominal half -m width
-                        node_tag_list = [ele[1], ele[2]]
-                        ele_str = grillage_member_obj.get_element_command_str(ele_tag=ele[0],
-                                                                              node_tag_list=node_tag_list,
-                                                                              transf_tag=ele[4],
-                                                                              ele_width=edge_ele_width,
-                                                                              materialtag=material_tag,
-                                                                              sectiontag=section_tag)
-                        ele_command_list.append(ele_str)
-                    self.ele_group_assigned_list.append("edge: {}".format(common_member_tag))
-
-        else:  # non-unit width member assignment
-            if z_flag:
-                if isinstance(common_member_tag, int):
-
-                    for z_groups in self.Mesh_obj.common_z_group_element[common_member_tag]:
-                        # assign properties to elements in z group
-
-                        ele_command_list += self._get_element_command_list(grillage_member_obj=grillage_member_obj,
-                                                                           list_of_ele=self.Mesh_obj.z_group_to_ele[
-                                                                               z_groups],
-                                                                           material_tag=material_tag,
-                                                                           section_tag=section_tag)
-                        self.ele_group_assigned_list.append(z_groups)
-                else:  # Offset beam
-                    # TODO CHECK
-                    first_group_offset_beam = self.Mesh_obj.global_z_grid_count
-                    for z_group in range(first_group_offset_beam, max(self.Mesh_obj.z_group_to_ele.keys()) + 1):
-                        ele_command_list += self._get_element_command_list(grillage_member_obj=grillage_member_obj,
-                                                                           list_of_ele=self.Mesh_obj.z_group_to_ele[
-                                                                               z_group],
-                                                                           material_tag=material_tag,
-                                                                           section_tag=section_tag)
-            elif edge_flag:
-                for ele in self.Mesh_obj.edge_span_ele:
-                    if ele[3] == common_member_tag:
-                        node_tag_list = [ele[1], ele[2]]
-                        ele_str = grillage_member_obj.get_element_command_str(ele_tag=ele[0],
-                                                                              node_tag_list=node_tag_list,
-                                                                              transf_tag=ele[4], ele_width=ele_width,
-                                                                              materialtag=material_tag,
-                                                                              sectiontag=section_tag)
-                        ele_command_list.append(ele_str)
-                    self.ele_group_assigned_list.append("edge: {}".format(common_member_tag))
-            # here set the element command list to the common member tag, if previously defined (key exist),
-            # overwrite the element command list for that key
-            elif x_flag:
-                # assigns all transverse ele (regardless of width)
-                # This option is only for uniform grids
-                # for ele in self.Mesh_obj.trans_ele:
-                #     n1 = ele[1]  # node i
-                #     n2 = ele[2]  # node j
-                #     node_tag_list = [n1, n2]
-                #     ele_width = 1
-                #     ele_str = grillage_member_obj.get_element_command_str(ele_tag=ele[0], node_tag_list=node_tag_list,
-                #                                                           transf_tag=ele[4], ele_width=ele_width,
-                #                                                           materialtag=material_tag,
-                #                                                           sectiontag=section_tag)
-                ele_command_list += self._get_element_command_list(grillage_member_obj=grillage_member_obj,
-                                                                   list_of_ele=self.Mesh_obj.trans_ele,
-                                                                   material_tag=material_tag,
-                                                                   section_tag=section_tag)
-                # ele_command_list.append(ele_str)
-        ele_command_dict[common_member_tag] = ele_command_list
-        self.element_command_list.append(ele_command_dict)
 
     # overwrite fix procedure
     def _write_op_fix(self, mesh_obj):
@@ -2333,19 +2192,18 @@ class OspGrillageShell(OspGrillage):
             with open(self.filename, 'a') as file_handle:
                 file_handle.write("# Boundary condition implementation\n")
         for node_tag, edge_group_num in mesh_obj.edge_support_nodes.items():
-
             if edge_group_num == 0:  # 0 is edge of start of span
                 if self.pyfile:  # if writing py file
                     with open(self.filename, 'a') as file_handle:
-                        file_handle.write("ops.fix({}, *{})\n".format(node_tag, self.fix_val_pin))
+                        file_handle.write("ops.fix({}, *{})\n".format(node_tag, self.fixity_vector["pin"]))
                 else:  # run instance
-                    ops.fix(node_tag, *self.fix_val_pin)
+                    ops.fix(node_tag, *self.fixity_vector["pin"])
             elif edge_group_num == 1:  # 1 is edge of end of span
                 if self.pyfile:  # if writing py file
                     with open(self.filename, 'a') as file_handle:
-                        file_handle.write("ops.fix({}, *{})\n".format(node_tag, self.fix_val_roller_x))
+                        file_handle.write("ops.fix({}, *{})\n".format(node_tag, self.fixity_vector["roller"]))
                 else:  # run instance
-                    ops.fix(node_tag, *self.fix_val_roller_x)
+                    ops.fix(node_tag, *self.fixity_vector["roller"])
 
     def _write_rigid_link(self):
         # loop all rigidLink command, write or eval rigid link command. note link_str is already formatted

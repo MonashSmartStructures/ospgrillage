@@ -141,12 +141,15 @@ def shell_link_bridge(ref_bridge_properties):
                                         link_nodes_width=0.89)
 
 
-    # set shell
-    #example_bridge.set_member(I_beam, member="interior_main_beam")
-    example_bridge.set_shell_members(slab_shell)
 
     # set beams
-    example_bridge.set_member(I_beam,member="offset_beam")
+    example_bridge.set_member(I_beam, member="interior_main_beam")
+    example_bridge.set_member(I_beam, member="exterior_main_beam_1")
+    example_bridge.set_member(I_beam, member="exterior_main_beam_2")
+    # set shell
+    example_bridge.set_shell_members(slab_shell)
+
+
     example_bridge.create_osp_model(pyfile=False)
 
 
@@ -173,5 +176,6 @@ def test_create_beam_link_model(beam_link_bridge):
 
 
 def test_create_shell_link_model(shell_link_bridge):
+
     shell_link_model = shell_link_bridge
     og.opsplt.plot_model("nodes")

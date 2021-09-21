@@ -60,6 +60,7 @@ Result class
     :show-inheritance:
 
 
+
 Material class
 ------------------------------------------
 For information regarding the procedures in :class:`~OpsGrillage` class, see
@@ -151,11 +152,18 @@ For information regarding in :class:`~LoadCase` class, see
 Misc
 ------------------------------------------
 
-LoadCase
-^^^^^^^^^^^^^^^^
+Path for moving loads
+^^^^^^^^^^^^^^^^^^^^^^^
 .. autoclass:: ospgrillage.load.Path
     :members:
     :show-inheritance:
+
+Envelope
+^^^^^^^^^^^
+
+.. autoclass:: ospgrillage.static.Envelope
+    :members:
+
 
 Shape functions
 ^^^^^^^^^^^^^^^^

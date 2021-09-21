@@ -526,7 +526,48 @@ def check_dict_same_keys(d_1, d_2):
     return merged
 
 
+def sort_list_into_four_groups(group_list:list, option:str=None):
+    """
+    Function to sort a list of group number into four groups , returns a dict with keys [0,1,2,3] placing the ordered
+    group_list into each key. Purpose is to distinguish main grillage elements based on the group positioning
+    e.g. if group_list = [0,1,2,3,4,5,6], returns {0:[0,6], 1:[1],2:[2,3,4],3:[5]}
+    :param group_list:
+    :return: dict with keys [0,1,2,3] and values be the sorted group list as shown in description
+    """
+    # sort asccending
+    output_dict = dict()
+    if option == "shell":
+        # add two proxy element at start and end of group list
+        group_list = [group_list[0]-1] + group_list + [group_list[-1]+1]
+
+    # edges
+    output_dict[0] = [group_list[0], group_list[-1]]
+    # instantiate
+    exterior_beam_group_1 = [group_list[1]]
+    exterior_beam_group_2 = [group_list[-2]]
+    interior_beam_group = group_list[2:len(group_list)-2]
+
+    # check for special cases
+    if len(group_list) > 2:
+        if len(group_list) == 3: # 2 edge and 1 interior
+            interior_beam_group = [group_list[1]]
+            exterior_beam_group_1 = []
+            exterior_beam_group_2 = []
+        elif len(group_list)==4: # 2 edge, ext_1 and ext_2
+            interior_beam_group = []
+
+    output_dict[1] = exterior_beam_group_1
+    output_dict[2] = interior_beam_group
+    output_dict[3] = exterior_beam_group_2
+    return output_dict
+
+
 def get_envelope(**kwargs):
+    """
+    User interface function to create envelopes from data array
+    :param kwargs:
+    :return:
+    """
     return Envelope(kwargs)
 
 
@@ -562,7 +603,7 @@ class Envelope:
         self.component = kwargs.get("load_effect", None)  # specific load effect to query
         self.array = kwargs.get("array", "displacements")
         self.value_mode = kwargs.get("value_mode", False)
-        self.query_mode = kwargs.get("query_mode", True)
+        self.query_mode = kwargs.get("query_mode", True)  # default query mode
         self.extrema = kwargs.get("extrema", "max")
 
         # check variables
