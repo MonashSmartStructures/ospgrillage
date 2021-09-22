@@ -742,7 +742,7 @@ def test_1m_wide_bridge(ref_bridge_properties):
 
     pyfile = False
     example_bridge.create_osp_model(pyfile=pyfile)
-    example_bridge.get_element(member="start_edge",options="nodes")
+    print(example_bridge.get_element(member="start_edge",options="nodes"))
     og.opsv.plot_model(az_el=(-90, 0))
     og.plt.show()
 
@@ -772,9 +772,23 @@ def test_1m_wide_bridge(ref_bridge_properties):
     patch_load_case.add_load(compound_patch)
     example_bridge.add_load_case(patch_load_case)
     example_bridge.analyze()
+    result = example_bridge.get_results()
+
     #print(og.ops.nodeDisp(25))
     #print(og.ops.nodeDisp(26))
 
+    # method to plot using matplotlib
+    nodes = example_bridge.get_nodes() # ospgrillage way to store node information
+
+    x_coord = [spec['coordinate'][0] for spec in nodes.values()]
+    z_coord = [spec['coordinate'][2] for spec in nodes.values()]
+
+    # get load effect
+    load_effect = result.displacements.sel(Component="dy")[0]
+
+    ax = og.plt.axes(projection='3d')
+    ax.scatter(x_coord,z_coord,load_effect)
+    load_effect = result.forces.sel(Component="Mz_i")[0]
     # og.opsv.plot_defo(unDefoFlag=0, endDispFlag=0)
     # og.plt.show()
     # opsv.section_force_distribution_3d()

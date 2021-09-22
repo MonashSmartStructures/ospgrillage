@@ -237,6 +237,11 @@ class OspGrillage:
         self._create_standard_element_list()
 
     def _create_mesh(self, **kwargs):
+        """
+        Private method called during init to create appropriate mesh based on OspGrillage model type
+        :param kwargs:
+        :return:
+        """
         if self.model_type == "beam_link":
             mesh_obj = BeamLinkMesh(**kwargs)
         elif self.model_type == "shell":
@@ -539,7 +544,7 @@ class OspGrillage:
         #
         # return z_flag, x_flag, edge_flag, common_member_tag
 
-    # Function to set grillage elements
+    # Main function to set grillage elements
     def set_member(self, grillage_member_obj: GrillageMember, member=None):
         """
         Function to set grillage member class object to elements of grillage members.
@@ -702,8 +707,7 @@ class OspGrillage:
         ele_command_dict[member] = ele_command_list
         self.element_command_list.append(ele_command_dict)
 
-    # subfunction for setting member of groups
-
+    # subfunctions for setting member of groups
     @staticmethod
     def _get_element_command_list(grillage_member_obj, list_of_ele, material_tag, section_tag):
         """
@@ -1671,18 +1675,12 @@ class OspGrillage:
                             else:
                                 factored_array = xr.concat([factored_array, basic_da.sel(
                                     Loadcase=load_case_name) * load_factor + summation_array], dim="Loadcase")
-                            coordinate_name_list.append(load_case_name)
                             # store new coordinate name for load case
-
-                    # apply load factor to all incremental load cases, then write to placeholder variable new_ma_list
-                    # new_ma_list.append(
-                    # summation_array += basic_da.sel(Loadcase=incremental_load_case["name"]) * load_case_dict['load_factor']
-                    # factored_array = xr.concat([summation_array,
-                    #                             basic_da.sel(Loadcase=load_case_name) * load_factor]
-                    #                            , dim="Loadcase")
+                            coordinate_name_list.append(load_case_name)
+                # check if combination has moving load, if no, combination output is array summed among basic load case
                 if not factored_array:
                     combination_array = summation_array
-                else:
+                else: # comb has moving load, assign the coordinates along the load case dimension for identification
                     combination_array = factored_array.assign_coords(Loadcase=coordinate_name_list)
                 output_load_comb_dict.append(combination_array)
             return output_load_comb_dict  # list of data array
@@ -1714,8 +1712,7 @@ class OspGrillage:
         if not options:
             raise Exception("Options not defined: Hint pass option=  \"nodes\",\"element\",\"node_i\",\"node_j\"")
 
-
-        # get z_group num from common member tag
+        # reading common elements off namestring
         if namestring == "transverse_slab":
             extracted_ele = self.Mesh_obj.trans_ele
             # TODO
@@ -1724,7 +1721,7 @@ class OspGrillage:
                 extracted_ele = self.Mesh_obj.edge_group_to_ele[edge_group]
             if options == node_option:
                 sorted_return_list = [key for key, val in self.Mesh_obj.edge_node_recorder.items()
-                                      if val == self.common_grillage_element[namestring]]
+                                      if val == self.common_grillage_element[namestring][0]]
             elif options == element_option:
 
                 sorted_return_list = [ele[0] for ele in extracted_ele]
@@ -1740,6 +1737,12 @@ class OspGrillage:
 
         return sorted_return_list
 
+    def get_nodes(self):
+        """
+        Function to return nodes of grillage model
+        :return: dict contain node information
+        """
+        return self.Mesh_obj.node_spec
 
 # ---------------------------------------------------------------------------------------------------------------------
 class Analysis:
@@ -2134,7 +2137,7 @@ class OspGrillageShell(OspGrillage):
         # create the result file for the Mesh object
         self.results = Results(self.Mesh_obj)
 
-    # overwrites base class for beam element grillage
+    # overwrites base class for beam element grillage - specific for Shell model
     def _create_standard_element_list(self):
         # TODO
 
