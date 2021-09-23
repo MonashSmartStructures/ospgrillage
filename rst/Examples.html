@@ -97,7 +97,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Module%20description.html">Creating grillage models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ModelTemplates.html">Grillage model templates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Running_analysis.html">Performing analysis</a></li>
-<li class="toctree-l1"><a class="reference internal" href="PostProcessing.html">Post Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PostProcessing.html">Post-Processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="APIdoc.html">API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ModuleDoc.html">Module design</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
@@ -409,9 +409,6 @@ as <cite>xarray</cite> datasets. See <span class="xref std std-ref">Running_anal
 </div>
 <div class="section" id="getting-load-combination-results">
 <h3>Getting load combination results<a class="headerlink" href="#getting-load-combination-results" title="Permalink to this headline">¶</a></h3>
-<p>Load combinations are computed on the fly in <cite>get_results()</cite> by specifying a keyword argument for combinations.
-Argument takes in a <cite>dict</cite> having load case name strings as key, and corresponding load factor as value. The following
-example code define a load combinations having two load cases.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">l_factor</span> <span class="o">=</span> <span class="mf">2.3</span>
 <span class="n">p_factor</span> <span class="o">=</span> <span class="mf">0.5</span>
 <span class="c1"># combination with line load case and patch load case</span>

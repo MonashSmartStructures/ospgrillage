@@ -22,8 +22,9 @@ Defining loads
 Loads are created with the interface function ``create_load()``. Users pass argument for `type=` to specify the load type.
 Available loads types include `Point`_, `Line`_, and `Patch`_ loads.
 
-Each load type requires user to specify its load point(s). This is achieved by a namedTuple `LoadPoint(x,y,z,p)` where `x`,`y`,`z` are the coordinates of the load point
-and `p` is the magnitude of the vertical loading. Note, `p` is a unit magnitude which is interpreted differently based on the load type - this will be later explained.
+Each load type requires user to specify its load point(s). This is achieved by `create_load_vertex()` function. This function creates
+a `LoadPoint(x,y,z,p)` where `x`,`y`,`z` are the coordinates of the load point and `p` is the magnitude of the vertical loading.
+Note, `p` is a unit magnitude which is interpreted differently based on the load type - this will be later explained.
 
 .. code-block:: python
 
@@ -31,8 +32,8 @@ and `p` is the magnitude of the vertical loading. Note, `p` is a unit magnitude 
 
 
 Depending on the load type, a minimum number of LoadPoint namedTuple are required.
-These are set to each load type's `point#=` variable for the load type class for the global coordinate system,
-or else `local_point_#=` variable for a user-defined local coordinate system, where # is a digit from 1 to 9.
+These are set to each load type's `point#=` variable for the load type's coordinate system,
+where # is a digit from 1 to 9.
 
 
 Loads are generally in the global coordinate system with respect to the created grillage model.
@@ -42,24 +43,15 @@ Nodal loads
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Nodal loads are defined by using ``create_load()``, specifying `type=` as "nodal". There are six degrees-of-freedom (DOFs) for
-acting loads in each node.
+acting loads in each node. Each nodal load is defined by a `NodalForce(Fx,Fy,Fz,Mx,My,Mz)` namedtuple.
 
 The following example creates a nodal load on Node 13 of a model with 10 unit force in both transverse X and Y directions.
 
 .. code-block:: python
 
-    node13force = ospg.create_load(type="nodal",name="nodal 13", Fx=10, Fy=10) # load values in other dofs default to 0
+    nodalforce = ospg.NodalForce(Fx=10,Fy=10)
+    node13force = ospg.create_load(type="nodal",name="nodal 13", node_force=nodalforce) # load values in other dofs default to 0
 
-Following are keyword arguments for creating nodal load:
-
-#. node_tag (`int`): node tag number of model
-#. Fx (`float`): Force value in global x axis
-#. Fy (`float`): Force value in global y axis
-#. Fz (`float`): Force value in global z axis
-#. Mx (`float`): Moment value about global x axis
-#. My (`float`): Moment value about global y axis
-#. Mz (`float`): Moment value about global z axis
-#. name (`str`): name string of nodal load (optional)
 
 .. note::
 
@@ -87,7 +79,7 @@ The following example code creates a 20 force unit point load located at (5,0,2)
 
 .. code-block:: python
 
-    point_load_location = ospg.create_load_vertices(x=5, y=0, z=2, p=20)  # create load point
+    point_load_location = ospg.create_load_vertices(x=5, z=2, p=20)  # create load point
     Single = ospg.create_load(type="point",name="single point", point1=point_load_location)
 
 
@@ -96,9 +88,9 @@ The following example code creates a 20 force unit point load located at (5,0,2)
 Line Loads
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Line loads are loads exerted along a line. Line loads are useful to represent loads such as self weight of longitudinal beams or
-distributed load on beam elements along the span direction.
+distributed load along beam elements.
 
-Line loads are instantiated with the interface function ``create_load(type="line)`` and required at least two :class:`LoadPoint` tuple (corresponds to the start and end of the line load) - see Figure 3.
+Line loads are instantiated with the interface function ``create_load(type="line)`` and required at least two `LoadPoint`s (corresponds to the start and end of the line load) - see Figure 3.
 Using more than two tuples allows a curve line loading profile.
 `p` in the :class:`LoadPoint` tuple should have units of force per distance (eg. kN/m, kips/ft, etc).
 
@@ -117,6 +109,10 @@ in the global coordinate system from -1 to 11 distance units in the `x`-axis and
     barrier_point_1 = ospg.LoadPoint(-1, 0, 3, 2)
     barrier_point_2 = ospg.LoadPoint(11, 0, 3, 2)
     Barrier = ospg.create_load(type="line", name="Barrier curb", point1=barrier_point_1, point2=barrier_point_2)
+
+
+.. note::
+    As of release 0.1.0, curved line loads are not available.
 
 
 .. _Patch:
@@ -150,10 +146,13 @@ To position the load instead in a user defined local coordinate system, the vari
     lane_point_4 = ospg.LoadPoint(0, 0, 5, 5)
     Lane = ospg.create_load(type="patch",name="Lane 1", point1=lane_point_1, point2=lane_point_2, point3=lane_point_3, point4=lane_point_4)
 
+.. note::
+    As of release 0.1.0, curved patch loads are not available.
+
 .. _Compound load:
 
 Compound loads
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------
 Two or more of the basic load types can be combined to form a Compound load. All load types are applied in the direction of the global `y`-axis.
 Loads in other directions and applied moments are currently not supported.
 
