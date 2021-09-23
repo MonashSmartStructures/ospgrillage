@@ -247,9 +247,7 @@ as `xarray` datasets. See :ref:`Running_analysis` for more information on the `x
 
 Getting load combination results
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Load combinations are computed on the fly in `get_results()` by specifying a keyword argument for combinations.
-Argument takes in a `dict` having load case name strings as key, and corresponding load factor as value. The following
-example code define a load combinations having two load cases.
+
 
 .. code-block:: python
 

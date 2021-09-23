@@ -779,16 +779,30 @@ def test_1m_wide_bridge(ref_bridge_properties):
 
     # method to plot using matplotlib
     nodes = example_bridge.get_nodes() # ospgrillage way to store node information
-
+    #element = example_bridge.get_element()
     x_coord = [spec['coordinate'][0] for spec in nodes.values()]
     z_coord = [spec['coordinate'][2] for spec in nodes.values()]
-
     # get load effect
     load_effect = result.displacements.sel(Component="dy")[0]
-
     ax = og.plt.axes(projection='3d')
     ax.scatter(x_coord,z_coord,load_effect)
-    load_effect = result.forces.sel(Component="Mz_i")[0]
+
+
+    # for forces
+    nodes_to_plot = example_bridge.get_element(member="exterior_main_beam_2", options="nodes")
+    eletag = example_bridge.get_element(member="exterior_main_beam_2", options="elements")
+
+    load_effect_i = result.forces.sel(Component="Mz_i",Element=eletag)[0]
+    load_effect_j = result.forces.sel(Component="Mz_j",Element=eletag)[0]
+    result.ele_nodes.sel(Element=eletag, Nodes='i')
+    # select and extract specific elements for grillage members to plot
+
+    # from specific elements, first 6 assign to node i, second 6 assign to node j
+
+
+
+
+
     # og.opsv.plot_defo(unDefoFlag=0, endDispFlag=0)
     # og.plt.show()
     # opsv.section_force_distribution_3d()
@@ -844,15 +858,30 @@ def test_28m_bridge(ref_28m_bridge):
     # add a load combination
     #bridge_28.add_load_combination(load_combination_name="factored_point",
                                   # load_case_and_factor_dict={"point_load_case": 1.5})
-    bridge_28.analyze()
+    bridge_28.analyze(load_case=line_load_case.name)
 
-    results = bridge_28.get_results(combinations={"line_load_case":1,"patch_load_case":1})
+    #results = bridge_28.get_results(combinations={"line_load_case":1,"patch_load_case":1})
+    results = bridge_28.get_results()
     # extract points along mid span, compare dY with those from Lusas model
     print(og.ops.nodeDisp(57))
     print(og.ops.nodeDisp(63))
     print(og.ops.nodeDisp(60))
     print(og.ops.nodeDisp(53))
     print(og.ops.nodeDisp(40))
+
+    # template to plot BMD
+    nodes=bridge_28.get_nodes()
+    nodes_to_plot = bridge_28.get_element(member="exterior_main_beam_2", options="nodes")
+    eletag = bridge_28.get_element(member="exterior_main_beam_2", options="elements")
+    load_effect_i = results.forces.sel(Component="Mz_i",Element=eletag)[0]
+    load_effect_j = results.forces.sel(Component="Mz_j",Element=eletag)[0]
+    load_effect = og.np.concatenate(([load_effect_i[0].values],load_effect_j.values))
+    results.ele_nodes.sel(Element=eletag, Nodes='i')
+    node_x = [nodes[n]['coordinate'][0] for n in nodes_to_plot[0]]
+    node_z = [nodes[n]['coordinate'][2] for n in nodes_to_plot[0]]
+    ax = og.plt.axes(projection='3d')
+    ax.plot(node_x,node_z,load_effect)
+
     #og.opsv.plot_defo(unDefoFlag=0, endDispFlag=0)
     #og.plt.show()
     # opsv.section_force_distribution_3d()

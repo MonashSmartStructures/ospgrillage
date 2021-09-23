@@ -38,13 +38,15 @@ A third model is a more refined model using two element types - shell and beam e
 
 * Shell elements are layed in a grid to represent bridge decks.
 * Beam elements are modelled with an offset to the plane of shell elements to represent longitudinal beam sections.
-* Beam elements are linked to shell elements at two correponding locations using constraint equations - `OpenSeesPy`'s **rigidLink** command
+* Beam elements are linked to shell elements at two corresponding locations using constraint equations - `OpenSeesPy`'s **rigidLink** command
 
 This model has advantageous in modelling slabs - shell elements are well-suited to represent two-dimensional slab behaviour.
 
 Figure 3 shows the shell beam hybrid model.
 
 [picture]
+
+
 
 
 

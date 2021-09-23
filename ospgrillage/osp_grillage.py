@@ -1698,7 +1698,7 @@ class OspGrillage:
         """
         # get query member details
         namestring = kwargs.get("member", None)
-        select_z_group = kwargs.get("z_group_num", None)  # optional z_group number for internal beam members
+        select_z_group = kwargs.get("z_group_num", 0)  # optional z_group number for internal beam members
         select_x_group = kwargs.get("x_group_num", None)
         select_edge_group = kwargs.get("edge_group_num", None)
         # prefix namestring variables
@@ -1725,8 +1725,9 @@ class OspGrillage:
             elif options == element_option:
 
                 sorted_return_list = [ele[0] for ele in extracted_ele]
-        else:
-            extracted_ele = self.Mesh_obj.z_group_to_ele[self.common_grillage_element[namestring]]
+        else:  # longitudinal members
+
+            extracted_ele = [self.Mesh_obj.z_group_to_ele[num] for num in self.common_grillage_element[namestring]][select_z_group]
             if options == node_option:
                 first_list = [i[1] for i in extracted_ele]  # first list of nodes
                 second_list = [i[2] for i in extracted_ele]  # second list of nodes
@@ -1734,7 +1735,8 @@ class OspGrillage:
                 # sort nodes based on x coordinate
                 node_x = [self.Mesh_obj.node_spec[tag]['coordinate'][0] for tag in return_list]
                 sorted_return_list.append([x for _, x in sorted(zip(node_x, return_list))])
-
+            elif options == element_option:
+                sorted_return_list = [i[0] for i in extracted_ele]
         return sorted_return_list
 
     def get_nodes(self):
@@ -1884,10 +1886,10 @@ class Analysis:
             for ele_tag in ops.getEleTags():
                 ele_force = ops.eleResponse(ele_tag, 'localForces')
                 self.ele_force.setdefault(ele_tag, ele_force)
-                global_ele_force = ops.eleResponse(ele_tag, 'Forces')
+                global_ele_force = ops.eleResponse(ele_tag, 'forces')
                 self.global_ele_force.setdefault(ele_tag, global_ele_force)
         else:
-            print("OspGrillage is at output mode, pyfile = True. No results are extracted")
+            print("OspGrillage is at output mode, pyfile = True. Procedure for {} are generated.".format(self.analysis_name))
 
         print("Extraction of results completed for Analysis:{} ".format(self.analysis_name))
 
