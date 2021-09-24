@@ -197,7 +197,7 @@ Figure 4 shows how the grid numbers and skew angles affects the output mesh of g
     :align: center
     :scale: 75 %
 
-    Figure 4: Grid numbers and edge angles
+    Figure 4: Example grid numbers and edge angles
 
 
 For the example bridge in Figure 2, the following code line creates its :class:`~OpsGrillage` object i.e. *example_bridge*:

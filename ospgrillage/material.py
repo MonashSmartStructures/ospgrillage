@@ -65,43 +65,49 @@ class Material:
     def __init__(self, **kwargs):
         """
         The constructor of Material takes in three types of keyword arguments:
+
         #. Keyword for looking up the *ospgrillage* material library i.e. mat_lib.json.
         #. General material properties - such as E, and G
         #. Material arguments of ```OpenSeesPy```. E.g. Opensees's Steel01 material takes isotropic hardening parameters a1
            to a4.
 
         The following keywords are for item (1):
+
         :keyword:
+
         * code (`str`): name string of code according to mat_lib.json
         * type (`str`): Either "concrete" or "steel"
         * grade(`str`): Grade of material according to code
 
         The following keywords are examples of general material properties:
+
         :keyword:
+
         * E (`float`): Elastic modulus
         * G (`float`): Shear modulus
 
 
         For developers wishing to add more material properties:
 
-        #. if the material is a codified material, modify mat_lib.json file by adding the material according
-        to the file format.
+        #. if the material is a codified material, modify mat_lib.json file by adding the material according to the file format.
         #. if the material is a `OpenSees` Material that wasn't added previously, add properties under ``get_mat_args()``
-        function. Then check the commands in _write_material() of `OspGrillage` class.
+            function. Then check the commands in _write_material() of `OspGrillage` class.
 
         """
+        # Instantiate variables
         self.mat_type = None  # this is the os convention for materials e.g. Concrete01
-        self.op_mat_arg = None
+        self.op_mat_arg = None # arguments according to OpenSeesPy
         self.units = None  # default SI units
-        # assigns variables for all kwargs for specific material types , else sets None
+        # assigns variables for all kwargs for codified material types
         self.code = kwargs.get("code", None)
         self.material_type = kwargs.get("type", None)
         self.material_grade = kwargs.get("grade", None)
-        # generic material properties
+        # assign generic material properties
         self.elastic_modulus = kwargs.get("E", None)
         self.shear_modulus = kwargs.get("G", None)
         self.poisson_ratio = kwargs.get("v", None)
         self.density = kwargs.get("rho",None)
+
         # properties for Concrete - symbols according to OpenSees uniaxialMaterial/Concrete
         self.fpc = kwargs.get("fpc", None)
         self.epsc0 = kwargs.get("epsc0", None)
@@ -119,12 +125,12 @@ class Material:
 
         # get mat lib file
         self._mat_lib = self._read_mat_lib()
-        # process generic material inputs into relevant inputs for OpenSees material command
+        # process all inputs into relevant inputs for OpenSees material command
         self.parse_material_command()
 
     def parse_material_command(self):
         """
-        Function to parse the material inputs according to OpenSeesPy convention of inputs
+        Function to parse the material inputs into OpenSeesPy commands
         """
         # check if code material is selected, if yes read from material library json
         if self.code:
@@ -291,21 +297,3 @@ class UniAxialElasticMaterial(Material):
             )
         return mat_str
 
-
-class NDmaterial(Material):
-    """
-    .. note::
-        This class is to be deprecated in Beta release
-
-    Main class for OpenSees ND material object. This class wraps the ND material object by sorting input parameters and
-    parse into input commands for ops commands.
-    """
-
-    def __init__(self, mat_type, **kwargs):
-        super().__init__(mat_type, **kwargs)
-
-    def get_ndMaterial_args(self):
-        pass
-
-    def get_nd_ops_commands(self):
-        pass

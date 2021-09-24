@@ -777,7 +777,7 @@ def test_1m_wide_bridge(ref_bridge_properties):
     #print(og.ops.nodeDisp(25))
     #print(og.ops.nodeDisp(26))
 
-    # method to plot using matplotlib
+    # template to plot displacements
     nodes = example_bridge.get_nodes() # ospgrillage way to store node information
     #element = example_bridge.get_element()
     x_coord = [spec['coordinate'][0] for spec in nodes.values()]
@@ -786,22 +786,6 @@ def test_1m_wide_bridge(ref_bridge_properties):
     load_effect = result.displacements.sel(Component="dy")[0]
     ax = og.plt.axes(projection='3d')
     ax.scatter(x_coord,z_coord,load_effect)
-
-
-    # for forces
-    nodes_to_plot = example_bridge.get_element(member="exterior_main_beam_2", options="nodes")
-    eletag = example_bridge.get_element(member="exterior_main_beam_2", options="elements")
-
-    load_effect_i = result.forces.sel(Component="Mz_i",Element=eletag)[0]
-    load_effect_j = result.forces.sel(Component="Mz_j",Element=eletag)[0]
-    result.ele_nodes.sel(Element=eletag, Nodes='i')
-    # select and extract specific elements for grillage members to plot
-
-    # from specific elements, first 6 assign to node i, second 6 assign to node j
-
-
-
-
 
     # og.opsv.plot_defo(unDefoFlag=0, endDispFlag=0)
     # og.plt.show()
@@ -873,9 +857,10 @@ def test_28m_bridge(ref_28m_bridge):
     nodes=bridge_28.get_nodes()
     nodes_to_plot = bridge_28.get_element(member="exterior_main_beam_2", options="nodes")
     eletag = bridge_28.get_element(member="exterior_main_beam_2", options="elements")
-    load_effect_i = results.forces.sel(Component="Mz_i",Element=eletag)[0]
-    load_effect_j = results.forces.sel(Component="Mz_j",Element=eletag)[0]
-    load_effect = og.np.concatenate(([load_effect_i[0].values],load_effect_j.values))
+    load_effect_mz = results.forces.sel(Component="Mz_i",Element=eletag)[0]
+    load_effect_vy = results.forces.sel(Component="Vy_i",Element=eletag)[0]
+    #load_effect = og.np.concatenate(([load_effect_i[0].values],load_effect_j.values))
+    #TODO
     results.ele_nodes.sel(Element=eletag, Nodes='i')
     node_x = [nodes[n]['coordinate'][0] for n in nodes_to_plot[0]]
     node_z = [nodes[n]['coordinate'][2] for n in nodes_to_plot[0]]

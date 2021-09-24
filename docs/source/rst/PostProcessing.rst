@@ -53,15 +53,14 @@ example code define a load combinations having two load cases.
 
 Load envelope
 --------------------------------------
-Load envelope is generated from load combination results for extrema of load effect as a new xarray.
+Load envelope is generated from load combination results for extrema of load effect using `get_envelope()` function. Envelope are
+chosen based on user selected component (*array* keyword) as either "displacements" or "forces", extrema as either maximum or minimum,
+and load effect component (e.g. "dy" for displacements). The `get_envelope()` function is defined as follows:
 
 .. code-block:: python
-    first_combination = comb_results[0]
-    envelope = og.get_envelope(ds=first_combination,load_effect="dy",array="displacements")
-    disp_env = envelope.get()
-
-
-
+    first_combination = comb_results[0] # list of combination xarray, get the first
+    envelope = og.get_envelope(ds=first_combination,load_effect="dy",array="displacements") # creates the envelope obj
+    disp_env = envelope.get() # get the output xarray of envelope
 
 
 Plotting results
@@ -70,40 +69,40 @@ Plotting results
 Current limitation of plotting module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-`OpenSeesPy`'s visualization module `ops_vis` offers users the capability to visualize analysis results on a model in
-comprehensive ways. However, `ops_vis` operates on plotting results of the current model (and analysis) instance in `OpenSees`
-framework. Additionally, `ops_vis` does not contain enveloping feature across multiple analysis - this especially the case for moving
-load analysis.
+`OpenSeesPy`'s visualization module `ops_vis` offers comprehensive visualization of analysis results.
+However, `ops_vis`'s plotting operates only for the current model (and analysis) instance in `OpenSees`
+framework. In other words multiple plots of different analysis results is not straightforward for `ops_vis`.
+Additionally, `ops_vis` does not contain enveloping feature across multiple analysis - especially for moving
+load analysis comprise of multiple incremental load case for each moving load position.
 
-In the following section, we will present an alternative way to visualize results of *ospgrillage* - albeit in pythonic code lines.
+In the following section, we present an alternative way to visualize results of *ospgrillage* - template codes to plot and visualize results.
 
 Suggested method using matplotlib
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Here are some example code which can help plot desired load effects.
+Here are some template codes for plotting load effects using Python's `matplotlib` library tools.
 
-For displacement array:
+For displacement components:
 
 .. code-block:: python
 
-    # template code to plot displacements
     # get all node information
     nodes = example_bridge.get_nodes() # dictionary containing information of nodes
     # extract list of x and z coordinate of nodes
     x_coord = [spec['coordinate'][0] for spec in nodes.values()]
     z_coord = [spec['coordinate'][2] for spec in nodes.values()]
 
-    # get load effect
-    load_effect = result.displacements.sel(Component="dy")[0] # Alter the component according to user
+    # get displacement load effect - specifically dy
+    load_effect = result.displacements.sel(Component="dy")[0] # a list of array, therefore access element 0
     ax = og.plt.axes(projection='3d') # create plot
     ax.scatter(x_coord,z_coord,load_effect) # plot load effect against x and z coordinate positions
 
-For forces.
+For forces components of beam elements:
 
 .. code-block:: python
 
     # template code to plot load effect - herein plot "Mz" global of exterior main beam 2
     nodes=bridge_28.get_nodes()
-    nodes_to_plot = bridge_28.get_element(member="exterior_main_beam_2", options="nodes")
+    nodes_to_plot = bridge_28.get_element(member="exterior_main_beam_2", options="nodes",z_group_num=0)
     eletag = bridge_28.get_element(member="exterior_main_beam_2", options="elements")
     load_effect_i = results.forces.sel(Component="Mz_i",Element=eletag)[0]
     load_effect_j = results.forces.sel(Component="Mz_j",Element=eletag)[0]
@@ -114,5 +113,8 @@ For forces.
     ax = og.plt.axes(projection='3d')
     ax.plot(node_x,node_z,load_effect)
 
-plot for interior beams
+For force component of shell elements:
+
+.. code-block:: python
+
 
