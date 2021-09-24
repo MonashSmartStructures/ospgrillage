@@ -113,8 +113,18 @@ For forces components of beam elements:
     ax = og.plt.axes(projection='3d')
     ax.plot(node_x,node_z,load_effect)
 
-For force component of shell elements:
+For force component version 2:
 
 .. code-block:: python
 
+    for ele in eletag:
+    ele_components = results.forces.sel(Element=ele, Component=["Vx_i", "Vy_i", "Vz_i", "Mx_i", "My_i", "Mz_i", "Vx_j", "Vy_j", "Vz_j", "Mx_j", "My_j",
+                       "Mz_j"])[0].values
+    #ele_components = results.forces.sel(Element=ele)[0].values[:12]
+    ele_node = results.ele_nodes.sel(Element=ele)
+    xx = [nodes[n]['coordinate'][0] for n in ele_node.values]
+    yy = [nodes[n]['coordinate'][1] for n in ele_node.values]
+    zz = [nodes[n]['coordinate'][2] for n in ele_node.values]
+    s,al = og.opsv.section_force_distribution_3d(ex=xx,ey=yy,ez=zz,pl=ele_components)
+    ax.plot(xx,zz,s[:,5])
 

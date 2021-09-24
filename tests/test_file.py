@@ -854,21 +854,62 @@ def test_28m_bridge(ref_28m_bridge):
     print(og.ops.nodeDisp(40))
 
     # template to plot BMD
+    ax = og.plt.axes(projection='3d') # create plot
     nodes=bridge_28.get_nodes()
     nodes_to_plot = bridge_28.get_element(member="exterior_main_beam_2", options="nodes")
     eletag = bridge_28.get_element(member="exterior_main_beam_2", options="elements")
-    load_effect_mz = results.forces.sel(Component="Mz_i",Element=eletag)[0]
-    load_effect_vy = results.forces.sel(Component="Vy_i",Element=eletag)[0]
-    #load_effect = og.np.concatenate(([load_effect_i[0].values],load_effect_j.values))
+    load_effect_i = results.forces.sel(Component="Mz_i",Element=eletag)[0]
+    load_effect_j = results.forces.sel(Component="Vy_i",Element=eletag)[0]
+    load_effect = og.np.concatenate(([load_effect_i[0].values],load_effect_j.values))
+
+
     #TODO
-    results.ele_nodes.sel(Element=eletag, Nodes='i')
-    node_x = [nodes[n]['coordinate'][0] for n in nodes_to_plot[0]]
-    node_z = [nodes[n]['coordinate'][2] for n in nodes_to_plot[0]]
-    ax = og.plt.axes(projection='3d')
-    ax.plot(node_x,node_z,load_effect)
+    # if bending
+    component = "Mz_i"
+
+    # for ele in eletag:
+    #     p_i = results.forces.sel(Component=component,Element=ele)[0].values
+    #     ele_node = results.ele_nodes.sel(Element=ele)
+    #     if component == "Mz_i":
+    #         component_reci = "Vy_i"
+    #         p_j = - results.forces.sel(Component=component, Element=ele)[0] +results.forces.sel(Component=component_reci,Element=ele)[0]
+    #     elif component == "My_i":
+    #         component_reci = "Vz_i"
+    #         p_j = - results.forces.sel(Component=component, Element=ele)[0] +results.forces.sel(Component=component_reci,Element=ele)[0]
+    #     xx = [nodes[n]['coordinate'][0] for n in ele_node.values]
+    #     yy = [p_i,p_j]
+    #     zz = [nodes[n]['coordinate'][2] for n in ele_node.values]
+    #
+    #     ax.plot(xx,yy,zz)
+    #
+    #
+    #
+    # node_i= results.ele_nodes.sel(Element=eletag, Nodes='i')
+    # node_j= results.ele_nodes.sel(Element=eletag, Nodes='j')
+    # node_x = [nodes[n]['coordinate'][0] for n in nodes_to_plot[0]]
+    # node_z = [nodes[n]['coordinate'][2] for n in nodes_to_plot[0]]
+    #
+    # ax.plot(node_x,node_z,load_effect)
 
     #og.opsv.plot_defo(unDefoFlag=0, endDispFlag=0)
     #og.plt.show()
+
+    # third way is to use ops_vis \section force distribution to identify element BMD sfd.
+
+    for ele in eletag:
+        ele_components = results.forces.sel(Element=ele, Component=["Vx_i", "Vy_i", "Vz_i", "Mx_i", "My_i", "Mz_i", "Vx_j", "Vy_j", "Vz_j", "Mx_j", "My_j",
+                           "Mz_j"])[0].values
+        #ele_components = results.forces.sel(Element=ele)[0].values[:12]
+        ele_node = results.ele_nodes.sel(Element=ele)
+        xx = [nodes[n]['coordinate'][0] for n in ele_node.values]
+        yy = [nodes[n]['coordinate'][1] for n in ele_node.values]
+        zz = [nodes[n]['coordinate'][2] for n in ele_node.values]
+        s,al = og.opsv.section_force_distribution_3d(ex=xx,ey=yy,ez=zz,pl=ele_components)
+        ax.plot(xx,zz,s[:,1])
+        print(s)
+
+
+
     # opsv.section_force_distribution_3d()
     minY, maxY = og.opsv.section_force_diagram_3d('Mz', {}, 1)
     og.plt.show()
