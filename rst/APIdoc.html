@@ -101,17 +101,27 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#uml-diagram-overview">UML diagram overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#user-interface-functions-api">User interface functions - API</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.osp_grillage.create_grillage.html">ospgrillage.osp_grillage.create_grillage</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.material.create_material.html">ospgrillage.material.create_material</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.members.create_section.html">ospgrillage.members.create_section</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.members.create_member.html">ospgrillage.members.create_member</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_load_vertex.html">ospgrillage.load.create_load_vertex</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_load.html">ospgrillage.load.create_load</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_load_case.html">ospgrillage.load.create_load_case</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_compound_load.html">ospgrillage.load.create_compound_load</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_moving_path.html">ospgrillage.load.create_moving_path</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_moving_load.html">ospgrillage.load.create_moving_load</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.mesh.create_point.html">ospgrillage.mesh.create_point</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#top-level-interface-functions">Top level interface functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.osp_grillage.create_grillage.html">ospgrillage.osp_grillage.create_grillage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.material.create_material.html">ospgrillage.material.create_material</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.members.create_section.html">ospgrillage.members.create_section</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.members.create_member.html">ospgrillage.members.create_member</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.load.create_load_vertex.html">ospgrillage.load.create_load_vertex</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.load.create_load.html">ospgrillage.load.create_load</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.load.create_load_case.html">ospgrillage.load.create_load_case</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.load.create_compound_load.html">ospgrillage.load.create_compound_load</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.load.create_moving_path.html">ospgrillage.load.create_moving_path</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.load.create_moving_load.html">ospgrillage.load.create_moving_load</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.mesh.create_point.html">ospgrillage.mesh.create_point</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#grillage-model-interface">Grillage model interface</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.set_member.html">ospgrillage.osp_grillage.OspGrillage.set_member</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_nodes.html">ospgrillage.osp_grillage.OspGrillage.get_nodes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze.html">ospgrillage.osp_grillage.OspGrillage.analyze</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html">ospgrillage.osp_grillage.OspGrillage.get_results</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#ospgrillage-class">OspGrillage class</a><ul>
@@ -225,6 +235,8 @@
 <h2>User interface functions - API<a class="headerlink" href="#user-interface-functions-api" title="Permalink to this headline">¶</a></h2>
 <p>This module comprised of user interface functions to take user inputs and returns its corresponding object creation.
 Here is a summary of these functions.</p>
+<div class="section" id="top-level-interface-functions">
+<h3>Top level interface functions<a class="headerlink" href="#top-level-interface-functions" title="Permalink to this headline">¶</a></h3>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -266,6 +278,30 @@ Here is a summary of these functions.</p>
 </tr>
 </tbody>
 </table>
+</div>
+<div class="section" id="grillage-model-interface">
+<h3>Grillage model interface<a class="headerlink" href="#grillage-model-interface" title="Permalink to this headline">¶</a></h3>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.set_member.html#ospgrillage.osp_grillage.OspGrillage.set_member" title="ospgrillage.osp_grillage.OspGrillage.set_member"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.osp_grillage.OspGrillage.set_member</span></code></a>(…)</p></td>
+<td><p>Function to set grillage member class object to elements of grillage members.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_nodes.html#ospgrillage.osp_grillage.OspGrillage.get_nodes" title="ospgrillage.osp_grillage.OspGrillage.get_nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.osp_grillage.OspGrillage.get_nodes</span></code></a>()</p></td>
+<td><p>Function to return all nodes of grillage model :return: dict contain node information</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze.html#ospgrillage.osp_grillage.OspGrillage.analyze" title="ospgrillage.osp_grillage.OspGrillage.analyze"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.osp_grillage.OspGrillage.analyze</span></code></a>(…)</p></td>
+<td><p>Function to analyze defined load</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.osp_grillage.OspGrillage.get_results</span></code></a>(…)</p></td>
+<td><p>Function to get results from load cases.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div class="section" id="ospgrillage-class">
 <h2>OspGrillage class<a class="headerlink" href="#ospgrillage-class" title="Permalink to this headline">¶</a></h2>
@@ -436,7 +472,7 @@ argument.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ospgrillage.osp_grillage.OspGrillage.get_nodes">
 <span class="sig-name descname"><span class="pre">get_nodes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OspGrillage.get_nodes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to return nodes of grillage model
+<dd><p>Function to return all nodes of grillage model
 :return: dict contain node information</p>
 </dd></dl>
 
@@ -448,9 +484,8 @@ argument.</p>
 <dt class="sig sig-object py" id="ospgrillage.osp_grillage.Analysis">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.osp_grillage.</span></span><span class="sig-name descname"><span class="pre">Analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">analysis_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ops_grillage_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pyfile</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_counter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ele_counter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">analysis_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Static'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_counter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pattern_counter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.Analysis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Main class to handle the run/execution of load case + load combination + moving load analysis. Analysis class is
-created and used within OspGrillage class after “adding load case”, “adding load combination” and “adding moving
-load” procedures.</p>
+<p>Main class to handle the run/execution of load case, including incremental load cases of a moving load analysis.
+Analysis class is created and handled by the OspGrillage class.</p>
 <p>The following are the roles of Analysis object:</p>
 <ul class="simple">
 <li><p>store information of ops commands for performing static (default) analysis of single/multiple load case(s).</p></li>
@@ -496,31 +531,45 @@ the appropriate keyword arguments to create the code defined materials.</p>
 <p class="admonition-title">Note</p>
 <p>Current version of mat_lib.json is 0.1.0</p>
 </div>
-<p>The constructor of Material takes in three types of keyword arguments:
-#. Keyword for looking up the <em>ospgrillage</em> material library i.e. mat_lib.json.
-#. General material properties - such as E, and G
-#. Material arguments of <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code>. E.g. Opensees’s Steel01 material takes isotropic hardening parameters a1</p>
-<blockquote>
-<div><p>to a4.</p>
-</div></blockquote>
-<p>The following keywords are for item (1):
-:keyword:
-* code (<cite>str</cite>): name string of code according to mat_lib.json
-* type (<cite>str</cite>): Either “concrete” or “steel”
-* grade(<cite>str</cite>): Grade of material according to code</p>
-<p>The following keywords are examples of general material properties:
-:keyword:
-* E (<cite>float</cite>): Elastic modulus
-* G (<cite>float</cite>): Shear modulus</p>
+<p>The constructor of Material takes in three types of keyword arguments:</p>
+<ol class="arabic simple">
+<li><p>Keyword for looking up the <em>ospgrillage</em> material library i.e. mat_lib.json.</p></li>
+<li><p>General material properties - such as E, and G</p></li>
+<li><p>Material arguments of <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code>. E.g. Opensees’s Steel01 material takes isotropic hardening parameters a1
+to a4.</p></li>
+</ol>
+<p>The following keywords are for item (1):</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+<ul class="simple">
+<li><p>code (<cite>str</cite>): name string of code according to mat_lib.json</p></li>
+<li><p>type (<cite>str</cite>): Either “concrete” or “steel”</p></li>
+<li><p>grade(<cite>str</cite>): Grade of material according to code</p></li>
+</ul>
+<p>The following keywords are examples of general material properties:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+<ul class="simple">
+<li><p>E (<cite>float</cite>): Elastic modulus</p></li>
+<li><p>G (<cite>float</cite>): Shear modulus</p></li>
+</ul>
 <p>For developers wishing to add more material properties:</p>
-<p>#. if the material is a codified material, modify mat_lib.json file by adding the material according
-to the file format.
-#. if the material is a <cite>OpenSees</cite> Material that wasn’t added previously, add properties under <code class="docutils literal notranslate"><span class="pre">get_mat_args()</span></code>
-function. Then check the commands in _write_material() of <cite>OspGrillage</cite> class.</p>
+<ol class="arabic simple">
+<li><p>if the material is a codified material, modify mat_lib.json file by adding the material according to the file format.</p></li>
+<li><dl class="simple">
+<dt>if the material is a <cite>OpenSees</cite> Material that wasn’t added previously, add properties under <code class="docutils literal notranslate"><span class="pre">get_mat_args()</span></code></dt><dd><p>function. Then check the commands in _write_material() of <cite>OspGrillage</cite> class.</p>
+</dd>
+</dl>
+</li>
+</ol>
 <dl class="py method">
 <dt class="sig sig-object py" id="ospgrillage.material.Material.parse_material_command">
 <span class="sig-name descname"><span class="pre">parse_material_command</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.material.Material.parse_material_command" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to parse the material inputs according to OpenSeesPy convention of inputs</p>
+<dd><p>Function to parse the material inputs into OpenSeesPy commands</p>
 </dd></dl>
 
 <dl class="py method">

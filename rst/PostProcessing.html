@@ -214,39 +214,41 @@ example code define a load combinations having two load cases.</p>
 </div>
 <div class="section" id="load-envelope">
 <h2>Load envelope<a class="headerlink" href="#load-envelope" title="Permalink to this headline">¶</a></h2>
-<p>Load envelope is generated from load combination results for extrema of load effect as a new xarray.</p>
+<p>Load envelope is generated from load combination results for extrema of load effect using <cite>get_envelope()</cite> function. Envelope are
+chosen based on user selected component (<em>array</em> keyword) as either “displacements” or “forces”, extrema as either maximum or minimum,
+and load effect component (e.g. “dy” for displacements). The <cite>get_envelope()</cite> function is defined as follows:</p>
 </div>
 <div class="section" id="plotting-results">
 <h2>Plotting results<a class="headerlink" href="#plotting-results" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="current-limitation-of-plotting-module">
 <h3>Current limitation of plotting module<a class="headerlink" href="#current-limitation-of-plotting-module" title="Permalink to this headline">¶</a></h3>
-<p><cite>OpenSeesPy</cite>’s visualization module <cite>ops_vis</cite> offers users the capability to visualize analysis results on a model in
-comprehensive ways. However, <cite>ops_vis</cite> operates on plotting results of the current model (and analysis) instance in <cite>OpenSees</cite>
-framework. Additionally, <cite>ops_vis</cite> does not contain enveloping feature across multiple analysis - this especially the case for moving
-load analysis.</p>
-<p>In the following section, we will present an alternative way to visualize results of <em>ospgrillage</em> - albeit in pythonic code lines.</p>
+<p><cite>OpenSeesPy</cite>’s visualization module <cite>ops_vis</cite> offers comprehensive visualization of analysis results.
+However, <cite>ops_vis</cite>’s plotting operates only for the current model (and analysis) instance in <cite>OpenSees</cite>
+framework. In other words multiple plots of different analysis results is not straightforward for <cite>ops_vis</cite>.
+Additionally, <cite>ops_vis</cite> does not contain enveloping feature across multiple analysis - especially for moving
+load analysis comprise of multiple incremental load case for each moving load position.</p>
+<p>In the following section, we present an alternative way to visualize results of <em>ospgrillage</em> - template codes to plot and visualize results.</p>
 </div>
 <div class="section" id="suggested-method-using-matplotlib">
 <h3>Suggested method using matplotlib<a class="headerlink" href="#suggested-method-using-matplotlib" title="Permalink to this headline">¶</a></h3>
-<p>Here are some example code which can help plot desired load effects.</p>
-<p>For displacement array:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># template code to plot displacements</span>
-<span class="c1"># get all node information</span>
+<p>Here are some template codes for plotting load effects using Python’s <cite>matplotlib</cite> library tools.</p>
+<p>For displacement components:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get all node information</span>
 <span class="n">nodes</span> <span class="o">=</span> <span class="n">example_bridge</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()</span> <span class="c1"># dictionary containing information of nodes</span>
 <span class="c1"># extract list of x and z coordinate of nodes</span>
 <span class="n">x_coord</span> <span class="o">=</span> <span class="p">[</span><span class="n">spec</span><span class="p">[</span><span class="s1">&#39;coordinate&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">spec</span> <span class="ow">in</span> <span class="n">nodes</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
 <span class="n">z_coord</span> <span class="o">=</span> <span class="p">[</span><span class="n">spec</span><span class="p">[</span><span class="s1">&#39;coordinate&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">spec</span> <span class="ow">in</span> <span class="n">nodes</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
 
-<span class="c1"># get load effect</span>
-<span class="n">load_effect</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">displacements</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Component</span><span class="o">=</span><span class="s2">&quot;dy&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># Alter the component according to user</span>
+<span class="c1"># get displacement load effect - specifically dy</span>
+<span class="n">load_effect</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">displacements</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Component</span><span class="o">=</span><span class="s2">&quot;dy&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># a list of array, therefore access element 0</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span> <span class="c1"># create plot</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_coord</span><span class="p">,</span><span class="n">z_coord</span><span class="p">,</span><span class="n">load_effect</span><span class="p">)</span> <span class="c1"># plot load effect against x and z coordinate positions</span>
 </pre></div>
 </div>
-<p>For forces.</p>
+<p>For forces components of beam elements:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># template code to plot load effect - herein plot &quot;Mz&quot; global of exterior main beam 2</span>
 <span class="n">nodes</span><span class="o">=</span><span class="n">bridge_28</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()</span>
-<span class="n">nodes_to_plot</span> <span class="o">=</span> <span class="n">bridge_28</span><span class="o">.</span><span class="n">get_element</span><span class="p">(</span><span class="n">member</span><span class="o">=</span><span class="s2">&quot;exterior_main_beam_2&quot;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="s2">&quot;nodes&quot;</span><span class="p">)</span>
+<span class="n">nodes_to_plot</span> <span class="o">=</span> <span class="n">bridge_28</span><span class="o">.</span><span class="n">get_element</span><span class="p">(</span><span class="n">member</span><span class="o">=</span><span class="s2">&quot;exterior_main_beam_2&quot;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="s2">&quot;nodes&quot;</span><span class="p">,</span><span class="n">z_group_num</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">eletag</span> <span class="o">=</span> <span class="n">bridge_28</span><span class="o">.</span><span class="n">get_element</span><span class="p">(</span><span class="n">member</span><span class="o">=</span><span class="s2">&quot;exterior_main_beam_2&quot;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="s2">&quot;elements&quot;</span><span class="p">)</span>
 <span class="n">load_effect_i</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">forces</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Component</span><span class="o">=</span><span class="s2">&quot;Mz_i&quot;</span><span class="p">,</span><span class="n">Element</span><span class="o">=</span><span class="n">eletag</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 <span class="n">load_effect_j</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">forces</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Component</span><span class="o">=</span><span class="s2">&quot;Mz_j&quot;</span><span class="p">,</span><span class="n">Element</span><span class="o">=</span><span class="n">eletag</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
@@ -258,7 +260,10 @@ load analysis.</p>
 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">node_x</span><span class="p">,</span><span class="n">node_z</span><span class="p">,</span><span class="n">load_effect</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>plot for interior beams</p>
+<p>For force component of shell elements:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
 </div>
 </div>
 </div>

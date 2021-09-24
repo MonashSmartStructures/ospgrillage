@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>ospgrillage.load.create_compound_load &mdash; ospgrillage module 0.1.0 documentation</title>
+  <title>ospgrillage.osp_grillage.OspGrillage.get_nodes &mdash; ospgrillage module 0.1.0 documentation</title>
   
 
   
@@ -41,8 +41,8 @@
     
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="ospgrillage.load.create_moving_path" href="ospgrillage.load.create_moving_path.html" />
-    <link rel="prev" title="ospgrillage.load.create_load_case" href="ospgrillage.load.create_load_case.html" /> 
+    <link rel="next" title="ospgrillage.osp_grillage.OspGrillage.analyze" href="ospgrillage.osp_grillage.OspGrillage.analyze.html" />
+    <link rel="prev" title="ospgrillage.osp_grillage.OspGrillage.set_member" href="ospgrillage.osp_grillage.OspGrillage.set_member.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -101,21 +101,14 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../APIdoc.html">API reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../APIdoc.html#uml-diagram-overview">UML diagram overview</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../APIdoc.html#user-interface-functions-api">User interface functions - API</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="../APIdoc.html#top-level-interface-functions">Top level interface functions</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="ospgrillage.osp_grillage.create_grillage.html">ospgrillage.osp_grillage.create_grillage</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ospgrillage.material.create_material.html">ospgrillage.material.create_material</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ospgrillage.members.create_section.html">ospgrillage.members.create_section</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ospgrillage.members.create_member.html">ospgrillage.members.create_member</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ospgrillage.load.create_load_vertex.html">ospgrillage.load.create_load_vertex</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ospgrillage.load.create_load.html">ospgrillage.load.create_load</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ospgrillage.load.create_load_case.html">ospgrillage.load.create_load_case</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">ospgrillage.load.create_compound_load</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ospgrillage.load.create_moving_path.html">ospgrillage.load.create_moving_path</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ospgrillage.load.create_moving_load.html">ospgrillage.load.create_moving_load</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ospgrillage.mesh.create_point.html">ospgrillage.mesh.create_point</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../APIdoc.html#top-level-interface-functions">Top level interface functions</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../APIdoc.html#grillage-model-interface">Grillage model interface</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.set_member.html">ospgrillage.osp_grillage.OspGrillage.set_member</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">ospgrillage.osp_grillage.OspGrillage.get_nodes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.analyze.html">ospgrillage.osp_grillage.OspGrillage.analyze</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.get_results.html">ospgrillage.osp_grillage.OspGrillage.get_results</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../APIdoc.html#grillage-model-interface">Grillage model interface</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../APIdoc.html#ospgrillage-class">OspGrillage class</a></li>
@@ -183,13 +176,13 @@
         
           <li><a href="../APIdoc.html">API reference</a> &raquo;</li>
         
-      <li>ospgrillage.load.create_compound_load</li>
+      <li>ospgrillage.osp_grillage.OspGrillage.get_nodes</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../../_sources/rst/generated/ospgrillage.load.create_compound_load.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/rst/generated/ospgrillage.osp_grillage.OspGrillage.get_nodes.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -202,18 +195,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="ospgrillage-load-create-compound-load">
-<h1>ospgrillage.load.create_compound_load<a class="headerlink" href="#ospgrillage-load-create-compound-load" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="ospgrillage.load.create_compound_load">
-<span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">create_compound_load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.create_compound_load" title="Permalink to this definition">¶</a></dt>
-<dd><p>User interface function to create compound load/ CompoundLoad objects</p>
-<dl class="field-list simple">
-<dt class="field-odd">Keyword</dt>
-<dd class="field-odd"><p></p></dd>
-</dl>
-<p>name (<cite>str</cite>): Name string of compound load
-:returns CompoundLoad:</p>
+  <div class="section" id="ospgrillage-osp-grillage-ospgrillage-get-nodes">
+<h1>ospgrillage.osp_grillage.OspGrillage.get_nodes<a class="headerlink" href="#ospgrillage-osp-grillage-ospgrillage-get-nodes" title="Permalink to this headline">¶</a></h1>
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.osp_grillage.OspGrillage.get_nodes">
+<span class="sig-prename descclassname"><span class="pre">OspGrillage.</span></span><span class="sig-name descname"><span class="pre">get_nodes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OspGrillage.get_nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to return all nodes of grillage model
+:return: dict contain node information</p>
 </dd></dl>
 
 </div>
@@ -224,8 +212,8 @@
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="ospgrillage.load.create_moving_path.html" class="btn btn-neutral float-right" title="ospgrillage.load.create_moving_path" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="ospgrillage.load.create_load_case.html" class="btn btn-neutral float-left" title="ospgrillage.load.create_load_case" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ospgrillage.osp_grillage.OspGrillage.analyze.html" class="btn btn-neutral float-right" title="ospgrillage.osp_grillage.OspGrillage.analyze" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="ospgrillage.osp_grillage.OspGrillage.set_member.html" class="btn btn-neutral float-left" title="ospgrillage.osp_grillage.OspGrillage.set_member" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

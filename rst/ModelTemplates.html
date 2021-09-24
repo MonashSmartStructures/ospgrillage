@@ -176,25 +176,37 @@
             
   <div class="section" id="grillage-model-templates">
 <h1>Grillage model templates<a class="headerlink" href="#grillage-model-templates" title="Permalink to this headline">¶</a></h1>
-<p><em>ospgrillage</em> offers several types of grillage models.</p>
 <div class="section" id="beam-grillage">
 <h2>Beam grillage<a class="headerlink" href="#beam-grillage" title="Permalink to this headline">¶</a></h2>
-<p>The most common form of grillage model. This model comprise of beam elements layed out in a grid pattern with features:
-* longitudinal members representing composite section along longitudinal direction (e.g. main beams)
-* transverse members representing slabs or secondary beam sections.</p>
+<p>This is the most common form of grillage model which comprise of beam elements lay out in a grid pattern, with:</p>
+<ul class="simple">
+<li><p>longitudinal members representing composite section along longitudinal direction (e.g. main beams)</p></li>
+<li><p>transverse members representing slabs or secondary beam sections.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">OspGrillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;SuperT_10m&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">skew</span><span class="o">=-</span><span class="mi">42</span><span class="p">,</span>
+                                <span class="n">num_long_grid</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">edge_beam_dist</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mesh_type</span><span class="o">=</span><span class="s2">&quot;Ortho&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>Figure 1 shows a beam grillage model type - outlining the elements.</p>
 <p>[picture]</p>
 </div>
 <div class="section" id="beam-grillage-with-rigid-links">
 <h2>Beam grillage with rigid links<a class="headerlink" href="#beam-grillage-with-rigid-links" title="Permalink to this headline">¶</a></h2>
-<p>This model is a modified beam grillage with the following features:</p>
+<p>This model is a modified version of beam grillage with the following features:</p>
 <ul class="simple">
-<li><p>Offset (in x-z plane) for start and end nodes of transverse members - by introducing joint offset.</p></li>
-<li><p>Offset (in vertical y direction) for start and end nodes of longitudinal members - again introducing joint offsets.</p></li>
+<li><p>Offsets (in x-z plane) for start and end nodes along direction of transverse members - using joint offset.</p></li>
+<li><p>Offsets (in vertical y direction) for start and end nodes of longitudinal members - again using joint offsets.</p></li>
 </ul>
-<p>Joint offsets are linked via a rigid link. For more information on joint offsets see <a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/LinearTransf.html">geomtransf</a></p>
+<p>To create this model, have <cite>create_grillage()</cite> keyword for model_type set to “beam_link”.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_grillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;beamlink_10m&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">skew</span><span class="o">=-</span><span class="mi">12</span><span class="p">,</span>
+                                    <span class="n">num_long_grid</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">edge_beam_dist</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mesh_type</span><span class="o">=</span><span class="s2">&quot;Ortho&quot;</span><span class="p">,</span>
+                                    <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;beam_link&quot;</span><span class="p">,</span>
+                                    <span class="n">beam_width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">web_thick</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span> <span class="n">centroid_dist_y</span><span class="o">=</span><span class="mf">0.499</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>Figure 2 shows the aforementioned model type.</p>
 <p>[picture]</p>
+<p>Joint offsets are linked via a rigid link. Information for joint offsets can be found in <cite>OpenSeesPy</cite>’s <a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/LinearTransf.html">geomtransf</a></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>As of release 0.1.0, <cite>OpenSeesPy</cite> visualization module is unable to visualize the joint offsets.</p>
@@ -202,13 +214,23 @@
 </div>
 <div class="section" id="shell-and-beam-hybrid-model">
 <h2>Shell and beam hybrid model<a class="headerlink" href="#shell-and-beam-hybrid-model" title="Permalink to this headline">¶</a></h2>
-<p>A third model is a more refined model using two element types - shell and beam elements - with the following features:</p>
+<p>This is a more refined model using two element types - shell and beam elements - with the following features:</p>
 <ul class="simple">
-<li><p>Shell elements are layed in a grid to represent bridge decks.</p></li>
-<li><p>Beam elements are modelled with an offset to the plane of shell elements to represent longitudinal beam sections.</p></li>
-<li><p>Beam elements are linked to shell elements at two corresponding locations using constraint equations - <cite>OpenSeesPy</cite>’s <strong>rigidLink</strong> command</p></li>
+<li><p>Shell elements lay in grids to represent bridge decks.</p></li>
+<li><p>Beam elements modelled with an offset to the plane of shell elements to represent longitudinal beam sections.</p></li>
+<li><p>Beam elements linked to shell elements at two corresponding locations using constraint equations - <cite>OpenSeesPy</cite>’s <strong>rigidLink</strong> command</p></li>
 </ul>
 <p>This model has advantageous in modelling slabs - shell elements are well-suited to represent two-dimensional slab behaviour.</p>
+<p>To create this model, have <cite>create_grillage()</cite> keyword for model_type set to “shell”.
+.. code-block:: python</p>
+<blockquote>
+<div><dl class="simple">
+<dt>example_bridge = og.create_grillage(bridge_name=”shelllink_10m”, long_dim=10, width=7, skew=0,</dt><dd><p>num_long_grid=6, num_trans_grid=11, edge_beam_dist=1, mesh_type=”Orth”,
+model_type=”shell”, max_mesh_size_z=0.5, offset_beam_y_dist=0.499,
+link_nodes_width=0.89)</p>
+</dd>
+</dl>
+</div></blockquote>
 <p>Figure 3 shows the shell beam hybrid model.</p>
 <p>[picture]</p>
 </div>

@@ -20,6 +20,8 @@ User interface functions - API
 This module comprised of user interface functions to take user inputs and returns its corresponding object creation.
 Here is a summary of these functions.
 
+Top level interface functions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. autosummary::
     :toctree: generated/
@@ -36,6 +38,18 @@ Here is a summary of these functions.
     ospgrillage.load.create_moving_load
     ospgrillage.mesh.create_point
 
+
+Grillage model interface
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autosummary::
+    :toctree: generated/
+
+    ospgrillage.osp_grillage.OspGrillage.set_member
+    ospgrillage.osp_grillage.OspGrillage.get_nodes
+    ospgrillage.osp_grillage.OspGrillage.get_elements
+    ospgrillage.osp_grillage.OspGrillage.analyze
+    ospgrillage.osp_grillage.OspGrillage.get_results
 
 
 OspGrillage class
