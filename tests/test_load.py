@@ -394,7 +394,7 @@ def test_moving_load_case(bridge_model_42_negative):
     move_point.add_loads(load_obj=front_wheel)
     example_bridge.add_load_case(move_point)
 
-    example_bridge.analyze(all=True)
+    example_bridge.analyze()
     results = example_bridge.get_results()
     print(results)
 
@@ -447,7 +447,7 @@ def test_moving_compound_load(bridge_model_42_negative):
     truck.add_loads(load_obj=M1600)
 
     example_bridge.add_load_case(truck)
-    example_bridge.analyze(all=True)
+    example_bridge.analyze()
     results = example_bridge.get_results()
     print("finish test compound moving load")
 

@@ -2,7 +2,7 @@
 API reference
 ====================
 
-This page outlines *ospgrillage*'s API. For detail regarding module design and algorithms, refer to :doc:`ModuleDoc`.
+This page outlines *ospgrillage*'s API. For details regarding module design and algorithms, refer to :doc:`ModuleDoc`.
 
 
 UML diagram overview
@@ -41,6 +41,7 @@ Top level interface functions
 
 Grillage model interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The following methods can be called on the :class:`OspGrillage` object.
 
 .. autosummary::
     :toctree: generated/

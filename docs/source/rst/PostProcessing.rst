@@ -1,12 +1,12 @@
 ========================
-Post-Processing
+Getting the Results
 ========================
 
 This page shows the post-processing capabilities of *ospgrillage*. Examples herein should guide users to extract desired results
 from analysis.
 
 
-Getting results
+Extracting results
 --------------------------------------
 
 After analysis, results are obtained using `get_results()` function. The following example code demonstrates
@@ -21,17 +21,17 @@ The **result** variable is a `Xarray` data set.
 Structure of data sets
 --------------------------------------
 
-The dataset contains two main data arrays representing load effects:
+The dataset consist of two data arrays that represent load effects:
 
-*. displacements i.e. rotation and translations
-*. forces e.g. Bending about z axis, Shear forces etc.
+#. displacements i.e. rotation and translations
+#. forces e.g. bending about z axis, Shear forces etc.
 
-Following example shows how each data array of results is accessed :
+Following example shows how each data array  is accessed :
 
 .. code-block:: python
 
-    disp_array = result.displacements
-    force_array = result.forces
+    disp_array = result.displacements # displacement components
+    force_array = result.forces # force components
 
 Users can access specific component in each load effect data array. Following example extracts the displacment 'dy' component using `Xarray`'s
 `sel()` function.
@@ -63,6 +63,7 @@ and load effect component (e.g. "dy" for displacements). The `get_envelope()` fu
     disp_env = envelope.get() # get the output xarray of envelope
 
 
+
 Plotting results
 --------------------------------------
 
@@ -77,7 +78,7 @@ load analysis comprise of multiple incremental load case for each moving load po
 
 In the following section, we present an alternative way to visualize results of *ospgrillage* - template codes to plot and visualize results.
 
-Suggested method using matplotlib
+Template code for plotting
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Here are some template codes for plotting load effects using Python's `matplotlib` library tools.
 
@@ -101,6 +102,7 @@ For forces components of beam elements:
 .. code-block:: python
 
     # template code to plot load effect - herein plot "Mz" global of exterior main beam 2
+    ax = og.plt.axes(projection='3d') # create plot window
     nodes=bridge_28.get_nodes()
     nodes_to_plot = bridge_28.get_element(member="exterior_main_beam_2", options="nodes",z_group_num=0)
     eletag = bridge_28.get_element(member="exterior_main_beam_2", options="elements")
@@ -117,14 +119,15 @@ For force component version 2:
 
 .. code-block:: python
 
+    ax = og.plt.axes(projection='3d') # create plot window
     for ele in eletag:
-    ele_components = results.forces.sel(Element=ele, Component=["Vx_i", "Vy_i", "Vz_i", "Mx_i", "My_i", "Mz_i", "Vx_j", "Vy_j", "Vz_j", "Mx_j", "My_j",
-                       "Mz_j"])[0].values
-    #ele_components = results.forces.sel(Element=ele)[0].values[:12]
-    ele_node = results.ele_nodes.sel(Element=ele)
-    xx = [nodes[n]['coordinate'][0] for n in ele_node.values]
-    yy = [nodes[n]['coordinate'][1] for n in ele_node.values]
-    zz = [nodes[n]['coordinate'][2] for n in ele_node.values]
-    s,al = og.opsv.section_force_distribution_3d(ex=xx,ey=yy,ez=zz,pl=ele_components)
-    ax.plot(xx,zz,s[:,5])
+        ele_components = results.forces.sel(Element=ele, Component=["Vx_i", "Vy_i", "Vz_i", "Mx_i", "My_i", "Mz_i", "Vx_j", "Vy_j", "Vz_j", "Mx_j", "My_j",
+                           "Mz_j"])[0].values
+        #ele_components = results.forces.sel(Element=ele)[0].values[:12]
+        ele_node = results.ele_nodes.sel(Element=ele)
+        xx = [nodes[n]['coordinate'][0] for n in ele_node.values]
+        yy = [nodes[n]['coordinate'][1] for n in ele_node.values]
+        zz = [nodes[n]['coordinate'][2] for n in ele_node.values]
+        s,al = og.opsv.section_force_distribution_3d(ex=xx,ey=yy,ez=zz,pl=ele_components)
+        ax.plot(xx,zz,s[:,5])
 

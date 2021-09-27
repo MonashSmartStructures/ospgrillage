@@ -1585,12 +1585,8 @@ class OspGrillage:
         """
         list_of_moving_load_case = []
         coordinate_name_list = None  # instantiate
-        local_force_flag = kwargs.get("local_forces", True)
-        if local_force_flag:
-            basic_da = self.results.compile_data_array()
-        else:
-            basic_da = self.results.compile_data_array(local_option=False)
-
+        local_force_flag = kwargs.get("local_forces", False)
+        basic_da = self.results.compile_data_array(local_force_option=local_force_flag)
         # get kwargs
         comb = kwargs.get("combinations", False)  # if Boolean true
         save_filename = kwargs.get("save_filename", None)  # str of file name
@@ -1967,8 +1963,8 @@ class Results:
             self.moving_load_case_record.append(inc_load_case_record)
             self.moving_load_case_record_global_forces.append(inc_load_case_global_force_record)
 
-    def compile_data_array(self, local_force_option=True):
-        # Final function called to compile all inserted analyses into xarray dataArray format
+    def compile_data_array(self, local_force_option=False):
+        # Function called to compile analysis results into xarray
         # Dimension names
         dim = ["Loadcase", "Node", "Component"]
         dim2 = ["Loadcase", "Element", "Component"]
@@ -1979,7 +1975,7 @@ class Results:
         displacement_component = ["dx", "dy", "dz", "theta_x", "theta_y", "theta_z"]
         force_component = ["Vx_i", "Vy_i", "Vz_i", "Mx_i", "My_i", "Mz_i", "Vx_j", "Vy_j", "Vz_j", "Mx_j", "My_j",
                            "Mz_j"]
-        # TODO
+        # coordinate for force component of shell
         force_component_shell = ["Vx_i", "Vy_i", "Vz_i", "Mx_i", "My_i", "Mz_i", "Vx_j", "Vy_j", "Vz_j", "Mx_j", "My_j",
                                  "Mz_j","Vx_k", "Vy_k", "Vz_k", "Mx_k", "My_k", "Mz_k","Vx_l", "Vy_l", "Vz_l", "Mx_l",
                                  "My_l", "Mz_l"]
@@ -1990,7 +1986,8 @@ class Results:
         basic_ele_force_list = []
         extracted_ele_nodes_list = False  # a 2D array of ele node i and ele node j
         ele_nodes_list = []
-
+        base_ele_force_list_beam= []
+        base_ele_force_list_shell= []
         # check if force option is global or local
         if local_force_option:
             basic_dict = self.basic_load_case_record
@@ -2001,12 +1998,17 @@ class Results:
 
         # loop all basic load case
         for load_case_name, resp_list_of_2_dict in basic_dict.items():
-            # for displacements of each node
-            basic_array_list.append([a for a in list(resp_list_of_2_dict[0].values())])
-            basic_ele_force_list.append([a for a in list(resp_list_of_2_dict[1].values())])
+            # extract displacement
+            basic_array_list.append([a for a in list(resp_list_of_2_dict[0].values())]) # list index 0 is disp
+            # extract force
+            basic_ele_force_list.append([a for a in list(resp_list_of_2_dict[1].values())]) # list index 1 is force
+            # extract based on element type
+            base_ele_force_list_beam.append([a for a in list(resp_list_of_2_dict[1].values()) if len(a) ==12])
+            base_ele_force_list_shell.append([a for a in list(resp_list_of_2_dict[1].values()) if len(a) ==24])
             if not extracted_ele_nodes_list:
-                ele_nodes_list = list(resp_list_of_2_dict[2].values())
-                extracted_ele_nodes_list = True
+                ele_nodes_list = list(resp_list_of_2_dict[2].values())  # list index 2 is ele nodes variable
+                extracted_ele_nodes_list = True  # set to true, only extract if its the first time extracting
+                ele_tag = list(resp_list_of_2_dict[2].keys())
             # for section forces of each element
             # Coordinate of Load Case dimension
             basic_load_case_coord.append(load_case_name)
@@ -2020,31 +2022,57 @@ class Results:
                 #                                                       list(inc_resp_list_of_2_dict[1].values()))])
                 basic_array_list.append([a for a in list(inc_resp_list_of_2_dict[0].values())])
                 basic_ele_force_list.append([a for a in list(inc_resp_list_of_2_dict[1].values())])
+
+                base_ele_force_list_beam.append([a for a in list(inc_resp_list_of_2_dict[1].values()) if len(a) == 12])
+                base_ele_force_list_shell.append([a for a in list(inc_resp_list_of_2_dict[1].values()) if len(a) == 24])
                 # Coordinate of Load Case dimension
                 # inc_moving_load_case_coord.append(increment_load_case_name)
                 basic_load_case_coord.append(increment_load_case_name)
                 if not extracted_ele_nodes_list:
                     ele_nodes_list = list(inc_resp_list_of_2_dict[2].values())
+                    ele_tag = list(inc_resp_list_of_2_dict[2].keys())
                     extracted_ele_nodes_list = True
         # convert to np array format
         basic_array = np.array(basic_array_list)
         force_array = np.array(basic_ele_force_list)
         ele_array = np.array(ele_nodes_list)
+        ele_array_shell = [e for e in ele_array if len(e) > 2]
+        ele_array_beam = [e for e in ele_array if len(e) == 2]
+        ele_tag = np.array(ele_tag)
+        ele_tag_shell = [tag for tag,e in zip(ele_tag,ele_array) if len(e) > 2]
+        ele_tag_beam = [tag for tag,e in zip(ele_tag,ele_array) if len(e) ==2]
+        force_array_shell = np.array(base_ele_force_list_shell)
+        force_array_beam = np.array(base_ele_force_list_beam)
+
         # create data array for each basic load case if any, else return
         if basic_array.size:
             # displacement data array
             basic_da = xr.DataArray(data=basic_array, dims=dim,
                                     coords={dim[0]: basic_load_case_coord, dim[1]: node, dim[2]: displacement_component})
+
+            force_da_beam = xr.DataArray(data=force_array_beam, dims=dim2,
+                                         coords={dim2[0]: basic_load_case_coord, dim2[1]: ele_tag_beam,
+                                                 dim2[2]: force_component})
+            ele_nodes_beam = xr.DataArray(data=ele_array_beam, dims=[dim2[1], "Nodes"],
+                                          coords={dim2[1]: ele_tag_beam, "Nodes": ["i", "j"]})
+            # create data set based on
+            if isinstance(self.mesh_obj,ShellLinkMesh):
+                force_da_shell = xr.DataArray(data=force_array_shell, dims=dim2,
+                                              coords={dim2[0]: basic_load_case_coord, dim2[1]: ele_tag_shell,
+                                                      dim2[2]: force_component_shell})
+                ele_nodes_shell = xr.DataArray(data=ele_array_shell, dims=[dim2[1], "Nodes"],
+                                               coords={dim2[1]: ele_tag_shell, "Nodes": ["i", "j", "k", "l"]})
+                result = xr.Dataset(
+                    {"displacements": basic_da, "forces_beam": force_da_beam, "forces_shell": force_da_shell
+                        , "ele_nodes_beam": ele_nodes_beam, "ele_nodes_shell": ele_nodes_shell})
+            else:
+                result = xr.Dataset({"displacements": basic_da, "forces": force_da_beam, "ele_nodes": ele_nodes_beam})
             # element force data array
-            force_da = xr.DataArray(data=force_array, dims=dim2,
-                                    coords={dim2[0]: basic_load_case_coord, dim2[1]: ele, dim2[2]: force_component})
-            ele_nodes = xr.DataArray(data=ele_array, dims=[dim2[1], "Nodes"],
-                                     coords={dim2[1]: ele, "Nodes": ["i", "j"]})
-            # TODO add force_da shell
-            #force_da_shell = xr.DataArray(data=force_array, dims=dim2,
-            #                        coords={dim2[0]: basic_load_case_coord, dim2[1]: ele, dim2[2]: force_component_shell})
-            # create data set
-            result = xr.Dataset({"displacements": basic_da, "forces": force_da, "ele_nodes": ele_nodes})
+            #force_da = xr.DataArray(data=force_array, dims=dim2,
+                                    #coords={dim2[0]: basic_load_case_coord, dim2[1]: ele, dim2[2]: force_component})
+            #ele_nodes = xr.DataArray(data=ele_array, dims=[dim2[1], "Nodes"],
+                                     #coords={dim2[1]: ele, "Nodes": ["i", "j"]})
+
         else:
             result = None
         return result
