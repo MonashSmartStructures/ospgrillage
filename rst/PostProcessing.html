@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Post-Processing &mdash; ospgrillage module 0.1.0 documentation</title>
+  <title>Getting the Results &mdash; ospgrillage module 0.1.0 documentation</title>
   
 
   
@@ -41,7 +41,7 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="API reference" href="APIdoc.html" />
+    <link rel="next" title="Grillage model templates" href="ModelTemplates.html" />
     <link rel="prev" title="Performing analysis" href="Running_analysis.html" /> 
 </head>
 
@@ -95,20 +95,20 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Module%20description.html">Creating grillage models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ModelTemplates.html">Grillage model templates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Running_analysis.html">Performing analysis</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Post-Processing</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#getting-results">Getting results</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting the Results</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#extracting-results">Extracting results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#structure-of-data-sets">Structure of data sets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#getting-combinations">Getting combinations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#load-envelope">Load envelope</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#plotting-results">Plotting results</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#current-limitation-of-plotting-module">Current limitation of plotting module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#suggested-method-using-matplotlib">Suggested method using matplotlib</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#template-code-for-plotting">Template code for plotting</a></li>
 </ul>
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="ModelTemplates.html">Grillage model templates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="APIdoc.html">API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ModuleDoc.html">Module design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html">Examples</a></li>
@@ -161,7 +161,7 @@
     
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Post-Processing</li>
+      <li>Getting the Results</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -180,24 +180,26 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="post-processing">
-<h1>Post-Processing<a class="headerlink" href="#post-processing" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="getting-the-results">
+<h1>Getting the Results<a class="headerlink" href="#getting-the-results" title="Permalink to this headline">¶</a></h1>
 <p>This page shows the post-processing capabilities of <em>ospgrillage</em>. Examples herein should guide users to extract desired results
 from analysis.</p>
-<div class="section" id="getting-results">
-<h2>Getting results<a class="headerlink" href="#getting-results" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="extracting-results">
+<h2>Extracting results<a class="headerlink" href="#extracting-results" title="Permalink to this headline">¶</a></h2>
 <p>After analysis, results are obtained using <cite>get_results()</cite> function. The following example code demonstrates
 the <cite>get_results()</cite> utility.</p>
 <p>The <strong>result</strong> variable is a <cite>Xarray</cite> data set.</p>
 </div>
 <div class="section" id="structure-of-data-sets">
 <h2>Structure of data sets<a class="headerlink" href="#structure-of-data-sets" title="Permalink to this headline">¶</a></h2>
-<p>The dataset contains two main data arrays representing load effects:</p>
-<p><a href="#id1"><span class="problematic" id="id2">*</span></a>. displacements i.e. rotation and translations
-<a href="#id3"><span class="problematic" id="id4">*</span></a>. forces e.g. Bending about z axis, Shear forces etc.</p>
-<p>Following example shows how each data array of results is accessed :</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">disp_array</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">displacements</span>
-<span class="n">force_array</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">forces</span>
+<p>The dataset consist of two data arrays that represent load effects:</p>
+<ol class="arabic simple">
+<li><p>displacements i.e. rotation and translations</p></li>
+<li><p>forces e.g. bending about z axis, Shear forces etc.</p></li>
+</ol>
+<p>Following example shows how each data array  is accessed :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">disp_array</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">displacements</span> <span class="c1"># displacement components</span>
+<span class="n">force_array</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">forces</span> <span class="c1"># force components</span>
 </pre></div>
 </div>
 <p>Users can access specific component in each load effect data array. Following example extracts the displacment ‘dy’ component using <cite>Xarray</cite>’s
@@ -229,8 +231,8 @@ Additionally, <cite>ops_vis</cite> does not contain enveloping feature across mu
 load analysis comprise of multiple incremental load case for each moving load position.</p>
 <p>In the following section, we present an alternative way to visualize results of <em>ospgrillage</em> - template codes to plot and visualize results.</p>
 </div>
-<div class="section" id="suggested-method-using-matplotlib">
-<h3>Suggested method using matplotlib<a class="headerlink" href="#suggested-method-using-matplotlib" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="template-code-for-plotting">
+<h3>Template code for plotting<a class="headerlink" href="#template-code-for-plotting" title="Permalink to this headline">¶</a></h3>
 <p>Here are some template codes for plotting load effects using Python’s <cite>matplotlib</cite> library tools.</p>
 <p>For displacement components:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get all node information</span>
@@ -247,6 +249,7 @@ load analysis comprise of multiple incremental load case for each moving load po
 </div>
 <p>For forces components of beam elements:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># template code to plot load effect - herein plot &quot;Mz&quot; global of exterior main beam 2</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span> <span class="c1"># create plot window</span>
 <span class="n">nodes</span><span class="o">=</span><span class="n">bridge_28</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()</span>
 <span class="n">nodes_to_plot</span> <span class="o">=</span> <span class="n">bridge_28</span><span class="o">.</span><span class="n">get_element</span><span class="p">(</span><span class="n">member</span><span class="o">=</span><span class="s2">&quot;exterior_main_beam_2&quot;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="s2">&quot;nodes&quot;</span><span class="p">,</span><span class="n">z_group_num</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">eletag</span> <span class="o">=</span> <span class="n">bridge_28</span><span class="o">.</span><span class="n">get_element</span><span class="p">(</span><span class="n">member</span><span class="o">=</span><span class="s2">&quot;exterior_main_beam_2&quot;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="s2">&quot;elements&quot;</span><span class="p">)</span>
@@ -261,16 +264,17 @@ load analysis comprise of multiple incremental load case for each moving load po
 </pre></div>
 </div>
 <p>For force component version 2:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">ele</span> <span class="ow">in</span> <span class="n">eletag</span><span class="p">:</span>
-<span class="n">ele_components</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">forces</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Element</span><span class="o">=</span><span class="n">ele</span><span class="p">,</span> <span class="n">Component</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Vx_i&quot;</span><span class="p">,</span> <span class="s2">&quot;Vy_i&quot;</span><span class="p">,</span> <span class="s2">&quot;Vz_i&quot;</span><span class="p">,</span> <span class="s2">&quot;Mx_i&quot;</span><span class="p">,</span> <span class="s2">&quot;My_i&quot;</span><span class="p">,</span> <span class="s2">&quot;Mz_i&quot;</span><span class="p">,</span> <span class="s2">&quot;Vx_j&quot;</span><span class="p">,</span> <span class="s2">&quot;Vy_j&quot;</span><span class="p">,</span> <span class="s2">&quot;Vz_j&quot;</span><span class="p">,</span> <span class="s2">&quot;Mx_j&quot;</span><span class="p">,</span> <span class="s2">&quot;My_j&quot;</span><span class="p">,</span>
-                   <span class="s2">&quot;Mz_j&quot;</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-<span class="c1">#ele_components = results.forces.sel(Element=ele)[0].values[:12]</span>
-<span class="n">ele_node</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">ele_nodes</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Element</span><span class="o">=</span><span class="n">ele</span><span class="p">)</span>
-<span class="n">xx</span> <span class="o">=</span> <span class="p">[</span><span class="n">nodes</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s1">&#39;coordinate&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">ele_node</span><span class="o">.</span><span class="n">values</span><span class="p">]</span>
-<span class="n">yy</span> <span class="o">=</span> <span class="p">[</span><span class="n">nodes</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s1">&#39;coordinate&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">ele_node</span><span class="o">.</span><span class="n">values</span><span class="p">]</span>
-<span class="n">zz</span> <span class="o">=</span> <span class="p">[</span><span class="n">nodes</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s1">&#39;coordinate&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">ele_node</span><span class="o">.</span><span class="n">values</span><span class="p">]</span>
-<span class="n">s</span><span class="p">,</span><span class="n">al</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">opsv</span><span class="o">.</span><span class="n">section_force_distribution_3d</span><span class="p">(</span><span class="n">ex</span><span class="o">=</span><span class="n">xx</span><span class="p">,</span><span class="n">ey</span><span class="o">=</span><span class="n">yy</span><span class="p">,</span><span class="n">ez</span><span class="o">=</span><span class="n">zz</span><span class="p">,</span><span class="n">pl</span><span class="o">=</span><span class="n">ele_components</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span><span class="n">zz</span><span class="p">,</span><span class="n">s</span><span class="p">[:,</span><span class="mi">5</span><span class="p">])</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span> <span class="c1"># create plot window</span>
+<span class="k">for</span> <span class="n">ele</span> <span class="ow">in</span> <span class="n">eletag</span><span class="p">:</span>
+    <span class="n">ele_components</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">forces</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Element</span><span class="o">=</span><span class="n">ele</span><span class="p">,</span> <span class="n">Component</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Vx_i&quot;</span><span class="p">,</span> <span class="s2">&quot;Vy_i&quot;</span><span class="p">,</span> <span class="s2">&quot;Vz_i&quot;</span><span class="p">,</span> <span class="s2">&quot;Mx_i&quot;</span><span class="p">,</span> <span class="s2">&quot;My_i&quot;</span><span class="p">,</span> <span class="s2">&quot;Mz_i&quot;</span><span class="p">,</span> <span class="s2">&quot;Vx_j&quot;</span><span class="p">,</span> <span class="s2">&quot;Vy_j&quot;</span><span class="p">,</span> <span class="s2">&quot;Vz_j&quot;</span><span class="p">,</span> <span class="s2">&quot;Mx_j&quot;</span><span class="p">,</span> <span class="s2">&quot;My_j&quot;</span><span class="p">,</span>
+                       <span class="s2">&quot;Mz_j&quot;</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="c1">#ele_components = results.forces.sel(Element=ele)[0].values[:12]</span>
+    <span class="n">ele_node</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">ele_nodes</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Element</span><span class="o">=</span><span class="n">ele</span><span class="p">)</span>
+    <span class="n">xx</span> <span class="o">=</span> <span class="p">[</span><span class="n">nodes</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s1">&#39;coordinate&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">ele_node</span><span class="o">.</span><span class="n">values</span><span class="p">]</span>
+    <span class="n">yy</span> <span class="o">=</span> <span class="p">[</span><span class="n">nodes</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s1">&#39;coordinate&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">ele_node</span><span class="o">.</span><span class="n">values</span><span class="p">]</span>
+    <span class="n">zz</span> <span class="o">=</span> <span class="p">[</span><span class="n">nodes</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s1">&#39;coordinate&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">ele_node</span><span class="o">.</span><span class="n">values</span><span class="p">]</span>
+    <span class="n">s</span><span class="p">,</span><span class="n">al</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">opsv</span><span class="o">.</span><span class="n">section_force_distribution_3d</span><span class="p">(</span><span class="n">ex</span><span class="o">=</span><span class="n">xx</span><span class="p">,</span><span class="n">ey</span><span class="o">=</span><span class="n">yy</span><span class="p">,</span><span class="n">ez</span><span class="o">=</span><span class="n">zz</span><span class="p">,</span><span class="n">pl</span><span class="o">=</span><span class="n">ele_components</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span><span class="n">zz</span><span class="p">,</span><span class="n">s</span><span class="p">[:,</span><span class="mi">5</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -283,7 +287,7 @@ load analysis comprise of multiple incremental load case for each moving load po
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="APIdoc.html" class="btn btn-neutral float-right" title="API reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="ModelTemplates.html" class="btn btn-neutral float-right" title="Grillage model templates" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="Running_analysis.html" class="btn btn-neutral float-left" title="Performing analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
