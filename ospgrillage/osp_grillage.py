@@ -1567,20 +1567,19 @@ class OspGrillage:
 
     def get_results(self, **kwargs):
         """
-        Function to get results from load cases. Alternatively, if keyword "combinations" is provided
-        with boolean True, returns data array processed based on defined load combinations instead.
+        Function to get results from specific or all load cases. Alternatively, function process and returns load combination if
+        "combinations" argument is provided. Result format is xarray DataSet. If a "save_file_name" is provided, saves
+        xarray DataSet to NetCDF format to current working directory.
 
         :keyword:
-        * combinations (`bool`): If true, returns a list of DataSet, each element of list represent a defined load combination
+        * combinations (`bool`): If provided, returns a modified DataSet according to combinations defined. Format of argument is dict()
+                                 with keys of load case name string and values of load factors (`int` of `float`)
         * save_file_name (`str`): Name string of file name. Saves to NetCDF.
         * load_case (`str`): str or list of name string of specific load case to extract. Returned DataSet with the specified Load cases only
 
         :returns results: xarray DataSet of analysis results - extracted based on keyword option specified.
                             If combination is True, returns a list of DataSet, with each element correspond to
                             a load combination.
-
-        Alternatively, saves and store a NetCDF format of the DataSet - with filename specified in save_file_name=
-        argument.
 
         """
         list_of_moving_load_case = []
@@ -1688,7 +1687,14 @@ class OspGrillage:
 
     def get_element(self, **kwargs):
         """
-        Function ot query element and nodes of grillage model
+        Function to query properties of elements in grillage model.
+        :keyword:
+        * options (`str): string for element data option. Either "elements" or "nodes" (default)
+        * z_group_num (`int`): group number [0 to N] for N is the number of groups within a specific grillage element group.
+                                this is needed for interior beams, where users which to query specific group (e.g. 2nd group)
+                                within this "interior_main_beam" element group.
+        * x_group_num (`int`): ditto for z_group_num but for x_group
+        * edge_group_num(`int`): ditto for z_group_num but for edge groups
 
         :return: List of element data
         """
@@ -1704,7 +1710,7 @@ class OspGrillage:
         sorted_return_list = []
         extracted_ele = []
         # options
-        options = kwargs.get("options", None)  # similar to ops_vis, "nodes","element","node_i","node_j"
+        options = kwargs.get("options", node_option)  # similar to ops_vis, "nodes","element","node_i","node_j"
         if not options:
             raise Exception("Options not defined: Hint pass option=  \"nodes\",\"element\",\"node_i\",\"node_j\"")
 
@@ -1722,7 +1728,6 @@ class OspGrillage:
 
                 sorted_return_list = [ele[0] for ele in extracted_ele]
         else:  # longitudinal members
-
             extracted_ele = [self.Mesh_obj.z_group_to_ele[num] for num in self.common_grillage_element[namestring]][select_z_group]
             if options == node_option:
                 first_list = [i[1] for i in extracted_ele]  # first list of nodes
@@ -1737,7 +1742,7 @@ class OspGrillage:
 
     def get_nodes(self):
         """
-        Function to return all nodes of grillage model
+        Function to return all information for nodes in grillage model
         :return: dict contain node information
         """
         return self.Mesh_obj.node_spec
@@ -1874,6 +1879,12 @@ class Analysis:
 
     # function to extract grillage model responses (dx,dy,dz,rotx,roty,rotz,N,Vy,Vz,Mx,My,Mz) and store to Result class
     def extract_grillage_responses(self):
+        """
+        Function that wraps OpenSeesPy nodeDisp() and eleResponse(), gets results of current analysis - model instance
+        in OpenSees.
+
+        :return: Stores results in global_ele_force and node_disp class variable
+        """
         if not self.pyfile:
             # first loop extract node displacements
             for node_tag in ops.getNodeTags():
@@ -2240,6 +2251,11 @@ class OspGrillageShell(OspGrillage):
                     ops.fix(node_tag, *self.fixity_vector["roller"])
 
     def _write_rigid_link(self):
+        """
+        Private procedure to write or execute OpenSeesPy rigidLink() command. Reads rigid link data from link_str_list
+        variable
+
+        """
         # loop all rigidLink command, write or eval rigid link command. note link_str is already formatted
         for link_str in self.Mesh_obj.link_str_list:
             if self.pyfile:

@@ -2,16 +2,6 @@
 API reference
 ====================
 
-UML diagram overview
-----------------------------
-
-..  figure:: ../images/draftUML.PNG
-    :align: center
-    :scale: 50 %
-
-    Figure 1: UML diagram - draft version 1.
-
-
 User interface functions - API
 ------------------------------------------
 This module comprised of user interface functions to take user inputs and returns its corresponding object creation.
@@ -23,20 +13,21 @@ Top level interface functions
 .. autosummary::
     :toctree: generated/
 
-    ospgrillage.osp_grillage.create_grillage
     ospgrillage.material.create_material
     ospgrillage.members.create_section
     ospgrillage.members.create_member
+    ospgrillage.osp_grillage.create_grillage
     ospgrillage.load.create_load_vertex
     ospgrillage.load.create_load
+    ospgrillage.mesh.create_point
     ospgrillage.load.create_load_case
     ospgrillage.load.create_compound_load
     ospgrillage.load.create_moving_path
     ospgrillage.load.create_moving_load
-    ospgrillage.mesh.create_point
 
 
-Grillage model interface
+
+Grillage model interface API
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 The following methods can be called on the :class:`OspGrillage` object.
 
@@ -44,10 +35,21 @@ The following methods can be called on the :class:`OspGrillage` object.
     :toctree: generated/
 
     ospgrillage.osp_grillage.OspGrillage.set_member
-    ospgrillage.osp_grillage.OspGrillage.get_nodes
-    ospgrillage.osp_grillage.OspGrillage.get_elements
     ospgrillage.osp_grillage.OspGrillage.analyze
     ospgrillage.osp_grillage.OspGrillage.get_results
+    ospgrillage.osp_grillage.OspGrillage.get_nodes
+    ospgrillage.osp_grillage.OspGrillage.get_element
+
+Load utility API
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autosummary::
+    :toctree: generated/
+
+
+    ospgrillage.osp_grillage.load.CompoundLoad.set_global_coord
+    ospgrillage.osp_grillage.load.LoadCase.add_load
+    ospgrillage.osp_grillage.load.MovingLoad.query
 
 
 OspGrillage class
