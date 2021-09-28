@@ -235,7 +235,7 @@ def test_line_load(bridge_model_42_negative):
     ULS_DL = og.create_load_case(name="Barrier")
     ULS_DL.add_load(Barrier)  # ch
     example_bridge.add_load_case(ULS_DL)
-    example_bridge.analyze(all=True)
+    example_bridge.analyze()
     example_bridge.get_results()
     ref_answer = [{7: {'long_intersect': [], 'trans_intersect': [[3.1514141550424406, 0, 3.0]], 'edge_intersect': [],
                        'ends': [[3, 0, 3]]}, 8: {'long_intersect': [], 'trans_intersect': [[3.1514141550424406, 0, 3.0],
@@ -382,7 +382,7 @@ def test_patch_load(bridge_model_42_negative):
     ULS_DL = og.LoadCase(name="Lane")
     ULS_DL.add_load(Lane)  # ch
     example_bridge.add_load_case(ULS_DL)
-    example_bridge.analyze(all=True)
+    example_bridge.analyze()
 
     assert example_bridge.global_load_str == [
         'ops.load(19, *[0, 1.40688131921542, 0, 0.703440659607712, 0, 0.703440659607704])\n',
@@ -447,7 +447,7 @@ def test_patch_load_using_linear_shape_function(bridge_model_42_negative):
     ULS_DL = og.LoadCase(name="Lane")
     ULS_DL.add_load(Lane)  # ch
     example_bridge.add_load_case(ULS_DL)
-    example_bridge.analyze(all=True)
+    example_bridge.analyze()
 # ----------------------------------------------------------------------------------------------------------------------
 # test sub functions
 # ----------------------------------------------------------------------------------------------------------------------
@@ -487,7 +487,7 @@ def test_compound_load_distribution_to_nodes(bridge_model_42_negative):
     static_truck = og.create_load_case(name="static M1600")
     static_truck.add_load(M1600)
     example_bridge.add_load_case(static_truck)
-    example_bridge.analyze(all=True)
+    example_bridge.analyze()
     results = example_bridge.get_results()
     pass
 
@@ -505,7 +505,7 @@ def test_moving_load_case(bridge_model_42_negative):
     move_point.add_loads(load_obj=front_wheel)
     example_bridge.add_load_case(move_point)
 
-    example_bridge.analyze(all=True)
+    example_bridge.analyze()
     results = example_bridge.get_results()
     print(results)
 
@@ -562,7 +562,7 @@ def test_moving_load_and_basic_load_together(bridge_model_42_negative):
     move_point.add_loads(load_obj=front_wheel)
     example_bridge.add_load_case(move_point)
 
-    # example_bridge.analyze(all=True)
+    # example_bridge.analyze()
     example_bridge.analyze()
     og.opsv.plot_defo()
     og.plt.show()
@@ -643,7 +643,7 @@ def test_patch_partially_outside_mesh(bridge_model_42_negative):
     ULS_DL = og.create_load_case(name="Lane")
     ULS_DL.add_load(Lane)  # ch
     example_bridge.add_load_case(ULS_DL)
-    example_bridge.analyze(all=True)
+    example_bridge.analyze()
     results = example_bridge.get_results()
 
     assert example_bridge.load_case_list[0]['load_command'] == [
@@ -928,7 +928,7 @@ def test_28m_bridge_moving_load(ref_28m_bridge):
     move_point.add_loads(load_obj=front_wheel)
     bridge_28.add_load_case(move_point)
 
-    bridge_28.analyze(all=True)
+    bridge_28.analyze()
     results = bridge_28.get_results()
     results.sel(Node=63, Component='dy')
     print(results)
@@ -1046,25 +1046,6 @@ def test_simple_grid():
     print(maxY, minY)
     pass
 
-# def test_create_shell_link_model(shell_link_bridge):
-#     shell_link_model = shell_link_bridge
-#     point_1 = og.create_load_vertex(x=2, z=3, p=1e3)
-#     point_2 = og.create_load_vertex(x=5, z=4, p=1e3)
-#     # test_load = opsg.LineLoading("Test Load", point1=point_1, point2=point_2)
-#     test_load = og.create_load(type="point",name="Test Load", point1=point_1, point2=point_2)  #
-#     #test_load = og.PointLoad("Test Point", point1=og.LoadPoint(L / 2, 0, w / 2, 1e3))
-#
-#     # Load case creating and assign
-#     test_case = og.create_load_case(name="Test Case")
-#     test_case.add_load_groups(test_load)
-#
-#     shell_link_model.add_load_case(test_case)
-#     shell_link_model.analyze(all=True)
-#     results = shell_link_model.get_results()
-#     #og.opsv.plot_defo()
-#     #og.plt.show()
-#     minY, maxY = og.opsv.section_force_diagram_3d('Mz', {}, 1)
-#     og.plt.show()
 
 def test_loading_shell_link_model(shell_link_bridge):
     shell_link_model = shell_link_bridge
