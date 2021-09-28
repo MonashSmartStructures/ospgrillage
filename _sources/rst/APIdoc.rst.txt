@@ -2,9 +2,6 @@
 API reference
 ====================
 
-This page outlines *ospgrillage*'s API. For details regarding module design and algorithms, refer to :doc:`ModuleDoc`.
-
-
 UML diagram overview
 ----------------------------
 

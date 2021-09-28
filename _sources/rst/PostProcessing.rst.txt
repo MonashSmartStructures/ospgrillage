@@ -1,40 +1,75 @@
 ========================
-Getting the Results
+Getting Results
 ========================
-
-This page shows the post-processing capabilities of *ospgrillage*. Examples herein should guide users to extract desired results
-from analysis.
 
 
 Extracting results
 --------------------------------------
 
-After analysis, results are obtained using `get_results()` function. The following example code demonstrates
-the `get_results()` utility.
+After analysis, results are obtained using :func:`~ospgrillage.OspGrillage.get_results` function.
+The following example extracts results for all defined analysis.
 
 .. code-block:: python
     result = example_bridge.get_results() # this extracts all results
     result = example_bridge.get_results(load_case = "patch load case") # this extracts only the patch load case results
 
-The **result** variable is a `Xarray` data set.
+The returned **result** variable is an
+`xarray DataSet <http://xarray.pydata.org/en/stable/generated/xarray.Dataset.html>`_.
 
-Structure of data sets
---------------------------------------
+Structure of xarray data set
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The dataset consist of two data arrays that represent load effects:
+The dataset contains two `xarray DataArray <http://xarray.pydata.org/en/stable/generated/xarray.DataArray.html#xarray.DataArray>`_.
+that represent two groups of load effects:
 
-#. displacements i.e. rotation and translations
-#. forces e.g. bending about z axis, Shear forces etc.
+#. **displacements** i.e. rotation and translations
+#. **forces** e.g. bending about z axis, Shear forces etc.
 
-Following example shows how each data array  is accessed :
+Following example shows how each DataArray is accessed from **result** DataSet:
 
 .. code-block:: python
 
     disp_array = result.displacements # displacement components
     force_array = result.forces # force components
 
-Users can access specific component in each load effect data array. Following example extracts the displacment 'dy' component using `Xarray`'s
-`sel()` function.
+The DataArrays and DataSet differs for each model types. Table 1 outlines the structure of the two data arrays,
+namely the dimensions and its coordinates, for each model type as of release 0.1.0.
+
+.. list-table:: Table: 1 Structure of DataSet and DataArray - release 0.1.0.
+   :widths: 25 25 25 25
+   :header-rows: 1
+
+   * - Load effect
+     - `local_coord=`
+     - Description
+     - Require `set_global_coord()`?
+   * - Global
+     - No
+     - Sets the Load's points to global space
+     - No
+   * - Global
+     - Yes
+     - Overwrites the Load's global space, keeping only the Magnitude of the global load
+     - Yes
+   * - Local
+     - No
+     - Sets the Load's local space, later set to global using `set_global_coord()`
+     - Yes
+   * - Local
+     - Yes
+     - **Invalid combination**, loads are defined in local space already
+     - N/A
+
+
+
+
+
+
+Accessing and querying data
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+From the data arrays, users can access various component in each load effect using `xarray`'s data array commands.
+Following example extracts the displacment 'dy' component using `xarray`'s `sel()` function.
 
 .. code-block:: python
     disp_array.sel(Component='dy') # vertical deflection
@@ -51,7 +86,7 @@ example code define a load combinations having two load cases.
 
     comb_result = example_bridge.get_results(combinations={"patch_load_case":2,"moving_truck":1.6})
 
-Load envelope
+Getting load envelope
 --------------------------------------
 Load envelope is generated from load combination results for extrema of load effect using `get_envelope()` function. Envelope are
 chosen based on user selected component (*array* keyword) as either "displacements" or "forces", extrema as either maximum or minimum,
@@ -61,6 +96,23 @@ and load effect component (e.g. "dy" for displacements). The `get_envelope()` fu
     first_combination = comb_results[0] # list of combination xarray, get the first
     envelope = og.get_envelope(ds=first_combination,load_effect="dy",array="displacements") # creates the envelope obj
     disp_env = envelope.get() # get the output xarray of envelope
+
+
+
+Getting specific properties
+--------------------------------------
+
+Node
+^^^^^^^^^^^^^^^^^^^
+
+.. automethod:: ospgrillage.OspGrillage.get_node()
+    :noindex:
+
+Element
+^^^^^^^^^^^^^^^^^^^
+
+.. automethod:: ospgrillage.OspGrillage.get_element()
+    :noindex:
 
 
 
