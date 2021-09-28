@@ -41,8 +41,8 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="ospgrillage.osp_grillage.create_grillage" href="generated/ospgrillage.osp_grillage.create_grillage.html" />
-    <link rel="prev" title="Grillage model templates" href="ModelTemplates.html" /> 
+    <link rel="next" title="ospgrillage.material.create_material" href="generated/ospgrillage.material.create_material.html" />
+    <link rel="prev" title="What types of grillages are available?" href="ModelTemplates.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -97,31 +97,32 @@
 <li class="toctree-l1"><a class="reference internal" href="Module%20description.html">Creating grillage models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Running_analysis.html">Performing analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="PostProcessing.html">Getting Results</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ModelTemplates.html">Grillage model templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ModelTemplates.html">What types of grillages are available?</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#uml-diagram-overview">UML diagram overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#user-interface-functions-api">User interface functions - API</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#top-level-interface-functions">Top level interface functions</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.osp_grillage.create_grillage.html">ospgrillage.osp_grillage.create_grillage</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.material.create_material.html">ospgrillage.material.create_material</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.members.create_section.html">ospgrillage.members.create_section</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.members.create_member.html">ospgrillage.members.create_member</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.osp_grillage.create_grillage.html">ospgrillage.osp_grillage.create_grillage</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.load.create_load_vertex.html">ospgrillage.load.create_load_vertex</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.load.create_load.html">ospgrillage.load.create_load</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.mesh.create_point.html">ospgrillage.mesh.create_point</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.load.create_load_case.html">ospgrillage.load.create_load_case</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.load.create_compound_load.html">ospgrillage.load.create_compound_load</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.load.create_moving_path.html">ospgrillage.load.create_moving_path</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.load.create_moving_load.html">ospgrillage.load.create_moving_load</a></li>
-<li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.mesh.create_point.html">ospgrillage.mesh.create_point</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#grillage-model-interface">Grillage model interface</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#grillage-model-interface-api">Grillage model interface API</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.set_member.html">ospgrillage.osp_grillage.OspGrillage.set_member</a></li>
-<li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_nodes.html">ospgrillage.osp_grillage.OspGrillage.get_nodes</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze.html">ospgrillage.osp_grillage.OspGrillage.analyze</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html">ospgrillage.osp_grillage.OspGrillage.get_results</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_nodes.html">ospgrillage.osp_grillage.OspGrillage.get_nodes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_element.html">ospgrillage.osp_grillage.OspGrillage.get_element</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#load-utility-api">Load utility API</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#ospgrillage-class">OspGrillage class</a><ul>
@@ -223,13 +224,6 @@
             
   <div class="section" id="api-reference">
 <h1>API reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="uml-diagram-overview">
-<h2>UML diagram overview<a class="headerlink" href="#uml-diagram-overview" title="Permalink to this headline">¶</a></h2>
-<div class="figure align-center" id="id3">
-<a class="reference internal image-reference" href="../_images/draftUML.PNG"><img alt="../_images/draftUML.PNG" src="../_images/draftUML.PNG" style="width: 546.5px; height: 372.0px;" /></a>
-<p class="caption"><span class="caption-text">Figure 1: UML diagram - draft version 1.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
-</div>
-</div>
 <div class="section" id="user-interface-functions-api">
 <h2>User interface functions - API<a class="headerlink" href="#user-interface-functions-api" title="Permalink to this headline">¶</a></h2>
 <p>This module comprised of user interface functions to take user inputs and returns its corresponding object creation.
@@ -242,17 +236,17 @@ Here is a summary of these functions.</p>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.create_grillage.html#ospgrillage.osp_grillage.create_grillage" title="ospgrillage.osp_grillage.create_grillage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.osp_grillage.create_grillage</span></code></a>(…)</p></td>
-<td><p>User interface for creating grillage model / OspGrilage object.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.material.create_material.html#ospgrillage.material.create_material" title="ospgrillage.material.create_material"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.material.create_material</span></code></a>(**kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.material.create_material.html#ospgrillage.material.create_material" title="ospgrillage.material.create_material"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.material.create_material</span></code></a>(**kwargs)</p></td>
 <td><p>User interface function to create material/ <cite>Material</cite> object</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.members.create_section.html#ospgrillage.members.create_section" title="ospgrillage.members.create_section"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.members.create_section</span></code></a>(**kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.members.create_section.html#ospgrillage.members.create_section" title="ospgrillage.members.create_section"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.members.create_section</span></code></a>(**kwargs)</p></td>
 <td><p>User interface for section creation.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.members.create_member.html#ospgrillage.members.create_member" title="ospgrillage.members.create_member"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.members.create_member</span></code></a>(**kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.members.create_member.html#ospgrillage.members.create_member" title="ospgrillage.members.create_member"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.members.create_member</span></code></a>(**kwargs)</p></td>
 <td><p>User interface for member creation.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.create_grillage.html#ospgrillage.osp_grillage.create_grillage" title="ospgrillage.osp_grillage.create_grillage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.osp_grillage.create_grillage</span></code></a>(…)</p></td>
+<td><p>User interface for creating grillage model / OspGrilage object.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_load_vertex.html#ospgrillage.load.create_load_vertex" title="ospgrillage.load.create_load_vertex"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.load.create_load_vertex</span></code></a>(**kwargs)</p></td>
 <td><p>User interface function to create load vertex of various load types.</p></td>
@@ -260,26 +254,26 @@ Here is a summary of these functions.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_load.html#ospgrillage.load.create_load" title="ospgrillage.load.create_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.load.create_load</span></code></a>(**kwargs)</p></td>
 <td><p>User interface function to create load types.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_load_case.html#ospgrillage.load.create_load_case" title="ospgrillage.load.create_load_case"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.load.create_load_case</span></code></a>(**kwargs)</p></td>
-<td><p>User interface function to create load case/ LoadCase objects.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_compound_load.html#ospgrillage.load.create_compound_load" title="ospgrillage.load.create_compound_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.load.create_compound_load</span></code></a>(**kwargs)</p></td>
-<td><p>User interface function to create compound load/ CompoundLoad objects</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_moving_path.html#ospgrillage.load.create_moving_path" title="ospgrillage.load.create_moving_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.load.create_moving_path</span></code></a>(**kwargs)</p></td>
-<td><p>User interface function to create Path object for moving load.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_moving_load.html#ospgrillage.load.create_moving_load" title="ospgrillage.load.create_moving_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.load.create_moving_load</span></code></a>(**kwargs)</p></td>
-<td><p>User interface function to create Moving Load object.</p></td>
-</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.mesh.create_point.html#ospgrillage.mesh.create_point" title="ospgrillage.mesh.create_point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.mesh.create_point</span></code></a>(**kwargs)</p></td>
 <td><p>User interface function to create a point named tuple :keyword:</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_load_case.html#ospgrillage.load.create_load_case" title="ospgrillage.load.create_load_case"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.load.create_load_case</span></code></a>(**kwargs)</p></td>
+<td><p>User interface function to create load case/ LoadCase objects.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_compound_load.html#ospgrillage.load.create_compound_load" title="ospgrillage.load.create_compound_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.load.create_compound_load</span></code></a>(**kwargs)</p></td>
+<td><p>User interface function to create compound load/ CompoundLoad objects</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_moving_path.html#ospgrillage.load.create_moving_path" title="ospgrillage.load.create_moving_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.load.create_moving_path</span></code></a>(**kwargs)</p></td>
+<td><p>User interface function to create Path object for moving load.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_moving_load.html#ospgrillage.load.create_moving_load" title="ospgrillage.load.create_moving_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.load.create_moving_load</span></code></a>(**kwargs)</p></td>
+<td><p>User interface function to create Moving Load object.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
-<div class="section" id="grillage-model-interface">
-<h3>Grillage model interface<a class="headerlink" href="#grillage-model-interface" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="grillage-model-interface-api">
+<h3>Grillage model interface API<a class="headerlink" href="#grillage-model-interface-api" title="Permalink to this headline">¶</a></h3>
 <p>The following methods can be called on the <code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code> object.</p>
 <table class="longtable docutils align-default">
 <colgroup>
@@ -290,15 +284,29 @@ Here is a summary of these functions.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.set_member.html#ospgrillage.osp_grillage.OspGrillage.set_member" title="ospgrillage.osp_grillage.OspGrillage.set_member"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.osp_grillage.OspGrillage.set_member</span></code></a>(…)</p></td>
 <td><p>Function to set grillage member class object to elements of grillage members.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_nodes.html#ospgrillage.osp_grillage.OspGrillage.get_nodes" title="ospgrillage.osp_grillage.OspGrillage.get_nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.osp_grillage.OspGrillage.get_nodes</span></code></a>()</p></td>
-<td><p>Function to return all nodes of grillage model :return: dict contain node information</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze.html#ospgrillage.osp_grillage.OspGrillage.analyze" title="ospgrillage.osp_grillage.OspGrillage.analyze"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.osp_grillage.OspGrillage.analyze</span></code></a>(…)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze.html#ospgrillage.osp_grillage.OspGrillage.analyze" title="ospgrillage.osp_grillage.OspGrillage.analyze"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.osp_grillage.OspGrillage.analyze</span></code></a>(…)</p></td>
 <td><p>Function to analyze defined load</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.osp_grillage.OspGrillage.get_results</span></code></a>(…)</p></td>
-<td><p>Function to get results from load cases.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.osp_grillage.OspGrillage.get_results</span></code></a>(…)</p></td>
+<td><p>Function to get results from specific or all load cases.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_nodes.html#ospgrillage.osp_grillage.OspGrillage.get_nodes" title="ospgrillage.osp_grillage.OspGrillage.get_nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.osp_grillage.OspGrillage.get_nodes</span></code></a>()</p></td>
+<td><p>Function to return all information for nodes in grillage model :return: dict contain node information</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_element.html#ospgrillage.osp_grillage.OspGrillage.get_element" title="ospgrillage.osp_grillage.OspGrillage.get_element"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.osp_grillage.OspGrillage.get_element</span></code></a>(…)</p></td>
+<td><p>Function to query properties of elements in grillage model. :keyword: * options (<cite>str): string for element data option. Either “elements” or “nodes” (default) * z_group_num (`int</cite>): group number [0 to N] for N is the number of groups within a specific grillage element group. this is needed for interior beams, where users which to query specific group (e.g. 2nd group)                         within this “interior_main_beam” element group. * x_group_num (<cite>int</cite>): ditto for z_group_num but for x_group * edge_group_num(<cite>int</cite>): ditto for z_group_num but for edge groups.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="load-utility-api">
+<h3>Load utility API<a class="headerlink" href="#load-utility-api" title="Permalink to this headline">¶</a></h3>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
 </tbody>
 </table>
 </div>
@@ -436,14 +444,19 @@ corresponding load factor as value.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="ospgrillage.osp_grillage.OspGrillage.get_results">
 <span class="sig-name descname"><span class="pre">get_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OspGrillage.get_results" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to get results from load cases. Alternatively, if keyword “combinations” is provided
-with boolean True, returns data array processed based on defined load combinations instead.</p>
+<dd><p>Function to get results from specific or all load cases. Alternatively, function process and returns load combination if
+“combinations” argument is provided. Result format is xarray DataSet. If a “save_file_name” is provided, saves
+xarray DataSet to NetCDF format to current working directory.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Keyword</dt>
 <dd class="field-odd"><p></p></dd>
 </dl>
 <ul class="simple">
-<li><p>combinations (<cite>bool</cite>): If true, returns a list of DataSet, each element of list represent a defined load combination</p></li>
+<li><dl class="simple">
+<dt>combinations (<cite>bool</cite>): If provided, returns a modified DataSet according to combinations defined. Format of argument is dict()</dt><dd><p>with keys of load case name string and values of load factors (<cite>int</cite> of <cite>float</cite>)</p>
+</dd>
+</dl>
+</li>
 <li><p>save_file_name (<cite>str</cite>): Name string of file name. Saves to NetCDF.</p></li>
 <li><p>load_case (<cite>str</cite>): str or list of name string of specific load case to extract. Returned DataSet with the specified Load cases only</p></li>
 </ul>
@@ -454,14 +467,23 @@ If combination is True, returns a list of DataSet, with each element correspond 
 a load combination.</p>
 </dd>
 </dl>
-<p>Alternatively, saves and store a NetCDF format of the DataSet - with filename specified in save_file_name=
-argument.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ospgrillage.osp_grillage.OspGrillage.get_element">
 <span class="sig-name descname"><span class="pre">get_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OspGrillage.get_element" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function ot query element and nodes of grillage model</p>
+<dd><p>Function to query properties of elements in grillage model.
+:keyword:
+* options (<cite>str): string for element data option. Either “elements” or “nodes” (default)
+* z_group_num (`int</cite>): group number [0 to N] for N is the number of groups within a specific grillage element group.</p>
+<blockquote>
+<div><p>this is needed for interior beams, where users which to query specific group (e.g. 2nd group)
+within this “interior_main_beam” element group.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>x_group_num (<cite>int</cite>): ditto for z_group_num but for x_group</p></li>
+<li><p>edge_group_num(<cite>int</cite>): ditto for z_group_num but for edge groups</p></li>
+</ul>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>List of element data</p>
@@ -472,7 +494,7 @@ argument.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ospgrillage.osp_grillage.OspGrillage.get_nodes">
 <span class="sig-name descname"><span class="pre">get_nodes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OspGrillage.get_nodes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to return all nodes of grillage model
+<dd><p>Function to return all information for nodes in grillage model
 :return: dict contain node information</p>
 </dd></dl>
 
@@ -493,6 +515,18 @@ Analysis class is created and handled by the OspGrillage class.</p>
 <li><p>if flagged, writes an executable py file instead which performs the exact analysis as it would for an OspGrillage instance instead.</p></li>
 <li><p>manages multiple load case’s ops.load() commands, applying the specified load factors to the load cases for load combinations</p></li>
 </ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.osp_grillage.Analysis.extract_grillage_responses">
+<span class="sig-name descname"><span class="pre">extract_grillage_responses</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.Analysis.extract_grillage_responses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function that wraps OpenSeesPy nodeDisp() and eleResponse(), gets results of current analysis - model instance
+in OpenSees.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Stores results in global_ele_force and node_disp class variable</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -1018,8 +1052,8 @@ More shape functions can be added herein</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="generated/ospgrillage.osp_grillage.create_grillage.html" class="btn btn-neutral float-right" title="ospgrillage.osp_grillage.create_grillage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="ModelTemplates.html" class="btn btn-neutral float-left" title="Grillage model templates" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="generated/ospgrillage.material.create_material.html" class="btn btn-neutral float-right" title="ospgrillage.material.create_material" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="ModelTemplates.html" class="btn btn-neutral float-left" title="What types of grillages are available?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

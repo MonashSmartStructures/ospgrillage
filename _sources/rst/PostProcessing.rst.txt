@@ -16,7 +16,7 @@ The following example extracts results for all defined analysis.
 The returned **result** variable is an
 `xarray DataSet <http://xarray.pydata.org/en/stable/generated/xarray.Dataset.html>`_.
 
-Structure of xarray data set
+Structure of xarray DataSet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The dataset contains two `xarray DataArray <http://xarray.pydata.org/en/stable/generated/xarray.DataArray.html#xarray.DataArray>`_.
@@ -99,13 +99,13 @@ and load effect component (e.g. "dy" for displacements). The `get_envelope()` fu
 
 
 
-Getting specific properties
+Getting specific properties of model
 --------------------------------------
 
 Node
 ^^^^^^^^^^^^^^^^^^^
 
-.. automethod:: ospgrillage.OspGrillage.get_node()
+.. automethod:: ospgrillage.OspGrillage.get_nodes()
     :noindex:
 
 Element

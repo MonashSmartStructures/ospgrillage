@@ -1,6 +1,6 @@
-========================
-Grillage model templates
-========================
+========================================
+What types of grillages are available?
+========================================
 
 
 Beam grillage

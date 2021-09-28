@@ -41,7 +41,7 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Grillage model templates" href="ModelTemplates.html" />
+    <link rel="next" title="What types of grillages are available?" href="ModelTemplates.html" />
     <link rel="prev" title="Performing analysis" href="Running_analysis.html" /> 
 </head>
 
@@ -98,13 +98,13 @@
 <li class="toctree-l1"><a class="reference internal" href="Running_analysis.html">Performing analysis</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Results</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#extracting-results">Extracting results</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#structure-of-xarray-data-set">Structure of xarray data set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#structure-of-xarray-dataset">Structure of xarray DataSet</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#accessing-and-querying-data">Accessing and querying data</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#getting-combinations">Getting combinations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#getting-load-envelope">Getting load envelope</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#getting-specific-properties">Getting specific properties</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#getting-specific-properties-of-model">Getting specific properties of model</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#node">Node</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#element">Element</a></li>
 </ul>
@@ -116,7 +116,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="ModelTemplates.html">Grillage model templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ModelTemplates.html">What types of grillages are available?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="APIdoc.html">API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ModuleDoc.html">Module design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html">Examples</a></li>
@@ -196,8 +196,8 @@
 The following example extracts results for all defined analysis.</p>
 <p>The returned <strong>result</strong> variable is an
 <a class="reference external" href="http://xarray.pydata.org/en/stable/generated/xarray.Dataset.html">xarray DataSet</a>.</p>
-<div class="section" id="structure-of-xarray-data-set">
-<h3>Structure of xarray data set<a class="headerlink" href="#structure-of-xarray-data-set" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="structure-of-xarray-dataset">
+<h3>Structure of xarray DataSet<a class="headerlink" href="#structure-of-xarray-dataset" title="Permalink to this headline">¶</a></h3>
 <p>The dataset contains two <a class="reference external" href="http://xarray.pydata.org/en/stable/generated/xarray.DataArray.html#xarray.DataArray">xarray DataArray</a>.
 that represent two groups of load effects:</p>
 <ol class="arabic simple">
@@ -271,17 +271,35 @@ example code define a load combinations having two load cases.</p>
 chosen based on user selected component (<em>array</em> keyword) as either “displacements” or “forces”, extrema as either maximum or minimum,
 and load effect component (e.g. “dy” for displacements). The <cite>get_envelope()</cite> function is defined as follows:</p>
 </div>
-<div class="section" id="getting-specific-properties">
-<h2>Getting specific properties<a class="headerlink" href="#getting-specific-properties" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="getting-specific-properties-of-model">
+<h2>Getting specific properties of model<a class="headerlink" href="#getting-specific-properties-of-model" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="node">
 <h3>Node<a class="headerlink" href="#node" title="Permalink to this headline">¶</a></h3>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">OspGrillage.</span></span><span class="sig-name descname"><span class="pre">get_nodes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Function to return all information for nodes in grillage model
+:return: dict contain node information</p>
+</dd></dl>
+
 </div>
 <div class="section" id="element">
 <h3>Element<a class="headerlink" href="#element" title="Permalink to this headline">¶</a></h3>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-prename descclassname"><span class="pre">OspGrillage.</span></span><span class="sig-name descname"><span class="pre">get_element</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
-<dd><p>Function ot query element and nodes of grillage model</p>
+<dd><p>Function to query properties of elements in grillage model.
+:keyword:
+* options (<cite>str): string for element data option. Either “elements” or “nodes” (default)
+* z_group_num (`int</cite>): group number [0 to N] for N is the number of groups within a specific grillage element group.</p>
+<blockquote>
+<div><p>this is needed for interior beams, where users which to query specific group (e.g. 2nd group)
+within this “interior_main_beam” element group.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>x_group_num (<cite>int</cite>): ditto for z_group_num but for x_group</p></li>
+<li><p>edge_group_num(<cite>int</cite>): ditto for z_group_num but for edge groups</p></li>
+</ul>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>List of element data</p>
@@ -358,7 +376,7 @@ load analysis comprise of multiple incremental load case for each moving load po
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="ModelTemplates.html" class="btn btn-neutral float-right" title="Grillage model templates" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="ModelTemplates.html" class="btn btn-neutral float-right" title="What types of grillages are available?" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="Running_analysis.html" class="btn btn-neutral float-left" title="Performing analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 

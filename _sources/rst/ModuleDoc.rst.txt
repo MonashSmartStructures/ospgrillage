@@ -162,7 +162,7 @@ The definition of the following components within *ops-grillage* requires attent
 
 * Load objects (Point, Line, Patch) - takes either local or global coordinate.
 * Path objects (Path for moving load)
-* Compound load object - takes either local or global coordinates.
+* Compound load object - defined in local and set to global via ``set_global_coord()``
 
 
 For :class:`~LoadCase`, all load object inputs can be either local or global. Note when local coordinate is defined for a load object, a global reference coordinate needs to be defined or else
