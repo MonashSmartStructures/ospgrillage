@@ -23,9 +23,9 @@ Documentation
 
    rst/Installation
    rst/Module description
+   rst/ModelTemplates
    rst/Running_analysis
    rst/PostProcessing
-   rst/ModelTemplates
    rst/APIdoc
    rst/ModuleDoc
    rst/Examples

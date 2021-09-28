@@ -1,0 +1,6 @@
+﻿ospgrillage.load.CompoundLoad.set\_global\_coord
+================================================
+
+.. currentmodule:: ospgrillage.load
+
+.. automethod:: CompoundLoad.set_global_coord

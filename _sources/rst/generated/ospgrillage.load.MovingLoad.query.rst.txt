@@ -1,0 +1,6 @@
+﻿ospgrillage.load.MovingLoad.query
+=================================
+
+.. currentmodule:: ospgrillage.load
+
+.. automethod:: MovingLoad.query

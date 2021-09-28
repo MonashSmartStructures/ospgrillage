@@ -2,10 +2,12 @@
 Performing analysis
 ========================
 
-Having created the grillage model, users can proceed with grillage analysis.
-The *ospgrillage* module contains grillage analysis utilities which wraps ``OpenSeesPy`` commands to perform load analysis.
+*ospgrillage* contains grillage analysis utilities which wraps ``OpenSeesPy`` commands to perform load analysis.
 This allow users to specify load cases comprising of multiple loads types and then run load case analysis.
 Furthermore, *ospgrillage* module also options for moving load analysis.
+
+Load analysis workflow
+------------------------
 
 Figure 1 shows the flowchart for the load analysis utilities of *ospgrillage*.
 
@@ -42,10 +44,11 @@ However, a user-defined local coordinate system is required when defining `Compo
 Nodal loads
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Nodal loads are defined by using ``create_load()``, specifying `type=` as "nodal". There are six degrees-of-freedom (DOFs) for
-acting loads in each node. Each nodal load is defined by a `NodalForce(Fx,Fy,Fz,Mx,My,Mz)` namedtuple.
 
-The following example creates a nodal load on Node 13 of a model with 10 unit force in both transverse X and Y directions.
+Nodal loads are defined using ``create_load()``, specifying `type=` as "nodal". There are six degrees-of-freedom (DOFs) for
+acting loads in each node. Nodal loads do not require a load vertex, instead it requires a `NodalForce(Fx,Fy,Fz,Mx,My,Mz)` namedtuple.
+
+The following example creates a NodalFroce namedtuple and a nodal load on Node 13 of a model, with 10 unit force in both transverse X and Y directions.
 
 .. code-block:: python
 
@@ -62,7 +65,7 @@ The following example creates a nodal load on Node 13 of a model with 10 unit fo
 Point Loads
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Point load is a force applied on a single infinitesmal point of the grillage model.
+Point load is a force applied on a single infinitesimal point of the grillage model.
 Point loads are used represent a large range of loads, such as truck axle, or superimposed dead load on a deck.
 
 Point load takes only a single `LoadPoint` tuple. `p` in the tuple should have units of force (eg. N, kN, kips, etc)
@@ -101,13 +104,13 @@ Using more than two tuples allows a curve line loading profile.
     Figure 3: Line load
 
 
-The following example code is a constant 2 force per distance unit line load (UDL)
+The following example code is a constant Two force per distance unit line load (UDL)
 in the global coordinate system from -1 to 11 distance units in the `x`-axis and along the position in the `z`-axis at 3 distance units.
 
 .. code-block:: python
 
-    barrier_point_1 = ospg.LoadPoint(-1, 0, 3, 2)
-    barrier_point_2 = ospg.LoadPoint(11, 0, 3, 2)
+    barrier_point_1 = ospg.create_load_vertices(x=-1, z=3, p=2)
+    barrier_point_2 = ospg.create_load_vertices(x=11, z=3, p=2)
     Barrier = ospg.create_load(type="line", name="Barrier curb", point1=barrier_point_1, point2=barrier_point_2)
 
 
@@ -121,8 +124,8 @@ Patch loads
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Patch loads are useful to represent loads distributed uniformly over a certain area such as traffic lanes.
 
-Patch loads are instantiated with the interface function ``create_load(type="patch)``, or directly
-using :class:`PatchLoading`. Patch load requires at least four :class:`LoadPoint` tuple (corresponds to the vertices of the patch load) - see Figure 4.
+Patch loads are instantiated with the interface function ``create_load(type="patch)``.
+Patch load requires at least four :class:`LoadPoint` tuple (corresponds to the vertices of the patch load) - see Figure 4.
 Using eight tuples allows a curve surface loading profile.
 `p` in the :class:`LoadPoint` tuple should have units of force per area.
 
@@ -140,10 +143,10 @@ To position the load instead in a user defined local coordinate system, the vari
 
 .. code-block:: python
 
-    lane_point_1 = ospg.LoadPoint(0, 0, 3, 5)
-    lane_point_2 = ospg.LoadPoint(8, 0, 3, 5)
-    lane_point_3 = ospg.LoadPoint(8, 0, 5, 5)
-    lane_point_4 = ospg.LoadPoint(0, 0, 5, 5)
+    lane_point_1 = ospg.create_load_vertices(x=0, z=3, p=5)
+    lane_point_2 = ospg.create_load_vertices(x=8, z=3, p=5)
+    lane_point_3 = ospg.create_load_vertices(x=8, z=5, p=5)
+    lane_point_4 = ospg.create_load_vertices(x=0, z=5, p=5)
     Lane = ospg.create_load(type="patch",name="Lane 1", point1=lane_point_1, point2=lane_point_2, point3=lane_point_3, point4=lane_point_4)
 
 .. note::
@@ -168,7 +171,7 @@ shows the relationship and process of mapping local to global system of a compou
 
     Figure 5: Compound load
 
-The following code creates and adds a point and line load of a Compound load.
+The following code creates a point and line load which is to be assigned as a Compound load.
 
 .. code-block:: python
 
@@ -176,7 +179,7 @@ The following code creates and adds a point and line load of a Compound load.
     wheel_1 = ospg.create_load(type="point", point1= ospg.LoadPoint(0, 0, 3, 5))  # point load 1
     wheel_2 = ospg.create_load(type="point", point1= ospg.LoadPoint(0, 0, 3, 5))  # point load 2
 
-After creating a compound load, users will have to add :class:`~Loads` objects (Point, Line, Patch) to the Compound load object:
+The following code creates a Compound load and adds the created :class:`~Loads` objects (Point, Line, Patch) object to the Compound load object:
 
 .. code-block:: python
 
@@ -185,10 +188,10 @@ After creating a compound load, users will have to add :class:`~Loads` objects (
     C_Load.add_load(load_obj=wheel_2)
 
 After defining all required load objects, :class:`~CompoundLoad` requires users to define the global coordinate to map the origin of user-defined local coordinates
-to the global coordinate space. This is done using ``set_global_coord()`` function as seen in Figure 5, passing a Point namedTuple
+to the global coordinate space. This is done using ``set_global_coord()`` function as seen in Figure 5, passing a ```Point(x,y,z)``` namedTuple
 If not specified, the mapping's reference point is default to the **Origin** of coordinate system i.e. (0,0,0)
 
-For example, this code line sets the **Origin** of the compound load, including all load points for all load objects of **C_load**  by x + 4, y + 0 , and z + 3.
+The following example sets the local **Origin** of the compound load, including all load points for all load objects of **C_load**  by x + 4, y + 0 , and z + 3.
 
 .. code-block:: python
 

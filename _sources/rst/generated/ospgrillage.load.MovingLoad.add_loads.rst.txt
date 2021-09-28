@@ -1,0 +1,6 @@
+﻿ospgrillage.load.MovingLoad.add\_loads
+======================================
+
+.. currentmodule:: ospgrillage.load
+
+.. automethod:: MovingLoad.add_loads

@@ -1,7 +1,6 @@
 ========================================
-What types of grillages are available?
+Model types available
 ========================================
-
 
 Beam grillage
 --------------------------------------

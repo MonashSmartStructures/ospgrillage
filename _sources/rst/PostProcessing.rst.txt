@@ -2,7 +2,6 @@
 Getting Results
 ========================
 
-
 Extracting results
 --------------------------------------
 
@@ -39,26 +38,26 @@ namely the dimensions and its coordinates, for each model type as of release 0.1
    :widths: 25 25 25 25
    :header-rows: 1
 
-   * - Load effect
-     - `local_coord=`
-     - Description
-     - Require `set_global_coord()`?
-   * - Global
-     - No
-     - Sets the Load's points to global space
-     - No
-   * - Global
+   * - DataArray
+     - displacement
+     - forces
+     -
+   * - Dimension names
+     - Loadcase, Node, Component
+     - Loadcase, Element, Component
+     -
+   * - Loadcase
+     - Namestring of load case
+     - Namestring of load case
+     -
+   * - Component
+     - ["dx", "dy", "dz", "theta_x", "theta_y", "theta_z"]
+     - ["Vx_i", "Vy_i", "Vz_i", "Mx_i", "My_i", "Mz_i", "Vx_j", "Vy_j", "Vz_j", "Mx_j", "My_j",
+                           "Mz_j"]
+     - ["Vx_i", "Vy_i", "Vz_i", "Mx_i", "My_i", "Mz_i", "Vx_j", "Vy_j", "Vz_j", "Mx_j", "My_j",
+                                 "Mz_j","Vx_k", "Vy_k", "Vz_k", "Mx_k", "My_k", "Mz_k","Vx_l", "Vy_l", "Vz_l", "Mx_l",
+                                 "My_l", "Mz_l"]
      - Yes
-     - Overwrites the Load's global space, keeping only the Magnitude of the global load
-     - Yes
-   * - Local
-     - No
-     - Sets the Load's local space, later set to global using `set_global_coord()`
-     - Yes
-   * - Local
-     - Yes
-     - **Invalid combination**, loads are defined in local space already
-     - N/A
 
 
 
@@ -95,7 +94,7 @@ and load effect component (e.g. "dy" for displacements). The `get_envelope()` fu
 .. code-block:: python
     first_combination = comb_results[0] # list of combination xarray, get the first
     envelope = og.get_envelope(ds=first_combination,load_effect="dy",array="displacements") # creates the envelope obj
-    disp_env = envelope.get() # get the output xarray of envelope
+    disp_env = envelope.get() # step to get envelope of xarray
 
 
 
@@ -116,7 +115,7 @@ Element
 
 
 
-Plotting results
+Plotting results from DataArrays
 --------------------------------------
 
 Current limitation of plotting module
@@ -130,7 +129,7 @@ load analysis comprise of multiple incremental load case for each moving load po
 
 In the following section, we present an alternative way to visualize results of *ospgrillage* - template codes to plot and visualize results.
 
-Template code for plotting
+Template code for plotting results
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Here are some template codes for plotting load effects using Python's `matplotlib` library tools.
 

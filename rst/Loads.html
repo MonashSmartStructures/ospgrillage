@@ -93,9 +93,9 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Module%20description.html">Creating grillage models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ModelTemplates.html">Model types available</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Running_analysis.html">Performing analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="PostProcessing.html">Getting Results</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ModelTemplates.html">What types of grillages are available?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="APIdoc.html">API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ModuleDoc.html">Module design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html">Examples</a></li>
@@ -771,10 +771,8 @@ each assigned load type with a corresponding unique Path object (which can diffe
 <dl class="py method">
 <dt class="sig sig-object py" id="ospgrillage.load.MovingLoad.set_path">
 <span class="sig-name descname"><span class="pre">set_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.MovingLoad.set_path" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="simple">
-<dt>Function to assign/modify the common path variable with a new Path object.</dt><dd><p>All loads added later to Moving load object will traverse the same common path object.</p>
-</dd>
-</dl>
+<dd><p>Function to assign/modify the common path variable with a new Path object.
+All loads added later to Moving load object will traverse the same common path object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>path_obj</strong> (<a class="reference internal" href="#ospgrillage.load.Path" title="ospgrillage.load.Path"><em>Path</em></a>) – Path object to specify common path variable.</p>
@@ -833,8 +831,10 @@ load group.</p>
 <dt class="sig sig-object py" id="ospgrillage.load.ShapeFunction">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">ShapeFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_three_node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'triangle_linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">option_four_node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hermite'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.ShapeFunction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Class for shape functions. Shape functions are used primarily to distribute loads to nodes.
-More shape functions can be added herein</p>
+<p>Class for shape functions. The role of Shape functions in ospgrillage is to distribute loads to nodes.</p>
+<p>Here developers can add more shape functions to this class by:
+* adding the option in get_shape_function()
+* defining the shape function as a class function</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ospgrillage.load.ShapeFunction.get_shape_function">
 <span class="sig-name descname"><span class="pre">get_shape_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zeta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.ShapeFunction.get_shape_function" title="Permalink to this definition">¶</a></dt>

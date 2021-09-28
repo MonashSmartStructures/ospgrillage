@@ -42,7 +42,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="ospgrillage.material.create_material" href="generated/ospgrillage.material.create_material.html" />
-    <link rel="prev" title="What types of grillages are available?" href="ModelTemplates.html" /> 
+    <link rel="prev" title="Getting Results" href="PostProcessing.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -95,9 +95,9 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Module%20description.html">Creating grillage models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ModelTemplates.html">Model types available</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Running_analysis.html">Performing analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="PostProcessing.html">Getting Results</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ModelTemplates.html">What types of grillages are available?</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#user-interface-functions-api">User interface functions - API</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#top-level-interface-functions">Top level interface functions</a><ul>
@@ -122,7 +122,14 @@
 <li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_element.html">ospgrillage.osp_grillage.OspGrillage.get_element</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#load-utility-api">Load utility API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#load-utility-api">Load utility API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.set_global_coord.html">ospgrillage.load.CompoundLoad.set_global_coord</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.load.LoadCase.add_load.html">ospgrillage.load.LoadCase.add_load</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.set_path.html">ospgrillage.load.MovingLoad.set_path</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.add_loads.html">ospgrillage.load.MovingLoad.add_loads</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.query.html">ospgrillage.load.MovingLoad.query</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#ospgrillage-class">OspGrillage class</a><ul>
@@ -291,7 +298,7 @@ Here is a summary of these functions.</p>
 <td><p>Function to get results from specific or all load cases.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_nodes.html#ospgrillage.osp_grillage.OspGrillage.get_nodes" title="ospgrillage.osp_grillage.OspGrillage.get_nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.osp_grillage.OspGrillage.get_nodes</span></code></a>()</p></td>
-<td><p>Function to return all information for nodes in grillage model :return: dict contain node information</p></td>
+<td><p>Function to return all information for nodes in grillage model</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_element.html#ospgrillage.osp_grillage.OspGrillage.get_element" title="ospgrillage.osp_grillage.OspGrillage.get_element"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.osp_grillage.OspGrillage.get_element</span></code></a>(…)</p></td>
 <td><p>Function to query properties of elements in grillage model. :keyword: * options (<cite>str): string for element data option. Either “elements” or “nodes” (default) * z_group_num (`int</cite>): group number [0 to N] for N is the number of groups within a specific grillage element group. this is needed for interior beams, where users which to query specific group (e.g. 2nd group)                         within this “interior_main_beam” element group. * x_group_num (<cite>int</cite>): ditto for z_group_num but for x_group * edge_group_num(<cite>int</cite>): ditto for z_group_num but for edge groups.</p></td>
@@ -307,12 +314,34 @@ Here is a summary of these functions.</p>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.set_global_coord.html#ospgrillage.load.CompoundLoad.set_global_coord" title="ospgrillage.load.CompoundLoad.set_global_coord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.load.CompoundLoad.set_global_coord</span></code></a>(…)</p></td>
+<td><p>Function to set global coordinate of the compound load with respect to global coordinate system of grillage model.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.LoadCase.add_load.html#ospgrillage.load.LoadCase.add_load" title="ospgrillage.load.LoadCase.add_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.load.LoadCase.add_load</span></code></a>(load_obj, …)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">param load_obj</dt>
+<dd class="field-odd"><p>Load or Compound load object</p>
+</dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.set_path.html#ospgrillage.load.MovingLoad.set_path" title="ospgrillage.load.MovingLoad.set_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.load.MovingLoad.set_path</span></code></a>(path_obj)</p></td>
+<td><p>Function to assign/modify the common path variable with a new Path object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.add_loads.html#ospgrillage.load.MovingLoad.add_loads" title="ospgrillage.load.MovingLoad.add_loads"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.load.MovingLoad.add_loads</span></code></a>(load_obj)</p></td>
+<td><p>Function to set a load type (Loads class object) with its path (Path class object).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.query.html#ospgrillage.load.MovingLoad.query" title="ospgrillage.load.MovingLoad.query"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.load.MovingLoad.query</span></code></a>(…)</p></td>
+<td><p>Function to query properties of moving load :param kwargs: :return:</p></td>
+</tr>
 </tbody>
 </table>
 </div>
 </div>
 <div class="section" id="ospgrillage-class">
 <h2>OspGrillage class<a class="headerlink" href="#ospgrillage-class" title="Permalink to this headline">¶</a></h2>
+<p>For information regarding the procedures in <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> class, see
+<a class="reference internal" href="ModuleDoc.html"><span class="doc">Module design</span></a>.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.osp_grillage.OspGrillage">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.osp_grillage.</span></span><span class="sig-name descname"><span class="pre">OspGrillage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bridge_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">long_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skew</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_long_grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_trans_grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_beam_dist</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Ortho'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'3D'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OspGrillage" title="Permalink to this definition">¶</a></dt>
@@ -494,8 +523,12 @@ within this “interior_main_beam” element group.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ospgrillage.osp_grillage.OspGrillage.get_nodes">
 <span class="sig-name descname"><span class="pre">get_nodes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OspGrillage.get_nodes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to return all information for nodes in grillage model
-:return: dict contain node information</p>
+<dd><p>Function to return all information for nodes in grillage model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>dict contain node information</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -544,8 +577,6 @@ Class object is accessed within OspGrillage class object.</p>
 </div>
 <div class="section" id="material-class">
 <h2>Material class<a class="headerlink" href="#material-class" title="Permalink to this headline">¶</a></h2>
-<p>For information regarding the procedures in <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> class, see
-<a class="reference internal" href="ModuleDoc.html"><span class="doc">Module design</span></a>.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.material.Material">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.material.</span></span><span class="sig-name descname"><span class="pre">Material</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.material.Material" title="Permalink to this definition">¶</a></dt>
@@ -874,10 +905,8 @@ each assigned load type with a corresponding unique Path object (which can diffe
 <dl class="py method">
 <dt class="sig sig-object py" id="ospgrillage.load.MovingLoad.set_path">
 <span class="sig-name descname"><span class="pre">set_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.MovingLoad.set_path" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="simple">
-<dt>Function to assign/modify the common path variable with a new Path object.</dt><dd><p>All loads added later to Moving load object will traverse the same common path object.</p>
-</dd>
-</dl>
+<dd><p>Function to assign/modify the common path variable with a new Path object.
+All loads added later to Moving load object will traverse the same common path object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>path_obj</strong> (<a class="reference internal" href="Loads.html#ospgrillage.load.Path" title="ospgrillage.load.Path"><em>Path</em></a>) – Path object to specify common path variable.</p>
@@ -1002,8 +1031,10 @@ load group.</p>
 <dt class="sig sig-object py" id="ospgrillage.load.ShapeFunction">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">ShapeFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_three_node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'triangle_linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">option_four_node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hermite'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.ShapeFunction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Class for shape functions. Shape functions are used primarily to distribute loads to nodes.
-More shape functions can be added herein</p>
+<p>Class for shape functions. The role of Shape functions in ospgrillage is to distribute loads to nodes.</p>
+<p>Here developers can add more shape functions to this class by:
+* adding the option in get_shape_function()
+* defining the shape function as a class function</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ospgrillage.load.ShapeFunction.hermite_shape_function_1d">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">hermite_shape_function_1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zeta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.ShapeFunction.hermite_shape_function_1d" title="Permalink to this definition">¶</a></dt>
@@ -1053,7 +1084,7 @@ More shape functions can be added herein</p>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="generated/ospgrillage.material.create_material.html" class="btn btn-neutral float-right" title="ospgrillage.material.create_material" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="ModelTemplates.html" class="btn btn-neutral float-left" title="What types of grillages are available?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="PostProcessing.html" class="btn btn-neutral float-left" title="Getting Results" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
