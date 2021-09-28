@@ -800,7 +800,7 @@ class MovingLoad:
     def set_path(self, path_obj):
         """
         Function to assign/modify the common path variable with a new Path object.
-         All loads added later to Moving load object will traverse the same common path object.
+        All loads added later to Moving load object will traverse the same common path object.
 
         :param path_obj: Path object to specify common path variable.
         :type path_obj: Path
@@ -951,8 +951,12 @@ class Path:
 # ---------------------------------------------------------------------------------------------------------------
 class ShapeFunction:
     """
-    Class for shape functions. Shape functions are used primarily to distribute loads to nodes.
-    More shape functions can be added herein
+    Class for shape functions. The role of Shape functions in ospgrillage is to distribute loads to nodes.
+
+    Here developers can add more shape functions to this class by:
+    * adding the option in get_shape_function()
+    * defining the shape function as a class function
+
     """
 
     def __init__(self, option_three_node="triangle_linear", option_four_node="hermite"):

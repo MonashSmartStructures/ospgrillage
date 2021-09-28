@@ -1743,6 +1743,7 @@ class OspGrillage:
     def get_nodes(self):
         """
         Function to return all information for nodes in grillage model
+
         :return: dict contain node information
         """
         return self.Mesh_obj.node_spec

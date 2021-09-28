@@ -40,6 +40,7 @@ The following methods can be called on the :class:`OspGrillage` object.
     ospgrillage.osp_grillage.OspGrillage.get_nodes
     ospgrillage.osp_grillage.OspGrillage.get_element
 
+
 Load utility API
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -47,13 +48,18 @@ Load utility API
     :toctree: generated/
 
 
-    ospgrillage.osp_grillage.load.CompoundLoad.set_global_coord
-    ospgrillage.osp_grillage.load.LoadCase.add_load
-    ospgrillage.osp_grillage.load.MovingLoad.query
+    ospgrillage.load.CompoundLoad.set_global_coord
+    ospgrillage.load.LoadCase.add_load
+    ospgrillage.load.MovingLoad.set_path
+    ospgrillage.load.MovingLoad.add_loads
+    ospgrillage.load.MovingLoad.query
 
 
 OspGrillage class
 ---------------------------
+
+For information regarding the procedures in :class:`~OpsGrillage` class, see
+:doc:`ModuleDoc`.
 
 .. autoclass:: ospgrillage.osp_grillage.OspGrillage
     :members:
@@ -77,8 +83,6 @@ Result class
 
 Material class
 ------------------------------------------
-For information regarding the procedures in :class:`~OpsGrillage` class, see
-:doc:`ModuleDoc`.
 
 
 .. autoclass:: ospgrillage.material.Material
