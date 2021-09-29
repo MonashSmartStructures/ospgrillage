@@ -432,6 +432,16 @@ creates multiple <a class="reference internal" href="#load-cases">load cases</a>
 <p>To analyse load case(s), users run the class function <code class="docutils literal notranslate"><span class="pre">analyze()</span></code>. By default``analyze()`` will run all defined load cases.
 If users wish to run only a specific set of load cases, pass a list of load case name str to <code class="docutils literal notranslate"><span class="pre">loadcase=</span></code>  keyword.
 This will analyse all load cases of the list. Here are a few interface examples of <code class="docutils literal notranslate"><span class="pre">analyze()</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># analyze all</span>
+<span class="n">example_bridge</span><span class="o">.</span><span class="n">analyze</span><span class="p">()</span>
+<span class="c1"># or a single str</span>
+<span class="n">example_bridge</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span><span class="n">load_case</span><span class="o">=</span><span class="s2">&quot;DL&quot;</span><span class="p">)</span>
+<span class="c1"># or a single element list</span>
+<span class="n">example_bridge</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span><span class="n">load_case</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;DL&quot;</span><span class="p">])</span>
+<span class="c1"># or a list of multiple load cases</span>
+<span class="n">example_bridge</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span><span class="n">load_case</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;DL&quot;</span><span class="p">,</span><span class="s2">&quot;SDL&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
 <p>Results are returned by running <code class="docutils literal notranslate"><span class="pre">get_results()</span></code> function.
 The results are returned as <a class="reference external" href="http://xarray.pydata.org/en/stable/user-guide/data-structures.html#">an xarray’s DataSet</a> (python’s <code class="docutils literal notranslate"><span class="pre">`Xarray`</span></code> module).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span>  <span class="n">example_bridge</span><span class="o">.</span><span class="n">get_results</span><span class="p">()</span>

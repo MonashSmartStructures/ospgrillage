@@ -203,7 +203,7 @@ grillage generation to the respective concrete class</p>
 <dt class="sig sig-object py" id="ospgrillage.osp_grillage.GrillageElement">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.osp_grillage.</span></span><span class="sig-name descname"><span class="pre">GrillageElement</span></span><a class="headerlink" href="#ospgrillage.osp_grillage.GrillageElement" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>class to store grillage element data pertaining to generating ops.element() command. This class is handled by
+<p>Class to store grillage element data pertaining to generating ops.element() command. This class is handled by
 OspGrillage class to transfer information between GrillageMember, Mesh, and OspGrillage classes.</p>
 </dd></dl>
 
@@ -211,14 +211,11 @@ OspGrillage class to transfer information between GrillageMember, Mesh, and OspG
 <dt class="sig sig-object py" id="ospgrillage.osp_grillage.OspGrillage">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.osp_grillage.</span></span><span class="sig-name descname"><span class="pre">OspGrillage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bridge_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">long_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skew</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_long_grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_trans_grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_beam_dist</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Ortho'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'3D'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OspGrillage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Base class of grillage model. Outputs an executable py file which generates the prescribed
-OpenSees grillage model based on user input.</p>
-<p>The class provides an interface for the user to specify the geometry of the grillage model. A keyword argument
-allows for users to select between skew/oblique or orthogonal mesh. Methods in this class allows users to input
-properties for various elements in the grillage model.</p>
-<p>For developers, this class handles the mesh class inputs. In future releases, new mesh types are introduced into
-mesh.py module as child class of a base Mesh class. In turn, developers need to provide the information of the
-new mesh type and algorithm to parse mesh paraemters to OspGrillage class.</p>
+<p>Base class of grillage model. Stores information about mesh and grillage elements. Also provides methods to
+add load cases to grillage model for analysis.</p>
+<p>The class constructor provides an interface for the user to specify the geometric properties of the grillage model
+and its mesh.</p>
+<p>Instantiate the OspGrillage class</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -231,6 +228,12 @@ new mesh type and algorithm to parse mesh paraemters to OspGrillage class.</p>
 <li><p><strong>edge_beam_dist</strong> (<em>int</em><em> or </em><em>float</em>) – Distance of edge beam node lines to exterior main beam node lines</p></li>
 <li><p><strong>mesh_type</strong> (<em>string</em>) – Type of mesh either “Ortho” for orthogonal mesh or “Oblique” for oblique mesh</p></li>
 </ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – <ol class="arabic simple">
+<li><p>If skew angle is greater than 90. (2) number of transverse grid line is less than 2</p></li>
+</ol>
+</p>
 </dd>
 </dl>
 <dl class="py method">
@@ -339,7 +342,7 @@ corresponding load factor as value.</p></li>
 <dt class="sig sig-object py" id="ospgrillage.osp_grillage.OspGrillage.get_results">
 <span class="sig-name descname"><span class="pre">get_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OspGrillage.get_results" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to get results from specific or all load cases. Alternatively, function process and returns load combination if
-“combinations” argument is provided. Result format is xarray DataSet. If a “save_file_name” is provided, saves
+“combina+tions” argument is provided. Result format is xarray DataSet. If a “save_file_name” is provided, saves
 xarray DataSet to NetCDF format to current working directory.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Keyword</dt>
@@ -438,6 +441,7 @@ Class object is accessed within OspGrillage class object.</p>
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.osp_grillage.</span></span><span class="sig-name descname"><span class="pre">OspGrillageBeam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bridge_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">long_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skew</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_long_grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_trans_grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_beam_dist</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Ortho'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'3D'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OspGrillageBeam" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">ospgrillage.osp_grillage.OspGrillage</span></code></a></p>
 <p>Concrete class for beam grillage model type.</p>
+<p>Instantiate the OspGrillage class</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -451,6 +455,12 @@ Class object is accessed within OspGrillage class object.</p>
 <li><p><strong>mesh_type</strong> (<em>string</em>) – Type of mesh either “Ortho” for orthogonal mesh or “Oblique” for oblique mesh</p></li>
 </ul>
 </dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – <ol class="arabic simple">
+<li><p>If skew angle is greater than 90. (2) number of transverse grid line is less than 2</p></li>
+</ol>
+</p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -459,6 +469,7 @@ Class object is accessed within OspGrillage class object.</p>
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.osp_grillage.</span></span><span class="sig-name descname"><span class="pre">OspGrillageShell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bridge_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">long_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skew</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_long_grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_trans_grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_beam_dist</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Ortho'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'3D'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OspGrillageShell" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">ospgrillage.osp_grillage.OspGrillage</span></code></a></p>
 <p>Concrete class for shell model type</p>
+<p>Instantiate the OspGrillage class</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -471,6 +482,12 @@ Class object is accessed within OspGrillage class object.</p>
 <li><p><strong>edge_beam_dist</strong> (<em>int</em><em> or </em><em>float</em>) – Distance of edge beam node lines to exterior main beam node lines</p></li>
 <li><p><strong>mesh_type</strong> (<em>string</em>) – Type of mesh either “Ortho” for orthogonal mesh or “Oblique” for oblique mesh</p></li>
 </ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – <ol class="arabic simple">
+<li><p>If skew angle is greater than 90. (2) number of transverse grid line is less than 2</p></li>
+</ol>
+</p>
 </dd>
 </dl>
 <dl class="py method">

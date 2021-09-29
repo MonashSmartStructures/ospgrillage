@@ -346,14 +346,11 @@ Here is a summary of these functions.</p>
 <dt class="sig sig-object py" id="ospgrillage.osp_grillage.OspGrillage">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.osp_grillage.</span></span><span class="sig-name descname"><span class="pre">OspGrillage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bridge_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">long_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skew</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_long_grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_trans_grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_beam_dist</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Ortho'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'3D'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OspGrillage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Base class of grillage model. Outputs an executable py file which generates the prescribed
-OpenSees grillage model based on user input.</p>
-<p>The class provides an interface for the user to specify the geometry of the grillage model. A keyword argument
-allows for users to select between skew/oblique or orthogonal mesh. Methods in this class allows users to input
-properties for various elements in the grillage model.</p>
-<p>For developers, this class handles the mesh class inputs. In future releases, new mesh types are introduced into
-mesh.py module as child class of a base Mesh class. In turn, developers need to provide the information of the
-new mesh type and algorithm to parse mesh paraemters to OspGrillage class.</p>
+<p>Base class of grillage model. Stores information about mesh and grillage elements. Also provides methods to
+add load cases to grillage model for analysis.</p>
+<p>The class constructor provides an interface for the user to specify the geometric properties of the grillage model
+and its mesh.</p>
+<p>Instantiate the OspGrillage class</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -366,6 +363,12 @@ new mesh type and algorithm to parse mesh paraemters to OspGrillage class.</p>
 <li><p><strong>edge_beam_dist</strong> (<em>int</em><em> or </em><em>float</em>) – Distance of edge beam node lines to exterior main beam node lines</p></li>
 <li><p><strong>mesh_type</strong> (<em>string</em>) – Type of mesh either “Ortho” for orthogonal mesh or “Oblique” for oblique mesh</p></li>
 </ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – <ol class="arabic simple">
+<li><p>If skew angle is greater than 90. (2) number of transverse grid line is less than 2</p></li>
+</ol>
+</p>
 </dd>
 </dl>
 <dl class="py method">
@@ -474,7 +477,7 @@ corresponding load factor as value.</p></li>
 <dt class="sig sig-object py" id="ospgrillage.osp_grillage.OspGrillage.get_results">
 <span class="sig-name descname"><span class="pre">get_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OspGrillage.get_results" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to get results from specific or all load cases. Alternatively, function process and returns load combination if
-“combinations” argument is provided. Result format is xarray DataSet. If a “save_file_name” is provided, saves
+“combina+tions” argument is provided. Result format is xarray DataSet. If a “save_file_name” is provided, saves
 xarray DataSet to NetCDF format to current working directory.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Keyword</dt>
@@ -652,36 +655,33 @@ to a4.</p></li>
 <dt class="sig sig-object py" id="ospgrillage.members.Section">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.members.</span></span><span class="sig-name descname"><span class="pre">Section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">op_ele_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'elasticBeamColumn'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_mass_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_section_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Elastic'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.members.Section" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Class for structural cross sections.Stores geometric properties related to <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> command in creating sections
-in OpenSees model space.</p>
-<p>In addition, this class stores user input for element types - which correspond to <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> element command.
-This class does not provide methods which wraps <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> Section() commands - this is done by GrillageMember class</p>
-<p>For developers wishing to expand the library of sections, introduce in this class:</p>
+<p>Class for sections. Stores geometric properties of cross sections. These information parsed into relevant
+<code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> command, creating sections in OpenSees framework.</p>
+<p>This class does have methods which wraps <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> Section() commands - this is handled by
+the GrillageMember class instead.</p>
+<p>For developers wishing to expand the library of sections, introduce under the constructor init:</p>
 <ol class="arabic simple">
-<li><p>The keyword arguments for the new sections.</p></li>
-<li><p>The keyword arguments for the new element - for which the Section() object is tied to if any.</p></li>
+<li><p>The name for the new sections.</p></li>
+<li><p>The keyword arguments for the new section plus any OpenSeesPy Section keyword which is tied to.</p></li>
 </ol>
 <p>The constructor takes in two types of keyword arguments.</p>
 <ol class="arabic simple">
-<li><dl class="simple">
-<dt>General section properties - such as A, I, J for example. These properties are parses into the appropriate</dt><dd><p>OpenSees section arguments.</p>
-</dd>
-</dl>
-</li>
+<li><p>General section properties - such as A, I, J for example. These properties are parses into the appropriate
+OpenSees section arguments.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">`OpenSeespy`</span></code> section arguments - i.e. specific keyword for a specific ops.section() type.</p></li>
 </ol>
-<p><a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/section.html">Here</a> is information on OpenSees Section()</p>
-<p>Here are the main input for the constructor to properly parse the inputs to <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> sections.</p>
+<p><a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/section.html">Section</a>  information of OpenSeesPy</p>
+<p>Constructor takes following inputs to be parse into arguments for <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> Sections.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>op_ele_type</strong> (<em>str</em>) – OpenSees element type</p></li>
-<li><p><strong>op_section_type</strong> (<em>str</em>) – OpenSees section type</p></li>
+<li><p><strong>op_ele_type</strong> (<em>str</em>) – OpenSees element type - default elasticBeamColumn</p></li>
+<li><p><strong>op_section_type</strong> (<em>str</em>) – OpenSees section type - default Elastic</p></li>
 <li><p><strong>unit_width</strong> (<em>bool</em>) – Flag for unit width properties</p></li>
 </ul>
 </dd>
 </dl>
-<p>Here are the common keyword arguments for defining a section.</p>
+<p>Constructor also takes the follwoing keyword arguments for defining a section.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Keyword</dt>
 <dd class="field-odd"><p></p></dd>
@@ -703,7 +703,7 @@ This class does not provide methods which wraps <code class="docutils literal no
 <dt class="sig sig-object py" id="ospgrillage.members.GrillageMember">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.members.</span></span><span class="sig-name descname"><span class="pre">GrillageMember</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">section</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#ospgrillage.members.Section" title="ospgrillage.members.Section"><span class="pre">ospgrillage.members.Section</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">material</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">member_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Undefined'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quad_ele_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tri_ele_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.members.GrillageMember" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Parent class for defining a Grillage member. Provides methods to wrap <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> Element() command.</p>
+<p>Base class for defining a Grillage member. Provides methods to wrap <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> Element() command.</p>
 <p>Some <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> element() command takes in directly both material and section properties, while some requires
 first defining an <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> material, or OpenSees section object. The role of this class is to parse the material
 and section information into its corresponding <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> Element() command.</p>
@@ -719,7 +719,7 @@ Element definition.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>section</strong> (<a class="reference internal" href="#ospgrillage.members.Section" title="ospgrillage.members.Section"><code class="xref py py-class docutils literal notranslate"><span class="pre">Section</span></code></a>) – Section class object</p></li>
-<li><p><strong>material</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code>) – Material class object</p></li>
+<li><p><strong>material</strong> (<a class="reference internal" href="#ospgrillage.material.Material" title="ospgrillage.material.Material"><code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code></a>) – Material class object</p></li>
 <li><p><strong>member_name</strong> (<em>str</em>) – Name of the grillage member (Optional)</p></li>
 </ul>
 </dd>
