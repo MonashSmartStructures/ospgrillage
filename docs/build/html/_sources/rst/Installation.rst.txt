@@ -13,7 +13,7 @@ Required dependencies
 
 Instructions
 --------------------
-The easiest way to install is to use `pip`.
+The easiest way to install is to use python package index `pip`.
 
 .. code-block:: python
 
@@ -23,8 +23,8 @@ For development, install as follows:
 
 .. code-block:: python
 
-    git clone https://github.com/MonashSmartStructures/ops-grillage.git
-    cd ops-grillage
+    git clone https://github.com/MonashSmartStructures/ospgrillage.git
+    cd ospgrillage
     pip install -e
 
 
@@ -32,10 +32,10 @@ For development, install as follows:
 Installing dependencies
 ------------------------
 
-The *ospgrillage* module uses several external modules for its usage. A list of modules required for the working
-environment of *ospgrillage* is found in the *requirement.txt* file.
+The *ospgrillage* module uses several python modules. List of modules for a working python
+environment is found in the *requirement.txt* file.
 
-To install a working environment with all required dependencies, run the following command line in terminal
+To create a working environment with all required dependencies, run the following command line in terminal
 
 .. code-block:: python
 
@@ -44,9 +44,10 @@ To install a working environment with all required dependencies, run the followi
 
 Tests
 -------------------
-The module comes with a pytest protocol named `test_file.py` which users can run `pytest` in the root directory of the module.
+The module comes with a pytest protocol for each sub module py file, which users can run `pytest` in the root directory of the module
+to run all
 
 .. code-block:: python
 
-    python -m pytest test_file.py
+    python -m pytest
 

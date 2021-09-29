@@ -317,7 +317,9 @@ To analyse load case(s), users run the class function ``analyze()``. By default`
 If users wish to run only a specific set of load cases, pass a list of load case name str to ``loadcase=``  keyword.
 This will analyse all load cases of the list. Here are a few interface examples of ``analyze()``.
 
+
 .. code-block:: python
+
     # analyze all
     example_bridge.analyze()
     # or a single str
@@ -326,6 +328,7 @@ This will analyse all load cases of the list. Here are a few interface examples 
     example_bridge.analyze(load_case=["DL"])
     # or a list of multiple load cases
     example_bridge.analyze(load_case=["DL","SDL"])
+
 
 
 Obtaining results

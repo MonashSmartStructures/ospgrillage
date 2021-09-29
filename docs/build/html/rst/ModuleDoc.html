@@ -42,7 +42,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Examples" href="Examples.html" />
-    <link rel="prev" title="ospgrillage.load.create_moving_load" href="generated/ospgrillage.load.create_moving_load.html" /> 
+    <link rel="prev" title="ospgrillage.load.MovingLoad.query" href="generated/ospgrillage.load.MovingLoad.query.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -95,7 +95,9 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Module%20description.html">Creating grillage models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ModelTemplates.html">Model types available</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Running_analysis.html">Performing analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PostProcessing.html">Getting Results</a></li>
 <li class="toctree-l1"><a class="reference internal" href="APIdoc.html">API reference</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Module design</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#grillage-model">Grillage model</a><ul>
@@ -194,7 +196,7 @@
 the developers welcome any improvements to its procedures via pull requests.</p>
 <div class="section" id="grillage-model">
 <h2>Grillage model<a class="headerlink" href="#grillage-model" title="Permalink to this headline">¶</a></h2>
-<p>The <em>ospgrillage</em> module generates a two-dimensional (2D) grillage model of a bridge deck in Opensees - see Figure 1.</p>
+<p>The <em>ospgrillage</em> module generates a two-dimensional (2D) grillage model of a bridge deck in OpenSees - see Figure 1.</p>
 <div class="figure align-center" id="id1">
 <a class="reference internal image-reference" href="../_images/Figure_1.png"><img alt="../_images/Figure_1.png" src="../_images/Figure_1.png" /></a>
 <p class="caption"><span class="caption-text">Figure 1: Typical grillage model nodes.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
@@ -214,10 +216,12 @@ For a 2-D model space, the model plane is the x-y plane.</p>
 <li><p>global z direction defines the width of the bridge model - the slabs elements are layed in this axis direction.</p></li>
 <li><p>global y direction is the vertical axis - typically the direction of loads</p></li>
 </ul>
-<p>Two reasons behind selecting the coordinate system are as such:
-# To be consistent with geometric transformation (from local to global) of Opensees. The geometric transformation is used in Section definition, with local X being the axial direction
-of beam/truss members; where y and z axes being the vertical and horizontal axis of the local coordinate system respectively.</p>
-<p># To be consistent with 1D problems where the working axis for 1-D models is typically <em>x</em> (horizontal axis) and <em>y</em> (vertical axis).</p>
+<p>Two reasons behind selecting the coordinate system:</p>
+<ol class="arabic simple">
+<li><p>To be consistent with geometric transformation (from local to global) of OpenSees. The geometric transformation is used in Section definition, with local X being the axial direction
+of beam/truss members; where y and z axes being the vertical and horizontal axis of the local coordinate system respectively.</p></li>
+<li><p>To be consistent with 1D problems where the working axis for 1-D models is typically <em>x</em> (horizontal axis) and <em>y</em> (vertical axis).</p></li>
+</ol>
 </div>
 </div>
 <div class="section" id="meshing-procedure">
@@ -239,19 +243,20 @@ of beam/truss members; where y and z axes being the vertical and horizontal axis
 </div>
 <p>Meshing algorithm is controlled by the <code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code> class object. The following components are generated to
 define the nodes and elements of the mesh:</p>
-<p># Construction line at edge of model &#64; the start of the span (start_span_edge)
+<ol class="arabic simple">
+<li><p><strong>Construction line at edge of model &#64; the start of the span (start_span_edge)</strong>
 A construction line consisting of the edge of the model is first defined. Construction line consist of nodes that
 coincide with the number and position of longitudinal beams in the model. The angle of the construction line is based on skew angle
-(skew_1). By default, the reference point of the construction line coincide with the origin [0,0,0] of the model space.</p>
-<p># Construction line at edge of model &#64; the end of the span (end_span_edge)
+(skew_1). By default, the reference point of the construction line coincide with the origin [0,0,0] of the model space.</p></li>
+<li><p><strong>Construction line at edge of model &#64; the end of the span (end_span_edge)</strong>
 Similar to (1), the construction line at the end of the span is created based on number of longitudinal beam. The
 spacing of the nodes in the z direction is identical to that of the first construction line. By default the skew angle
 of this second construction (skew_2) can be different. In constrast, the reference point of second construction line
 is [L, 0 ,f(L)] where L is the length of the model, and f(L) is the z coordinate of the reference node based on
-the defined sweep path of the model - this is next explained</p>
-<p># Sweep Path
-By default, the sweep path of the model is a straight line of y = 0 which starts at the origin [0,0,0] of model space.
-A few option</p>
+the defined sweep path of the model - this is next explained</p></li>
+<li><p><strong>Sweep Path</strong> By default, the sweep path of the model is a straight line of y = 0 which starts at the origin [0,0,0] of model space.
+A few option</p></li>
+</ol>
 </div>
 <div class="section" id="meshing-rules">
 <h3>Meshing Rules<a class="headerlink" href="#meshing-rules" title="Permalink to this headline">¶</a></h3>
@@ -267,17 +272,23 @@ on common industrial practice of grillage analysis.</p>
 </div>
 <div class="section" id="meshing-steps">
 <h3>Meshing steps<a class="headerlink" href="#meshing-steps" title="Permalink to this headline">¶</a></h3>
-<p># Starting at first construction line, algorithm checks the angle of the construction line relative to the tangent/slope
-of the sweep line at the first position (i.e. &#64; [0,0,0])</p>
-<p># If mesh type for the given angle of construction line is permitted, a for loop procedure is initiated.
+<ol class="arabic simple">
+<li><p>Starting at first construction line, algorithm checks the angle of the construction line relative to the tangent/slope</p></li>
+</ol>
+<blockquote>
+<div><p>of the sweep line at the first position (i.e. &#64; [0,0,0])</p>
+</div></blockquote>
+<ol class="arabic simple">
+<li><p>If mesh type for the given angle of construction line is permitted, a for loop procedure is initiated.
 The iteration: (1) goes through every point in the construction line, (2) find the point on the sweep path whose normal vector
 intersects the current point of the construction line, (3) create the nodes bounded between the current point and the intersection
-point on the sweep line - see figure below. If mesh type is not valid, the process skips to step 3.</p>
-<p># If angle is not permitted, the construction line is taken as the sweep node line. An iteration goes
-through all points on construction line and assigns them as nodes. Then the process move to the step 4.</p>
-<p># Similar to step 2, step 4 comprise the process of step 2 but conducted for the second construction line instead.</p>
-<p># Remaining uniformly spaced nodes between the two construction lines are now defined. The algorithm spaces the nodes
-evenly based on the number of transverse beam specified.</p>
+point on the sweep line - see figure below. If mesh type is not valid, the process skips to step 3.</p></li>
+<li><p>If angle is not permitted, the construction line is taken as the sweep node line. An iteration goes
+through all points on construction line and assigns them as nodes. Then the process move to the step 4.</p></li>
+<li><p>Similar to step 2, step 4 comprise the process of step 2 but conducted for the second construction line instead.</p></li>
+<li><p>Remaining uniformly spaced nodes between the two construction lines are now defined. The algorithm spaces the nodes
+evenly based on the number of transverse beam specified.</p></li>
+</ol>
 <p>While nodes are generated, elements are also created by linking the generated nodes. Node linking is based on the grid numbering
 allocated to each node. For example, A node with x grid = 1 and z grid = 1 forms a longitudinal beam element with node having
 x grid = 2 and z_grid = 1.</p>
@@ -297,15 +308,19 @@ and (2) number of transverse beams.</p>
 </div>
 <div class="section" id="mesh-variables">
 <h3>Mesh variables<a class="headerlink" href="#mesh-variables" title="Permalink to this headline">¶</a></h3>
-<p>Nodes are specified into dictionary</p>
-<p>Elements are specified by list. A typical element list is like this [2, 2, 3, 0, 2]
-The entries are the element tag, node_i, node_j, grouping (based on list), and geometric transformation tag.</p>
-<p>Groups are sorted into dictionary</p>
-<p>Common element group as key: return z groups
-Z group as key, return longitudinal elements within the z group
-X group as key, return transverse elements within the x group
-node tag as key, return x spacings between vicinity nodes
-node tag as key, return the z spacings between vicinity nodes</p>
+<ul class="simple">
+<li><p>Nodes information are stored as dictionaries</p></li>
+<li><p>Elements are specified by list. A typical element list is like this [2, 2, 3, 0, 2]
+The entries are the element tag, node_i, node_j, grouping (based on list), and geometric transformation tag.</p></li>
+</ul>
+<p>Dictionaries are used to store information of mesh:</p>
+<ul class="simple">
+<li><p>Common element group as key: return z groups</p></li>
+<li><p>Z group as key, return longitudinal elements within the z group</p></li>
+<li><p>X group as key, return transverse elements within the x group</p></li>
+<li><p>node tag as key, return x spacings between vicinity nodes</p></li>
+<li><p>node tag as key, return the z spacings between vicinity nodes</p></li>
+</ul>
 </div>
 </div>
 <div class="section" id="local-vs-global-coordinate-system">
@@ -316,7 +331,7 @@ grillage model space.</p>
 <ul class="simple">
 <li><p>Load objects (Point, Line, Patch) - takes either local or global coordinate.</p></li>
 <li><p>Path objects (Path for moving load)</p></li>
-<li><p>Compound load object - takes either local or global coordinates.</p></li>
+<li><p>Compound load object - defined in local and set to global via <code class="docutils literal notranslate"><span class="pre">set_global_coord()</span></code></p></li>
 </ul>
 <p>For <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadCase</span></code>, all load object inputs can be either local or global. Note when local coordinate is defined for a load object, a global reference coordinate needs to be defined or else
 the module raises an Error regarding its point/vertices values.</p>
@@ -341,7 +356,8 @@ the module raises an Error regarding its point/vertices values.</p>
 <p>Use the following links for more on:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="http://bridgedesign.org.uk/tutorial/bs-grillage.php">Grillage modelling</a></p></li>
-<li><p><a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/">Openseespy documentation</a></p></li>
+<li><p><a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/">OpenSeesPy documentation</a></p></li>
+<li><p><a class="reference external" href="https://www.researchgate.net/publication/289736527_Effect_of_skew_angle_on_behavior_of_simply_supported_R_C_T-beam_bridge_decks">Example bridge with skew edges</a></p></li>
 </ul>
 </div>
 <div class="section" id="further-development">
@@ -358,7 +374,7 @@ edge construction lines. This is done by developing the <cite>EdgeConstructionLi
 this requires a bit more development as current edge construction lines are only recognized as end
 supports - catering meshing procedures for one span.</p>
 <p>The developers also acknowledges that there is minor conflict between the coordinate system of <em>ospgrillage</em> and the default
-coordinate system for the <cite>ops_vis</cite> module of <cite>Openseespy</cite>. The <cite>ops_vis</cite> module default isotropic angle is x - y with z axis plane
+coordinate system for the <cite>ops_vis</cite> module of <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code>. The <cite>ops_vis</cite> module default isotropic angle is x - y with z axis plane
 being the model plane of a 2-D model in 3-D space. Currently the easiest solution is to further develop <cite>ops_vis</cite> to allow
 multi isotropic views of the model space. If developers were to program <em>ospgrillage</em> to fit <cite>ops_vis</cite> current default axis,
 it would require substantial rework of the entire module - since the module assume the model plane of the 2D grillage is the
@@ -373,7 +389,7 @@ y axis.</p>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="Examples.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="generated/ospgrillage.load.create_moving_load.html" class="btn btn-neutral float-left" title="ospgrillage.load.create_moving_load" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="generated/ospgrillage.load.MovingLoad.query.html" class="btn btn-neutral float-left" title="ospgrillage.load.MovingLoad.query" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

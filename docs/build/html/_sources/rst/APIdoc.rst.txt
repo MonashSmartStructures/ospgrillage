@@ -2,33 +2,24 @@
 API reference
 ====================
 
-This page outlines *ospgrillage*'s API. For detail regarding module design and algorithms, refer to :doc:`ModuleDoc`.
-
-
-UML diagram overview
-----------------------------
-
-..  figure:: ../images/draftUML.PNG
-    :align: center
-    :scale: 50 %
-
-    Figure 1: UML diagram - draft version 1.
-
-
-What functions are considered public API?
+User interface functions - API
 ------------------------------------------
 This module comprised of user interface functions to take user inputs and returns its corresponding object creation.
+Here is a summary of these functions.
 
+Top level interface functions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. autosummary::
     :toctree: generated/
 
-    ospgrillage.osp_grillage.create_grillage
     ospgrillage.material.create_material
     ospgrillage.members.create_section
     ospgrillage.members.create_member
-    ospgrillage.load.create_load_vertices
+    ospgrillage.osp_grillage.create_grillage
+    ospgrillage.load.create_load_vertex
     ospgrillage.load.create_load
+    ospgrillage.mesh.create_point
     ospgrillage.load.create_load_case
     ospgrillage.load.create_compound_load
     ospgrillage.load.create_moving_path
@@ -36,8 +27,39 @@ This module comprised of user interface functions to take user inputs and return
 
 
 
-OpsGrillage class
+Grillage model interface API
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The following methods can be called on the :class:`OspGrillage` object.
+
+.. autosummary::
+    :toctree: generated/
+
+    ospgrillage.osp_grillage.OspGrillage.set_member
+    ospgrillage.osp_grillage.OspGrillage.analyze
+    ospgrillage.osp_grillage.OspGrillage.get_results
+    ospgrillage.osp_grillage.OspGrillage.get_nodes
+    ospgrillage.osp_grillage.OspGrillage.get_element
+
+
+Load utility API
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autosummary::
+    :toctree: generated/
+
+
+    ospgrillage.load.CompoundLoad.set_global_coord
+    ospgrillage.load.LoadCase.add_load
+    ospgrillage.load.MovingLoad.set_path
+    ospgrillage.load.MovingLoad.add_loads
+    ospgrillage.load.MovingLoad.query
+
+
+OspGrillage class
 ---------------------------
+
+For information regarding the procedures in :class:`~OpsGrillage` class, see
+:doc:`ModuleDoc`.
 
 .. autoclass:: ospgrillage.osp_grillage.OspGrillage
     :members:
@@ -58,10 +80,9 @@ Result class
     :show-inheritance:
 
 
+
 Material class
 ------------------------------------------
-For information regarding the procedures in :class:`~OpsGrillage` class, see
-:doc:`ModuleDoc`.
 
 
 .. autoclass:: ospgrillage.material.Material
@@ -105,21 +126,21 @@ PointLoad
 ^^^^^^^^^^^^^^^^
 
 .. autoclass:: ospgrillage.load.PointLoad
-    :members:
+
 
 
 LineLoading
 ^^^^^^^^^^^^^^^^
 
 .. autoclass:: ospgrillage.load.LineLoading
-    :members:
+
 
 
 PatchLoading
 ^^^^^^^^^^^^^^^^
 
 .. autoclass:: ospgrillage.load.PatchLoading
-    :members:
+
 
 
 CompoundLoad
@@ -149,11 +170,18 @@ For information regarding in :class:`~LoadCase` class, see
 Misc
 ------------------------------------------
 
-LoadCase
-^^^^^^^^^^^^^^^^
+Path for moving loads
+^^^^^^^^^^^^^^^^^^^^^^^
 .. autoclass:: ospgrillage.load.Path
     :members:
     :show-inheritance:
+
+Envelope
+^^^^^^^^^^^
+
+.. autoclass:: ospgrillage.static.Envelope
+    :members:
+
 
 Shape functions
 ^^^^^^^^^^^^^^^^

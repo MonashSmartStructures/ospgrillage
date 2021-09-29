@@ -93,7 +93,9 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="rst/Installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rst/Module%20description.html">Creating grillage models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rst/ModelTemplates.html">Model types available</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rst/Running_analysis.html">Performing analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rst/PostProcessing.html">Getting Results</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rst/APIdoc.html">API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rst/ModuleDoc.html">Module design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rst/Examples.html">Examples</a></li>
@@ -169,7 +171,7 @@
 <div class="genindex-jumpbox">
  <a href="#A"><strong>A</strong></a>
  | <a href="#C"><strong>C</strong></a>
- | <a href="#F"><strong>F</strong></a>
+ | <a href="#E"><strong>E</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
@@ -178,6 +180,7 @@
  | <a href="#N"><strong>N</strong></a>
  | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
+ | <a href="#Q"><strong>Q</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  
@@ -186,20 +189,22 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="rst/APIdoc.html#ospgrillage.load.CompoundLoad.add_load">add_load() (ospgrillage.load.CompoundLoad method)</a>, <a href="rst/Loads.html#ospgrillage.load.CompoundLoad.add_load">[1]</a>
+
+      <ul>
+        <li><a href="rst/APIdoc.html#ospgrillage.load.LoadCase.add_load">(ospgrillage.load.LoadCase method)</a>, <a href="rst/Loads.html#ospgrillage.load.LoadCase.add_load">[1]</a>, <a href="rst/generated/ospgrillage.load.LoadCase.add_load.html#ospgrillage.load.LoadCase.add_load">[2]</a>
 </li>
+      </ul></li>
       <li><a href="rst/APIdoc.html#ospgrillage.osp_grillage.OspGrillage.add_load_case">add_load_case() (ospgrillage.osp_grillage.OspGrillage method)</a>, <a href="rst/OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage.add_load_case">[1]</a>
 </li>
       <li><a href="rst/APIdoc.html#ospgrillage.osp_grillage.OspGrillage.add_load_combination">add_load_combination() (ospgrillage.osp_grillage.OspGrillage method)</a>, <a href="rst/OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage.add_load_combination">[1]</a>
 </li>
-      <li><a href="rst/APIdoc.html#ospgrillage.load.LoadCase.add_load_groups">add_load_groups() (ospgrillage.load.LoadCase method)</a>, <a href="rst/Loads.html#ospgrillage.load.LoadCase.add_load_groups">[1]</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="rst/APIdoc.html#ospgrillage.load.MovingLoad.add_loads">add_loads() (ospgrillage.load.MovingLoad method)</a>, <a href="rst/Loads.html#ospgrillage.load.MovingLoad.add_loads">[1]</a>
+      <li><a href="rst/APIdoc.html#ospgrillage.load.MovingLoad.add_loads">add_loads() (ospgrillage.load.MovingLoad method)</a>, <a href="rst/Loads.html#ospgrillage.load.MovingLoad.add_loads">[1]</a>, <a href="rst/generated/ospgrillage.load.MovingLoad.add_loads.html#ospgrillage.load.MovingLoad.add_loads">[2]</a>
 </li>
       <li><a href="rst/APIdoc.html#ospgrillage.osp_grillage.Analysis">Analysis (class in ospgrillage.osp_grillage)</a>, <a href="rst/OpsGrillage.html#ospgrillage.osp_grillage.Analysis">[1]</a>
 </li>
-      <li><a href="rst/APIdoc.html#ospgrillage.osp_grillage.OspGrillage.analyze">analyze() (ospgrillage.osp_grillage.OspGrillage method)</a>, <a href="rst/OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage.analyze">[1]</a>
+      <li><a href="rst/APIdoc.html#ospgrillage.osp_grillage.OspGrillage.analyze">analyze() (ospgrillage.osp_grillage.OspGrillage method)</a>, <a href="rst/OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage.analyze">[1]</a>, <a href="rst/generated/ospgrillage.osp_grillage.OspGrillage.analyze.html#ospgrillage.osp_grillage.OspGrillage.analyze">[2]</a>
 </li>
       <li><a href="rst/Loads.html#ospgrillage.load.Loads.apply_load_factor">apply_load_factor() (ospgrillage.load.Loads method)</a>
 </li>
@@ -219,29 +224,43 @@
 </li>
       <li><a href="rst/Loads.html#ospgrillage.load.create_load_case">create_load_case() (in module ospgrillage.load)</a>, <a href="rst/generated/ospgrillage.load.create_load_case.html#ospgrillage.load.create_load_case">[1]</a>
 </li>
-      <li><a href="rst/Loads.html#ospgrillage.load.create_load_vertices">create_load_vertices() (in module ospgrillage.load)</a>, <a href="rst/generated/ospgrillage.load.create_load_vertices.html#ospgrillage.load.create_load_vertices">[1]</a>
+      <li><a href="rst/Loads.html#ospgrillage.load.create_load_vertex">create_load_vertex() (in module ospgrillage.load)</a>, <a href="rst/generated/ospgrillage.load.create_load_vertex.html#ospgrillage.load.create_load_vertex">[1]</a>
+</li>
+      <li><a href="rst/generated/ospgrillage.material.create_material.html#ospgrillage.material.create_material">create_material() (in module ospgrillage.material)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="rst/generated/ospgrillage.material.create_material.html#ospgrillage.material.create_material">create_material() (in module ospgrillage.material)</a>
-</li>
       <li><a href="rst/generated/ospgrillage.members.create_member.html#ospgrillage.members.create_member">create_member() (in module ospgrillage.members)</a>
 </li>
       <li><a href="rst/Loads.html#ospgrillage.load.create_moving_load">create_moving_load() (in module ospgrillage.load)</a>, <a href="rst/generated/ospgrillage.load.create_moving_load.html#ospgrillage.load.create_moving_load">[1]</a>
 </li>
       <li><a href="rst/Loads.html#ospgrillage.load.create_moving_path">create_moving_path() (in module ospgrillage.load)</a>, <a href="rst/generated/ospgrillage.load.create_moving_path.html#ospgrillage.load.create_moving_path">[1]</a>
 </li>
-      <li><a href="rst/APIdoc.html#ospgrillage.osp_grillage.OspGrillage.create_ops">create_ops() (ospgrillage.osp_grillage.OspGrillage method)</a>, <a href="rst/OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage.create_ops">[1]</a>
+      <li><a href="rst/APIdoc.html#ospgrillage.osp_grillage.OspGrillage.create_osp_model">create_osp_model() (ospgrillage.osp_grillage.OspGrillage method)</a>, <a href="rst/OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage.create_osp_model">[1]</a>
+
+      <ul>
+        <li><a href="rst/OpsGrillage.html#ospgrillage.osp_grillage.OspGrillageShell.create_osp_model">(ospgrillage.osp_grillage.OspGrillageShell method)</a>
 </li>
+      </ul></li>
+      <li><a href="rst/Loads.html#ospgrillage.load.create_point">create_point() (in module ospgrillage.load)</a>
+
+      <ul>
+        <li><a href="rst/generated/ospgrillage.mesh.create_point.html#ospgrillage.mesh.create_point">(in module ospgrillage.mesh)</a>
+</li>
+      </ul></li>
       <li><a href="rst/generated/ospgrillage.members.create_section.html#ospgrillage.members.create_section">create_section() (in module ospgrillage.members)</a>
 </li>
   </ul></td>
 </tr></table>
 
-<h2 id="F">F</h2>
+<h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="rst/Loads.html#ospgrillage.load.Loads.form_compound_load">form_compound_load() (ospgrillage.load.Loads method)</a>
+      <li><a href="rst/APIdoc.html#ospgrillage.static.Envelope">Envelope (class in ospgrillage.static)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="rst/APIdoc.html#ospgrillage.osp_grillage.Analysis.extract_grillage_responses">extract_grillage_responses() (ospgrillage.osp_grillage.Analysis method)</a>, <a href="rst/OpsGrillage.html#ospgrillage.osp_grillage.Analysis.extract_grillage_responses">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -249,23 +268,35 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="rst/APIdoc.html#ospgrillage.static.Envelope.get">get() (ospgrillage.static.Envelope method)</a>
+</li>
       <li><a href="rst/Loads.html#ospgrillage.load.Path.get_custom_path_points">get_custom_path_points() (ospgrillage.load.Path method)</a>
+</li>
+      <li><a href="rst/APIdoc.html#ospgrillage.osp_grillage.OspGrillage.get_element">get_element() (ospgrillage.osp_grillage.OspGrillage method)</a>, <a href="rst/OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage.get_element">[1]</a>, <a href="rst/generated/ospgrillage.osp_grillage.OspGrillage.get_element.html#ospgrillage.osp_grillage.OspGrillage.get_element">[2]</a>
 </li>
       <li><a href="rst/Loads.html#ospgrillage.load.LineLoading.get_line_segment_given_x">get_line_segment_given_x() (ospgrillage.load.LineLoading method)</a>
 </li>
       <li><a href="rst/Loads.html#ospgrillage.load.LineLoading.get_line_segment_given_z">get_line_segment_given_z() (ospgrillage.load.LineLoading method)</a>
 </li>
-      <li><a href="rst/APIdoc.html#ospgrillage.load.NodalLoad.get_nodal_load_str">get_nodal_load_str() (ospgrillage.load.NodalLoad method)</a>, <a href="rst/Loads.html#ospgrillage.load.NodalLoad.get_nodal_load_str">[1]</a>
+      <li><a href="rst/Loads.html#ospgrillage.load.Loads.get_magnitude">get_magnitude() (ospgrillage.load.Loads method)</a>
+</li>
+      <li><a href="rst/APIdoc.html#ospgrillage.material.Material.get_material_args">get_material_args() (ospgrillage.material.Material method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="rst/APIdoc.html#ospgrillage.load.NodalLoad.get_nodal_load_str">get_nodal_load_str() (ospgrillage.load.NodalLoad method)</a>, <a href="rst/Loads.html#ospgrillage.load.NodalLoad.get_nodal_load_str">[1]</a>
+</li>
+      <li><a href="rst/APIdoc.html#ospgrillage.osp_grillage.OspGrillage.get_nodes">get_nodes() (ospgrillage.osp_grillage.OspGrillage method)</a>, <a href="rst/OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage.get_nodes">[1]</a>, <a href="rst/generated/ospgrillage.osp_grillage.OspGrillage.get_nodes.html#ospgrillage.osp_grillage.OspGrillage.get_nodes">[2]</a>
+</li>
       <li><a href="rst/Loads.html#ospgrillage.load.Path.get_path_points">get_path_points() (ospgrillage.load.Path method)</a>
 </li>
       <li><a href="rst/Loads.html#ospgrillage.load.LineLoading.get_point_given_distance">get_point_given_distance() (ospgrillage.load.LineLoading method)</a>
 </li>
-      <li><a href="rst/APIdoc.html#ospgrillage.osp_grillage.OspGrillage.get_results">get_results() (ospgrillage.osp_grillage.OspGrillage method)</a>, <a href="rst/OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage.get_results">[1]</a>
+      <li><a href="rst/APIdoc.html#ospgrillage.osp_grillage.OspGrillage.get_results">get_results() (ospgrillage.osp_grillage.OspGrillage method)</a>, <a href="rst/OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage.get_results">[1]</a>, <a href="rst/generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results">[2]</a>
 </li>
       <li><a href="rst/Loads.html#ospgrillage.load.ShapeFunction.get_shape_function">get_shape_function() (ospgrillage.load.ShapeFunction method)</a>
+</li>
+      <li><a href="rst/OpsGrillage.html#ospgrillage.osp_grillage.GrillageElement">GrillageElement (class in ospgrillage.osp_grillage)</a>
 </li>
       <li><a href="rst/APIdoc.html#ospgrillage.members.GrillageMember">GrillageMember (class in ospgrillage.members)</a>
 </li>
@@ -470,21 +501,35 @@
         <li><a href="rst/OpsGrillage.html#module-ospgrillage.osp_grillage">module</a>
 </li>
       </ul></li>
+      <li><a href="rst/OpsGrillage.html#ospgrillage.osp_grillage.OspGrillageBeam">OspGrillageBeam (class in ospgrillage.osp_grillage)</a>
+</li>
+      <li><a href="rst/OpsGrillage.html#ospgrillage.osp_grillage.OspGrillageShell">OspGrillageShell (class in ospgrillage.osp_grillage)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="rst/Loads.html#ospgrillage.load.MovingLoad.parse_moving_load_cases">parse_moving_load_cases() (ospgrillage.load.MovingLoad method)</a>
+      <li><a href="rst/APIdoc.html#ospgrillage.material.Material.parse_material_command">parse_material_command() (ospgrillage.material.Material method)</a>
 </li>
-      <li><a href="rst/APIdoc.html#ospgrillage.load.PatchLoading">PatchLoading (class in ospgrillage.load)</a>, <a href="rst/Loads.html#ospgrillage.load.PatchLoading">[1]</a>
+      <li><a href="rst/Loads.html#ospgrillage.load.MovingLoad.parse_moving_load_cases">parse_moving_load_cases() (ospgrillage.load.MovingLoad method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="rst/APIdoc.html#ospgrillage.load.PatchLoading">PatchLoading (class in ospgrillage.load)</a>, <a href="rst/Loads.html#ospgrillage.load.PatchLoading">[1]</a>
+</li>
       <li><a href="rst/APIdoc.html#ospgrillage.load.Path">Path (class in ospgrillage.load)</a>, <a href="rst/Loads.html#ospgrillage.load.Path">[1]</a>
 </li>
       <li><a href="rst/APIdoc.html#ospgrillage.load.PointLoad">PointLoad (class in ospgrillage.load)</a>, <a href="rst/Loads.html#ospgrillage.load.PointLoad">[1]</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="Q">Q</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="rst/APIdoc.html#ospgrillage.load.MovingLoad.query">query() (ospgrillage.load.MovingLoad method)</a>, <a href="rst/Loads.html#ospgrillage.load.MovingLoad.query">[1]</a>, <a href="rst/generated/ospgrillage.load.MovingLoad.query.html#ospgrillage.load.MovingLoad.query">[2]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -504,17 +549,17 @@
 </li>
       <li><a href="rst/APIdoc.html#ospgrillage.osp_grillage.OspGrillage.set_boundary_condition">set_boundary_condition() (ospgrillage.osp_grillage.OspGrillage method)</a>, <a href="rst/OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage.set_boundary_condition">[1]</a>
 </li>
-      <li><a href="rst/APIdoc.html#ospgrillage.load.CompoundLoad.set_global_coord">set_global_coord() (ospgrillage.load.CompoundLoad method)</a>, <a href="rst/Loads.html#ospgrillage.load.CompoundLoad.set_global_coord">[1]</a>
+      <li><a href="rst/APIdoc.html#ospgrillage.load.CompoundLoad.set_global_coord">set_global_coord() (ospgrillage.load.CompoundLoad method)</a>, <a href="rst/Loads.html#ospgrillage.load.CompoundLoad.set_global_coord">[1]</a>, <a href="rst/generated/ospgrillage.load.CompoundLoad.set_global_coord.html#ospgrillage.load.CompoundLoad.set_global_coord">[2]</a>
 </li>
       <li><a href="rst/APIdoc.html#ospgrillage.osp_grillage.OspGrillage.set_material">set_material() (ospgrillage.osp_grillage.OspGrillage method)</a>, <a href="rst/OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage.set_material">[1]</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="rst/APIdoc.html#ospgrillage.osp_grillage.OspGrillage.set_member">set_member() (ospgrillage.osp_grillage.OspGrillage method)</a>, <a href="rst/OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage.set_member">[1]</a>
+      <li><a href="rst/APIdoc.html#ospgrillage.osp_grillage.OspGrillage.set_member">set_member() (ospgrillage.osp_grillage.OspGrillage method)</a>, <a href="rst/OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage.set_member">[1]</a>, <a href="rst/generated/ospgrillage.osp_grillage.OspGrillage.set_member.html#ospgrillage.osp_grillage.OspGrillage.set_member">[2]</a>
 </li>
-      <li><a href="rst/APIdoc.html#ospgrillage.load.MovingLoad.set_path">set_path() (ospgrillage.load.MovingLoad method)</a>, <a href="rst/Loads.html#ospgrillage.load.MovingLoad.set_path">[1]</a>
+      <li><a href="rst/APIdoc.html#ospgrillage.load.MovingLoad.set_path">set_path() (ospgrillage.load.MovingLoad method)</a>, <a href="rst/Loads.html#ospgrillage.load.MovingLoad.set_path">[1]</a>, <a href="rst/generated/ospgrillage.load.MovingLoad.set_path.html#ospgrillage.load.MovingLoad.set_path">[2]</a>
 </li>
-      <li><a href="rst/APIdoc.html#ospgrillage.osp_grillage.OspGrillage.set_shell_members">set_shell_members() (ospgrillage.osp_grillage.OspGrillage method)</a>, <a href="rst/OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage.set_shell_members">[1]</a>
+      <li><a href="rst/OpsGrillage.html#ospgrillage.osp_grillage.OspGrillageShell.set_shell_members">set_shell_members() (ospgrillage.osp_grillage.OspGrillageShell method)</a>
 </li>
       <li><a href="rst/APIdoc.html#ospgrillage.load.ShapeFunction">ShapeFunction (class in ospgrillage.load)</a>, <a href="rst/Loads.html#ospgrillage.load.ShapeFunction">[1]</a>
 </li>

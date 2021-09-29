@@ -38,32 +38,33 @@ def create_section(**kwargs):
 
 def create_member(**kwargs):
     """
-    User interface for member creation.
+    User interface for member creation. A grillage member consist of a :class:`~ospgrillage.material.Material` and a
+    :class:`~ospgrillage.members.Section`
 
     :param section: Section class object
     :type section: :class:`Section`
     :param material: Material class object
-    :type material: :class:`Material`
+    :type material: :class:`~ospgrillage.material.Material`
     :param member_name: Name of the grillage member (Optional)
     :type member_name: str
 
-    :returns GrillageMember: Grillage member object
+    :returns GrillageMember: :class:`~ospgrillage.members.GrillageMember`
     """
     return GrillageMember(**kwargs)
 
 
 class Section:
     """
-    Class for structural cross sections.Stores geometric properties related to ```OpenSeesPy``` command in creating sections
-    in OpenSees model space.
+    Class for sections. Stores geometric properties of cross sections. These information parsed into relevant
+    ```OpenSeesPy``` command, creating sections in OpenSees framework.
 
-    In addition, this class stores user input for element types - which correspond to ```OpenSeesPy``` element command.
-    This class does not provide methods which wraps ```OpenSeesPy``` Section() commands - this is done by GrillageMember class
+    This class does have methods which wraps ```OpenSeesPy``` Section() commands - this is handled by
+    the GrillageMember class instead.
 
-    For developers wishing to expand the library of sections, introduce in this class:
+    For developers wishing to expand the library of sections, introduce under the constructor init:
 
-    #. The keyword arguments for the new sections.
-    #. The keyword arguments for the new element - for which the Section() object is tied to if any.
+    #. The name for the new sections.
+    #. The keyword arguments for the new section plus any OpenSeesPy Section keyword which is tied to.
 
     """
 
@@ -80,21 +81,21 @@ class Section:
         The constructor takes in two types of keyword arguments.
 
         #. General section properties - such as A, I, J for example. These properties are parses into the appropriate
-            OpenSees section arguments.
+           OpenSees section arguments.
         #. ```OpenSeespy``` section arguments - i.e. specific keyword for a specific ops.section() type.
 
-        `Here <https://openseespydoc.readthedocs.io/en/latest/src/section.html>`_ is information on OpenSees Section()
+        `Section <https://openseespydoc.readthedocs.io/en/latest/src/section.html>`_  information of OpenSeesPy
 
-        Here are the main input for the constructor to properly parse the inputs to ```OpenSeesPy``` sections.
+        Constructor takes following inputs to be parse into arguments for ```OpenSeesPy``` Sections.
 
-        :param op_ele_type: OpenSees element type
+        :param op_ele_type: OpenSees element type - default elasticBeamColumn
         :type op_ele_type: str
-        :param op_section_type: OpenSees section type
+        :param op_section_type: OpenSees section type - default Elastic
         :type op_section_type: str
         :param unit_width: Flag for unit width properties
         :type unit_width: bool
 
-        Here are the common keyword arguments for defining a section.
+        Constructor also takes the follwoing keyword arguments for defining a section.
 
         :keyword:
         * A (``float``): Cross sectional area
@@ -142,9 +143,9 @@ class Section:
             self.op_section_type = "ElasticMembranePlateSection"
             self.op_ele_type = "ShellDKGQ"
         # warning checks
-        E = kwargs.get("E",None)
-        G = kwargs.get("G",None)
-        if any([E,G]):
+        E = kwargs.get("E", None)
+        G = kwargs.get("G", None)
+        if any([E, G]):
             raise ValueError("E or G is provided to Section object. Hint: E and G are attributes of Material Object")
         self.parse_section_properties()
 
@@ -159,11 +160,13 @@ class Section:
             self.Az = 0.2 * self.A
         if self.Iy is None and self.Iz is not None:
             self.Iy = 0.2 * self.Iz
+
+
 # ----------------------------------------------------------------------------------------------------------------
 
 class GrillageMember:
     """
-    Parent class for defining a Grillage member. Provides methods to wrap ```OpenSeesPy``` Element() command.
+    Base class for defining a Grillage member. Provides methods to wrap ```OpenSeesPy``` Element() command.
 
     Some ```OpenSeesPy``` element() command takes in directly both material and section properties, while some requires
     first defining an ```OpenSeesPy``` material, or OpenSees section object. The role of this class is to parse the material
@@ -185,9 +188,9 @@ class GrillageMember:
         Constructor takes two input object. A Material, and Section object.
 
         :param section: Section class object
-        :type section: :class:`Section`
+        :type section: :class:`~ospgrillage.members.Section`
         :param material: Material class object
-        :type material: :class:`Material`
+        :type material: :class:`~ospgrillage.material.Material`
         :param member_name: Name of the grillage member (Optional)
         :type member_name: str
         """
@@ -217,22 +220,26 @@ class GrillageMember:
 
         # if elastic Beam column elements, return str of section input
         if self.section.op_ele_type == "ElasticTimoshenkoBeam":
-            if None in [self.material.elastic_modulus, self.material.shear_modulus, self.section.A, self.section.J, self.section.Iy,
+            if None in [self.material.elastic_modulus, self.material.shear_modulus, self.section.A, self.section.J,
+                        self.section.Iy,
                         self.section.Iz, self.section.Ay, self.section.Az]:
                 raise ValueError("One or more missing arguments for Section: {}".format(self.section.op_ele_type))
-            asterisk_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.material.elastic_modulus,
-                                                                                                       self.material.shear_modulus,
-                                                                                                       self.section.A * width,
-                                                                                                       self.section.J * width,
-                                                                                                       self.section.Iy * width,
-                                                                                                       self.section.Iz * width,
-                                                                                                       self.section.Ay * width,
-                                                                                                       self.section.Az * width)
+            asterisk_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(
+                self.material.elastic_modulus,
+                self.material.shear_modulus,
+                self.section.A * width,
+                self.section.J * width,
+                self.section.Iy * width,
+                self.section.Iz * width,
+                self.section.Ay * width,
+                self.section.Az * width)
         elif self.section.op_ele_type == "elasticBeamColumn":  # eleColumn
-            if None in [self.material.elastic_modulus, self.material.shear_modulus, self.section.A, self.section.J, self.section.Iy,
+            if None in [self.material.elastic_modulus, self.material.shear_modulus, self.section.A, self.section.J,
+                        self.section.Iy,
                         self.section.Iz]:
                 raise ValueError("One or more missing arguments for Section: {}".format(self.section.op_ele_type))
-            asterisk_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.material.elastic_modulus, self.material.shear_modulus,
+            asterisk_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.material.elastic_modulus,
+                                                                                       self.material.shear_modulus,
                                                                                        self.section.A * width,
                                                                                        self.section.J * width,
                                                                                        self.section.Iy * width,
@@ -246,11 +253,13 @@ class GrillageMember:
                                                                                        self.section.Iz * width)
 
         elif self.section.op_ele_type == "ModElasticBeam2d":
-            if None in [self.section.A, self.material.elastic_modulus, self.section.Iz * width, self.section.K11, self.section.K33,
+            if None in [self.section.A, self.material.elastic_modulus, self.section.Iz * width, self.section.K11,
+                        self.section.K33,
                         self.section.K44]:
                 raise ValueError("One or more missing arguments for Section: {}".format(self.section.op_section_type))
             asterisk_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(
-                self.section.A * width, self.material.elastic_modulus, self.section.Iz * width, self.section.K11, self.section.K33,
+                self.section.A * width, self.material.elastic_modulus, self.section.Iz * width, self.section.K11,
+                self.section.K33,
                 self.section.K44)
 
         # TO be populated with more inputs for various element types
@@ -262,7 +271,8 @@ class GrillageMember:
         section_args = None
 
         if self.section.op_section_type == "Elastic":
-            section_args = [self.material.elastic_modulus, self.section.A, self.section.Iz, self.section.Iy, self.material.shear_modulus,
+            section_args = [self.material.elastic_modulus, self.section.A, self.section.Iz, self.section.Iy,
+                            self.material.shear_modulus,
                             self.section.J, self.section.alpha_y, self.section.alpha_z]
 
         return section_args

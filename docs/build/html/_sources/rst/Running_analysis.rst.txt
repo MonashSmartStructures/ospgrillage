@@ -2,10 +2,20 @@
 Performing analysis
 ========================
 
-Having created the grillage model, users can proceed with grillage analysis.
-The *ospgrillage* module contains grillage analysis utilities which wraps Openseespy commands to perform load analysis.
+*ospgrillage* contains grillage analysis utilities which wraps ``OpenSeesPy`` commands to perform load analysis.
 This allow users to specify load cases comprising of multiple loads types and then run load case analysis.
 Furthermore, *ospgrillage* module also options for moving load analysis.
+
+Load analysis workflow
+------------------------
+
+Figure 1 shows the flowchart for the load analysis utilities of *ospgrillage*.
+
+..  figure:: ../../_images/flowchart2.png
+    :align: center
+    :scale: 75 %
+
+    Figure 1: Load analysis utility flow chart
 
 
 Defining loads
@@ -14,53 +24,66 @@ Defining loads
 Loads are created with the interface function ``create_load()``. Users pass argument for `type=` to specify the load type.
 Available loads types include `Point`_, `Line`_, and `Patch`_ loads.
 
-
-[picture]
-
-
-Each load type requires user to specify its load point(s). This is achieved by a namedTuple `LoadPoint(x,y,z,p)` where `x`,`y`,`z` are the coordinates of the load point
-and `p` is the magnitude of the vertical loading. Note, `p` is a unit magnitude which is interpreted differently based on the load type - this will be later explained.
+Each load type requires user to specify its load point(s). This is achieved by `create_load_vertex()` function. This function creates
+a `LoadPoint(x,y,z,p)` where `x`,`y`,`z` are the coordinates of the load point and `p` is the magnitude of the vertical loading.
+Note, `p` is a unit magnitude which is interpreted differently based on the load type - this will be later explained.
 
 .. code-block:: python
 
-    point_load_location = ospg.create_load_vertices(x=5, y=0, z=2, p=20)  # create load point
+    point_load_location = ospg.create_load_vertices(x=5, z=2, p=20)  # create load point
 
 
 Depending on the load type, a minimum number of LoadPoint namedTuple are required.
-These are set to each load type's `point#=` variable for the load type class for the global coordinate system,
-or else `local_point_#=` variable for a user-defined local coordinate system, where # is a digit from 1 to 9.
+These are set to each load type's `point#=` variable for the load type's coordinate system,
+where # is a digit from 1 to 9.
 
 
 Loads are generally in the global coordinate system with respect to the created grillage model.
-However, a user-defined local coordinate system may also be used to assist in then creating `Compound load`_ later on.
+However, a user-defined local coordinate system is required when defining `Compound load`_ later on.
+
+Nodal loads
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+Nodal loads are defined using ``create_load()``, specifying `type=` as "nodal". There are six degrees-of-freedom (DOFs) for
+acting loads in each node. Nodal loads do not require a load vertex, instead it requires a `NodalForce(Fx,Fy,Fz,Mx,My,Mz)` namedtuple.
+
+The following example creates a NodalFroce namedtuple and a nodal load on Node 13 of a model, with 10 unit force in both transverse X and Y directions.
+
+.. code-block:: python
+
+    nodalforce = ospg.NodalForce(Fx=10,Fy=10)
+    node13force = ospg.create_load(type="nodal",name="nodal 13", node_force=nodalforce) # load values in other dofs default to 0
+
+
+.. note::
+
+    Users only have to specify non-zero load values for the desire DOFs. Load values for non-specified DOFs are defaulted to zero.
 
 .. _Point:
 
 Point Loads
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Point load is a force applied on a single infinitesmal point of the grillage model.
-Point loads are used represent a large range of loads, such as concentrated load of a car axle.
+Point load is a force applied on a single infinitesimal point of the grillage model.
+Point loads are used represent a large range of loads, such as truck axle, or superimposed dead load on a deck.
 
+Point load takes only a single `LoadPoint` tuple. `p` in the tuple should have units of force (eg. N, kN, kips, etc)
+- see Figure 2.
 
-[picture]
+..  figure:: ../../_images/pointload.png
+    :align: center
+    :scale: 75 %
 
+    Figure 2: Point load
 
-Point load takes only a single `LoadPoint` tuple. `p` in the tuple should have units of force (eg. N, kN, kips, etc).
 
 The following example code creates a 20 force unit point load located at (5,0,2) in the global coordinate system.
 
 .. code-block:: python
 
-    point_load_location = ospg.create_load_vertices(x=5, y=0, z=2, p=20)  # create load point
+    point_load_location = ospg.create_load_vertices(x=5, z=2, p=20)  # create load point
     Single = ospg.create_load(type="point",name="single point", point1=point_load_location)
-
-To position the load instead in a user defined local coordinate system to later create a `Compound Load`_, the variable `localpoint1` instead of `point1` is used.
-
-.. code-block:: python
-
-    point_load_location = ospg.create_load_vertices(5, 0, 2, 20)  # create load point
-    Single = ospg.create_load(type="point",name="single point", localpoint1=point_load_location)
 
 
 .. _Line:
@@ -68,24 +91,32 @@ To position the load instead in a user defined local coordinate system to later 
 Line Loads
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Line loads are loads exerted along a line. Line loads are useful to represent loads such as self weight of longitudinal beams or
-distributed load on beam elements along the span direction.
+distributed load along beam elements.
 
-[picture]
-
-Line loads are instantiated with the interface function ``create_load(type="line)`` and required at least two :class:`LoadPoint` tuple (corresponds to the start and end of the line load).
+Line loads are instantiated with the interface function ``create_load(type="line)`` and required at least two `LoadPoint`s (corresponds to the start and end of the line load) - see Figure 3.
 Using more than two tuples allows a curve line loading profile.
 `p` in the :class:`LoadPoint` tuple should have units of force per distance (eg. kN/m, kips/ft, etc).
 
-The following example code is a constant 2 force per distance unit line load (UDL)
+..  figure:: ../../_images/lineload.png
+    :align: center
+    :scale: 75 %
+
+    Figure 3: Line load
+
+
+The following example code is a constant Two force per distance unit line load (UDL)
 in the global coordinate system from -1 to 11 distance units in the `x`-axis and along the position in the `z`-axis at 3 distance units.
 
 .. code-block:: python
 
-    barrier_point_1 = ospg.LoadPoint(-1, 0, 3, 2)
-    barrier_point_2 = ospg.LoadPoint(11, 0, 3, 2)
-    Barrier = ospg.LineLoading("Barrier curb load", point1=barrier_point_1, point2=barrier_point_2)
+    barrier_point_1 = ospg.create_load_vertices(x=-1, z=3, p=2)
+    barrier_point_2 = ospg.create_load_vertices(x=11, z=3, p=2)
+    Barrier = ospg.create_load(type="line", name="Barrier curb", point1=barrier_point_1, point2=barrier_point_2)
 
-As before, to position the load instead in a user defined local coordinate system to later create a `Compound load`_ loads, the variable `localpoint` instead of `point` is used.
+
+.. note::
+    As of release 0.1.0, curved line loads are not available.
+
 
 .. _Patch:
 
@@ -93,57 +124,74 @@ Patch loads
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Patch loads are useful to represent loads distributed uniformly over a certain area such as traffic lanes.
 
-[picture]
-
-Patch loads are instantiated with the interface function ``create_load(type="patch)``, or directly
-using :class:`PatchLoading` and required at least four :class:`LoadPoint` tuple (corresponds to the vertices of the patch load).
-Using more than four tuples allows a curve surface loading profile.
+Patch loads are instantiated with the interface function ``create_load(type="patch)``.
+Patch load requires at least four :class:`LoadPoint` tuple (corresponds to the vertices of the patch load) - see Figure 4.
+Using eight tuples allows a curve surface loading profile.
 `p` in the :class:`LoadPoint` tuple should have units of force per area.
 
-The following example code is constant 5 force per area unit patch load 
+
+..  figure:: ../../_images/patchload.png
+    :align: center
+    :scale: 75 %
+
+    Figure 4: Patch load
+
+
+The following example code creates a constant 5 force per area unit patch load
 in the global coordinate system. 
 To position the load instead in a user defined local coordinate system, the variable `localpoint` instead of `point` is used.
 
 .. code-block:: python
 
-    lane_point_1 = ospg.LoadPoint(0, 0, 3, 5)
-    lane_point_2 = ospg.LoadPoint(8, 0, 3, 5)
-    lane_point_3 = ospg.LoadPoint(8, 0, 5, 5)
-    lane_point_4 = ospg.LoadPoint(0, 0, 5, 5)
-    Lane = PatchLoading("Lane 1", point1=lane_point_1, point2=lane_point_2, point3=lane_point_3, point4=lane_point_4)
+    lane_point_1 = ospg.create_load_vertices(x=0, z=3, p=5)
+    lane_point_2 = ospg.create_load_vertices(x=8, z=3, p=5)
+    lane_point_3 = ospg.create_load_vertices(x=8, z=5, p=5)
+    lane_point_4 = ospg.create_load_vertices(x=0, z=5, p=5)
+    Lane = ospg.create_load(type="patch",name="Lane 1", point1=lane_point_1, point2=lane_point_2, point3=lane_point_3, point4=lane_point_4)
+
+.. note::
+    As of release 0.1.0, curved patch loads are not available.
 
 .. _Compound load:
 
 Compound loads
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Two or more of these load types can be combined to form `Compound load`_ loads. All load types are applied in the direction of the global `y`-axis.
+------------------------
+Two or more of the basic load types can be combined to form a Compound load. All load types are applied in the direction of the global `y`-axis.
 Loads in other directions and applied moments are currently not supported.
-
-[picture]
 
 To create a compound load, use the ``create_compound_load()`` function or the
 :class:`CompoundLoad` class - passing load objects for compounding as input parameters.
 
-The following code creates and add a point and line load to the :class:`CompoundLoad` object.
+Compound load are defined in a local coordinate system and then set to global coordinate system of the grillage. Figure 5
+shows the relationship and process of mapping local to global system of a compound load.
+
+..  figure:: ../../_images/compoundload.png
+    :align: center
+    :scale: 75 %
+
+    Figure 5: Compound load
+
+The following code creates a point and line load which is to be assigned as a Compound load.
 
 .. code-block:: python
 
-    # compound load
-    wheel_1 = ospg.PointLoad(ospg.LoadPoint(0, 0, 3, 5))
-    wheel_2 = ospg.PointLoad(ospg.LoadPoint(0, 0, 3, 5))
-    C_Load = ospg.CompoundLoad("Axle tandem")
+    # components in a compound load
+    wheel_1 = ospg.create_load(type="point", point1= ospg.LoadPoint(0, 0, 3, 5))  # point load 1
+    wheel_2 = ospg.create_load(type="point", point1= ospg.LoadPoint(0, 0, 3, 5))  # point load 2
 
-After creating a compound load, users will have to add :class:`~Loads` objects (Point, Line, Patch) to the Compound load object:
+The following code creates a Compound load and adds the created :class:`~Loads` objects (Point, Line, Patch) object to the Compound load object:
 
 .. code-block:: python
 
+    C_Load = ospg.create_compound_load(name = "Axle tandem")  # constructor of compound load
     C_Load.add_load(load_obj=wheel_1)
     C_Load.add_load(load_obj=wheel_2)
 
-After defining all required load objects, :class:`~CompoundLoad` requires users to define the global coordinate which to map the user-defined local coordinates.
+After defining all required load objects, :class:`~CompoundLoad` requires users to define the global coordinate to map the origin of user-defined local coordinates
+to the global coordinate space. This is done using ``set_global_coord()`` function as seen in Figure 5, passing a ```Point(x,y,z)``` namedTuple
 If not specified, the mapping's reference point is default to the **Origin** of coordinate system i.e. (0,0,0)
 
-For example, this code line sets the **Origin** as well as load points for all load objects of **C_load**  by x + 4, y + 0 , and z + 3.
+The following example sets the local **Origin** of the compound load, including all load points for all load objects of **C_load**  by x + 4, y + 0 , and z + 3.
 
 .. code-block:: python
 
@@ -179,7 +227,7 @@ Here are the valid input types for which CompoundLoad accepts:
 
 **Coordinate System**
 
-When adding each load object, the :class:`~CompoundLoad` class allow users to input a ``load_coord=`` keyworded parameter.
+When adding each load object, the :class:`~CompoundLoad` class allow users to input a ``load_coord=`` keyword argument.
 This relates to the load object - whether it was previously defined in the user-defined *local* or in the *global* coordinate system. The following explains the various
 input conditions
 
@@ -195,7 +243,7 @@ input conditions
 .. _load cases:
 
 Load cases
-______________________
+------------------------
 Load cases are a set of load types (`Point`_, `Line`_, `Patch`_, `Compound load`_) used to define a particular loading condition. Compound loads are treated as a single load group within a load case
 having same reference points (e.g. tandem axle) and properties (e.g. load factor)
 
@@ -227,20 +275,29 @@ Moving loads
 ------------------------
 For moving load analysis, users create moving load objects using :class:`MovingLoad` class. The moving load class takes a load type object (`Point`_, `Line`_, `Patch`_, `Compound load`_) and moves the load
 through a path points described by a :class:`Path` object and obtained by the ``get_path_points()`` method. 
-Path are defined using two namedTuple :class:`Point(x,y,z)` to describe its start and end position.
+Path are defined using two namedTuple :class:`Point(x,y,z)` to describe its start and end position. Figure 6 summarizes the relationship between moving loads
+, paths and the position of the loads on the grillage model.
+
+..  figure:: ../../_images/movingload.png
+    :align: center
+    :scale: 75 %
+
+    Figure 6: Moving load
+
 
 The following example code is two point loads defined as a moving load travelling a path from 2 to 4 distance units in the global coordinate system.
 
 .. code-block:: python
 
-    front_wheel = ospg.LoadPoint(0, 0, 0, 6)   # load point 1
-    back_wheel = ospg.LoadPoint(-1, 0, 0, 6)   # load point 2
+    front_wheel = ospg.create_load_vertices(x=0, z=0, p=6)   # load point 1
+    back_wheel = ospg.create_load_vertices(x=-1, z=0, p=6)   # load point 2
+    Line = ospg.create_load(type="line",local_point_1=front_wheel,local_point_2=back_wheel)
     tandem = ospg.create_compound_load("Two wheel vehicle")
 
     single_path = ospg.create_moving_path(start_point=ospg.Point(2,0,2), end_point= ospg.Point(4,0,2))  # create path object
-    move_line = ospg.MovingLoad(name="Line Load moving")
-    move_line.set_path(single_path)
-    move_line.add_loads(load_obj=Line)
+    move_line = ospg.create_moving_load(name="Line Load moving") # moving load obj
+    move_line.set_path(single_path)   # set path
+    move_line.add_loads(load_obj=Line)  # add compound load to moving load
 
 
 From here, use the ``add_load_case()`` function of the :class:`OspGrillage` to add the moving load. Here, the function automatically
@@ -250,32 +307,21 @@ creates multiple `load cases`_ which corresponds to the load condition as the lo
 
     example_bridge.add_load_case(move_point)
 
-Defining load combination
-------------------------
-Load combinations analysis are performed by using the :class:`OspGrillage` function ``add_load_combination()``.
-Load combinations are defined by passing an input dictionary of basic load case name as keys with load factors as
-values. An example dictionary is shown as follows:
-
-.. code-block:: python
-
-    load_combinations = {'Dead Load':1.2,'Live traffic':1.7}
-    example_bridge.add_load_combination(name = "ULS", input_dict = load_combinations )
-
-Load combinations are automatically calculated from the analysis results at the end after analysing all load cases.
-The following section on Running Analysis will explain how these load combinations are extracted.
 
 Running analysis
 ------------------------
 
-Once all defined load cases (static and moving) have been added to the grillage the analysis can be conducted.
+Once all defined load cases (static and moving) have been added to the grillage object, analysis can be conducted.
 
-To analyse loadcase(s), users run the class function ``analyze()``. This function takes either keyword arguments
-``all=`` or ``loadcase=``. When ``all=True``, ``analyze()`` will run all defined load cases. If users wish to run only
-a specific set of load cases, pass a list of load case name str to ``loadcase=``  keyword. This will analyse all load cases of the list.
+To analyse load case(s), users run the class function ``analyze()``. By default``analyze()`` will run all defined load cases.
+If users wish to run only a specific set of load cases, pass a list of load case name str to ``loadcase=``  keyword.
+This will analyse all load cases of the list. Here are a few interface examples of ``analyze()``.
+
 
 .. code-block:: python
-    # run either one
-    example_bridge.analyze(all = True)
+
+    # analyze all
+    example_bridge.analyze()
     # or a single str
     example_bridge.analyze(load_case="DL")
     # or a single element list
@@ -284,36 +330,67 @@ a specific set of load cases, pass a list of load case name str to ``loadcase=``
     example_bridge.analyze(load_case=["DL","SDL"])
 
 
+
 Obtaining results
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Results are returned as `data arrays <http://xarray.pydata.org/en/stable/user-guide/data-structures.html#>`_ (python's Xarray module).
-To this, run the ``get_results()`` function and an output tuple of two objects will be returned:
+__________________________________
+Results are returned by running ``get_results()`` function.
+The results are returned as `an xarray's DataSet <http://xarray.pydata.org/en/stable/user-guide/data-structures.html#>`_ (python's ```Xarray``` module).
+
 
 .. code-block:: python
 
     results =  example_bridge.get_results()
 
+The *results* dataset contains dataarray **variables** with dimensions in brackets:
 
-The *result* data array contains dimensions of:
+* displacement (Loadcase, Node, Component)
+* forces (Loadcase, Element, Component)
 
-* load case : listing all load case
-* Node : listing all nodes within mesh of grillage model
+To read element forces at nodes, an additional array **variable** contains information on element nodes.
+
+* ele_nodes (Element, Nodes)
+
+where Nodes is a 2-D array of node connectivity of beam element e.g. [[1, 2], [2, 3], ... [n , j]]
+
+The coordinates of *results* dataset contains:
+
 * Component: Node responses ordered in this manner - dx,dy,dz,theta_x,theta_y,theta_z,Vx,Vy,Vz,Mx,My,Mz
+* Loadcase: name string of load case - list of str
+* Node: Node numbers of model- list of int
 
-Here is an example of how the data array looks like in practice:
 
-..  figure:: ../images/stucture_dataarray.PNG
-    :align: center
-    :scale: 75 %
+From here, users can use xarray's function for data array to query data.
 
-From here, users can use xarray's function for data array to extract 'slices' of data
 
-For load combinations, users flag the `get_combination=` keyword as *True*.
+Obtaining specific load case results
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+By default, ```get_results()``` returns results of all defined load cases (be it basic or moving).
+If users wish to extract results of a specific load case (e.g. moving load), users pass in a single or a `list`
+of name string(s) of the specific load cases to keyword argument `load_case =`
 
 .. code-block:: python
 
-    load_combination_dict = example_bridge.get_results(get_combinations=True)
+    moving_load_results = example_bridge.get_results(load_case="M1600")
 
-Instead of two data arrays, the function returns a single dict with names of load combinations as key, paired with a data array
-of the load combination as its value. The data array has the same dimensions as those from basic_load_case_result and
-moving_load_results, only this time the arrays are modified by load factors defined for the load combinations.
+The above code will return a data set containing only the incremental load cases for each position of the "M1600" moving load.
+
+Obtaining load combinations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For load combinations, users passes `combination=` argument as a dict with key matching the defined load cases, and
+values of load factors given as floats or ints.
+
+Load combinations are automatically calculated from analysis results at the end after all load cases were analyzed.
+
+.. code-block:: python
+
+    load_combinations = {'Dead Load':1.2,'Live traffic':1.7}
+    load_combination_results = example_bridge.get_results(combinations=load_combinations)
+
+Instead of a single data set, the function returns a single dict with names of load combinations as key, paired with a data array
+of the load combination as its value. The data array has the same dimensions as those from standard
+load case data set, only this time the arrays are modified by load factors defined for the load combinations.
+
+Here is how the structure of a `load_combination_dict` looks like:
+
+[picture]

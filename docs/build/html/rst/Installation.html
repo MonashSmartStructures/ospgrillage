@@ -42,7 +42,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Creating grillage models" href="Module%20description.html" />
-    <link rel="prev" title="Openseespy Grillage wizard" href="../index.html" /> 
+    <link rel="prev" title="OpenSeesPy Grillage wizard - ospgrillage" href="../index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -101,7 +101,9 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Module%20description.html">Creating grillage models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ModelTemplates.html">Model types available</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Running_analysis.html">Performing analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PostProcessing.html">Getting Results</a></li>
 <li class="toctree-l1"><a class="reference internal" href="APIdoc.html">API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ModuleDoc.html">Module design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html">Examples</a></li>
@@ -186,30 +188,31 @@
 </div>
 <div class="section" id="instructions">
 <h2>Instructions<a class="headerlink" href="#instructions" title="Permalink to this headline">¶</a></h2>
-<p>The easiest way to install is to use <cite>pip</cite>.</p>
+<p>The easiest way to install is to use python package index <cite>pip</cite>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">git</span><span class="o">+</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">MonashSmartStructures</span><span class="o">/</span><span class="n">ops</span><span class="o">-</span><span class="n">grillage</span><span class="o">.</span><span class="n">git</span>
 </pre></div>
 </div>
 <p>For development, install as follows:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">MonashSmartStructures</span><span class="o">/</span><span class="n">ops</span><span class="o">-</span><span class="n">grillage</span><span class="o">.</span><span class="n">git</span>
-<span class="n">cd</span> <span class="n">ops</span><span class="o">-</span><span class="n">grillage</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">MonashSmartStructures</span><span class="o">/</span><span class="n">ospgrillage</span><span class="o">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="n">ospgrillage</span>
 <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="installing-dependencies">
 <h2>Installing dependencies<a class="headerlink" href="#installing-dependencies" title="Permalink to this headline">¶</a></h2>
-<p>The <em>ospgrillage</em> module uses several external modules for its usage. A list of modules required for the working
-environment of <em>ospgrillage</em> is found in the <em>requirement.txt</em> file.</p>
-<p>To install a working environment with all required dependencies, run the following command line in terminal</p>
+<p>The <em>ospgrillage</em> module uses several python modules. List of modules for a working python
+environment is found in the <em>requirement.txt</em> file.</p>
+<p>To create a working environment with all required dependencies, run the following command line in terminal</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="tests">
 <h2>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h2>
-<p>The module comes with a pytest protocol named <cite>test_file.py</cite> which users can run <cite>pytest</cite> in the root directory of the module.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pytest</span> <span class="n">test_file</span><span class="o">.</span><span class="n">py</span>
+<p>The module comes with a pytest protocol for each sub module py file, which users can run <cite>pytest</cite> in the root directory of the module
+to run all</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pytest</span>
 </pre></div>
 </div>
 </div>
@@ -222,7 +225,7 @@ environment of <em>ospgrillage</em> is found in the <em>requirement.txt</em> fil
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="Module%20description.html" class="btn btn-neutral float-right" title="Creating grillage models" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="../index.html" class="btn btn-neutral float-left" title="Openseespy Grillage wizard" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../index.html" class="btn btn-neutral float-left" title="OpenSeesPy Grillage wizard - ospgrillage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
