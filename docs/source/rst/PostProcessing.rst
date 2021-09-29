@@ -25,7 +25,7 @@ that represent two groups of load effects:
 #. **displacements** i.e. rotation and translations
 #. **forces** e.g. bending about z axis, Shear forces etc.
 
-..  figure:: ../../_images/structure_dataset.png
+..  figure:: ../../_images/structure_dataset.PNG
     :align: center
     :scale: 75 %
 

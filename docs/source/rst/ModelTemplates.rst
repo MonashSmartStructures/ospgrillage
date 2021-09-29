@@ -56,6 +56,7 @@ This is a more refined model using two element types - shell and beam elements -
 This model has advantageous in modelling slabs - shell elements are well-suited to represent two-dimensional slab behaviour.
 
 To create this model, have `create_grillage()` keyword for model_type set to "shell".
+
 .. code-block:: python
     example_bridge = og.create_grillage(bridge_name="shelllink_10m", long_dim=10, width=7, skew=0,
                                         num_long_grid=6, num_trans_grid=11, edge_beam_dist=1, mesh_type="Orth",
