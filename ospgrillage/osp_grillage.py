@@ -1664,6 +1664,7 @@ class OspGrillage:
     def get_element(self, **kwargs):
         """
         Function to query properties of elements in grillage model.
+
         :keyword:
         * options (`str): string for element data option. Either "elements" or "nodes" (default)
         * z_group_num (`int`): group number [0 to N] for N is the number of groups within a specific grillage element group.
@@ -1682,7 +1683,7 @@ class OspGrillage:
         # prefix namestring variables
         element_option = "elements"
         node_option = "nodes"
-        return_list = []
+        # instantiate variables 
         sorted_return_list = []
         extracted_ele = []
         # options
