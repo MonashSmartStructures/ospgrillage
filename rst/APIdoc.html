@@ -301,7 +301,7 @@ Here is a summary of these functions.</p>
 <td><p>Function to return all information for nodes in grillage model</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_element.html#ospgrillage.osp_grillage.OspGrillage.get_element" title="ospgrillage.osp_grillage.OspGrillage.get_element"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.osp_grillage.OspGrillage.get_element</span></code></a>(…)</p></td>
-<td><p>Function to query properties of elements in grillage model. :keyword: * options (<cite>str): string for element data option. Either “elements” or “nodes” (default) * z_group_num (`int</cite>): group number [0 to N] for N is the number of groups within a specific grillage element group. this is needed for interior beams, where users which to query specific group (e.g. 2nd group)                         within this “interior_main_beam” element group. * x_group_num (<cite>int</cite>): ditto for z_group_num but for x_group * edge_group_num(<cite>int</cite>): ditto for z_group_num but for edge groups.</p></td>
+<td><p>Function to query properties of elements in grillage model.</p></td>
 </tr>
 </tbody>
 </table>
@@ -504,15 +504,19 @@ a load combination.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ospgrillage.osp_grillage.OspGrillage.get_element">
 <span class="sig-name descname"><span class="pre">get_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OspGrillage.get_element" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to query properties of elements in grillage model.
-:keyword:
-* options (<cite>str): string for element data option. Either “elements” or “nodes” (default)
-* z_group_num (`int</cite>): group number [0 to N] for N is the number of groups within a specific grillage element group.</p>
-<blockquote>
-<div><p>this is needed for interior beams, where users which to query specific group (e.g. 2nd group)
-within this “interior_main_beam” element group.</p>
-</div></blockquote>
+<dd><p>Function to query properties of elements in grillage model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
 <ul class="simple">
+<li><p>options (<a href="#id1"><span class="problematic" id="id2">`</span></a>str): string for element data option. Either “elements” or “nodes” (default)</p></li>
+<li><dl class="simple">
+<dt>z_group_num (<cite>int</cite>): group number [0 to N] for N is the number of groups within a specific grillage element group.</dt><dd><p>this is needed for interior beams, where users which to query specific group (e.g. 2nd group)
+within this “interior_main_beam” element group.</p>
+</dd>
+</dl>
+</li>
 <li><p>x_group_num (<cite>int</cite>): ditto for z_group_num but for x_group</p></li>
 <li><p>edge_group_num(<cite>int</cite>): ditto for z_group_num but for edge groups</p></li>
 </ul>

@@ -198,24 +198,33 @@ The following example extracts results for all defined analysis.</p>
 <a class="reference external" href="http://xarray.pydata.org/en/stable/generated/xarray.Dataset.html">xarray DataSet</a>.</p>
 <div class="section" id="structure-of-xarray-dataset">
 <h3>Structure of xarray DataSet<a class="headerlink" href="#structure-of-xarray-dataset" title="Permalink to this headline">¶</a></h3>
-<p>The dataset contains two <a class="reference external" href="http://xarray.pydata.org/en/stable/generated/xarray.DataArray.html#xarray.DataArray">xarray DataArray</a>.
+<p>Figure 1 shows the structure of the xarray DataSet for results.
+The dataset contains two <a class="reference external" href="http://xarray.pydata.org/en/stable/generated/xarray.DataArray.html#xarray.DataArray">xarray DataArray</a>.
 that represent two groups of load effects:</p>
 <ol class="arabic simple">
 <li><p><strong>displacements</strong> i.e. rotation and translations</p></li>
 <li><p><strong>forces</strong> e.g. bending about z axis, Shear forces etc.</p></li>
 </ol>
+<div class="figure align-center" id="id3">
+<a class="reference internal image-reference" href="../_images/structure_dataset.png"><img alt="../_images/structure_dataset.png" src="../_images/structure_dataset.png" /></a>
+<p class="caption"><span class="caption-text">Figure 1: Structure of DataSet.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+</div>
+<p>Depending on the model type, the DataArrays for <strong>forces</strong> can be further categorized for various elements. For example
+the beam and shell elements in the shell hybrid model have forces recorded in <strong>forces_beam</strong> and <strong>forces_shell</strong>
+respectively (Figure 1). When this is the case, <strong>ele_nodes</strong> will be split into <strong>ele_nodes_beam</strong> and <strong>ele_nodes_shell</strong>
+as well.</p>
 <p>Following example shows how each DataArray is accessed from <strong>result</strong> DataSet:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">disp_array</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">displacements</span> <span class="c1"># displacement components</span>
 <span class="n">force_array</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">forces</span> <span class="c1"># force components</span>
 </pre></div>
 </div>
-<p>The DataArrays and DataSet differs for each model types. Table 1 outlines the structure of the two data arrays,
-namely the dimensions and its coordinates, for each model type as of release 0.1.0.</p>
+<p>A third variable present in the DataSet of Figure 1 is the variable for element and its respective nodes.</p>
 </div>
 <div class="section" id="accessing-and-querying-data">
 <h3>Accessing and querying data<a class="headerlink" href="#accessing-and-querying-data" title="Permalink to this headline">¶</a></h3>
 <p>From the data arrays, users can access various component in each load effect using <cite>xarray</cite>’s data array commands.
 Following example extracts the displacment ‘dy’ component using <cite>xarray</cite>’s <cite>sel()</cite> function.</p>
+<p>The following components</p>
 </div>
 </div>
 <div class="section" id="getting-combinations">
@@ -254,15 +263,19 @@ and load effect component (e.g. “dy” for displacements). The <cite>get_envel
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-prename descclassname"><span class="pre">OspGrillage.</span></span><span class="sig-name descname"><span class="pre">get_element</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
-<dd><p>Function to query properties of elements in grillage model.
-:keyword:
-* options (<cite>str): string for element data option. Either “elements” or “nodes” (default)
-* z_group_num (`int</cite>): group number [0 to N] for N is the number of groups within a specific grillage element group.</p>
-<blockquote>
-<div><p>this is needed for interior beams, where users which to query specific group (e.g. 2nd group)
-within this “interior_main_beam” element group.</p>
-</div></blockquote>
+<dd><p>Function to query properties of elements in grillage model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
 <ul class="simple">
+<li><p>options (<a href="#id1"><span class="problematic" id="id2">`</span></a>str): string for element data option. Either “elements” or “nodes” (default)</p></li>
+<li><dl class="simple">
+<dt>z_group_num (<cite>int</cite>): group number [0 to N] for N is the number of groups within a specific grillage element group.</dt><dd><p>this is needed for interior beams, where users which to query specific group (e.g. 2nd group)
+within this “interior_main_beam” element group.</p>
+</dd>
+</dl>
+</li>
 <li><p>x_group_num (<cite>int</cite>): ditto for z_group_num but for x_group</p></li>
 <li><p>edge_group_num(<cite>int</cite>): ditto for z_group_num but for edge groups</p></li>
 </ul>

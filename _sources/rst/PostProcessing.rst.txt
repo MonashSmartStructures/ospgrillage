@@ -18,11 +18,23 @@ The returned **result** variable is an
 Structure of xarray DataSet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Figure 1 shows the structure of the xarray DataSet for results.
 The dataset contains two `xarray DataArray <http://xarray.pydata.org/en/stable/generated/xarray.DataArray.html#xarray.DataArray>`_.
 that represent two groups of load effects:
 
 #. **displacements** i.e. rotation and translations
 #. **forces** e.g. bending about z axis, Shear forces etc.
+
+..  figure:: ../../_images/structure_dataset.png
+    :align: center
+    :scale: 75 %
+
+    Figure 1: Structure of DataSet.
+
+Depending on the model type, the DataArrays for **forces** can be further categorized for various elements. For example
+the beam and shell elements in the shell hybrid model have forces recorded in **forces_beam** and **forces_shell**
+respectively (Figure 1). When this is the case, **ele_nodes** will be split into **ele_nodes_beam** and **ele_nodes_shell**
+as well.
 
 Following example shows how each DataArray is accessed from **result** DataSet:
 
@@ -31,38 +43,7 @@ Following example shows how each DataArray is accessed from **result** DataSet:
     disp_array = result.displacements # displacement components
     force_array = result.forces # force components
 
-The DataArrays and DataSet differs for each model types. Table 1 outlines the structure of the two data arrays,
-namely the dimensions and its coordinates, for each model type as of release 0.1.0.
-
-.. list-table:: Table: 1 Structure of DataSet and DataArray - release 0.1.0.
-   :widths: 25 25 25 25
-   :header-rows: 1
-
-   * - DataArray
-     - displacement
-     - forces
-     -
-   * - Dimension names
-     - Loadcase, Node, Component
-     - Loadcase, Element, Component
-     -
-   * - Loadcase
-     - Namestring of load case
-     - Namestring of load case
-     -
-   * - Component
-     - ["dx", "dy", "dz", "theta_x", "theta_y", "theta_z"]
-     - ["Vx_i", "Vy_i", "Vz_i", "Mx_i", "My_i", "Mz_i", "Vx_j", "Vy_j", "Vz_j", "Mx_j", "My_j",
-                           "Mz_j"]
-     - ["Vx_i", "Vy_i", "Vz_i", "Mx_i", "My_i", "Mz_i", "Vx_j", "Vy_j", "Vz_j", "Mx_j", "My_j",
-                                 "Mz_j","Vx_k", "Vy_k", "Vz_k", "Mx_k", "My_k", "Mz_k","Vx_l", "Vy_l", "Vz_l", "Mx_l",
-                                 "My_l", "Mz_l"]
-     - Yes
-
-
-
-
-
+A third variable present in the DataSet of Figure 1 is the variable for element and its respective nodes.
 
 Accessing and querying data
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -73,6 +54,8 @@ Following example extracts the displacment 'dy' component using `xarray`'s `sel(
 .. code-block:: python
     disp_array.sel(Component='dy') # vertical deflection
     force_array.sel(Component='Mz_i')
+
+The following components
 
 
 Getting combinations
