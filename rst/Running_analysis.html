@@ -108,11 +108,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#compound-loads">Compound loads</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#load-cases">Load cases</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#moving-loads">Moving loads</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#running-analysis">Running analysis</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#obtaining-specific-load-case-results">Obtaining specific load case results</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#obtaining-load-combinations">Obtaining load combinations</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#running-analysis">Running analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="PostProcessing.html">Getting Results</a></li>
@@ -441,53 +437,6 @@ This will analyse all load cases of the list. Here are a few interface examples 
 <span class="c1"># or a list of multiple load cases</span>
 <span class="n">example_bridge</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span><span class="n">load_case</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;DL&quot;</span><span class="p">,</span><span class="s2">&quot;SDL&quot;</span><span class="p">])</span>
 </pre></div>
-</div>
-<p>Results are returned by running <code class="docutils literal notranslate"><span class="pre">get_results()</span></code> function.
-The results are returned as <a class="reference external" href="http://xarray.pydata.org/en/stable/user-guide/data-structures.html#">an xarray’s DataSet</a> (python’s <code class="docutils literal notranslate"><span class="pre">`Xarray`</span></code> module).</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span>  <span class="n">example_bridge</span><span class="o">.</span><span class="n">get_results</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>The <em>results</em> dataset contains dataarray <strong>variables</strong> with dimensions in brackets:</p>
-<ul class="simple">
-<li><p>displacement (Loadcase, Node, Component)</p></li>
-<li><p>forces (Loadcase, Element, Component)</p></li>
-</ul>
-<p>To read element forces at nodes, an additional array <strong>variable</strong> contains information on element nodes.</p>
-<ul class="simple">
-<li><p>ele_nodes (Element, Nodes)</p></li>
-</ul>
-<p>where Nodes is a 2-D array of node connectivity of beam element e.g. [[1, 2], [2, 3], … [n , j]]</p>
-<p>The coordinates of <em>results</em> dataset contains:</p>
-<ul class="simple">
-<li><p>Component: Node responses ordered in this manner - dx,dy,dz,theta_x,theta_y,theta_z,Vx,Vy,Vz,Mx,My,Mz</p></li>
-<li><p>Loadcase: name string of load case - list of str</p></li>
-<li><p>Node: Node numbers of model- list of int</p></li>
-</ul>
-<p>From here, users can use xarray’s function for data array to query data.</p>
-<div class="section" id="obtaining-specific-load-case-results">
-<h3>Obtaining specific load case results<a class="headerlink" href="#obtaining-specific-load-case-results" title="Permalink to this headline">¶</a></h3>
-<p>By default, <code class="docutils literal notranslate"><span class="pre">`get_results()`</span></code> returns results of all defined load cases (be it basic or moving).
-If users wish to extract results of a specific load case (e.g. moving load), users pass in a single or a <cite>list</cite>
-of name string(s) of the specific load cases to keyword argument <cite>load_case =</cite></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">moving_load_results</span> <span class="o">=</span> <span class="n">example_bridge</span><span class="o">.</span><span class="n">get_results</span><span class="p">(</span><span class="n">load_case</span><span class="o">=</span><span class="s2">&quot;M1600&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>The above code will return a data set containing only the incremental load cases for each position of the “M1600” moving load.</p>
-</div>
-<div class="section" id="obtaining-load-combinations">
-<h3>Obtaining load combinations<a class="headerlink" href="#obtaining-load-combinations" title="Permalink to this headline">¶</a></h3>
-<p>For load combinations, users passes <cite>combination=</cite> argument as a dict with key matching the defined load cases, and
-values of load factors given as floats or ints.</p>
-<p>Load combinations are automatically calculated from analysis results at the end after all load cases were analyzed.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">load_combinations</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Dead Load&#39;</span><span class="p">:</span><span class="mf">1.2</span><span class="p">,</span><span class="s1">&#39;Live traffic&#39;</span><span class="p">:</span><span class="mf">1.7</span><span class="p">}</span>
-<span class="n">load_combination_results</span> <span class="o">=</span> <span class="n">example_bridge</span><span class="o">.</span><span class="n">get_results</span><span class="p">(</span><span class="n">combinations</span><span class="o">=</span><span class="n">load_combinations</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Instead of a single data set, the function returns a single dict with names of load combinations as key, paired with a data array
-of the load combination as its value. The data array has the same dimensions as those from standard
-load case data set, only this time the arrays are modified by load factors defined for the load combinations.</p>
-<p>Here is how the structure of a <cite>load_combination_dict</cite> looks like:</p>
-<p>[picture]</p>
 </div>
 </div>
 </div>
