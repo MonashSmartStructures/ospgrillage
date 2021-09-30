@@ -2,7 +2,7 @@
 Performing analysis
 ========================
 
-*ospgrillage* contains grillage analysis utilities which wraps ``OpenSeesPy`` commands to perform load analysis.
+*ospgrillage* contains grillage analysis utilities which wraps `OpenSeesPy` commands to perform load analysis.
 This allow users to specify load cases comprising of multiple loads types and then run load case analysis.
 Furthermore, *ospgrillage* module also options for moving load analysis.
 
@@ -21,12 +21,12 @@ Figure 1 shows the flowchart for the load analysis utilities of *ospgrillage*.
 Defining loads
 ------------------------
 
-Loads are created with the interface function ``create_load()``. Users pass argument for `type=` to specify the load type.
+Loads are created with the interface function :func:`~ospgrillage.load.create_load`. Users pass argument for `type=` to specify the load type.
 Available loads types include `Point`_, `Line`_, and `Patch`_ loads.
 
-Each load type requires user to specify its load point(s). This is achieved by `create_load_vertex()` function. This function creates
+Each load type requires user to specify its load point(s). This is achieved by :func:`~ospgrillage.load.create_load_vertex` function. This function creates
 a `LoadPoint(x,y,z,p)` where `x`,`y`,`z` are the coordinates of the load point and `p` is the magnitude of the vertical loading.
-Note, `p` is a unit magnitude which is interpreted differently based on the load type - this will be later explained.
+Note, `p` is a unit magnitude which is interpreted differently based on the load type - this will be later explained. By default, `y` is `0`.
 
 .. code-block:: python
 
@@ -44,8 +44,7 @@ However, a user-defined local coordinate system is required when defining `Compo
 Nodal loads
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-
-Nodal loads are defined using ``create_load()``, specifying `type=` as "nodal". There are six degrees-of-freedom (DOFs) for
+Nodal loads are defined using :func:`~ospgrillage.load.create_load`, specifying ``type= "nodal"``. There are six degrees-of-freedom (DOFs) for
 acting loads in each node. Nodal loads do not require a load vertex, instead it requires a `NodalForce(Fx,Fy,Fz,Mx,My,Mz)` namedtuple.
 
 The following example creates a NodalFroce namedtuple and a nodal load on Node 13 of a model, with 10 unit force in both transverse X and Y directions.
@@ -93,7 +92,7 @@ Line Loads
 Line loads are loads exerted along a line. Line loads are useful to represent loads such as self weight of longitudinal beams or
 distributed load along beam elements.
 
-Line loads are instantiated with the interface function ``create_load(type="line)`` and required at least two `LoadPoint`s (corresponds to the start and end of the line load) - see Figure 3.
+Line loads are instantiated with :func:`~ospgrillage.load.create_load` passing ``type = "line"`` and required at least two `LoadPoint`s (corresponds to the start and end of the line load) - see Figure 3.
 Using more than two tuples allows a curve line loading profile.
 `p` in the :class:`LoadPoint` tuple should have units of force per distance (eg. kN/m, kips/ft, etc).
 
@@ -300,12 +299,16 @@ The following example code is two point loads defined as a moving load travellin
     move_line.add_loads(load_obj=Line)  # add compound load to moving load
 
 
-From here, use the ``add_load_case()`` function of the :class:`OspGrillage` to add the moving load. Here, the function automatically
+From here, use the :func:`~ospgrillage.osp_grillage.OspGrillage.add_load_case` function of the :class:`OspGrillage` to add the moving load. Here, the function automatically
 creates multiple `load cases`_ which corresponds to the load condition as the load moves through each increment of the path.
 
 .. code-block:: python
 
     example_bridge.add_load_case(move_point)
+
+
+Offsets
+^^^^^^^^^^^^^^^^^^^^
 
 
 Running analysis

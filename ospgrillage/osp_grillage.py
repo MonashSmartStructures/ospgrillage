@@ -633,54 +633,6 @@ class OspGrillage:
                                                                        material_tag=material_tag,
                                                                        section_tag=section_tag)
 
-            # if z_flag:
-            #     for z_groups in self.Mesh_obj.common_z_group_element[common_member_tag]:
-            #         # assign properties to elements in z group
-            #
-            #         ele_command_list += self._get_element_command_list(grillage_member_obj=grillage_member_obj,
-            #                                                            list_of_ele=self.Mesh_obj.z_group_to_ele[
-            #                                                                z_groups],
-            #                                                            material_tag=material_tag,
-            #                                                            section_tag=section_tag)
-            #
-            #         # for ele in self.Mesh_obj.z_group_to_ele[z_groups]:
-            #         #     node_tag_list = [ele[1], ele[2]]
-            #         #     ele_str = grillage_member_obj.get_element_command_str(ele_tag=ele[0],
-            #         #                                                           node_tag_list=node_tag_list,
-            #         #                                                           transf_tag=ele[4], ele_width=ele_width,
-            #         #                                                           materialtag=material_tag,
-            #         #                                                           sectiontag=section_tag)
-            #         #
-            #         #     ele_command_list.append(ele_str)
-            #
-            #         self.ele_group_assigned_list.append(z_groups)
-            # elif edge_flag:
-            #     for ele in self.Mesh_obj.edge_span_ele:
-            #         if ele[3] == common_member_tag:
-            #             node_tag_list = [ele[1], ele[2]]
-            #             ele_str = grillage_member_obj.get_element_command_str(ele_tag=ele[0],
-            #                                                                   node_tag_list=node_tag_list,
-            #                                                                   transf_tag=ele[4], ele_width=ele_width,
-            #                                                                   materialtag=material_tag,
-            #                                                                   sectiontag=section_tag)
-            #             ele_command_list.append(ele_str)
-            #         self.ele_group_assigned_list.append("edge: {}".format(common_member_tag))
-            # here set the element command list to the common member tag, if previously defined (key exist),
-            # overwrite the element command list for that key
-            #elif x_flag:
-                # assigns all transverse ele (regardless of width)
-                # This option is only for uniform grids
-                # for ele in self.Mesh_obj.trans_ele:
-                #     n1 = ele[1]  # node i
-                #     n2 = ele[2]  # node j
-                #     node_tag_list = [n1, n2]
-                #     ele_width = 1
-                #     ele_str = grillage_member_obj.get_element_command_str(ele_tag=ele[0], node_tag_list=node_tag_list,
-                #                                                           transf_tag=ele[4], ele_width=ele_width,
-                #                                                           materialtag=material_tag,
-                #                                                           sectiontag=section_tag)
-
-                # ele_command_list.append(ele_str)
         ele_command_dict[member] = ele_command_list
         self.element_command_list.append(ele_command_dict)
 
@@ -865,15 +817,6 @@ class OspGrillage:
                 coord = self.Mesh_obj.node_spec[node_tag]['coordinate']
                 coord_point = Point(coord[0], coord[1], coord[2])
                 point_tuple_list.append(coord_point)
-            # if not any([n >= 2 for n in [len(val) for val in int_list.values()]]):
-            # if grid_key == start_grid or start_grid in self.Mesh_obj.grid_vicinity_dict[grid_key].values():
-            #     int_list.setdefault("ends", [[line_load_obj.load_point_1.x, line_load_obj.load_point_1.y,
-            #                                   line_load_obj.load_point_1.z]])
-            #
-            # elif grid_key == last_grid or last_grid in self.Mesh_obj.grid_vicinity_dict[grid_key].values():
-            #     int_list.setdefault("ends", [[line_load_obj.line_end_point.x, line_load_obj.line_end_point.y,
-            #                                   line_load_obj.line_end_point.z]])
-            # check if both points are in grid
 
             if check_point_in_grid(start_load_vertex, point_tuple_list):
                 # int_list.setdefault("ends", [[line_load_obj.load_point_1.x, line_load_obj.load_point_1.y,
@@ -1472,7 +1415,7 @@ class OspGrillage:
                                           pattern_counter=self.global_pattern_counter,
                                           node_counter=self.Mesh_obj.node_counter,
                                           ele_counter=self.Mesh_obj.element_counter,
-                                          constraint_type=self.constraint_type)
+                                          constraint_type=self.constraint_type,load_case=load_case_obj)
             load_case_analysis.add_load_command(load_command, load_factor=load_factor)
             # run the Analysis object, collect results, and store Analysis object in the list for Analysis load case
             self.global_time_series_counter, self.global_pattern_counter, node_disp, ele_force \
@@ -1495,7 +1438,7 @@ class OspGrillage:
                                                 pattern_counter=self.global_pattern_counter,
                                                 node_counter=self.Mesh_obj.node_counter,
                                                 ele_counter=self.Mesh_obj.element_counter,
-                                                constraint_type=self.constraint_type)
+                                                constraint_type=self.constraint_type,load_case=load_case_obj)
                 incremental_analysis.add_load_command(load_command, load_factor=load_factor)
                 self.global_time_series_counter, self.global_pattern_counter, node_disp, ele_force \
                     = incremental_analysis.evaluate_analysis()
@@ -1628,6 +1571,7 @@ class OspGrillage:
 
                     # load_case_name = load_case_dict['loadcase'].name
                     # if first load case, the first extracted array becomes the summation array
+                    # TODO, coordinate is now Load case Object
                     if summation_array is None:
                         summation_array = basic_da.sel(Loadcase=load_case_name) * load_factor
                     else:  # add to summation array
@@ -1744,7 +1688,7 @@ class Analysis:
 
     def __init__(self, analysis_name: str, ops_grillage_name: str, pyfile: bool, node_counter, ele_counter,
                  analysis_type='Static',
-                 time_series_counter=1, pattern_counter=1, **kwargs):
+                 time_series_counter=1, pattern_counter=1, load_case:LoadCase=None, **kwargs):
         self.analysis_name = analysis_name
         self.ops_grillage_name = ops_grillage_name
         self.time_series_tag = None
@@ -1777,6 +1721,8 @@ class Analysis:
         self.mesh_node_counter = node_counter  # set node counter based on current Mesh
         self.mesh_ele_counter = ele_counter  # set ele counter based on current Mesh
         self.remove_pattern_command = "ops.remove('loadPattern',{})\n"  # default remove load command
+        # save deepcopy of load case object
+        self.load_cases_obj = deepcopy(load_case)
         # if true for pyfile, create pyfile for analysis command
         if self.pyfile:
             with open(self.analysis_file_name, 'w') as file_handle:
@@ -1924,7 +1870,7 @@ class Results:
                 # get ele nodes
                 ele_nodes = ops.eleNodes(ele_num)
                 ele_nodes_dict.update({ele_num: ele_nodes})
-            self.basic_load_case_record.setdefault(analysis_obj.analysis_name,
+            self.basic_load_case_record.setdefault(analysis_obj.load_cases_obj,
                                                    [node_disp, ele_force_dict, ele_nodes_dict])
 
             # repeat to extract global forces instead
@@ -1933,7 +1879,7 @@ class Results:
                 global_ele_force_dict.update({ele_num: ele_forces})
                 ele_nodes = ops.eleNodes(ele_num)  # get ele nodes
                 ele_nodes_dict.update({ele_num: ele_nodes})
-            self.basic_load_case_record_global_forces.setdefault(analysis_obj.analysis_name,
+            self.basic_load_case_record_global_forces.setdefault(analysis_obj.load_cases_obj,
                                                                  [node_disp, global_ele_force_dict, ele_nodes_dict])
         # if moving load, input is a list of analysis obj
         elif list_of_inc_analysis:
