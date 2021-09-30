@@ -209,8 +209,8 @@ that represent two groups of load effects:</p>
 <a class="reference internal image-reference" href="../_images/structure_dataset.PNG"><img alt="../_images/structure_dataset.PNG" src="../_images/structure_dataset.PNG" /></a>
 <p class="caption"><span class="caption-text">Figure 1: Structure of DataSet.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </div>
-<p>Depending on the model type, the DataArrays for <strong>forces</strong> can be further categorized for various elements. For example
-the beam and shell elements in the shell hybrid model have forces recorded in <strong>forces_beam</strong> and <strong>forces_shell</strong>
+<p>Depending on the model type, the DataArray for <strong>forces</strong> is grouped according to element types. For example
+the <a class="reference internal" href="ModelTemplates.html#shell-hybrid-model"><span class="std std-ref">Shell and beam hybrid model</span></a> with beam and shell elements have forces recorded in <strong>forces_beam</strong> and <strong>forces_shell</strong>
 respectively (Figure 1). When this is the case, <strong>ele_nodes</strong> will be split into <strong>ele_nodes_beam</strong> and <strong>ele_nodes_shell</strong>
 as well.</p>
 <p>Following example shows how each DataArray is accessed from <strong>result</strong> DataSet:</p>

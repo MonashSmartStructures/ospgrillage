@@ -183,7 +183,7 @@
 <li><p>longitudinal members representing composite section along longitudinal direction (e.g. main beams)</p></li>
 <li><p>transverse members representing slabs or secondary beam sections.</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">OspGrillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;SuperT_10m&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">skew</span><span class="o">=-</span><span class="mi">42</span><span class="p">,</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_grillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;SuperT_10m&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">skew</span><span class="o">=-</span><span class="mi">42</span><span class="p">,</span>
                                 <span class="n">num_long_grid</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">edge_beam_dist</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mesh_type</span><span class="o">=</span><span class="s2">&quot;Ortho&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -209,11 +209,11 @@
 <p>Joint offsets are linked via a rigid link. Information for joint offsets can be found in <cite>OpenSeesPy</cite>’s <a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/LinearTransf.html">geomtransf</a></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>As of release 0.1.0, <cite>OpenSeesPy</cite> visualization module is unable to visualize the joint offsets.</p>
+<p>As of release 0.1.0, <cite>OpenSeesPy</cite> visualization module ops_vis is unable to visualize the joint offsets.</p>
 </div>
 </div>
 <div class="section" id="shell-and-beam-hybrid-model">
-<h2>Shell and beam hybrid model<a class="headerlink" href="#shell-and-beam-hybrid-model" title="Permalink to this headline">¶</a></h2>
+<span id="shell-hybrid-model"></span><h2>Shell and beam hybrid model<a class="headerlink" href="#shell-and-beam-hybrid-model" title="Permalink to this headline">¶</a></h2>
 <p>This is a more refined model using two element types - shell and beam elements - with the following features:</p>
 <ul class="simple">
 <li><p>Shell elements lay in grids to represent bridge decks.</p></li>
