@@ -31,8 +31,8 @@ that represent two groups of load effects:
 
     Figure 1: Structure of DataSet.
 
-Depending on the model type, the DataArrays for **forces** can be further categorized for various elements. For example
-the beam and shell elements in the shell hybrid model have forces recorded in **forces_beam** and **forces_shell**
+Depending on the model type, the DataArray for **forces** is grouped according to element types. For example
+the :ref:`shell hybrid model` with beam and shell elements have forces recorded in **forces_beam** and **forces_shell**
 respectively (Figure 1). When this is the case, **ele_nodes** will be split into **ele_nodes_beam** and **ele_nodes_shell**
 as well.
 

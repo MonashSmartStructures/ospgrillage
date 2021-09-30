@@ -1896,6 +1896,17 @@ class Results:
         self.moving_load_counter = 0
         # store mesh data of holding model
         self.mesh_obj = mesh_obj
+        # coordinates for dimensions
+        self.displacement_component = ["dx", "dy", "dz", "theta_x", "theta_y", "theta_z"]
+        self.force_component = ["Vx_i", "Vy_i", "Vz_i", "Mx_i", "My_i", "Mz_i", "Vx_j", "Vy_j", "Vz_j", "Mx_j", "My_j",
+                           "Mz_j"]
+        # for force component of shell model (4 nodes)
+        self.force_component_shell = ["Vx_i", "Vy_i", "Vz_i", "Mx_i", "My_i", "Mz_i", "Vx_j", "Vy_j", "Vz_j", "Mx_j", "My_j",
+                                 "Mz_j","Vx_k", "Vy_k", "Vz_k", "Mx_k", "My_k", "Mz_k","Vx_l", "Vy_l", "Vz_l", "Mx_l",
+                                 "My_l", "Mz_l"]
+        # dimension names
+        self.dim = ["Loadcase", "Node", "Component"]
+        self.dim2 = ["Loadcase", "Element", "Component"]
 
     def insert_analysis_results(self, analysis_obj: Analysis = None, list_of_inc_analysis: list = None):
         # Create/parse data based on incoming analysis object or list of analysis obj (moving load)
@@ -1954,20 +1965,10 @@ class Results:
 
     def compile_data_array(self, local_force_option=False):
         # Function called to compile analysis results into xarray
-        # Dimension names
-        dim = ["Loadcase", "Node", "Component"]
-        dim2 = ["Loadcase", "Element", "Component"]
         # Coordinates of dimension
         node = list(self.mesh_obj.node_spec.keys())  # for Node
         ele = list(ops.getEleTags())
-        # for Component
-        displacement_component = ["dx", "dy", "dz", "theta_x", "theta_y", "theta_z"]
-        force_component = ["Vx_i", "Vy_i", "Vz_i", "Mx_i", "My_i", "Mz_i", "Vx_j", "Vy_j", "Vz_j", "Mx_j", "My_j",
-                           "Mz_j"]
-        # coordinate for force component of shell
-        force_component_shell = ["Vx_i", "Vy_i", "Vz_i", "Mx_i", "My_i", "Mz_i", "Vx_j", "Vy_j", "Vz_j", "Mx_j", "My_j",
-                                 "Mz_j","Vx_k", "Vy_k", "Vz_k", "Mx_k", "My_k", "Mz_k","Vx_l", "Vy_l", "Vz_l", "Mx_l",
-                                 "My_l", "Mz_l"]
+
         # Sort data for dataArrays
         # for basic load case  {loadcasename:[{1:,2:...},{1:,2:...}], ... , loadcasename:[{1:,2:...},{1:,2:...} }
         basic_array_list = []
@@ -1992,8 +1993,8 @@ class Results:
             # extract force
             basic_ele_force_list.append([a for a in list(resp_list_of_2_dict[1].values())]) # list index 1 is force
             # extract based on element type
-            base_ele_force_list_beam.append([a for a in list(resp_list_of_2_dict[1].values()) if len(a) ==12])
-            base_ele_force_list_shell.append([a for a in list(resp_list_of_2_dict[1].values()) if len(a) ==24])
+            base_ele_force_list_beam.append([a for a in list(resp_list_of_2_dict[1].values()) if len(a) ==len(self.force_component)])
+            base_ele_force_list_shell.append([a for a in list(resp_list_of_2_dict[1].values()) if len(a) ==len(self.force_component_shell)])
             if not extracted_ele_nodes_list:
                 ele_nodes_list = list(resp_list_of_2_dict[2].values())  # list index 2 is ele nodes variable
                 extracted_ele_nodes_list = True  # set to true, only extract if its the first time extracting
@@ -2012,8 +2013,8 @@ class Results:
                 basic_array_list.append([a for a in list(inc_resp_list_of_2_dict[0].values())])
                 basic_ele_force_list.append([a for a in list(inc_resp_list_of_2_dict[1].values())])
 
-                base_ele_force_list_beam.append([a for a in list(inc_resp_list_of_2_dict[1].values()) if len(a) == 12])
-                base_ele_force_list_shell.append([a for a in list(inc_resp_list_of_2_dict[1].values()) if len(a) == 24])
+                base_ele_force_list_beam.append([a for a in list(inc_resp_list_of_2_dict[1].values()) if len(a) == len(self.force_component)])
+                base_ele_force_list_shell.append([a for a in list(inc_resp_list_of_2_dict[1].values()) if len(a) == len(self.force_component_shell)])
                 # Coordinate of Load Case dimension
                 # inc_moving_load_case_coord.append(increment_load_case_name)
                 basic_load_case_coord.append(increment_load_case_name)
@@ -2036,33 +2037,28 @@ class Results:
         # create data array for each basic load case if any, else return
         if basic_array.size:
             # displacement data array
-            basic_da = xr.DataArray(data=basic_array, dims=dim,
-                                    coords={dim[0]: basic_load_case_coord, dim[1]: node, dim[2]: displacement_component})
+            basic_da = xr.DataArray(data=basic_array, dims=self.dim,
+                                    coords={self.dim[0]: basic_load_case_coord, self.dim[1]: node, self.dim[2]: self.displacement_component})
 
-            force_da_beam = xr.DataArray(data=force_array_beam, dims=dim2,
-                                         coords={dim2[0]: basic_load_case_coord, dim2[1]: ele_tag_beam,
-                                                 dim2[2]: force_component})
-            ele_nodes_beam = xr.DataArray(data=ele_array_beam, dims=[dim2[1], "Nodes"],
-                                          coords={dim2[1]: ele_tag_beam, "Nodes": ["i", "j"]})
+            force_da_beam = xr.DataArray(data=force_array_beam, dims=self.dim2,
+                                         coords={self.dim2[0]: basic_load_case_coord, self.dim2[1]: ele_tag_beam,
+                                                 self.dim2[2]: self.force_component})
+            ele_nodes_beam = xr.DataArray(data=ele_array_beam, dims=[self.dim2[1], "Nodes"],
+                                          coords={self.dim2[1]: ele_tag_beam, "Nodes": ["i", "j"]})
             # create data set based on
             if isinstance(self.mesh_obj,ShellLinkMesh):
-                force_da_shell = xr.DataArray(data=force_array_shell, dims=dim2,
-                                              coords={dim2[0]: basic_load_case_coord, dim2[1]: ele_tag_shell,
-                                                      dim2[2]: force_component_shell})
-                ele_nodes_shell = xr.DataArray(data=ele_array_shell, dims=[dim2[1], "Nodes"],
-                                               coords={dim2[1]: ele_tag_shell, "Nodes": ["i", "j", "k", "l"]})
+                force_da_shell = xr.DataArray(data=force_array_shell, dims=self.dim2,
+                                              coords={self.dim2[0]: basic_load_case_coord, self.dim2[1]: ele_tag_shell,
+                                                      self.dim2[2]: self.force_component_shell})
+                ele_nodes_shell = xr.DataArray(data=ele_array_shell, dims=[self.dim2[1], "Nodes"],
+                                               coords={self.dim2[1]: ele_tag_shell, "Nodes": ["i", "j", "k", "l"]})
                 result = xr.Dataset(
                     {"displacements": basic_da, "forces_beam": force_da_beam, "forces_shell": force_da_shell
                         , "ele_nodes_beam": ele_nodes_beam, "ele_nodes_shell": ele_nodes_shell})
             else:
                 result = xr.Dataset({"displacements": basic_da, "forces": force_da_beam, "ele_nodes": ele_nodes_beam})
-            # element force data array
-            #force_da = xr.DataArray(data=force_array, dims=dim2,
-                                    #coords={dim2[0]: basic_load_case_coord, dim2[1]: ele, dim2[2]: force_component})
-            #ele_nodes = xr.DataArray(data=ele_array, dims=[dim2[1], "Nodes"],
-                                     #coords={dim2[1]: ele, "Nodes": ["i", "j"]})
 
-        else:
+        else: # not valid result return None
             result = None
         return result
 
@@ -2132,17 +2128,9 @@ class OspGrillageShell(OspGrillage):
                                   "\nimport openseespy.postprocessing.Get_Rendering as opsplt\n")
         # model() command
         self._write_op_model()
-        # create grillage mesh object
+        # create grillage mesh object + beam element groups
         self._run_mesh_generation()
-        # create element commands of grillage model
-        for ele_dict in self.element_command_list:
-            for ele_list in ele_dict.values():
-                for ele_str in ele_list:
-                    if self.pyfile:
-                        with open(self.filename, 'a') as file_handle:
-                            file_handle.write(ele_str)
-                    else:
-                        eval(ele_str)
+
         # create shell element commands
         for ele_str in self.shell_element_command_list:
             if self.pyfile:

@@ -11,7 +11,7 @@ This is the most common form of grillage model which comprise of beam elements l
 
 .. code-block:: python
 
-    example_bridge = og.OspGrillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=-42,
+    example_bridge = og.create_grillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=-42,
                                     num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
 
 Figure 1 shows a beam grillage model type - outlining the elements.
@@ -42,8 +42,9 @@ Joint offsets are linked via a rigid link. Information for joint offsets can be 
 
 
 .. note::
-    As of release 0.1.0, `OpenSeesPy` visualization module is unable to visualize the joint offsets.
+    As of release 0.1.0, `OpenSeesPy` visualization module ops_vis is unable to visualize the joint offsets.
 
+.. _shell hybrid model:
 
 Shell and beam hybrid model
 --------------------------------------
