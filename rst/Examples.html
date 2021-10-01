@@ -229,7 +229,6 @@ and results are compared with those from LUSAS model.</p>
 <span class="n">end_transverse_section</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_section</span><span class="p">(</span><span class="n">A</span><span class="o">=</span><span class="mf">0.504</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="n">m2</span><span class="p">,</span> <span class="n">J</span><span class="o">=</span><span class="mf">2.5012e-3</span><span class="o">*</span><span class="n">m3</span><span class="p">,</span> <span class="n">Iy</span><span class="o">=</span><span class="mf">0.04116</span><span class="o">*</span><span class="n">m4</span><span class="p">,</span> <span class="n">Iz</span><span class="o">=</span><span class="mf">0.6804e-3</span><span class="o">*</span><span class="n">m4</span><span class="p">,</span>
                                              <span class="n">Ay</span><span class="o">=</span><span class="mf">0.21</span><span class="o">*</span><span class="n">m2</span><span class="p">,</span> <span class="n">Az</span><span class="o">=</span><span class="mf">0.21</span><span class="o">*</span><span class="n">m2</span><span class="p">)</span>
 
-
  <span class="c1"># define grillage members</span>
 <span class="n">longitudinal_beam</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_member</span><span class="p">(</span><span class="n">section</span><span class="o">=</span><span class="n">longitudinal_section</span><span class="p">,</span> <span class="n">material</span><span class="o">=</span><span class="n">concrete</span><span class="p">)</span>
 <span class="n">edge_longitudinal_beam</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_member</span><span class="p">(</span><span class="n">section</span><span class="o">=</span><span class="n">edge_longitudinal_section</span><span class="p">,</span> <span class="n">material</span><span class="o">=</span><span class="n">concrete</span><span class="p">)</span>
@@ -259,7 +258,8 @@ and results are compared with those from LUSAS model.</p>
 
 <span class="c1"># create the model in OpenSees</span>
 <span class="n">simple_grid</span><span class="o">.</span><span class="n">create_osp_model</span><span class="p">(</span><span class="n">pyfile</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1"># pyfile will not (False) be generated for further analysis (should be create_osp?)</span>
-<span class="n">ospg</span><span class="o">.</span><span class="n">opsplt</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="s2">&quot;nodes&quot;</span><span class="p">)</span> <span class="c1"># plotting of grid for visualisation using ops_vis module</span>
+<span class="n">ospg</span><span class="o">.</span><span class="n">opsplt</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="s2">&quot;nodes&quot;</span><span class="p">)</span> <span class="c1"># plotting using Get_rendering</span>
+<span class="n">og</span><span class="o">.</span><span class="n">opsv</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">az_el</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="c1"># plotting using ops_vis</span>
 </pre></div>
 </div>
 <p>Figure 1 shows the plotted model in OpenSees model space.</p>
@@ -270,7 +270,7 @@ and results are compared with those from LUSAS model.</p>
 </div>
 <div class="section" id="adding-load-cases-to-model">
 <h3>Adding load cases to model<a class="headerlink" href="#adding-load-cases-to-model" title="Permalink to this headline">¶</a></h3>
-<p>Here are a few examples on creating/adding load cases to the <cite>simple_grid</cite> model.</p>
+<p>Here we create and add load cases to the <cite>simple_grid</cite> model for analysis.</p>
 <p>First load case is a line load running along mid span width.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># reference unit load for various load types</span>
 <span class="n">P</span> <span class="o">=</span> <span class="mi">1</span><span class="o">*</span><span class="n">kN</span>
@@ -348,7 +348,7 @@ in Local coordinates then setting the local coordinate system of compound load t
 </div>
 <div class="section" id="adding-a-moving-load-analysis">
 <h3>Adding a moving load analysis<a class="headerlink" href="#adding-a-moving-load-analysis" title="Permalink to this headline">¶</a></h3>
-<p>Here’s how we create and add a moving load analysis to the 28 m bridge model.</p>
+<p>Here’s how we create and add a moving load (e.g. a truck) to the 28 m bridge model.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 2 axle truck (equal loads, 2x2 spacing centre line running)</span>
 
 <span class="c1"># create truck in local coordinate system</span>
@@ -390,22 +390,15 @@ in Local coordinates then setting the local coordinate system of compound load t
 </div>
 <div class="section" id="analysis">
 <h3>Analysis<a class="headerlink" href="#analysis" title="Permalink to this headline">¶</a></h3>
-<p>The following lines of code shows how we can process the output data array. Uncomment each line to test out the ways to
-run <code class="docutils literal notranslate"><span class="pre">analyze()</span></code> function.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run analysis</span>
-<span class="n">simple_grid</span><span class="o">.</span><span class="n">analyze</span><span class="p">()</span> <span class="c1"># by default analyzes all load cases</span>
-</pre></div>
-</div>
-<p>If users wish to <code class="docutils literal notranslate"><span class="pre">analyze()</span></code>  a specific load case, provide load case’s name string as keyword argument - either as a
-<cite>str</cite>, or <cite>list</cite> of <cite>str</cite>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">simple_grid</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span><span class="n">load_case</span> <span class="o">=</span> <span class="s2">&quot;line_load_case&quot;</span><span class="p">)</span> <span class="c1"># by default analyzes all load cases</span>
+<span class="n">simple_grid</span><span class="o">.</span><span class="n">analyze</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="getting-load-case-results">
 <h3>Getting load case results<a class="headerlink" href="#getting-load-case-results" title="Permalink to this headline">¶</a></h3>
-<p>Results are obtained via <code class="docutils literal notranslate"><span class="pre">get_results()</span></code>. The following code lines extracts all load case results. Results are presented
-as <cite>xarray</cite> datasets. See <span class="xref std std-ref">Running_analysis</span> for more information on the <cite>xarray</cite> formats.</p>
+<p>Get <cite>xarray</cite> DataSet of results.</p>
+<p>For information on <code class="docutils literal notranslate"><span class="pre">results</span></code> variable, see <span class="xref std std-ref">PostProcessing</span>.</p>
 </div>
 <div class="section" id="getting-load-combination-results">
 <h3>Getting load combination results<a class="headerlink" href="#getting-load-combination-results" title="Permalink to this headline">¶</a></h3>
@@ -420,14 +413,14 @@ as <cite>xarray</cite> datasets. See <span class="xref std std-ref">Running_anal
 </div>
 <div class="section" id="data-processing">
 <h3>Data processing<a class="headerlink" href="#data-processing" title="Permalink to this headline">¶</a></h3>
-<p>Having the results be in <cite>xarray</cite> DataSet format, we can do many things with it such as slicing and query its data.</p>
+<p>Having the results be in <cite>xarray</cite> DataSet, we can do many things with it such as slicing and query its data.</p>
 <p>The following example shows how to extract bending moments in midspan - the critical location for the defined load cases.</p>
 <p>Extracting only the static loads. We can extract moments in global z for each <cite>i</cite> node of grillage member (since <cite>i</cite> node correspond to the nodes in the mid span).</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;forces&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Loadcase</span><span class="o">=</span><span class="n">static_cases_names</span><span class="p">,</span> <span class="n">Element</span><span class="o">=</span><span class="n">ele_set</span><span class="p">,</span> <span class="n">Component</span><span class="o">=</span><span class="s2">&quot;Mz_i&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">extracted_bending</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;forces&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Loadcase</span><span class="o">=</span><span class="n">static_cases_names</span><span class="p">,</span> <span class="n">Element</span><span class="o">=</span><span class="n">ele_set</span><span class="p">,</span> <span class="n">Component</span><span class="o">=</span><span class="s2">&quot;Mz_i&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="simple">
-<dt><cite>results</cite> variable now holds the load case for ‘Line Test Case’, ‘Point Test Case(Global)’, ‘Points Test Case (Local in Point)’,</dt><dd><p>‘Points Test Case (Local in Compound)’, ‘Patch Test Case’.</p>
+<dt><cite>extracted_bending</cite> variable now holds the load case for ‘Line Test Case’, ‘Point Test Case(Global)’, ‘Points Test Case (Local in Point)’,</dt><dd><p>‘Points Test Case (Local in Compound)’, ‘Patch Test Case’.</p>
 </dd>
 </dl>
 <p>Should we sum the nodal forces from members on one side, we expect approximate equal PL/4 (similar) or sum of the following

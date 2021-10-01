@@ -108,7 +108,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#compound-loads">Compound loads</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#load-cases">Load cases</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#moving-loads">Moving loads</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#offsets">Offsets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#advance-usage">Advance usage</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#running-analysis">Running analysis</a></li>
@@ -188,12 +188,10 @@
             
   <div class="section" id="performing-analysis">
 <h1>Performing analysis<a class="headerlink" href="#performing-analysis" title="Permalink to this headline">¶</a></h1>
-<p><em>ospgrillage</em> contains grillage analysis utilities which wraps <cite>OpenSeesPy</cite> commands to perform load analysis.
-This allow users to specify load cases comprising of multiple loads types and then run load case analysis.
-Furthermore, <em>ospgrillage</em> module also options for moving load analysis.</p>
+<p><em>ospgrillage</em> contains a load module which wraps <cite>OpenSeesPy</cite> commands to perform load analysis.</p>
 <div class="section" id="load-analysis-workflow">
 <h2>Load analysis workflow<a class="headerlink" href="#load-analysis-workflow" title="Permalink to this headline">¶</a></h2>
-<p>Figure 1 shows the flowchart for the load analysis utilities of <em>ospgrillage</em>.</p>
+<p>Figure 1 shows the flowchart for the load module of <em>ospgrillage</em>.</p>
 <div class="figure align-center" id="id2">
 <a class="reference internal image-reference" href="../_images/flowchart2.png"><img alt="../_images/flowchart2.png" src="../_images/flowchart2.png" /></a>
 <p class="caption"><span class="caption-text">Figure 1: Load analysis utility flow chart</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
@@ -205,34 +203,36 @@ Furthermore, <em>ospgrillage</em> module also options for moving load analysis.<
 Available loads types include <a class="reference internal" href="#point">Point</a>, <a class="reference internal" href="#line">Line</a>, and <a class="reference internal" href="#patch">Patch</a> loads.</p>
 <p>Each load type requires user to specify its load point(s). This is achieved by <a class="reference internal" href="generated/ospgrillage.load.create_load_vertex.html#ospgrillage.load.create_load_vertex" title="ospgrillage.load.create_load_vertex"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_load_vertex()</span></code></a> function. This function creates
 a <cite>LoadPoint(x,y,z,p)</cite> where <cite>x</cite>,`y`,`z` are the coordinates of the load point and <cite>p</cite> is the magnitude of the vertical loading.
-Note, <cite>p</cite> is a unit magnitude which is interpreted differently based on the load type - this will be later explained. By default, <cite>y</cite> is <cite>0</cite>.</p>
+Note, <cite>p</cite> is a unit magnitude which is interpreted differently based on the load type - this will be later explained.
+By default, <cite>y</cite> is <cite>0</cite> i.e. the grillage model plane.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">point_load_location</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_load_vertices</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>  <span class="c1"># create load point</span>
 </pre></div>
 </div>
 <p>Depending on the load type, a minimum number of LoadPoint namedTuple are required.
 These are set to each load type’s <cite>point#=</cite> variable for the load type’s coordinate system,
 where # is a digit from 1 to 9.</p>
-<p>Loads are generally in the global coordinate system with respect to the created grillage model.
+<p>Loads are generally defined in the global coordinate system with respect to the created grillage model.
 However, a user-defined local coordinate system is required when defining <a class="reference internal" href="#compound-load">Compound load</a> later on.</p>
 <div class="section" id="nodal-loads">
 <h3>Nodal loads<a class="headerlink" href="#nodal-loads" title="Permalink to this headline">¶</a></h3>
 <p>Nodal loads are defined using <a class="reference internal" href="generated/ospgrillage.load.create_load.html#ospgrillage.load.create_load" title="ospgrillage.load.create_load"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_load()</span></code></a>, specifying <code class="docutils literal notranslate"><span class="pre">type=</span> <span class="pre">&quot;nodal&quot;</span></code>. There are six degrees-of-freedom (DOFs) for
 acting loads in each node. Nodal loads do not require a load vertex, instead it requires a <cite>NodalForce(Fx,Fy,Fz,Mx,My,Mz)</cite> namedtuple.</p>
-<p>The following example creates a NodalFroce namedtuple and a nodal load on Node 13 of a model, with 10 unit force in both transverse X and Y directions.</p>
+<p>The following example creates a <cite>NodalFroce</cite> namedtuple and a nodal load on Node 13 of a model, with 10 unit force in both transverse X and Y directions.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">nodalforce</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">NodalForce</span><span class="p">(</span><span class="n">Fx</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">Fy</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">node13force</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_load</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;nodal&quot;</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;nodal 13&quot;</span><span class="p">,</span> <span class="n">node_force</span><span class="o">=</span><span class="n">nodalforce</span><span class="p">)</span> <span class="c1"># load values in other dofs default to 0</span>
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Users only have to specify non-zero load values for the desire DOFs. Load values for non-specified DOFs are defaulted to zero.</p>
+<p>Users only have to specify non-zero load values for the desire DOFs for <cite>NodalForce</cite>. Any non-specified component are defaulted to zero.</p>
 </div>
 </div>
 <div class="section" id="point-loads">
 <span id="point"></span><h3>Point Loads<a class="headerlink" href="#point-loads" title="Permalink to this headline">¶</a></h3>
 <p>Point load is a force applied on a single infinitesimal point of the grillage model.
 Point loads are used represent a large range of loads, such as truck axle, or superimposed dead load on a deck.</p>
-<p>Point load takes only a single <cite>LoadPoint</cite> tuple. <cite>p</cite> in the tuple should have units of force (eg. N, kN, kips, etc)
+<p>Point loads are created using <a class="reference internal" href="generated/ospgrillage.load.create_load.html#ospgrillage.load.create_load" title="ospgrillage.load.create_load"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_load()</span></code></a>, passing <code class="docutils literal notranslate"><span class="pre">type</span> <span class="pre">=</span> <span class="pre">&quot;point&quot;</span></code>.
+Point load takes only a single <cite>LoadPoint</cite> tuple. <cite>p</cite> in the tuple should have units of force (eg. N, kN, kips, etc)
 - see Figure 2.</p>
 <div class="figure align-center" id="id3">
 <a class="reference internal image-reference" href="../_images/pointload.png"><img alt="../_images/pointload.png" src="../_images/pointload.png" /></a>
@@ -270,7 +270,7 @@ in the global coordinate system from -1 to 11 distance units in the <cite>x</cit
 <div class="section" id="patch-loads">
 <span id="patch"></span><h3>Patch loads<a class="headerlink" href="#patch-loads" title="Permalink to this headline">¶</a></h3>
 <p>Patch loads are useful to represent loads distributed uniformly over a certain area such as traffic lanes.</p>
-<p>Patch loads are instantiated with the interface function <code class="docutils literal notranslate"><span class="pre">create_load(type=&quot;patch)</span></code>.
+<p>Patch loads are instantiated <a class="reference internal" href="generated/ospgrillage.load.create_load.html#ospgrillage.load.create_load" title="ospgrillage.load.create_load"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_load()</span></code></a>, specifying <code class="docutils literal notranslate"><span class="pre">type</span> <span class="pre">=</span> <span class="pre">&quot;patch&quot;</span></code>.
 Patch load requires at least four <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadPoint</span></code> tuple (corresponds to the vertices of the patch load) - see Figure 4.
 Using eight tuples allows a curve surface loading profile.
 <cite>p</cite> in the <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadPoint</span></code> tuple should have units of force per area.</p>
@@ -298,9 +298,9 @@ To position the load instead in a user defined local coordinate system, the vari
 <span id="compound-load"></span><h2>Compound loads<a class="headerlink" href="#compound-loads" title="Permalink to this headline">¶</a></h2>
 <p>Two or more of the basic load types can be combined to form a Compound load. All load types are applied in the direction of the global <cite>y</cite>-axis.
 Loads in other directions and applied moments are currently not supported.</p>
-<p>To create a compound load, use the <code class="docutils literal notranslate"><span class="pre">create_compound_load()</span></code> function or the
-<code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundLoad</span></code> class - passing load objects for compounding as input parameters.</p>
-<p>Compound load are defined in a local coordinate system and then set to global coordinate system of the grillage. Figure 5
+<p>To create a compound load, use the <a class="reference internal" href="generated/ospgrillage.load.create_compound_load.html#ospgrillage.load.create_compound_load" title="ospgrillage.load.create_compound_load"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_compound_load()</span></code></a> function. This function creates a
+<a class="reference internal" href="Loads.html#ospgrillage.load.CompoundLoad" title="ospgrillage.load.CompoundLoad"><code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundLoad</span></code></a> object.</p>
+<p>Compound load are defined in a <strong>local coordinate system</strong> and then set to global coordinate system of the grillage. Figure 5
 shows the relationship and process of mapping local to global system of a compound load.</p>
 <div class="figure align-center" id="id6">
 <a class="reference internal image-reference" href="../_images/compoundload.png"><img alt="../_images/compoundload.png" src="../_images/compoundload.png" /></a>
@@ -318,7 +318,7 @@ shows the relationship and process of mapping local to global system of a compou
 <span class="n">C_Load</span><span class="o">.</span><span class="n">add_load</span><span class="p">(</span><span class="n">load_obj</span><span class="o">=</span><span class="n">wheel_2</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>After defining all required load objects, <code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundLoad</span></code> requires users to define the global coordinate to map the origin of user-defined local coordinates
+<p>After defining all required load objects, <a class="reference internal" href="Loads.html#ospgrillage.load.CompoundLoad" title="ospgrillage.load.CompoundLoad"><code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundLoad</span></code></a> requires users to define the global coordinate to map the origin of user-defined local coordinates
 to the global coordinate space. This is done using <code class="docutils literal notranslate"><span class="pre">set_global_coord()</span></code> function as seen in Figure 5, passing a <code class="docutils literal notranslate"><span class="pre">`Point(x,y,z)`</span></code> namedTuple
 If not specified, the mapping’s reference point is default to the <strong>Origin</strong> of coordinate system i.e. (0,0,0)</p>
 <p>The following example sets the local <strong>Origin</strong> of the compound load, including all load points for all load objects of <strong>C_load</strong>  by x + 4, y + 0 , and z + 3.</p>
@@ -365,7 +365,7 @@ If not specified, the mapping’s reference point is default to the <strong>Orig
 </tbody>
 </table>
 <p><strong>Coordinate System</strong></p>
-<p>When adding each load object, the <code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundLoad</span></code> class allow users to input a <code class="docutils literal notranslate"><span class="pre">load_coord=</span></code> keyword argument.
+<p>When adding each load object, the <a class="reference internal" href="Loads.html#ospgrillage.load.CompoundLoad" title="ospgrillage.load.CompoundLoad"><code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundLoad</span></code></a> class allow users to input a <code class="docutils literal notranslate"><span class="pre">load_coord=</span></code> keyword argument.
 This relates to the load object - whether it was previously defined in the user-defined <em>local</em> or in the <em>global</em> coordinate system. The following explains the various
 input conditions</p>
 <div class="admonition note">
@@ -379,8 +379,8 @@ are automatically converted to <strong>global coordinates</strong>, based on the
 <span id="id1"></span><h2>Load cases<a class="headerlink" href="#load-cases" title="Permalink to this headline">¶</a></h2>
 <p>Load cases are a set of load types (<a class="reference internal" href="#point">Point</a>, <a class="reference internal" href="#line">Line</a>, <a class="reference internal" href="#patch">Patch</a>, <a class="reference internal" href="#compound-load">Compound load</a>) used to define a particular loading condition. Compound loads are treated as a single load group within a load case
 having same reference points (e.g. tandem axle) and properties (e.g. load factor)</p>
-<p>After load type objects are created, users add the load objects to <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadCase</span></code> class objects. First, users instantiates a
-<code class="xref py py-class docutils literal notranslate"><span class="pre">LoadCase</span></code> class object and giving it its name.</p>
+<p>After load type objects are created, users add the load objects to <a class="reference internal" href="Loads.html#ospgrillage.load.LoadCase" title="ospgrillage.load.LoadCase"><code class="xref py py-class docutils literal notranslate"><span class="pre">LoadCase</span></code></a> class objects. First, users instantiates a
+<a class="reference internal" href="Loads.html#ospgrillage.load.LoadCase" title="ospgrillage.load.LoadCase"><code class="xref py py-class docutils literal notranslate"><span class="pre">LoadCase</span></code></a> class object and giving it its name.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">DL</span> <span class="o">=</span> <span class="n">create_load_case</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Dead Load&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -391,15 +391,16 @@ the above load types are added to <em>DL</em> load case.</p>
 <span class="n">DL</span><span class="o">.</span><span class="n">add_load_groups</span><span class="p">(</span><span class="n">Lane</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>After adding loads, the <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadCase</span></code> object is added to grillage model for analysis using the <code class="docutils literal notranslate"><span class="pre">add_load_case()</span></code>
-function of <code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code> class. Users repeat this step for any defined load cases.</p>
+<p>After adding loads, the <a class="reference internal" href="Loads.html#ospgrillage.load.LoadCase" title="ospgrillage.load.LoadCase"><code class="xref py py-class docutils literal notranslate"><span class="pre">LoadCase</span></code></a> object is added to grillage model for analysis using the
+<a class="reference internal" href="OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage.add_load_case" title="ospgrillage.osp_grillage.OspGrillage.add_load_case"><code class="xref py py-class docutils literal notranslate"><span class="pre">add_load_case</span></code></a>. of <code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code> class.
+Users repeat this step for any defined load cases.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span><span class="o">.</span><span class="n">add_load_case</span><span class="p">(</span><span class="n">DL</span><span class="p">)</span>  <span class="c1"># adding this load case to grillage model</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="moving-loads">
 <h2>Moving loads<a class="headerlink" href="#moving-loads" title="Permalink to this headline">¶</a></h2>
-<p>For moving load analysis, users create moving load objects using <code class="xref py py-class docutils literal notranslate"><span class="pre">MovingLoad</span></code> class. The moving load class takes a load type object (<a class="reference internal" href="#point">Point</a>, <a class="reference internal" href="#line">Line</a>, <a class="reference internal" href="#patch">Patch</a>, <a class="reference internal" href="#compound-load">Compound load</a>) and moves the load
+<p>For moving load analysis, users create moving load objects using <a class="reference internal" href="Loads.html#ospgrillage.load.MovingLoad" title="ospgrillage.load.MovingLoad"><code class="xref py py-class docutils literal notranslate"><span class="pre">MovingLoad</span></code></a> class. The moving load class takes a load type object (<a class="reference internal" href="#point">Point</a>, <a class="reference internal" href="#line">Line</a>, <a class="reference internal" href="#patch">Patch</a>, <a class="reference internal" href="#compound-load">Compound load</a>) and moves the load
 through a path points described by a <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code> object and obtained by the <code class="docutils literal notranslate"><span class="pre">get_path_points()</span></code> method.
 Path are defined using two namedTuple <code class="xref py py-class docutils literal notranslate"><span class="pre">Point(x,y,z)</span></code> to describe its start and end position. Figure 6 summarizes the relationship between moving loads
 , paths and the position of the loads on the grillage model.</p>
@@ -424,16 +425,32 @@ creates multiple <a class="reference internal" href="#load-cases">load cases</a>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span><span class="o">.</span><span class="n">add_load_case</span><span class="p">(</span><span class="n">move_point</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="section" id="offsets">
-<h3>Offsets<a class="headerlink" href="#offsets" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="advance-usage">
+<h3>Advance usage<a class="headerlink" href="#advance-usage" title="Permalink to this headline">¶</a></h3>
+<p>All basic load added to a <a class="reference internal" href="Loads.html#ospgrillage.load.MovingLoad" title="ospgrillage.load.MovingLoad"><code class="xref py py-class docutils literal notranslate"><span class="pre">MovingLoad</span></code></a> class via <a class="reference internal" href="generated/ospgrillage.load.MovingLoad.add_loads.html#ospgrillage.load.MovingLoad.add_loads" title="ospgrillage.load.MovingLoad.add_loads"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_loads()</span></code></a> function
+are assigned with a single common <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code> object.</p>
+<p><a class="reference internal" href="Loads.html#ospgrillage.load.MovingLoad" title="ospgrillage.load.MovingLoad"><code class="xref py py-class docutils literal notranslate"><span class="pre">MovingLoad</span></code></a> allows a more advance usage whereby individual moving path can be set to each basic load within <code class="xref py py-class docutils literal notranslate"><span class="pre">MovingLoad</span></code>.
+For this, the setup for <a class="reference internal" href="Loads.html#ospgrillage.load.MovingLoad" title="ospgrillage.load.MovingLoad"><code class="xref py py-class docutils literal notranslate"><span class="pre">MovingLoad</span></code></a> requires definition of a <code class="docutils literal notranslate"><span class="pre">global_increment</span></code> parameter which ensures each unique
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code> object of basic load has the same <code class="docutils literal notranslate"><span class="pre">global_increment</span></code>. Following, each basic load added via <a class="reference internal" href="generated/ospgrillage.load.MovingLoad.add_loads.html#ospgrillage.load.MovingLoad.add_loads" title="ospgrillage.load.MovingLoad.add_loads"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_loads()</span></code></a>
+takes a second argument <code class="docutils literal notranslate"><span class="pre">path_obj</span></code>, which is its corresponding <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code> object.</p>
+<p>Following example outline this procedure:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># create moving load with global increment of 20 for all unique moving path</span>
+<span class="n">moving_load_group</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_moving_load</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Line Load moving&quot;</span><span class="p">,</span><span class="n">global_increment</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+
+<span class="c1"># add load + their respective path</span>
+<span class="n">move_load_group</span><span class="o">.</span><span class="n">add_loads</span><span class="p">(</span><span class="n">load_obj</span><span class="o">=</span><span class="n">truck_a</span><span class="p">,</span><span class="n">path_obj</span><span class="o">=</span><span class="n">path_a</span><span class="p">)</span>
+<span class="n">move_load_group</span><span class="o">.</span><span class="n">add_loads</span><span class="p">(</span><span class="n">load_obj</span><span class="o">=</span><span class="n">truck_b</span><span class="p">,</span><span class="n">path_obj</span><span class="o">=</span><span class="n">path_b</span><span class="p">)</span>
+</pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="running-analysis">
 <h2>Running analysis<a class="headerlink" href="#running-analysis" title="Permalink to this headline">¶</a></h2>
 <p>Once all defined load cases (static and moving) have been added to the grillage object, analysis can be conducted.</p>
-<p>To analyse load case(s), users run the class function <code class="docutils literal notranslate"><span class="pre">analyze()</span></code>. By default``analyze()`` will run all defined load cases.
+<p>To analyse load case(s), users run the class function <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze.html#ospgrillage.osp_grillage.OspGrillage.analyze" title="ospgrillage.osp_grillage.OspGrillage.analyze"><code class="xref py py-func docutils literal notranslate"><span class="pre">analyze()</span></code></a>. By default
+<a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze.html#ospgrillage.osp_grillage.OspGrillage.analyze" title="ospgrillage.osp_grillage.OspGrillage.analyze"><code class="xref py py-func docutils literal notranslate"><span class="pre">analyze()</span></code></a> will run all defined load cases.
 If users wish to run only a specific set of load cases, pass a list of load case name str to <code class="docutils literal notranslate"><span class="pre">loadcase=</span></code>  keyword.
-This will analyse all load cases of the list. Here are a few interface examples of <code class="docutils literal notranslate"><span class="pre">analyze()</span></code>.</p>
+This will analyse all load cases of the list. Following code are few examples of <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze.html#ospgrillage.osp_grillage.OspGrillage.analyze" title="ospgrillage.osp_grillage.OspGrillage.analyze"><code class="xref py py-func docutils literal notranslate"><span class="pre">analyze()</span></code></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># analyze all</span>
 <span class="n">example_bridge</span><span class="o">.</span><span class="n">analyze</span><span class="p">()</span>
 <span class="c1"># or a single str</span>

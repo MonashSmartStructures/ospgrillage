@@ -107,7 +107,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#assigning-grillage-members">Assigning grillage members</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#creating-the-grillage-in-opensees-framework-or-as-an-executable-py-file">Creating the grillage in OpenSees framework or as an executable py file</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#creating-exporting-opensees-model">Creating/exporting OpenSees Model</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#visualize-grillage-model">Visualize grillage model</a></li>
 </ul>
 </li>
@@ -190,9 +190,9 @@
   <div class="section" id="creating-grillage-models">
 <h1>Creating grillage models<a class="headerlink" href="#creating-grillage-models" title="Permalink to this headline">¶</a></h1>
 <p>The <em>ospgrillage</em> module contains user <strong>interface functions</strong> which can be called after the module syntax. These interface functions
-generally have  <code class="docutils literal notranslate"><span class="pre">set_</span></code>, <code class="docutils literal notranslate"><span class="pre">create_</span></code> or <code class="docutils literal notranslate"><span class="pre">get_</span></code> in their syntax. For example, users create a material with <code class="xref py py-func docutils literal notranslate"><span class="pre">create_material`()</span></code>.</p>
+generally have  <code class="docutils literal notranslate"><span class="pre">set_</span></code>, <code class="docutils literal notranslate"><span class="pre">create_</span></code> or <code class="docutils literal notranslate"><span class="pre">get_</span></code> in their syntax. For example, users create a material with <a class="reference internal" href="generated/ospgrillage.material.create_material.html#ospgrillage.material.create_material" title="ospgrillage.material.create_material"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_material()</span></code></a>.</p>
 <p>A list of all interface functions can be found in <a class="reference internal" href="APIdoc.html"><span class="doc">API reference</span></a>.
-Although users can opt to interact with module objects directly without using interface functions - we recommend the more pythonic interface functions.</p>
+Although users can opt to interact with module objects directly without using interface functions, we recommend the more pythonic interface functions.</p>
 <div class="section" id="workflow-overview">
 <h2>Workflow overview<a class="headerlink" href="#workflow-overview" title="Permalink to this headline">¶</a></h2>
 <p>Figure 1 summarizes the workflow of creating grillage models using <em>ospgrillage</em>.</p>
@@ -421,12 +421,12 @@ input.</p>
 </div>
 <p>This is a useful tool for switching all grillage members to the same material after previously defining with perhaps a different material.</p>
 </div>
-<div class="section" id="creating-the-grillage-in-opensees-framework-or-as-an-executable-py-file">
-<h2>Creating the grillage in OpenSees framework or as an executable py file<a class="headerlink" href="#creating-the-grillage-in-opensees-framework-or-as-an-executable-py-file" title="Permalink to this headline">¶</a></h2>
-<p>Only once the object of grillage model is created and members are assigned, we can either:</p>
+<div class="section" id="creating-exporting-opensees-model">
+<h2>Creating/exporting OpenSees Model<a class="headerlink" href="#creating-exporting-opensees-model" title="Permalink to this headline">¶</a></h2>
+<p>Only once the <a class="reference internal" href="OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a> is created and members are assigned, we can either:</p>
 <ol class="lowerroman simple">
 <li><p>create the model in OpenSees software space for further grillage analysis, or;</p></li>
-<li><p>an executable python file that can be edited and used for a more complex analysis.</p></li>
+<li><p>export an executable python file that can be edited and used for a more complex analysis.</p></li>
 </ol>
 <p>These are achieved by calling the <code class="xref py py-func docutils literal notranslate"><span class="pre">create_ops()</span></code> function.</p>
 <p>The <code class="xref py py-func docutils literal notranslate"><span class="pre">create_ops()</span></code> function takes a boolean for <cite>pyfile=</cite> (default is <cite>False</cite>).
@@ -437,13 +437,13 @@ Setting this parameter to <cite>False</cite> creates the grillage model in <cite
 <p>After model is instantiated in <cite>OpenSees</cite>, users can run any <cite>OpenSeesPy</cite> command (e.g. <cite>ops_vis</cite> commands) within the current workflow
 to interact with the <cite>OpenSees</cite> grillage model.</p>
 <p>When <cite>pyfile=</cite> parameter is set to <cite>True</cite>, an executable py file will be generated instead.
-The executable py file contains all relevant OpenSees command from which when executed,
+The executable py file contains all relevant <cite>OpenSeesPy</cite> command from which when executed,
 creates the model instance in OpenSees which can edited and later used to perform more complex analysis.
 Note that in doing so, the model instance in <cite>OpenSees</cite> space is not created.</p>
 <div class="section" id="visualize-grillage-model">
 <h3>Visualize grillage model<a class="headerlink" href="#visualize-grillage-model" title="Permalink to this headline">¶</a></h3>
-<p>To check that we created the model in OpenSees space, we can plot the model using <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code>’s visualization module <cite>ops_vis</cite>.
-The <em>ospgrillage</em> module already wraps and import <cite>OpenSeesPy</cite>’s <cite>ops_vis</cite> module. Therefore, one can run access <cite>ops_vis</cite> by running
+<p>To check that we created the model in OpenSees space, we can plot the model using <cite>OpenSeesPy</cite>’s visualization module <cite>ops_vis</cite>.
+The <em>ospgrillage</em> module already imports the <cite>ops_vis</cite> module. Therefore, one can run access <cite>ops_vis</cite> by running
 the following code line and a plot like in <a class="reference internal" href="#figure-2">Figure 2</a> will be returned:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ospg</span><span class="o">.</span><span class="n">opsplt</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="s2">&quot;nodes&quot;</span><span class="p">)</span>
 </pre></div>

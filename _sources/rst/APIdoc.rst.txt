@@ -29,7 +29,7 @@ Top level interface functions
 
 Grillage model interface API
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The following methods can be called on the :class:`OspGrillage` object.
+The following methods can be called on the :class:`ospgrillage.osp_grillage.OspGrillage` object.
 
 .. autosummary::
     :toctree: generated/
@@ -41,8 +41,9 @@ The following methods can be called on the :class:`OspGrillage` object.
     ospgrillage.osp_grillage.OspGrillage.get_element
 
 
-Load utility API
+Load module API
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The following methods can be called from the respective class objects in the Load module.
 
 .. autosummary::
     :toctree: generated/
@@ -83,7 +84,6 @@ Result class
 
 Material class
 ------------------------------------------
-
 
 .. autoclass:: ospgrillage.material.Material
     :members:

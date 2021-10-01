@@ -2,14 +2,13 @@
 Performing analysis
 ========================
 
-*ospgrillage* contains grillage analysis utilities which wraps `OpenSeesPy` commands to perform load analysis.
-This allow users to specify load cases comprising of multiple loads types and then run load case analysis.
-Furthermore, *ospgrillage* module also options for moving load analysis.
+*ospgrillage* contains a load module which wraps `OpenSeesPy` commands to perform load analysis.
+
 
 Load analysis workflow
 ------------------------
 
-Figure 1 shows the flowchart for the load analysis utilities of *ospgrillage*.
+Figure 1 shows the flowchart for the load module of *ospgrillage*.
 
 ..  figure:: ../../_images/flowchart2.png
     :align: center
@@ -26,7 +25,8 @@ Available loads types include `Point`_, `Line`_, and `Patch`_ loads.
 
 Each load type requires user to specify its load point(s). This is achieved by :func:`~ospgrillage.load.create_load_vertex` function. This function creates
 a `LoadPoint(x,y,z,p)` where `x`,`y`,`z` are the coordinates of the load point and `p` is the magnitude of the vertical loading.
-Note, `p` is a unit magnitude which is interpreted differently based on the load type - this will be later explained. By default, `y` is `0`.
+Note, `p` is a unit magnitude which is interpreted differently based on the load type - this will be later explained.
+By default, `y` is `0` i.e. the grillage model plane.
 
 .. code-block:: python
 
@@ -37,8 +37,7 @@ Depending on the load type, a minimum number of LoadPoint namedTuple are require
 These are set to each load type's `point#=` variable for the load type's coordinate system,
 where # is a digit from 1 to 9.
 
-
-Loads are generally in the global coordinate system with respect to the created grillage model.
+Loads are generally defined in the global coordinate system with respect to the created grillage model.
 However, a user-defined local coordinate system is required when defining `Compound load`_ later on.
 
 Nodal loads
@@ -47,7 +46,7 @@ Nodal loads
 Nodal loads are defined using :func:`~ospgrillage.load.create_load`, specifying ``type= "nodal"``. There are six degrees-of-freedom (DOFs) for
 acting loads in each node. Nodal loads do not require a load vertex, instead it requires a `NodalForce(Fx,Fy,Fz,Mx,My,Mz)` namedtuple.
 
-The following example creates a NodalFroce namedtuple and a nodal load on Node 13 of a model, with 10 unit force in both transverse X and Y directions.
+The following example creates a `NodalFroce` namedtuple and a nodal load on Node 13 of a model, with 10 unit force in both transverse X and Y directions.
 
 .. code-block:: python
 
@@ -57,7 +56,7 @@ The following example creates a NodalFroce namedtuple and a nodal load on Node 1
 
 .. note::
 
-    Users only have to specify non-zero load values for the desire DOFs. Load values for non-specified DOFs are defaulted to zero.
+    Users only have to specify non-zero load values for the desire DOFs for `NodalForce`. Any non-specified component are defaulted to zero.
 
 .. _Point:
 
@@ -67,6 +66,7 @@ Point Loads
 Point load is a force applied on a single infinitesimal point of the grillage model.
 Point loads are used represent a large range of loads, such as truck axle, or superimposed dead load on a deck.
 
+Point loads are created using :func:`~ospgrillage.load.create_load`, passing ``type = "point"``.
 Point load takes only a single `LoadPoint` tuple. `p` in the tuple should have units of force (eg. N, kN, kips, etc)
 - see Figure 2.
 
@@ -123,7 +123,7 @@ Patch loads
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Patch loads are useful to represent loads distributed uniformly over a certain area such as traffic lanes.
 
-Patch loads are instantiated with the interface function ``create_load(type="patch)``.
+Patch loads are instantiated :func:`~ospgrillage.load.create_load`, specifying ``type = "patch"``.
 Patch load requires at least four :class:`LoadPoint` tuple (corresponds to the vertices of the patch load) - see Figure 4.
 Using eight tuples allows a curve surface loading profile.
 `p` in the :class:`LoadPoint` tuple should have units of force per area.
@@ -158,10 +158,10 @@ Compound loads
 Two or more of the basic load types can be combined to form a Compound load. All load types are applied in the direction of the global `y`-axis.
 Loads in other directions and applied moments are currently not supported.
 
-To create a compound load, use the ``create_compound_load()`` function or the
-:class:`CompoundLoad` class - passing load objects for compounding as input parameters.
+To create a compound load, use the :func:`~ospgrillage.load.create_compound_load` function. This function creates a
+:class:`~ospgrillage.load.CompoundLoad` object.
 
-Compound load are defined in a local coordinate system and then set to global coordinate system of the grillage. Figure 5
+Compound load are defined in a **local coordinate system** and then set to global coordinate system of the grillage. Figure 5
 shows the relationship and process of mapping local to global system of a compound load.
 
 ..  figure:: ../../_images/compoundload.png
@@ -186,7 +186,7 @@ The following code creates a Compound load and adds the created :class:`~Loads` 
     C_Load.add_load(load_obj=wheel_1)
     C_Load.add_load(load_obj=wheel_2)
 
-After defining all required load objects, :class:`~CompoundLoad` requires users to define the global coordinate to map the origin of user-defined local coordinates
+After defining all required load objects, :class:`~ospgrillage.load.CompoundLoad` requires users to define the global coordinate to map the origin of user-defined local coordinates
 to the global coordinate space. This is done using ``set_global_coord()`` function as seen in Figure 5, passing a ```Point(x,y,z)``` namedTuple
 If not specified, the mapping's reference point is default to the **Origin** of coordinate system i.e. (0,0,0)
 
@@ -226,7 +226,7 @@ Here are the valid input types for which CompoundLoad accepts:
 
 **Coordinate System**
 
-When adding each load object, the :class:`~CompoundLoad` class allow users to input a ``load_coord=`` keyword argument.
+When adding each load object, the :class:`~ospgrillage.load.CompoundLoad` class allow users to input a ``load_coord=`` keyword argument.
 This relates to the load object - whether it was previously defined in the user-defined *local* or in the *global* coordinate system. The following explains the various
 input conditions
 
@@ -246,8 +246,8 @@ Load cases
 Load cases are a set of load types (`Point`_, `Line`_, `Patch`_, `Compound load`_) used to define a particular loading condition. Compound loads are treated as a single load group within a load case
 having same reference points (e.g. tandem axle) and properties (e.g. load factor)
 
-After load type objects are created, users add the load objects to :class:`LoadCase` class objects. First, users instantiates a
-:class:`LoadCase` class object and giving it its name.
+After load type objects are created, users add the load objects to :class:`~ospgrillage.load.LoadCase` class objects. First, users instantiates a
+:class:`~ospgrillage.load.LoadCase` class object and giving it its name.
 
 .. code-block:: python
 
@@ -262,8 +262,9 @@ the above load types are added to *DL* load case.
     DL.add_load_groups(Barrier)
     DL.add_load_groups(Lane)
 
-After adding loads, the :class:`LoadCase` object is added to grillage model for analysis using the ``add_load_case()``
-function of :class:`OspGrillage` class. Users repeat this step for any defined load cases.
+After adding loads, the :class:`~ospgrillage.load.LoadCase` object is added to grillage model for analysis using the
+:class:`~ospgrillage.osp_grillage.OspGrillage.add_load_case`. of :class:`~ospgrillage.load.OspGrillage` class.
+Users repeat this step for any defined load cases.
 
 .. code-block:: python
 
@@ -272,7 +273,7 @@ function of :class:`OspGrillage` class. Users repeat this step for any defined l
 
 Moving loads
 ------------------------
-For moving load analysis, users create moving load objects using :class:`MovingLoad` class. The moving load class takes a load type object (`Point`_, `Line`_, `Patch`_, `Compound load`_) and moves the load
+For moving load analysis, users create moving load objects using :class:`~ospgrillage.load.MovingLoad` class. The moving load class takes a load type object (`Point`_, `Line`_, `Patch`_, `Compound load`_) and moves the load
 through a path points described by a :class:`Path` object and obtained by the ``get_path_points()`` method. 
 Path are defined using two namedTuple :class:`Point(x,y,z)` to describe its start and end position. Figure 6 summarizes the relationship between moving loads
 , paths and the position of the loads on the grillage model.
@@ -307,8 +308,28 @@ creates multiple `load cases`_ which corresponds to the load condition as the lo
     example_bridge.add_load_case(move_point)
 
 
-Offsets
-^^^^^^^^^^^^^^^^^^^^
+
+Advance usage
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+All basic load added to a :class:`~ospgrillage.load.MovingLoad` class via :func:`~ospgrillage.load.MovingLoad.add_loads` function
+are assigned with a single common :class:`Path` object.
+
+:class:`~ospgrillage.load.MovingLoad` allows a more advance usage whereby individual moving path can be set to each basic load within :class:`MovingLoad`.
+For this, the setup for :class:`~ospgrillage.load.MovingLoad` requires definition of a ``global_increment`` parameter which ensures each unique
+:class:`Path` object of basic load has the same ``global_increment``. Following, each basic load added via :func:`~ospgrillage.load.MovingLoad.add_loads`
+takes a second argument ``path_obj``, which is its corresponding :class:`Path` object.
+
+Following example outline this procedure:
+
+.. code-block:: python
+
+    # create moving load with global increment of 20 for all unique moving path
+    moving_load_group = ospg.create_moving_load(name="Line Load moving",global_increment=20)
+
+    # add load + their respective path
+    move_load_group.add_loads(load_obj=truck_a,path_obj=path_a)
+    move_load_group.add_loads(load_obj=truck_b,path_obj=path_b)
 
 
 Running analysis
@@ -316,9 +337,10 @@ Running analysis
 
 Once all defined load cases (static and moving) have been added to the grillage object, analysis can be conducted.
 
-To analyse load case(s), users run the class function ``analyze()``. By default``analyze()`` will run all defined load cases.
+To analyse load case(s), users run the class function :func:`~ospgrillage.osp_grillage.OspGrillage.analyze`. By default
+:func:`~ospgrillage.osp_grillage.OspGrillage.analyze` will run all defined load cases.
 If users wish to run only a specific set of load cases, pass a list of load case name str to ``loadcase=``  keyword.
-This will analyse all load cases of the list. Here are a few interface examples of ``analyze()``.
+This will analyse all load cases of the list. Following code are few examples of :func:`~ospgrillage.osp_grillage.OspGrillage.analyze`.
 
 
 .. code-block:: python
