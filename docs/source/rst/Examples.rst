@@ -8,6 +8,9 @@ Here are some examples of what you can do with *ospgrillage* module.
 This example reproduces a numerical model constructed in commercial software i.e. LUSAS. Following, analysis are performed on the OpenSees model
 and results are compared with those from LUSAS model.
 
+
+
+
 Creating the grillage
 ^^^^^^^^^^^^^^^^^^^^^^^^
 .. code-block:: python
@@ -47,7 +50,6 @@ Creating the grillage
     end_transverse_section = ospg.create_section(A=0.504/2*m2, J=2.5012e-3*m3, Iy=0.04116*m4, Iz=0.6804e-3*m4,
                                                  Ay=0.21*m2, Az=0.21*m2)
 
-
      # define grillage members
     longitudinal_beam = ospg.create_member(section=longitudinal_section, material=concrete)
     edge_longitudinal_beam = ospg.create_member(section=edge_longitudinal_section, material=concrete)
@@ -77,7 +79,8 @@ Creating the grillage
 
     # create the model in OpenSees
     simple_grid.create_osp_model(pyfile=False) # pyfile will not (False) be generated for further analysis (should be create_osp?)
-    ospg.opsplt.plot_model("nodes") # plotting of grid for visualisation using ops_vis module
+    ospg.opsplt.plot_model("nodes") # plotting using Get_rendering
+    og.opsv.plot_model(az_el=(-90, 0)) # plotting using ops_vis
 
 Figure 1 shows the plotted model in OpenSees model space.
 
@@ -89,7 +92,7 @@ Figure 1 shows the plotted model in OpenSees model space.
 
 Adding load cases to model
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Here are a few examples on creating/adding load cases to the `simple_grid` model.
+Here we create and add load cases to the `simple_grid` model for analysis.
 
 First load case is a line load running along mid span width.
 
@@ -176,7 +179,7 @@ Fourth load case entails a patch load
 
 Adding a moving load analysis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Here's how we create and add a moving load analysis to the 28 m bridge model.
+Here's how we create and add a moving load (e.g. a truck) to the 28 m bridge model.
 
 .. code-block:: python
 
@@ -220,34 +223,25 @@ Here's how we create and add a moving load analysis to the 28 m bridge model.
 
 Analysis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The following lines of code shows how we can process the output data array. Uncomment each line to test out the ways to
-run ``analyze()`` function.
 
 .. code-block:: python
 
     # Run analysis
-    simple_grid.analyze() # by default analyzes all load cases
-
-If users wish to ``analyze()``  a specific load case, provide load case's name string as keyword argument - either as a
-`str`, or `list` of `str`.
-
-.. code-block:: python
-
-    simple_grid.analyze(load_case = "line_load_case") # by default analyzes all load cases
+    simple_grid.analyze()
 
 
 Getting load case results
 ^^^^^^^^^^^^^^^^^^^
-Results are obtained via ``get_results()``. The following code lines extracts all load case results. Results are presented
-as `xarray` datasets. See :ref:`Running_analysis` for more information on the `xarray` formats.
+
+Get `xarray` DataSet of results.
 
 .. code-block:: python
     results = simple_grid.get_results() # gets basic results
 
+For information on ``results`` variable, see :ref:`PostProcessing`.
 
 Getting load combination results
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 
 .. code-block:: python
 
@@ -261,7 +255,7 @@ Refer to :ref:`Running_analysis` for more information on the `xarray` formats fo
 
 Data processing
 ^^^^^^^^^^^^^^^^^^^
-Having the results be in `xarray` DataSet format, we can do many things with it such as slicing and query its data.
+Having the results be in `xarray` DataSet, we can do many things with it such as slicing and query its data.
 
 The following example shows how to extract bending moments in midspan - the critical location for the defined load cases.
 
@@ -269,10 +263,10 @@ Extracting only the static loads. We can extract moments in global z for each `i
 
 .. code-block:: python
 
-    results['forces'].sel(Loadcase=static_cases_names, Element=ele_set, Component="Mz_i")
+    extracted_bending = results['forces'].sel(Loadcase=static_cases_names, Element=ele_set, Component="Mz_i")
 
 
-`results` variable now holds the load case for 'Line Test Case', 'Point Test Case(Global)', 'Points Test Case (Local in Point)',
+`extracted_bending` variable now holds the load case for 'Line Test Case', 'Point Test Case(Global)', 'Points Test Case (Local in Point)',
        'Points Test Case (Local in Compound)', 'Patch Test Case'.
 
 Should we sum the nodal forces from members on one side, we expect approximate equal PL/4 (similar) or sum of the following

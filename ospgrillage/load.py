@@ -737,17 +737,6 @@ class LoadCase:
         load_dict.setdefault('load', deepcopy(load_obj))  # create copy of object instance
         # check if load_obj's load points are local points, if True, check if kwargs global coord is provided
         global_coord_of_load_obj: Point = kwargs.get("global_coord_of_load_obj", None)
-        # if load obj is defined using local coord. Skip this check if load_obj is instance of Compoint load
-        # if not isinstance(load_obj, CompoundLoad):
-        #
-        #     if any(load_dict['load'].local_point_list):
-        #         if global_coord_of_load_obj is None:
-        #             raise ValueError(
-        #                 "Load object : {} has been defined with local coordinates however no Global coord ("
-        #                 "global_coord_of_load_obj=Point tuple) is "
-        #                 "assigned to map to global coordinate system".format(load_obj.name))
-        #         else:  # global_coord is not NOne
-        #             load_dict['load'].move_load(ref_point=global_coord_of_load_obj)
 
         load_factor = kwargs.get('load_factor', 1)
         load_dict.setdefault('factor', load_factor)
@@ -914,7 +903,7 @@ class MovingLoad:
         if option == "position":
             return [a['load'].point_list for a in selected_load_groups]
         elif option == "offset":
-            return [a.point_list - b for (a,b) in zip(selected_load_groups,selected_lc_list)]
+            return [a['load'].point_list - b for (a,b) in zip(selected_load_groups,selected_lc_list)]
         elif option == "original":
             return selected_lc_list
         elif option == "path":

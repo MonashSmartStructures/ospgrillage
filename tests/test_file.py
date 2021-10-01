@@ -719,7 +719,7 @@ def test_28m_bridge_compound_point_load_midspan(ref_28m_bridge):
     point_case.add_load(test_point_load)
 
     bridge_28.add_load_case(point_case)
-    bridge_28.load_case_list
+
 
 
 
@@ -797,7 +797,7 @@ def test_1m_wide_bridge(ref_bridge_properties):
 # test for comparing max deflection with a numerical comparison model in Lusas
 def test_28m_bridge(ref_28m_bridge):
     bridge_28 = ref_28m_bridge
-    og.opsv.plot_model(az_el=(-90, 0))
+    #og.opsv.plot_model(az_el=(-90, 0))
     #og.plt.show()
     #og.opsplt.plot_model("nodes")
     og.ops.wipeAnalysis()
@@ -854,7 +854,8 @@ def test_28m_bridge(ref_28m_bridge):
     print(og.ops.nodeDisp(40))
 
     # template to plot BMD
-    ax = og.plt.axes(projection='3d') # create plot
+    #ax = og.plt.axes(projection='3d') # create plot
+    ax = og.plt.figure # create plot
     nodes=bridge_28.get_nodes()
     nodes_to_plot = bridge_28.get_element(member="exterior_main_beam_2", options="nodes")
     eletag = bridge_28.get_element(member="exterior_main_beam_2", options="elements")
@@ -905,9 +906,11 @@ def test_28m_bridge(ref_28m_bridge):
         yy = [nodes[n]['coordinate'][1] for n in ele_node.values]
         zz = [nodes[n]['coordinate'][2] for n in ele_node.values]
         s,al = og.opsv.section_force_distribution_3d(ex=xx,ey=yy,ez=zz,pl=ele_components)
-        ax.plot(xx,zz,s[:,1])
+        #ax.plot(xx,zz,s[:,5],'g-')
+        og.plt.plot(xx,s[:,5],'g-')
         print(s)
-
+    og.plt.xlabel("x (m) ")
+    og.plt.ylabel("Mz (Nm)")
 
 
     # opsv.section_force_distribution_3d()

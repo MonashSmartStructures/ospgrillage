@@ -2,10 +2,10 @@
 Creating grillage models
 ========================
 The *ospgrillage* module contains user **interface functions** which can be called after the module syntax. These interface functions
-generally have  ``set_``, ``create_`` or ``get_`` in their syntax. For example, users create a material with :func:`~ospgrillage.material.create_material``.
+generally have  ``set_``, ``create_`` or ``get_`` in their syntax. For example, users create a material with :func:`~ospgrillage.material.create_material`.
 
 A list of all interface functions can be found in :doc:`APIdoc`.
-Although users can opt to interact with module objects directly without using interface functions - we recommend the more pythonic interface functions.
+Although users can opt to interact with module objects directly without using interface functions, we recommend the more pythonic interface functions.
 
 Workflow overview
 ------------------------------------------------------------------
@@ -285,12 +285,12 @@ input.
 
 This is a useful tool for switching all grillage members to the same material after previously defining with perhaps a different material.
 
-Creating the grillage in OpenSees framework or as an executable py file
------------------------------------------------------------------------------
-Only once the object of grillage model is created and members are assigned, we can either: 
+Creating/exporting OpenSees Model
+----------------------------
+Only once the :class:`~ospgrillage.osp_grillage.OspGrillage` is created and members are assigned, we can either:
 
 (i) create the model in OpenSees software space for further grillage analysis, or;
-(ii) an executable python file that can be edited and used for a more complex analysis.
+(ii) export an executable python file that can be edited and used for a more complex analysis.
 
 These are achieved by calling the :func:`~ospgrillage.osp_grillage.OspGrillage.create_ops` function.
 
@@ -305,14 +305,14 @@ After model is instantiated in `OpenSees`, users can run any `OpenSeesPy` comman
 to interact with the `OpenSees` grillage model.
 
 When `pyfile=` parameter is set to `True`, an executable py file will be generated instead.
-The executable py file contains all relevant OpenSees command from which when executed,
+The executable py file contains all relevant `OpenSeesPy` command from which when executed,
 creates the model instance in OpenSees which can edited and later used to perform more complex analysis.
 Note that in doing so, the model instance in `OpenSees` space is not created.
 
 Visualize grillage model
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-To check that we created the model in OpenSees space, we can plot the model using ``OpenSeesPy``'s visualization module `ops_vis`.
-The *ospgrillage* module already wraps and import `OpenSeesPy`'s `ops_vis` module. Therefore, one can run access `ops_vis` by running
+To check that we created the model in OpenSees space, we can plot the model using `OpenSeesPy`'s visualization module `ops_vis`.
+The *ospgrillage* module already imports the `ops_vis` module. Therefore, one can run access `ops_vis` by running
 the following code line and a plot like in `Figure 2`_ will be returned:
 
 .. code-block:: python

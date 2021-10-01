@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-This module holds all static methods used in the other modules.
+This module holds all static methods used in other modules. Most methods herein are not part of API.
 """
 
 import numpy as np
@@ -249,37 +249,6 @@ def solve_zeta_eta(xp, zp, x1, z1, x2, z2, x3, z3, x4, z4):
     zeta = root[1]
     return eta, zeta
 
-
-#
-# def calculate_area_given_four_points(inside_point, point1, point2, point3, point4):
-#     # inputs are namedtuple Point() of coordinates
-#     # ref: <https://math.stackexchange.com/questions/190111/how-to-check-if-a-point-is-inside-a-rectangle>
-#     # function typically assume plane of x and y. for usage in OpsGrillage, plane x z is taken instead, where y is z
-#     a1 = np.sqrt((point1.x - point2.x) ** 2 + (point1.z - point2.z) ** 2)
-#     a2 = np.sqrt((point2.x - point3.x) ** 2 + (point2.z - point3.z) ** 2)
-#     a3 = np.sqrt((point3.x - point4.x) ** 2 + (point3.z - point4.z) ** 2)
-#     a4 = np.sqrt((point4.x - point1.x) ** 2 + (point4.z - point1.z) ** 2)
-#     b1 = np.sqrt((point1.x - inside_point.x) ** 2 + (point1.z - inside_point.z) ** 2)
-#     b2 = np.sqrt((point2.x - inside_point.x) ** 2 + (point2.z - inside_point.z) ** 2)
-#     b3 = np.sqrt((point3.x - inside_point.x) ** 2 + (point3.z - inside_point.z) ** 2)
-#     b4 = np.sqrt((point4.x - inside_point.x) ** 2 + (point4.z - inside_point.z) ** 2)
-#     # Herons formula
-#     u1 = (a1 + b1 + b2) / 2
-#     u2 = (a2 + b2 + b3) / 2
-#     u3 = (a3 + b3 + b4) / 2
-#     u4 = (a4 + b4 + b1) / 2
-#     A1 = np.sqrt(u1 * (u1 - a1) * (u1 - b1) * (u1 - b2))
-#     A2 = np.sqrt(u2 * (u2 - a2) * (u2 - b2) * (u2 - b3))
-#     A3 = np.sqrt(u3 * (u3 - a3) * (u3 - b3) * (u3 - b4))
-#     A4 = np.sqrt(u4 * (u4 - a4) * (u4 - b4) * (u4 - b1))
-#     A = a1 * a2
-#     return [A1, A2, A3, A4], A
-#
-#
-# def calculate_area_given_three_points(point1, point2, point3):
-#     # ref: https://ncalculators.com/geometry/triangle-area-by-3-points.htm
-#     A = 0.5 * (point1.x * (point2.z - point3.z) + point2.x * (point3.z - point1.z) + point3.x * (point1.z - point2.z))
-#     return A
 
 def get_distance(a, b):
     return np.sqrt((a.x - b.x) ** 2 + (a.z - b.z) ** 2)
@@ -562,7 +531,7 @@ def sort_list_into_four_groups(group_list:list, option:str=None):
     return output_dict
 
 
-def get_envelope(**kwargs):
+def create_envelope(**kwargs):
     """
     User interface function to create envelopes from data array
     :param kwargs:
@@ -572,12 +541,30 @@ def get_envelope(**kwargs):
 
 
 class Envelope:
+    """
+    Main class for envelope. This class takes a :class:`~ospgrillage.osp_grillage.OspGrillage` result
+    `xarray`, enveloping the `xarray` based on user options, return a modified `xarray`.
 
+    """
     def __init__(self, ds, load_effect: str = None, **kwargs):
         """
+        The constructor takes an `xarray` DataSet and kwargs for enveloping options.
 
         :param ds: Data set from `get_results()`
-        :param kwargs:
+        :type ds: Xarray
+        :param kwargs: Keyword arguments see below.
+
+        :keyword:
+
+        * array
+        * value_mode
+        * query_mode
+        * extrema
+        * elements
+        * nodes
+        * array
+        * load_effect
+
         """
         self.ds = ds
         if ds is None:
