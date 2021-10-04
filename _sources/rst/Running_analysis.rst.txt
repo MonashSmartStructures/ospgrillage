@@ -4,6 +4,11 @@ Performing analysis
 
 *ospgrillage* contains a load module which wraps `OpenSeesPy` commands to perform load analysis.
 
+For all example code in this page, *ospgrillage* is imported as ``ospg``
+
+.. code-block:: python
+    import ospgrillage as ospg
+
 
 Load analysis workflow
 ------------------------

@@ -16,7 +16,12 @@ This is the most common form of grillage model which comprise of beam elements l
 
 Figure 1 shows a beam grillage model type - outlining the elements.
 
-[picture]
+..  figure:: ../../_images/beam_grillage.PNG
+    :align: center
+    :scale: 75 %
+
+    Figure 1: Beam grillage model
+
 
 Beam grillage with rigid links
 --------------------------------------
@@ -36,7 +41,17 @@ To create this model, have `create_grillage()` keyword for model_type set to "be
 
 Figure 2 shows the aforementioned model type.
 
-[picture]
+..  figure:: ../../_images/beam_link_idealization.PNG
+    :align: center
+    :scale: 75 %
+
+    Figure 2: Beam grillage with rigid links - idealization.
+
+..  figure:: ../../_images/spacegass.PNG
+    :align: center
+    :scale: 75 %
+
+    Figure 3: Beam grillage with rigid links in SPACEGASS.
 
 Joint offsets are linked via a rigid link. Information for joint offsets can be found in `OpenSeesPy`'s `geomtransf <https://openseespydoc.readthedocs.io/en/latest/src/LinearTransf.html>`_
 
@@ -64,10 +79,13 @@ To create this model, have `create_grillage()` keyword for model_type set to "sh
                                         model_type="shell", max_mesh_size_z=0.5, offset_beam_y_dist=0.499,
                                         link_nodes_width=0.89)
 
-Figure 3 shows the shell beam hybrid model.
+Figure 4 shows the shell beam hybrid model.
 
-[picture]
+..  figure:: ../../_images/shell_link_idealization.PNG
+    :align: center
+    :scale: 75 %
 
+    Figure 4: Shell beam hybrid model idealization
 
 
 
