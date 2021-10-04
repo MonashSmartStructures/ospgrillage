@@ -55,14 +55,20 @@ Accessing and querying data
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 From the data arrays, users can access various component in each load effect using `xarray`'s data array commands.
-Following example extracts the displacment 'dy' component using `xarray`'s `sel()` function.
+
+Following example extracts the displacment 'dy' component using `xarray`'s ``sel()`` function.
 
 .. code-block:: python
-    disp_array.sel(Component='dy') # vertical deflection
-    force_array.sel(Component='Mz_i')
 
-The following components
+    disp_array.sel(Component='dy') # select data of "dy"
+    force_array.sel(Component='Mz_i') # select data of "Mz_i"
 
+Following example shows how to extract results for specific load cases with specific element/node:
+
+.. code-block:: python
+
+    disp_array.sel(Loadcase="patch load case",Node=20)
+    force_array.sel(Loadcase="Barrier", Element=[2,3,4])
 
 Getting combinations
 --------------------------------------
@@ -81,6 +87,7 @@ Envelope are chosen based on user selected component (*array* keyword) as either
 and load effect component (e.g. "dy" for displacements). The `get_envelope()` function is defined as follows:
 
 .. code-block:: python
+
     first_combination = comb_results[0] # list of combination xarray, get the first
     envelope = ospg.get_envelope(ds=first_combination,load_effect="dy",array="displacements") # creates the envelope obj
     disp_env = envelope.get() # step to get envelope of xarray

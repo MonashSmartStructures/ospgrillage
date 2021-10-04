@@ -227,9 +227,17 @@ as well.</p>
 </div>
 <div class="section" id="accessing-and-querying-data">
 <h3>Accessing and querying data<a class="headerlink" href="#accessing-and-querying-data" title="Permalink to this headline">¶</a></h3>
-<p>From the data arrays, users can access various component in each load effect using <cite>xarray</cite>’s data array commands.
-Following example extracts the displacment ‘dy’ component using <cite>xarray</cite>’s <cite>sel()</cite> function.</p>
-<p>The following components</p>
+<p>From the data arrays, users can access various component in each load effect using <cite>xarray</cite>’s data array commands.</p>
+<p>Following example extracts the displacment ‘dy’ component using <cite>xarray</cite>’s <code class="docutils literal notranslate"><span class="pre">sel()</span></code> function.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">disp_array</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Component</span><span class="o">=</span><span class="s1">&#39;dy&#39;</span><span class="p">)</span> <span class="c1"># select data of &quot;dy&quot;</span>
+<span class="n">force_array</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Component</span><span class="o">=</span><span class="s1">&#39;Mz_i&#39;</span><span class="p">)</span> <span class="c1"># select data of &quot;Mz_i&quot;</span>
+</pre></div>
+</div>
+<p>Following example shows how to extract results for specific load cases with specific element/node:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">disp_array</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Loadcase</span><span class="o">=</span><span class="s2">&quot;patch load case&quot;</span><span class="p">,</span><span class="n">Node</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">force_array</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Loadcase</span><span class="o">=</span><span class="s2">&quot;Barrier&quot;</span><span class="p">,</span> <span class="n">Element</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
+</pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="getting-combinations">
@@ -246,6 +254,11 @@ example code define a load combinations having two load cases.</p>
 <p>Load envelope is generated from load combination results for extrema of load effect using <code class="xref py py-func docutils literal notranslate"><span class="pre">create_envelope()</span></code> function.
 Envelope are chosen based on user selected component (<em>array</em> keyword) as either “displacements” or “forces”, extrema as either maximum or minimum,
 and load effect component (e.g. “dy” for displacements). The <cite>get_envelope()</cite> function is defined as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">first_combination</span> <span class="o">=</span> <span class="n">comb_results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># list of combination xarray, get the first</span>
+<span class="n">envelope</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">get_envelope</span><span class="p">(</span><span class="n">ds</span><span class="o">=</span><span class="n">first_combination</span><span class="p">,</span><span class="n">load_effect</span><span class="o">=</span><span class="s2">&quot;dy&quot;</span><span class="p">,</span><span class="n">array</span><span class="o">=</span><span class="s2">&quot;displacements&quot;</span><span class="p">)</span> <span class="c1"># creates the envelope obj</span>
+<span class="n">disp_env</span> <span class="o">=</span> <span class="n">envelope</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="c1"># step to get envelope of xarray</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="getting-specific-properties-of-model">
 <h2>Getting specific properties of model<a class="headerlink" href="#getting-specific-properties-of-model" title="Permalink to this headline">¶</a></h2>
