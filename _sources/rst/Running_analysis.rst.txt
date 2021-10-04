@@ -87,7 +87,7 @@ The following example code creates a 20 force unit point load located at (5,0,2)
 .. code-block:: python
 
     point_load_location = ospg.create_load_vertices(x=5, z=2, p=20)  # create load point
-    Single = ospg.create_load(type="point",name="single point", point1=point_load_location)
+    point_load = ospg.create_load(type="point",name="single point", point1=point_load_location)
 
 
 .. _Line:
@@ -188,11 +188,11 @@ The following code creates a Compound load and adds the created :class:`~Loads` 
 .. code-block:: python
 
     C_Load = ospg.create_compound_load(name = "Axle tandem")  # constructor of compound load
-    C_Load.add_load(load_obj=wheel_1)
-    C_Load.add_load(load_obj=wheel_2)
+    C_Load.add_load(load_obj=wheel_1) # add wheel_1
+    C_Load.add_load(load_obj=wheel_2) # add wheel_2
 
 After defining all required load objects, :class:`~ospgrillage.load.CompoundLoad` requires users to define the global coordinate to map the origin of user-defined local coordinates
-to the global coordinate space. This is done using ``set_global_coord()`` function as seen in Figure 5, passing a ```Point(x,y,z)``` namedTuple
+to the global coordinate space. This is done using :func:`~ospgrillage.load.CompoundLoad.set_global_coord` function as seen in Figure 5, passing a ```Point(x,y,z)``` namedTuple
 If not specified, the mapping's reference point is default to the **Origin** of coordinate system i.e. (0,0,0)
 
 The following example sets the local **Origin** of the compound load, including all load points for all load objects of **C_load**  by x + 4, y + 0 , and z + 3.
@@ -263,7 +263,7 @@ the above load types are added to *DL* load case.
 
 .. code-block:: python
 
-    DL.add_load_groups(Single)  # each line adds individual load types to the load case
+    DL.add_load_groups(point_load)  # each line adds individual load types to the load case
     DL.add_load_groups(Barrier)
     DL.add_load_groups(Lane)
 

@@ -176,6 +176,7 @@
             
   <div class="section" id="model-types-available">
 <h1>Model types available<a class="headerlink" href="#model-types-available" title="Permalink to this headline">¶</a></h1>
+<p>For all example code in this page, <em>ospgrillage</em> is imported as <code class="docutils literal notranslate"><span class="pre">ospg</span></code></p>
 <div class="section" id="beam-grillage">
 <h2>Beam grillage<a class="headerlink" href="#beam-grillage" title="Permalink to this headline">¶</a></h2>
 <p>This is the most common form of grillage model which comprise of beam elements lay out in a grid pattern, with:</p>
@@ -183,7 +184,8 @@
 <li><p>longitudinal members representing composite section along longitudinal direction (e.g. main beams)</p></li>
 <li><p>transverse members representing slabs or secondary beam sections.</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_grillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;SuperT_10m&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">skew</span><span class="o">=-</span><span class="mi">42</span><span class="p">,</span>
+<p>This is the default model type when we <code class="xref py py-func docutils literal notranslate"><span class="pre">create_grillage()</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_grillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;SuperT_10m&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">skew</span><span class="o">=-</span><span class="mi">42</span><span class="p">,</span>
                                 <span class="n">num_long_grid</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">edge_beam_dist</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mesh_type</span><span class="o">=</span><span class="s2">&quot;Ortho&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -200,8 +202,8 @@
 <li><p>Offsets (in x-z plane) for start and end nodes along direction of transverse members - using joint offset.</p></li>
 <li><p>Offsets (in vertical y direction) for start and end nodes of longitudinal members - again using joint offsets.</p></li>
 </ul>
-<p>To create this model, have <cite>create_grillage()</cite> keyword for model_type set to “beam_link”.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_grillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;beamlink_10m&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">skew</span><span class="o">=-</span><span class="mi">12</span><span class="p">,</span>
+<p>To create this model, have <code class="xref py py-func docutils literal notranslate"><span class="pre">create_grillage()</span></code> keyword for <code class="docutils literal notranslate"><span class="pre">model_type</span></code> set to <strong>beam_link</strong>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_grillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;beamlink_10m&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">skew</span><span class="o">=-</span><span class="mi">12</span><span class="p">,</span>
                                     <span class="n">num_long_grid</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">edge_beam_dist</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mesh_type</span><span class="o">=</span><span class="s2">&quot;Ortho&quot;</span><span class="p">,</span>
                                     <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;beam_link&quot;</span><span class="p">,</span>
                                     <span class="n">beam_width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">web_thick</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span> <span class="n">centroid_dist_y</span><span class="o">=</span><span class="mf">0.499</span><span class="p">)</span>
@@ -214,7 +216,7 @@
 </div>
 <div class="figure align-center" id="id3">
 <a class="reference internal image-reference" href="../_images/spacegass.PNG"><img alt="../_images/spacegass.PNG" src="../_images/spacegass.PNG" /></a>
-<p class="caption"><span class="caption-text">Figure 3: Beam grillage with rigid links in SPACEGASS.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 3: Beam grillage with rigid links model from SPACEGASS software.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </div>
 <p>Joint offsets are linked via a rigid link. Information for joint offsets can be found in <cite>OpenSeesPy</cite>’s <a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/LinearTransf.html">geomtransf</a></p>
 <div class="admonition note">
@@ -231,7 +233,13 @@
 <li><p>Beam elements linked to shell elements at two corresponding locations using constraint equations - <cite>OpenSeesPy</cite>’s <strong>rigidLink</strong> command</p></li>
 </ul>
 <p>This model has advantageous in modelling slabs - shell elements are well-suited to represent two-dimensional slab behaviour.</p>
-<p>To create this model, have <cite>create_grillage()</cite> keyword for model_type set to “shell”.</p>
+<p>To create this model, have <code class="xref py py-func docutils literal notranslate"><span class="pre">create_grillage()</span></code> keyword for <code class="docutils literal notranslate"><span class="pre">model_type</span></code> set to <strong>shell</strong>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_grillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;shelllink_10m&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">skew</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                    <span class="n">num_long_grid</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">edge_beam_dist</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mesh_type</span><span class="o">=</span><span class="s2">&quot;Orth&quot;</span><span class="p">,</span>
+                                    <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;shell&quot;</span><span class="p">,</span> <span class="n">max_mesh_size_z</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">offset_beam_y_dist</span><span class="o">=</span><span class="mf">0.499</span><span class="p">,</span>
+                                    <span class="n">link_nodes_width</span><span class="o">=</span><span class="mf">0.89</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>Figure 4 shows the shell beam hybrid model.</p>
 <div class="figure align-center" id="id4">
 <a class="reference internal image-reference" href="../_images/shell_link_idealization.PNG"><img alt="../_images/shell_link_idealization.PNG" src="../_images/shell_link_idealization.PNG" /></a>

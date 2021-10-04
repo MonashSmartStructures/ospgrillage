@@ -10,12 +10,13 @@ For all example code in this page, *ospgrillage* is imported as ``ospg``
 Extracting results
 --------------------------------------
 
-After analysis, results are obtained using :func:`~ospgrillage.OspGrillage.get_results` function.
+After analysis, results are obtained using :func:`~ospgrillage.osp_grillage.OspGrillage.get_results` function.
 The following example extracts results for all defined analysis.
 
 .. code-block:: python
-    result = example_bridge.get_results() # this extracts all results
-    result = example_bridge.get_results(load_case = "patch load case") # this extracts only the patch load case results
+
+    all_result = example_bridge.get_results() # this extracts all results
+    patch_result = example_bridge.get_results(load_case = "patch load case") # this extracts only the patch load case results
 
 The returned **result** variable is an
 `xarray DataSet <http://xarray.pydata.org/en/stable/generated/xarray.Dataset.html>`_.
@@ -45,8 +46,8 @@ Following example shows how each DataArray is accessed from **result** DataSet:
 
 .. code-block:: python
 
-    disp_array = result.displacements # displacement components
-    force_array = result.forces # force components
+    disp_array = all_result.displacements # displacement components
+    force_array = all_result.forces # force components
 
 A third variable present in the DataSet of Figure 1 is the variable for element and its respective nodes.
 

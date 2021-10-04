@@ -193,8 +193,12 @@
 <p>For all example code in this page, <em>ospgrillage</em> is imported as <code class="docutils literal notranslate"><span class="pre">ospg</span></code></p>
 <div class="section" id="extracting-results">
 <h2>Extracting results<a class="headerlink" href="#extracting-results" title="Permalink to this headline">¶</a></h2>
-<p>After analysis, results are obtained using <code class="xref py py-func docutils literal notranslate"><span class="pre">get_results()</span></code> function.
+<p>After analysis, results are obtained using <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_results()</span></code></a> function.
 The following example extracts results for all defined analysis.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">all_result</span> <span class="o">=</span> <span class="n">example_bridge</span><span class="o">.</span><span class="n">get_results</span><span class="p">()</span> <span class="c1"># this extracts all results</span>
+<span class="n">patch_result</span> <span class="o">=</span> <span class="n">example_bridge</span><span class="o">.</span><span class="n">get_results</span><span class="p">(</span><span class="n">load_case</span> <span class="o">=</span> <span class="s2">&quot;patch load case&quot;</span><span class="p">)</span> <span class="c1"># this extracts only the patch load case results</span>
+</pre></div>
+</div>
 <p>The returned <strong>result</strong> variable is an
 <a class="reference external" href="http://xarray.pydata.org/en/stable/generated/xarray.Dataset.html">xarray DataSet</a>.</p>
 <div class="section" id="structure-of-xarray-dataset">
@@ -215,8 +219,8 @@ the <a class="reference internal" href="ModelTemplates.html#shell-hybrid-model">
 respectively (Figure 1). When this is the case, <strong>ele_nodes</strong> will be split into <strong>ele_nodes_beam</strong> and <strong>ele_nodes_shell</strong>
 as well.</p>
 <p>Following example shows how each DataArray is accessed from <strong>result</strong> DataSet:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">disp_array</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">displacements</span> <span class="c1"># displacement components</span>
-<span class="n">force_array</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">forces</span> <span class="c1"># force components</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">disp_array</span> <span class="o">=</span> <span class="n">all_result</span><span class="o">.</span><span class="n">displacements</span> <span class="c1"># displacement components</span>
+<span class="n">force_array</span> <span class="o">=</span> <span class="n">all_result</span><span class="o">.</span><span class="n">forces</span> <span class="c1"># force components</span>
 </pre></div>
 </div>
 <p>A third variable present in the DataSet of Figure 1 is the variable for element and its respective nodes.</p>

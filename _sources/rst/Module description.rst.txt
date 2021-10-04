@@ -119,7 +119,7 @@ Creating section objects
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 A :class:`~ospgrillage.members.Section` object is needed when `defining Grillage member`_.
 
-To create sections, users call the :func:`~ospgrillage.members.create_section`` function which returns a :class:`~ospgrillage.members.Section` object.
+To create sections, users call the :func:`~ospgrillage.members.create_section` function which returns a :class:`~ospgrillage.members.Section` object.
 
 The following code line creates a :class:`~ospgrillage.members.Section` object called *I_beam_section*, which is earlier passed as input for its corresponding object, i.e. *I_beam*:
 
