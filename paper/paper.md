@@ -24,19 +24,22 @@ bibliography: paper.bib
 
 # Summary
 
-`OpenSees` is a simulation framework for structural and geotechnical systems. Due to its robustness and versatility,
-it is highly suited for structural analysis such as bridge deck analysis. Before `ospgrillage`, users of `OpenSees` 
-are required to write code from scratch to define a section or a mesh of nodes for example. 
-Such code can be very length for detailed structural models, most notably a bridge grillage model -
-having many elements and features to be defined. In turn, `OpenSees` framework would benefit from having
-a module that automatically creates structural through a simpler and non-trivia user interface. 
-With `ospgrillage` it is now possible to create a variety of grillage models with 
-just a few lines of codes. `ospgrillage` wraps and generates bridge grillage model using the python intepreter of `OpenSees` 
-i.e. `OpenSeesPy`. In addition, `ospgrillage` allow users to output an executable python script
-containing relevant `OpenSeesPy` command to create the prescribed grillage model. Furthermore,
+`ospgrillage` is a Python package that wraps `OpenSeesPy` module in creating structural grillage models for performing
+grillage analysis in `OpenSees` framework. In the past, `OpenSees` - the open-source simulation framework for structural and geotechnical systems -
+allow users to create and perform finite element analysis by writing scripts. The robustness of `OpenSees` robustness when combined,
+with scripting language (such as Python) allow users to perform parallel structural analysis. However, `OpenSees` require users to write code
+from scratch which can be time-consuming. Having inherit a vast library of elements and computational modules, `OpenSees`
+would benefit greatly from having a module that automatically creates structural models through a simple user interface.
+
+`ospgrillage` is designed to fill the aforementioned gap by providing users a simple interface which consist of
+interface functions. For example, users only need to run a single `create_section` command instead of creating a Section object representing a bridge beam from scratch 
+(i.e. defining and instantiating objects). With `ospgrillage` it is possible to create a variety of complex grillage models with 
+just a few lines of codes. In addition to creating grillage models in the `OpenSees` framework, `ospgrillage` allow users to output an executable 
+python script containing relevant `OpenSeesPy` command which creates the prescribed grillage model when executed. Furthermore,
 `ospgrillage` offers load analysis utility using created grillage models, allowing users to perform
 static and moving load analysis for example. An online documentation has been provided at 
-Ngan et. al. (2021) which includes tutorials and examples for `ospgrillage`.
+Ngan et. al. (2021) which includes tutorials and examples for `ospgrillage`. Overall, `ospgrillage` should reduce the time needed 
+to write scripts which open up `OpenSees` framework to a wider audience while also lowering the bar for teaching and learning of the `OpenSeesPy` module. 
 
 
 # Statement of Need
@@ -71,21 +74,19 @@ reduces the time required for numerical analysis of bridge grillage models using
 `ospgrillage` is intended for two groups of users who would like to utilize `OpenSees` in Python language. Firstly, the ability of `ospgrillage` in providing a simple interface for creating grillage
 is suited for users who wish to create and analyze grillage models instantaneously in `OpenSees` framework. Secondly, `ospgrillage`'s
 ability to generate and export fully-fledged python scripts caters for users who wish to create and store multiple grillage models 
-for uses outside of `ospgrillage`. Overall, `ospgrillage` greatly reduces the time needed to write scripts which open up `OpenSees` framework
-to a wider audience by lowering the bar for teaching and learning of the `OpenSeesPy` module. 
-
-Source code, documentation, and issue trackers can be found at `ospgrillage`'s the main repository. Details on the module 
-design can be found on the documentation page. Guide and examples for creating grillage models can be found in 
-documentation as well. 
+for uses outside of `ospgrillage`. 
 
 
-# Package information
+# Module information
 
 In general, `ospgrillage` wraps `OpenSeesPy` command for:
 
 - creating grillage model, and
 - running analysis
 
+Source code, documentation, and issue trackers can be found at `ospgrillage`'s the main [repository](https://monashsmartstructures.github.io/ospgrillage/index.html). 
+Further details on the module design can be found on the documentation Module design page. Guide and examples for creating grillage models are also presented in the 
+documentation as well. 
 
 # Acknowledgements
 
