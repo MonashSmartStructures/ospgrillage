@@ -864,8 +864,6 @@ def test_28m_bridge(ref_28m_bridge):
     load_effect = og.np.concatenate(([load_effect_i[0].values],load_effect_j.values))
 
 
-    #TODO
-    # if bending
     component = "Mz_i"
 
     # for ele in eletag:

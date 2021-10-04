@@ -2,6 +2,11 @@
 Getting Results
 ========================
 
+For all example code in this page, *ospgrillage* is imported as ``ospg``
+
+.. code-block:: python
+    import ospgrillage as ospg
+
 Extracting results
 --------------------------------------
 
@@ -76,7 +81,7 @@ and load effect component (e.g. "dy" for displacements). The `get_envelope()` fu
 
 .. code-block:: python
     first_combination = comb_results[0] # list of combination xarray, get the first
-    envelope = og.get_envelope(ds=first_combination,load_effect="dy",array="displacements") # creates the envelope obj
+    envelope = ospg.get_envelope(ds=first_combination,load_effect="dy",array="displacements") # creates the envelope obj
     disp_env = envelope.get() # step to get envelope of xarray
 
 
@@ -116,13 +121,16 @@ using `ops_vis`:
 
 .. code-block:: python
 
+    ospg.opsv.section_force_diagram_3d('Mz', {}, 1) # here change name string argument to force component of interest
 
 
-* Have only one load case only.
-* Plot responses using `ops_vis` after :func:`~ospgrillage.osp_grillage.OspGrillage.analyze`
+.. note::
+
+    `opsv` gives the correct result only if the load case of interest is the only load case
+    being :func:`~ospgrillage.osp_grillage.OspGrillage.analyze`.
 
 
-In the following section, we present an alternative way to visualize results of `xarray` DataSets.
+In the following section, we present an alternative way to visualize results from the `xarray` DataSets.
 
 Template code for plotting results
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -155,17 +163,17 @@ Plotting "Mz" of "exterior_main_beam_2" in ``example_bridge`` model:
 .. code-block:: python
 
     # template code to plot load effect - herein plot "Mz" global of exterior main beam 2
-    ax = og.plt.axes(projection='3d') # create plot window
-    nodes=bridge_28.get_nodes() # extract node information of model
-    nodes_to_plot = bridge_28.get_element(member="exterior_main_beam_2", options="nodes",z_group_num=0) # extract nodes of exterior beam
-    eletag = bridge_28.get_element(member="exterior_main_beam_2", options="elements") #
+    ax = ospg.plt.axes(projection='3d') # create plot window
+    nodes=example_bridge.get_nodes() # extract node information of model
+    nodes_to_plot = example_bridge.get_element(member="exterior_main_beam_2", options="nodes",z_group_num=0) # extract nodes of exterior beam
+    eletag = example_bridge.get_element(member="exterior_main_beam_2", options="elements") #
     load_effect_i = results.forces.sel(Component="Mz_i",Element=eletag)[0]
     load_effect_j = results.forces.sel(Component="Mz_j",Element=eletag)[0]
-    load_effect = og.np.concatenate(([load_effect_i[0].values],load_effect_j.values))
+    load_effect = ospg.np.concatenate(([load_effect_i[0].values],load_effect_j.values))
     results.ele_nodes.sel(Element=eletag, Nodes='i')
     node_x = [nodes[n]['coordinate'][0] for n in nodes_to_plot[0]]
     node_z = [nodes[n]['coordinate'][2] for n in nodes_to_plot[0]]
-    ax = og.plt.axes(projection='3d')
+    ax = ospg.plt.axes(projection='3d')
     ax.plot(node_x,node_z,load_effect)
 
 
@@ -173,20 +181,27 @@ Plotting "Mz" of "exterior_main_beam_2" in ``example_bridge``- version 2 leverag
 
 .. code-block:: python
 
-    ax = og.plt.axes(projection='3d') # create plot window
+    ax = ospg.plt.axes(projection='3d') # create plot window
+    nodes=example_bridge.get_nodes() # extract node information of model
+    eletag = example_bridge.get_element(member="exterior_main_beam_2", options="elements") # get ele tag of grillage elements
+    # loop ele tags of ele
     for ele in eletag:
+        # get force components
         ele_components = results.forces.sel(Element=ele, Component=["Vx_i", "Vy_i", "Vz_i", "Mx_i", "My_i", "Mz_i", "Vx_j", "Vy_j", "Vz_j", "Mx_j", "My_j",
                            "Mz_j"])[0].values
-        #ele_components = results.forces.sel(Element=ele)[0].values[:12]
+        # get nodes of ele
         ele_node = results.ele_nodes.sel(Element=ele)
+        # create arrays for x y and z for plots
         xx = [nodes[n]['coordinate'][0] for n in ele_node.values]
         yy = [nodes[n]['coordinate'][1] for n in ele_node.values]
         zz = [nodes[n]['coordinate'][2] for n in ele_node.values]
-        s,al = og.opsv.section_force_distribution_3d(ex=xx,ey=yy,ez=zz,pl=ele_components)
+        # use ops_vis module to get force distribution on element
+        s,al = ospg.opsv.section_force_distribution_3d(ex=xx,ey=yy,ez=zz,pl=ele_components)
+        # plot desire element force component
         ax.plot(xx,zz,s[:,5]) # Here change int accordingly: {0:Fx,1:Fy,2:Fz,3:Mx,4:My,5:Mz}
 
 ..  figure:: ../../_images/example_bmd.PNG
     :align: center
     :scale: 75 %
 
-    Figure 1: Structure of DataSet.
+    Figure 2: Bending moment about z axis of exterior main beam 2 .

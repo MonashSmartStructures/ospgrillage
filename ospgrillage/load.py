@@ -801,10 +801,6 @@ class MovingLoad:
                              "moving load object")
         # else, valid input for setting a basic moving load - proceed setting common path variable
         self.common_path = path_obj
-        # if all loads defined before setting path, append their
-        # TODO
-        # if self.load_case_dict_list: #
-        #    for loads in self.load_case_dict_list:
 
     def add_loads(self, load_obj: Union[Loads, CompoundLoad], path_obj=None):
         """
@@ -830,12 +826,16 @@ class MovingLoad:
         elif self.global_increment:  # advance use - where each object has individual path
             load_pair_path.setdefault("path", path_obj.get_custom_path_points(self.global_increment))
         else:  # error, no global statement was provided,
-            raise ValueError("No global_increment= was provided for Moving load - intended for advance usage with "
-                             "individual loads having individual paths")
+            raise ValueError("No set_path() for moving load {}: Hint run set_path() before add_loads()"
+                             .format(self.name))
         self.load_case_dict_list.append(load_pair_path)
 
     # function to create incremental load cases for each step of the moving loads. Function handled by OspGrillage
     def parse_moving_load_cases(self):
+
+
+
+
         # loop through all load-path pairs and identify static loads
         for load_pair_dict in self.load_case_dict_list:
             if not load_pair_dict["path"]:  # empty path, load is static
