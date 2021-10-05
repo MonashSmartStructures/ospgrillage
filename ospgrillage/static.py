@@ -16,45 +16,7 @@ def diff(li1, li2):
     return list(list(set(li1) - set(li2)) + list(set(li2) - set(li1)))
 
 
-def search_grid_lines(node_line_list, position, position_bound="ub"):
-    upper_grids = []
-    lower_grids = []
-    for count, node_position in enumerate(node_line_list):
-        if node_position <= position:
-            lower_grids.append(count)
-        elif node_position >= position:
-            upper_grids.append(count)
-
-    lower_line = max(lower_grids)
-    upper_line = min(upper_grids)
-
-    lower_pos_diff = position - node_line_list[lower_line]
-    upper_pos_diff = node_line_list[upper_line] - position
-    spacing = (node_line_list[upper_line] - node_line_list[lower_line]) / 2
-    if position_bound == "ub":
-        if lower_pos_diff > spacing:
-            upper_line_width = lower_pos_diff - spacing
-            lower_line_width = spacing
-        else:
-            upper_line = []
-            upper_line_width = 0
-            lower_line_width = lower_pos_diff
-    elif position_bound == "lb":
-        if upper_pos_diff > spacing:
-            lower_line_width = upper_pos_diff - spacing
-            upper_line_width = spacing
-        else:
-            lower_line = []
-            lower_line_width = 0
-            upper_line_width = upper_pos_diff
-    else:
-        upper_line_width = upper_pos_diff
-        lower_line_width = lower_pos_diff
-
-    return [[upper_line, upper_line_width], [lower_line, lower_line_width]]
-
-
-def findCircle(x1, y1, x2, y2, x3, y3):
+def find_circle(x1, y1, x2, y2, x3, y3):
     x12 = x1 - x2
     x13 = x1 - x3
 
@@ -204,29 +166,6 @@ def get_slope(pt1, pt2):
 
 
 def solve_zeta_eta(xp, zp, x1, z1, x2, z2, x3, z3, x4, z4):
-    # function to solve for eta and zeta of point in grid after mapping grid nodes (4) to four coordinate in
-    # a reference isoparametric quadrilateral
-    # note: sympy version to be deprecated
-    # x, z = symbols('x,z')
-    #
-    # eq1 = Eq(
-    #     4 * zp - ((1 - x) * (1 - z) * z1 + (1 + x) * (1 - z) * z2 + (1 + x) * (1 + z) * z3 + (1 - x) * (1 + z) * z4), 0)
-    # eq2 = Eq(
-    #     4 * xp - ((1 - x) * (1 - z) * x1 + (1 + x) * (1 - z) * x2 + (1 + x) * (1 + z) * x3 + (1 - x) * (1 + z) * x4), 0)
-    # sol = solve((eq1, eq2), (x, z))
-    # if type(sol) is list:
-    #     sol_extract= sol[0]
-    #     if isinstance(sol_extract,tuple):
-    #         eta = sol_extract[0]
-    #         zeta = sol_extract[1]
-    #     elif sol_extract is dict:
-    #         eta = sol_extract[x]
-    #         zeta = sol_extract[z]
-    # elif type(sol) is dict:
-    #     sol_extract = sol
-    #     eta = sol_extract[x]
-    #     zeta = sol_extract[z]
-
     # create function to solve for eta and zeta - dynamically for varying parameters x1-x4, z1-z4, zp,xp
 
     def obj_func(x, xp, zp, x1, x2, x3, x4, z1, z2, z3, z4):
@@ -561,6 +500,7 @@ class Envelope:
         * load_effect
 
         """
+        self.value = True
         self.ds = ds
         if ds is None:
             return
@@ -631,7 +571,6 @@ class Envelope:
         Function to return envelope of xarray given data set and enveloping options
         :return:
         """
-        self.value = True
 
         return eval(self.format_string)
 

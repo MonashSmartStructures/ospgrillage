@@ -427,9 +427,9 @@ class LineLoading(Loads):
             # curve
         if self.load_point_3 is not None:  # curve
             # findCircle assumes model plane is y = 0, ignores y input, y in this case is a 2D view of x z plane
-            self.d = findCircle(x1=self.load_point_1.x, y1=self.load_point_1.z,
-                                x2=self.load_point_2.x, y2=self.load_point_2.z,
-                                x3=self.load_point_3.x, y3=self.load_point_3.z)
+            self.d = find_circle(x1=self.load_point_1.x, y1=self.load_point_1.z,
+                                 x2=self.load_point_2.x, y2=self.load_point_2.z,
+                                 x3=self.load_point_3.x, y3=self.load_point_3.z)
             # return a function variable
             self.line_end_point = self.load_point_3
         else:  # straight line with 2 points
@@ -810,13 +810,10 @@ class MovingLoad:
         :param load_obj: Loads class object , or Compound load object
         :param path_obj: Path class object - this is for advance use, where users specify unique path object for each load within the moving load object.
 
-
         """
         # if no path object is added, set empty list to path_obj. The load group will be treated as a static load
         # present throughout the movement of other load groups (added to the series of moving load case)
-        # if path_obj is None:
-        #     # path_obj = [] version
-        #     raise Exception("Path object not defined")
+
         load_pair_path = dict()
         load_pair_path.setdefault("load", load_obj)
         # check if basic moving load case

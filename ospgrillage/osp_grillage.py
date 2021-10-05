@@ -1465,19 +1465,19 @@ class OspGrillage:
         load_comb = {"name_of_load_case_1":1.2, "name_of_load_case_2": 1.5}
 
         """
-        ind = None
+        load_case_dict = None # instantiate
         load_case_dict_list = []  # list of dict: structure of dict See line
         # create dict with key (combination name) and val (list of dict of load cases)
         for load_case_name, combination_load_factor in load_case_and_factor_dict.items():
             # lookup basic load cases for load_case_name
-            a = [index for (index, val) in enumerate(self.load_case_list) if val['name'] == load_case_name]
-            # check if a placeholder variable exist, if yes, ind is a load case
-            if a:
-                ind = a[0]
+            index_list = [index for (index, val) in enumerate(self.load_case_list) if val['name'] == load_case_name]
+            # copy lc objects in index list if present
+            if index_list:
+                ind = index_list[0]
                 load_case_dict = deepcopy(self.load_case_list[ind])
                 load_case_dict['load_factor'] = combination_load_factor
                 load_case_dict_list.append(load_case_dict)
-            # else look up moving load cases
+            # else look up in moving load cases
             elif load_case_name in self.moving_load_case_dict.keys():
                 for inc_load_case_dict in self.moving_load_case_dict[load_case_name]:
                     inc_load_case_dict['load_factor'] = combination_load_factor
@@ -1501,7 +1501,7 @@ class OspGrillage:
         * save_file_name (`str`): Name string of file name. Saves to NetCDF.
         * load_case (`str`): str or list of name string of specific load case to extract. Returned DataSet with the specified Load cases only
 
-        :returns results: xarray DataSet of analysis results - extracted based on keyword option specified.
+        :return: Xarray DataSet of analysis results - extracted based on keyword option specified.
                             If combination is True, returns a list of DataSet, with each element correspond to
                             a load combination.
 

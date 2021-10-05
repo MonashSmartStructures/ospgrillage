@@ -34,12 +34,12 @@ Point = namedtuple("Point", ['x', 'y', 'z'])
 
 class Mesh:
     """
-    Main class for grid mesh. The class holds information pertaining the mesh group such as element connectivity and nodes
+    Base class for mesh class. The class holds information pertaining the mesh group such as element connectivity and nodes
     of the mesh object. Positional arguments are handled by OspGrillage class.
 
     .. note::
 
-        As of beta version 0.1.0, the default mesh is a straight mesh with either Orthogonal and Oblique grids. For developers
+        As of version 0.1.0, the default mesh is a straight mesh with either Orthogonal and Oblique grids. For developers
         mesh module needs a new structure where the mesh class will have mesh types segregated into a base Mesh class
         and child class e.g. OrthogonalMesh(Mesh) class.
 
@@ -63,7 +63,7 @@ class Mesh:
         self.skew_1 = skew_1
         self.skew_2 = skew_2
         self.orthogonal = kwargs.get("orthogonal", False)
-        self.beam_element_flag = kwargs.get("create_beam_elements",True) # bool to create beam elements between nodes
+        self.beam_element_flag = kwargs.get("create_beam_elements", True)  # bool to create beam elements between nodes
         # sweep path properties
         self.pt1 = pt1
         self.pt2 = pt2
@@ -147,7 +147,7 @@ class Mesh:
                                                           edge_width_b=self.edge_width_b,
                                                           edge_angle=self.skew_1,
                                                           num_long_beam=self.num_long_beam,
-                                                          model_plane_y=self.y_elevation,**kwargs)
+                                                          model_plane_y=self.y_elevation, **kwargs)
 
         # ------------------------------------------------------------------------------------------
         # edge construction line 2
@@ -157,7 +157,7 @@ class Mesh:
                                                         edge_width_a=self.edge_width_a, edge_width_b=self.edge_width_b,
                                                         edge_angle=self.skew_2,
                                                         num_long_beam=self.num_long_beam,
-                                                        model_plane_y=self.y_elevation,**kwargs)
+                                                        model_plane_y=self.y_elevation, **kwargs)
         # ------------------------------------------------------------------------------------------
         # Sweep nodes
         # nodes to be swept across sweep path varies based
@@ -296,7 +296,7 @@ class Mesh:
             self.global_x_grid_count += 1
             self.assigned_node_tag = []  # reset variable
             print("Edge mesh @ start span completed")
-        else: # perform edge meshing with variable distance between transverse members by looping through all control
+        else:  # perform edge meshing with variable distance between transverse members by looping through all control
             # points of edgecontrolline
             # loop for each control point of edge line with sweep nodes
             for z_count, int_point in enumerate(self.start_edge_line.node_list):
@@ -669,7 +669,7 @@ class Mesh:
             self.x_group_to_ele[count] = [ele for ele in self.trans_ele if ele[3] == count]
         # dict edge counter to ele
         self.edge_group_to_ele = dict()
-        for count in range(0,self.global_edge_count+1):
+        for count in range(0, self.global_edge_count + 1):
             self.edge_group_to_ele[count] = [ele for ele in self.edge_span_ele if ele[3] == count]
         # dict node tag to width in x direction
         self.node_width_x_dict = dict()
@@ -914,7 +914,8 @@ class Mesh:
 
 class EdgeControlLine:
     """
-    edge node class
+    Main class for edge control points. This class holds information for node meshing points of model edges - start and
+    end spans. This class is used in BeamMesh class.
     """
 
     def __init__(self, edge_ref_point, width_z, edge_width_a, edge_width_b, edge_angle, num_long_beam, model_plane_y,
@@ -944,8 +945,7 @@ class EdgeControlLine:
         self._create_trans_grid(nox_girder=nox_girder)
         # if self.feature == "standard":
         #     self.noz = np.hstack((np.hstack((0, nox_girder)), self.width_z))
-        #elif self.feature == "shell_link":
-
+        # elif self.feature == "shell_link":
 
         # if negative angle, create edge_node_x based on negative angle algorithm, else positive angle algorithm
         if self.edge_angle <= 0:
@@ -969,20 +969,23 @@ class EdgeControlLine:
         group = self.node_list.index(coordinate)
         return group
 
-
-    def _create_trans_grid(self,nox_girder):
+    def _create_trans_grid(self, nox_girder):
         self.noz = np.hstack((np.hstack((0, nox_girder)), self.width_z))
 
 
 class ShellEdgeControlLine(EdgeControlLine):
-    def __init__(self,edge_ref_point, width_z, edge_width_a, edge_width_b, edge_angle, num_long_beam, model_plane_y,
+    """
+    Child class of EdgeControlLine. This class is used by ShellMesh class
+    """
+
+    def __init__(self, edge_ref_point, width_z, edge_width_a, edge_width_b, edge_angle, num_long_beam, model_plane_y,
                  feature="standard", ext_to_int_a=None, ext_to_int_b=None, **kwargs):
         # get properties specific to shell mesh
-        self.link_nodes_width = kwargs.get("link_nodes_width",None)  # information from kwargs of Shellmodel class
-        self.max_mesh_size_z = kwargs.get("max_mesh_size_z") # information from kwargs of Shellmodel class
-        self.max_mesh_size_x = kwargs.get("max_mesh_size_x") # information from kwargs of Shellmodel class
+        self.link_nodes_width = kwargs.get("link_nodes_width", None)  # information from kwargs of Shellmodel class
+        self.max_mesh_size_z = kwargs.get("max_mesh_size_z")  # information from kwargs of Shellmodel class
+        self.max_mesh_size_x = kwargs.get("max_mesh_size_x")  # information from kwargs of Shellmodel class
         super().__init__(edge_ref_point, width_z, edge_width_a, edge_width_b, edge_angle, num_long_beam, model_plane_y,
-                            feature, ext_to_int_a, ext_to_int_b, **kwargs)
+                         feature, ext_to_int_a, ext_to_int_b, **kwargs)
 
     # function specific to shell edge line
     def _get_shell_z_group_pair(self):
@@ -991,7 +994,7 @@ class ShellEdgeControlLine(EdgeControlLine):
             list_index = [self.noz.index(node_z_pair[0]), self.noz.index(node_z_pair[1])]
             self.z_group_master_pair_list.append(list_index)
 
-    def _create_trans_grid(self,nox_girder):
+    def _create_trans_grid(self, nox_girder):
         z_spacing = self.link_nodes_width / 2
         mesh_z_spacing = self.max_mesh_size_z
         self.beam_position = np.hstack(
@@ -1018,6 +1021,11 @@ class ShellEdgeControlLine(EdgeControlLine):
 
 
 class SweepPath:
+    """
+    Main class for sweep path. Sweep path is assigned to an EdgeControlLine class in order to create mesh of nodes
+    across its path. The constuctor is handled by Mesh classes ( either base or concrete classes)
+    """
+
     def __init__(self, pt1: Point, pt2: Point, pt3: Point = None):
         """
 
@@ -1038,7 +1046,7 @@ class SweepPath:
     def get_sweep_line_properties(self):
         if self.pt3 is not None:
             try:
-                self.d = findCircle(x1=0, y1=0, x2=self.pt2.x, y2=self.pt2.z, x3=self.pt3.x, y3=self.pt3.z)
+                self.d = find_circle(x1=0, y1=0, x2=self.pt2.x, y2=self.pt2.z, x3=self.pt3.x, y3=self.pt3.z)
                 self.curve_path = True
             except ZeroDivisionError:
                 return Exception("Zero div error. Point 3 not valid to construct curve line")
@@ -1075,6 +1083,10 @@ class SweepPath:
 # ---------------------------------------------------------------------------------------------------------------------
 # concrete classes of Mesh
 class BeamMesh(Mesh):
+    """
+    Concrete class for Mesh class. This is the default Mesh class for Beam grillage
+    """
+
     def __init__(self, long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
                  skew_2, ext_to_int_a, ext_to_int_b, **kwargs):
         """
@@ -1102,6 +1114,10 @@ class BeamMesh(Mesh):
 
 
 class BeamLinkMesh(Mesh):
+    """
+    Concrete class for Mesh class. This Mesh class is for model type 2: Beam grillage with rigid links and offsets
+    """
+
     def __init__(self, long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
                  skew_2, ext_to_int_a, ext_to_int_b, **kwargs):
         """
@@ -1178,6 +1194,10 @@ class BeamLinkMesh(Mesh):
 
 
 class ShellLinkMesh(Mesh):
+    """
+    Concrete class for Mesh class. This Mesh class is for model type 3: Shell hybrid model with rigid links
+    """
+
     def __init__(self, long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
                  skew_2, ext_to_int_a, ext_to_int_b, link_type="beam", **kwargs):
         """
@@ -1207,9 +1227,9 @@ class ShellLinkMesh(Mesh):
         self.roller_node_group = 1
         # get variables from keyword arguments
         self.y_offset = kwargs.get("offset_beam_y_dist", 0.449)  # Here default values
-        self.link_nodes_width = kwargs.get("link_nodes_width",0.445)   # Here default values
-        self.max_mesh_size_z = kwargs.get("max_mesh_size_z",1)  # Here default values
-        self.max_mesh_size_x = kwargs.get("max_mesh_size_x",1)  # Here default values
+        self.link_nodes_width = kwargs.get("link_nodes_width", 0.445)  # Here default values
+        self.max_mesh_size_z = kwargs.get("max_mesh_size_z", 1)  # Here default values
+        self.max_mesh_size_x = kwargs.get("max_mesh_size_x", 1)  # Here default values
         # variables to store assignment counters after meshing of main model plane grid y = 0
         self.x_grid_to_x_dict = dict()  # key is x value (m), value is x grid number (for offset nodes)
         self.z_grid_to_z_dict = dict()  # key is z value (m), value is z grid number (for offset nodes)
@@ -1228,14 +1248,13 @@ class ShellLinkMesh(Mesh):
         # base class stores node groups as self.model_plane_z_groups, here for offset elements store as new variable
         self.offset_z_groups = [a for a in list(self.z_group_to_ele.keys()) if a not in self.model_plane_z_groups]
 
-
     # -----------------------------------------------------------------------------------------------------------------
     # Functions which are overwritten of that from base class to for specific shell type model
     def create_control_points(self, **kwargs):
 
         return ShellEdgeControlLine(**kwargs)
 
-       # add groupings of offset beam elements
+    # add groupings of offset beam elements
 
     # ----------------------------------------------------------------------------------------------------------------
     # sub procedures specific to shell meshes
@@ -1279,12 +1298,14 @@ class ShellLinkMesh(Mesh):
         z_pair = self.start_edge_line.z_group_master_pair_list
         # loop each z pair
         # loop each x group
-        for x_group in range(0,self.global_x_grid_count):
-            for beam_group,z_pair_group in enumerate(z_pair):
-                n1 = [key for key,n in self.node_spec.items() if n['x_group']==x_group and n['z_group']==z_pair_group[0]]
-                n2 = [key for key,n in self.node_spec.items() if n['x_group']==x_group and n['z_group']==z_pair_group[1]]
+        for x_group in range(0, self.global_x_grid_count):
+            for beam_group, z_pair_group in enumerate(z_pair):
+                n1 = [key for key, n in self.node_spec.items() if
+                      n['x_group'] == x_group and n['z_group'] == z_pair_group[0]]
+                n2 = [key for key, n in self.node_spec.items() if
+                      n['x_group'] == x_group and n['z_group'] == z_pair_group[1]]
 
-                if not len(n1) == 1 or not len(n2) ==1:
+                if not len(n1) == 1 or not len(n2) == 1:
                     continue
                 n1_coord = self.node_spec[n1[0]]['coordinate']
                 n2_coord = self.node_spec[n2[0]]['coordinate']
@@ -1297,17 +1318,17 @@ class ShellLinkMesh(Mesh):
                                            'x_group': x_count, 'z_group': z_count.format(beam_group)})
 
                 # store offset node rigid details
-                master_node_list = [n1[0],n2[0]]  # list of list
+                master_node_list = [n1[0], n2[0]]  # list of list
                 self.link_dict.setdefault(self.node_counter, master_node_list)
 
                 # store node - beam group detail
-                #beam_group = [ind for ind, i in enumerate([self.node_spec in z for z in z_pair]) if i][0]  # numbering of beam group
+                # beam_group = [ind for ind, i in enumerate([self.node_spec in z for z in z_pair]) if i][0]  # numbering of beam group
                 self.offset_node_group_dict.setdefault(self.node_counter, beam_group)  # c node is key, group num is val
                 self.node_counter += 1
 
         # generate for edge nodes - only for orthogonal mesh
         if self.orthogonal:
-            for edge_group in range(0,self.global_edge_count):
+            for edge_group in range(0, self.global_edge_count):
                 for beam_group, z_pair_group in enumerate(z_pair):
                     n1 = [key for key, n in self.node_spec.items() if
                           key in self.edge_node_recorder.keys() and n['z_group'] == z_pair_group[0]]
@@ -1348,4 +1369,3 @@ class ShellLinkMesh(Mesh):
 
 # -----------------------------------------------------------------------------------------------------------------
 # concrete classes for mesh elements
-
