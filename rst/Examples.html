@@ -390,6 +390,7 @@ in Local coordinates then setting the local coordinate system of compound load t
 </div>
 <div class="section" id="analysis">
 <h3>Analysis<a class="headerlink" href="#analysis" title="Permalink to this headline">¶</a></h3>
+<p>Analyzing all defined load case</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run analysis</span>
 <span class="n">simple_grid</span><span class="o">.</span><span class="n">analyze</span><span class="p">()</span>
 </pre></div>
@@ -398,7 +399,7 @@ in Local coordinates then setting the local coordinate system of compound load t
 <div class="section" id="getting-load-case-results">
 <h3>Getting load case results<a class="headerlink" href="#getting-load-case-results" title="Permalink to this headline">¶</a></h3>
 <p>Get <cite>xarray</cite> DataSet of results.</p>
-<p>For information on <code class="docutils literal notranslate"><span class="pre">results</span></code> variable, see <span class="xref std std-ref">PostProcessing</span>.</p>
+<p>For information on <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-func docutils literal notranslate"><span class="pre">ospgrillage.osp_grillage.OspGrillage.get_results()</span></code></a> variable, see <span class="xref std std-ref">PostProcessing</span>.</p>
 </div>
 <div class="section" id="getting-load-combination-results">
 <h3>Getting load combination results<a class="headerlink" href="#getting-load-combination-results" title="Permalink to this headline">¶</a></h3>
@@ -495,7 +496,7 @@ lusas plot</p>
 <h2>Skew edges of mesh<a class="headerlink" href="#skew-edges-of-mesh" title="Permalink to this headline">¶</a></h2>
 <p>Here is an example showing the types of edge skew you can produce with <em>ospgrillage</em>.
 A version the aforementioned 28m grillage model example is given but
-with different parameters for its grillage object i.e. <code class="docutils literal notranslate"><span class="pre">create_grillage()</span></code>.
+with different parameters for its grillage object i.e. <code class="xref py py-func docutils literal notranslate"><span class="pre">create_grillage()</span></code>.
 This time we have varied span to 10 m, and edge skew angles - left edge is 42 degrees, right edge is 0 degrees (orthogonal).</p>
 <p>The following portion of the code is altered which then produces a grillage model with mesh as shown in Figure 4:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_grillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;SuperT_10m&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">skew</span><span class="o">=</span><span class="p">[</span><span class="mi">42</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
@@ -506,8 +507,8 @@ This time we have varied span to 10 m, and edge skew angles - left edge is 42 de
 </pre></div>
 </div>
 <div class="figure align-center" id="id4">
-<a class="reference internal image-reference" href="../images/42_0_mesh.PNG"><img alt="../images/42_0_mesh.PNG" src="../images/42_0_mesh.PNG" /></a>
-<p class="caption"><span class="caption-text">Figure 4: Left angle 42, right angle 0 (orthogonal).</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+<a class="reference internal image-reference" href="../_images/42_0_mesh.PNG"><img alt="../_images/42_0_mesh.PNG" src="../_images/42_0_mesh.PNG" /></a>
+<p class="caption"><span class="caption-text">Figure 4: Orthogonal mesh with left and right edge angle of 42 and 0 respectively.</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 </div>
