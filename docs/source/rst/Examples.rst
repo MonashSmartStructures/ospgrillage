@@ -224,6 +224,8 @@ Here's how we create and add a moving load (e.g. a truck) to the 28 m bridge mod
 Analysis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Analyzing all defined load case
+
 .. code-block:: python
 
     # Run analysis
@@ -238,7 +240,7 @@ Get `xarray` DataSet of results.
 .. code-block:: python
     results = simple_grid.get_results() # gets basic results
 
-For information on ``results`` variable, see :ref:`PostProcessing`.
+For information on :func:`ospgrillage.osp_grillage.OspGrillage.get_results` variable, see :ref:`PostProcessing`.
 
 Getting load combination results
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -359,7 +361,7 @@ Skew edges of mesh
 --------------------
 Here is an example showing the types of edge skew you can produce with *ospgrillage*.
 A version the aforementioned 28m grillage model example is given but
-with different parameters for its grillage object i.e. ``create_grillage()``.
+with different parameters for its grillage object i.e. :func:`~ospgrillage.osp_grillage.OspGrillage.create_grillage`.
 This time we have varied span to 10 m, and edge skew angles - left edge is 42 degrees, right edge is 0 degrees (orthogonal).
 
 The following portion of the code is altered which then produces a grillage model with mesh as shown in Figure 4:
@@ -373,8 +375,8 @@ The following portion of the code is altered which then produces a grillage mode
     og.opsplt.plot_model("nodes")
 
 
-..  figure:: ../../images/42_0_mesh.PNG
+..  figure:: ../../_images/42_0_mesh.PNG
     :align: center
     :scale: 75 %
 
-    Figure 4: Left angle 42, right angle 0 (orthogonal).
+    Figure 4: Orthogonal mesh with left and right edge angle of 42 and 0 respectively.
