@@ -801,9 +801,9 @@ def test_28m_bridge(ref_28m_bridge):
     #og.plt.show()
     #og.opsplt.plot_model("nodes")
     og.ops.wipeAnalysis()
-    p = 50
-    lane_point_1 = og.create_load_vertex(x=20.89, y=0, z=3, p=5)
-    lane_point_2 = og.create_load_vertex(x=20.89, y=0, z=7, p=5)
+    p = 50000
+    lane_point_1 = og.create_load_vertex(x=20.89, y=0, z=3, p=p)
+    lane_point_2 = og.create_load_vertex(x=20.89, y=0, z=7, p=p)
     width_a = 2.29375
     width_a = 3.9
     width_b = 4.70625
@@ -853,6 +853,18 @@ def test_28m_bridge(ref_28m_bridge):
     print(og.ops.nodeDisp(53))
     print(og.ops.nodeDisp(40))
 
+    # template to plot displacements
+    nodes = bridge_28.get_nodes()  # ospgrillage way to store node information
+    # element = example_bridge.get_element()
+    x_coord = [spec['coordinate'][0] for spec in nodes.values()]
+    z_coord = [spec['coordinate'][2] for spec in nodes.values()]
+    # get load effect
+    load_effect = results.displacements.sel(Component="dy")[0]
+    #ax = og.plt.figure
+    #ax.scatter(x_coord, z_coord, load_effect)
+    # if require deflected shape across all nodes
+
+
     # template to plot BMD
     #ax = og.plt.axes(projection='3d') # create plot
     ax = og.plt.figure # create plot
@@ -863,8 +875,16 @@ def test_28m_bridge(ref_28m_bridge):
     load_effect_j = results.forces.sel(Component="Vy_i",Element=eletag)[0]
     load_effect = og.np.concatenate(([load_effect_i[0].values],load_effect_j.values))
 
-
-    component = "Mz_i"
+    dis_comp = "dy" # change here
+    for node in nodes_to_plot[0]:
+        disp = results.displacements.sel(Component=dis_comp,Node=node)[0].values
+        xx = nodes[node]['coordinate'][0]
+        zz = nodes[node]['coordinate'][2]
+        og.plt.plot(xx, disp,'ob')
+    og.plt.xlabel("x (m) ")
+    og.plt.ylabel("dy (m)")
+    og.plt.show()
+    force_component = "Mz_i"
 
     # for ele in eletag:
     #     p_i = results.forces.sel(Component=component,Element=ele)[0].values

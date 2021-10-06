@@ -148,42 +148,27 @@ Scatter plot of "dy" component in each node of ``example_bridge``:
 
 .. code-block:: python
 
+    dis_comp = "dy" # change here for desired displacement component
     # get all node information
     nodes = example_bridge.get_nodes() # dictionary containing information of nodes
-    # extract list of x and z coordinate of nodes
-    x_coord = [spec['coordinate'][0] for spec in nodes.values()]
-    z_coord = [spec['coordinate'][2] for spec in nodes.values()]
-
-    # get displacement load effect - vertical "dy"
-    load_effect = result.displacements.sel(Component="dy")[0] # Modify component here accordingly
-    ax = og.plt.axes(projection='3d') # create plot
-    ax.scatter(x_coord,z_coord,load_effect) # plot load effect against x and z coordinate positions
+    # get specific nodes for specific element
+    nodes_to_plot = bridge_28.get_element(member="exterior_main_beam_2", options="nodes")[0] # list of list
+    # loop through nodes to plot
+    for node in nodes_to_plot:
+        disp = results.displacements.sel(Component=dis_comp,Node=node)[0].values # get node disp value
+        xx = nodes[node]['coordinate'][0] # get x coord
+        zz = nodes[node]['coordinate'][2] # get z coord (for 3D plots)
+        og.plt.plot(xx, disp,'ob')  # here plot accordingly, we plot a 1-D plot of all nodes in grillage element
+    og.plt.xlabel("x (m) ") # labels
+    og.plt.ylabel("dy (m)") # labels
+    og.plt.show()
 
 
 ..  figure:: ../../_images/example_deflected.PNG
     :align: center
     :scale: 75 %
 
-    Figure 1: Structure of DataSet.
-
-Plotting "Mz" of "exterior_main_beam_2" in ``example_bridge`` model:
-
-.. code-block:: python
-
-    # template code to plot load effect - herein plot "Mz" global of exterior main beam 2
-    ax = ospg.plt.axes(projection='3d') # create plot window
-    nodes=example_bridge.get_nodes() # extract node information of model
-    nodes_to_plot = example_bridge.get_element(member="exterior_main_beam_2", options="nodes",z_group_num=0) # extract nodes of exterior beam
-    eletag = example_bridge.get_element(member="exterior_main_beam_2", options="elements") #
-    load_effect_i = results.forces.sel(Component="Mz_i",Element=eletag)[0]
-    load_effect_j = results.forces.sel(Component="Mz_j",Element=eletag)[0]
-    load_effect = ospg.np.concatenate(([load_effect_i[0].values],load_effect_j.values))
-    results.ele_nodes.sel(Element=eletag, Nodes='i')
-    node_x = [nodes[n]['coordinate'][0] for n in nodes_to_plot[0]]
-    node_z = [nodes[n]['coordinate'][2] for n in nodes_to_plot[0]]
-    ax = ospg.plt.axes(projection='3d')
-    ax.plot(node_x,node_z,load_effect)
-
+    Figure 1: Deflected shape of of exterior main beam 2.
 
 Plotting "Mz" of "exterior_main_beam_2" in ``example_bridge``- version 2 leveraging function of `ops_vis` module:
 
@@ -207,6 +192,10 @@ Plotting "Mz" of "exterior_main_beam_2" in ``example_bridge``- version 2 leverag
         s,al = ospg.opsv.section_force_distribution_3d(ex=xx,ey=yy,ez=zz,pl=ele_components)
         # plot desire element force component
         ax.plot(xx,zz,s[:,5]) # Here change int accordingly: {0:Fx,1:Fy,2:Fz,3:Mx,4:My,5:Mz}
+    ospg.plt.xlabel("x (m) ")
+    ospg.plt.ylabel("Mz (Nm)")
+    ospg.plt.show()
+
 
 ..  figure:: ../../_images/example_bmd.PNG
     :align: center
