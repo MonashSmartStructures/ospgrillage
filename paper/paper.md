@@ -84,7 +84,7 @@ meshing capabilities to quickly generate command lines of nodes and elements for
 
 Source code, documentation, and issue trackers can be found at `ospgrillage`'s the main [repository](https://monashsmartstructures.github.io/ospgrillage/index.html). 
 Guide and examples for creating grillage models have been provided in the documentation. 
-Further details on the module design can also be found on the Module Design page in documentation.
+Further, `ospgrillage`'s module design details can also be found on the *Module Design* page in documentation.
 
 # Acknowledgements
 

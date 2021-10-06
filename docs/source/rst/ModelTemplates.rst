@@ -14,7 +14,6 @@ This is the most common form of grillage model which comprise of beam elements l
 * longitudinal members representing composite section along longitudinal direction (e.g. main beams)
 * transverse members representing slabs or secondary beam sections.
 
-
 This is the default model type when we :func:`~ospgrillage.osp_grillage.OspGrillage.create_grillage`
 
 .. code-block:: python
@@ -22,13 +21,8 @@ This is the default model type when we :func:`~ospgrillage.osp_grillage.OspGrill
     example_bridge = ospg.create_grillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=-42,
                                     num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
 
-Figure 1 shows a beam grillage model type - outlining the elements.
 
-..  figure:: ../../_images/beam_grillage.PNG
-    :align: center
-    :scale: 75 %
-
-    Figure 1: Beam grillage model
+Information on beam grillage model can be found `here<https://www.steelconstruction.info/Modelling_and_analysis_of_beam_bridges>`_.
 
 
 Beam grillage with rigid links
@@ -47,7 +41,8 @@ To create this model, have :func:`~ospgrillage.osp_grillage.OspGrillage.create_g
                                         model_type="beam_link",
                                         beam_width=1, web_thick=0.02, centroid_dist_y=0.499)
 
-Figure 2 shows the aforementioned model type.
+Figure 2 shows the details of the aforementioned model type. Figure 3 shows the model type created in an external
+software - i.e. SPACEGASS.
 
 ..  figure:: ../../_images/beam_link_idealization.PNG
     :align: center
@@ -77,7 +72,16 @@ This is a more refined model using two element types - shell and beam elements -
 * Beam elements modelled with an offset to the plane of shell elements to represent longitudinal beam sections.
 * Beam elements linked to shell elements at two corresponding locations using constraint equations - `OpenSeesPy`'s **rigidLink** command
 
-This model has advantageous in modelling slabs - shell elements are well-suited to represent two-dimensional slab behaviour.
+Figure 4 shows the details of the shell beam hybrid model.
+
+..  figure:: ../../_images/shell_link_idealization.PNG
+    :align: center
+    :scale: 75 %
+
+    Figure 4: Shell beam hybrid model idealization
+
+
+This model has advantageous in modelling slabs using shell elements which are well-suited to represent two-dimensional slab behaviour.
 
 To create this model, have :func:`~ospgrillage.osp_grillage.OspGrillage.create_grillage` keyword for ``model_type`` set to **shell**.
 
@@ -88,13 +92,6 @@ To create this model, have :func:`~ospgrillage.osp_grillage.OspGrillage.create_g
                                         model_type="shell", max_mesh_size_z=0.5, offset_beam_y_dist=0.499,
                                         link_nodes_width=0.89)
 
-Figure 4 shows the shell beam hybrid model.
-
-..  figure:: ../../_images/shell_link_idealization.PNG
-    :align: center
-    :scale: 75 %
-
-    Figure 4: Shell beam hybrid model idealization
 
 
 
