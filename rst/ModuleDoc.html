@@ -192,11 +192,12 @@
             
   <div class="section" id="module-design">
 <h1>Module design<a class="headerlink" href="#module-design" title="Permalink to this headline">¶</a></h1>
-<p>This page details the processes within <em>ospgrillage</em> module. In providing the outline of processes,
-the developers welcome any improvements to its procedures via pull requests.</p>
+<p>This page details the designs decisions of <em>ospgrillage</em> module. In outlining these processes,
+the developers welcome any improvements to its procedures via pull requests. Also, any issues with each process can
+be reported by raising an issue in the main repository.</p>
 <div class="section" id="grillage-model">
 <h2>Grillage model<a class="headerlink" href="#grillage-model" title="Permalink to this headline">¶</a></h2>
-<p>The <em>ospgrillage</em> module generates a two-dimensional (2D) grillage model of a bridge deck in OpenSees - see Figure 1.</p>
+<p>The <em>ospgrillage</em> module generates a two-dimensional (2D) grillage model of a bridge deck in <cite>OpenSees</cite> - see Figure 1.</p>
 <div class="figure align-center" id="id1">
 <a class="reference internal image-reference" href="../_images/Figure_1.png"><img alt="../_images/Figure_1.png" src="../_images/Figure_1.png" /></a>
 <p class="caption"><span class="caption-text">Figure 1: Typical grillage model nodes.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
@@ -226,7 +227,7 @@ of beam/truss members; where y and z axes being the vertical and horizontal axis
 </div>
 <div class="section" id="meshing-procedure">
 <h2>Meshing Procedure<a class="headerlink" href="#meshing-procedure" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code> class handles a <code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code> class object which stores information of the grillage mesh, such as:</p>
+<p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> class handles a <a class="reference internal" href="APIdoc.html#ospgrillage.mesh.Mesh" title="ospgrillage.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a> class object which stores information of the grillage mesh, such as:</p>
 <ul class="simple">
 <li><p>Nodes</p></li>
 <li><p>Elements</p></li>
@@ -241,7 +242,7 @@ of beam/truss members; where y and z axes being the vertical and horizontal axis
 <a class="reference internal image-reference" href="../_images/Moduledoc_1.PNG"><img alt="../_images/Moduledoc_1.PNG" src="../_images/Moduledoc_1.PNG" /></a>
 <p class="caption"><span class="caption-text">Figure 2: Meshing construction lines, showing start edge construction line (Blue), end edge construction line (Green), sweep path (Black) and sweeping nodes (Red).</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
-<p>Meshing algorithm is controlled by the <code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code> class object. The following components are generated to
+<p>Meshing algorithm is controlled by the <a class="reference internal" href="APIdoc.html#ospgrillage.mesh.Mesh" title="ospgrillage.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a> class object. The following components are generated to
 define the nodes and elements of the mesh:</p>
 <ol class="arabic simple">
 <li><p><strong>Construction line at edge of model &#64; the start of the span (start_span_edge)</strong>
@@ -299,7 +300,7 @@ Longitudinal elements are linked by recording the nodes with common z grid group
 <h3>Grid groups<a class="headerlink" href="#grid-groups" title="Permalink to this headline">¶</a></h3>
 <p>Grid groups for elements in the z direct is defined based on the number of longitudinal beams. For the example bridge,
 there are 7 longitudinal beams (2 edge, 2 exterior and 3 interior beams). Therefore, starting from 0, the nodes that
-conincide with edge beams are numbered 0 and 6, while nodes for exterior beams are 1 and 5. The interior beam consist
+coincide with edge beams are numbered 0 and 6, while nodes for exterior beams are 1 and 5. The interior beam consist
 of the remaining groups (2,3,4) by this default.</p>
 <p>Grid groups for elements in x direction is defined based on the number of times (or loops) through each intersection point
 with the sweep path. In other words, the total number of groups for x grid varies depending on the (1) number of long beams
@@ -331,9 +332,9 @@ grillage model space.</p>
 <ul class="simple">
 <li><p>Load objects (Point, Line, Patch) - takes either local or global coordinate.</p></li>
 <li><p>Path objects (Path for moving load)</p></li>
-<li><p>Compound load object - defined in local and set to global via <code class="docutils literal notranslate"><span class="pre">set_global_coord()</span></code></p></li>
+<li><p>Compound load object - defined in local and set to global via <a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.set_global_coord.html#ospgrillage.load.CompoundLoad.set_global_coord" title="ospgrillage.load.CompoundLoad.set_global_coord"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_global_coord()</span></code></a></p></li>
 </ul>
-<p>For <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadCase</span></code>, all load object inputs can be either local or global. Note when local coordinate is defined for a load object, a global reference coordinate needs to be defined or else
+<p>For <a class="reference internal" href="Loads.html#ospgrillage.load.LoadCase" title="ospgrillage.load.LoadCase"><code class="xref py py-class docutils literal notranslate"><span class="pre">LoadCase</span></code></a>, all load object inputs can be either local or global. Note when local coordinate is defined for a load object, a global reference coordinate needs to be defined or else
 the module raises an Error regarding its point/vertices values.</p>
 <div class="figure align-center" id="id3">
 <a class="reference internal image-reference" href="../_images/coordinate_system_mapping.PNG"><img alt="../_images/coordinate_system_mapping.PNG" src="../_images/coordinate_system_mapping.PNG" /></a>
@@ -362,22 +363,27 @@ the module raises an Error regarding its point/vertices values.</p>
 </div>
 <div class="section" id="further-development">
 <h2>Further development<a class="headerlink" href="#further-development" title="Permalink to this headline">¶</a></h2>
+<p><em>ospgrillage</em> is developed as a open-source package. In turn, the developers welcome contributors to add/improve on
+the current release of <em>ospgrillage</em>.</p>
+<p><strong>Update Sept 2021</strong></p>
 <p>The initial release of <em>ospgrillage</em> contains core algorithms to generate meshes of grillage models. However the
 release comes with limitations and further development are required to extend beyond these limitations.</p>
-<p>The current version of <em>ospgrillage</em> is limited to straight meshes. However, the developers coded the module in a way
-where curve mesh is possible in future developments. Specifically, <cite>SweepPath</cite> class in meshing procedure can be introduced with
-curved lines instead of straight (current version). This makes curve mesh possible with the sweep nodes been coded to be always orthogonal
-to sweep path.</p>
+<p>The current version of <em>ospgrillage</em> is limited to straight meshes. However, the developers have coded the module in a way
+where adding in curve meshing in future developments is just a matter of adding <strong>curve line</strong> functionality to
+the <code class="xref py py-class docutils literal notranslate"><span class="pre">SweepPath</span></code> class. Notably, the curve mesh is also possible with the current meshing rules
+- i.e. the sweep nodes have been coded to be always orthogonal to the gradient of the sweep path (straight or curve).</p>
 <p>Current version of <em>ospgrillage</em> is limited to a single span mesh, where the support edges lies on the start and end
-edge of the mesh. Multi-span mesh is possible with a few more developments. This is done by introducing intermediate
-edge construction lines. This is done by developing the <cite>EdgeConstructionLine</cite> class. However,
-this requires a bit more development as current edge construction lines are only recognized as end
-supports - catering meshing procedures for one span.</p>
-<p>The developers also acknowledges that there is minor conflict between the coordinate system of <em>ospgrillage</em> and the default
-coordinate system for the <cite>ops_vis</cite> module of <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code>. The <cite>ops_vis</cite> module default isotropic angle is x - y with z axis plane
-being the model plane of a 2-D model in 3-D space. Currently the easiest solution is to further develop <cite>ops_vis</cite> to allow
-multi isotropic views of the model space. If developers were to program <em>ospgrillage</em> to fit <cite>ops_vis</cite> current default axis,
-it would require substantial rework of the entire module - since the module assume the model plane of the 2D grillage is the
+edge of the mesh. Multi-span mesh is possible with a few more developments. This can be done by introducing intermediate
+edge construction lines, a feature to be introduced to <a class="reference internal" href="APIdoc.html#ospgrillage.mesh.Mesh" title="ospgrillage.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">ospgrillage.mesh.Mesh</span></code></a>.
+In tandem with this, the <code class="xref py py-class docutils literal notranslate"><span class="pre">EdgeControlPoints</span></code> class will need to be reviewed as current edge control points
+are only recognized as end supports - catering to current meshing procedures for single span configuration.</p>
+<p>The developers also acknowledges that there are conflicts between the adopted coordinate system of <em>ospgrillage</em> and the default
+coordinate system for the <cite>OpenSees</cite>’s <cite>ops_vis</cite> module. The <cite>ops_vis</cite> module default isotropic angle is x - y with z axis plane
+being the model plane of a 2-D model in 3-D space. Currently it is not easy to alter the coordinate system of
+<em>ospgrillage</em>. However, the developers are hoping that <cite>ops_vis</cite> can cater to
+multi isotropic views of the model space as oppose to the current fixed coordinate system.
+It would require substantial rework of the entire <em>ospgrillage</em> module if one decides to “fit”
+<em>ospgrillage</em> ‘s coordinate system to <cite>ops_vis</cite> - since the module assume the model plane of the 2D grillage is the
 y axis.</p>
 </div>
 </div>

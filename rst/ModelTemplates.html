@@ -189,11 +189,7 @@
                                 <span class="n">num_long_grid</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">edge_beam_dist</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mesh_type</span><span class="o">=</span><span class="s2">&quot;Ortho&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Figure 1 shows a beam grillage model type - outlining the elements.</p>
-<div class="figure align-center" id="id1">
-<a class="reference internal image-reference" href="../_images/beam_grillage.PNG"><img alt="../_images/beam_grillage.PNG" src="../_images/beam_grillage.PNG" /></a>
-<p class="caption"><span class="caption-text">Figure 1: Beam grillage model</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
-</div>
+<p>Information on beam grillage model can be found <a href="#id4"><span class="problematic" id="id5">`here&lt;https://www.steelconstruction.info/Modelling_and_analysis_of_beam_bridges&gt;`_</span></a>.</p>
 </div>
 <div class="section" id="beam-grillage-with-rigid-links">
 <h2>Beam grillage with rigid links<a class="headerlink" href="#beam-grillage-with-rigid-links" title="Permalink to this headline">¶</a></h2>
@@ -209,14 +205,15 @@
                                     <span class="n">beam_width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">web_thick</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span> <span class="n">centroid_dist_y</span><span class="o">=</span><span class="mf">0.499</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Figure 2 shows the aforementioned model type.</p>
-<div class="figure align-center" id="id2">
+<p>Figure 2 shows the details of the aforementioned model type. Figure 3 shows the model type created in an external
+software - i.e. SPACEGASS.</p>
+<div class="figure align-center" id="id1">
 <a class="reference internal image-reference" href="../_images/beam_link_idealization.PNG"><img alt="../_images/beam_link_idealization.PNG" src="../_images/beam_link_idealization.PNG" /></a>
-<p class="caption"><span class="caption-text">Figure 2: Beam grillage with rigid links - idealization.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 2: Beam grillage with rigid links - idealization.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </div>
-<div class="figure align-center" id="id3">
+<div class="figure align-center" id="id2">
 <a class="reference internal image-reference" href="../_images/spacegass.PNG"><img alt="../_images/spacegass.PNG" src="../_images/spacegass.PNG" /></a>
-<p class="caption"><span class="caption-text">Figure 3: Beam grillage with rigid links model from SPACEGASS software.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 3: Beam grillage with rigid links model from SPACEGASS software.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
 <p>Joint offsets are linked via a rigid link. Information for joint offsets can be found in <cite>OpenSeesPy</cite>’s <a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/LinearTransf.html">geomtransf</a></p>
 <div class="admonition note">
@@ -232,18 +229,18 @@
 <li><p>Beam elements modelled with an offset to the plane of shell elements to represent longitudinal beam sections.</p></li>
 <li><p>Beam elements linked to shell elements at two corresponding locations using constraint equations - <cite>OpenSeesPy</cite>’s <strong>rigidLink</strong> command</p></li>
 </ul>
-<p>This model has advantageous in modelling slabs - shell elements are well-suited to represent two-dimensional slab behaviour.</p>
+<p>Figure 4 shows the details of the shell beam hybrid model.</p>
+<div class="figure align-center" id="id3">
+<a class="reference internal image-reference" href="../_images/shell_link_idealization.PNG"><img alt="../_images/shell_link_idealization.PNG" src="../_images/shell_link_idealization.PNG" /></a>
+<p class="caption"><span class="caption-text">Figure 4: Shell beam hybrid model idealization</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+</div>
+<p>This model has advantageous in modelling slabs using shell elements which are well-suited to represent two-dimensional slab behaviour.</p>
 <p>To create this model, have <code class="xref py py-func docutils literal notranslate"><span class="pre">create_grillage()</span></code> keyword for <code class="docutils literal notranslate"><span class="pre">model_type</span></code> set to <strong>shell</strong>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_grillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;shelllink_10m&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">skew</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                                     <span class="n">num_long_grid</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">edge_beam_dist</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mesh_type</span><span class="o">=</span><span class="s2">&quot;Orth&quot;</span><span class="p">,</span>
                                     <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;shell&quot;</span><span class="p">,</span> <span class="n">max_mesh_size_z</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">offset_beam_y_dist</span><span class="o">=</span><span class="mf">0.499</span><span class="p">,</span>
                                     <span class="n">link_nodes_width</span><span class="o">=</span><span class="mf">0.89</span><span class="p">)</span>
 </pre></div>
-</div>
-<p>Figure 4 shows the shell beam hybrid model.</p>
-<div class="figure align-center" id="id4">
-<a class="reference internal image-reference" href="../_images/shell_link_idealization.PNG"><img alt="../_images/shell_link_idealization.PNG" src="../_images/shell_link_idealization.PNG" /></a>
-<p class="caption"><span class="caption-text">Figure 4: Shell beam hybrid model idealization</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 </div>

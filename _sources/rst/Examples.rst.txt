@@ -268,8 +268,8 @@ Extracting only the static loads. We can extract moments in global z for each `i
     extracted_bending = results['forces'].sel(Loadcase=static_cases_names, Element=ele_set, Component="Mz_i")
 
 
-`extracted_bending` variable now holds the load case for 'Line Test Case', 'Point Test Case(Global)', 'Points Test Case (Local in Point)',
-       'Points Test Case (Local in Compound)', 'Patch Test Case'.
+`extracted_bending` variable holds the load case for 'Line Test Case', 'Point Test Case(Global)', 'Points Test Case (Local in Point)',
+'Points Test Case (Local in Compound)', 'Patch Test Case'.
 
 Should we sum the nodal forces from members on one side, we expect approximate equal PL/4 (similar) or sum of the following
 lusas plot
@@ -308,7 +308,7 @@ One can query results at specific position of the moving load by looking up the 
 
 .. code-block:: python
 
-    # selecting specific position based on integer
+    # selecting specific position
     integer = int(L/2 - 1 + 2)  # here we choose when the load groups are at/near mid span L = 14m
     move_results['forces'].isel(Loadcase=integer).sel(Element=ele_set,Component="Mz_i")
     # Midspan positioning is where origin is located at L/2 + axl_s/2

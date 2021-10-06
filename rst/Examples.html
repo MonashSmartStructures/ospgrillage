@@ -420,10 +420,8 @@ in Local coordinates then setting the local coordinate system of compound load t
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">extracted_bending</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;forces&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Loadcase</span><span class="o">=</span><span class="n">static_cases_names</span><span class="p">,</span> <span class="n">Element</span><span class="o">=</span><span class="n">ele_set</span><span class="p">,</span> <span class="n">Component</span><span class="o">=</span><span class="s2">&quot;Mz_i&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<dl class="simple">
-<dt><cite>extracted_bending</cite> variable now holds the load case for ‘Line Test Case’, ‘Point Test Case(Global)’, ‘Points Test Case (Local in Point)’,</dt><dd><p>‘Points Test Case (Local in Compound)’, ‘Patch Test Case’.</p>
-</dd>
-</dl>
+<p><cite>extracted_bending</cite> variable holds the load case for ‘Line Test Case’, ‘Point Test Case(Global)’, ‘Points Test Case (Local in Point)’,
+‘Points Test Case (Local in Compound)’, ‘Patch Test Case’.</p>
 <p>Should we sum the nodal forces from members on one side, we expect approximate equal PL/4 (similar) or sum of the following
 lusas plot</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;forces&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Loadcase</span><span class="o">=</span><span class="n">static_cases_names</span><span class="p">,</span> <span class="n">Element</span><span class="o">=</span><span class="n">ele_set</span><span class="p">,</span> <span class="n">Component</span><span class="o">=</span><span class="s2">&quot;Mz_i&quot;</span><span class="p">)),</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -451,7 +449,7 @@ lusas plot</p>
 </pre></div>
 </div>
 <p>One can query results at specific position of the moving load by looking up the index of load case.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># selecting specific position based on integer</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># selecting specific position</span>
 <span class="n">integer</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">L</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># here we choose when the load groups are at/near mid span L = 14m</span>
 <span class="n">move_results</span><span class="p">[</span><span class="s1">&#39;forces&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">Loadcase</span><span class="o">=</span><span class="n">integer</span><span class="p">)</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Element</span><span class="o">=</span><span class="n">ele_set</span><span class="p">,</span><span class="n">Component</span><span class="o">=</span><span class="s2">&quot;Mz_i&quot;</span><span class="p">)</span>
 <span class="c1"># Midspan positioning is where origin is located at L/2 + axl_s/2</span>
