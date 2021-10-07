@@ -42,7 +42,7 @@ As will be needed later, we also prepared the unit convention of variables for t
 
 .. code-block:: python
 
-    import ospgrillage as ospg
+    import ospgrillage as og
     # create unit signs for variables of example
     kilo = 1e3
     milli = 1e-3
@@ -65,7 +65,7 @@ an *I_beam* element to represent some intermediate concrete I-beam, with materia
 
 .. code-block:: python
 
-    I_beam = ospg.create_member(member_name="Intermediate I-beams", section=I_beam_section, material=concrete)
+    I_beam = og.create_member(member_name="Intermediate I-beams", section=I_beam_section, material=concrete)
 
 This function parses the keyword inputs and returns a
 :class:`~ospgrillage.members.GrillageMember` object, which requires two objects as inputs passed
@@ -84,9 +84,9 @@ For the example bridge, lets define all its elements i.e. *slab*, *edge_beam*, a
 
 .. code-block:: python
 
-    slab = ospg.create_member(member_name="concrete slab", section=slab_section, material=concrete)
-    edge_beam = ospg.create_member(member_name="edge beams", section=edge_beam_section,material=concrete)
-    edge_slab = ospg.create_member(member_name="edge slab", section=edge_slab_section,material=concrete)
+    slab = og.create_member(member_name="concrete slab", section=slab_section, material=concrete)
+    edge_beam = og.create_member(member_name="edge beams", section=edge_beam_section,material=concrete)
+    edge_slab = og.create_member(member_name="edge slab", section=edge_slab_section,material=concrete)
 
 Creating material objects
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -95,7 +95,7 @@ The following code line creates the a *concrete* material needed for`defining Gr
 
 .. code-block:: python
 
-    concrete = ospg.create_material(type="concrete", code="AS5100-2017", grade="50MPa")
+    concrete = og.create_material(type="concrete", code="AS5100-2017", grade="50MPa")
 
 For most bridges made of steel and concrete, material properties of either concrete and steel can be defined using
 keyword "steel" or "concrete" passed as an argument to :class:`~Material` class.
@@ -107,7 +107,7 @@ The following code shows how a concrete material can be created using keyword ar
 
 .. code-block:: python
 
-    concrete = ospg.create_material(E=30*Giga*Pa, G = 20*Giga*Pa, v= 0.2)
+    concrete = og.create_material(E=30*Giga*Pa, G = 20*Giga*Pa, v= 0.2)
 
 This command wraps OpenSees material commands and chooses the appropriate material model in OpenSees to represent the material.
 For example, *Concrete01* and *Steel01* of OpenSees library is used to represent most concrete and steel material.
@@ -125,7 +125,7 @@ The following code line creates a :class:`~ospgrillage.members.Section` object c
 
 .. code-block:: python
 
-    I_beam_section = ospg.create_section(A=0.896*m2, J=0.133*m4, Iy=0.213*m4, Iz=0.259*m4, Ay=0.233*m2, Az=0.58*m2)
+    I_beam_section = og.create_section(A=0.896*m2, J=0.133*m4, Iy=0.213*m4, Iz=0.259*m4, Ay=0.233*m2, Az=0.58*m2)
 
 The module's :class:`~ospgrillage.members.Section` object wraps `OpenSees`'s `element()` command.
 Similar to :class:`~ospgrillage.material.Material`, users familiar with certain OpenSees element can pass its input parameters as keyword arguments
@@ -137,8 +137,8 @@ The following codes creates the rest of the sections for the grillage model:
 
 .. code-block:: python
 
-    edge_beam_section = ospg.create_section(A=0.044625*m2,J=2.28e-3*m4, Iy=2.23e-1*m4,Iz=1.2e-3*m4, Ay=3.72e-2*m2, Az=3.72e-2*m2)
-    edge_slab_section = ospg.create_section(A=0.039375*m2,J=0.21e-3*m4, Iy=0.1e-3*m2,Iz=0.166e-3*m2,Ay=0.0328*m2, Az=0.0328*m2))
+    edge_beam_section = og.create_section(A=0.044625*m2,J=2.28e-3*m4, Iy=2.23e-1*m4,Iz=1.2e-3*m4, Ay=3.72e-2*m2, Az=3.72e-2*m2)
+    edge_slab_section = og.create_section(A=0.039375*m2,J=0.21e-3*m4, Iy=0.1e-3*m2,Iz=0.166e-3*m2,Ay=0.0328*m2, Az=0.0328*m2))
 
 For transverse members, a **unit width option** is available - properties defined as based on unit width. When enabled, *ospgrillage* will automatically
 assigns these properties of slab section based on the spacing of transverse members. This is recommended for orthogonal mesh with skewed
@@ -146,7 +146,7 @@ edges.
 
 .. code-block:: python
 
-    slab_section = ospg.create_section(A=0.04428*m2, J=2.6e-4*m4, Iy=1.1e-4*m4, Iz=2.42e-4*m4,Ay=3.69e-1*m2, Az=3.69e-1*m2, unit_width=True)
+    slab_section = og.create_section(A=0.04428*m2, J=2.6e-4*m4, Iy=1.1e-4*m4, Iz=2.42e-4*m4,Ay=3.69e-1*m2, Az=3.69e-1*m2, unit_width=True)
 
 .. note::
 
@@ -207,7 +207,7 @@ For the example bridge in Figure 2, the following code line creates its :class:`
 
 .. code-block:: python
 
-    example_bridge = ospg.create_grillage(bridge_name="SuperT_10m", long_dim=10, width=5, skew=-21,
+    example_bridge = og.create_grillage(bridge_name="SuperT_10m", long_dim=10, width=5, skew=-21,
                          num_long_grid=7, num_trans_grid=17, edge_beam_dist=1, mesh_type="Ortho")
 
 
@@ -317,7 +317,7 @@ the following code line and a plot like in `Figure 2`_ will be returned:
 
 .. code-block:: python
 
-    ospg.opsplt.plot_model("nodes")
+    og.opsplt.plot_model("nodes")
 
 Whilst all nodes will be visualized, only the assigned members are visualized. This is a good way to check if desired members are assigned
 and hence, shown on the plot. Failure to not have all members assigned will affect subsequent analysis.

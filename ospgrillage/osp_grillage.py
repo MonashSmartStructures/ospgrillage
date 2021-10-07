@@ -8,15 +8,14 @@ This module also handles all load case assignment, analysis, and results by wrap
 import math
 from datetime import datetime
 from itertools import combinations
-import openseespy.postprocessing.Get_Rendering as opsplt
-import matplotlib.pyplot as plt
-import openseespy.postprocessing.ops_vis as opsv
+
 import openseespy.opensees as ops
 
 from ospgrillage.load import *
 from ospgrillage.mesh import *
 from ospgrillage.material import *
 from ospgrillage.members import *
+from ospgrillage.postprocessing import *
 import xarray as xr
 
 

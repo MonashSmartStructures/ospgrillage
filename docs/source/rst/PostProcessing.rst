@@ -5,7 +5,7 @@ Getting Results
 For all example code in this page, *ospgrillage* is imported as ``ospg``
 
 .. code-block:: python
-    import ospgrillage as ospg
+    import ospgrillage as og
 
 Extracting results
 --------------------------------------
@@ -89,7 +89,7 @@ and load effect component (e.g. "dy" for displacements). The `get_envelope()` fu
 .. code-block:: python
 
     first_combination = comb_results[0] # list of combination xarray, get the first
-    envelope = ospg.get_envelope(ds=first_combination,load_effect="dy",array="displacements") # creates the envelope obj
+    envelope = og.get_envelope(ds=first_combination,load_effect="dy",array="displacements") # creates the envelope obj
     disp_env = envelope.get() # step to get envelope of xarray
 
 
@@ -129,7 +129,7 @@ using `ops_vis`:
 
 .. code-block:: python
 
-    ospg.opsv.section_force_diagram_3d('Mz', {}, 1) # here change name string argument to force component of interest
+    og.opsv.section_force_diagram_3d('Mz', {}, 1) # here change name string argument to force component of interest
 
 
 .. note::
@@ -174,7 +174,7 @@ Plotting "Mz" of "exterior_main_beam_2" in ``example_bridge``- version 2 leverag
 
 .. code-block:: python
 
-    ax = ospg.plt.axes(projection='3d') # create plot window
+    ax = og.plt.axes(projection='3d') # create plot window
     nodes=example_bridge.get_nodes() # extract node information of model
     eletag = example_bridge.get_element(member="exterior_main_beam_2", options="elements") # get ele tag of grillage elements
     # loop ele tags of ele
@@ -189,12 +189,12 @@ Plotting "Mz" of "exterior_main_beam_2" in ``example_bridge``- version 2 leverag
         yy = [nodes[n]['coordinate'][1] for n in ele_node.values]
         zz = [nodes[n]['coordinate'][2] for n in ele_node.values]
         # use ops_vis module to get force distribution on element
-        s,al = ospg.opsv.section_force_distribution_3d(ex=xx,ey=yy,ez=zz,pl=ele_components)
+        s,al = og.opsv.section_force_distribution_3d(ex=xx,ey=yy,ez=zz,pl=ele_components)
         # plot desire element force component
         ax.plot(xx,zz,s[:,5]) # Here change int accordingly: {0:Fx,1:Fy,2:Fz,3:Mx,4:My,5:Mz}
-    ospg.plt.xlabel("x (m) ")
-    ospg.plt.ylabel("Mz (Nm)")
-    ospg.plt.show()
+    og.plt.xlabel("x (m) ")
+    og.plt.ylabel("Mz (Nm)")
+    og.plt.show()
 
 
 ..  figure:: ../../_images/example_bmd.PNG

@@ -14,7 +14,7 @@ This is the most common form of grillage model which comprise of beam elements l
 * longitudinal members representing composite section along longitudinal direction (e.g. main beams)
 * transverse members representing slabs or secondary beam sections.
 
-This is the default model type when we :func:`~ospgrillage.osp_grillage.OspGrillage.create_grillage`
+This is the default model type when we :func:`~ospgrillage.osp_grillage.create_grillage`
 
 .. code-block:: python
 
@@ -32,7 +32,7 @@ This model is a modified version of beam grillage with the following features:
 * Offsets (in x-z plane) for start and end nodes along direction of transverse members - using joint offset.
 * Offsets (in vertical y direction) for start and end nodes of longitudinal members - again using joint offsets.
 
-To create this model, have :func:`~ospgrillage.osp_grillage.OspGrillage.create_grillage` keyword for ``model_type`` set to **beam_link**.
+To create this model, have :func:`~ospgrillage.osp_grillage.create_grillage` keyword for ``model_type`` set to **beam_link**.
 
 .. code-block:: python
 
@@ -83,14 +83,36 @@ Figure 4 shows the details of the shell beam hybrid model.
 
 This model has advantageous in modelling slabs using shell elements which are well-suited to represent two-dimensional slab behaviour.
 
-To create this model, have :func:`~ospgrillage.osp_grillage.OspGrillage.create_grillage` keyword for ``model_type`` set to **shell**.
+To create this model, have :func:`~ospgrillage.osp_grillage.create_grillage` keyword for ``model_type`` set to **shell**. In addition,
+users are required to define and assign shell elements. The following example code details the steps:
 
 .. code-block:: python
 
+    # create section of shell element
+    slab_shell_section = og.create_section(h=0.2)
+    # set shell members to shell elements
+    example_bridge.set_shell_members(slab_shell)
+    # create grillage with shell model type
     example_bridge = ospg.create_grillage(bridge_name="shelllink_10m", long_dim=10, width=7, skew=0,
                                         num_long_grid=6, num_trans_grid=11, edge_beam_dist=1, mesh_type="Orth",
                                         model_type="shell", max_mesh_size_z=0.5, offset_beam_y_dist=0.499,
                                         link_nodes_width=0.89)
+
+Table 1 outlines the variable types in :func:`~ospgrillage.osp_grillage.create_grillage` for shell hybrid model.
+
+.. list-table:: Table: 1 Input arguments for shell hybrid model
+   :widths: 50 50
+   :header-rows: 0
+
+   * - Keyword argument
+     - Description
+   * - `max_mesh_size_z`
+     - max mesh size in z direction. *ospgrillage* automatically determines the mesh size in z direction
+       based on this variable and spacing of link nodes
+   * - `offset_beam_y_dist`
+     - distance between offset beams and grillage shell plane.
+   * - `link_nodes_width`
+     - width between link nodes - left and right links to offset beam elements - in global z direction
 
 
 
