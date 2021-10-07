@@ -324,6 +324,14 @@ Finally, comparing with theoretical:
     bending_z_theoretical = 2*P*(L/2-axl_s/2)
 
 
+28 m super T bridge model using shell hybrid model type
+------------------------------------------------------------
+Here we recreate the 28 m super T bridge using the shell hybrid model type.
+
+.. code-block:: python
+
+
+
 Oblique vs Orthogonal Mesh
 ---------------------------
 Here are some more examples showing the variety of meshes capable of being generated with *ospgrillage* module.
