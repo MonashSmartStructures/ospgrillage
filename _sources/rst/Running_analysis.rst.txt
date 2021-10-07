@@ -4,10 +4,10 @@ Performing analysis
 
 *ospgrillage* contains a load module which wraps `OpenSeesPy` commands to perform load analysis.
 
-For all example code in this page, *ospgrillage* is imported as ``ospg``
+For all example code in this page, *ospgrillage* is imported as ``og``
 
 .. code-block:: python
-    import ospgrillage as ospg
+    import ospgrillage as og
 
 
 Load analysis workflow
@@ -35,7 +35,7 @@ By default, `y` is `0` i.e. the grillage model plane.
 
 .. code-block:: python
 
-    point_load_location = ospg.create_load_vertices(x=5, z=2, p=20)  # create load point
+    point_load_location = og.create_load_vertices(x=5, z=2, p=20)  # create load point
 
 
 Depending on the load type, a minimum number of LoadPoint namedTuple are required.
@@ -55,8 +55,8 @@ The following example creates a `NodalFroce` namedtuple and a nodal load on Node
 
 .. code-block:: python
 
-    nodalforce = ospg.NodalForce(Fx=10,Fy=10)
-    node13force = ospg.create_load(type="nodal",name="nodal 13", node_force=nodalforce) # load values in other dofs default to 0
+    nodalforce = og.NodalForce(Fx=10,Fy=10)
+    node13force = og.create_load(type="nodal",name="nodal 13", node_force=nodalforce) # load values in other dofs default to 0
 
 
 .. note::
@@ -86,8 +86,8 @@ The following example code creates a 20 force unit point load located at (5,0,2)
 
 .. code-block:: python
 
-    point_load_location = ospg.create_load_vertices(x=5, z=2, p=20)  # create load point
-    point_load = ospg.create_load(type="point",name="single point", point1=point_load_location)
+    point_load_location = og.create_load_vertices(x=5, z=2, p=20)  # create load point
+    point_load = og.create_load(type="point",name="single point", point1=point_load_location)
 
 
 .. _Line:
@@ -113,9 +113,9 @@ in the global coordinate system from -1 to 11 distance units in the `x`-axis and
 
 .. code-block:: python
 
-    barrier_point_1 = ospg.create_load_vertices(x=-1, z=3, p=2)
-    barrier_point_2 = ospg.create_load_vertices(x=11, z=3, p=2)
-    Barrier = ospg.create_load(type="line", name="Barrier curb", point1=barrier_point_1, point2=barrier_point_2)
+    barrier_point_1 = og.create_load_vertices(x=-1, z=3, p=2)
+    barrier_point_2 = og.create_load_vertices(x=11, z=3, p=2)
+    Barrier = og.create_load(type="line", name="Barrier curb", point1=barrier_point_1, point2=barrier_point_2)
 
 
 .. note::
@@ -147,11 +147,11 @@ To position the load instead in a user defined local coordinate system, the vari
 
 .. code-block:: python
 
-    lane_point_1 = ospg.create_load_vertices(x=0, z=3, p=5)
-    lane_point_2 = ospg.create_load_vertices(x=8, z=3, p=5)
-    lane_point_3 = ospg.create_load_vertices(x=8, z=5, p=5)
-    lane_point_4 = ospg.create_load_vertices(x=0, z=5, p=5)
-    Lane = ospg.create_load(type="patch",name="Lane 1", point1=lane_point_1, point2=lane_point_2, point3=lane_point_3, point4=lane_point_4)
+    lane_point_1 = og.create_load_vertices(x=0, z=3, p=5)
+    lane_point_2 = og.create_load_vertices(x=8, z=3, p=5)
+    lane_point_3 = og.create_load_vertices(x=8, z=5, p=5)
+    lane_point_4 = og.create_load_vertices(x=0, z=5, p=5)
+    Lane = og.create_load(type="patch",name="Lane 1", point1=lane_point_1, point2=lane_point_2, point3=lane_point_3, point4=lane_point_4)
 
 .. note::
     As of release 0.1.0, curved patch loads are not available.
@@ -180,14 +180,14 @@ The following code creates a point and line load which is to be assigned as a Co
 .. code-block:: python
 
     # components in a compound load
-    wheel_1 = ospg.create_load(type="point", point1= ospg.LoadPoint(0, 0, 3, 5))  # point load 1
-    wheel_2 = ospg.create_load(type="point", point1= ospg.LoadPoint(0, 0, 3, 5))  # point load 2
+    wheel_1 = og.create_load(type="point", point1= og.LoadPoint(0, 0, 3, 5))  # point load 1
+    wheel_2 = og.create_load(type="point", point1= og.LoadPoint(0, 0, 3, 5))  # point load 2
 
 The following code creates a Compound load and adds the created :class:`~Loads` objects (Point, Line, Patch) object to the Compound load object:
 
 .. code-block:: python
 
-    C_Load = ospg.create_compound_load(name = "Axle tandem")  # constructor of compound load
+    C_Load = og.create_compound_load(name = "Axle tandem")  # constructor of compound load
     C_Load.add_load(load_obj=wheel_1) # add wheel_1
     C_Load.add_load(load_obj=wheel_2) # add wheel_2
 
@@ -294,13 +294,13 @@ The following example code is two point loads defined as a moving load travellin
 
 .. code-block:: python
 
-    front_wheel = ospg.create_load_vertices(x=0, z=0, p=6)   # load point 1
-    back_wheel = ospg.create_load_vertices(x=-1, z=0, p=6)   # load point 2
-    Line = ospg.create_load(type="line",local_point_1=front_wheel,local_point_2=back_wheel)
-    tandem = ospg.create_compound_load("Two wheel vehicle")
+    front_wheel = og.create_load_vertices(x=0, z=0, p=6)   # load point 1
+    back_wheel = og.create_load_vertices(x=-1, z=0, p=6)   # load point 2
+    Line = og.create_load(type="line",local_point_1=front_wheel,local_point_2=back_wheel)
+    tandem = og.create_compound_load("Two wheel vehicle")
 
-    single_path = ospg.create_moving_path(start_point=ospg.Point(2,0,2), end_point= ospg.Point(4,0,2))  # create path object
-    move_line = ospg.create_moving_load(name="Line Load moving") # moving load obj
+    single_path = og.create_moving_path(start_point=og.Point(2,0,2), end_point= og.Point(4,0,2))  # create path object
+    move_line = og.create_moving_load(name="Line Load moving") # moving load obj
     move_line.set_path(single_path)   # set path
     move_line.add_loads(load_obj=Line)  # add compound load to moving load
 
@@ -330,7 +330,7 @@ Following example outline this procedure:
 .. code-block:: python
 
     # create moving load with global increment of 20 for all unique moving path
-    moving_load_group = ospg.create_moving_load(name="Line Load moving",global_increment=20)
+    moving_load_group = og.create_moving_load(name="Line Load moving",global_increment=20)
 
     # add load + their respective path
     move_load_group.add_loads(load_obj=truck_a,path_obj=path_a)

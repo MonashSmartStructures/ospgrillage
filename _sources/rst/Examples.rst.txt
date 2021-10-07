@@ -4,11 +4,15 @@ Examples
 Here are some examples of what you can do with *ospgrillage* module.
 
 28 m super T bridge model with orthogonal mesh
---------------------
+------------------------------------------------------------
 This example reproduces a numerical model constructed in commercial software i.e. LUSAS. Following, analysis are performed on the OpenSees model
 and results are compared with those from LUSAS model.
 
+..  figure:: ../../_images/example_cross_section.PNG
+    :align: center
+    :scale: 25 %
 
+    Figure 1: Super T deck cross section (after Caprani et al., 2017).
 
 
 Creating the grillage
@@ -16,9 +20,7 @@ Creating the grillage
 .. code-block:: python
 
     import numpy as np
-    import openseespy.postprocessing.ops_vis as opsv
-    import sys
-    import ospgrillage as ospg
+    import ospgrillage as og
 
     # Adopted units: N and m
     kilo = 1e3
@@ -34,27 +36,27 @@ Creating the grillage
     GPa = kilo*MPa
 
     # define material
-    concrete = ospg.create_material(type="concrete", code="AS5100-2017", grade="50MPa")
+    concrete = og.create_material(type="concrete", code="AS5100-2017", grade="50MPa")
 
     # define sectons (lusas parameters)
-    longitudinal_section = ospg.create_section(A=0.866937*m2,J=0.154806*m3, Iz=0.215366*m4, Iy=0.213602*m4,
+    longitudinal_section = og.create_section(A=0.866937*m2,J=0.154806*m3, Iz=0.215366*m4, Iy=0.213602*m4,
                                                Az=0.444795*m2, Ay=0.258704*m2)
 
-    edge_longitudinal_section = ospg.create_section(A=0.044625*m2, J=0.26253e-3*m3, Iz=0.241812e-3*m4,Iy=0.113887e-3*m4,
+    edge_longitudinal_section = og.create_section(A=0.044625*m2, J=0.26253e-3*m3, Iz=0.241812e-3*m4,Iy=0.113887e-3*m4,
                                                     Az=0.0371929*m2, Ay=0.0371902*m2)
 
 
-    transverse_section = ospg.create_section(A=0.504*m2, J=5.22303e-3*m3, Iy=0.32928*m4, Iz=1.3608e-3*m4,
+    transverse_section = og.create_section(A=0.504*m2, J=5.22303e-3*m3, Iy=0.32928*m4, Iz=1.3608e-3*m4,
                                              Ay=0.42*m2, Az=0.42*m2)
 
-    end_transverse_section = ospg.create_section(A=0.504/2*m2, J=2.5012e-3*m3, Iy=0.04116*m4, Iz=0.6804e-3*m4,
+    end_transverse_section = og.create_section(A=0.504/2*m2, J=2.5012e-3*m3, Iy=0.04116*m4, Iz=0.6804e-3*m4,
                                                  Ay=0.21*m2, Az=0.21*m2)
 
      # define grillage members
-    longitudinal_beam = ospg.create_member(section=longitudinal_section, material=concrete)
-    edge_longitudinal_beam = ospg.create_member(section=edge_longitudinal_section, material=concrete)
-    transverse_slab = ospg.create_member(section=transverse_section, material=concrete)
-    end_transverse_slab = ospg.create_member(section=end_transverse_section, material=concrete)
+    longitudinal_beam = og.create_member(section=longitudinal_section, material=concrete)
+    edge_longitudinal_beam = og.create_member(section=edge_longitudinal_section, material=concrete)
+    transverse_slab = og.create_member(section=transverse_section, material=concrete)
+    end_transverse_slab = og.create_member(section=end_transverse_section, material=concrete)
 
     # create the grillage parameters
     L = 28*m # span
@@ -65,7 +67,7 @@ Creating the grillage
     angle = 0 # skew angle
 
     # create grillage
-    simple_grid = ospg.create_grillage(bridge_name="Super-T 28m", long_dim=L, width=w, skew=angle,
+    simple_grid = og.create_grillage(bridge_name="Super-T 28m", long_dim=L, width=w, skew=angle,
                                    num_long_grid=n_l, num_trans_grid=n_t, edge_beam_dist=edge_dist)
 
     # assign grillage member to element groups of grillage model
@@ -79,16 +81,16 @@ Creating the grillage
 
     # create the model in OpenSees
     simple_grid.create_osp_model(pyfile=False) # pyfile will not (False) be generated for further analysis (should be create_osp?)
-    ospg.opsplt.plot_model("nodes") # plotting using Get_rendering
+    og.opsplt.plot_model("nodes") # plotting using Get_rendering
     og.opsv.plot_model(az_el=(-90, 0)) # plotting using ops_vis
 
-Figure 1 shows the plotted model in OpenSees model space.
+Figure 2 shows the plotted model in OpenSees model space.
 
 ..  figure:: ../../_images/28m_bridge.png
     :align: center
     :scale: 75 %
 
-    Figure 1: Grillage model of the exemplar 28 m bridge.
+    Figure 2: Grillage model of the exemplar 28 m bridge.
 
 Adding load cases to model
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -106,12 +108,12 @@ First load case is a line load running along mid span width.
 
     # Line load running along midspan width (P is kN/m)
     # Create vertical load points in global coordinate system
-    line_point_1 = ospg.create_load_vertex(x=L/2, z=0, p=P)
-    line_point_2 = ospg.create_load_vertex(x=L/2, z=w, p=P)
-    test_line_load = ospg.create_load(type='line',name="Test Load", point1=line_point_1, point2=line_point_2)
+    line_point_1 = og.create_load_vertex(x=L/2, z=0, p=P)
+    line_point_2 = og.create_load_vertex(x=L/2, z=w, p=P)
+    test_line_load = og.create_load(type='line',name="Test Load", point1=line_point_1, point2=line_point_2)
 
     # Create load case, add loads, and assign
-    line_case = ospg.create_load_case(name=static_cases_names[0])
+    line_case = og.create_load_case(name=static_cases_names[0])
     line_case.add_load_groups(test_line_load)
 
     simple_grid.add_load_case(line_case)
@@ -124,14 +126,14 @@ Second load case comprise of Compounded point loads
     # working in global coordinate system
     p_list = [0,edge_dist,edge_dist+2*m,edge_dist+4*m,edge_dist+6*m,w-edge_dist,w] # creating list of load position
 
-    test_points_load = ospg.create_compound_load(name="Points Test Case (Global)")
+    test_points_load = og.create_compound_load(name="Points Test Case (Global)")
 
     for p in p_list:
-        point = ospg.create_load(type='point',name="Point",point1=ospg.create_load_vertex(x=L/2, z=p, p=P))
+        point = og.create_load(type='point',name="Point",point1=og.create_load_vertex(x=L/2, z=p, p=P))
         test_points_load.add_load(load_obj = point)
 
     # Create load case, add loads, and assign
-    points_case = ospg.create_load_case(name=static_cases_names[1])
+    points_case = og.create_load_case(name=static_cases_names[1])
     points_case.add_load_groups(test_points_load)
 
     simple_grid.add_load_case(points_case)
@@ -143,17 +145,17 @@ in Local coordinates then setting the local coordinate system of compound load t
 
     # Compound point loads along midspan width
     # working in user-defined local coordinate (in point load)
-    test_points_load = ospg.create_compound_load(name="Points Test Case (Local in Point)")
+    test_points_load = og.create_compound_load(name="Points Test Case (Local in Point)")
 
     for p in p_list:
-        point = ospg.create_load(type='point',name="Point",localpoint1=ospg.create_load_vertex(x=0, z=p, p=P))
+        point = og.create_load(type='point',name="Point",localpoint1=og.create_load_vertex(x=0, z=p, p=P))
         # maybe local point is useless?
         test_points_load.add_load(load_obj = point)
 
-    test_points_load.set_global_coord(ospg.Point(L/2,0,0)) # shift from local to global
+    test_points_load.set_global_coord(og.Point(L/2,0,0)) # shift from local to global
 
     # Create load case, add loads, and assign
-    points_case = ospg.create_load_case(name=static_cases_names[2])
+    points_case = og.create_load_case(name=static_cases_names[2])
     points_case.add_load_groups(test_points_load)
 
     simple_grid.add_load_case(points_case)
@@ -163,16 +165,16 @@ Fourth load case entails a patch load
 .. code-block:: python
 
     # Patch load over entire bridge deck (P is kN/m2)
-    patch_point_1 = ospg.create_load_vertex(x=0, z=0, p=P)
-    patch_point_2 = ospg.create_load_vertex(x=L, z=0, p=P)
-    patch_point_3 = ospg.create_load_vertex(x=L, z=w, p=P)
-    patch_point_4 = ospg.create_load_vertex(x=0, z=w, p=P)
-    test_patch_load = ospg.create_load(type='patch',name="Test Load",
+    patch_point_1 = og.create_load_vertex(x=0, z=0, p=P)
+    patch_point_2 = og.create_load_vertex(x=L, z=0, p=P)
+    patch_point_3 = og.create_load_vertex(x=L, z=w, p=P)
+    patch_point_4 = og.create_load_vertex(x=0, z=w, p=P)
+    test_patch_load = og.create_load(type='patch',name="Test Load",
                                        point1=patch_point_1, point2=patch_point_2,
                                        point3=patch_point_3, point4=patch_point_4)
 
     # Create load case, add loads, and assign
-    patch_case = ospg.create_load_case(name=static_cases_names[4])
+    patch_case = og.create_load_case(name=static_cases_names[4])
     patch_case.add_load_groups(test_patch_load)
     simple_grid.add_load_case(patch_case)
 
@@ -186,12 +188,12 @@ Here's how we create and add a moving load (e.g. a truck) to the 28 m bridge mod
     # 2 axle truck (equal loads, 2x2 spacing centre line running)
 
     # create truck in local coordinate system
-    two_axle_truck = ospg.create_compound_load(name="Two Axle Truck")
+    two_axle_truck = og.create_compound_load(name="Two Axle Truck")
     # note here we show that we can directly interact and create load vertex using LoadPoint namedtuple instead of create_load_vertex()
-    point1 = ospg.create_load(type="point",name="Point",point1=ospg.LoadPoint(x=0, y=0, z=0, p=P))
-    point2 = ospg.create_load(type="point",name="Point",point1=ospg.LoadPoint(x=0, y=0, z=axl_w, p=P))
-    point3 = ospg.create_load(type="point",name="Point",point1=ospg.LoadPoint(x=axl_s, y=0, z=axl_w, p=P))
-    point4 = ospg.create_load(type="point",name="Point",point1=ospg.LoadPoint(x=axl_s, y=0, z=0, p=P))
+    point1 = og.create_load(type="point",name="Point",point1=og.LoadPoint(x=0, y=0, z=0, p=P))
+    point2 = og.create_load(type="point",name="Point",point1=og.LoadPoint(x=0, y=0, z=axl_w, p=P))
+    point3 = og.create_load(type="point",name="Point",point1=og.LoadPoint(x=axl_s, y=0, z=axl_w, p=P))
+    point4 = og.create_load(type="point",name="Point",point1=og.LoadPoint(x=axl_s, y=0, z=0, p=P))
 
     axl_w = 2*m # axle width
     axl_s = 2*m # axle spacing
@@ -204,13 +206,13 @@ Here's how we create and add a moving load (e.g. a truck) to the 28 m bridge mod
 
     # create path object in global coordinate system - centre line running of entire span
     # when local coord: the path describes where the moving load *origin* is to start and end
-    single_path = ospg.create_moving_path(start_point=ospg.Point(0-axl_w,0,w/2-axl_w/2),
-                                          end_point=ospg.Point(L,0,w/2-axl_w/2),
+    single_path = og.create_moving_path(start_point=og.Point(0-axl_w,0,w/2-axl_w/2),
+                                          end_point=og.Point(L,0,w/2-axl_w/2),
                                           increments=L+veh_l+1)
 
 
     # create moving load (and case)
-    moving_truck = ospg.create_moving_load(name="Moving Two Axle Truck")
+    moving_truck = og.create_moving_load(name="Moving Two Axle Truck")
 
     # Set path to all loads defined within moving_truck
     moving_truck.set_path(single_path)
@@ -280,7 +282,6 @@ lusas plot
     np.sum(np.array(results['forces'].sel(Loadcase=static_cases_names, Element=ele_set, Component="Mz_i")),axis=1)
 
 
-[ Picture of lusas plots]
 
 Process load combinations results
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -323,6 +324,14 @@ Finally, comparing with theoretical:
     bending_z_theoretical = 2*P*(L/2-axl_s/2)
 
 
+28 m super T bridge model using shell hybrid model type
+------------------------------------------------------------
+Here we recreate the 28 m super T bridge using the shell hybrid model type.
+
+.. code-block:: python
+
+
+
 Oblique vs Orthogonal Mesh
 ---------------------------
 Here are some more examples showing the variety of meshes capable of being generated with *ospgrillage* module.
@@ -339,7 +348,7 @@ Here are some more examples showing the variety of meshes capable of being gener
     :align: center
     :scale: 75 %
 
-    Figure 2: Oblique mesh
+    Figure 3: Oblique mesh
 
 
 2) 28 m bridge with "Ortho" mesh
@@ -354,7 +363,7 @@ Here are some more examples showing the variety of meshes capable of being gener
     :align: center
     :scale: 75 %
 
-    Figure 3: Orthogonal mesh
+    Figure 4: Orthogonal mesh
 
 
 Skew edges of mesh
@@ -379,4 +388,4 @@ The following portion of the code is altered which then produces a grillage mode
     :align: center
     :scale: 75 %
 
-    Figure 4: Orthogonal mesh with left and right edge angle of 42 and 0 respectively.
+    Figure 5: Orthogonal mesh with left and right edge angle of 42 and 0 respectively.

@@ -184,12 +184,12 @@
 <li><p>longitudinal members representing composite section along longitudinal direction (e.g. main beams)</p></li>
 <li><p>transverse members representing slabs or secondary beam sections.</p></li>
 </ul>
-<p>This is the default model type when we <code class="xref py py-func docutils literal notranslate"><span class="pre">create_grillage()</span></code></p>
+<p>This is the default model type when we <a class="reference internal" href="generated/ospgrillage.osp_grillage.create_grillage.html#ospgrillage.osp_grillage.create_grillage" title="ospgrillage.osp_grillage.create_grillage"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_grillage()</span></code></a></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_grillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;SuperT_10m&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">skew</span><span class="o">=-</span><span class="mi">42</span><span class="p">,</span>
                                 <span class="n">num_long_grid</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">edge_beam_dist</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mesh_type</span><span class="o">=</span><span class="s2">&quot;Ortho&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Information on beam grillage model can be found <a href="#id4"><span class="problematic" id="id5">`here&lt;https://www.steelconstruction.info/Modelling_and_analysis_of_beam_bridges&gt;`_</span></a>.</p>
+<p>Information on beam grillage model can be found <a href="#id5"><span class="problematic" id="id6">`here&lt;https://www.steelconstruction.info/Modelling_and_analysis_of_beam_bridges&gt;`_</span></a>.</p>
 </div>
 <div class="section" id="beam-grillage-with-rigid-links">
 <h2>Beam grillage with rigid links<a class="headerlink" href="#beam-grillage-with-rigid-links" title="Permalink to this headline">¶</a></h2>
@@ -198,7 +198,7 @@
 <li><p>Offsets (in x-z plane) for start and end nodes along direction of transverse members - using joint offset.</p></li>
 <li><p>Offsets (in vertical y direction) for start and end nodes of longitudinal members - again using joint offsets.</p></li>
 </ul>
-<p>To create this model, have <code class="xref py py-func docutils literal notranslate"><span class="pre">create_grillage()</span></code> keyword for <code class="docutils literal notranslate"><span class="pre">model_type</span></code> set to <strong>beam_link</strong>.</p>
+<p>To create this model, have <a class="reference internal" href="generated/ospgrillage.osp_grillage.create_grillage.html#ospgrillage.osp_grillage.create_grillage" title="ospgrillage.osp_grillage.create_grillage"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_grillage()</span></code></a> keyword for <code class="docutils literal notranslate"><span class="pre">model_type</span></code> set to <strong>beam_link</strong>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_grillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;beamlink_10m&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">skew</span><span class="o">=-</span><span class="mi">12</span><span class="p">,</span>
                                     <span class="n">num_long_grid</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">edge_beam_dist</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mesh_type</span><span class="o">=</span><span class="s2">&quot;Ortho&quot;</span><span class="p">,</span>
                                     <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;beam_link&quot;</span><span class="p">,</span>
@@ -235,13 +235,42 @@ software - i.e. SPACEGASS.</p>
 <p class="caption"><span class="caption-text">Figure 4: Shell beam hybrid model idealization</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </div>
 <p>This model has advantageous in modelling slabs using shell elements which are well-suited to represent two-dimensional slab behaviour.</p>
-<p>To create this model, have <code class="xref py py-func docutils literal notranslate"><span class="pre">create_grillage()</span></code> keyword for <code class="docutils literal notranslate"><span class="pre">model_type</span></code> set to <strong>shell</strong>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_grillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;shelllink_10m&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">skew</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<p>To create this model, have <a class="reference internal" href="generated/ospgrillage.osp_grillage.create_grillage.html#ospgrillage.osp_grillage.create_grillage" title="ospgrillage.osp_grillage.create_grillage"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_grillage()</span></code></a> keyword for <code class="docutils literal notranslate"><span class="pre">model_type</span></code> set to <strong>shell</strong>. In addition,
+users are required to define and assign shell elements. The following example code details the steps:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># create section of shell element</span>
+<span class="n">slab_shell_section</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_section</span><span class="p">(</span><span class="n">h</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="c1"># set shell members to shell elements</span>
+<span class="n">example_bridge</span><span class="o">.</span><span class="n">set_shell_members</span><span class="p">(</span><span class="n">slab_shell</span><span class="p">)</span>
+<span class="c1"># create grillage with shell model type</span>
+<span class="n">example_bridge</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_grillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;shelllink_10m&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">skew</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                                     <span class="n">num_long_grid</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">edge_beam_dist</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mesh_type</span><span class="o">=</span><span class="s2">&quot;Orth&quot;</span><span class="p">,</span>
                                     <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;shell&quot;</span><span class="p">,</span> <span class="n">max_mesh_size_z</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">offset_beam_y_dist</span><span class="o">=</span><span class="mf">0.499</span><span class="p">,</span>
                                     <span class="n">link_nodes_width</span><span class="o">=</span><span class="mf">0.89</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>Table 1 outlines the variable types in <a class="reference internal" href="generated/ospgrillage.osp_grillage.create_grillage.html#ospgrillage.osp_grillage.create_grillage" title="ospgrillage.osp_grillage.create_grillage"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_grillage()</span></code></a> for shell hybrid model.</p>
+<table class="colwidths-given docutils align-default" id="id4">
+<caption><span class="caption-text">Table: 1 Input arguments for shell hybrid model</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Keyword argument</p></td>
+<td><p>Description</p></td>
+</tr>
+<tr class="row-even"><td><p><cite>max_mesh_size_z</cite></p></td>
+<td><p>max mesh size in z direction. <em>ospgrillage</em> automatically determines the mesh size in z direction
+based on this variable and spacing of link nodes</p></td>
+</tr>
+<tr class="row-odd"><td><p><cite>offset_beam_y_dist</cite></p></td>
+<td><p>distance between offset beams and grillage shell plane.</p></td>
+</tr>
+<tr class="row-even"><td><p><cite>link_nodes_width</cite></p></td>
+<td><p>width between link nodes - left and right links to offset beam elements - in global z direction</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 
