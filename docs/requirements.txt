@@ -49,10 +49,12 @@ multidict==5.1.0
 ndg-httpsclient==0.5.1
 numpy==1.19.2
 oauthlib==3.1.1
-openseespy==3.3.0.0
+openseespy>=3.2.2.6
 openseespywin==3.3.0.0
+opsvis~=0.95.5
+openseespyvis>=0.0.6
 packaging==20.4
-pandas==1.1.3
+pandas==1.3.2
 pathspec==0.8.1
 Pillow==7.2.0
 pluggy==0.13.1
@@ -68,6 +70,7 @@ pyparsing==2.4.7
 pytest==6.1.1
 python-dateutil==2.8.1
 pytz==2020.1
+pywin32==227
 recommonmark==0.7.1
 requests==2.25.1
 requests-oauthlib==1.3.0
