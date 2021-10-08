@@ -35,7 +35,7 @@ def bridge_model_42_negative(ref_bridge_properties):
     I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
 
     # construct grillage model
-    example_bridge = og.OspGrillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=-42,
+    example_bridge = og.OspGrillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=0,
                                     num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
 
     # set grillage member to element groups of grillage model
@@ -122,12 +122,12 @@ def shell_link_bridge(ref_bridge_properties):
 def test_model_instance(bridge_model_42_negative):
     example_bridge = bridge_model_42_negative
     #og.opsplt.plot_model("nodes")
-    og.opsv.plot_model(az_el=(-90, 0))
+    og.opsv.plot_model(az_el=(-90, 0),element_labels=0)
     og.plt.show()
     assert og.ops.nodeCoord(18)  # check if model node exist in OpenSees model space
     og.ops.wipe()
     a = example_bridge.get_element(member="exterior_main_beam_2",options="nodes")
-    print(a)
+    assert a
 
 
 #  test creating beam model with rigid links

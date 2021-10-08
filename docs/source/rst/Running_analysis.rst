@@ -17,7 +17,7 @@ Figure 1 shows the flowchart for the load module of *ospgrillage*.
 
 ..  figure:: ../../_images/flowchart2.png
     :align: center
-    :scale: 75 %
+    :scale: 50 %
 
     Figure 1: Load analysis utility flow chart
 
@@ -77,7 +77,7 @@ Point load takes only a single `LoadPoint` tuple. `p` in the tuple should have u
 
 ..  figure:: ../../_images/pointload.png
     :align: center
-    :scale: 75 %
+    :scale: 50 %
 
     Figure 2: Point load
 
@@ -103,7 +103,7 @@ Using more than two tuples allows a curve line loading profile.
 
 ..  figure:: ../../_images/lineload.png
     :align: center
-    :scale: 75 %
+    :scale: 50 %
 
     Figure 3: Line load
 
@@ -136,7 +136,7 @@ Using eight tuples allows a curve surface loading profile.
 
 ..  figure:: ../../_images/patchload.png
     :align: center
-    :scale: 75 %
+    :scale: 50 %
 
     Figure 4: Patch load
 

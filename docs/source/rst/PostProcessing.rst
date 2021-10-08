@@ -2,7 +2,7 @@
 Getting Results
 ========================
 
-For all example code in this page, *ospgrillage* is imported as ``ospg``
+For all example code in this page, *ospgrillage* is imported as ``og``
 
 .. code-block:: python
     import ospgrillage as og
@@ -111,11 +111,11 @@ Element
 
 
 
-Plotting results from DataArrays
+Plotting results of DataArrays
 --------------------------------------
 
-Current limitation of plotting module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Current limitation of `OpenSees` dedicated plotting module
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 `OpenSeesPy`'s visualization module `ops_vis` offers comprehensive visualization analysis results in `OpenSees`.
 However, `ops_vis`'s plotting operates only for the current model (and analysis) instance in `OpenSees`
@@ -139,6 +139,12 @@ using `ops_vis`:
 
 
 In the following section, we present an alternative way to visualize results from the `xarray` DataSets.
+
+Plotting functions from post-processing module
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+*ospgrillage* has a built-in post-processing module
+
+
 
 Template code for plotting results
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
