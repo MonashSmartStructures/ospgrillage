@@ -777,6 +777,8 @@ def test_1m_wide_bridge(ref_bridge_properties):
     #print(og.ops.nodeDisp(25))
     #print(og.ops.nodeDisp(26))
 
+    og.plot_defo(example_bridge,result,"exterior_main_beam_2","nodes")
+
     # template to plot displacements
     nodes = example_bridge.get_nodes() # ospgrillage way to store node information
     #element = example_bridge.get_element()

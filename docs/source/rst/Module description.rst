@@ -168,7 +168,7 @@ beam-and-slab bridge deck. The model comprises of standard grillage members whic
 
 Figure 3 illustrates these standard grillage members and their position on an exemplar orthogonal grillage mesh.
 
-.. figure:: ../../_images/elements.svg
+.. figure:: ../../_images/grillage_elements.png
     :align: center
     :scale: 75 %
 
