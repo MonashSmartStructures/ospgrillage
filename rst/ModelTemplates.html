@@ -229,16 +229,19 @@ software - i.e. SPACEGASS.</p>
 <li><p>Beam elements modelled with an offset to the plane of shell elements to represent longitudinal beam sections.</p></li>
 <li><p>Beam elements linked to shell elements at two corresponding locations using constraint equations - <cite>OpenSeesPy</cite>’s <strong>rigidLink</strong> command</p></li>
 </ul>
-<p>Figure 4 shows the details of the shell beam hybrid model.</p>
+<p>This model has advantageous in modelling slabs using shell elements which are well-suited to represent two-dimensional slab behaviour.
+Figure 4 shows the details of the shell beam hybrid model.</p>
 <div class="figure align-center" id="id3">
 <a class="reference internal image-reference" href="../_images/shell_link_idealization.PNG"><img alt="../_images/shell_link_idealization.PNG" src="../_images/shell_link_idealization.PNG" /></a>
 <p class="caption"><span class="caption-text">Figure 4: Shell beam hybrid model idealization</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </div>
-<p>This model has advantageous in modelling slabs using shell elements which are well-suited to represent two-dimensional slab behaviour.</p>
-<p>To create this model, have <a class="reference internal" href="generated/ospgrillage.osp_grillage.create_grillage.html#ospgrillage.osp_grillage.create_grillage" title="ospgrillage.osp_grillage.create_grillage"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_grillage()</span></code></a> keyword for <code class="docutils literal notranslate"><span class="pre">model_type</span></code> set to <strong>shell</strong>. In addition,
-users are required to define and assign shell elements. The following example code details the steps:</p>
+<p>When <strong>shell</strong> model type is selected, <em>ospgrillage</em> automatically determines the position of shell elements within the grillage plane.
+Users only have to define and assign the section of the shell element via <code class="xref py py-func docutils literal notranslate"><span class="pre">create_section()</span></code> and
+<code class="xref py py-func docutils literal notranslate"><span class="pre">set_shell_member()</span></code> respectively.
+Finally, to create this model, have <a class="reference internal" href="generated/ospgrillage.osp_grillage.create_grillage.html#ospgrillage.osp_grillage.create_grillage" title="ospgrillage.osp_grillage.create_grillage"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_grillage()</span></code></a> keyword for <code class="docutils literal notranslate"><span class="pre">model_type</span></code> set to <strong>shell</strong>. In addition,
+users are required to define and assign shell elements. The following example code details the aforementioned steps:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># create section of shell element</span>
-<span class="n">slab_shell_section</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_section</span><span class="p">(</span><span class="n">h</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="n">slab_shell_section</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_section</span><span class="p">(</span><span class="n">h</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span> <span class="c1"># h = thickness</span>
 <span class="c1"># set shell members to shell elements</span>
 <span class="n">example_bridge</span><span class="o">.</span><span class="n">set_shell_members</span><span class="p">(</span><span class="n">slab_shell</span><span class="p">)</span>
 <span class="c1"># create grillage with shell model type</span>
@@ -255,10 +258,12 @@ users are required to define and assign shell elements. The following example co
 <col style="width: 50%" />
 <col style="width: 50%" />
 </colgroup>
-<tbody>
-<tr class="row-odd"><td><p>Keyword argument</p></td>
-<td><p>Description</p></td>
+<thead>
+<tr class="row-odd"><th class="head"><p>Keyword argument</p></th>
+<th class="head"><p>Description</p></th>
 </tr>
+</thead>
+<tbody>
 <tr class="row-even"><td><p><cite>max_mesh_size_z</cite></p></td>
 <td><p>max mesh size in z direction. <em>ospgrillage</em> automatically determines the mesh size in z direction
 based on this variable and spacing of link nodes</p></td>

@@ -10,11 +10,11 @@ Although users can opt to interact with module objects directly without using in
 Workflow overview
 ------------------------------------------------------------------
 
-Figure 1 summarizes the workflow of creating grillage models using *ospgrillage*.
+Figure 1 summarizes the workflow of creating a grillage model using *ospgrillage*.
 
 ..  figure:: ../../_images/flowchart1.png
     :align: center
-    :scale: 75 %
+    :scale: 50 %
 
     Figure 1: Grillage model creation flow chart
 
@@ -168,9 +168,8 @@ beam-and-slab bridge deck. The model comprises of standard grillage members whic
 
 Figure 3 illustrates these standard grillage members and their position on an exemplar orthogonal grillage mesh.
 
-..  figure:: ../../_images/Standard_elements.PNG
-    :align: center
-    :scale: 75 %
+.. image:: elements.svg
+    :target: ../../_images/elements.svg
 
     Figure 3: Standard elements supported by *ospgrillage*
 

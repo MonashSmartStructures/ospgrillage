@@ -195,7 +195,7 @@ generally have  <code class="docutils literal notranslate"><span class="pre">set
 Although users can opt to interact with module objects directly without using interface functions, we recommend the more pythonic interface functions.</p>
 <div class="section" id="workflow-overview">
 <h2>Workflow overview<a class="headerlink" href="#workflow-overview" title="Permalink to this headline">¶</a></h2>
-<p>Figure 1 summarizes the workflow of creating grillage models using <em>ospgrillage</em>.</p>
+<p>Figure 1 summarizes the workflow of creating a grillage model using <em>ospgrillage</em>.</p>
 <div class="figure align-center" id="id1">
 <a class="reference internal image-reference" href="../_images/flowchart1.png"><img alt="../_images/flowchart1.png" src="../_images/flowchart1.png" /></a>
 <p class="caption"><span class="caption-text">Figure 1: Grillage model creation flow chart</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
@@ -317,10 +317,6 @@ beam-and-slab bridge deck. The model comprises of standard grillage members whic
 <li><p>Remaining transverse slabs</p></li>
 </ul>
 <p>Figure 3 illustrates these standard grillage members and their position on an exemplar orthogonal grillage mesh.</p>
-<div class="figure align-center" id="id3">
-<a class="reference internal image-reference" href="../_images/Standard_elements.PNG"><img alt="../_images/Standard_elements.PNG" src="../_images/Standard_elements.PNG" /></a>
-<p class="caption"><span class="caption-text">Figure 3: Standard elements supported by <em>ospgrillage</em></span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
-</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>For supports, nodes along start and end edges are fixated with pinned supports at start edges (restrained global x, y and z axis)
@@ -340,9 +336,9 @@ A-I, G-I, A-J, G-J.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">mesh_type</span></code>: Mesh type of grillage model. Must take a <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> input of either “Ortho” or “Oblique”. The default is “Ortho” (an orthogonal mesh). However, “Ortho” is not accepted for certain skew angles. The threshold for orthogonal mesh is greater than 11 degree- less than 11 degree the mesh will change to Oblique</p></li>
 </ul>
 <p>Figure 4 shows how the grid numbers and skew angles affects the output mesh of grillage model.</p>
-<div class="figure align-center" id="id4">
+<div class="figure align-center" id="id3">
 <a class="reference internal image-reference" href="../_images/edge_angles.PNG"><img alt="../_images/edge_angles.PNG" src="../_images/edge_angles.PNG" /></a>
-<p class="caption"><span class="caption-text">Figure 4: Example grid numbers and edge angles</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 4: Example grid numbers and edge angles</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </div>
 <p>For the example bridge in Figure 2, the following code line creates its <a class="reference internal" href="OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a> object i.e. <em>example_bridge</em>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_grillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;SuperT_10m&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">skew</span><span class="o">=-</span><span class="mi">21</span><span class="p">,</span>
@@ -362,8 +358,8 @@ Vertical (normal to grid) loads are applied in the <span class="math notranslate
 the function requires a member name string argument.</p>
 <p>The member string specifies the standard grillage element for which the <a class="reference internal" href="APIdoc.html#ospgrillage.members.GrillageMember" title="ospgrillage.members.GrillageMember"><code class="xref py py-class docutils literal notranslate"><span class="pre">GrillageMember</span></code></a> is assigned. Table 1
 summarizes the name strings available for <em>ospgrillage</em>.</p>
-<table class="colwidths-given docutils align-default" id="id5">
-<caption><span class="caption-text">Table: 1 Current supported member string and tags</span><a class="headerlink" href="#id5" title="Permalink to this table">¶</a></caption>
+<table class="colwidths-given docutils align-default" id="id4">
+<caption><span class="caption-text">Table: 1 Current supported member string and tags</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
 <colgroup>
 <col style="width: 50%" />
 <col style="width: 50%" />

@@ -110,8 +110,9 @@
 <li class="toctree-l3"><a class="reference internal" href="#element">Element</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#plotting-results-from-dataarrays">Plotting results from DataArrays</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#current-limitation-of-plotting-module">Current limitation of plotting module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plotting-results-of-dataarrays">Plotting results of DataArrays</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#current-limitation-of-opensees-dedicated-plotting-module">Current limitation of <cite>OpenSees</cite> dedicated plotting module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#plotting-functions-from-post-processing-module">Plotting functions from post-processing module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#template-code-for-plotting-results">Template code for plotting results</a></li>
 </ul>
 </li>
@@ -190,7 +191,7 @@
             
   <div class="section" id="getting-results">
 <h1>Getting Results<a class="headerlink" href="#getting-results" title="Permalink to this headline">¶</a></h1>
-<p>For all example code in this page, <em>ospgrillage</em> is imported as <code class="docutils literal notranslate"><span class="pre">ospg</span></code></p>
+<p>For all example code in this page, <em>ospgrillage</em> is imported as <code class="docutils literal notranslate"><span class="pre">og</span></code></p>
 <div class="section" id="extracting-results">
 <h2>Extracting results<a class="headerlink" href="#extracting-results" title="Permalink to this headline">¶</a></h2>
 <p>After analysis, results are obtained using <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_results()</span></code></a> function.
@@ -306,10 +307,10 @@ within this “interior_main_beam” element group.</p>
 
 </div>
 </div>
-<div class="section" id="plotting-results-from-dataarrays">
-<h2>Plotting results from DataArrays<a class="headerlink" href="#plotting-results-from-dataarrays" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="current-limitation-of-plotting-module">
-<h3>Current limitation of plotting module<a class="headerlink" href="#current-limitation-of-plotting-module" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="plotting-results-of-dataarrays">
+<h2>Plotting results of DataArrays<a class="headerlink" href="#plotting-results-of-dataarrays" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="current-limitation-of-opensees-dedicated-plotting-module">
+<h3>Current limitation of <cite>OpenSees</cite> dedicated plotting module<a class="headerlink" href="#current-limitation-of-opensees-dedicated-plotting-module" title="Permalink to this headline">¶</a></h3>
 <p><cite>OpenSeesPy</cite>’s visualization module <cite>ops_vis</cite> offers comprehensive visualization analysis results in <cite>OpenSees</cite>.
 However, <cite>ops_vis</cite>’s plotting operates only for the current model (and analysis) instance in <cite>OpenSees</cite>
 framework. In other words multiple plots of different analysis results is not straightforward for <cite>ops_vis</cite>.
@@ -327,6 +328,10 @@ using <cite>ops_vis</cite>:</p>
 being <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze.html#ospgrillage.osp_grillage.OspGrillage.analyze" title="ospgrillage.osp_grillage.OspGrillage.analyze"><code class="xref py py-func docutils literal notranslate"><span class="pre">analyze()</span></code></a>.</p>
 </div>
 <p>In the following section, we present an alternative way to visualize results from the <cite>xarray</cite> DataSets.</p>
+</div>
+<div class="section" id="plotting-functions-from-post-processing-module">
+<h3>Plotting functions from post-processing module<a class="headerlink" href="#plotting-functions-from-post-processing-module" title="Permalink to this headline">¶</a></h3>
+<p><em>ospgrillage</em> has a built-in post-processing module</p>
 </div>
 <div class="section" id="template-code-for-plotting-results">
 <h3>Template code for plotting results<a class="headerlink" href="#template-code-for-plotting-results" title="Permalink to this headline">¶</a></h3>
