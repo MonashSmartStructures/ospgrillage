@@ -168,18 +168,13 @@ beam-and-slab bridge deck. The model comprises of standard grillage members whic
 
 Figure 3 illustrates these standard grillage members and their position on an exemplar orthogonal grillage mesh.
 
-.. image:: elements.svg
-    :target: ../../_images/elements.svg
+.. figure:: ../../_images/elements.svg
+    :align: center
+    :scale: 75 %
 
     Figure 3: Standard elements supported by *ospgrillage*
 
-
-.. note::
-
-    For supports, nodes along start and end edges are fixated with pinned supports at start edges (restrained global x, y and z axis)
-    and rollers at end edges (restrained global y and z axis) respectively.
-    In addition, nodes that coincide edge beams and edge slabs are not supported. In example of Figure 1, these nodes are node pairs
-    A-I, G-I, A-J, G-J.
+Supports are automatically set at nodes (1 to 7)  along grid A and grid E as pinned and roller respectively.
 
 
 The :class:`~ospgrillage.osp_grillage.OspGrillage` class takes the following keyword arguments:
