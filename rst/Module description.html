@@ -439,7 +439,8 @@ Note that in doing so, the model instance in <cite>OpenSees</cite> space is not 
 <p>To check that we created the model in OpenSees space, we can plot the model using <cite>OpenSeesPy</cite>’s visualization module <cite>ops_vis</cite>.
 The <em>ospgrillage</em> module already imports the <cite>ops_vis</cite> module. Therefore, one can run access <cite>ops_vis</cite> by running
 the following code line and a plot like in <a class="reference internal" href="#figure-2">Figure 2</a> will be returned:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">og</span><span class="o">.</span><span class="n">opsplt</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="s2">&quot;nodes&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ospg</span><span class="o">.</span><span class="n">opsplt</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="s2">&quot;nodes&quot;</span><span class="p">)</span> <span class="c1"># using Get Rendering module</span>
+<span class="n">ospg</span><span class="o">.</span><span class="n">opsv</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">az_el</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="c1"># using osp_vis</span>
 </pre></div>
 </div>
 <p>Whilst all nodes will be visualized, only the assigned members are visualized. This is a good way to check if desired members are assigned
