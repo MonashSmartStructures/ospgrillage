@@ -311,7 +311,8 @@ the following code line and a plot like in `Figure 2`_ will be returned:
 
 .. code-block:: python
 
-    og.opsplt.plot_model("nodes")
+    ospg.opsplt.plot_model("nodes") # using Get Rendering module
+    ospg.opsv.plot_model(az_el=(-90, 0)) # using osp_vis
 
 Whilst all nodes will be visualized, only the assigned members are visualized. This is a good way to check if desired members are assigned
 and hence, shown on the plot. Failure to not have all members assigned will affect subsequent analysis.

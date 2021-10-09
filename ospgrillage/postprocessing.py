@@ -121,15 +121,21 @@ class Envelope:
         return eval(self.format_string)
 
 
-def plot_bmd(ospgrillage_obj, result_obj=None,
+def plot_bmd(ospgrillage_obj, result_obj=None,component = None,
               member: str = None, option: str = None):
     """
-    Function to plot diagrams from force component of :class:`~ospgrillage.osp_grillage.Result` object
+    Function to plot 2D diagrams from force component of :class:`~ospgrillage.osp_grillage.Result` object
 
-    :param ospgrillage_obj:
-    :param result_obj:
-    :param member:
+    :param ospgrillage_obj: Grillage model object
+    :type ospgrillage_obj: OspGrillage
+    :param result_obj: xarray DataSet of results
+    :type result_obj: xarray DataSet
+    :param component: Force component to plot
+    :type component: str
+    :param member: member
+    :type member: str
     :param option:
+    :type option: str
     :return:
     """
     # TODO
@@ -160,21 +166,26 @@ def plot_bmd(ospgrillage_obj, result_obj=None,
 
 
 def plot_defo(ospgrillage_obj, result_obj=None,
-              member: str = None, option: str = None):
+              member: str = None, component:str=None,option: str = None):
     """
-    Function to plot displacement components from :class:`~ospgrillage.osp_grillage.Result` object
+    Function to plot 2D diagrams of displacement components from result xarray DataSet
 
-    :param ospgrillage_obj:
-    :param result_obj:
-    :param member:
-    :param option:
-    :return:
+    :param ospgrillage_obj: Grillage model object
+    :type ospgrillage_obj: OspGrillage
+    :param result_obj: xarray DataSet of results
+    :type result_obj: xarray DataSet
+    :param component: Force component to plot
+    :type component: str
+    :param member: member
+    :type member: str
+    :param option: option of :func:`~ospgrillage.osp_grillage.OspGrillage.get_element`, either "nodes" or "element"
+                   (Default nodes)
+    :type option: str
     """
     # instantiate variables
     previous_def = None
     previous_xx = None
     previous_zz = None
-
 
     # check options
     if option is None:
@@ -184,9 +195,11 @@ def plot_defo(ospgrillage_obj, result_obj=None,
     # check member
     if member is None:
         return
+    # check if component is provided, else default to
+    dis_comp = component
+    if component is None:
+        dis_comp = "dy"  # default to dy
 
-        # TODO
-    dis_comp = "dy"  # change here for desired displacement component
     # get all node information
     nodes = ospgrillage_obj.get_nodes()  # dictionary containing information of nodes
     # get specific nodes for specific element
@@ -201,6 +214,7 @@ def plot_defo(ospgrillage_obj, result_obj=None,
         previous_def = disp
         previous_xx = xx
         previous_zz = zz
+    plt.title(member)
     plt.xlabel("x (m) ")  # labels
     plt.ylabel("dy (m)")  # labels
     plt.show()

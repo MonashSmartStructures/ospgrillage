@@ -181,17 +181,6 @@ def bridge_model_42_positive(ref_bridge_properties):
 
 
 # ------------------------------------------------------------------------------------------------------------------
-# tests for mesh class object
-def test_model_instance(bridge_model_42_negative):
-    example_bridge = bridge_model_42_negative
-    og.opsplt.plot_model("nodes")
-
-    print(og.ops.nodeCoord(18))
-    print("pass")
-    og.ops.wipe()
-
-
-# ------------------------------------------------------------------------------------------------------------------
 # tests for load assignments
 # tests point load return correct nodes
 def test_point_load_getter(bridge_model_42_negative):  # test get_point_load_nodes() function
@@ -795,6 +784,7 @@ def test_1m_wide_bridge(ref_bridge_properties):
     minY, maxY = og.opsv.section_force_diagram_3d('Mz', {}, 1)
     og.plt.show()
     print(maxY)
+
 # example super t 28 m  ref bridge
 # test for comparing max deflection with a numerical comparison model in Lusas
 def test_28m_bridge(ref_28m_bridge):
@@ -854,6 +844,8 @@ def test_28m_bridge(ref_28m_bridge):
     print(og.ops.nodeDisp(60))
     print(og.ops.nodeDisp(53))
     print(og.ops.nodeDisp(40))
+
+    og.plot_defo(bridge_28, results, member="exterior_main_beam_2", option= "nodes")
 
     # template to plot displacements
     nodes = bridge_28.get_nodes()  # ospgrillage way to store node information

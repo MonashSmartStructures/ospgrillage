@@ -3,8 +3,8 @@
 """
 This pytest pertains model validation of a LUSAS model built in ospgrillage. Note the test portion of this file are
 specific to the comparison i.e. 28m model between LUSAS model outputs and ospg outputs - hence is not advisable to copy-paste
-the tests herein to for another new pytest (say another model). However it is reasonable to replicate the fixtures of this pytest i.e.
-the model creation and running analysis portion of the pytest.
+the tests herein to for another new pytest (say another model). However it is reasonable to replicate structure of the fixtures i.e.
+the model creation and running analysis domain of the pytest.
 """
 import pytest
 import pickle
@@ -287,7 +287,7 @@ def add_analysis_to_simple_grid(create_grillage):
 
     # Run analysis #
 
-    simple_grid.analyze(all=True)  # all load cases
+    simple_grid.analyze()  # all load cases
     # simple_grid.analyze(load_case=load_name[0]) # specific load case
     # simple_grid.analyze(load_case=load_name[-1]) # specific moving load case
 
@@ -295,7 +295,7 @@ def add_analysis_to_simple_grid(create_grillage):
     # results = simple_grid.get_results(all=True) # same as above
     # results = simple_grid.get_results(load_case=load_case[0]) # specific load case
     move_results = simple_grid.get_results(load_case=load_name[-1])  # specific moving load case
-    combo_results = simple_grid.get_results(get_combinations=True)  # get combination
+    combo_results = simple_grid.get_results(combinations=load_combinations)  # get combination
 
     return all_results, move_results, combo_results
 
@@ -358,12 +358,12 @@ def test_line_load_results(add_analysis_to_simple_grid):
                                                         Component="Mz_i")), axis=1)
     # specific moving load case
     integer = int(L / 2 - 1 + 2)
-    mid_mov = np.sum(np.array(move_results['forces'].isel(Loadcase=integer).sel(Element=ele_set,
+    mid_mov = np.sum(np.array(move_results.forces.isel(Loadcase=integer).sel(Element=ele_set,
                                                                                 Component="Mz_i")))
 
     # load combo
-    mid_comb = np.sum(np.array(combo_results[load_combo["name"]]['forces'].sel(Element=ele_set,
-                                                                               Component="Mz_i")))
+    mid_comb = np.sum(np.array(combo_results[0].forces.sel(Element=ele_set,Component="Mz_i")))
+
 
     comp_calcs = list(mid_sta) + [mid_mov] + [mid_comb]
 
@@ -437,7 +437,7 @@ def test_line_load_results(add_analysis_to_simple_grid):
     # assert deflection results , if all true/ isclose()
     assert sum(np.isclose(lusas_def, sorted_zip_ospg_node, atol=1e-5)) >= 77
     # assert  # line, point, patch x 3, moving load, combination bending moment about global Z axis close to hand calcs
-    assert sum(np.isclose(hand_calcs, comp_calcs)) == 6
+    assert sum(np.isclose(hand_calcs, np.abs(comp_calcs))) == 6
 
 
 # ---------------------------------------------
