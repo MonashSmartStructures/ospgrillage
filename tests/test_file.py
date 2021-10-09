@@ -846,7 +846,7 @@ def test_28m_bridge(ref_28m_bridge):
     print(og.ops.nodeDisp(40))
 
     og.plot_defo(bridge_28, results, member="exterior_main_beam_2", option= "nodes")
-
+    og.plot_force(bridge_28, results, member="exterior_main_beam_2", component="Mz")
     # template to plot displacements
     nodes = bridge_28.get_nodes()  # ospgrillage way to store node information
     # element = example_bridge.get_element()

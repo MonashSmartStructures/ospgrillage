@@ -121,10 +121,10 @@ class Envelope:
         return eval(self.format_string)
 
 
-def plot_bmd(ospgrillage_obj, result_obj=None,component = None,
-              member: str = None, option: str = None):
+def plot_force(ospgrillage_obj, result_obj=None, component = None,
+               member: str = None, option: str = "elements"):
     """
-    Function to plot 2D diagrams from force component of :class:`~ospgrillage.osp_grillage.Result` object
+    Function to plot 2D diagrams from force component of specific elements from results xarray DataSet
 
     :param ospgrillage_obj: Grillage model object
     :type ospgrillage_obj: OspGrillage
@@ -138,11 +138,19 @@ def plot_bmd(ospgrillage_obj, result_obj=None,component = None,
     :type option: str
     :return:
     """
-    # TODO
-    ax = plt.axes(projection='3d')  # create plot window
+    # instantiate component dict
+    comp_dict = {"Fx":0,"Fy":1,"Fz":2,"Mx":3,"My":4,"Mz":5}
+    if member is None:
+        print("Missing argument member=")
+        return
+    component_index = component
+    if not isinstance(component,int):
+        component_index = comp_dict[component]
+
+    ax = plt.figure  # create plot window
     nodes = ospgrillage_obj.get_nodes()  # extract node information of model
-    eletag = ospgrillage_obj.get_element(member="exterior_main_beam_2",
-                                         options="elements")  # get ele tag of grillage elements
+    eletag = ospgrillage_obj.get_element(member=member,
+                                         options=option)  # get ele tag of grillage elements
     # loop ele tags of ele
     for ele in eletag:
         # get force components
@@ -158,8 +166,11 @@ def plot_bmd(ospgrillage_obj, result_obj=None,component = None,
         zz = [nodes[n]['coordinate'][2] for n in ele_node.values]
         # use ops_vis module to get force distribution on element
         s, al = opsv.section_force_distribution_3d(ex=xx, ey=yy, ez=zz, pl=ele_components)
-        # plot desire element force component
-        ax.plot(xx, zz, s[:, 5])  # Here change int accordingly: {0:Fx,1:Fy,2:Fz,3:Mx,4:My,5:Mz}
+        # plot element force component
+        plt.plot(xx, s[:, component_index],'-k')  # Here change int accordingly: {0:Fx,1:Fy,2:Fz,3:Mx,4:My,5:Mz}
+        # fill area between horizontal axis and line
+        plt.fill_between(xx,s[:, component_index],[0,0],color='k', alpha=0.4)
+    plt.title(member)
     plt.xlabel("x (m) ")
     plt.ylabel("Mz (Nm)")
     plt.show()
@@ -168,7 +179,7 @@ def plot_bmd(ospgrillage_obj, result_obj=None,component = None,
 def plot_defo(ospgrillage_obj, result_obj=None,
               member: str = None, component:str=None,option: str = None):
     """
-    Function to plot 2D diagrams of displacement components from result xarray DataSet
+    Function to plot 2D diagrams of displacement components of specific grillage element from result xarray DataSet
 
     :param ospgrillage_obj: Grillage model object
     :type ospgrillage_obj: OspGrillage
@@ -192,8 +203,9 @@ def plot_defo(ospgrillage_obj, result_obj=None,
         plot_option = "nodes"
     else:
         plot_option = option
-    # check member
+    # check member, if None, return None, Users need to define the member str to plot
     if member is None:
+        print("Missing argument for member= - no plot is returned")
         return
     # check if component is provided, else default to
     dis_comp = component
