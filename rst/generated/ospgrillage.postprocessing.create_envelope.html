@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>ospgrillage.load.create_compound_load &mdash; ospgrillage module 0.1.0 documentation</title>
+  <title>ospgrillage.postprocessing.create_envelope &mdash; ospgrillage module 0.1.0 documentation</title>
   
 
   
@@ -41,8 +41,8 @@
     
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="ospgrillage.load.create_moving_path" href="ospgrillage.load.create_moving_path.html" />
-    <link rel="prev" title="ospgrillage.load.create_load_case" href="ospgrillage.load.create_load_case.html" /> 
+    <link rel="next" title="ospgrillage.osp_grillage.OspGrillage.set_member" href="ospgrillage.osp_grillage.OspGrillage.set_member.html" />
+    <link rel="prev" title="ospgrillage.postprocessing.plot_defo" href="ospgrillage.postprocessing.plot_defo.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -109,12 +109,12 @@
 <li class="toctree-l4"><a class="reference internal" href="ospgrillage.load.create_load.html">ospgrillage.load.create_load</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ospgrillage.mesh.create_point.html">ospgrillage.mesh.create_point</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ospgrillage.load.create_load_case.html">ospgrillage.load.create_load_case</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">ospgrillage.load.create_compound_load</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ospgrillage.load.create_compound_load.html">ospgrillage.load.create_compound_load</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ospgrillage.load.create_moving_path.html">ospgrillage.load.create_moving_path</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ospgrillage.load.create_moving_load.html">ospgrillage.load.create_moving_load</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ospgrillage.postprocessing.plot_force.html">ospgrillage.postprocessing.plot_force</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ospgrillage.postprocessing.plot_defo.html">ospgrillage.postprocessing.plot_defo</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ospgrillage.postprocessing.create_envelope.html">ospgrillage.postprocessing.create_envelope</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">ospgrillage.postprocessing.create_envelope</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../APIdoc.html#grillage-model-interface-api">Grillage model interface API</a></li>
@@ -186,13 +186,13 @@
         
           <li><a href="../APIdoc.html">API reference</a> &raquo;</li>
         
-      <li>ospgrillage.load.create_compound_load</li>
+      <li>ospgrillage.postprocessing.create_envelope</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../../_sources/rst/generated/ospgrillage.load.create_compound_load.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/rst/generated/ospgrillage.postprocessing.create_envelope.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -205,18 +205,38 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="ospgrillage-load-create-compound-load">
-<h1>ospgrillage.load.create_compound_load<a class="headerlink" href="#ospgrillage-load-create-compound-load" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="ospgrillage-postprocessing-create-envelope">
+<h1>ospgrillage.postprocessing.create_envelope<a class="headerlink" href="#ospgrillage-postprocessing-create-envelope" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="ospgrillage.load.create_compound_load">
-<span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">create_compound_load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.create_compound_load" title="Permalink to this definition">¶</a></dt>
-<dd><p>User interface function to create compound load/ CompoundLoad objects</p>
+<dt class="sig sig-object py" id="ospgrillage.postprocessing.create_envelope">
+<span class="sig-prename descclassname"><span class="pre">ospgrillage.postprocessing.</span></span><span class="sig-name descname"><span class="pre">create_envelope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.postprocessing.create_envelope" title="Permalink to this definition">¶</a></dt>
+<dd><p>User interface function to create envelopes from data array</p>
+<p>The constructor takes an <cite>xarray</cite> DataSet and kwargs for enveloping options.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Keyword</dt>
-<dd class="field-odd"><p></p></dd>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ds</strong> (<em>Xarray</em>) – Data set from <cite>get_results()</cite></p></li>
+<li><p><strong>kwargs</strong> – Keyword arguments see below.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Keyword</dt>
+<dd class="field-even"><p></p></dd>
 </dl>
-<p>name (<cite>str</cite>): Name string of compound load
-:returns CompoundLoad:</p>
+<ul class="simple">
+<li><p>array</p></li>
+<li><p>value_mode</p></li>
+<li><p>query_mode</p></li>
+<li><p>extrema</p></li>
+<li><p>elements</p></li>
+<li><p>nodes</p></li>
+<li><p>array</p></li>
+<li><p>load_effect</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Envelope Object</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -227,8 +247,8 @@
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="ospgrillage.load.create_moving_path.html" class="btn btn-neutral float-right" title="ospgrillage.load.create_moving_path" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="ospgrillage.load.create_load_case.html" class="btn btn-neutral float-left" title="ospgrillage.load.create_load_case" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ospgrillage.osp_grillage.OspGrillage.set_member.html" class="btn btn-neutral float-right" title="ospgrillage.osp_grillage.OspGrillage.set_member" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="ospgrillage.postprocessing.plot_defo.html" class="btn btn-neutral float-left" title="ospgrillage.postprocessing.plot_defo" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

@@ -4,8 +4,8 @@ API reference
 
 User interface functions - API
 ------------------------------------------
-This module comprised of user interface functions to take user inputs and returns its corresponding object creation.
-Here is a summary of these functions.
+*ospgrillage* comprised of user interface functions callable from the main module. Following section summarizes
+the functions callable from all modules within *ospgrillage*.
 
 Top level interface functions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -24,7 +24,9 @@ Top level interface functions
     ospgrillage.load.create_compound_load
     ospgrillage.load.create_moving_path
     ospgrillage.load.create_moving_load
-
+    ospgrillage.postprocessing.plot_force
+    ospgrillage.postprocessing.plot_defo
+    ospgrillage.postprocessing.create_envelope
 
 
 Grillage model interface API
@@ -43,7 +45,7 @@ The following methods can be called on the :class:`ospgrillage.osp_grillage.OspG
 
 Load module API
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The following methods can be called from the respective class objects in the Load module.
+The following methods can be called from the respective Load class objects in the Load module.
 
 .. autosummary::
     :toctree: generated/
@@ -179,7 +181,7 @@ Path for moving loads
 Envelope
 ^^^^^^^^^^^
 
-.. autoclass:: ospgrillage.static.Envelope
+.. autoclass:: ospgrillage.postprocessing.Envelope
     :members:
 
 

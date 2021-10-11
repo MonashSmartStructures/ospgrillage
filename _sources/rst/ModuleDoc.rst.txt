@@ -202,6 +202,12 @@ Use the following links for more on:
 
 * `Example bridge with skew edges <https://www.researchgate.net/publication/289736527_Effect_of_skew_angle_on_behavior_of_simply_supported_R_C_T-beam_bridge_decks>`_
 
+References
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Caprani, Colin & Melhem, Mayer & Siamphukdee, Kanjana. (2017). Reliability analysis of a Super-T prestressed concrete
+  girder at serviceability limit state to AS 5100:2017. Australian Journal of Structural Engineering. 18. 1-13. 10.1080/13287982.2017.1332843.
+
 ====================
 Further development
 ====================

@@ -11,7 +11,7 @@ Extracting results
 --------------------------------------
 
 After analysis, results are obtained using :func:`~ospgrillage.osp_grillage.OspGrillage.get_results` function.
-The following example extracts results for all defined analysis.
+The following example extracts results for all defined analysis of ``example_bridge``.
 
 .. code-block:: python
 
@@ -90,8 +90,7 @@ and load effect component (e.g. "dy" for displacements). The `get_envelope()` fu
 
     first_combination = comb_results[0] # list of combination xarray, get the first
     envelope = og.get_envelope(ds=first_combination,load_effect="dy",array="displacements") # creates the envelope obj
-    disp_env = envelope.get() # step to get envelope of xarray
-
+    disp_env = envelope.get() # output the created envelope of xarray
 
 
 Getting specific properties of model
@@ -114,17 +113,20 @@ Element
 Plotting results of DataArrays
 --------------------------------------
 
-Current limitation of `OpenSees` dedicated plotting module
+Current limitation of `OpenSees` visualization module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-`OpenSeesPy`'s visualization module `ops_vis` offers comprehensive visualization analysis results in `OpenSees`.
-However, `ops_vis`'s plotting operates only for the current model (and analysis) instance in `OpenSees`
-framework. In other words multiple plots of different analysis results is not straightforward for `ops_vis`.
+`OpenSeesPy`'s visualization module - `ops_vis` - offers comprehensive visualization analysis results in `OpenSees`.
+However, `ops_vis` operates only for a single model instance (and analysis) in `OpenSees`
+framework. In other words, results from xarray DataSet (of :func:`~ospgrillage.osp_grillage.OspGrillage.get_results)
+cannot be plotted using the current visualization module.
 Additionally, `ops_vis` does not contain enveloping feature across multiple analysis - especially for moving
-load analysis comprise of multiple incremental load case for each moving load position. Overall, `ops_vis` is unable to plot
-results from `xarray` data set
+load analysis comprise of multiple incremental load case for each moving load position.
 
-The following code example allow users to plot results from **current analysis**
+If needed, users can still utilize `ops_vis` however only in a specific condition i.e. only a single load case is defined
+and :func:`~ospgrillage.osp_grillage.OspGrillage.analyze` in the `OpenSees` framework.
+With only a single load case and analysis, users can directly access the model results
+and plot using `ops_vis`. The following code example plots the results of the **current analysis instance **
 using `ops_vis`:
 
 .. code-block:: python
@@ -134,77 +136,59 @@ using `ops_vis`:
 
 .. note::
 
-    `opsv` gives the correct result only if the load case of interest is the only load case
-    being :func:`~ospgrillage.osp_grillage.OspGrillage.analyze`.
+    `opsv` only works for model template 1 (beam grillage) and 2 (beam grillage with rigid links). Plotting of shell model
+    type is not supported as of *ospgrillage* version 0.1.0
 
 
-In the following section, we present an alternative way to visualize results from the `xarray` DataSets.
-
-Plotting functions from post-processing module
+*ospgrillage* post-processing module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-*ospgrillage* has a built-in post-processing module
+For users wishing to plot results from xarray DataSet (multiple analysis),
+*ospgrillage* contains a dedicated post-processing module as of version 0.1.0 to visualize these results.
 
+.. note::
 
+    The plotting functions of post-processing module is at alpha development stage as compared to other modules. As of version 0.1.0,
+    it is sufficient to plot components from the xarray DataSets.
 
-Template code for plotting results
+Plotting functions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-For users wishing to plot results from `xarray` DataSets, here are some template codes for plotting load effects using Python's `matplotlib` library tools.
 
-Scatter plot of "dy" component in each node of ``example_bridge``:
+For this section, we will refer to an exemplar 28 m super-T bridge (Figure 1). The bridge grillage has been created
+and its :class:`~ospgrillage.osp_grillage.OspGrillage` object is defined as ``bridge_28``.
+
+..  figure:: ../../_images/28m_bridge.png
+    :align: center
+    :scale: 75 %
+
+    Figure 1: 28 m super-T bridge model.
+
+
+To plot deflection components from ``displacement`` DataArray, use :func:`~ospgrillage.postprocessing.plot_defo`. To use this function
+users need to specify the specific grillage member - this function returns a 2-D plot of displacement diagram.
+Following example plots the vertical deflection of ``bridge_28``, for "exterior_main_beam_2" member - plot shown in
+Figure 2:
 
 .. code-block:: python
 
-    dis_comp = "dy" # change here for desired displacement component
-    # get all node information
-    nodes = example_bridge.get_nodes() # dictionary containing information of nodes
-    # get specific nodes for specific element
-    nodes_to_plot = bridge_28.get_element(member="exterior_main_beam_2", options="nodes")[0] # list of list
-    # loop through nodes to plot
-    for node in nodes_to_plot:
-        disp = results.displacements.sel(Component=dis_comp,Node=node)[0].values # get node disp value
-        xx = nodes[node]['coordinate'][0] # get x coord
-        zz = nodes[node]['coordinate'][2] # get z coord (for 3D plots)
-        og.plt.plot(xx, disp,'ob')  # here plot accordingly, we plot a 1-D plot of all nodes in grillage element
-    og.plt.xlabel("x (m) ") # labels
-    og.plt.ylabel("dy (m)") # labels
-    og.plt.show()
-
+    og.plot_defo(bridge_28, results, member="exterior_main_beam_2", option= "nodes")
 
 ..  figure:: ../../_images/example_deflected.PNG
     :align: center
     :scale: 75 %
 
-    Figure 1: Deflected shape of of exterior main beam 2.
+    Figure 2: Deflected shape of of exterior main beam 2.
 
-Plotting "Mz" of "exterior_main_beam_2" in ``example_bridge``- version 2 leveraging function of `ops_vis` module:
+
+To plot force components from ``forces`` DataArray, use :func:`~ospgrillage.postprocessing.plot_force`. Similar to
+:func:`~ospgrillage.postprocessing.plot_defo`, users need to specify name string of specific grillage member.
+Following example plots the bending moment "Mz" of "exterior_main_beam_2" in ``bridge_28`` - plot shown in Figure 3:
 
 .. code-block:: python
 
-    ax = og.plt.axes(projection='3d') # create plot window
-    nodes=example_bridge.get_nodes() # extract node information of model
-    eletag = example_bridge.get_element(member="exterior_main_beam_2", options="elements") # get ele tag of grillage elements
-    # loop ele tags of ele
-    for ele in eletag:
-        # get force components
-        ele_components = results.forces.sel(Element=ele, Component=["Vx_i", "Vy_i", "Vz_i", "Mx_i", "My_i", "Mz_i", "Vx_j", "Vy_j", "Vz_j", "Mx_j", "My_j",
-                           "Mz_j"])[0].values
-        # get nodes of ele
-        ele_node = results.ele_nodes.sel(Element=ele)
-        # create arrays for x y and z for plots
-        xx = [nodes[n]['coordinate'][0] for n in ele_node.values]
-        yy = [nodes[n]['coordinate'][1] for n in ele_node.values]
-        zz = [nodes[n]['coordinate'][2] for n in ele_node.values]
-        # use ops_vis module to get force distribution on element
-        s,al = og.opsv.section_force_distribution_3d(ex=xx,ey=yy,ez=zz,pl=ele_components)
-        # plot desire element force component
-        ax.plot(xx,zz,s[:,5]) # Here change int accordingly: {0:Fx,1:Fy,2:Fz,3:Mx,4:My,5:Mz}
-    og.plt.xlabel("x (m) ")
-    og.plt.ylabel("Mz (Nm)")
-    og.plt.show()
-
+    og.plot_force(bridge_28, results, member="exterior_main_beam_2", component="Mz")
 
 ..  figure:: ../../_images/example_bmd.PNG
     :align: center
     :scale: 75 %
 
-    Figure 2: Bending moment about z axis of exterior main beam 2 .
+    Figure 3: Bending moment about z axis of exterior main beam 2 .

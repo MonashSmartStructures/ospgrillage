@@ -3,16 +3,16 @@ Examples
 ========================
 Here are some examples of what you can do with *ospgrillage* module.
 
-28 m super T bridge model with orthogonal mesh
+Super T bridge model
 ------------------------------------------------------------
-This example reproduces a numerical model constructed in commercial software i.e. LUSAS. Following, analysis are performed on the OpenSees model
-and results are compared with those from LUSAS model.
+This example reproduces a bridge grillage model of a super-T bridge from Caprani et al. (2017). In that study,
+a numerical model was constructed in commercial software i.e. LUSAS. Figure 1 shows the Super-T deck cross-section.
 
 ..  figure:: ../../_images/example_cross_section.PNG
     :align: center
     :scale: 25 %
 
-    Figure 1: Super T deck cross section (after Caprani et al., 2017).
+    Figure 1: Super-T deck cross section (after Caprani et al., 2017).
 
 
 Creating the grillage
@@ -36,13 +36,13 @@ Creating the grillage
     GPa = kilo*MPa
 
     # define material
-    concrete = og.create_material(type="concrete", code="AS5100-2017", grade="50MPa")
+    concrete = og.create_material(type="concrete", code="AS5100-2017", grade="65MPa")
 
-    # define sectons (lusas parameters)
-    longitudinal_section = og.create_section(A=0.866937*m2,J=0.154806*m3, Iz=0.215366*m4, Iy=0.213602*m4,
+    # define sections (parameters from LUSAS model)
+    edge_longitudinal_section= og.create_section(A=0.934*m2,J=0.1857*m3, Iz=0.3478*m4, Iy=0.213602*m4,
                                                Az=0.444795*m2, Ay=0.258704*m2)
 
-    edge_longitudinal_section = og.create_section(A=0.044625*m2, J=0.26253e-3*m3, Iz=0.241812e-3*m4,Iy=0.113887e-3*m4,
+    longitudinal_section = og.create_section(A=1.025*m2, J=0.1878*m3, Iz=0.3694*m4,Iy=0.113887e-3*m4,
                                                     Az=0.0371929*m2, Ay=0.0371902*m2)
 
 
@@ -58,16 +58,16 @@ Creating the grillage
     transverse_slab = og.create_member(section=transverse_section, material=concrete)
     end_transverse_slab = og.create_member(section=end_transverse_section, material=concrete)
 
-    # create the grillage parameters
-    L = 28*m # span
-    w = 10.175*m # width
-    n_l = 7 # number of longitidnal members
+    # parameters of bridge grillage
+    L = 33.5*m # span
+    w = 11.565*m # width
+    n_l = 7 # number of longitudinal members
     n_t = 11 # number of transverse members
-    edge_dist = 1.0875*m # distance between edge beam and first exterior beam
+    edge_dist = 1.05*m # distance between edge beam and first exterior beam
     angle = 0 # skew angle
 
     # create grillage
-    simple_grid = og.create_grillage(bridge_name="Super-T 28m", long_dim=L, width=w, skew=angle,
+    simple_grid = og.create_grillage(bridge_name="Super-T 33_5m", long_dim=L, width=w, skew=angle,
                                    num_long_grid=n_l, num_trans_grid=n_t, edge_beam_dist=edge_dist)
 
     # assign grillage member to element groups of grillage model
@@ -86,11 +86,11 @@ Creating the grillage
 
 Figure 2 shows the plotted model in OpenSees model space.
 
-..  figure:: ../../_images/28m_bridge.png
+..  figure:: ../../_images/33m_bridge.png
     :align: center
     :scale: 75 %
 
-    Figure 2: Grillage model of the exemplar 28 m bridge.
+    Figure 2: Grillage model of the exemplar 33.5 m bridge.
 
 Adding load cases to model
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -324,19 +324,91 @@ Finally, comparing with theoretical:
     bending_z_theoretical = 2*P*(L/2-axl_s/2)
 
 
-28 m super T bridge model using shell hybrid model type
+Super-T bridge model using shell hybrid model type
 ------------------------------------------------------------
-Here we recreate the 28 m super T bridge using the shell hybrid model type.
+Here we recreate the previous 33.5 m super-T bridge using the shell hybrid model type.
 
 .. code-block:: python
 
+    import numpy as np
+    import ospgrillage as og
+
+    # Adopted units: N and m
+    kilo = 1e3
+    milli = 1e-3
+    N = 1
+    m = 1
+    mm = milli*m
+    m2 = m**2
+    m3 = m**3
+    m4 = m**4
+    kN = kilo*N
+    MPa = N/((mm)**2)
+    GPa = kilo*MPa
+
+    # define material
+    concrete = og.create_material(type="concrete", code="AS5100-2017", grade="65MPa")
+
+    # define sections (parameters from LUSAS model)
+    edge_longitudinal_section= og.create_section(A=0.934*m2,J=0.1857*m3, Iz=0.3478*m4, Iy=0.213602*m4,
+                                               Az=0.444795*m2, Ay=0.258704*m2)
+
+    longitudinal_section = og.create_section(A=1.025*m2, J=0.1878*m3, Iz=0.3694*m4,Iy=0.113887e-3*m4,
+                                                    Az=0.0371929*m2, Ay=0.0371902*m2)
+
+
+    transverse_section = og.create_section(A=0.504*m2, J=5.22303e-3*m3, Iy=0.32928*m4, Iz=1.3608e-3*m4,
+                                             Ay=0.42*m2, Az=0.42*m2)
+
+    end_transverse_section = og.create_section(A=0.504/2*m2, J=2.5012e-3*m3, Iy=0.04116*m4, Iz=0.6804e-3*m4,
+                                                 Ay=0.21*m2, Az=0.21*m2)
+
+     # define grillage members
+    longitudinal_beam = og.create_member(section=longitudinal_section, material=concrete)
+    edge_longitudinal_beam = og.create_member(section=edge_longitudinal_section, material=concrete)
+    transverse_slab = og.create_member(section=transverse_section, material=concrete)
+    end_transverse_slab = og.create_member(section=end_transverse_section, material=concrete)
+
+    # parameters of bridge grillage
+    L = 33.5*m # span
+    w = 11.565*m # width
+    n_l = 7 # number of longitudinal members
+    n_t = 11 # number of transverse members
+    edge_dist = 1.05*m # distance between edge beam and first exterior beam
+    angle = 0 # skew angle
+    offset_beam_y = 0.499*m
+    max_mesh_size_z = 1*m
+    max_mesh_size_x = 1*m
+    link_nodes_width = 0.89*m
+
+    # create grillage - shell model variant
+    simple_grid = og.create_grillage(bridge_name="Super-T 33_5m", long_dim=L, width=w, skew=angle,
+                                   num_long_grid=n_l, num_trans_grid=n_t, edge_beam_dist=edge_dist,
+                                   model_type="shell", max_mesh_size_z=max_mesh_size_z,max_mesh_size_x=max_mesh_size_x,
+                                   offset_beam_y_dist=offset_beam_y,link_nodes_width=link_nodes_width)
+
+    # assign grillage member to element groups of grillage model
+    simple_grid.set_member(longitudinal_beam, member="interior_main_beam")
+    simple_grid.set_member(longitudinal_beam, member="exterior_main_beam_1")
+    simple_grid.set_member(longitudinal_beam, member="exterior_main_beam_2")
+    simple_grid.set_member(edge_longitudinal_beam, member="edge_beam")
+    simple_grid.set_member(transverse_slab, member="transverse_slab")
+    simple_grid.set_member(end_transverse_slab, member="start_edge")
+    simple_grid.set_member(end_transverse_slab, member="end_edge")
+
+    # create the model in OpenSees
+    simple_grid.create_osp_model(pyfile=False) # pyfile will not (False) be generated for further analysis (should be create_osp?)
+    og.opsplt.plot_model("nodes") # plotting using Get_rendering
+    # ops_vis does not work for hybrid model
 
 
 Oblique vs Orthogonal Mesh
 ---------------------------
 Here are some more examples showing the variety of meshes capable of being generated with *ospgrillage* module.
+We refer to the bridge model in :ref:
 
-1) 28 m bridge with "Oblique" mesh - positive 20 degree
+
+* 28 m bridge with "Oblique" mesh - positive 20 degree
 
 .. code-block:: python
 
@@ -351,7 +423,7 @@ Here are some more examples showing the variety of meshes capable of being gener
     Figure 3: Oblique mesh
 
 
-2) 28 m bridge with "Ortho" mesh
+* 28 m bridge with "Ortho" mesh
 
 .. code-block:: python
 
