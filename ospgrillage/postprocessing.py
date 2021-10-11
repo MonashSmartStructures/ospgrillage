@@ -1,20 +1,38 @@
 # -*- coding: utf-8 -*-
 """
-This module contains functions and classes related to post processing processes
+This module contains functions and classes related to post processing processes. The post processing module is an
+addition to the currently available post processing module of OpenSeesPy - this module fills in gaps to
+* create envelope from xarray DataSet
+* plot force and deflection diagrams from xarray DataSets
 """
 
 import matplotlib.pyplot as plt
 import opsvis as opsv
 import openseespyvis as opsplt
 
-import ospgrillage
-
 
 def create_envelope(**kwargs):
     """
     User interface function to create envelopes from data array
-    :param kwargs:
-    :return:
+
+    The constructor takes an `xarray` DataSet and kwargs for enveloping options.
+
+    :param ds: Data set from `get_results()`
+    :type ds: Xarray
+    :param kwargs: Keyword arguments see below.
+
+    :keyword:
+
+    * array
+    * value_mode
+    * query_mode
+    * extrema
+    * elements
+    * nodes
+    * array
+    * load_effect
+
+    :return: Envelope Object
     """
     return Envelope(kwargs)
 
@@ -172,12 +190,12 @@ def plot_force(ospgrillage_obj, result_obj=None, component = None,
         plt.fill_between(xx,s[:, component_index],[0,0],color='k', alpha=0.4)
     plt.title(member)
     plt.xlabel("x (m) ")
-    plt.ylabel("Mz (Nm)")
+    plt.ylabel(component)
     plt.show()
 
 
 def plot_defo(ospgrillage_obj, result_obj=None,
-              member: str = None, component:str=None,option: str = None):
+              member: str = None, component:str=None,option: str = "nodes"):
     """
     Function to plot 2D diagrams of displacement components of specific grillage element from result xarray DataSet
 
@@ -228,5 +246,5 @@ def plot_defo(ospgrillage_obj, result_obj=None,
         previous_zz = zz
     plt.title(member)
     plt.xlabel("x (m) ")  # labels
-    plt.ylabel("dy (m)")  # labels
+    plt.ylabel(dis_comp)  # labels
     plt.show()

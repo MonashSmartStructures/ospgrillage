@@ -172,13 +172,6 @@ class OspGrillage:
             self.ortho_mesh = True
         else:
             self.ortho_mesh = False
-        # rules for grillage automation - default values are in place, use keyword during class instantiation
-        self.grillage_rules_dict = dict()
-        self.grillage_rules_dict['min_long_spacing'] = kwargs.get('min_long_spacing', 1)
-        self.grillage_rules_dict['max_long_spacing'] = kwargs.get('max_long_spacing', 1)
-        self.grillage_rules_dict['min_trans_spacing'] = kwargs.get('min_trans_spacing', 1)
-        self.grillage_rules_dict['max_trans_spacing'] = kwargs.get('max_trans_spacing', 1)
-        self.grillage_rules_dict['aspect_ratio'] = kwargs.get('aspect_ratio', 1)
 
         self.y_elevation = 0  # default model plane is orthogonal plane of y = 0
         self.min_grid_ortho = 3  # for orthogonal mesh (skew>skew_threshold) region of orthogonal area default 3
@@ -637,7 +630,7 @@ class OspGrillage:
         ele_command_dict[member] = ele_command_list
         self.element_command_list.append(ele_command_dict)
 
-    # subfunctions for setting member of groups
+    # subfunctions of set_member function
     @staticmethod
     def _get_element_command_list(grillage_member_obj, list_of_ele, material_tag, section_tag):
         """
@@ -679,7 +672,7 @@ class OspGrillage:
 
     # ---------------------------------------------------------------
     # Functions to query nodes or grids correspond to a point or line + distributing
-    # loads to grillage nodes. These are low level functions not accessible from API.
+    # loads to grillage nodes. These are not accessible part of API
 
     # private procedure to find elements within a grid
     def _get_elements(self, node_tag_combo):

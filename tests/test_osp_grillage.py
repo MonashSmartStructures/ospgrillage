@@ -137,6 +137,8 @@ def test_create_beam_link_model(beam_link_bridge):
     assert og.ops.eleNodes(100)
 
 
+# test creating model using shell link
 def test_create_shell_link_model(shell_link_bridge):
     shell_link_model = shell_link_bridge
     og.opsplt.plot_model("nodes")
+    assert og.ops.getNodeTags()
