@@ -175,9 +175,9 @@ the module raises an Error regarding its point/vertices values.
 
     Figure 3: Mapping of local coordinate of Load/Path objects to global coordinate.
 
-====================
+==========================
 Links to module components
-====================
+==========================
 
 
 #. :doc:`Module description`
@@ -191,9 +191,9 @@ Links to module components
    :hidden:
 
 
-====================
+==========================
 Links to useful resources
-====================
+==========================
 Use the following links for more on:
 
 * `Grillage modelling <http://bridgedesign.org.uk/tutorial/bs-grillage.php>`_
@@ -202,8 +202,9 @@ Use the following links for more on:
 
 * `Example bridge with skew edges <https://www.researchgate.net/publication/289736527_Effect_of_skew_angle_on_behavior_of_simply_supported_R_C_T-beam_bridge_decks>`_
 
+
 References
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+---------------------
 
 * Caprani, Colin & Melhem, Mayer & Siamphukdee, Kanjana. (2017). Reliability analysis of a Super-T prestressed concrete
   girder at serviceability limit state to AS 5100:2017. Australian Journal of Structural Engineering. 18. 1-13. 10.1080/13287982.2017.1332843.

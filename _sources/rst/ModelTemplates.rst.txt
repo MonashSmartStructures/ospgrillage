@@ -58,6 +58,22 @@ software - i.e. SPACEGASS.
 
 Joint offsets are linked via a rigid link. Information for joint offsets can be found in `OpenSeesPy`'s `geomtransf <https://openseespydoc.readthedocs.io/en/latest/src/LinearTransf.html>`_
 
+Table 1 outlines the specific variables of :func:`~ospgrillage.osp_grillage.create_grillage` for beam link model.
+
+.. list-table:: Table: 1 Input arguments for shell hybrid model
+   :widths: 50 50
+   :header-rows: 1
+
+   * - Keyword argument
+     - Description
+   * - `beam_width`
+     - width of the beam/longitudinal members - this is needed for *ospgrillage* to define the offset distance in z direction
+   * - `web_thick`
+     - thickness of web - this is needed for *ospgrillage* to define the offset distance in z direction
+   * - `centroid_dist_y`
+     - distance in y direction to offset longitudinal members (exterior,interior main beams)
+
+
 
 .. note::
     As of release 0.1.0, `OpenSeesPy` visualization module ops_vis is unable to visualize the joint offsets.
@@ -99,9 +115,9 @@ users are required to define and assign shell elements. The following example co
                                         model_type="shell", max_mesh_size_z=0.5, offset_beam_y_dist=0.499,
                                         link_nodes_width=0.89)
 
-Table 1 outlines the variable types in :func:`~ospgrillage.osp_grillage.create_grillage` for shell hybrid model.
+Table 2 outlines the variable types in :func:`~ospgrillage.osp_grillage.create_grillage` for shell hybrid model.
 
-.. list-table:: Table: 1 Input arguments for shell hybrid model
+.. list-table:: Table: 2 Input arguments for shell hybrid model
    :widths: 50 50
    :header-rows: 1
 

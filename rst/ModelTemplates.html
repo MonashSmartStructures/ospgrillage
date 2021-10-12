@@ -189,7 +189,7 @@
                                 <span class="n">num_long_grid</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">edge_beam_dist</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mesh_type</span><span class="o">=</span><span class="s2">&quot;Ortho&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Information on beam grillage model can be found <a href="#id5"><span class="problematic" id="id6">`here&lt;https://www.steelconstruction.info/Modelling_and_analysis_of_beam_bridges&gt;`_</span></a>.</p>
+<p>Information on beam grillage model can be found <a href="#id6"><span class="problematic" id="id7">`here&lt;https://www.steelconstruction.info/Modelling_and_analysis_of_beam_bridges&gt;`_</span></a>.</p>
 </div>
 <div class="section" id="beam-grillage-with-rigid-links">
 <h2>Beam grillage with rigid links<a class="headerlink" href="#beam-grillage-with-rigid-links" title="Permalink to this headline">¶</a></h2>
@@ -216,6 +216,30 @@ software - i.e. SPACEGASS.</p>
 <p class="caption"><span class="caption-text">Figure 3: Beam grillage with rigid links model from SPACEGASS software.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
 <p>Joint offsets are linked via a rigid link. Information for joint offsets can be found in <cite>OpenSeesPy</cite>’s <a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/LinearTransf.html">geomtransf</a></p>
+<p>Table 1 outlines the specific variables of <a class="reference internal" href="generated/ospgrillage.osp_grillage.create_grillage.html#ospgrillage.osp_grillage.create_grillage" title="ospgrillage.osp_grillage.create_grillage"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_grillage()</span></code></a> for beam link model.</p>
+<table class="colwidths-given docutils align-default" id="id3">
+<caption><span class="caption-text">Table: 1 Input arguments for shell hybrid model</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Keyword argument</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><cite>beam_width</cite></p></td>
+<td><p>width of the beam/longitudinal members - this is needed for <em>ospgrillage</em> to define the offset distance in z direction</p></td>
+</tr>
+<tr class="row-odd"><td><p><cite>web_thick</cite></p></td>
+<td><p>thickness of web - this is needed for <em>ospgrillage</em> to define the offset distance in z direction</p></td>
+</tr>
+<tr class="row-even"><td><p><cite>centroid_dist_y</cite></p></td>
+<td><p>distance in y direction to offset longitudinal members (exterior,interior main beams)</p></td>
+</tr>
+</tbody>
+</table>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>As of release 0.1.0, <cite>OpenSeesPy</cite> visualization module ops_vis is unable to visualize the joint offsets.</p>
@@ -231,9 +255,9 @@ software - i.e. SPACEGASS.</p>
 </ul>
 <p>This model has advantageous in modelling slabs using shell elements which are well-suited to represent two-dimensional slab behaviour.
 Figure 4 shows the details of the shell beam hybrid model.</p>
-<div class="figure align-center" id="id3">
+<div class="figure align-center" id="id4">
 <a class="reference internal image-reference" href="../_images/shell_link_idealization.PNG"><img alt="../_images/shell_link_idealization.PNG" src="../_images/shell_link_idealization.PNG" /></a>
-<p class="caption"><span class="caption-text">Figure 4: Shell beam hybrid model idealization</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 4: Shell beam hybrid model idealization</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
 </div>
 <p>When <strong>shell</strong> model type is selected, <em>ospgrillage</em> automatically determines the position of shell elements within the grillage plane.
 Users only have to define and assign the section of the shell element via <code class="xref py py-func docutils literal notranslate"><span class="pre">create_section()</span></code> and
@@ -251,9 +275,9 @@ users are required to define and assign shell elements. The following example co
                                     <span class="n">link_nodes_width</span><span class="o">=</span><span class="mf">0.89</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Table 1 outlines the variable types in <a class="reference internal" href="generated/ospgrillage.osp_grillage.create_grillage.html#ospgrillage.osp_grillage.create_grillage" title="ospgrillage.osp_grillage.create_grillage"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_grillage()</span></code></a> for shell hybrid model.</p>
-<table class="colwidths-given docutils align-default" id="id4">
-<caption><span class="caption-text">Table: 1 Input arguments for shell hybrid model</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
+<p>Table 2 outlines the variable types in <a class="reference internal" href="generated/ospgrillage.osp_grillage.create_grillage.html#ospgrillage.osp_grillage.create_grillage" title="ospgrillage.osp_grillage.create_grillage"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_grillage()</span></code></a> for shell hybrid model.</p>
+<table class="colwidths-given docutils align-default" id="id5">
+<caption><span class="caption-text">Table: 2 Input arguments for shell hybrid model</span><a class="headerlink" href="#id5" title="Permalink to this table">¶</a></caption>
 <colgroup>
 <col style="width: 50%" />
 <col style="width: 50%" />

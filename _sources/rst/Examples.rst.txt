@@ -86,7 +86,7 @@ Creating the grillage
 
 Figure 2 shows the plotted model in OpenSees model space.
 
-..  figure:: ../../_images/33m_bridge.png
+..  figure:: ../../_images/33m_bridge.PNG
     :align: center
     :scale: 75 %
 
@@ -114,7 +114,7 @@ First load case is a line load running along mid span width.
 
     # Create load case, add loads, and assign
     line_case = og.create_load_case(name=static_cases_names[0])
-    line_case.add_load_groups(test_line_load)
+    line_case.add_load(test_line_load)
 
     simple_grid.add_load_case(line_case)
 
@@ -134,7 +134,7 @@ Second load case comprise of Compounded point loads
 
     # Create load case, add loads, and assign
     points_case = og.create_load_case(name=static_cases_names[1])
-    points_case.add_load_groups(test_points_load)
+    points_case.add_load(test_points_load)
 
     simple_grid.add_load_case(points_case)
 
@@ -156,7 +156,7 @@ in Local coordinates then setting the local coordinate system of compound load t
 
     # Create load case, add loads, and assign
     points_case = og.create_load_case(name=static_cases_names[2])
-    points_case.add_load_groups(test_points_load)
+    points_case.add_load(test_points_load)
 
     simple_grid.add_load_case(points_case)
 
@@ -175,7 +175,7 @@ Fourth load case entails a patch load
 
     # Create load case, add loads, and assign
     patch_case = og.create_load_case(name=static_cases_names[4])
-    patch_case.add_load_groups(test_patch_load)
+    patch_case.add_load(test_patch_load)
     simple_grid.add_load_case(patch_case)
 
 
@@ -186,7 +186,9 @@ Here's how we create and add a moving load (e.g. a truck) to the 28 m bridge mod
 .. code-block:: python
 
     # 2 axle truck (equal loads, 2x2 spacing centre line running)
-
+    axl_w = 2*m # axle width
+    axl_s = 2*m # axle spacing
+    veh_l = axl_s # vehicle length
     # create truck in local coordinate system
     two_axle_truck = og.create_compound_load(name="Two Axle Truck")
     # note here we show that we can directly interact and create load vertex using LoadPoint namedtuple instead of create_load_vertex()
@@ -194,10 +196,6 @@ Here's how we create and add a moving load (e.g. a truck) to the 28 m bridge mod
     point2 = og.create_load(type="point",name="Point",point1=og.LoadPoint(x=0, y=0, z=axl_w, p=P))
     point3 = og.create_load(type="point",name="Point",point1=og.LoadPoint(x=axl_s, y=0, z=axl_w, p=P))
     point4 = og.create_load(type="point",name="Point",point1=og.LoadPoint(x=axl_s, y=0, z=0, p=P))
-
-    axl_w = 2*m # axle width
-    axl_s = 2*m # axle spacing
-    veh_l = axl_s # vehicle length
 
     two_axle_truck.add_load(load_obj = point1)
     two_axle_truck.add_load(load_obj = point2)
@@ -208,7 +206,7 @@ Here's how we create and add a moving load (e.g. a truck) to the 28 m bridge mod
     # when local coord: the path describes where the moving load *origin* is to start and end
     single_path = og.create_moving_path(start_point=og.Point(0-axl_w,0,w/2-axl_w/2),
                                           end_point=og.Point(L,0,w/2-axl_w/2),
-                                          increments=L+veh_l+1)
+                                          increments=int(L+veh_l+1))
 
 
     # create moving load (and case)
@@ -267,7 +265,7 @@ Extracting only the static loads. We can extract moments in global z for each `i
 
 .. code-block:: python
 
-    extracted_bending = results['forces'].sel(Loadcase=static_cases_names, Element=ele_set, Component="Mz_i")
+    extracted_bending = results.forces.sel(Loadcase=static_cases_names, Element=ele_set, Component="Mz_i")
 
 
 `extracted_bending` variable holds the load case for 'Line Test Case', 'Point Test Case(Global)', 'Points Test Case (Local in Point)',
@@ -279,7 +277,7 @@ lusas plot
 
 .. code-block:: python
 
-    np.sum(np.array(results['forces'].sel(Loadcase=static_cases_names, Element=ele_set, Component="Mz_i")),axis=1)
+    np.sum(np.array(results.forces.sel(Loadcase=static_cases_names, Element=ele_set, Component="Mz_i")),axis=1)
 
 
 
@@ -289,11 +287,10 @@ Process load combinations results
 .. code-block:: python
 
     # load combination case (outputs as dictionary with keys as the load combination name)
-    combo_results = simple_grid.get_results(get_combinations=True)
-    combo_results['Load Combo']
+
     # sum the nodal forces from the members on one side
-    np.sum(np.array(combo_results['Load Combo']['forces'].sel(Element=ele_set, Component="Mz_i")))
-    # sum should be approximate equal to above.
+    np.sum(np.array(combo_results.forces.sel(Element=ele_set, Component="Mz_i")))
+
 
 Extract and process moving load results
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -301,27 +298,43 @@ Here we extract only the moving load case and process its results.
 
 .. code-block:: python
 
-    move_results = simple_grid.get_results(load_case="Moving Two Axle Truck")
     # call the results and
+    move_results = simple_grid.get_results(load_case="Moving Two Axle Truck")
     move_results # Print out all results as xarray (returns nothing if blank!)
 
-One can query results at specific position of the moving load by looking up the index of load case.
+One can query results at specific position of the moving load by looking up the index of load case. The following example
+we query the bending moment about z-axis component, with
+load case corresponding to where the load groups are at/near midspan L = 16.75 m, and the longitudinal elements along/near
+mid-span, i.e. element 84 to 90 in Figure 1:
 
 .. code-block:: python
 
     # selecting specific position
-    integer = int(L/2 - 1 + 2)  # here we choose when the load groups are at/near mid span L = 14m
-    move_results['forces'].isel(Loadcase=integer).sel(Element=ele_set,Component="Mz_i")
-    # Midspan positioning is where origin is located at L/2 + axl_s/2
+    integer = int(L/2 - 1 + 2)  # here we choose when the load groups are at/near mid span L = 14m i.e. 17
+    # get list of longitudinal element tags along/near mid_span i.e. 84 to 90 in Figure 1
+    ele_set = list(range(84, 90 + 1))
+    # query
+    move_results.forces.isel(Loadcase=integer).sel(Element=ele_set,Component="Mz_i")
 
-Finally, comparing with theoretical:
+
+Finally, summing the query of bending moment and comparing with theoretical calculation:
 
 .. code-block:: python
 
-    bending_z = np.sum(np.array(move_results['forces'].isel(Loadcase=integer).sel(Element=ele_set,Component="Mz_i")))
+    bending_z = np.sum(np.array(move_results.forces.isel(Loadcase=integer).sel(Element=ele_set,Component="Mz_i")))
 
     # Hand calc:
-    bending_z_theoretical = 2*P*(L/2-axl_s/2)
+    bending_z_theoretical = 2*P*(L/2-axl_s/2) # 31500
+
+    print("bending_z ={}".format(bending_z))
+    print("bending_z_theoretical ={}".format(bending_z_theoretical))
+
+The following is printed to terminal:
+
+.. code-block:: python
+
+    bending_z = 31499.999999999913
+    bending_z_theoretical = 31500.0
 
 
 Super-T bridge model using shell hybrid model type
