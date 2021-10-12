@@ -240,7 +240,7 @@ Get `xarray` DataSet of results.
 .. code-block:: python
     results = simple_grid.get_results() # gets basic results
 
-For information on :func:`ospgrillage.osp_grillage.OspGrillage.get_results` variable, see :ref:`PostProcessing`.
+For information on :func:`~ospgrillage.osp_grillage.OspGrillage.get_results` variable, see :ref:`PostProcessing`.
 
 Getting load combination results
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -261,10 +261,13 @@ Having the results be in `xarray` DataSet, we can do many things with it such as
 
 The following example shows how to extract bending moments in midspan - the critical location for the defined load cases.
 
-Extracting only the static loads. We can extract moments in global z for each `i` node of grillage member (since `i` node correspond to the nodes in the mid span).
+First for static load cases, we extract moments in global z for each `i` node of grillage member (since `i` node correspond to the nodes in the mid span).
 
 .. code-block:: python
 
+    # get list of longitudinal element tags along/near mid_span i.e. 84 to 90 in Figure 1
+    ele_set = list(range(84, 90 + 1))
+    # query
     extracted_bending = results.forces.sel(Loadcase=static_cases_names, Element=ele_set, Component="Mz_i")
 
 
@@ -273,7 +276,6 @@ Extracting only the static loads. We can extract moments in global z for each `i
 
 Should we sum the nodal forces from members on one side, we expect approximate equal PL/4 (similar) or sum of the following
 lusas plot
-
 
 .. code-block:: python
 
@@ -284,12 +286,10 @@ lusas plot
 Process load combinations results
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Here we sum the nodal forces from the mid span - `i` node
 .. code-block:: python
 
-    # load combination case (outputs as dictionary with keys as the load combination name)
-
-    # sum the nodal forces from the members on one side
-    np.sum(np.array(combo_results.forces.sel(Element=ele_set, Component="Mz_i")))
+    sum_node_force = np.sum(np.array(combo_results.forces.sel(Element=ele_set, Component="Mz_i")))
 
 
 Extract and process moving load results
@@ -300,7 +300,7 @@ Here we extract only the moving load case and process its results.
 
     # call the results and
     move_results = simple_grid.get_results(load_case="Moving Two Axle Truck")
-    move_results # Print out all results as xarray (returns nothing if blank!)
+    print(move_results)
 
 One can query results at specific position of the moving load by looking up the index of load case. The following example
 we query the bending moment about z-axis component, with
@@ -309,19 +309,18 @@ mid-span, i.e. element 84 to 90 in Figure 1:
 
 .. code-block:: python
 
-    # selecting specific position
+    # selecting load case of specific load position
     integer = int(L/2 - 1 + 2)  # here we choose when the load groups are at/near mid span L = 14m i.e. 17
-    # get list of longitudinal element tags along/near mid_span i.e. 84 to 90 in Figure 1
-    ele_set = list(range(84, 90 + 1))
+
     # query
-    move_results.forces.isel(Loadcase=integer).sel(Element=ele_set,Component="Mz_i")
+    mid_span_bending = move_results.forces.isel(Loadcase=integer).sel(Element=ele_set,Component="Mz_i")
 
 
 Finally, summing the query of bending moment and comparing with theoretical calculation:
 
 .. code-block:: python
 
-    bending_z = np.sum(np.array(move_results.forces.isel(Loadcase=integer).sel(Element=ele_set,Component="Mz_i")))
+    bending_z = np.sum(np.array(mid_span_bending))
 
     # Hand calc:
     bending_z_theoretical = 2*P*(L/2-axl_s/2) # 31500
@@ -329,7 +328,7 @@ Finally, summing the query of bending moment and comparing with theoretical calc
     print("bending_z ={}".format(bending_z))
     print("bending_z_theoretical ={}".format(bending_z_theoretical))
 
-The following is printed to terminal:
+The following is printed to terminal (units in N m) :
 
 .. code-block:: python
 
@@ -414,11 +413,16 @@ Here we recreate the previous 33.5 m super-T bridge using the shell hybrid model
     og.opsplt.plot_model("nodes") # plotting using Get_rendering
     # ops_vis does not work for hybrid model
 
+..  figure:: ../../_images/33m_bridge_shell.PNG
+    :align: center
+    :scale: 25 %
+
+    Figure 3: 33.5m exemplar bridge built with shell hybrid model.
+
 
 Oblique vs Orthogonal Mesh
 ---------------------------
 Here are some more examples showing the variety of meshes capable of being generated with *ospgrillage* module.
-We refer to the bridge model in :ref:
 
 
 * 28 m bridge with "Oblique" mesh - positive 20 degree
@@ -431,9 +435,9 @@ We refer to the bridge model in :ref:
 
 ..  figure:: ../../_images/standard_oblique.PNG
     :align: center
-    :scale: 75 %
+    :scale: 25 %
 
-    Figure 3: Oblique mesh
+    Figure 4: Oblique mesh
 
 
 * 28 m bridge with "Ortho" mesh
@@ -446,9 +450,9 @@ We refer to the bridge model in :ref:
 
 ..  figure:: ../../_images/standard_ortho.PNG
     :align: center
-    :scale: 75 %
+    :scale: 25 %
 
-    Figure 4: Orthogonal mesh
+    Figure 5: Orthogonal mesh
 
 
 Skew edges of mesh
@@ -458,7 +462,7 @@ A version the aforementioned 28m grillage model example is given but
 with different parameters for its grillage object i.e. :func:`~ospgrillage.osp_grillage.OspGrillage.create_grillage`.
 This time we have varied span to 10 m, and edge skew angles - left edge is 42 degrees, right edge is 0 degrees (orthogonal).
 
-The following portion of the code is altered which then produces a grillage model with mesh as shown in Figure 4:
+The following portion of the code is altered which then produces a grillage model with mesh as shown in Figure 6:
 
 .. code-block:: python
 
@@ -471,6 +475,6 @@ The following portion of the code is altered which then produces a grillage mode
 
 ..  figure:: ../../_images/42_0_mesh.PNG
     :align: center
-    :scale: 75 %
+    :scale: 25 %
 
-    Figure 5: Orthogonal mesh with left and right edge angle of 42 and 0 respectively.
+    Figure 6: Orthogonal mesh with left and right edge angle of 42 and 0 respectively.

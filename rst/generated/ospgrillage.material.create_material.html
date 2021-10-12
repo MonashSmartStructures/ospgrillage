@@ -210,13 +210,12 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="ospgrillage.material.create_material">
 <span class="sig-prename descclassname"><span class="pre">ospgrillage.material.</span></span><span class="sig-name descname"><span class="pre">create_material</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.material.create_material" title="Permalink to this definition">¶</a></dt>
-<dd><p>User interface function to create material/ <cite>Material</cite> object</p>
-<p>The constructor of <a class="reference internal" href="../APIdoc.html#ospgrillage.material.Material" title="ospgrillage.material.Material"><code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code></a> takes in three types of keyword arguments:</p>
+<dd><p>User interface function to create <a class="reference internal" href="../APIdoc.html#ospgrillage.material.Material" title="ospgrillage.material.Material"><code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code></a> object</p>
+<p>The constructor of <a class="reference internal" href="../APIdoc.html#ospgrillage.material.Material" title="ospgrillage.material.Material"><code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code></a> object takes in three types of keyword arguments:</p>
 <ol class="arabic simple">
 <li><p>Keyword for looking up the <em>ospgrillage</em> material library i.e. mat_lib.json.</p></li>
 <li><p>General material properties - such as E, and G</p></li>
-<li><p>Material arguments of <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code>. E.g. OpenSees’s Steel01 material takes isotropic hardening parameters a1
-to a4.</p></li>
+<li><p>Specific arguments of <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code> material library.</p></li>
 </ol>
 <dl class="field-list simple">
 <dt class="field-odd">Parameter</dt>
@@ -236,7 +235,6 @@ to a4.</p></li>
 <li><p>E (<cite>float</cite>): Elastic modulus</p></li>
 <li><p>G (<cite>float</cite>): Shear modulus</p></li>
 </ul>
-<p>For more information - see <cite>Material</cite>.</p>
 </dd></dl>
 
 </div>

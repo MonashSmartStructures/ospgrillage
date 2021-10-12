@@ -68,6 +68,14 @@ For information regarding the procedures in :class:`~OpsGrillage` class, see
     :members:
     :show-inheritance:
 
+.. autoclass:: ospgrillage.osp_grillage.OspGrillageBeam
+    :show-inheritance:
+    :noindex:
+
+.. autoclass:: ospgrillage.osp_grillage.OspGrillageShell
+    :show-inheritance:
+    :noindex:
+
 Analysis class
 ^^^^^^^^^^^^^^^^
 

@@ -210,33 +210,33 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="ospgrillage.members.create_section">
 <span class="sig-prename descclassname"><span class="pre">ospgrillage.members.</span></span><span class="sig-name descname"><span class="pre">create_section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.members.create_section" title="Permalink to this definition">¶</a></dt>
-<dd><p>User interface for section creation.
-Here are the main input for the constructor to properly parse the inputs to <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> sections.</p>
+<dd><p>User interface to create <a class="reference internal" href="../APIdoc.html#ospgrillage.members.Section" title="ospgrillage.members.Section"><code class="xref py py-class docutils literal notranslate"><span class="pre">Section</span></code></a> object.</p>
+<p>The constructor <a class="reference internal" href="../APIdoc.html#ospgrillage.members.Section" title="ospgrillage.members.Section"><code class="xref py py-class docutils literal notranslate"><span class="pre">Section</span></code></a> takes the following arguments.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>op_ele_type</strong> (<em>str</em>) – OpenSees element type - if none provided default to “elasticBeamColumn”</p></li>
-<li><p><strong>op_section_type</strong> (<em>str</em>) – OpenSees section type - if none is provided default to “Elastic”</p></li>
+<li><p><strong>op_ele_type</strong> (<em>str</em>) – OpenSees element type - default is “elasticBeamColumn”</p></li>
+<li><p><strong>op_section_type</strong> (<em>str</em>) – OpenSees section type - default is “Elastic”</p></li>
 <li><p><strong>unit_width</strong> (<em>bool</em>) – Flag for unit width properties</p></li>
 </ul>
 </dd>
 </dl>
-<p>Here are the common keyword arguments for defining a section.</p>
+<p>The constructor also takes in <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> which is summarized as follows:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Keyword</dt>
 <dd class="field-odd"><p></p></dd>
 </dl>
 <ul class="simple">
-<li><p>A (<code class="docutils literal notranslate"><span class="pre">float</span></code>): Cross sectional area</p></li>
-<li><p>Iz (<code class="docutils literal notranslate"><span class="pre">float</span></code>): Moment of inertia about local z axis</p></li>
-<li><p>Iy (<code class="docutils literal notranslate"><span class="pre">float</span></code>): Moment of inertia about local y axis</p></li>
-<li><p>J (<code class="docutils literal notranslate"><span class="pre">float</span></code>): Torsional inertia - about local x axis</p></li>
-<li><p>Az (<code class="docutils literal notranslate"><span class="pre">float</span></code>): Cross sectional area in the local z direction</p></li>
-<li><p>Ay (<code class="docutils literal notranslate"><span class="pre">float</span></code>): Cross sectional area in the local y direction</p></li>
+<li><p>A (<cite>float</cite>): Cross sectional area</p></li>
+<li><p>Iz (<cite>float</cite>): Moment of inertia about local z axis</p></li>
+<li><p>Iy (<cite>float</cite>): Moment of inertia about local y axis</p></li>
+<li><p>J (<cite>float</cite>): Torsional inertia - about local x axis</p></li>
+<li><p>Az (<cite>float</cite>): Cross sectional area in the local z direction</p></li>
+<li><p>Ay (<cite>float</cite>): Cross sectional area in the local y direction</p></li>
 </ul>
 <dl class="field-list simple">
-<dt class="field-odd">Return Section</dt>
-<dd class="field-odd"><p>Section object</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><a class="reference internal" href="../APIdoc.html#ospgrillage.members.Section" title="ospgrillage.members.Section"><code class="xref py py-class docutils literal notranslate"><span class="pre">Section</span></code></a> object</p>
 </dd>
 </dl>
 </dd></dl>

@@ -210,11 +210,12 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="ospgrillage.osp_grillage.create_grillage">
 <span class="sig-prename descclassname"><span class="pre">ospgrillage.osp_grillage.</span></span><span class="sig-name descname"><span class="pre">create_grillage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.create_grillage" title="Permalink to this definition">¶</a></dt>
-<dd><p>User interface for creating grillage model / OspGrilage object. Takes user input for grillage and redirects
-grillage generation to the respective concrete class</p>
+<dd><p>User interface to create <a class="reference internal" href="../OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a> object.</p>
+<p>The constructor takes the following arguments:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>model_type</strong> (<em>str</em>) – Name string of model type - default is “beam”</p></li>
 <li><p><strong>bridge_name</strong> (<em>str</em>) – Name of bridge model and output .py file</p></li>
 <li><p><strong>long_dim</strong> (<em>int</em><em> or </em><em>float</em>) – Length of the model in the longitudinal direction (default: x axis)</p></li>
 <li><p><strong>width</strong> (<em>int</em><em> or </em><em>float</em>) – Width of the model in the transverse direction (default: z axis)</p></li>
@@ -222,14 +223,15 @@ grillage generation to the respective concrete class</p>
 <li><p><strong>num_long_grid</strong> (<em>int</em>) – Number of grid lines in longitudinal direction</p></li>
 <li><p><strong>num_trans_grid</strong> (<em>int</em>) – Number of  grid lines in the transverse direction</p></li>
 <li><p><strong>edge_beam_dist</strong> (<em>int</em><em> or </em><em>float</em>) – Distance of edge beam node lines to exterior main beam node lines</p></li>
-<li><p><strong>mesh_type</strong> (<em>string</em>) – Type of mesh either “Ortho” for orthogonal mesh or “Oblique” for oblique mesh</p></li>
+<li><p><strong>mesh_type</strong> (<em>string</em>) – Type of mesh either “Ortho” or “Oblique” - default “Ortho”</p></li>
 </ul>
 </dd>
 </dl>
-<p>Parameters for <a class="reference internal" href="../OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a>. See <span class="xref std std-ref">OspGrillage</span> for information of parameters.</p>
+<p>Depending ont eh <code class="docutils literal notranslate"><span class="pre">model_type</span></code> argument, this function returns the relevant concrete class of
+<a class="reference internal" href="../OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><cite>OspGrillage</cite> object</p>
+<dd class="field-odd"><p><a class="reference internal" href="../OpsGrillage.html#ospgrillage.osp_grillage.OspGrillageBeam" title="ospgrillage.osp_grillage.OspGrillageBeam"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillageBeam</span></code></a> or <a class="reference internal" href="../OpsGrillage.html#ospgrillage.osp_grillage.OspGrillageShell" title="ospgrillage.osp_grillage.OspGrillageShell"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillageShell</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>

@@ -400,7 +400,7 @@ in Local coordinates then setting the local coordinate system of compound load t
 <div class="section" id="getting-load-case-results">
 <h3>Getting load case results<a class="headerlink" href="#getting-load-case-results" title="Permalink to this headline">¶</a></h3>
 <p>Get <cite>xarray</cite> DataSet of results.</p>
-<p>For information on <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-func docutils literal notranslate"><span class="pre">ospgrillage.osp_grillage.OspGrillage.get_results()</span></code></a> variable, see <span class="xref std std-ref">PostProcessing</span>.</p>
+<p>For information on <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_results()</span></code></a> variable, see <span class="xref std std-ref">PostProcessing</span>.</p>
 </div>
 <div class="section" id="getting-load-combination-results">
 <h3>Getting load combination results<a class="headerlink" href="#getting-load-combination-results" title="Permalink to this headline">¶</a></h3>
@@ -417,8 +417,11 @@ in Local coordinates then setting the local coordinate system of compound load t
 <h3>Data processing<a class="headerlink" href="#data-processing" title="Permalink to this headline">¶</a></h3>
 <p>Having the results be in <cite>xarray</cite> DataSet, we can do many things with it such as slicing and query its data.</p>
 <p>The following example shows how to extract bending moments in midspan - the critical location for the defined load cases.</p>
-<p>Extracting only the static loads. We can extract moments in global z for each <cite>i</cite> node of grillage member (since <cite>i</cite> node correspond to the nodes in the mid span).</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">extracted_bending</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">forces</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Loadcase</span><span class="o">=</span><span class="n">static_cases_names</span><span class="p">,</span> <span class="n">Element</span><span class="o">=</span><span class="n">ele_set</span><span class="p">,</span> <span class="n">Component</span><span class="o">=</span><span class="s2">&quot;Mz_i&quot;</span><span class="p">)</span>
+<p>First for static load cases, we extract moments in global z for each <cite>i</cite> node of grillage member (since <cite>i</cite> node correspond to the nodes in the mid span).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get list of longitudinal element tags along/near mid_span i.e. 84 to 90 in Figure 1</span>
+<span class="n">ele_set</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">84</span><span class="p">,</span> <span class="mi">90</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+<span class="c1"># query</span>
+<span class="n">extracted_bending</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">forces</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Loadcase</span><span class="o">=</span><span class="n">static_cases_names</span><span class="p">,</span> <span class="n">Element</span><span class="o">=</span><span class="n">ele_set</span><span class="p">,</span> <span class="n">Component</span><span class="o">=</span><span class="s2">&quot;Mz_i&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><cite>extracted_bending</cite> variable holds the load case for ‘Line Test Case’, ‘Point Test Case(Global)’, ‘Points Test Case (Local in Point)’,
@@ -431,35 +434,33 @@ lusas plot</p>
 </div>
 <div class="section" id="process-load-combinations-results">
 <h3>Process load combinations results<a class="headerlink" href="#process-load-combinations-results" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># load combination case (outputs as dictionary with keys as the load combination name)</span>
-
-<span class="c1"># sum the nodal forces from the members on one side</span>
-<span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">combo_results</span><span class="o">.</span><span class="n">forces</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Element</span><span class="o">=</span><span class="n">ele_set</span><span class="p">,</span> <span class="n">Component</span><span class="o">=</span><span class="s2">&quot;Mz_i&quot;</span><span class="p">)))</span>
-</pre></div>
-</div>
+<p>Here we sum the nodal forces from the mid span - <cite>i</cite> node
+.. code-block:: python</p>
+<blockquote>
+<div><p>sum_node_force = np.sum(np.array(combo_results.forces.sel(Element=ele_set, Component=”Mz_i”)))</p>
+</div></blockquote>
 </div>
 <div class="section" id="extract-and-process-moving-load-results">
 <h3>Extract and process moving load results<a class="headerlink" href="#extract-and-process-moving-load-results" title="Permalink to this headline">¶</a></h3>
 <p>Here we extract only the moving load case and process its results.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># call the results and</span>
 <span class="n">move_results</span> <span class="o">=</span> <span class="n">simple_grid</span><span class="o">.</span><span class="n">get_results</span><span class="p">(</span><span class="n">load_case</span><span class="o">=</span><span class="s2">&quot;Moving Two Axle Truck&quot;</span><span class="p">)</span>
-<span class="n">move_results</span> <span class="c1"># Print out all results as xarray (returns nothing if blank!)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">move_results</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>One can query results at specific position of the moving load by looking up the index of load case. The following example
 we query the bending moment about z-axis component, with
 load case corresponding to where the load groups are at/near midspan L = 16.75 m, and the longitudinal elements along/near
 mid-span, i.e. element 84 to 90 in Figure 1:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># selecting specific position</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># selecting load case of specific load position</span>
 <span class="n">integer</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">L</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># here we choose when the load groups are at/near mid span L = 14m i.e. 17</span>
-<span class="c1"># get list of longitudinal element tags along/near mid_span i.e. 84 to 90 in Figure 1</span>
-<span class="n">ele_set</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">84</span><span class="p">,</span> <span class="mi">90</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+
 <span class="c1"># query</span>
-<span class="n">move_results</span><span class="o">.</span><span class="n">forces</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">Loadcase</span><span class="o">=</span><span class="n">integer</span><span class="p">)</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Element</span><span class="o">=</span><span class="n">ele_set</span><span class="p">,</span><span class="n">Component</span><span class="o">=</span><span class="s2">&quot;Mz_i&quot;</span><span class="p">)</span>
+<span class="n">mid_span_bending</span> <span class="o">=</span> <span class="n">move_results</span><span class="o">.</span><span class="n">forces</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">Loadcase</span><span class="o">=</span><span class="n">integer</span><span class="p">)</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Element</span><span class="o">=</span><span class="n">ele_set</span><span class="p">,</span><span class="n">Component</span><span class="o">=</span><span class="s2">&quot;Mz_i&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Finally, summing the query of bending moment and comparing with theoretical calculation:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">bending_z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">move_results</span><span class="o">.</span><span class="n">forces</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">Loadcase</span><span class="o">=</span><span class="n">integer</span><span class="p">)</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Element</span><span class="o">=</span><span class="n">ele_set</span><span class="p">,</span><span class="n">Component</span><span class="o">=</span><span class="s2">&quot;Mz_i&quot;</span><span class="p">)))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">bending_z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mid_span_bending</span><span class="p">))</span>
 
 <span class="c1"># Hand calc:</span>
 <span class="n">bending_z_theoretical</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">P</span><span class="o">*</span><span class="p">(</span><span class="n">L</span><span class="o">/</span><span class="mi">2</span><span class="o">-</span><span class="n">axl_s</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># 31500</span>
@@ -468,7 +469,7 @@ mid-span, i.e. element 84 to 90 in Figure 1:</p>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;bending_z_theoretical =</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bending_z_theoretical</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>The following is printed to terminal:</p>
+<p>The following is printed to terminal (units in N m) :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">bending_z</span> <span class="o">=</span> <span class="mf">31499.999999999913</span>
 <span class="n">bending_z_theoretical</span> <span class="o">=</span> <span class="mf">31500.0</span>
 </pre></div>
@@ -550,11 +551,14 @@ mid-span, i.e. element 84 to 90 in Figure 1:</p>
 <span class="c1"># ops_vis does not work for hybrid model</span>
 </pre></div>
 </div>
+<div class="figure align-center" id="id3">
+<a class="reference internal image-reference" href="../_images/33m_bridge_shell.PNG"><img alt="../_images/33m_bridge_shell.PNG" src="../_images/33m_bridge_shell.PNG" /></a>
+<p class="caption"><span class="caption-text">Figure 3: 33.5m exemplar bridge built with shell hybrid model.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+</div>
 </div>
 <div class="section" id="oblique-vs-orthogonal-mesh">
 <h2>Oblique vs Orthogonal Mesh<a class="headerlink" href="#oblique-vs-orthogonal-mesh" title="Permalink to this headline">¶</a></h2>
-<p>Here are some more examples showing the variety of meshes capable of being generated with <em>ospgrillage</em> module.
-We refer to the bridge model in :ref:</p>
+<p>Here are some more examples showing the variety of meshes capable of being generated with <em>ospgrillage</em> module.</p>
 <ul class="simple">
 <li><p>28 m bridge with “Oblique” mesh - positive 20 degree</p></li>
 </ul>
@@ -562,9 +566,9 @@ We refer to the bridge model in :ref:</p>
                          <span class="n">num_long_grid</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">edge_beam_dist</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mesh_type</span><span class="o">=</span><span class="s2">&quot;Oblique&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="figure align-center" id="id3">
+<div class="figure align-center" id="id4">
 <a class="reference internal image-reference" href="../_images/standard_oblique.PNG"><img alt="../_images/standard_oblique.PNG" src="../_images/standard_oblique.PNG" /></a>
-<p class="caption"><span class="caption-text">Figure 3: Oblique mesh</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 4: Oblique mesh</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
 </div>
 <ul class="simple">
 <li><p>28 m bridge with “Ortho” mesh</p></li>
@@ -573,9 +577,9 @@ We refer to the bridge model in :ref:</p>
                          <span class="n">num_long_grid</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">edge_beam_dist</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mesh_type</span><span class="o">=</span><span class="s2">&quot;Ortho&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="figure align-center" id="id4">
+<div class="figure align-center" id="id5">
 <a class="reference internal image-reference" href="../_images/standard_ortho.PNG"><img alt="../_images/standard_ortho.PNG" src="../_images/standard_ortho.PNG" /></a>
-<p class="caption"><span class="caption-text">Figure 4: Orthogonal mesh</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 5: Orthogonal mesh</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 <div class="section" id="skew-edges-of-mesh">
@@ -584,7 +588,7 @@ We refer to the bridge model in :ref:</p>
 A version the aforementioned 28m grillage model example is given but
 with different parameters for its grillage object i.e. <code class="xref py py-func docutils literal notranslate"><span class="pre">create_grillage()</span></code>.
 This time we have varied span to 10 m, and edge skew angles - left edge is 42 degrees, right edge is 0 degrees (orthogonal).</p>
-<p>The following portion of the code is altered which then produces a grillage model with mesh as shown in Figure 4:</p>
+<p>The following portion of the code is altered which then produces a grillage model with mesh as shown in Figure 6:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_grillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;SuperT_10m&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">skew</span><span class="o">=</span><span class="p">[</span><span class="mi">42</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
                          <span class="n">num_long_grid</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">edge_beam_dist</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mesh_type</span><span class="o">=</span><span class="s2">&quot;Ortho&quot;</span><span class="p">)</span>
 
@@ -592,9 +596,9 @@ This time we have varied span to 10 m, and edge skew angles - left edge is 42 de
 <span class="n">og</span><span class="o">.</span><span class="n">opsplt</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="s2">&quot;nodes&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="figure align-center" id="id5">
+<div class="figure align-center" id="id6">
 <a class="reference internal image-reference" href="../_images/42_0_mesh.PNG"><img alt="../_images/42_0_mesh.PNG" src="../_images/42_0_mesh.PNG" /></a>
-<p class="caption"><span class="caption-text">Figure 5: Orthogonal mesh with left and right edge angle of 42 and 0 respectively.</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 6: Orthogonal mesh with left and right edge angle of 42 and 0 respectively.</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 </div>
