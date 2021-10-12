@@ -23,16 +23,16 @@ def create_envelope(**kwargs):
 
     :keyword:
 
-    * array
-    * value_mode
-    * query_mode
-    * extrema
-    * elements
+    * array: either 'displacement' or 'forces'
+    * value_mode: - True or False
+    * query_mode: - True or False
+    * extrema: either "min" or "max"
+    * elements:
     * nodes
     * array
     * load_effect
 
-    :return: Envelope Object
+    :return: :class:`Envelope` Object
     """
     return Envelope(kwargs)
 
@@ -54,11 +54,11 @@ class Envelope:
 
         :keyword:
 
-        * array
-        * value_mode
-        * query_mode
-        * extrema
-        * elements
+        * array: either 'displacement' or 'forces'
+        * value_mode: - True or False
+        * query_mode: - True or False
+        * extrema: either "min" or "max"
+        * elements:
         * nodes
         * array
         * load_effect

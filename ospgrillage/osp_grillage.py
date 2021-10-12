@@ -21,9 +21,12 @@ import xarray as xr
 
 def create_grillage(**kwargs):
     """
-    User interface for creating grillage model / OspGrilage object. Takes user input for grillage and redirects
-    grillage generation to the respective concrete class
+    User interface to create :class:`~ospgrillage.osp_grillage.OspGrillage` object.
 
+    The constructor takes the following arguments:
+
+    :param model_type: Name string of model type - default is "beam"
+    :type model_type: str
     :param bridge_name: Name of bridge model and output .py file
     :type bridge_name: str
     :param long_dim: Length of the model in the longitudinal direction (default: x axis)
@@ -38,12 +41,13 @@ def create_grillage(**kwargs):
     :type num_trans_grid: int
     :param edge_beam_dist: Distance of edge beam node lines to exterior main beam node lines
     :type edge_beam_dist: int or float
-    :param mesh_type: Type of mesh either "Ortho" for orthogonal mesh or "Oblique" for oblique mesh
+    :param mesh_type: Type of mesh either "Ortho" or "Oblique" - default "Ortho"
     :type mesh_type: string
 
-    Parameters for :class:`OspGrillage`. See :ref:`OspGrillage` for information of parameters.
+    Depending ont eh ``model_type`` argument, this function returns the relevant concrete class of
+    :class:`~ospgrillage.osp_grillage.OspGrillage`.
 
-    :returns: `OspGrillage` object
+    :returns: :class:`~ospgrillage.osp_grillage.OspGrillageBeam` or :class:`~ospgrillage.osp_grillage.OspGrillageShell`
     """
     model_type = kwargs.get("model_type", None)
     if model_type == "shell":  # if shell, create shell grillage type
@@ -78,7 +82,7 @@ class OspGrillage:
                  num_trans_grid: int, edge_beam_dist: Union[list, float, int],
                  mesh_type="Ortho", model="3D", **kwargs):
         """
-        Instantiate the OspGrillage class
+        Init the OspGrillage class
 
         :param bridge_name: Name of bridge model and output .py file
         :type bridge_name: str
@@ -97,9 +101,13 @@ class OspGrillage:
         :param mesh_type: Type of mesh either "Ortho" for orthogonal mesh or "Oblique" for oblique mesh
         :type mesh_type: string
 
-        :raises ValueError: (1) If skew angle is greater than 90. (2) number of transverse grid line is less than 2
+        :raises ValueError:
+
+        * If skew angle is greater than 90
+        * If number of transverse grid line is less than 2
+
         """
-        # save geometry input
+        # store geometry input
         self.mesh_type = mesh_type  # mesh type either orthogonal or oblique
         self.model_name = bridge_name  # name string
         self.long_dim = long_dim  # span , also c/c between support bearings

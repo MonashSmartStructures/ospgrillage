@@ -9,36 +9,39 @@ the section and material properties.
 
 def create_section(**kwargs):
     """
-    User interface for section creation.
-    Here are the main input for the constructor to properly parse the inputs to ```OpenSeesPy``` sections.
+    User interface to create :class:`Section` object.
 
-    :param op_ele_type: OpenSees element type - if none provided default to "elasticBeamColumn"
+    The constructor :class:`Section` takes the following arguments.
+
+    :param op_ele_type: OpenSees element type - default is "elasticBeamColumn"
     :type op_ele_type: str
-    :param op_section_type: OpenSees section type - if none is provided default to "Elastic"
+    :param op_section_type: OpenSees section type - default is "Elastic"
     :type op_section_type: str
     :param unit_width: Flag for unit width properties
     :type unit_width: bool
 
-    Here are the common keyword arguments for defining a section.
+    The constructor also takes in ``kwargs`` which is summarized as follows:
 
     :keyword:
 
-    * A (``float``): Cross sectional area
-    * Iz (``float``): Moment of inertia about local z axis
-    * Iy (``float``): Moment of inertia about local y axis
-    * J (``float``): Torsional inertia - about local x axis
-    * Az (``float``): Cross sectional area in the local z direction
-    * Ay (``float``): Cross sectional area in the local y direction
+    * A (`float`): Cross sectional area
+    * Iz (`float`): Moment of inertia about local z axis
+    * Iy (`float`): Moment of inertia about local y axis
+    * J (`float`): Torsional inertia - about local x axis
+    * Az (`float`): Cross sectional area in the local z direction
+    * Ay (`float`): Cross sectional area in the local y direction
 
 
-    :return Section: Section object
+    :return: :class:`Section` object
     """
     return Section(**kwargs)
 
 
 def create_member(**kwargs):
     """
-    User interface for member creation. A grillage member consist of a :class:`~ospgrillage.material.Material` and a
+    User interface to create :class:`GrillageMember` object.
+
+    A grillage member requires a :class:`~ospgrillage.material.Material` and a
     :class:`~ospgrillage.members.Section`
 
     :param section: Section class object
@@ -48,7 +51,7 @@ def create_member(**kwargs):
     :param member_name: Name of the grillage member (Optional)
     :type member_name: str
 
-    :returns GrillageMember: :class:`~ospgrillage.members.GrillageMember`
+    :returns: :class:`~ospgrillage.members.GrillageMember` object
     """
     return GrillageMember(**kwargs)
 

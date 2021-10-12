@@ -10,14 +10,13 @@ import json
 
 def create_material(**kwargs):
     """
-    User interface function to create material/ `Material` object
+    User interface function to create :class:`Material` object
 
-    The constructor of :class:`Material` takes in three types of keyword arguments:
+    The constructor of :class:`Material` object takes in three types of keyword arguments:
 
     #. Keyword for looking up the *ospgrillage* material library i.e. mat_lib.json.
     #. General material properties - such as E, and G
-    #. Material arguments of ```OpenSeesPy```. E.g. OpenSees's Steel01 material takes isotropic hardening parameters a1
-       to a4.
+    #. Specific arguments of ``OpenSeesPy`` material library.
 
 
     :parameter:
@@ -32,8 +31,6 @@ def create_material(**kwargs):
 
     * E (`float`): Elastic modulus
     * G (`float`): Shear modulus
-
-    For more information - see `Material`.
 
     """
     return Material(**kwargs)
