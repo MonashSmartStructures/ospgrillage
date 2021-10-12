@@ -1137,7 +1137,7 @@ class BeamLinkMesh(Mesh):
         :param ext_to_int_a:
         :param ext_to_int_b:
         """
-        # instantiate variables specific for current mesh subclass
+        # instantiate variables specific for beam link model
         self.beam_width = kwargs.get("beam_width", None)
         self.web_thick = kwargs.get("web_thick", None)
         self.centroid_dist_y = kwargs.get("centroid_dist_y", 0)

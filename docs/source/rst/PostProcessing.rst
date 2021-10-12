@@ -158,7 +158,7 @@ and its :class:`~ospgrillage.osp_grillage.OspGrillage` object is defined as ``br
 
 ..  figure:: ../../_images/28m_bridge.png
     :align: center
-    :scale: 75 %
+    :scale: 25 %
 
     Figure 1: 28 m super-T bridge model.
 
@@ -174,7 +174,7 @@ Figure 2:
 
 ..  figure:: ../../_images/example_deflected.PNG
     :align: center
-    :scale: 75 %
+    :scale: 25 %
 
     Figure 2: Deflected shape of of exterior main beam 2.
 
@@ -189,6 +189,6 @@ Following example plots the bending moment "Mz" of "exterior_main_beam_2" in ``b
 
 ..  figure:: ../../_images/example_bmd.PNG
     :align: center
-    :scale: 75 %
+    :scale: 25 %
 
     Figure 3: Bending moment about z axis of exterior main beam 2 .

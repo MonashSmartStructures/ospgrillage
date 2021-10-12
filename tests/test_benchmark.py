@@ -51,8 +51,10 @@ def create_grillage():
     grid_prop = bridge["grid"]
 
     grid_name = grid_prop["name"]
+
     L = grid_prop["span"] * m  # span
     w = grid_prop["width"] * m  # width
+
     n_l = grid_prop["n_longit"]  # number of longitudinal members
     n_t = grid_prop["n_trans"]  # number of transverse members
     edge_dist = grid_prop["edge_dist"] * m  # distance between edge beam and first exterior beam
@@ -136,7 +138,7 @@ def create_grillage():
     simple_grid.set_member(end_tranverse_slab, member="end_edge")
 
     simple_grid.create_osp_model(pyfile=False)
-    # ospg.opsplt.plot_model("element")
+    ospg.opsplt.plot_model("element")
     return simple_grid
 
 

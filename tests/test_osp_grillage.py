@@ -35,8 +35,8 @@ def bridge_model_42_negative(ref_bridge_properties):
     I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
 
     # construct grillage model
-    example_bridge = og.OspGrillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=-42,
-                                    num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
+    example_bridge = og.create_grillage(bridge_name="SuperT_10m", long_dim=33.5, width=11.565, skew=0,
+                                    num_long_grid=7, num_trans_grid=11, edge_beam_dist=1.05, mesh_type="Ortho")
 
     # set grillage member to element groups of grillage model
     example_bridge.set_member(I_beam, member="interior_main_beam")

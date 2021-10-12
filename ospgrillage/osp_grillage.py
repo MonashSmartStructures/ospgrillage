@@ -1606,8 +1606,8 @@ class OspGrillage:
         :keyword:
         * options (`str): string for element data option. Either "elements" or "nodes" (default)
         * z_group_num (`int`): group number [0 to N] for N is the number of groups within a specific grillage element group.
-                                this is needed for interior beams, where users which to query specific group (e.g. 2nd group)
-                                within this "interior_main_beam" element group.
+                               this is needed for interior beams, where users which to query specific group (e.g. 2nd group)
+                               within this "interior_main_beam" element group.
         * x_group_num (`int`): ditto for z_group_num but for x_group
         * edge_group_num(`int`): ditto for z_group_num but for edge groups
 
