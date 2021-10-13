@@ -238,6 +238,7 @@ Getting load case results
 Get `xarray` DataSet of results.
 
 .. code-block:: python
+
     results = simple_grid.get_results() # gets basic results
 
 For information on :func:`~ospgrillage.osp_grillage.OspGrillage.get_results` variable, see :ref:`PostProcessing`.
