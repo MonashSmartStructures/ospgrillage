@@ -68,16 +68,22 @@ For information regarding the procedures in :class:`~OpsGrillage` class, see
     :members:
     :show-inheritance:
 
+OspGrillageBeam class
+^^^^^^^^^^^^^^^^^^^^^^^^
+
 .. autoclass:: ospgrillage.osp_grillage.OspGrillageBeam
     :show-inheritance:
     :noindex:
+
+OspGrillageShell class
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: ospgrillage.osp_grillage.OspGrillageShell
     :show-inheritance:
     :noindex:
 
 Analysis class
-^^^^^^^^^^^^^^^^
+---------------------------
 
 .. autoclass:: ospgrillage.osp_grillage.Analysis
     :members:
@@ -85,7 +91,7 @@ Analysis class
 
 
 Result class
-^^^^^^^^^^^^^^^^
+---------------------------
 .. autoclass:: ospgrillage.osp_grillage.Results
     :members:
     :show-inheritance:
@@ -136,21 +142,21 @@ PointLoad
 ^^^^^^^^^^^^^^^^
 
 .. autoclass:: ospgrillage.load.PointLoad
-
+    :show-inheritance:
 
 
 LineLoading
 ^^^^^^^^^^^^^^^^
 
 .. autoclass:: ospgrillage.load.LineLoading
-
+    :show-inheritance:
 
 
 PatchLoading
 ^^^^^^^^^^^^^^^^
 
 .. autoclass:: ospgrillage.load.PatchLoading
-
+    :show-inheritance:
 
 
 CompoundLoad

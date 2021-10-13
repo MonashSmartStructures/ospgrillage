@@ -101,10 +101,8 @@ class OspGrillage:
         :param mesh_type: Type of mesh either "Ortho" for orthogonal mesh or "Oblique" for oblique mesh
         :type mesh_type: string
 
-        :raises ValueError:
+        :raises ValueError: If skew angle is greater than 90. If number of transverse grid line is less than 2.
 
-        * If skew angle is greater than 90
-        * If number of transverse grid line is less than 2
 
         """
         # store geometry input

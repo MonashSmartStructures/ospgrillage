@@ -22,14 +22,14 @@ H = 7 * m
 
 # reference super T bridge 28m for validation purpose
 # Members
-concrete = og.UniAxialElasticMaterial(
+concrete = og.create_material(
     mat_type="Concrete01", fpc=-6, epsc0=-0.004, fpcu=-6, epsU=-0.014
 )
 # define sections
-super_t_beam_section = og.Section(
-    A=1.0447, E=E, G=G, J=0.230698, Iy=0.231329, Iz=0.533953, Ay=0.397032, Az=0.434351
+super_t_beam_section = og.create_section(
+    A=1.0447, J=0.230698, Iy=0.231329, Iz=0.533953, Ay=0.397032, Az=0.434351
 )
-transverse_slab_section = og.Section(
+transverse_slab_section = og.create_section(
     A=0.5372,
     E=E,
     G=G,
@@ -40,7 +40,7 @@ transverse_slab_section = og.Section(
     Az=0.447 / 2,
     unit_width=True,
 )
-end_tranverse_slab_section = og.Section(
+end_tranverse_slab_section = og.create_section(
     A=0.5372 / 2,
     E=3.47e10,
     G=2.00e10,
