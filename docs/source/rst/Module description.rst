@@ -174,7 +174,7 @@ Figure 3 illustrates these standard grillage members and their position on an ex
 
     Figure 3: Standard elements supported by *ospgrillage*
 
-Supports are automatically set at nodes (1 to 7)  along grid A and grid E as pinned and roller respectively.
+Supports are automatically set at nodes  along grid A (2 to 6) and grid E (9 to 13)  as pinned and roller respectively.
 
 
 The :class:`~ospgrillage.osp_grillage.OspGrillage` class takes the following keyword arguments:
@@ -286,10 +286,10 @@ Only once the :class:`~ospgrillage.osp_grillage.OspGrillage` is created and memb
 (i) create the model in OpenSees software space for further grillage analysis, or;
 (ii) export an executable python file that can be edited and used for a more complex analysis.
 
-These are achieved by calling the :func:`~ospgrillage.osp_grillage.OspGrillage.create_ops` function.
+These are achieved by calling the :func:`~ospgrillage.osp_grillage.OspGrillage.create_osp_model` function.
 
-The :func:`~ospgrillage.osp_grillage.OspGrillage.create_ops` function takes a boolean for `pyfile=` (default is `False`).
-Setting this parameter to `False` creates the grillage model in `OpenSees` model space.
+The :func:`~ospgrillage.osp_grillage.OspGrillage.create_osp_model` function takes a boolean for `pyfile=` (default is `False`).
+Setting this parameter to ``False`` creates the grillage model in `OpenSees` model space.
 
 .. code-block:: python
 
@@ -311,8 +311,8 @@ the following code line and a plot like in `Figure 2`_ will be returned:
 
 .. code-block:: python
 
-    ospg.opsplt.plot_model("nodes") # using Get Rendering module
-    ospg.opsv.plot_model(az_el=(-90, 0)) # using osp_vis
+    og.opsplt.plot_model("nodes") # using Get Rendering module
+    og.opsv.plot_model(az_el=(-90, 0)) # using osp_vis
 
 Whilst all nodes will be visualized, only the assigned members are visualized. This is a good way to check if desired members are assigned
 and hence, shown on the plot. Failure to not have all members assigned will affect subsequent analysis.
