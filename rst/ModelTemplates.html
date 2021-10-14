@@ -184,7 +184,10 @@
 <li><p>longitudinal members representing composite section along longitudinal direction (e.g. main beams)</p></li>
 <li><p>transverse members representing slabs or secondary beam sections.</p></li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <p>This is the default model type when we <a class="reference internal" href="generated/ospgrillage.osp_grillage.create_grillage.html#ospgrillage.osp_grillage.create_grillage" title="ospgrillage.osp_grillage.create_grillage"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_grillage()</span></code></a></p>
+</div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span> <span class="o">=</span> <span class="n">ospg</span><span class="o">.</span><span class="n">create_grillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;SuperT_10m&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">skew</span><span class="o">=-</span><span class="mi">42</span><span class="p">,</span>
                                 <span class="n">num_long_grid</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">edge_beam_dist</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mesh_type</span><span class="o">=</span><span class="s2">&quot;Ortho&quot;</span><span class="p">)</span>
 </pre></div>
@@ -266,6 +269,8 @@ Finally, to create this model, have <a class="reference internal" href="generate
 users are required to define and assign shell elements. The following example code details the aforementioned steps:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># create section of shell element</span>
 <span class="n">slab_shell_section</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_section</span><span class="p">(</span><span class="n">h</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span> <span class="c1"># h = thickness</span>
+<span class="c1"># shell elements for slab</span>
+<span class="n">slab_shell</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_member</span><span class="p">(</span><span class="n">section</span><span class="o">=</span><span class="n">slab_shell_section</span><span class="p">,</span> <span class="n">material</span><span class="o">=</span><span class="n">concrete</span><span class="p">)</span>
 <span class="c1"># set shell members to shell elements</span>
 <span class="n">example_bridge</span><span class="o">.</span><span class="n">set_shell_members</span><span class="p">(</span><span class="n">slab_shell</span><span class="p">)</span>
 <span class="c1"># create grillage with shell model type</span>

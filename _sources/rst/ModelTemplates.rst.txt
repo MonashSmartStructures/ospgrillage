@@ -14,7 +14,9 @@ This is the most common form of grillage model which comprise of beam elements l
 * longitudinal members representing composite section along longitudinal direction (e.g. main beams)
 * transverse members representing slabs or secondary beam sections.
 
-This is the default model type when we :func:`~ospgrillage.osp_grillage.create_grillage`
+.. note::
+
+    This is the default model type when we :func:`~ospgrillage.osp_grillage.create_grillage`
 
 .. code-block:: python
 
@@ -107,6 +109,8 @@ users are required to define and assign shell elements. The following example co
 
     # create section of shell element
     slab_shell_section = og.create_section(h=0.2) # h = thickness
+    # shell elements for slab
+    slab_shell = og.create_member(section=slab_shell_section, material=concrete)
     # set shell members to shell elements
     example_bridge.set_shell_members(slab_shell)
     # create grillage with shell model type

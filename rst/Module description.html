@@ -321,7 +321,7 @@ beam-and-slab bridge deck. The model comprises of standard grillage members whic
 <a class="reference internal image-reference" href="../_images/grillage_elements.png"><img alt="../_images/grillage_elements.png" src="../_images/grillage_elements.png" /></a>
 <p class="caption"><span class="caption-text">Figure 3: Standard elements supported by <em>ospgrillage</em></span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </div>
-<p>Supports are automatically set at nodes (1 to 7)  along grid A and grid E as pinned and roller respectively.</p>
+<p>Supports are automatically set at nodes  along grid A (2 to 6) and grid E (9 to 13)  as pinned and roller respectively.</p>
 <p>The <a class="reference internal" href="OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a> class takes the following keyword arguments:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">bridge_name</span></code>: A <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> of the grillage model name.</p></li>
@@ -422,9 +422,9 @@ input.</p>
 <li><p>create the model in OpenSees software space for further grillage analysis, or;</p></li>
 <li><p>export an executable python file that can be edited and used for a more complex analysis.</p></li>
 </ol>
-<p>These are achieved by calling the <code class="xref py py-func docutils literal notranslate"><span class="pre">create_ops()</span></code> function.</p>
-<p>The <code class="xref py py-func docutils literal notranslate"><span class="pre">create_ops()</span></code> function takes a boolean for <cite>pyfile=</cite> (default is <cite>False</cite>).
-Setting this parameter to <cite>False</cite> creates the grillage model in <cite>OpenSees</cite> model space.</p>
+<p>These are achieved by calling the <a class="reference internal" href="OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage.create_osp_model" title="ospgrillage.osp_grillage.OspGrillage.create_osp_model"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_osp_model()</span></code></a> function.</p>
+<p>The <a class="reference internal" href="OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage.create_osp_model" title="ospgrillage.osp_grillage.OspGrillage.create_osp_model"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_osp_model()</span></code></a> function takes a boolean for <cite>pyfile=</cite> (default is <cite>False</cite>).
+Setting this parameter to <code class="docutils literal notranslate"><span class="pre">False</span></code> creates the grillage model in <cite>OpenSees</cite> model space.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span><span class="o">.</span><span class="n">create_osp_model</span><span class="p">(</span><span class="n">pyfile</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -439,8 +439,8 @@ Note that in doing so, the model instance in <cite>OpenSees</cite> space is not 
 <p>To check that we created the model in OpenSees space, we can plot the model using <cite>OpenSeesPy</cite>’s visualization module <cite>ops_vis</cite>.
 The <em>ospgrillage</em> module already imports the <cite>ops_vis</cite> module. Therefore, one can run access <cite>ops_vis</cite> by running
 the following code line and a plot like in <a class="reference internal" href="#figure-2">Figure 2</a> will be returned:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ospg</span><span class="o">.</span><span class="n">opsplt</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="s2">&quot;nodes&quot;</span><span class="p">)</span> <span class="c1"># using Get Rendering module</span>
-<span class="n">ospg</span><span class="o">.</span><span class="n">opsv</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">az_el</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="c1"># using osp_vis</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">og</span><span class="o">.</span><span class="n">opsplt</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="s2">&quot;nodes&quot;</span><span class="p">)</span> <span class="c1"># using Get Rendering module</span>
+<span class="n">og</span><span class="o">.</span><span class="n">opsv</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">az_el</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="c1"># using osp_vis</span>
 </pre></div>
 </div>
 <p>Whilst all nodes will be visualized, only the assigned members are visualized. This is a good way to check if desired members are assigned
