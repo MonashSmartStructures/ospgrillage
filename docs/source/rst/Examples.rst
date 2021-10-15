@@ -128,8 +128,10 @@ Second load case comprise of Compounded point loads
 
     test_points_load = og.create_compound_load(name="Points Test Case (Global)")
 
+    # create point load in global coordinate
     for p in p_list:
         point = og.create_load(type='point',name="Point",point1=og.create_load_vertex(x=L/2, z=p, p=P))
+        # add to compound load
         test_points_load.add_load(load_obj = point)
 
     # Create load case, add loads, and assign
@@ -147,12 +149,14 @@ in Local coordinates then setting the local coordinate system of compound load t
     # working in user-defined local coordinate (in point load)
     test_points_load = og.create_compound_load(name="Points Test Case (Local in Point)")
 
+    # create point load in local coordinate space
     for p in p_list:
-        point = og.create_load(type='point',name="Point",localpoint1=og.create_load_vertex(x=0, z=p, p=P))
-        # maybe local point is useless?
+        point = og.create_load(type='point',name="Point",point1=og.create_load_vertex(x=0, z=p, p=P))
+        # add to compound load
         test_points_load.add_load(load_obj = point)
 
-    test_points_load.set_global_coord(og.Point(L/2,0,0)) # shift from local to global
+    # shift from local to global
+    test_points_load.set_global_coord(og.Point(L/2,0,0))
 
     # Create load case, add loads, and assign
     points_case = og.create_load_case(name=static_cases_names[2])

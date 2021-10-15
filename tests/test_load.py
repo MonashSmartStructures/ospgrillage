@@ -299,7 +299,7 @@ def test_line_load_coincide_long_edge(bridge_model_42_negative):
 
 def test_line_load_coincide_transverse_member(bridge_42_0_angle_mesh):
     example_bridge = bridge_42_0_angle_mesh
-    og.opsplt.plot_model("nodes")
+    #og.opsplt.plot_model("nodes")
 
     # create reference line load
 
@@ -446,7 +446,7 @@ def test_patch_load_using_linear_shape_function(bridge_model_42_negative):
     lane_point_2 = og.create_load_vertex(x=8, y=0, z=3, p=5)
     lane_point_3 = og.create_load_vertex(x=8, y=0, z=5, p=5)
     lane_point_4 = og.create_load_vertex(x=5, y=0, z=5, p=5)
-    Lane = og.PatchLoading(point1=lane_point_1, point2=lane_point_2, point3=lane_point_3,
+    Lane = og.create_load(type="patch",point1=lane_point_1, point2=lane_point_2, point3=lane_point_3,
                            point4=lane_point_4, shape_function="linear")
     ULS_DL = og.LoadCase(name="Lane")
     ULS_DL.add_load(Lane)  # ch

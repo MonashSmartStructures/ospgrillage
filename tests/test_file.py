@@ -423,21 +423,7 @@ def test_patch_load(bridge_model_42_negative):
         'ops.load(15, *[0, 0.106207307625274, 0, -0.0531036538126368, 0, 0.0660145678416751])\n']
 
 
-# test for patch load with linear shape function for load distribution
-def test_patch_load_using_linear_shape_function(bridge_model_42_negative):
-    example_bridge = bridge_model_42_negative
-
-    lane_point_1 = og.create_load_vertex(x=5, y=0, z=3, p=5)
-    lane_point_2 = og.create_load_vertex(x=8, y=0, z=3, p=5)
-    lane_point_3 = og.create_load_vertex(x=8, y=0, z=5, p=5)
-    lane_point_4 = og.create_load_vertex(x=5, y=0, z=5, p=5)
-    Lane = og.PatchLoading("Lane 1", point1=lane_point_1, point2=lane_point_2, point3=lane_point_3,
-                           point4=lane_point_4, shape_function="linear")
-    ULS_DL = og.LoadCase(name="Lane")
-    ULS_DL.add_load(Lane)  # ch
-    example_bridge.add_load_case(ULS_DL)
-    example_bridge.analyze()
-# ----------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------
 # test sub functions
 # ----------------------------------------------------------------------------------------------------------------------
 
@@ -555,12 +541,14 @@ def test_moving_load_and_basic_load_together(bridge_model_42_negative):
     example_bridge.analyze()
     og.opsv.plot_defo()
     og.plt.show()
+    results = example_bridge.get_results()
     comb_results = example_bridge.get_results(combinations={"Barrier":1,"single_moving_point":2})
     #maxY = results.sel(Component='dy').max()
-    envelope = og.Envelope(ds=comb_results[0],load_effect="dy",array="displacements")
+    envelope = og.Envelope(ds=comb_results,load_effect="dy",array="displacements")
     max_disp = envelope.get()
+    print(max_disp)
     move_point.query(incremental_lc_name='single_moving_point at global position [2.00,0.00,2.00]')
-    print(comb_results)
+    #print(comb_results)
     print(og.ops.nodeDisp(25)[1])
 
 

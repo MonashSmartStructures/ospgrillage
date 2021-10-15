@@ -21,6 +21,24 @@ The following example extracts results for all defined analysis of ``example_bri
 The returned **result** variable is an
 `xarray DataSet <http://xarray.pydata.org/en/stable/generated/xarray.Dataset.html>`_.
 
+The following is printed to terminal after printing ``all_result``:
+
+.. code-block:: python
+
+    <xarray.Dataset>
+    Dimensions:        (Component: 18, Element: 142, Loadcase: 5, Node: 77, Nodes: 2)
+    Coordinates:
+      * Component      (Component) <U7 'Mx_i' 'Mx_j' 'My_i' ... 'theta_y' 'theta_z'
+      * Loadcase       (Loadcase) <U55 'Barrier' ... 'single_moving_point at glob...
+      * Node           (Node) int32 1 2 3 4 5 6 7 8 9 ... 69 70 71 72 73 74 75 76 77
+      * Element        (Element) int32 1 2 3 4 5 6 7 ... 136 137 138 139 140 141 142
+      * Nodes          (Nodes) <U1 'i' 'j'
+    Data variables:
+        displacements  (Loadcase, Node, Component) float64 nan nan ... -4.996e-10
+        forces         (Loadcase, Element, Component) float64 36.18 -156.9 ... nan
+        ele_nodes      (Element, Nodes) int32 2 3 1 2 1 3 4 ... 32 75 33 76 34 77 35
+
+
 Structure of xarray DataSet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -31,17 +49,6 @@ that represent two groups of load effects:
 #. **displacements** i.e. rotation and translations
 #. **forces** e.g. bending about z axis, Shear forces etc.
 
-..  figure:: ../../_images/structure_dataset.PNG
-    :align: center
-    :scale: 75 %
-
-    Figure 1: Structure of DataSet.
-
-Depending on the model type, the DataArray for **forces** is grouped according to element types. For example
-the :ref:`shell hybrid model` with beam and shell elements have forces recorded in **forces_beam** and **forces_shell**
-respectively (Figure 1). When this is the case, **ele_nodes** will be split into **ele_nodes_beam** and **ele_nodes_shell**
-as well.
-
 Following example shows how each DataArray is accessed from **result** DataSet:
 
 .. code-block:: python
@@ -49,14 +56,29 @@ Following example shows how each DataArray is accessed from **result** DataSet:
     disp_array = all_result.displacements # displacement components
     force_array = all_result.forces # force components
 
-A third variable present in the DataSet of Figure 1 is the variable for element and its respective nodes.
+The third variable present in the DataSet of Figure 1 contains information for element and its respective nodes.
+
+.. code-block:: python
+
+    ele_array = all_result.ele_nodes # array storing node tags of all elements
+
+The DataArray for **forces** is grouped according to element types. Depending on :ref:`ModelTemplates`, there can be one or more
+types of elements in the grillage model. For example the **force** DataArrays of a :ref:`shell hybrid model` are recorded in
+two separate DataArrays, namely **forces_beam** and **forces_shell** respectively (Figure 1).
+Similarly, **ele_nodes** will be split into **ele_nodes_beam** and **ele_nodes_shell**.
+
+..  figure:: ../../_images/structure_dataset.PNG
+    :align: center
+    :scale: 75 %
+
+    Figure 1: Structure of DataSet.
 
 Accessing and querying data
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 From the data arrays, users can access various component in each load effect using `xarray`'s data array commands.
 
-Following example extracts the displacment 'dy' component using `xarray`'s ``sel()`` function.
+Following example extracts the displacement 'dy' component using `xarray`'s ``sel()`` function.
 
 .. code-block:: python
 
@@ -72,25 +94,74 @@ Following example shows how to extract results for specific load cases with spec
 
 Getting combinations
 --------------------------------------
-Load combinations are computed on the fly in `get_results()` by specifying a keyword argument for combinations.
-Argument takes in a `dict` having load case name strings as key, and corresponding load factor as value. The following
-example code define a load combinations having two load cases.
+Load combinations are computed on the fly in :func:`~ospgrillage.osp_grillage.OspGrillage.get_results` by specifying a keyword argument for ``combinations``.
+The keyword argument accepts a ``dict`` with load case name strings as key, and corresponding load factor as value. The returned DataArray
+will have load case multiplied by prescribed load factors and summed along the load case dimension (for each load case in load combination).
+
+The following example code defines a load combinations which comprise of two load cases.
 
 .. code-block:: python
 
-    comb_result = example_bridge.get_results(combinations={"patch_load_case":2,"moving_truck":1.6})
+    # create dict with load case name string as key, and load factor as value
+    comb_dict = {"patch_load_case":2,"moving_truck":1.6}
+    comb_result = example_bridge.get_results(combinations=comb_dict)
+    # print combination
+    print(comb_results)
+
+The following is printed to the terminal.
+
+.. code-block:: python
+
+    <xarray.Dataset>
+    Dimensions:        (Component: 18, Element: 142, Loadcase: 3, Node: 77, Nodes: 2)
+    Coordinates:
+      * Component      (Component) <U7 'Mx_i' 'Mx_j' 'My_i' ... 'theta_y' 'theta_z'
+      * Node           (Node) int32 1 2 3 4 5 6 7 8 9 ... 69 70 71 72 73 74 75 76 77
+      * Element        (Element) int32 1 2 3 4 5 6 7 ... 136 137 138 139 140 141 142
+      * Nodes          (Nodes) <U1 'i' 'j'
+      * Loadcase       (Loadcase) <U55 'moving_truck at global position [2...
+    Data variables:
+        displacements  (Loadcase, Node, Component) float64 nan nan ... 0.0 7.688e-05
+        forces         (Loadcase, Element, Component) float64 36.18 -156.9 ... nan
+        ele_nodes      (Loadcase, Element, Nodes) int32 6 9 3 6 ... 228 102 231 105
+
+
+For combinations pertaining static and moving load cases, the factored static load cases are added to each
+incremental load case of the moving load.
+
 
 Getting load envelope
 --------------------------------------
-Load envelope is generated from load combination results for extrema of load effect using :func:`~ospgrillage.static.create_envelope` function.
+Load envelope is generated from load combination results for extrema of load effect using :func:`~ospgrillage.postprocessing.create_envelope` function.
 Envelope are chosen based on user selected component (*array* keyword) as either "displacements" or "forces", extrema as either maximum or minimum,
-and load effect component (e.g. "dy" for displacements). The `get_envelope()` function is defined as follows:
+and load effect component (e.g. "dy" for displacements). The following example uses creates a :func:`~ospgrillage.postprocessing.Envelope` object
+and uses its class function to :func:`~ospgrillage.postprocessing.Envelope.get` the enveloped DataArray:
 
 .. code-block:: python
 
-    first_combination = comb_results[0] # list of combination xarray, get the first
-    envelope = og.get_envelope(ds=first_combination,load_effect="dy",array="displacements") # creates the envelope obj
+    envelope = og.create_envelope(ds=comb_results,load_effect="dy",array="displacements") # creates the envelope obj
     disp_env = envelope.get() # output the created envelope of xarray
+
+For more information on the inputs, see :func:`~ospgrillage.postprocessing.create_envelope`.
+
+The following is printed to the terminal.
+
+.. code-block:: python
+
+    <xarray.DataArray 'Loadcase' (Node: 77, Component: 18)>
+    array([[nan, nan, nan, ...,
+            'single_moving_point at global position [2.00,0.00,2.00]',
+            'single_moving_point at global position [2.00,0.00,2.00]',
+            'single_moving_point at global position [4.00,0.00,3.00]'],
+           ...,
+           [nan, nan, nan, ...,
+            'single_moving_point at global position [3.00,0.00,2.50]',
+            'single_moving_point at global position [2.00,0.00,2.00]',
+            'single_moving_point at global position [3.00,0.00,2.50]']],
+          dtype=object)
+    Coordinates:
+      * Component  (Component) <U7 'Mx_i' 'Mx_j' 'My_i' ... 'theta_y' 'theta_z'
+      * Node       (Node) int32 1 2 3 4 5 6 7 8 9 10 ... 69 70 71 72 73 74 75 76 77
 
 
 Getting specific properties of model
