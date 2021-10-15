@@ -180,8 +180,8 @@ The following code creates a point and line load which is to be assigned as a Co
 .. code-block:: python
 
     # components in a compound load
-    wheel_1 = og.create_load(type="point", point1= og.LoadPoint(0, 0, 3, 5))  # point load 1
-    wheel_2 = og.create_load(type="point", point1= og.LoadPoint(0, 0, 3, 5))  # point load 2
+    wheel_1 = og.create_load(type="point", point1= og.create_load_vertices(x=0, z=3, p=5))  # point load 1
+    wheel_2 = og.create_load(type="point", point1= og.create_load_vertices(x=0, z=3, p=5))  # point load 2
 
 The following code creates a Compound load and adds the created :class:`~Loads` objects (Point, Line, Patch) object to the Compound load object:
 
@@ -200,33 +200,6 @@ The following example sets the local **Origin** of the compound load, including 
 .. code-block:: python
 
     C_Load.set_global_coord(Point(4,0,3))
-
-Here are the valid input types for which CompoundLoad accepts:
-
-.. list-table:: Table: 1 Valid combinations for CompoundLoad object
-   :widths: 25 25 25 25
-   :header-rows: 1
-
-   * - Load's coordinate space
-     - `local_coord=`
-     - Description
-     - Require `set_global_coord()`?
-   * - Global
-     - No
-     - Sets the Load's points to global space
-     - No
-   * - Global
-     - Yes
-     - Overwrites the Load's global space, keeping only the Magnitude of the global load
-     - Yes
-   * - Local
-     - No
-     - Sets the Load's local space, later set to global using `set_global_coord()`
-     - Yes
-   * - Local
-     - Yes
-     - **Invalid combination**, loads are defined in local space already
-     - N/A
 
 
 **Coordinate System**
@@ -296,7 +269,7 @@ The following example code is two point loads defined as a moving load travellin
 
     front_wheel = og.create_load_vertices(x=0, z=0, p=6)   # load point 1
     back_wheel = og.create_load_vertices(x=-1, z=0, p=6)   # load point 2
-    Line = og.create_load(type="line",local_point_1=front_wheel,local_point_2=back_wheel)
+    Line = og.create_load(type="line",point1=front_wheel,point2=back_wheel)
     tandem = og.create_compound_load("Two wheel vehicle")
 
     single_path = og.create_moving_path(start_point=og.Point(2,0,2), end_point= og.Point(4,0,2))  # create path object

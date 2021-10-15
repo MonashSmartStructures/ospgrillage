@@ -309,8 +309,8 @@ shows the relationship and process of mapping local to global system of a compou
 </div>
 <p>The following code creates a point and line load which is to be assigned as a Compound load.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># components in a compound load</span>
-<span class="n">wheel_1</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;point&quot;</span><span class="p">,</span> <span class="n">point1</span><span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">LoadPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>  <span class="c1"># point load 1</span>
-<span class="n">wheel_2</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;point&quot;</span><span class="p">,</span> <span class="n">point1</span><span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">LoadPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>  <span class="c1"># point load 2</span>
+<span class="n">wheel_1</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;point&quot;</span><span class="p">,</span> <span class="n">point1</span><span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertices</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>  <span class="c1"># point load 1</span>
+<span class="n">wheel_2</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;point&quot;</span><span class="p">,</span> <span class="n">point1</span><span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertices</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>  <span class="c1"># point load 2</span>
 </pre></div>
 </div>
 <p>The following code creates a Compound load and adds the created <code class="xref py py-class docutils literal notranslate"><span class="pre">Loads</span></code> objects (Point, Line, Patch) object to the Compound load object:</p>
@@ -326,45 +326,6 @@ If not specified, the mapping’s reference point is default to the <strong>Orig
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">C_Load</span><span class="o">.</span><span class="n">set_global_coord</span><span class="p">(</span><span class="n">Point</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>Here are the valid input types for which CompoundLoad accepts:</p>
-<table class="colwidths-given docutils align-default" id="id7">
-<caption><span class="caption-text">Table: 1 Valid combinations for CompoundLoad object</span><a class="headerlink" href="#id7" title="Permalink to this table">¶</a></caption>
-<colgroup>
-<col style="width: 25%" />
-<col style="width: 25%" />
-<col style="width: 25%" />
-<col style="width: 25%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Load’s coordinate space</p></th>
-<th class="head"><p><cite>local_coord=</cite></p></th>
-<th class="head"><p>Description</p></th>
-<th class="head"><p>Require <cite>set_global_coord()</cite>?</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>Global</p></td>
-<td><p>No</p></td>
-<td><p>Sets the Load’s points to global space</p></td>
-<td><p>No</p></td>
-</tr>
-<tr class="row-odd"><td><p>Global</p></td>
-<td><p>Yes</p></td>
-<td><p>Overwrites the Load’s global space, keeping only the Magnitude of the global load</p></td>
-<td><p>Yes</p></td>
-</tr>
-<tr class="row-even"><td><p>Local</p></td>
-<td><p>No</p></td>
-<td><p>Sets the Load’s local space, later set to global using <cite>set_global_coord()</cite></p></td>
-<td><p>Yes</p></td>
-</tr>
-<tr class="row-odd"><td><p>Local</p></td>
-<td><p>Yes</p></td>
-<td><p><strong>Invalid combination</strong>, loads are defined in local space already</p></td>
-<td><p>N/A</p></td>
-</tr>
-</tbody>
-</table>
 <p><strong>Coordinate System</strong></p>
 <p>When adding each load object, the <a class="reference internal" href="Loads.html#ospgrillage.load.CompoundLoad" title="ospgrillage.load.CompoundLoad"><code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundLoad</span></code></a> class allow users to input a <code class="docutils literal notranslate"><span class="pre">load_coord=</span></code> keyword argument.
 This relates to the load object - whether it was previously defined in the user-defined <em>local</em> or in the <em>global</em> coordinate system. The following explains the various
@@ -405,14 +366,14 @@ Users repeat this step for any defined load cases.</p>
 through a path points described by a <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code> object and obtained by the <code class="docutils literal notranslate"><span class="pre">get_path_points()</span></code> method.
 Path are defined using two namedTuple <code class="xref py py-class docutils literal notranslate"><span class="pre">Point(x,y,z)</span></code> to describe its start and end position. Figure 6 summarizes the relationship between moving loads
 , paths and the position of the loads on the grillage model.</p>
-<div class="figure align-center" id="id8">
+<div class="figure align-center" id="id7">
 <a class="reference internal image-reference" href="../_images/movingload.png"><img alt="../_images/movingload.png" src="../_images/movingload.png" /></a>
-<p class="caption"><span class="caption-text">Figure 6: Moving load</span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 6: Moving load</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
 </div>
 <p>The following example code is two point loads defined as a moving load travelling a path from 2 to 4 distance units in the global coordinate system.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">front_wheel</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertices</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>   <span class="c1"># load point 1</span>
 <span class="n">back_wheel</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertices</span><span class="p">(</span><span class="n">x</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>   <span class="c1"># load point 2</span>
-<span class="n">Line</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;line&quot;</span><span class="p">,</span><span class="n">local_point_1</span><span class="o">=</span><span class="n">front_wheel</span><span class="p">,</span><span class="n">local_point_2</span><span class="o">=</span><span class="n">back_wheel</span><span class="p">)</span>
+<span class="n">Line</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;line&quot;</span><span class="p">,</span><span class="n">point1</span><span class="o">=</span><span class="n">front_wheel</span><span class="p">,</span><span class="n">point2</span><span class="o">=</span><span class="n">back_wheel</span><span class="p">)</span>
 <span class="n">tandem</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_compound_load</span><span class="p">(</span><span class="s2">&quot;Two wheel vehicle&quot;</span><span class="p">)</span>
 
 <span class="n">single_path</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_moving_path</span><span class="p">(</span><span class="n">start_point</span><span class="o">=</span><span class="n">og</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">end_point</span><span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>  <span class="c1"># create path object</span>

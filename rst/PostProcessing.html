@@ -202,6 +202,21 @@ The following example extracts results for all defined analysis of <code class="
 </div>
 <p>The returned <strong>result</strong> variable is an
 <a class="reference external" href="http://xarray.pydata.org/en/stable/generated/xarray.Dataset.html">xarray DataSet</a>.</p>
+<p>The following is printed to terminal after printing <code class="docutils literal notranslate"><span class="pre">all_result</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">xarray</span><span class="o">.</span><span class="n">Dataset</span><span class="o">&gt;</span>
+<span class="n">Dimensions</span><span class="p">:</span>        <span class="p">(</span><span class="n">Component</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span> <span class="n">Element</span><span class="p">:</span> <span class="mi">142</span><span class="p">,</span> <span class="n">Loadcase</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="n">Node</span><span class="p">:</span> <span class="mi">77</span><span class="p">,</span> <span class="n">Nodes</span><span class="p">:</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">Coordinates</span><span class="p">:</span>
+  <span class="o">*</span> <span class="n">Component</span>      <span class="p">(</span><span class="n">Component</span><span class="p">)</span> <span class="o">&lt;</span><span class="n">U7</span> <span class="s1">&#39;Mx_i&#39;</span> <span class="s1">&#39;Mx_j&#39;</span> <span class="s1">&#39;My_i&#39;</span> <span class="o">...</span> <span class="s1">&#39;theta_y&#39;</span> <span class="s1">&#39;theta_z&#39;</span>
+  <span class="o">*</span> <span class="n">Loadcase</span>       <span class="p">(</span><span class="n">Loadcase</span><span class="p">)</span> <span class="o">&lt;</span><span class="n">U55</span> <span class="s1">&#39;Barrier&#39;</span> <span class="o">...</span> <span class="s1">&#39;single_moving_point at glob...</span>
+  <span class="o">*</span> <span class="n">Node</span>           <span class="p">(</span><span class="n">Node</span><span class="p">)</span> <span class="n">int32</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span> <span class="mi">8</span> <span class="mi">9</span> <span class="o">...</span> <span class="mi">69</span> <span class="mi">70</span> <span class="mi">71</span> <span class="mi">72</span> <span class="mi">73</span> <span class="mi">74</span> <span class="mi">75</span> <span class="mi">76</span> <span class="mi">77</span>
+  <span class="o">*</span> <span class="n">Element</span>        <span class="p">(</span><span class="n">Element</span><span class="p">)</span> <span class="n">int32</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span> <span class="o">...</span> <span class="mi">136</span> <span class="mi">137</span> <span class="mi">138</span> <span class="mi">139</span> <span class="mi">140</span> <span class="mi">141</span> <span class="mi">142</span>
+  <span class="o">*</span> <span class="n">Nodes</span>          <span class="p">(</span><span class="n">Nodes</span><span class="p">)</span> <span class="o">&lt;</span><span class="n">U1</span> <span class="s1">&#39;i&#39;</span> <span class="s1">&#39;j&#39;</span>
+<span class="n">Data</span> <span class="n">variables</span><span class="p">:</span>
+    <span class="n">displacements</span>  <span class="p">(</span><span class="n">Loadcase</span><span class="p">,</span> <span class="n">Node</span><span class="p">,</span> <span class="n">Component</span><span class="p">)</span> <span class="n">float64</span> <span class="n">nan</span> <span class="n">nan</span> <span class="o">...</span> <span class="o">-</span><span class="mf">4.996e-10</span>
+    <span class="n">forces</span>         <span class="p">(</span><span class="n">Loadcase</span><span class="p">,</span> <span class="n">Element</span><span class="p">,</span> <span class="n">Component</span><span class="p">)</span> <span class="n">float64</span> <span class="mf">36.18</span> <span class="o">-</span><span class="mf">156.9</span> <span class="o">...</span> <span class="n">nan</span>
+    <span class="n">ele_nodes</span>      <span class="p">(</span><span class="n">Element</span><span class="p">,</span> <span class="n">Nodes</span><span class="p">)</span> <span class="n">int32</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">1</span> <span class="mi">3</span> <span class="mi">4</span> <span class="o">...</span> <span class="mi">32</span> <span class="mi">75</span> <span class="mi">33</span> <span class="mi">76</span> <span class="mi">34</span> <span class="mi">77</span> <span class="mi">35</span>
+</pre></div>
+</div>
 <div class="section" id="structure-of-xarray-dataset">
 <h3>Structure of xarray DataSet<a class="headerlink" href="#structure-of-xarray-dataset" title="Permalink to this headline">¶</a></h3>
 <p>Figure 1 shows the structure of the xarray DataSet for results.
@@ -211,25 +226,28 @@ that represent two groups of load effects:</p>
 <li><p><strong>displacements</strong> i.e. rotation and translations</p></li>
 <li><p><strong>forces</strong> e.g. bending about z axis, Shear forces etc.</p></li>
 </ol>
-<div class="figure align-center" id="id5">
-<a class="reference internal image-reference" href="../_images/structure_dataset.PNG"><img alt="../_images/structure_dataset.PNG" src="../_images/structure_dataset.PNG" /></a>
-<p class="caption"><span class="caption-text">Figure 1: Structure of DataSet.</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
-</div>
-<p>Depending on the model type, the DataArray for <strong>forces</strong> is grouped according to element types. For example
-the <a class="reference internal" href="ModelTemplates.html#shell-hybrid-model"><span class="std std-ref">Shell and beam hybrid model</span></a> with beam and shell elements have forces recorded in <strong>forces_beam</strong> and <strong>forces_shell</strong>
-respectively (Figure 1). When this is the case, <strong>ele_nodes</strong> will be split into <strong>ele_nodes_beam</strong> and <strong>ele_nodes_shell</strong>
-as well.</p>
 <p>Following example shows how each DataArray is accessed from <strong>result</strong> DataSet:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">disp_array</span> <span class="o">=</span> <span class="n">all_result</span><span class="o">.</span><span class="n">displacements</span> <span class="c1"># displacement components</span>
 <span class="n">force_array</span> <span class="o">=</span> <span class="n">all_result</span><span class="o">.</span><span class="n">forces</span> <span class="c1"># force components</span>
 </pre></div>
 </div>
-<p>A third variable present in the DataSet of Figure 1 is the variable for element and its respective nodes.</p>
+<p>The third variable present in the DataSet of Figure 1 contains information for element and its respective nodes.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ele_array</span> <span class="o">=</span> <span class="n">all_result</span><span class="o">.</span><span class="n">ele_nodes</span> <span class="c1"># array storing node tags of all elements</span>
+</pre></div>
+</div>
+<p>The DataArray for <strong>forces</strong> is grouped according to element types. Depending on <span class="xref std std-ref">ModelTemplates</span>, there can be one or more
+types of elements in the grillage model. For example the <strong>force</strong> DataArrays of a <a class="reference internal" href="ModelTemplates.html#shell-hybrid-model"><span class="std std-ref">Shell and beam hybrid model</span></a> are recorded in
+two separate DataArrays, namely <strong>forces_beam</strong> and <strong>forces_shell</strong> respectively (Figure 1).
+Similarly, <strong>ele_nodes</strong> will be split into <strong>ele_nodes_beam</strong> and <strong>ele_nodes_shell</strong>.</p>
+<div class="figure align-center" id="id5">
+<a class="reference internal image-reference" href="../_images/structure_dataset.PNG"><img alt="../_images/structure_dataset.PNG" src="../_images/structure_dataset.PNG" /></a>
+<p class="caption"><span class="caption-text">Figure 1: Structure of DataSet.</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
+</div>
 </div>
 <div class="section" id="accessing-and-querying-data">
 <h3>Accessing and querying data<a class="headerlink" href="#accessing-and-querying-data" title="Permalink to this headline">¶</a></h3>
 <p>From the data arrays, users can access various component in each load effect using <cite>xarray</cite>’s data array commands.</p>
-<p>Following example extracts the displacment ‘dy’ component using <cite>xarray</cite>’s <code class="docutils literal notranslate"><span class="pre">sel()</span></code> function.</p>
+<p>Following example extracts the displacement ‘dy’ component using <cite>xarray</cite>’s <code class="docutils literal notranslate"><span class="pre">sel()</span></code> function.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">disp_array</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Component</span><span class="o">=</span><span class="s1">&#39;dy&#39;</span><span class="p">)</span> <span class="c1"># select data of &quot;dy&quot;</span>
 <span class="n">force_array</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Component</span><span class="o">=</span><span class="s1">&#39;Mz_i&#39;</span><span class="p">)</span> <span class="c1"># select data of &quot;Mz_i&quot;</span>
 </pre></div>
@@ -243,21 +261,61 @@ as well.</p>
 </div>
 <div class="section" id="getting-combinations">
 <h2>Getting combinations<a class="headerlink" href="#getting-combinations" title="Permalink to this headline">¶</a></h2>
-<p>Load combinations are computed on the fly in <cite>get_results()</cite> by specifying a keyword argument for combinations.
-Argument takes in a <cite>dict</cite> having load case name strings as key, and corresponding load factor as value. The following
-example code define a load combinations having two load cases.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">comb_result</span> <span class="o">=</span> <span class="n">example_bridge</span><span class="o">.</span><span class="n">get_results</span><span class="p">(</span><span class="n">combinations</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;patch_load_case&quot;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;moving_truck&quot;</span><span class="p">:</span><span class="mf">1.6</span><span class="p">})</span>
+<p>Load combinations are computed on the fly in <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_results()</span></code></a> by specifying a keyword argument for <code class="docutils literal notranslate"><span class="pre">combinations</span></code>.
+The keyword argument accepts a <code class="docutils literal notranslate"><span class="pre">dict</span></code> with load case name strings as key, and corresponding load factor as value. The returned DataArray
+will have load case multiplied by prescribed load factors and summed along the load case dimension (for each load case in load combination).</p>
+<p>The following example code defines a load combinations which comprise of two load cases.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># create dict with load case name string as key, and load factor as value</span>
+<span class="n">comb_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;patch_load_case&quot;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;moving_truck&quot;</span><span class="p">:</span><span class="mf">1.6</span><span class="p">}</span>
+<span class="n">comb_result</span> <span class="o">=</span> <span class="n">example_bridge</span><span class="o">.</span><span class="n">get_results</span><span class="p">(</span><span class="n">combinations</span><span class="o">=</span><span class="n">comb_dict</span><span class="p">)</span>
+<span class="c1"># print combination</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">comb_results</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>The following is printed to the terminal.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">xarray</span><span class="o">.</span><span class="n">Dataset</span><span class="o">&gt;</span>
+<span class="n">Dimensions</span><span class="p">:</span>        <span class="p">(</span><span class="n">Component</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span> <span class="n">Element</span><span class="p">:</span> <span class="mi">142</span><span class="p">,</span> <span class="n">Loadcase</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="n">Node</span><span class="p">:</span> <span class="mi">77</span><span class="p">,</span> <span class="n">Nodes</span><span class="p">:</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">Coordinates</span><span class="p">:</span>
+  <span class="o">*</span> <span class="n">Component</span>      <span class="p">(</span><span class="n">Component</span><span class="p">)</span> <span class="o">&lt;</span><span class="n">U7</span> <span class="s1">&#39;Mx_i&#39;</span> <span class="s1">&#39;Mx_j&#39;</span> <span class="s1">&#39;My_i&#39;</span> <span class="o">...</span> <span class="s1">&#39;theta_y&#39;</span> <span class="s1">&#39;theta_z&#39;</span>
+  <span class="o">*</span> <span class="n">Node</span>           <span class="p">(</span><span class="n">Node</span><span class="p">)</span> <span class="n">int32</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span> <span class="mi">8</span> <span class="mi">9</span> <span class="o">...</span> <span class="mi">69</span> <span class="mi">70</span> <span class="mi">71</span> <span class="mi">72</span> <span class="mi">73</span> <span class="mi">74</span> <span class="mi">75</span> <span class="mi">76</span> <span class="mi">77</span>
+  <span class="o">*</span> <span class="n">Element</span>        <span class="p">(</span><span class="n">Element</span><span class="p">)</span> <span class="n">int32</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span> <span class="o">...</span> <span class="mi">136</span> <span class="mi">137</span> <span class="mi">138</span> <span class="mi">139</span> <span class="mi">140</span> <span class="mi">141</span> <span class="mi">142</span>
+  <span class="o">*</span> <span class="n">Nodes</span>          <span class="p">(</span><span class="n">Nodes</span><span class="p">)</span> <span class="o">&lt;</span><span class="n">U1</span> <span class="s1">&#39;i&#39;</span> <span class="s1">&#39;j&#39;</span>
+  <span class="o">*</span> <span class="n">Loadcase</span>       <span class="p">(</span><span class="n">Loadcase</span><span class="p">)</span> <span class="o">&lt;</span><span class="n">U55</span> <span class="s1">&#39;moving_truck at global position [2...</span>
+<span class="n">Data</span> <span class="n">variables</span><span class="p">:</span>
+    <span class="n">displacements</span>  <span class="p">(</span><span class="n">Loadcase</span><span class="p">,</span> <span class="n">Node</span><span class="p">,</span> <span class="n">Component</span><span class="p">)</span> <span class="n">float64</span> <span class="n">nan</span> <span class="n">nan</span> <span class="o">...</span> <span class="mf">0.0</span> <span class="mf">7.688e-05</span>
+    <span class="n">forces</span>         <span class="p">(</span><span class="n">Loadcase</span><span class="p">,</span> <span class="n">Element</span><span class="p">,</span> <span class="n">Component</span><span class="p">)</span> <span class="n">float64</span> <span class="mf">36.18</span> <span class="o">-</span><span class="mf">156.9</span> <span class="o">...</span> <span class="n">nan</span>
+    <span class="n">ele_nodes</span>      <span class="p">(</span><span class="n">Loadcase</span><span class="p">,</span> <span class="n">Element</span><span class="p">,</span> <span class="n">Nodes</span><span class="p">)</span> <span class="n">int32</span> <span class="mi">6</span> <span class="mi">9</span> <span class="mi">3</span> <span class="mi">6</span> <span class="o">...</span> <span class="mi">228</span> <span class="mi">102</span> <span class="mi">231</span> <span class="mi">105</span>
+</pre></div>
+</div>
+<p>For combinations pertaining static and moving load cases, the factored static load cases are added to each
+incremental load case of the moving load.</p>
 </div>
 <div class="section" id="getting-load-envelope">
 <h2>Getting load envelope<a class="headerlink" href="#getting-load-envelope" title="Permalink to this headline">¶</a></h2>
-<p>Load envelope is generated from load combination results for extrema of load effect using <code class="xref py py-func docutils literal notranslate"><span class="pre">create_envelope()</span></code> function.
+<p>Load envelope is generated from load combination results for extrema of load effect using <a class="reference internal" href="generated/ospgrillage.postprocessing.create_envelope.html#ospgrillage.postprocessing.create_envelope" title="ospgrillage.postprocessing.create_envelope"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_envelope()</span></code></a> function.
 Envelope are chosen based on user selected component (<em>array</em> keyword) as either “displacements” or “forces”, extrema as either maximum or minimum,
-and load effect component (e.g. “dy” for displacements). The <cite>get_envelope()</cite> function is defined as follows:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">first_combination</span> <span class="o">=</span> <span class="n">comb_results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># list of combination xarray, get the first</span>
-<span class="n">envelope</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">get_envelope</span><span class="p">(</span><span class="n">ds</span><span class="o">=</span><span class="n">first_combination</span><span class="p">,</span><span class="n">load_effect</span><span class="o">=</span><span class="s2">&quot;dy&quot;</span><span class="p">,</span><span class="n">array</span><span class="o">=</span><span class="s2">&quot;displacements&quot;</span><span class="p">)</span> <span class="c1"># creates the envelope obj</span>
+and load effect component (e.g. “dy” for displacements). The following example uses creates a <a class="reference internal" href="APIdoc.html#ospgrillage.postprocessing.Envelope" title="ospgrillage.postprocessing.Envelope"><code class="xref py py-func docutils literal notranslate"><span class="pre">Envelope()</span></code></a> object
+and uses its class function to <a class="reference internal" href="APIdoc.html#ospgrillage.postprocessing.Envelope.get" title="ospgrillage.postprocessing.Envelope.get"><code class="xref py py-func docutils literal notranslate"><span class="pre">get()</span></code></a> the enveloped DataArray:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">envelope</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_envelope</span><span class="p">(</span><span class="n">ds</span><span class="o">=</span><span class="n">comb_results</span><span class="p">,</span><span class="n">load_effect</span><span class="o">=</span><span class="s2">&quot;dy&quot;</span><span class="p">,</span><span class="n">array</span><span class="o">=</span><span class="s2">&quot;displacements&quot;</span><span class="p">)</span> <span class="c1"># creates the envelope obj</span>
 <span class="n">disp_env</span> <span class="o">=</span> <span class="n">envelope</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="c1"># output the created envelope of xarray</span>
+</pre></div>
+</div>
+<p>For more information on the inputs, see <a class="reference internal" href="generated/ospgrillage.postprocessing.create_envelope.html#ospgrillage.postprocessing.create_envelope" title="ospgrillage.postprocessing.create_envelope"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_envelope()</span></code></a>.</p>
+<p>The following is printed to the terminal.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">xarray</span><span class="o">.</span><span class="n">DataArray</span> <span class="s1">&#39;Loadcase&#39;</span> <span class="p">(</span><span class="n">Node</span><span class="p">:</span> <span class="mi">77</span><span class="p">,</span> <span class="n">Component</span><span class="p">:</span> <span class="mi">18</span><span class="p">)</span><span class="o">&gt;</span>
+<span class="n">array</span><span class="p">([[</span><span class="n">nan</span><span class="p">,</span> <span class="n">nan</span><span class="p">,</span> <span class="n">nan</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span>
+        <span class="s1">&#39;single_moving_point at global position [2.00,0.00,2.00]&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;single_moving_point at global position [2.00,0.00,2.00]&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;single_moving_point at global position [4.00,0.00,3.00]&#39;</span><span class="p">],</span>
+       <span class="o">...</span><span class="p">,</span>
+       <span class="p">[</span><span class="n">nan</span><span class="p">,</span> <span class="n">nan</span><span class="p">,</span> <span class="n">nan</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span>
+        <span class="s1">&#39;single_moving_point at global position [3.00,0.00,2.50]&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;single_moving_point at global position [2.00,0.00,2.00]&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;single_moving_point at global position [3.00,0.00,2.50]&#39;</span><span class="p">]],</span>
+      <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+<span class="n">Coordinates</span><span class="p">:</span>
+  <span class="o">*</span> <span class="n">Component</span>  <span class="p">(</span><span class="n">Component</span><span class="p">)</span> <span class="o">&lt;</span><span class="n">U7</span> <span class="s1">&#39;Mx_i&#39;</span> <span class="s1">&#39;Mx_j&#39;</span> <span class="s1">&#39;My_i&#39;</span> <span class="o">...</span> <span class="s1">&#39;theta_y&#39;</span> <span class="s1">&#39;theta_z&#39;</span>
+  <span class="o">*</span> <span class="n">Node</span>       <span class="p">(</span><span class="n">Node</span><span class="p">)</span> <span class="n">int32</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span> <span class="mi">8</span> <span class="mi">9</span> <span class="mi">10</span> <span class="o">...</span> <span class="mi">69</span> <span class="mi">70</span> <span class="mi">71</span> <span class="mi">72</span> <span class="mi">73</span> <span class="mi">74</span> <span class="mi">75</span> <span class="mi">76</span> <span class="mi">77</span>
 </pre></div>
 </div>
 </div>
