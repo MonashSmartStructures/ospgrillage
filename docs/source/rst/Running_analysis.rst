@@ -7,6 +7,7 @@ Performing analysis
 For all example code in this page, *ospgrillage* is imported as ``og``
 
 .. code-block:: python
+
     import ospgrillage as og
 
 
@@ -277,7 +278,7 @@ The following example code is two point loads defined as a moving load travellin
     move_line.set_path(single_path)   # set path
     move_line.add_loads(load_obj=Line)  # add compound load to moving load
 
-
+:attr:`
 From here, use the :func:`~ospgrillage.osp_grillage.OspGrillage.add_load_case` function of the :class:`OspGrillage` to add the moving load. Here, the function automatically
 creates multiple `load cases`_ which corresponds to the load condition as the load moves through each increment of the path.
 

@@ -93,7 +93,13 @@ Following example shows how to extract results for specific load cases with spec
     disp_array.sel(Loadcase="patch load case",Node=20)
     force_array.sel(Loadcase="Barrier", Element=[2,3,4])
 
-As will be needed later, moving load case
+.. _moving load results:
+
+As will be needed later, moving load case are defined by the name string of the load case.
+
+
+
+Following example shows how to extract the results
 
 
 
