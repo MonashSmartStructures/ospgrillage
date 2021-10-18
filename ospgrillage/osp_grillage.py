@@ -49,8 +49,8 @@ def create_grillage(**kwargs):
 
     :returns: :class:`~ospgrillage.osp_grillage.OspGrillageBeam` or :class:`~ospgrillage.osp_grillage.OspGrillageShell`
     """
-    model_type = kwargs.get("model_type", None)
-    if model_type == "shell":  # if shell, create shell grillage type
+    model_type = kwargs.get("model_type", "beam_only")
+    if model_type == "shell_beam":  # if shell, create shell grillage type
         return OspGrillageShell(**kwargs)
     else:  # creates default model type - beam elements
         return OspGrillageBeam(**kwargs)
@@ -94,7 +94,7 @@ class OspGrillage:
         :type skew: int or float
         :param num_long_grid: Number of grid lines in longitudinal direction
         :type num_long_grid: int
-        :param num_trans_grid: Number of  grid lines in the transverse direction
+        :param num_trans_grid: Number of  grid lines in the transverse direction - 
         :type num_trans_grid: int
         :param edge_beam_dist: Distance of edge beam node lines to exterior main beam node lines
         :type edge_beam_dist: int or float
@@ -157,21 +157,20 @@ class OspGrillage:
         self.global_mat_object = []  # material matrix
         self.global_line_int_dict = []
         # list of components tags
-        self.element_command_list = []  # list of str for ops.element() commands
-        self.section_command_list = []  # list of str for ops.section() commands
-        self.material_command_list = []  # list of str for OpenSees material commands
+        self.element_command_list = []  # list of str of ops.element() commands
+        self.section_command_list = []  # list of str of ops.section() commands
+        self.material_command_list = []  # list of str of ops.material() commands
+        # list of common grillage elements - base class variable
         self.common_grillage_element_keys = ["edge_beam", "exterior_main_beam_1", "interior_main_beam",
-                                             "exterior_main_beam_2"
-            , "start_edge", "end_edge",
-                                             "transverse_slab"]  # standard elements in a grillage model - base class variable
+                                             "exterior_main_beam_2", "start_edge", "end_edge", "transverse_slab"]
+        # prefix index of members after longitudinal members
         self.long_member_index = 4  # 0,1,2,3 correspond to edge, ext_a, interior_beam,
-        # dict storing information of
-        self.common_grillage_element = dict()  # instantiate
-
-        self.section_dict = {}  # dictionary of section tags
-        self.material_dict = {}  # dictionary of material tags
+        # dict storing information
+        self.common_grillage_element = dict() # of common grillage
+        self.section_dict = {}  #  of section tags
+        self.material_dict = {}  #  of material tags
         # variables related to analysis - which can be unique to element/material/ types
-        self.constraint_type = "Plain"
+        self.constraint_type = "Plain" # base class - plain
         # collect mesh groups
         self.mesh_group = []  # for future release
         if self.mesh_type == "Ortho":
@@ -221,7 +220,7 @@ class OspGrillage:
         self.results = None
 
         # kwargs for rigid link modelling option
-        self.model_type = kwargs.get("model_type", None)  # accepts int type 1 or 2
+        self.model_type = kwargs.get("model_type", "beam_only")  # accepts int type 1 or 2
 
         # create mesh object of grillage
         self.Mesh_obj = self._create_mesh(long_dim=self.long_dim, width=self.width, trans_dim=self.trans_dim,
@@ -241,11 +240,12 @@ class OspGrillage:
         """
         if self.model_type == "beam_link":
             mesh_obj = BeamLinkMesh(**kwargs)
-        elif self.model_type == "shell":
+        elif self.model_type == "shell_beam":
             mesh_obj = ShellLinkMesh(**kwargs)
-        else:
+        elif self.model_type == "beam_only":
             mesh_obj = BeamMesh(**kwargs)
-
+        else:
+            mesh_obj = None
         return mesh_obj
 
     # interface function

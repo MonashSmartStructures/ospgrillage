@@ -17,6 +17,10 @@ a numerical model was constructed in commercial software i.e. LUSAS. Figure 1 sh
 
 Creating the grillage
 ^^^^^^^^^^^^^^^^^^^^^^^^
+
+In this example, the five super-T beam and two edge beams (parapets) of Figure 1 are modelled  - here the number of
+longitudinal and transverse grid lines used are 7 and 11 respectively.
+
 .. code-block:: python
 
     import numpy as np
@@ -427,14 +431,15 @@ Here we recreate the previous 33.5 m super-T bridge using the shell hybrid model
 
 Oblique vs Orthogonal Mesh
 ---------------------------
-Here are some more examples showing the variety of meshes capable of being generated with *ospgrillage* module.
+Here are some more examples showing the two types of meshes by altering the ``mesh_typ`` input of
+:func:`~ospgrillage.osp_grillage.create_grillage`.
 
 
-* 28 m bridge with "Oblique" mesh - positive 20 degree
+* 28 m bridge with :func:`Oblique` mesh - positive 20 degree
 
 .. code-block:: python
 
-    example_bridge = og.create_grillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=20,
+    example_bridge = og.create_grillage(bridge_name="Oblique_28m", long_dim=10, width=7, skew=20,
                              num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Oblique")
 
 
@@ -442,14 +447,14 @@ Here are some more examples showing the variety of meshes capable of being gener
     :align: center
     :scale: 25 %
 
-    Figure 4: Oblique mesh
+    Figure 4: Grillage with oblique mesh
 
 
-* 28 m bridge with "Ortho" mesh
+* 28 m bridge with :func:`Ortho` mesh
 
 .. code-block:: python
 
-    example_bridge = og.create_grillage(bridge_name="SuperT_10m", long_dim=10, width=7, skew=20,
+    example_bridge = og.create_grillage(bridge_name="Ortho_28m", long_dim=10, width=7, skew=20,
                              num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
 
 
@@ -457,7 +462,7 @@ Here are some more examples showing the variety of meshes capable of being gener
     :align: center
     :scale: 25 %
 
-    Figure 5: Orthogonal mesh
+    Figure 5: Grillage with orthogonal
 
 
 Skew edges of mesh

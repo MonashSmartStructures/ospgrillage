@@ -981,7 +981,7 @@ class ShellEdgeControlLine(EdgeControlLine):
     def __init__(self, edge_ref_point, width_z, edge_width_a, edge_width_b, edge_angle, num_long_beam, model_plane_y,
                  feature="standard", ext_to_int_a=None, ext_to_int_b=None, **kwargs):
         # get properties specific to shell mesh
-        self.link_nodes_width = kwargs.get("link_nodes_width", None)  # information from kwargs of Shellmodel class
+        self.beam_width = kwargs.get("beam_width", None)  # information from kwargs of Shellmodel class
         self.max_mesh_size_z = kwargs.get("max_mesh_size_z")  # information from kwargs of Shellmodel class
         self.max_mesh_size_x = kwargs.get("max_mesh_size_x")  # information from kwargs of Shellmodel class
         super().__init__(edge_ref_point, width_z, edge_width_a, edge_width_b, edge_angle, num_long_beam, model_plane_y,
@@ -995,7 +995,7 @@ class ShellEdgeControlLine(EdgeControlLine):
             self.z_group_master_pair_list.append(list_index)
 
     def _create_trans_grid(self, nox_girder):
-        z_spacing = self.link_nodes_width / 2
+        z_spacing = self.beam_width / 2
         mesh_z_spacing = self.max_mesh_size_z
         self.beam_position = np.hstack(
             (np.hstack((0, nox_girder)), self.width_z))  # default noz representing beam position
@@ -1227,7 +1227,7 @@ class ShellLinkMesh(Mesh):
         self.roller_node_group = 1
         # get variables from keyword arguments
         self.y_offset = kwargs.get("offset_beam_y_dist", 0.449)  # Here default values
-        self.link_nodes_width = kwargs.get("link_nodes_width", 0.445)  # Here default values
+        self.beam_width = kwargs.get("beam_width", 0.445)  # Here default values
         self.max_mesh_size_z = kwargs.get("max_mesh_size_z", 1)  # Here default values
         self.max_mesh_size_x = kwargs.get("max_mesh_size_x", 1)  # Here default values
         # variables to store assignment counters after meshing of main model plane grid y = 0
@@ -1238,8 +1238,6 @@ class ShellLinkMesh(Mesh):
         super().__init__(long_dim, width, trans_dim, edge_dist_a, edge_dist_b, num_trans_beam, num_long_beam, skew_1,
                          skew_2, ext_to_int_a, ext_to_int_b, **kwargs)
 
-        # identify member groups of grillage model plane y = 0
-        # self._identify_member_groups()
         # meshing procedure to create beam offset element and tie it with rigid links to master nodes of model plane y=0
         self._create_offset_beam_element()
 
