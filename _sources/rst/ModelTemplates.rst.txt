@@ -7,9 +7,9 @@ For all example code in this page, *ospgrillage* is imported as ``og``
 .. code-block:: python
     import ospgrillage as og
 
-Beam grillage
+Beam Elements Only - :func:`beam_only`
 --------------------------------------
-This is the most common form of grillage model which comprise of beam elements lay out in a grid pattern, with:
+This is the traditional modelling approach of grillage model that comprise of beam elements lay out in a grid pattern, with:
 
 * longitudinal members representing composite section along longitudinal direction (e.g. main beams)
 * transverse members representing slabs or secondary beam sections.
@@ -24,12 +24,12 @@ This is the most common form of grillage model which comprise of beam elements l
                                     num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
 
 
-Information on beam grillage model can be found `here<https://www.steelconstruction.info/Modelling_and_analysis_of_beam_bridges>`_.
+General information of this model type can be found `here<https://www.steelconstruction.info/Modelling_and_analysis_of_beam_bridges>`_.
 
 
-Beam grillage with rigid links
+Beam with Rigid Links :func:`beam_link`
 --------------------------------------
-This model is a modified version of beam grillage with the following features:
+This is a modified version of the traditional beam element model with the following features:
 
 * Offsets (in x-z plane) for start and end nodes along direction of transverse members - using joint offset.
 * Offsets (in vertical y direction) for start and end nodes of longitudinal members - again using joint offsets.
@@ -82,8 +82,8 @@ Table 1 outlines the specific variables of :func:`~ospgrillage.osp_grillage.crea
 
 .. _shell hybrid model:
 
-Shell and beam hybrid model
---------------------------------------
+Shell & Beam Elements - :func:`shell_beam`
+--------------------------------------------
 This is a more refined model using two element types - shell and beam elements - with the following features:
 
 * Shell elements lay in grids to represent bridge decks.
@@ -95,15 +95,15 @@ Figure 4 shows the details of the shell beam hybrid model.
 
 ..  figure:: ../../_images/shell_link_idealization.PNG
     :align: center
-    :scale: 75 %
+    :scale: 15 %
 
     Figure 4: Shell beam hybrid model idealization
 
-When **shell** model type is selected, *ospgrillage* automatically determines the position of shell elements within the grillage plane.
+When :func:`shell_beam` model type is selected, *ospgrillage* automatically determines the position of shell elements within the grillage plane.
 Users only have to define and assign the section of the shell element via :func:`~ospgrillage.member.create_section` and
 :func:`~ospgrillage.osp_grillage.OspGrillageShell.set_shell_member` respectively.
 Finally, to create this model, have :func:`~ospgrillage.osp_grillage.create_grillage` keyword for ``model_type`` set to **shell**. In addition,
-users are required to define and assign shell elements. The following example code details the aforementioned steps:
+users are required to define and assign shell elements. The following example code shows the steps to create the shell model type:
 
 .. code-block:: python
 
@@ -132,6 +132,6 @@ Table 2 outlines the variable types in :func:`~ospgrillage.osp_grillage.create_g
        based on this variable and spacing of link nodes
    * - `offset_beam_y_dist`
      - distance between offset beams and grillage shell plane.
-   * - `link_nodes_width`
-     - width between link nodes - left and right links to offset beam elements - in global z direction
+   * - `beam_width`
+     - this determines the width between link nodes - left and right links to offset beam elements - in global z direction
 

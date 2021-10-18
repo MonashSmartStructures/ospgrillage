@@ -96,9 +96,9 @@
 <li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Module%20description.html">Creating grillage models</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Model types available</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#beam-grillage">Beam grillage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#beam-grillage-with-rigid-links">Beam grillage with rigid links</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#shell-and-beam-hybrid-model">Shell and beam hybrid model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#beam-elements-only-beam-only">Beam Elements Only - <code class="xref py py-func docutils literal notranslate"><span class="pre">beam_only()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#beam-with-rigid-links-beam-link">Beam with Rigid Links <code class="xref py py-func docutils literal notranslate"><span class="pre">beam_link()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#shell-beam-elements-shell-beam">Shell &amp; Beam Elements - <code class="xref py py-func docutils literal notranslate"><span class="pre">shell_beam()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Running_analysis.html">Performing analysis</a></li>
@@ -177,9 +177,9 @@
   <div class="section" id="model-types-available">
 <h1>Model types available<a class="headerlink" href="#model-types-available" title="Permalink to this headline">¶</a></h1>
 <p>For all example code in this page, <em>ospgrillage</em> is imported as <code class="docutils literal notranslate"><span class="pre">og</span></code></p>
-<div class="section" id="beam-grillage">
-<h2>Beam grillage<a class="headerlink" href="#beam-grillage" title="Permalink to this headline">¶</a></h2>
-<p>This is the most common form of grillage model which comprise of beam elements lay out in a grid pattern, with:</p>
+<div class="section" id="beam-elements-only-beam-only">
+<h2>Beam Elements Only - <code class="xref py py-func docutils literal notranslate"><span class="pre">beam_only()</span></code><a class="headerlink" href="#beam-elements-only-beam-only" title="Permalink to this headline">¶</a></h2>
+<p>This is the traditional modelling approach of grillage model that comprise of beam elements lay out in a grid pattern, with:</p>
 <ul class="simple">
 <li><p>longitudinal members representing composite section along longitudinal direction (e.g. main beams)</p></li>
 <li><p>transverse members representing slabs or secondary beam sections.</p></li>
@@ -192,11 +192,11 @@
                                 <span class="n">num_long_grid</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">edge_beam_dist</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mesh_type</span><span class="o">=</span><span class="s2">&quot;Ortho&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Information on beam grillage model can be found <a href="#id6"><span class="problematic" id="id7">`here&lt;https://www.steelconstruction.info/Modelling_and_analysis_of_beam_bridges&gt;`_</span></a>.</p>
+<p>General information of this model type can be found <a href="#id6"><span class="problematic" id="id7">`here&lt;https://www.steelconstruction.info/Modelling_and_analysis_of_beam_bridges&gt;`_</span></a>.</p>
 </div>
-<div class="section" id="beam-grillage-with-rigid-links">
-<h2>Beam grillage with rigid links<a class="headerlink" href="#beam-grillage-with-rigid-links" title="Permalink to this headline">¶</a></h2>
-<p>This model is a modified version of beam grillage with the following features:</p>
+<div class="section" id="beam-with-rigid-links-beam-link">
+<h2>Beam with Rigid Links <code class="xref py py-func docutils literal notranslate"><span class="pre">beam_link()</span></code><a class="headerlink" href="#beam-with-rigid-links-beam-link" title="Permalink to this headline">¶</a></h2>
+<p>This is a modified version of the traditional beam element model with the following features:</p>
 <ul class="simple">
 <li><p>Offsets (in x-z plane) for start and end nodes along direction of transverse members - using joint offset.</p></li>
 <li><p>Offsets (in vertical y direction) for start and end nodes of longitudinal members - again using joint offsets.</p></li>
@@ -248,8 +248,8 @@ software - i.e. SPACEGASS.</p>
 <p>As of release 0.1.0, <cite>OpenSeesPy</cite> visualization module ops_vis is unable to visualize the joint offsets.</p>
 </div>
 </div>
-<div class="section" id="shell-and-beam-hybrid-model">
-<span id="shell-hybrid-model"></span><h2>Shell and beam hybrid model<a class="headerlink" href="#shell-and-beam-hybrid-model" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="shell-beam-elements-shell-beam">
+<span id="shell-hybrid-model"></span><h2>Shell &amp; Beam Elements - <code class="xref py py-func docutils literal notranslate"><span class="pre">shell_beam()</span></code><a class="headerlink" href="#shell-beam-elements-shell-beam" title="Permalink to this headline">¶</a></h2>
 <p>This is a more refined model using two element types - shell and beam elements - with the following features:</p>
 <ul class="simple">
 <li><p>Shell elements lay in grids to represent bridge decks.</p></li>
@@ -262,11 +262,11 @@ Figure 4 shows the details of the shell beam hybrid model.</p>
 <a class="reference internal image-reference" href="../_images/shell_link_idealization.PNG"><img alt="../_images/shell_link_idealization.PNG" src="../_images/shell_link_idealization.PNG" /></a>
 <p class="caption"><span class="caption-text">Figure 4: Shell beam hybrid model idealization</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
 </div>
-<p>When <strong>shell</strong> model type is selected, <em>ospgrillage</em> automatically determines the position of shell elements within the grillage plane.
+<p>When <code class="xref py py-func docutils literal notranslate"><span class="pre">shell_beam()</span></code> model type is selected, <em>ospgrillage</em> automatically determines the position of shell elements within the grillage plane.
 Users only have to define and assign the section of the shell element via <code class="xref py py-func docutils literal notranslate"><span class="pre">create_section()</span></code> and
 <code class="xref py py-func docutils literal notranslate"><span class="pre">set_shell_member()</span></code> respectively.
 Finally, to create this model, have <a class="reference internal" href="generated/ospgrillage.osp_grillage.create_grillage.html#ospgrillage.osp_grillage.create_grillage" title="ospgrillage.osp_grillage.create_grillage"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_grillage()</span></code></a> keyword for <code class="docutils literal notranslate"><span class="pre">model_type</span></code> set to <strong>shell</strong>. In addition,
-users are required to define and assign shell elements. The following example code details the aforementioned steps:</p>
+users are required to define and assign shell elements. The following example code shows the steps to create the shell model type:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># create section of shell element</span>
 <span class="n">slab_shell_section</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_section</span><span class="p">(</span><span class="n">h</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span> <span class="c1"># h = thickness</span>
 <span class="c1"># shell elements for slab</span>
@@ -300,8 +300,8 @@ based on this variable and spacing of link nodes</p></td>
 <tr class="row-odd"><td><p><cite>offset_beam_y_dist</cite></p></td>
 <td><p>distance between offset beams and grillage shell plane.</p></td>
 </tr>
-<tr class="row-even"><td><p><cite>link_nodes_width</cite></p></td>
-<td><p>width between link nodes - left and right links to offset beam elements - in global z direction</p></td>
+<tr class="row-even"><td><p><cite>beam_width</cite></p></td>
+<td><p>this determines the width between link nodes - left and right links to offset beam elements - in global z direction</p></td>
 </tr>
 </tbody>
 </table>

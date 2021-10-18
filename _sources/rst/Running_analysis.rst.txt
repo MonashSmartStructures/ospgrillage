@@ -267,7 +267,7 @@ The following example code is two point loads defined as a moving load travellin
 
 .. code-block:: python
 
-    front_wheel = og.create_load_vertices(x=0, z=0, p=6)   # load point 1
+    front_wheel = og.create_load_vertices(x=    0, z=0, p=6)   # load point 1
     back_wheel = og.create_load_vertices(x=-1, z=0, p=6)   # load point 2
     Line = og.create_load(type="line",point1=front_wheel,point2=back_wheel)
     tandem = og.create_compound_load("Two wheel vehicle")

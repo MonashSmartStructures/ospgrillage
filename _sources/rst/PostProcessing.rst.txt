@@ -5,13 +5,14 @@ Getting Results
 For all example code in this page, *ospgrillage* is imported as ``og``
 
 .. code-block:: python
+
     import ospgrillage as og
 
 Extracting results
 --------------------------------------
 
 After analysis, results are obtained using :func:`~ospgrillage.osp_grillage.OspGrillage.get_results` function.
-The following example extracts results for all defined analysis of ``example_bridge``.
+The following example extracts results for all defined analysis of ``example_bridge`` - all results and one of a specific load case only.
 
 .. code-block:: python
 
@@ -42,28 +43,28 @@ The following is printed to terminal after printing ``all_result``:
 Structure of xarray DataSet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Figure 1 shows the structure of the xarray DataSet for results.
+Figure 1 shows the structure of the `xarray` DataSet for results.
 The dataset contains two `xarray DataArray <http://xarray.pydata.org/en/stable/generated/xarray.DataArray.html#xarray.DataArray>`_.
 that represent two groups of load effects:
 
 #. **displacements** i.e. rotation and translations
 #. **forces** e.g. bending about z axis, Shear forces etc.
 
-Following example shows how each DataArray is accessed from **result** DataSet:
+Following example extracts the **displacements** and **forces** DataArray from DataSet:
 
 .. code-block:: python
 
     disp_array = all_result.displacements # displacement components
     force_array = all_result.forces # force components
 
-The third variable present in the DataSet of Figure 1 contains information for element and its respective nodes.
+The third variable **ele_nodes** of the DataSet (Figure 1) contains information for element and its respective nodes.
 
 .. code-block:: python
 
-    ele_array = all_result.ele_nodes # array storing node tags of all elements
+    ele_array = all_result.ele_nodes # store variable array as ele_array
 
-The DataArray for **forces** is grouped according to element types. Depending on :ref:`ModelTemplates`, there can be one or more
-types of elements in the grillage model. For example the **force** DataArrays of a :ref:`shell hybrid model` are recorded in
+The  **forces** DataArray is grouped according to element types. Depending on :ref:`ModelTemplates`, there can be one or more
+types of elements in the grillage model. For example, **force** of a :ref:`shell hybrid model` are recorded in
 two separate DataArrays, namely **forces_beam** and **forces_shell** respectively (Figure 1).
 Similarly, **ele_nodes** will be split into **ele_nodes_beam** and **ele_nodes_shell**.
 
@@ -78,7 +79,7 @@ Accessing and querying data
 
 From the data arrays, users can access various component in each load effect using `xarray`'s data array commands.
 
-Following example extracts the displacement 'dy' component using `xarray`'s ``sel()`` function.
+Following example extracts the displacement 'dy' component using `xarray`'s  function.
 
 .. code-block:: python
 
@@ -91,6 +92,10 @@ Following example shows how to extract results for specific load cases with spec
 
     disp_array.sel(Loadcase="patch load case",Node=20)
     force_array.sel(Loadcase="Barrier", Element=[2,3,4])
+
+As will be needed later, moving load case
+
+
 
 Getting combinations
 --------------------------------------
@@ -189,7 +194,7 @@ Current limitation of `OpenSees` visualization module
 
 `OpenSeesPy`'s visualization module - `ops_vis` - offers comprehensive visualization analysis results in `OpenSees`.
 However, `ops_vis` operates only for a single model instance (and analysis) in `OpenSees`
-framework. In other words, results from xarray DataSet (of :func:`~ospgrillage.osp_grillage.OspGrillage.get_results)
+framework. In other words, results from `xarray` DataSet (of :func:`~ospgrillage.osp_grillage.OspGrillage.get_results)
 cannot be plotted using the current visualization module.
 Additionally, `ops_vis` does not contain enveloping feature across multiple analysis - especially for moving
 load analysis comprise of multiple incremental load case for each moving load position.
@@ -213,7 +218,7 @@ using `ops_vis`:
 
 *ospgrillage* post-processing module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-For users wishing to plot results from xarray DataSet (multiple analysis),
+For users wishing to plot results from `xarray` DataSet (multiple analysis),
 *ospgrillage* contains a dedicated post-processing module as of version 0.1.0 to visualize these results.
 
 .. note::
@@ -234,7 +239,7 @@ and its :class:`~ospgrillage.osp_grillage.OspGrillage` object is defined as ``br
     Figure 1: 28 m super-T bridge model.
 
 
-To plot deflection components from ``displacement`` DataArray, use :func:`~ospgrillage.postprocessing.plot_defo`. To use this function
+To plot deflection components from **displacement** DataArray, use :func:`~ospgrillage.postprocessing.plot_defo`. To use this function
 users need to specify the specific grillage member - this function returns a 2-D plot of displacement diagram.
 Following example plots the vertical deflection of ``bridge_28``, for "exterior_main_beam_2" member - plot shown in
 Figure 2:
@@ -250,7 +255,7 @@ Figure 2:
     Figure 2: Deflected shape of of exterior main beam 2.
 
 
-To plot force components from ``forces`` DataArray, use :func:`~ospgrillage.postprocessing.plot_force`. Similar to
+To plot force components from **forces** DataArray, use :func:`~ospgrillage.postprocessing.plot_force`. Similar to
 :func:`~ospgrillage.postprocessing.plot_defo`, users need to specify name string of specific grillage member.
 Following example plots the bending moment "Mz" of "exterior_main_beam_2" in ``bridge_28`` - plot shown in Figure 3:
 
