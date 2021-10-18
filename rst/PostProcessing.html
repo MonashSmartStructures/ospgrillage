@@ -248,8 +248,9 @@ Similarly, <strong>ele_nodes</strong> will be split into <strong>ele_nodes_beam<
 </div>
 </div>
 <div class="section" id="accessing-and-querying-data">
-<h3>Accessing and querying data<a class="headerlink" href="#accessing-and-querying-data" title="Permalink to this headline">¶</a></h3>
-<p>From the data arrays, users can access various component in each load effect using <cite>xarray</cite>’s data array commands.</p>
+<span id="access-results"></span><h3>Accessing and querying data<a class="headerlink" href="#accessing-and-querying-data" title="Permalink to this headline">¶</a></h3>
+<p>From the data arrays, users can access various component in each load effect using <cite>xarray</cite>’s data array commands.
+Information on indexing and selecting DataArray data can be found <a href="#id9"><span class="problematic" id="id10">`here&lt;http://xarray.pydata.org/en/stable/user-guide/indexing.html&gt;`_</span></a></p>
 <p>Following example extracts the displacement ‘dy’ component using <cite>xarray</cite>’s  function.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">disp_array</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Component</span><span class="o">=</span><span class="s1">&#39;dy&#39;</span><span class="p">)</span> <span class="c1"># select data of &quot;dy&quot;</span>
 <span class="n">force_array</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Component</span><span class="o">=</span><span class="s1">&#39;Mz_i&#39;</span><span class="p">)</span> <span class="c1"># select data of &quot;Mz_i&quot;</span>
@@ -260,12 +261,22 @@ Similarly, <strong>ele_nodes</strong> will be split into <strong>ele_nodes_beam<
 <span class="n">force_array</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Loadcase</span><span class="o">=</span><span class="s2">&quot;Barrier&quot;</span><span class="p">,</span> <span class="n">Element</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
 </pre></div>
 </div>
-<p id="moving-load-results">As will be needed later, moving load case are defined by the name string of the load case.</p>
-<p>Following example shows how to extract the results</p>
+<p>If the load case is part of a <a class="reference internal" href="Running_analysis.html#moving-load"><span class="std std-ref">Moving loads</span></a> i.e. an incremental load cases, there are several ways to lookup the respective
+incremental load case. Following example shows the various method of <cite>xarray</cite> to extract and select <strong>force</strong> data:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">by_name</span> <span class="o">=</span> <span class="n">force_array</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Loadcase</span><span class="o">=</span><span class="s2">&quot;patch load case at global position [0,0,0]&quot;</span><span class="p">)</span> <span class="c1"># by load case name</span>
+<span class="n">by_index</span> <span class="o">=</span> <span class="n">force_array</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">Loadcase</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># by indexing</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The nomenclature of incremental load cases are generated automatically by <em>ospgrillage</em>, with
+load case name followed by “at global position [x,y,z]” where <cite>x</cite>,`y`,`z` are the positions of the moving load/ compound load with
+respect to the global grillage coordinate.</p>
+</div>
 </div>
 </div>
 <div class="section" id="getting-combinations">
-<h2>Getting combinations<a class="headerlink" href="#getting-combinations" title="Permalink to this headline">¶</a></h2>
+<span id="load-combinations"></span><h2>Getting combinations<a class="headerlink" href="#getting-combinations" title="Permalink to this headline">¶</a></h2>
 <p>Load combinations are computed on the fly in <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_results()</span></code></a> by specifying a keyword argument for <code class="docutils literal notranslate"><span class="pre">combinations</span></code>.
 The keyword argument accepts a <code class="docutils literal notranslate"><span class="pre">dict</span></code> with load case name strings as key, and corresponding load factor as value. The returned DataArray
 will have load case multiplied by prescribed load factors and summed along the load case dimension (for each load case in load combination).</p>

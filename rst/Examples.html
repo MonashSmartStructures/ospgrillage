@@ -200,7 +200,7 @@ the LUSAS commercial software is used to create the grillage model. Figure 1 sho
 <div class="section" id="creating-the-grillage">
 <h3>Creating the grillage<a class="headerlink" href="#creating-the-grillage" title="Permalink to this headline">¶</a></h3>
 <p>For this example, the five super-T beams and two edge beams (parapets) of Figure 1 are being modelled similar to Caprani et al. (2017)
-- for this the number of longitudinal and transverse grid lines are 7 and 11 respectively.</p>
+- with the number of longitudinal and transverse grid lines being 7 and 11 respectively.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">ospgrillage</span> <span class="k">as</span> <span class="nn">og</span>
 
@@ -451,7 +451,7 @@ lusas plot</p>
 </div>
 <div class="section" id="extract-and-process-moving-load-results">
 <h3>Extract and process moving load results<a class="headerlink" href="#extract-and-process-moving-load-results" title="Permalink to this headline">¶</a></h3>
-<p>Here we extract the moving load case and process the <span class="xref std std-ref">moving load results</span>.</p>
+<p>Here we <a class="reference internal" href="PostProcessing.html#access-results"><span class="std std-ref">Accessing and querying data</span></a> of the moving load case.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># call the results and</span>
 <span class="n">move_results</span> <span class="o">=</span> <span class="n">simple_grid</span><span class="o">.</span><span class="n">get_results</span><span class="p">(</span><span class="n">load_case</span><span class="o">=</span><span class="s2">&quot;Moving Two Axle Truck&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">move_results</span><span class="p">)</span>
@@ -542,7 +542,7 @@ mid-span, i.e. element 84 to 90 in Figure 1:</p>
 <span class="c1"># create grillage - shell model variant</span>
 <span class="n">simple_grid</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_grillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;Super-T 33_5m&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="n">L</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">skew</span><span class="o">=</span><span class="n">angle</span><span class="p">,</span>
                                <span class="n">num_long_grid</span><span class="o">=</span><span class="n">n_l</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="n">n_t</span><span class="p">,</span> <span class="n">edge_beam_dist</span><span class="o">=</span><span class="n">edge_dist</span><span class="p">,</span>
-                               <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;shell&quot;</span><span class="p">,</span> <span class="n">max_mesh_size_z</span><span class="o">=</span><span class="n">max_mesh_size_z</span><span class="p">,</span><span class="n">max_mesh_size_x</span><span class="o">=</span><span class="n">max_mesh_size_x</span><span class="p">,</span>
+                               <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;shell_beam&quot;</span><span class="p">,</span> <span class="n">max_mesh_size_z</span><span class="o">=</span><span class="n">max_mesh_size_z</span><span class="p">,</span><span class="n">max_mesh_size_x</span><span class="o">=</span><span class="n">max_mesh_size_x</span><span class="p">,</span>
                                <span class="n">offset_beam_y_dist</span><span class="o">=</span><span class="n">offset_beam_y</span><span class="p">,</span><span class="n">link_nodes_width</span><span class="o">=</span><span class="n">link_nodes_width</span><span class="p">)</span>
 
 <span class="c1"># assign grillage member to element groups of grillage model</span>

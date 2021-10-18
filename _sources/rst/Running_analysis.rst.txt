@@ -249,11 +249,12 @@ Users repeat this step for any defined load cases.
 
     example_bridge.add_load_case(DL)  # adding this load case to grillage model
 
+.. _Moving load:
 
 Moving loads
 ------------------------
 For moving load analysis, users create moving load objects using :class:`~ospgrillage.load.MovingLoad` class. The moving load class takes a load type object (`Point`_, `Line`_, `Patch`_, `Compound load`_) and moves the load
-through a path points described by a :class:`Path` object and obtained by the ``get_path_points()`` method. 
+through a path points described by a :class:`Path` object and obtained by the :func:`get_path_points` method.
 Path are defined using two namedTuple :class:`Point(x,y,z)` to describe its start and end position. Figure 6 summarizes the relationship between moving loads
 , paths and the position of the loads on the grillage model.
 
@@ -278,9 +279,9 @@ The following example code is two point loads defined as a moving load travellin
     move_line.set_path(single_path)   # set path
     move_line.add_loads(load_obj=Line)  # add compound load to moving load
 
-:attr:`
+
 From here, use the :func:`~ospgrillage.osp_grillage.OspGrillage.add_load_case` function of the :class:`OspGrillage` to add the moving load. Here, the function automatically
-creates multiple `load cases`_ which corresponds to the load condition as the load moves through each increment of the path.
+creates multiple incremental `load cases`_ each of which corresponds to the incremental load positions along the moving path.
 
 .. code-block:: python
 
