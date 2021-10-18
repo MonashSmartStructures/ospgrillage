@@ -190,6 +190,9 @@
 <h1>Performing analysis<a class="headerlink" href="#performing-analysis" title="Permalink to this headline">¶</a></h1>
 <p><em>ospgrillage</em> contains a load module which wraps <cite>OpenSeesPy</cite> commands to perform load analysis.</p>
 <p>For all example code in this page, <em>ospgrillage</em> is imported as <code class="docutils literal notranslate"><span class="pre">og</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ospgrillage</span> <span class="k">as</span> <span class="nn">og</span>
+</pre></div>
+</div>
 <div class="section" id="load-analysis-workflow">
 <h2>Load analysis workflow<a class="headerlink" href="#load-analysis-workflow" title="Permalink to this headline">¶</a></h2>
 <p>Figure 1 shows the flowchart for the load module of <em>ospgrillage</em>.</p>
@@ -382,7 +385,8 @@ Path are defined using two namedTuple <code class="xref py py-class docutils lit
 <span class="n">move_line</span><span class="o">.</span><span class="n">add_loads</span><span class="p">(</span><span class="n">load_obj</span><span class="o">=</span><span class="n">Line</span><span class="p">)</span>  <span class="c1"># add compound load to moving load</span>
 </pre></div>
 </div>
-<p>From here, use the <a class="reference internal" href="OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage.add_load_case" title="ospgrillage.osp_grillage.OspGrillage.add_load_case"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_load_case()</span></code></a> function of the <code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code> to add the moving load. Here, the function automatically
+<p>:attr:`
+From here, use the <a class="reference internal" href="OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage.add_load_case" title="ospgrillage.osp_grillage.OspGrillage.add_load_case"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_load_case()</span></code></a> function of the <code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code> to add the moving load. Here, the function automatically
 creates multiple <a class="reference internal" href="#load-cases">load cases</a> which corresponds to the load condition as the load moves through each increment of the path.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span><span class="o">.</span><span class="n">add_load_case</span><span class="p">(</span><span class="n">move_point</span><span class="p">)</span>
 </pre></div>

@@ -5,8 +5,8 @@ Here are some examples of what you can do with *ospgrillage* module.
 
 Super T bridge model
 ------------------------------------------------------------
-This example reproduces a bridge grillage model of a super-T bridge from Caprani et al. (2017). In that study,
-a numerical model was constructed in commercial software i.e. LUSAS. Figure 1 shows the Super-T deck cross-section.
+This example reproduces the grillage model of a super-T bridge from Caprani et al. (2017). In that study,
+the LUSAS commercial software is used to create the grillage model. Figure 1 shows the Super-T deck cross-section.
 
 ..  figure:: ../../_images/example_cross_section.PNG
     :align: center
@@ -18,8 +18,8 @@ a numerical model was constructed in commercial software i.e. LUSAS. Figure 1 sh
 Creating the grillage
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-In this example, the five super-T beam and two edge beams (parapets) of Figure 1 are modelled  - here the number of
-longitudinal and transverse grid lines used are 7 and 11 respectively.
+For this example, the five super-T beams and two edge beams (parapets) of Figure 1 are being modelled similar to Caprani et al. (2017)
+- for this the number of longitudinal and transverse grid lines are 7 and 11 respectively.
 
 .. code-block:: python
 
@@ -303,7 +303,7 @@ Here we sum the nodal forces from the mid span - `i` node
 
 Extract and process moving load results
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Here we extract only the moving load case and process its results.
+Here we extract the moving load case and process the :ref:`moving load results`.
 
 .. code-block:: python
 

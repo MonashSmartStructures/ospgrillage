@@ -191,16 +191,16 @@
 <p>Here are some examples of what you can do with <em>ospgrillage</em> module.</p>
 <div class="section" id="super-t-bridge-model">
 <h2>Super T bridge model<a class="headerlink" href="#super-t-bridge-model" title="Permalink to this headline">¶</a></h2>
-<p>This example reproduces a bridge grillage model of a super-T bridge from Caprani et al. (2017). In that study,
-a numerical model was constructed in commercial software i.e. LUSAS. Figure 1 shows the Super-T deck cross-section.</p>
+<p>This example reproduces the grillage model of a super-T bridge from Caprani et al. (2017). In that study,
+the LUSAS commercial software is used to create the grillage model. Figure 1 shows the Super-T deck cross-section.</p>
 <div class="figure align-center" id="id1">
 <a class="reference internal image-reference" href="../_images/example_cross_section.PNG"><img alt="../_images/example_cross_section.PNG" src="../_images/example_cross_section.PNG" /></a>
 <p class="caption"><span class="caption-text">Figure 1: Super-T deck cross section (after Caprani et al., 2017).</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </div>
 <div class="section" id="creating-the-grillage">
 <h3>Creating the grillage<a class="headerlink" href="#creating-the-grillage" title="Permalink to this headline">¶</a></h3>
-<p>In this example, the five super-T beam and two edge beams (parapets) of Figure 1 are modelled  - here the number of
-longitudinal and transverse grid lines used are 7 and 11 respectively.</p>
+<p>For this example, the five super-T beams and two edge beams (parapets) of Figure 1 are being modelled similar to Caprani et al. (2017)
+- for this the number of longitudinal and transverse grid lines are 7 and 11 respectively.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">ospgrillage</span> <span class="k">as</span> <span class="nn">og</span>
 
@@ -451,7 +451,7 @@ lusas plot</p>
 </div>
 <div class="section" id="extract-and-process-moving-load-results">
 <h3>Extract and process moving load results<a class="headerlink" href="#extract-and-process-moving-load-results" title="Permalink to this headline">¶</a></h3>
-<p>Here we extract only the moving load case and process its results.</p>
+<p>Here we extract the moving load case and process the <span class="xref std std-ref">moving load results</span>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># call the results and</span>
 <span class="n">move_results</span> <span class="o">=</span> <span class="n">simple_grid</span><span class="o">.</span><span class="n">get_results</span><span class="p">(</span><span class="n">load_case</span><span class="o">=</span><span class="s2">&quot;Moving Two Axle Truck&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">move_results</span><span class="p">)</span>

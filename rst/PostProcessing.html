@@ -239,7 +239,7 @@ that represent two groups of load effects:</p>
 </pre></div>
 </div>
 <p>The  <strong>forces</strong> DataArray is grouped according to element types. Depending on <span class="xref std std-ref">ModelTemplates</span>, there can be one or more
-types of elements in the grillage model. For example, <strong>force</strong> of a <a class="reference internal" href="ModelTemplates.html#shell-hybrid-model"><span class="std std-ref">Shell &amp; Beam Elements - shell_beam()</span></a> are recorded in
+types of elements in the grillage model. For example, <strong>force</strong> of a <a class="reference internal" href="ModelTemplates.html#shell-hybrid-model"><span class="std std-ref">Shell &amp; Beam Elements - shell_beam</span></a> are recorded in
 two separate DataArrays, namely <strong>forces_beam</strong> and <strong>forces_shell</strong> respectively (Figure 1).
 Similarly, <strong>ele_nodes</strong> will be split into <strong>ele_nodes_beam</strong> and <strong>ele_nodes_shell</strong>.</p>
 <div class="figure align-center" id="id5">
@@ -260,7 +260,8 @@ Similarly, <strong>ele_nodes</strong> will be split into <strong>ele_nodes_beam<
 <span class="n">force_array</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Loadcase</span><span class="o">=</span><span class="s2">&quot;Barrier&quot;</span><span class="p">,</span> <span class="n">Element</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
 </pre></div>
 </div>
-<p>As will be needed later, moving load case</p>
+<p id="moving-load-results">As will be needed later, moving load case are defined by the name string of the load case.</p>
+<p>Following example shows how to extract the results</p>
 </div>
 </div>
 <div class="section" id="getting-combinations">
