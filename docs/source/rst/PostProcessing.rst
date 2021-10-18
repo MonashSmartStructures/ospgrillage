@@ -74,10 +74,13 @@ Similarly, **ele_nodes** will be split into **ele_nodes_beam** and **ele_nodes_s
 
     Figure 1: Structure of DataSet.
 
+.. _access results:
+
 Accessing and querying data
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 From the data arrays, users can access various component in each load effect using `xarray`'s data array commands.
+Information on indexing and selecting DataArray data can be found `here<http://xarray.pydata.org/en/stable/user-guide/indexing.html>`_
 
 Following example extracts the displacement 'dy' component using `xarray`'s  function.
 
@@ -93,15 +96,24 @@ Following example shows how to extract results for specific load cases with spec
     disp_array.sel(Loadcase="patch load case",Node=20)
     force_array.sel(Loadcase="Barrier", Element=[2,3,4])
 
-.. _moving load results:
 
-As will be needed later, moving load case are defined by the name string of the load case.
+If the load case is part of a :ref:`Moving load` i.e. an incremental load cases, there are several ways to lookup the respective
+incremental load case. Following example shows the various method of `xarray` to extract and select **force** data:
+
+.. code-block:: python
+
+    by_name = force_array.sel(Loadcase="patch load case at global position [0,0,0]") # by load case name
+    by_index = force_array.isel(Loadcase = 0)  # by indexing
 
 
+.. note::
 
-Following example shows how to extract the results
+    The nomenclature of incremental load cases are generated automatically by *ospgrillage*, with
+    load case name followed by "at global position [x,y,z]" where `x`,`y`,`z` are the positions of the moving load/ compound load with
+    respect to the global grillage coordinate.
 
 
+.. _load combinations:
 
 Getting combinations
 --------------------------------------

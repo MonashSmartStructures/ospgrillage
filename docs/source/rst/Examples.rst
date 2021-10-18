@@ -19,7 +19,7 @@ Creating the grillage
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 For this example, the five super-T beams and two edge beams (parapets) of Figure 1 are being modelled similar to Caprani et al. (2017)
-- for this the number of longitudinal and transverse grid lines are 7 and 11 respectively.
+- with the number of longitudinal and transverse grid lines being 7 and 11 respectively.
 
 .. code-block:: python
 
@@ -303,7 +303,7 @@ Here we sum the nodal forces from the mid span - `i` node
 
 Extract and process moving load results
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Here we extract the moving load case and process the :ref:`moving load results`.
+Here we :ref:`access results` of the moving load case.
 
 .. code-block:: python
 
@@ -405,7 +405,7 @@ Here we recreate the previous 33.5 m super-T bridge using the shell hybrid model
     # create grillage - shell model variant
     simple_grid = og.create_grillage(bridge_name="Super-T 33_5m", long_dim=L, width=w, skew=angle,
                                    num_long_grid=n_l, num_trans_grid=n_t, edge_beam_dist=edge_dist,
-                                   model_type="shell", max_mesh_size_z=max_mesh_size_z,max_mesh_size_x=max_mesh_size_x,
+                                   model_type="shell_beam", max_mesh_size_z=max_mesh_size_z,max_mesh_size_x=max_mesh_size_x,
                                    offset_beam_y_dist=offset_beam_y,link_nodes_width=link_nodes_width)
 
     # assign grillage member to element groups of grillage model
