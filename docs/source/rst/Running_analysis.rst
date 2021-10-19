@@ -138,6 +138,7 @@ Using eight tuples allows a curve surface loading profile.
 ..  figure:: ../../_images/patch.png
     :align: center
     :scale: 10 %
+    :width: 700
 
     Figure 4: Patch load
 
@@ -173,7 +174,6 @@ shows the relationship and process of mapping local to global system of a compou
 ..  figure:: ../../_images/compoundload.png
     :align: center
     :scale: 75 %
-    :width: 400
 
     Figure 5: Compound load
 
