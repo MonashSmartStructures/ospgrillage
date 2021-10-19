@@ -108,7 +108,7 @@ incremental load case. Following example shows the various method of `xarray` to
 
 .. note::
 
-    The nomenclature of incremental load cases are generated automatically by *ospgrillage*, with
+    For moving load, the nomenclature of incremental load cases are generated automatically by *ospgrillage*, with
     load case name followed by "at global position [x,y,z]" where `x`,`y`,`z` are the positions of the moving load/ compound load with
     respect to the global grillage coordinate.
 

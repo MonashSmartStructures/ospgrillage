@@ -12,7 +12,7 @@ Workflow overview
 
 Figure 1 summarizes the workflow of creating a grillage model using *ospgrillage*.
 
-..  figure:: ../../_images/flowchart1.png
+..  figure:: ../../_images/grillage_workflow.png
     :align: center
     :scale: 50 %
 
@@ -107,7 +107,7 @@ The following code shows how a concrete material can be created using keyword ar
 
 .. code-block:: python
 
-    concrete = og.create_material(E=30*Giga*Pa, G = 20*Giga*Pa, v= 0.2)
+    concrete = og.create_material(E=30*GPa, G = 20*GPa, v= 0.2)
 
 This command wraps OpenSees material commands and chooses the appropriate material model in OpenSees to represent the material.
 For example, *Concrete01* and *Steel01* of OpenSees library is used to represent most concrete and steel material.
@@ -190,7 +190,7 @@ The :class:`~ospgrillage.osp_grillage.OspGrillage` class takes the following key
 
 Figure 4 shows how the grid numbers and skew angles affects the output mesh of grillage model.
 
-..  figure:: ../../_images/edge_angles.PNG
+..  figure:: ../../_images/grillage_dimensions.PNG
     :align: center
     :scale: 75 %
 

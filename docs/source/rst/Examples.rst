@@ -309,7 +309,6 @@ Here we :ref:`access results` of the moving load case.
 
     # call the results and
     move_results = simple_grid.get_results(load_case="Moving Two Axle Truck")
-    print(move_results)
 
 One can query results at specific position of the moving load by looking up the index of load case. The following example
 we query the bending moment about z-axis component, with

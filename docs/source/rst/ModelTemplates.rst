@@ -92,7 +92,7 @@ This is a more refined model using two element types - shell and beam elements -
 This model has advantageous in modelling slabs using shell elements which are well-suited to represent two-dimensional slab behaviour.
 Figure 4 shows the details of the shell beam hybrid model.
 
-..  figure:: ../../_images/shell_link_idealization.PNG
+..  figure:: ../../_images/shell_beam_idealization.PNG
     :align: center
     :scale: 15 %
 
