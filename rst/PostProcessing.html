@@ -243,7 +243,7 @@ types of elements in the grillage model. For example, <strong>force</strong> of 
 two separate DataArrays, namely <strong>forces_beam</strong> and <strong>forces_shell</strong> respectively (Figure 1).
 Similarly, <strong>ele_nodes</strong> will be split into <strong>ele_nodes_beam</strong> and <strong>ele_nodes_shell</strong>.</p>
 <div class="figure align-center" id="id5">
-<a class="reference internal image-reference" href="../_images/structure_dataset.PNG"><img alt="../_images/structure_dataset.PNG" src="../_images/structure_dataset.PNG" /></a>
+<a class="reference internal image-reference" href="../_images/structure_dataset.png"><img alt="../_images/structure_dataset.png" src="../_images/structure_dataset.png" /></a>
 <p class="caption"><span class="caption-text">Figure 1: Structure of DataSet.</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
 </div>
 </div>
@@ -252,11 +252,11 @@ Similarly, <strong>ele_nodes</strong> will be split into <strong>ele_nodes_beam<
 <p>From the data arrays, users can access various component in each load effect using <cite>xarray</cite>’s data array commands.
 Information on indexing and selecting DataArray data can be found <a href="#id9"><span class="problematic" id="id10">`here&lt;http://xarray.pydata.org/en/stable/user-guide/indexing.html&gt;`_</span></a></p>
 <p>Following example extracts the displacement ‘dy’ component using <cite>xarray</cite>’s  function.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">disp_array</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Component</span><span class="o">=</span><span class="s1">&#39;dy&#39;</span><span class="p">)</span> <span class="c1"># select data of &quot;dy&quot;</span>
-<span class="n">force_array</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Component</span><span class="o">=</span><span class="s1">&#39;Mz_i&#39;</span><span class="p">)</span> <span class="c1"># select data of &quot;Mz_i&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">disp_array</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Component</span><span class="o">=</span><span class="s1">&#39;dy&#39;</span><span class="p">)</span> <span class="c1"># selecting &quot;dy&quot; component</span>
+<span class="n">force_array</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Component</span><span class="o">=</span><span class="s1">&#39;Mz_i&#39;</span><span class="p">)</span> <span class="c1"># selecting &quot;Mz_i&quot; component</span>
 </pre></div>
 </div>
-<p>Following example shows how to extract results for specific load cases with specific element/node:</p>
+<p>Following example shows how to extract results for specific load cases of specific element/node:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">disp_array</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Loadcase</span><span class="o">=</span><span class="s2">&quot;patch load case&quot;</span><span class="p">,</span><span class="n">Node</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 <span class="n">force_array</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Loadcase</span><span class="o">=</span><span class="s2">&quot;Barrier&quot;</span><span class="p">,</span> <span class="n">Element</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
 </pre></div>
@@ -270,7 +270,7 @@ incremental load case. Following example shows the various method of <cite>xarra
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>For moving load, the nomenclature of incremental load cases are generated automatically by <em>ospgrillage</em>, with
-load case name followed by “at global position [x,y,z]” where <cite>x</cite>,`y`,`z` are the positions of the moving load/ compound load with
+load case name followed by “at global position [x,y,z]” where <cite>x</cite>, <cite>y</cite> , <cite>z</cite> are the positions of the moving load/ compound load with
 respect to the global grillage coordinate.</p>
 </div>
 </div>
@@ -310,14 +310,14 @@ incremental load case of the moving load.</p>
 <h2>Getting load envelope<a class="headerlink" href="#getting-load-envelope" title="Permalink to this headline">¶</a></h2>
 <p>Load envelope is generated from load combination results for extrema of load effect using <a class="reference internal" href="generated/ospgrillage.postprocessing.create_envelope.html#ospgrillage.postprocessing.create_envelope" title="ospgrillage.postprocessing.create_envelope"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_envelope()</span></code></a> function.
 Envelope are chosen based on user selected component (<em>array</em> keyword) as either “displacements” or “forces”, extrema as either maximum or minimum,
-and load effect component (e.g. “dy” for displacements). The following example uses creates a <a class="reference internal" href="APIdoc.html#ospgrillage.postprocessing.Envelope" title="ospgrillage.postprocessing.Envelope"><code class="xref py py-func docutils literal notranslate"><span class="pre">Envelope()</span></code></a> object
+and load effect component (e.g. “dy” for displacements). The following example uses creates a <a class="reference internal" href="APIdoc.html#ospgrillage.postprocessing.Envelope" title="ospgrillage.postprocessing.Envelope"><code class="xref py py-class docutils literal notranslate"><span class="pre">Envelope</span></code></a> object
 and uses its class function to <a class="reference internal" href="APIdoc.html#ospgrillage.postprocessing.Envelope.get" title="ospgrillage.postprocessing.Envelope.get"><code class="xref py py-func docutils literal notranslate"><span class="pre">get()</span></code></a> the enveloped DataArray:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">envelope</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_envelope</span><span class="p">(</span><span class="n">ds</span><span class="o">=</span><span class="n">comb_results</span><span class="p">,</span><span class="n">load_effect</span><span class="o">=</span><span class="s2">&quot;dy&quot;</span><span class="p">,</span><span class="n">array</span><span class="o">=</span><span class="s2">&quot;displacements&quot;</span><span class="p">)</span> <span class="c1"># creates the envelope obj</span>
 <span class="n">disp_env</span> <span class="o">=</span> <span class="n">envelope</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="c1"># output the created envelope of xarray</span>
 </pre></div>
 </div>
-<p>For more information on the inputs, see <a class="reference internal" href="generated/ospgrillage.postprocessing.create_envelope.html#ospgrillage.postprocessing.create_envelope" title="ospgrillage.postprocessing.create_envelope"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_envelope()</span></code></a>.</p>
-<p>The following is printed to the terminal.</p>
+<p>By default, <a class="reference internal" href="APIdoc.html#ospgrillage.postprocessing.Envelope" title="ospgrillage.postprocessing.Envelope"><code class="xref py py-class docutils literal notranslate"><span class="pre">Envelope</span></code></a> is in query mode whereby the load case corresponding to the maxima
+are returned. The following is printed to the terminal when <code class="docutils literal notranslate"><span class="pre">disp_env</span></code> is printed:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">xarray</span><span class="o">.</span><span class="n">DataArray</span> <span class="s1">&#39;Loadcase&#39;</span> <span class="p">(</span><span class="n">Node</span><span class="p">:</span> <span class="mi">77</span><span class="p">,</span> <span class="n">Component</span><span class="p">:</span> <span class="mi">18</span><span class="p">)</span><span class="o">&gt;</span>
 <span class="n">array</span><span class="p">([[</span><span class="n">nan</span><span class="p">,</span> <span class="n">nan</span><span class="p">,</span> <span class="n">nan</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span>
         <span class="s1">&#39;single_moving_point at global position [2.00,0.00,2.00]&#39;</span><span class="p">,</span>
@@ -334,6 +334,7 @@ and uses its class function to <a class="reference internal" href="APIdoc.html#o
   <span class="o">*</span> <span class="n">Node</span>       <span class="p">(</span><span class="n">Node</span><span class="p">)</span> <span class="n">int32</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span> <span class="mi">8</span> <span class="mi">9</span> <span class="mi">10</span> <span class="o">...</span> <span class="mi">69</span> <span class="mi">70</span> <span class="mi">71</span> <span class="mi">72</span> <span class="mi">73</span> <span class="mi">74</span> <span class="mi">75</span> <span class="mi">76</span> <span class="mi">77</span>
 </pre></div>
 </div>
+<p>For more information on the inputs and options, see <a class="reference internal" href="generated/ospgrillage.postprocessing.create_envelope.html#ospgrillage.postprocessing.create_envelope" title="ospgrillage.postprocessing.create_envelope"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_envelope()</span></code></a>.</p>
 </div>
 <div class="section" id="getting-specific-properties-of-model">
 <h2>Getting specific properties of model<a class="headerlink" href="#getting-specific-properties-of-model" title="Permalink to this headline">¶</a></h2>

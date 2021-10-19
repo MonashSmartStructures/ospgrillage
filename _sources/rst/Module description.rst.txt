@@ -190,7 +190,7 @@ The :class:`~ospgrillage.osp_grillage.OspGrillage` class takes the following key
 
 Figure 4 shows how the grid numbers and skew angles affects the output mesh of grillage model.
 
-..  figure:: ../../_images/grillage_dimensions.PNG
+..  figure:: ../../_images/grillage_dimensions.png
     :align: center
     :scale: 75 %
 

@@ -68,7 +68,7 @@ types of elements in the grillage model. For example, **force** of a :ref:`shell
 two separate DataArrays, namely **forces_beam** and **forces_shell** respectively (Figure 1).
 Similarly, **ele_nodes** will be split into **ele_nodes_beam** and **ele_nodes_shell**.
 
-..  figure:: ../../_images/structure_dataset.PNG
+..  figure:: ../../_images/structure_dataset.png
     :align: center
     :scale: 75 %
 
@@ -86,10 +86,10 @@ Following example extracts the displacement 'dy' component using `xarray`'s  fun
 
 .. code-block:: python
 
-    disp_array.sel(Component='dy') # select data of "dy"
-    force_array.sel(Component='Mz_i') # select data of "Mz_i"
+    disp_array.sel(Component='dy') # selecting "dy" component
+    force_array.sel(Component='Mz_i') # selecting "Mz_i" component
 
-Following example shows how to extract results for specific load cases with specific element/node:
+Following example shows how to extract results for specific load cases of specific element/node:
 
 .. code-block:: python
 
@@ -109,7 +109,7 @@ incremental load case. Following example shows the various method of `xarray` to
 .. note::
 
     For moving load, the nomenclature of incremental load cases are generated automatically by *ospgrillage*, with
-    load case name followed by "at global position [x,y,z]" where `x`,`y`,`z` are the positions of the moving load/ compound load with
+    load case name followed by "at global position [x,y,z]" where `x`, `y` , `z` are the positions of the moving load/ compound load with
     respect to the global grillage coordinate.
 
 
@@ -157,7 +157,7 @@ Getting load envelope
 --------------------------------------
 Load envelope is generated from load combination results for extrema of load effect using :func:`~ospgrillage.postprocessing.create_envelope` function.
 Envelope are chosen based on user selected component (*array* keyword) as either "displacements" or "forces", extrema as either maximum or minimum,
-and load effect component (e.g. "dy" for displacements). The following example uses creates a :func:`~ospgrillage.postprocessing.Envelope` object
+and load effect component (e.g. "dy" for displacements). The following example uses creates a :class:`~ospgrillage.postprocessing.Envelope` object
 and uses its class function to :func:`~ospgrillage.postprocessing.Envelope.get` the enveloped DataArray:
 
 .. code-block:: python
@@ -165,9 +165,9 @@ and uses its class function to :func:`~ospgrillage.postprocessing.Envelope.get` 
     envelope = og.create_envelope(ds=comb_results,load_effect="dy",array="displacements") # creates the envelope obj
     disp_env = envelope.get() # output the created envelope of xarray
 
-For more information on the inputs, see :func:`~ospgrillage.postprocessing.create_envelope`.
 
-The following is printed to the terminal.
+By default, :class:`~ospgrillage.postprocessing.Envelope` is in query mode whereby the load case corresponding to the maxima
+are returned. The following is printed to the terminal when ``disp_env`` is printed:
 
 .. code-block:: python
 
@@ -185,6 +185,9 @@ The following is printed to the terminal.
     Coordinates:
       * Component  (Component) <U7 'Mx_i' 'Mx_j' 'My_i' ... 'theta_y' 'theta_z'
       * Node       (Node) int32 1 2 3 4 5 6 7 8 9 10 ... 69 70 71 72 73 74 75 76 77
+
+
+For more information on the inputs and options, see :func:`~ospgrillage.postprocessing.create_envelope`.
 
 
 Getting specific properties of model
