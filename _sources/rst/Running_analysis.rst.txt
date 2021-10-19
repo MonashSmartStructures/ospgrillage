@@ -137,7 +137,7 @@ Using eight tuples allows a curve surface loading profile.
 
 ..  figure:: ../../_images/patch.png
     :align: center
-    :scale: 10 %
+    :scale: 50 %
     :width: 700
 
     Figure 4: Patch load
