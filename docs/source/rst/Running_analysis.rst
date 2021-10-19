@@ -76,9 +76,9 @@ Point loads are created using :func:`~ospgrillage.load.create_load`, passing ``t
 Point load takes only a single `LoadPoint` tuple. `p` in the tuple should have units of force (eg. N, kN, kips, etc)
 - see Figure 2.
 
-..  figure:: ../../_images/pointload.png
+..  figure:: ../../_images/point.png
     :align: center
-    :scale: 50 %
+    :scale: 20 %
 
     Figure 2: Point load
 
@@ -102,9 +102,9 @@ Line loads are instantiated with :func:`~ospgrillage.load.create_load` passing `
 Using more than two tuples allows a curve line loading profile.
 `p` in the :class:`LoadPoint` tuple should have units of force per distance (eg. kN/m, kips/ft, etc).
 
-..  figure:: ../../_images/lineload.png
+..  figure:: ../../_images/line.png
     :align: center
-    :scale: 50 %
+    :scale: 10 %
 
     Figure 3: Line load
 
@@ -135,9 +135,9 @@ Using eight tuples allows a curve surface loading profile.
 `p` in the :class:`LoadPoint` tuple should have units of force per area.
 
 
-..  figure:: ../../_images/patchload.png
+..  figure:: ../../_images/patch.png
     :align: center
-    :scale: 50 %
+    :scale: 10 %
 
     Figure 4: Patch load
 
@@ -173,6 +173,7 @@ shows the relationship and process of mapping local to global system of a compou
 ..  figure:: ../../_images/compoundload.png
     :align: center
     :scale: 75 %
+    :width: 400
 
     Figure 5: Compound load
 
