@@ -197,7 +197,7 @@ Although users can opt to interact with module objects directly without using in
 <h2>Workflow overview<a class="headerlink" href="#workflow-overview" title="Permalink to this headline">¶</a></h2>
 <p>Figure 1 summarizes the workflow of creating a grillage model using <em>ospgrillage</em>.</p>
 <div class="figure align-center" id="id1">
-<a class="reference internal image-reference" href="../_images/flowchart1.png"><img alt="../_images/flowchart1.png" src="../_images/flowchart1.png" /></a>
+<a class="reference internal image-reference" href="../_images/grillage_workflow.png"><img alt="../_images/grillage_workflow.png" src="../_images/grillage_workflow.png" /></a>
 <p class="caption"><span class="caption-text">Figure 1: Grillage model creation flow chart</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </div>
 <p>In general, there are three steps to create a grillage model with <em>ospgrillage</em>:</p>
@@ -266,7 +266,7 @@ In addition, <em>ospgrillage</em> offers a library of codified material properti
 On first release, it has library for two code namely the Australia standard AS5100 and AASHTO LRFD-8th.</p>
 <p>As an alternative to material library, users can specify custom properties of steel and concrete by passing in keyword arguments.
 The following code shows how a concrete material can be created using keyword arguments:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">concrete</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_material</span><span class="p">(</span><span class="n">E</span><span class="o">=</span><span class="mi">30</span><span class="o">*</span><span class="n">Giga</span><span class="o">*</span><span class="n">Pa</span><span class="p">,</span> <span class="n">G</span> <span class="o">=</span> <span class="mi">20</span><span class="o">*</span><span class="n">Giga</span><span class="o">*</span><span class="n">Pa</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span> <span class="mf">0.2</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">concrete</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_material</span><span class="p">(</span><span class="n">E</span><span class="o">=</span><span class="mi">30</span><span class="o">*</span><span class="n">GPa</span><span class="p">,</span> <span class="n">G</span> <span class="o">=</span> <span class="mi">20</span><span class="o">*</span><span class="n">GPa</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span> <span class="mf">0.2</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This command wraps OpenSees material commands and chooses the appropriate material model in OpenSees to represent the material.
@@ -335,7 +335,7 @@ beam-and-slab bridge deck. The model comprises of standard grillage members whic
 </ul>
 <p>Figure 4 shows how the grid numbers and skew angles affects the output mesh of grillage model.</p>
 <div class="figure align-center" id="id4">
-<a class="reference internal image-reference" href="../_images/edge_angles.PNG"><img alt="../_images/edge_angles.PNG" src="../_images/edge_angles.PNG" /></a>
+<a class="reference internal image-reference" href="../_images/grillage_dimensions.PNG"><img alt="../_images/grillage_dimensions.PNG" src="../_images/grillage_dimensions.PNG" /></a>
 <p class="caption"><span class="caption-text">Figure 4: Example grid numbers and edge angles</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
 </div>
 <p>For the example bridge in Figure 2, the following code line creates its <a class="reference internal" href="OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a> object i.e. <em>example_bridge</em>:</p>

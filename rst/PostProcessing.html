@@ -261,7 +261,7 @@ Information on indexing and selecting DataArray data can be found <a href="#id9"
 <span class="n">force_array</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Loadcase</span><span class="o">=</span><span class="s2">&quot;Barrier&quot;</span><span class="p">,</span> <span class="n">Element</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
 </pre></div>
 </div>
-<p>If the load case is part of a <a class="reference internal" href="Running_analysis.html#moving-load"><span class="std std-ref">Moving loads</span></a> i.e. an incremental load cases, there are several ways to lookup the respective
+<p>If the load case is part of a <a class="reference internal" href="Running_analysis.html#moving-load"><span class="std std-ref">Moving load</span></a> i.e. an incremental load cases, there are several ways to lookup the respective
 incremental load case. Following example shows the various method of <cite>xarray</cite> to extract and select <strong>force</strong> data:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">by_name</span> <span class="o">=</span> <span class="n">force_array</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Loadcase</span><span class="o">=</span><span class="s2">&quot;patch load case at global position [0,0,0]&quot;</span><span class="p">)</span> <span class="c1"># by load case name</span>
 <span class="n">by_index</span> <span class="o">=</span> <span class="n">force_array</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">Loadcase</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># by indexing</span>
@@ -269,7 +269,7 @@ incremental load case. Following example shows the various method of <cite>xarra
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The nomenclature of incremental load cases are generated automatically by <em>ospgrillage</em>, with
+<p>For moving load, the nomenclature of incremental load cases are generated automatically by <em>ospgrillage</em>, with
 load case name followed by “at global position [x,y,z]” where <cite>x</cite>,`y`,`z` are the positions of the moving load/ compound load with
 respect to the global grillage coordinate.</p>
 </div>

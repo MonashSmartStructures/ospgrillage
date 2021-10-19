@@ -16,7 +16,7 @@ Load analysis workflow
 
 Figure 1 shows the flowchart for the load module of *ospgrillage*.
 
-..  figure:: ../../_images/flowchart2.png
+..  figure:: ../../_images/analysis_workflow.png
     :align: center
     :scale: 50 %
 
@@ -251,7 +251,7 @@ Users repeat this step for any defined load cases.
 
 .. _Moving load:
 
-Moving loads
+Moving load
 ------------------------
 For moving load analysis, users create moving load objects using :class:`~ospgrillage.load.MovingLoad` class. The moving load class takes a load type object (`Point`_, `Line`_, `Patch`_, `Compound load`_) and moves the load
 through a path points described by a :class:`Path` object and obtained by the :func:`get_path_points` method.
