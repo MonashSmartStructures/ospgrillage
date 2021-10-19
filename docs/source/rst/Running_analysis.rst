@@ -78,7 +78,8 @@ Point load takes only a single `LoadPoint` tuple. `p` in the tuple should have u
 
 ..  figure:: ../../_images/point.png
     :align: center
-    :scale: 20 %
+    :scale: 75 %
+    :width: 800
 
     Figure 2: Point load
 
@@ -104,7 +105,8 @@ Using more than two tuples allows a curve line loading profile.
 
 ..  figure:: ../../_images/line.png
     :align: center
-    :scale: 10 %
+    :scale: 75 %
+    :width: 800
 
     Figure 3: Line load
 
@@ -137,8 +139,8 @@ Using eight tuples allows a curve surface loading profile.
 
 ..  figure:: ../../_images/patch.png
     :align: center
-    :scale: 50 %
-    :width: 700
+    :scale: 75 %
+    :width: 800
 
     Figure 4: Patch load
 
