@@ -239,7 +239,7 @@ Point loads are used represent a large range of loads, such as truck axle, or su
 Point load takes only a single <cite>LoadPoint</cite> tuple. <cite>p</cite> in the tuple should have units of force (eg. N, kN, kips, etc)
 - see Figure 2.</p>
 <div class="figure align-center" id="id4">
-<a class="reference internal image-reference" href="../_images/point.png"><img alt="../_images/point.png" src="../_images/point.png" style="width: 600.0px;" /></a>
+<a class="reference internal image-reference" href="../_images/point.png"><img alt="../_images/point.png" src="../_images/point.png" style="width: 520.0px;" /></a>
 <p class="caption"><span class="caption-text">Figure 2: Point load</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
 </div>
 <p>The following example code creates a 20 force unit point load located at (5,0,2) in the global coordinate system.</p>
@@ -256,7 +256,7 @@ distributed load along beam elements.</p>
 Using more than two tuples allows a curve line loading profile.
 `p</cite> in the <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadPoint</span></code> tuple should have units of force per distance (eg. kN/m, kips/ft, etc).</p>
 <div class="figure align-center" id="id5">
-<a class="reference internal image-reference" href="../_images/line.png"><img alt="../_images/line.png" src="../_images/line.png" style="width: 600.0px;" /></a>
+<a class="reference internal image-reference" href="../_images/line.png"><img alt="../_images/line.png" src="../_images/line.png" style="width: 520.0px;" /></a>
 <p class="caption"><span class="caption-text">Figure 3: Line load</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
 </div>
 <p>The following example code is a constant Two force per distance unit line load (UDL)
@@ -279,7 +279,7 @@ Patch load requires at least four <code class="xref py py-class docutils literal
 Using eight tuples allows a curve surface loading profile.
 <cite>p</cite> in the <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadPoint</span></code> tuple should have units of force per area.</p>
 <div class="figure align-center" id="id6">
-<a class="reference internal image-reference" href="../_images/patch.png"><img alt="../_images/patch.png" src="../_images/patch.png" style="width: 600.0px;" /></a>
+<a class="reference internal image-reference" href="../_images/patch.png"><img alt="../_images/patch.png" src="../_images/patch.png" style="width: 520.0px;" /></a>
 <p class="caption"><span class="caption-text">Figure 4: Patch load</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
 </div>
 <p>The following example code creates a constant 5 force per area unit patch load
@@ -304,7 +304,7 @@ To position the load instead in a user defined local coordinate system, the vari
 Loads in other directions and applied moments are currently not supported.</p>
 <p>To create a compound load, use the <a class="reference internal" href="generated/ospgrillage.load.create_compound_load.html#ospgrillage.load.create_compound_load" title="ospgrillage.load.create_compound_load"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_compound_load()</span></code></a> function. This function creates a
 <a class="reference internal" href="Loads.html#ospgrillage.load.CompoundLoad" title="ospgrillage.load.CompoundLoad"><code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundLoad</span></code></a> object.</p>
-<p>Compound load are defined in a <strong>local coordinate system</strong> and then set to global coordinate system of the grillage. Figure 5
+<p>Compound load are typically defined in a <strong>local coordinate system</strong> and then set to global coordinate system of the grillage. Figure 5
 shows the relationship and process of mapping local to global system of a compound load.</p>
 <div class="figure align-center" id="id7">
 <a class="reference internal image-reference" href="../_images/compoundload.png"><img alt="../_images/compoundload.png" src="../_images/compoundload.png" /></a>
@@ -374,12 +374,13 @@ Path are defined using two namedTuple <code class="xref py py-class docutils lit
 <p class="caption"><span class="caption-text">Figure 6: Moving load</span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
 </div>
 <p>The following example code is two point loads defined as a moving load travelling a path from 2 to 4 distance units in the global coordinate system.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">front_wheel</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertices</span><span class="p">(</span><span class="n">x</span><span class="o">=</span>    <span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>   <span class="c1"># load point 1</span>
-<span class="n">back_wheel</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertices</span><span class="p">(</span><span class="n">x</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>   <span class="c1"># load point 2</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># create components of compound load</span>
+<span class="n">front_wheel</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertices</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+<span class="n">back_wheel</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertices</span><span class="p">(</span><span class="n">x</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
 <span class="n">Line</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;line&quot;</span><span class="p">,</span><span class="n">point1</span><span class="o">=</span><span class="n">front_wheel</span><span class="p">,</span><span class="n">point2</span><span class="o">=</span><span class="n">back_wheel</span><span class="p">)</span>
 <span class="n">tandem</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_compound_load</span><span class="p">(</span><span class="s2">&quot;Two wheel vehicle&quot;</span><span class="p">)</span>
-
-<span class="n">single_path</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_moving_path</span><span class="p">(</span><span class="n">start_point</span><span class="o">=</span><span class="n">og</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">end_point</span><span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>  <span class="c1"># create path object</span>
+<span class="c1"># create path object</span>
+<span class="n">single_path</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_moving_path</span><span class="p">(</span><span class="n">start_point</span><span class="o">=</span><span class="n">og</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">end_point</span><span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
 <span class="n">move_line</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_moving_load</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Line Load moving&quot;</span><span class="p">)</span> <span class="c1"># moving load obj</span>
 <span class="n">move_line</span><span class="o">.</span><span class="n">set_path</span><span class="p">(</span><span class="n">single_path</span><span class="p">)</span>   <span class="c1"># set path</span>
 <span class="n">move_line</span><span class="o">.</span><span class="n">add_loads</span><span class="p">(</span><span class="n">load_obj</span><span class="o">=</span><span class="n">Line</span><span class="p">)</span>  <span class="c1"># add compound load to moving load</span>

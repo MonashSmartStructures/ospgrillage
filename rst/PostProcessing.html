@@ -243,14 +243,14 @@ types of elements in the grillage model. For example, <strong>force</strong> of 
 two separate DataArrays, namely <strong>forces_beam</strong> and <strong>forces_shell</strong> respectively (Figure 1).
 Similarly, <strong>ele_nodes</strong> will be split into <strong>ele_nodes_beam</strong> and <strong>ele_nodes_shell</strong>.</p>
 <div class="figure align-center" id="id5">
-<a class="reference internal image-reference" href="../_images/structure_dataset.png"><img alt="../_images/structure_dataset.png" src="../_images/structure_dataset.png" /></a>
+<a class="reference internal image-reference" href="../_images/dataset_structure.png"><img alt="../_images/dataset_structure.png" src="../_images/dataset_structure.png" /></a>
 <p class="caption"><span class="caption-text">Figure 1: Structure of DataSet.</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 <div class="section" id="accessing-and-querying-data">
 <span id="access-results"></span><h3>Accessing and querying data<a class="headerlink" href="#accessing-and-querying-data" title="Permalink to this headline">¶</a></h3>
 <p>From the data arrays, users can access various component in each load effect using <cite>xarray</cite>’s data array commands.
-Information on indexing and selecting DataArray data can be found <a href="#id9"><span class="problematic" id="id10">`here&lt;http://xarray.pydata.org/en/stable/user-guide/indexing.html&gt;`_</span></a></p>
+Information on indexing and selecting DataArray data can be found <a class="reference external" href="http://xarray.pydata.org/en/stable/user-guide/indexing.html">here</a></p>
 <p>Following example extracts the displacement ‘dy’ component using <cite>xarray</cite>’s  function.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">disp_array</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Component</span><span class="o">=</span><span class="s1">&#39;dy&#39;</span><span class="p">)</span> <span class="c1"># selecting &quot;dy&quot; component</span>
 <span class="n">force_array</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Component</span><span class="o">=</span><span class="s1">&#39;Mz_i&#39;</span><span class="p">)</span> <span class="c1"># selecting &quot;Mz_i&quot; component</span>

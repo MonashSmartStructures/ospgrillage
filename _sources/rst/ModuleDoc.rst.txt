@@ -2,7 +2,7 @@
 Module design
 #####################
 
-This page details the designs decisions of *ospgrillage* module. In outlining these processes,
+This page details the design decisions of *ospgrillage* module. In outlining these processes,
 the developers welcome any improvements to its procedures via pull requests. Also, any issues with each process can
 be reported by raising an issue in the main repository.
 
