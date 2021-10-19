@@ -68,7 +68,7 @@ types of elements in the grillage model. For example, **force** of a :ref:`shell
 two separate DataArrays, namely **forces_beam** and **forces_shell** respectively (Figure 1).
 Similarly, **ele_nodes** will be split into **ele_nodes_beam** and **ele_nodes_shell**.
 
-..  figure:: ../../_images/structure_dataset.png
+..  figure:: ../../_images/dataset_structure.png
     :align: center
     :scale: 75 %
 
@@ -80,7 +80,7 @@ Accessing and querying data
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 From the data arrays, users can access various component in each load effect using `xarray`'s data array commands.
-Information on indexing and selecting DataArray data can be found `here<http://xarray.pydata.org/en/stable/user-guide/indexing.html>`_
+Information on indexing and selecting DataArray data can be found `here <http://xarray.pydata.org/en/stable/user-guide/indexing.html>`_
 
 Following example extracts the displacement 'dy' component using `xarray`'s  function.
 

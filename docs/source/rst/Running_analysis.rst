@@ -78,7 +78,7 @@ Point load takes only a single `LoadPoint` tuple. `p` in the tuple should have u
 
 ..  figure:: ../../_images/point.png
     :align: center
-    :scale: 75 %
+    :scale: 65 %
     :width: 800
 
     Figure 2: Point load
@@ -105,7 +105,7 @@ Using more than two tuples allows a curve line loading profile.
 
 ..  figure:: ../../_images/line.png
     :align: center
-    :scale: 75 %
+    :scale: 65 %
     :width: 800
 
     Figure 3: Line load
@@ -139,7 +139,7 @@ Using eight tuples allows a curve surface loading profile.
 
 ..  figure:: ../../_images/patch.png
     :align: center
-    :scale: 75 %
+    :scale: 65 %
     :width: 800
 
     Figure 4: Patch load
@@ -170,12 +170,12 @@ Loads in other directions and applied moments are currently not supported.
 To create a compound load, use the :func:`~ospgrillage.load.create_compound_load` function. This function creates a
 :class:`~ospgrillage.load.CompoundLoad` object.
 
-Compound load are defined in a **local coordinate system** and then set to global coordinate system of the grillage. Figure 5
+Compound load are typically defined in a **local coordinate system** and then set to global coordinate system of the grillage. Figure 5
 shows the relationship and process of mapping local to global system of a compound load.
 
 ..  figure:: ../../_images/compoundload.png
     :align: center
-    :scale: 75 %
+    :scale: 65 %
 
     Figure 5: Compound load
 
@@ -272,12 +272,13 @@ The following example code is two point loads defined as a moving load travellin
 
 .. code-block:: python
 
-    front_wheel = og.create_load_vertices(x=    0, z=0, p=6)   # load point 1
-    back_wheel = og.create_load_vertices(x=-1, z=0, p=6)   # load point 2
+    # create components of compound load
+    front_wheel = og.create_load_vertices(x=0, z=0, p=6)
+    back_wheel = og.create_load_vertices(x=-1, z=0, p=6)
     Line = og.create_load(type="line",point1=front_wheel,point2=back_wheel)
     tandem = og.create_compound_load("Two wheel vehicle")
-
-    single_path = og.create_moving_path(start_point=og.Point(2,0,2), end_point= og.Point(4,0,2))  # create path object
+    # create path object
+    single_path = og.create_moving_path(start_point=og.Point(2,0,2), end_point= og.Point(4,0,2))
     move_line = og.create_moving_load(name="Line Load moving") # moving load obj
     move_line.set_path(single_path)   # set path
     move_line.add_loads(load_obj=Line)  # add compound load to moving load
