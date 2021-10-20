@@ -127,9 +127,10 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#load-module-api">Load module API</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.set_global_coord.html">ospgrillage.load.CompoundLoad.set_global_coord</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.add_load.html">ospgrillage.load.CompoundLoad.add_load</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.load.LoadCase.add_load.html">ospgrillage.load.LoadCase.add_load</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.set_path.html">ospgrillage.load.MovingLoad.set_path</a></li>
-<li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.add_loads.html">ospgrillage.load.MovingLoad.add_loads</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.add_load.html">ospgrillage.load.MovingLoad.add_load</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.query.html">ospgrillage.load.MovingLoad.query</a></li>
 </ul>
 </li>
@@ -270,10 +271,10 @@ the functions callable from all modules within <em>ospgrillage</em>.</p>
 <td><p>User interface function to create a point named tuple :keyword:</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_load_case.html#ospgrillage.load.create_load_case" title="ospgrillage.load.create_load_case"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.load.create_load_case</span></code></a>(**kwargs)</p></td>
-<td><p>User interface function to create load case/ LoadCase objects.</p></td>
+<td><p>User interface function to create LoadCase objects.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_compound_load.html#ospgrillage.load.create_compound_load" title="ospgrillage.load.create_compound_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.load.create_compound_load</span></code></a>(**kwargs)</p></td>
-<td><p>User interface function to create compound load/ CompoundLoad objects</p></td>
+<td><p>User interface function to create CompoundLoad object.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_moving_path.html#ospgrillage.load.create_moving_path" title="ospgrillage.load.create_moving_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.load.create_moving_path</span></code></a>(**kwargs)</p></td>
 <td><p>User interface function to create Path object for moving load.</p></td>
@@ -322,7 +323,7 @@ the functions callable from all modules within <em>ospgrillage</em>.</p>
 </div>
 <div class="section" id="load-module-api">
 <h3>Load module API<a class="headerlink" href="#load-module-api" title="Permalink to this headline">¶</a></h3>
-<p>The following methods can be called from the respective Load class objects in the Load module.</p>
+<p>The following methods can be called from the respective class objects of the Load module.</p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -332,22 +333,20 @@ the functions callable from all modules within <em>ospgrillage</em>.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.set_global_coord.html#ospgrillage.load.CompoundLoad.set_global_coord" title="ospgrillage.load.CompoundLoad.set_global_coord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.load.CompoundLoad.set_global_coord</span></code></a>(…)</p></td>
 <td><p>Function to set global coordinate of the compound load with respect to global coordinate system of grillage model.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.LoadCase.add_load.html#ospgrillage.load.LoadCase.add_load" title="ospgrillage.load.LoadCase.add_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.load.LoadCase.add_load</span></code></a>(load_obj, …)</p></td>
-<td><p><dl class="field-list simple">
-<dt class="field-odd">param load_obj</dt>
-<dd class="field-odd"><p>Load or Compound load object</p>
-</dd>
-</dl>
-</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.add_load.html#ospgrillage.load.CompoundLoad.add_load" title="ospgrillage.load.CompoundLoad.add_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.load.CompoundLoad.add_load</span></code></a>(load_obj)</p></td>
+<td><p>Function to add load object to compound load group.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.set_path.html#ospgrillage.load.MovingLoad.set_path" title="ospgrillage.load.MovingLoad.set_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.load.MovingLoad.set_path</span></code></a>(path_obj)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.LoadCase.add_load.html#ospgrillage.load.LoadCase.add_load" title="ospgrillage.load.LoadCase.add_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.load.LoadCase.add_load</span></code></a>(load_obj, …)</p></td>
+<td><p>Function to add load objects to LoadCase</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.set_path.html#ospgrillage.load.MovingLoad.set_path" title="ospgrillage.load.MovingLoad.set_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.load.MovingLoad.set_path</span></code></a>(path_obj)</p></td>
 <td><p>Function to assign/modify the common path variable with a new Path object.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.add_loads.html#ospgrillage.load.MovingLoad.add_loads" title="ospgrillage.load.MovingLoad.add_loads"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.load.MovingLoad.add_loads</span></code></a>(load_obj)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.add_load.html#ospgrillage.load.MovingLoad.add_load" title="ospgrillage.load.MovingLoad.add_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.load.MovingLoad.add_load</span></code></a>(load_obj)</p></td>
 <td><p>Function to set a load type (Loads class object) with its path (Path class object).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.query.html#ospgrillage.load.MovingLoad.query" title="ospgrillage.load.MovingLoad.query"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.load.MovingLoad.query</span></code></a>(…)</p></td>
-<td><p>Function to query properties of moving load :param kwargs: :return:</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.query.html#ospgrillage.load.MovingLoad.query" title="ospgrillage.load.MovingLoad.query"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.load.MovingLoad.query</span></code></a>(…)</p></td>
+<td><p>Function to query properties of moving load :param incremental_lc_name: Name string of load case to query properties :type incremental_lc_name: str :param kwargs: :return:</p></td>
 </tr>
 </tbody>
 </table>
@@ -377,10 +376,18 @@ and its mesh.</p>
 <li><p><strong>num_trans_grid</strong> (<em>int</em>) – Number of  grid lines in the transverse direction -</p></li>
 <li><p><strong>edge_beam_dist</strong> (<em>int</em><em> or </em><em>float</em>) – Distance of edge beam node lines to exterior main beam node lines</p></li>
 <li><p><strong>mesh_type</strong> (<em>string</em>) – Type of mesh either “Ortho” for orthogonal mesh or “Oblique” for oblique mesh</p></li>
+<li><p><strong>kwargs</strong> – See below</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>ValueError</strong> – If skew angle is greater than 90. If number of transverse grid line is less than 2.</p>
+<dt class="field-even">Keyword</dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+<ul class="simple">
+<li><p>ext_to_int_dist: (Int or Float) distance between internal beams and exterior main beams (on both sides)</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If skew angle is greater than 90. If number of transverse grid line is less than 2.</p>
 </dd>
 </dl>
 <dl class="py method">
@@ -571,10 +578,18 @@ within this “interior_main_beam” element group.</p>
 <li><p><strong>num_trans_grid</strong> (<em>int</em>) – Number of  grid lines in the transverse direction -</p></li>
 <li><p><strong>edge_beam_dist</strong> (<em>int</em><em> or </em><em>float</em>) – Distance of edge beam node lines to exterior main beam node lines</p></li>
 <li><p><strong>mesh_type</strong> (<em>string</em>) – Type of mesh either “Ortho” for orthogonal mesh or “Oblique” for oblique mesh</p></li>
+<li><p><strong>kwargs</strong> – See below</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>ValueError</strong> – If skew angle is greater than 90. If number of transverse grid line is less than 2.</p>
+<dt class="field-even">Keyword</dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+<ul class="simple">
+<li><p>ext_to_int_dist: (Int or Float) distance between internal beams and exterior main beams (on both sides)</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If skew angle is greater than 90. If number of transverse grid line is less than 2.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -599,10 +614,18 @@ within this “interior_main_beam” element group.</p>
 <li><p><strong>num_trans_grid</strong> (<em>int</em>) – Number of  grid lines in the transverse direction -</p></li>
 <li><p><strong>edge_beam_dist</strong> (<em>int</em><em> or </em><em>float</em>) – Distance of edge beam node lines to exterior main beam node lines</p></li>
 <li><p><strong>mesh_type</strong> (<em>string</em>) – Type of mesh either “Ortho” for orthogonal mesh or “Oblique” for oblique mesh</p></li>
+<li><p><strong>kwargs</strong> – See below</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>ValueError</strong> – If skew angle is greater than 90. If number of transverse grid line is less than 2.</p>
+<dt class="field-even">Keyword</dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+<ul class="simple">
+<li><p>ext_to_int_dist: (Int or Float) distance between internal beams and exterior main beams (on both sides)</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If skew angle is greater than 90. If number of transverse grid line is less than 2.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -990,8 +1013,8 @@ All loads added later to Moving load object will traverse the same common path o
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="ospgrillage.load.MovingLoad.add_loads">
-<span class="sig-name descname"><span class="pre">add_loads</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">load_obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="Loads.html#ospgrillage.load.Loads" title="ospgrillage.load.Loads"><span class="pre">ospgrillage.load.Loads</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="Loads.html#ospgrillage.load.CompoundLoad" title="ospgrillage.load.CompoundLoad"><span class="pre">ospgrillage.load.CompoundLoad</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_obj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.MovingLoad.add_loads" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ospgrillage.load.MovingLoad.add_load">
+<span class="sig-name descname"><span class="pre">add_load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">load_obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="Loads.html#ospgrillage.load.Loads" title="ospgrillage.load.Loads"><span class="pre">ospgrillage.load.Loads</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="Loads.html#ospgrillage.load.CompoundLoad" title="ospgrillage.load.CompoundLoad"><span class="pre">ospgrillage.load.CompoundLoad</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_obj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.MovingLoad.add_load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to set a load type (Loads class object) with its path (Path class object). Function accepts compound load (Compound load class) as a load input, which in turn sets the path object to all loads within the compound
 load group.</p>
 <dl class="field-list simple">
@@ -1008,6 +1031,8 @@ load group.</p>
 <dt class="sig sig-object py" id="ospgrillage.load.MovingLoad.query">
 <span class="sig-name descname"><span class="pre">query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incremental_lc_name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.MovingLoad.query" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to query properties of moving load
+:param incremental_lc_name: Name string of load case to query properties
+:type incremental_lc_name: str
 :param kwargs:
 :return:</p>
 </dd></dl>
@@ -1043,7 +1068,8 @@ load group.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ospgrillage.load.LoadCase.add_load">
 <span class="sig-name descname"><span class="pre">add_load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">load_obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="Loads.html#ospgrillage.load.Loads" title="ospgrillage.load.Loads"><span class="pre">ospgrillage.load.Loads</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="Loads.html#ospgrillage.load.CompoundLoad" title="ospgrillage.load.CompoundLoad"><span class="pre">ospgrillage.load.CompoundLoad</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LoadCase.add_load" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Function to add load objects to LoadCase</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>load_obj</strong> – Load or Compound load object</p></li>
@@ -1054,11 +1080,8 @@ load group.</p>
 <dd class="field-even"><p></p></dd>
 </dl>
 <ul class="simple">
-<li><dl class="simple">
-<dt>global_coord_of_load_obj (<cite>Point</cite> namedTuple): if load objects are defined in local coordinate, this parameter</dt><dd><p>is required to set the origin of local coordinate of load groups onto the global coordiante of the grillage</p>
-</dd>
-</dl>
-</li>
+<li><p>global_coord_of_load_obj (<cite>Point</cite> namedTuple): if load objects are defined in local coordinate, this parameter
+is required to set the origin of local coordinate of load groups onto the global coordinate of the grillage</p></li>
 </ul>
 </dd></dl>
 
@@ -1084,12 +1107,12 @@ load group.</p>
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.postprocessing.</span></span><span class="sig-name descname"><span class="pre">Envelope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_effect</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.postprocessing.Envelope" title="Permalink to this definition">¶</a></dt>
 <dd><p>Main class for envelope. This class takes a <a class="reference internal" href="OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a> result
 <cite>xarray</cite>, enveloping the <cite>xarray</cite> based on user options, return a modified <cite>xarray</cite>.</p>
-<p>The constructor takes an <cite>xarray</cite> DataSet and kwargs for enveloping options.</p>
+<p>Inits the Envelope class. The constructor takes an <cite>xarray</cite> DataSet and kwargs for enveloping options.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ds</strong> (<em>Xarray</em>) – Data set from <cite>get_results()</cite></p></li>
-<li><p><strong>kwargs</strong> – Keyword arguments see below.</p></li>
+<li><p><strong>ds</strong> (<em>Xarray</em>) – Data set from <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_results()</span></code></a></p></li>
+<li><p><strong>kwargs</strong> – See below.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Keyword</dt>

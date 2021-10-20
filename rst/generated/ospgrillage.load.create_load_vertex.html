@@ -212,14 +212,9 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="ospgrillage.load.create_load_vertex">
 <span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">create_load_vertex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.create_load_vertex" title="Permalink to this definition">¶</a></dt>
-<dd><p>User interface function to create load vertex of various load types.</p>
+<dd><p>User interface function to create load vertex of various load types.
+:param kwargs: Keyword arg, see below.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>namedTuple LoadPoint(x,y,z,p)</p>
-</dd>
-<dt class="field-even">Except</dt>
-<dd class="field-even"><p>ValueError if missing one or more keyword arguments.</p>
-</dd>
 <dt class="field-odd">Keyword</dt>
 <dd class="field-odd"><p></p></dd>
 </dl>
@@ -229,6 +224,14 @@
 <li><p>z (<cite>float</cite> or <cite>int</cite>): Value of z coordinate</p></li>
 <li><p>p (<cite>float</cite> or <cite>int</cite>): Magnitude of vertical load in y direction.</p></li>
 </ul>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>namedTuple LoadPoint(x,y,z,p)</p>
+</dd>
+<dt class="field-even">Except</dt>
+<dd class="field-even"><p>ValueError if missing one or more keyword arguments.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>

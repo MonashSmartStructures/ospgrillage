@@ -192,7 +192,7 @@
 <p>The <em>ospgrillage</em> module contains user <strong>interface functions</strong> which can be called after the module syntax. These interface functions
 generally have  <code class="docutils literal notranslate"><span class="pre">set_</span></code>, <code class="docutils literal notranslate"><span class="pre">create_</span></code> or <code class="docutils literal notranslate"><span class="pre">get_</span></code> in their syntax. For example, users create a material with <a class="reference internal" href="generated/ospgrillage.material.create_material.html#ospgrillage.material.create_material" title="ospgrillage.material.create_material"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_material()</span></code></a>.</p>
 <p>A list of all interface functions can be found in <a class="reference internal" href="APIdoc.html"><span class="doc">API reference</span></a>.
-Although users can opt to interact with module objects directly without using interface functions, we recommend the more pythonic interface functions.</p>
+Although users can opt to interact with module objects directly, we recommend the more pythonic interface functions.</p>
 <div class="section" id="workflow-overview">
 <h2>Workflow overview<a class="headerlink" href="#workflow-overview" title="Permalink to this headline">¶</a></h2>
 <p>Figure 1 summarizes the workflow of creating a grillage model using <em>ospgrillage</em>.</p>
@@ -202,16 +202,16 @@ Although users can opt to interact with module objects directly without using in
 </div>
 <p>In general, there are three steps to create a grillage model with <em>ospgrillage</em>:</p>
 <ol class="arabic simple">
-<li><p>Creating elements of a grillage model i.e. grillage members.</p></li>
-<li><p>Creating the grillage model instance (the nodes and mesh).</p></li>
-<li><p>Assigning the defined grillage members to the elements of grillage model instance.</p></li>
+<li><p>Creating the grillage members.</p></li>
+<li><p>Creating the grillage model object.</p></li>
+<li><p>Assigning the defined grillage members to the elements of grillage model object.</p></li>
 </ol>
 <p>We will detail these steps by creating a grillage model of a bridge deck as shown in Figure 1.</p>
 <div class="figure align-center" id="id2">
 <span id="figure-2"></span><a class="reference internal image-reference" href="../_images/42degnegative10m.png"><img alt="../_images/42degnegative10m.png" src="../_images/42degnegative10m.png" /></a>
 <p class="caption"><span class="caption-text">Figure 2: Grillage model created using <cite>OpenSeesPy</cite></span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
-<p>To begin, do import <cite>ospgrillage</cite> as either <code class="docutils literal notranslate"><span class="pre">ospg</span></code> or <code class="docutils literal notranslate"><span class="pre">og</span></code>.
+<p>To begin, import <cite>ospgrillage</cite> as either <code class="docutils literal notranslate"><span class="pre">ospg</span></code> or <code class="docutils literal notranslate"><span class="pre">og</span></code>.
 As will be needed later, we also prepared the unit convention of variables for this example as shown in the same code block.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ospgrillage</span> <span class="k">as</span> <span class="nn">og</span>
 <span class="c1"># create unit signs for variables of example</span>

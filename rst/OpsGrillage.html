@@ -189,10 +189,16 @@ This module also handles all load case assignment, analysis, and results by wrap
 <li><p><strong>num_trans_grid</strong> (<em>int</em>) – Number of  grid lines in the transverse direction</p></li>
 <li><p><strong>edge_beam_dist</strong> (<em>int</em><em> or </em><em>float</em>) – Distance of edge beam node lines to exterior main beam node lines</p></li>
 <li><p><strong>mesh_type</strong> (<em>string</em>) – Type of mesh either “Ortho” or “Oblique” - default “Ortho”</p></li>
+<li><p><strong>kwargs</strong> – See below</p></li>
 </ul>
 </dd>
+<dt class="field-even">Keyword</dt>
+<dd class="field-even"><p></p></dd>
 </dl>
-<p>Depending ont eh <code class="docutils literal notranslate"><span class="pre">model_type</span></code> argument, this function returns the relevant concrete class of
+<ul class="simple">
+<li><p>ext_to_int_dist: (Int or Float) distance between internal beams and exterior main beams (on both sides)</p></li>
+</ul>
+<p>Depending on the <code class="docutils literal notranslate"><span class="pre">model_type</span></code> argument, this function returns the relevant concrete class of
 <a class="reference internal" href="#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -229,10 +235,18 @@ and its mesh.</p>
 <li><p><strong>num_trans_grid</strong> (<em>int</em>) – Number of  grid lines in the transverse direction -</p></li>
 <li><p><strong>edge_beam_dist</strong> (<em>int</em><em> or </em><em>float</em>) – Distance of edge beam node lines to exterior main beam node lines</p></li>
 <li><p><strong>mesh_type</strong> (<em>string</em>) – Type of mesh either “Ortho” for orthogonal mesh or “Oblique” for oblique mesh</p></li>
+<li><p><strong>kwargs</strong> – See below</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>ValueError</strong> – If skew angle is greater than 90. If number of transverse grid line is less than 2.</p>
+<dt class="field-even">Keyword</dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+<ul class="simple">
+<li><p>ext_to_int_dist: (Int or Float) distance between internal beams and exterior main beams (on both sides)</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If skew angle is greater than 90. If number of transverse grid line is less than 2.</p>
 </dd>
 </dl>
 <dl class="py method">
@@ -456,10 +470,18 @@ Class object is accessed within OspGrillage class object.</p>
 <li><p><strong>num_trans_grid</strong> (<em>int</em>) – Number of  grid lines in the transverse direction -</p></li>
 <li><p><strong>edge_beam_dist</strong> (<em>int</em><em> or </em><em>float</em>) – Distance of edge beam node lines to exterior main beam node lines</p></li>
 <li><p><strong>mesh_type</strong> (<em>string</em>) – Type of mesh either “Ortho” for orthogonal mesh or “Oblique” for oblique mesh</p></li>
+<li><p><strong>kwargs</strong> – See below</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>ValueError</strong> – If skew angle is greater than 90. If number of transverse grid line is less than 2.</p>
+<dt class="field-even">Keyword</dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+<ul class="simple">
+<li><p>ext_to_int_dist: (Int or Float) distance between internal beams and exterior main beams (on both sides)</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If skew angle is greater than 90. If number of transverse grid line is less than 2.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -481,10 +503,18 @@ Class object is accessed within OspGrillage class object.</p>
 <li><p><strong>num_trans_grid</strong> (<em>int</em>) – Number of  grid lines in the transverse direction -</p></li>
 <li><p><strong>edge_beam_dist</strong> (<em>int</em><em> or </em><em>float</em>) – Distance of edge beam node lines to exterior main beam node lines</p></li>
 <li><p><strong>mesh_type</strong> (<em>string</em>) – Type of mesh either “Ortho” for orthogonal mesh or “Oblique” for oblique mesh</p></li>
+<li><p><strong>kwargs</strong> – See below</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>ValueError</strong> – If skew angle is greater than 90. If number of transverse grid line is less than 2.</p>
+<dt class="field-even">Keyword</dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+<ul class="simple">
+<li><p>ext_to_int_dist: (Int or Float) distance between internal beams and exterior main beams (on both sides)</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If skew angle is greater than 90. If number of transverse grid line is less than 2.</p>
 </dd>
 </dl>
 <dl class="py method">

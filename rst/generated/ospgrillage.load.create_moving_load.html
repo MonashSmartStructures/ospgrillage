@@ -212,20 +212,21 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="ospgrillage.load.create_moving_load">
 <span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">create_moving_load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.create_moving_load" title="Permalink to this definition">¶</a></dt>
-<dd><p>User interface function to create Moving Load object.</p>
+<dd><p>User interface function to create Moving Load object. Following this function, users are required to:</p>
+<p><a href="#id1"><span class="problematic" id="id2">*</span></a>. Set a common path to object via <a class="reference internal" href="ospgrillage.load.MovingLoad.set_path.html#ospgrillage.load.MovingLoad.set_path" title="ospgrillage.load.MovingLoad.set_path"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_path()</span></code></a>
+<a href="#id3"><span class="problematic" id="id4">*</span></a>. Add loads to object via <a class="reference internal" href="ospgrillage.load.MovingLoad.add_load.html#ospgrillage.load.MovingLoad.add_load" title="ospgrillage.load.MovingLoad.add_load"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_load()</span></code></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><cite>MovingLoad</cite> object</p>
+<dd class="field-odd"><p><a class="reference internal" href="../Loads.html#ospgrillage.load.MovingLoad" title="ospgrillage.load.MovingLoad"><code class="xref py py-class docutils literal notranslate"><span class="pre">MovingLoad</span></code></a> object</p>
 </dd>
 <dt class="field-even">Keyword</dt>
 <dd class="field-even"><p></p></dd>
 </dl>
 <ul class="simple">
 <li><p>common_path(<cite>Path</cite>): Path object for all load groups added to the Moving load object to traverse</p></li>
-<li><p>global_increment(<cite>float</cite> or <cite>int</cite>): Number of increments to discretize Path object. This keyword is only used in</p></li>
+<li><p>global_increment(<cite>float</cite> or <cite>int</cite>): Number of increments to discretize Path object. This keyword is only used in
+advance usage where Moving Load contains multiple load groups each with unique path objects.</p></li>
 </ul>
-<p>advance usage where Moving Load contains multiple load groups each with unique path objects.</p>
-<p>See <span class="xref std std-ref">Loads</span> or <span class="xref std std-ref">Running_analysis</span> for more information on this.</p>
 </dd></dl>
 
 </div>

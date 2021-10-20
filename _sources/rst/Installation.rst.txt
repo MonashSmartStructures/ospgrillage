@@ -19,7 +19,7 @@ The easiest way to install is to use python package index `pip`.
 
     pip install git+https://github.com/MonashSmartStructures/ops-grillage.git
 
-For development, install as follows:
+For users wishing to develop/contribute, install as follows:
 
 .. code-block:: python
 
@@ -32,8 +32,7 @@ For development, install as follows:
 Installing dependencies
 ------------------------
 
-The *ospgrillage* module uses several python modules. List of modules for a working python
-environment is found in the *requirement.txt* file.
+A list of modules for a working python environment is found in the *requirement.txt* file.
 
 To create a working environment with all required dependencies, run the following command line in terminal
 

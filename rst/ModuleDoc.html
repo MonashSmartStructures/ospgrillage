@@ -105,7 +105,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#coordinate-system">Coordinate system</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#meshing-procedure">Meshing Procedure</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#meshing">Meshing</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#meshing-algorithm">Meshing algorithm</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#meshing-rules">Meshing Rules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#meshing-steps">Meshing steps</a></li>
@@ -200,7 +200,7 @@ the developers welcome any improvements to its procedures via pull requests. Als
 be reported by raising an issue in the main repository.</p>
 <div class="section" id="grillage-model">
 <h2>Grillage model<a class="headerlink" href="#grillage-model" title="Permalink to this headline">¶</a></h2>
-<p>The <em>ospgrillage</em> module generates a two-dimensional (2D) grillage model of a bridge deck in <cite>OpenSees</cite> - see Figure 1.</p>
+<p>The <em>ospgrillage</em> module generates a two-dimensional (2D) grillage model of a bridge deck in OpenSees - see Figure 1.</p>
 <div class="figure align-center" id="id1">
 <a class="reference internal image-reference" href="../_images/Figure_1.png"><img alt="../_images/Figure_1.png" src="../_images/Figure_1.png" /></a>
 <p class="caption"><span class="caption-text">Figure 1: Typical grillage model nodes.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
@@ -209,8 +209,8 @@ be reported by raising an issue in the main repository.</p>
 <h3>Model space<a class="headerlink" href="#model-space" title="Permalink to this headline">¶</a></h3>
 <p>By default the <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> object creates a 2-D grillage model that exist in the 3-D model space.
 The model has 6 degrees-of-freedom at each nodes. The grillage model plane lies in the x-z plane of the coordinate system.
-For a 2-D model space, the model plane is the x-y plane.</p>
-<p>Development for 1-D models in 2-D space is yet to complete but we welcome any pull request for it.</p>
+For a 2-D model, the model plane is the x-y plane.</p>
+<p>Development for 1-D models in 2-D space is yet to complete in release 0.1.0 but we welcome any pull request for it.</p>
 </div>
 <div class="section" id="coordinate-system">
 <h3>Coordinate system<a class="headerlink" href="#coordinate-system" title="Permalink to this headline">¶</a></h3>
@@ -228,38 +228,38 @@ of beam/truss members; where y and z axes being the vertical and horizontal axis
 </ol>
 </div>
 </div>
-<div class="section" id="meshing-procedure">
-<h2>Meshing Procedure<a class="headerlink" href="#meshing-procedure" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> class handles a <a class="reference internal" href="APIdoc.html#ospgrillage.mesh.Mesh" title="ospgrillage.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a> class object which stores information of the grillage mesh, such as:</p>
+<div class="section" id="meshing">
+<h2>Meshing<a class="headerlink" href="#meshing" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a> class handles a <a class="reference internal" href="APIdoc.html#ospgrillage.mesh.Mesh" title="ospgrillage.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a> class object which stores information of the grillage mesh, such as:</p>
 <ul class="simple">
 <li><p>Nodes</p></li>
 <li><p>Elements</p></li>
-<li><p>Element local transformation of sections and materials</p></li>
+<li><p>Transformation of sections and materials</p></li>
 <li><p>Grouping of grillage elements for calculating properties and assigning members.</p></li>
-<li><p>width and distance between</p></li>
+<li><p>Dimensions of mesh</p></li>
 </ul>
 <div class="section" id="meshing-algorithm">
 <h3>Meshing algorithm<a class="headerlink" href="#meshing-algorithm" title="Permalink to this headline">¶</a></h3>
 <p>Figure 2 shows an bridge mesh nodes as an explanatory example.</p>
 <div class="figure align-center" id="id2">
 <a class="reference internal image-reference" href="../_images/Moduledoc_1.PNG"><img alt="../_images/Moduledoc_1.PNG" src="../_images/Moduledoc_1.PNG" /></a>
-<p class="caption"><span class="caption-text">Figure 2: Meshing construction lines, showing start edge construction line (Blue), end edge construction line (Green), sweep path (Black) and sweeping nodes (Red).</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 2: Meshing construction lines, showing start control line (Blue), end end control line (Green), sweep path (Black) and sweeping nodes (Red).</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
 <p>Meshing algorithm is controlled by the <a class="reference internal" href="APIdoc.html#ospgrillage.mesh.Mesh" title="ospgrillage.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a> class object. The following components are generated to
 define the nodes and elements of the mesh:</p>
 <ol class="arabic simple">
-<li><p><strong>Construction line at edge of model &#64; the start of the span (start_span_edge)</strong>
+<li><p><strong>Line of control points at start of the span (start_span_edge)</strong>
 A construction line consisting of the edge of the model is first defined. Construction line consist of nodes that
 coincide with the number and position of longitudinal beams in the model. The angle of the construction line is based on skew angle
 (skew_1). By default, the reference point of the construction line coincide with the origin [0,0,0] of the model space.</p></li>
-<li><p><strong>Construction line at edge of model &#64; the end of the span (end_span_edge)</strong>
+<li><p><strong>Line of control points at the end of the span (end_span_edge)</strong>
 Similar to (1), the construction line at the end of the span is created based on number of longitudinal beam. The
 spacing of the nodes in the z direction is identical to that of the first construction line. By default the skew angle
-of this second construction (skew_2) can be different. In constrast, the reference point of second construction line
+of this second construction (skew_2) can be different. In contrast, the reference point of second construction line
 is [L, 0 ,f(L)] where L is the length of the model, and f(L) is the z coordinate of the reference node based on
 the defined sweep path of the model - this is next explained</p></li>
 <li><p><strong>Sweep Path</strong> By default, the sweep path of the model is a straight line of y = 0 which starts at the origin [0,0,0] of model space.
-A few option</p></li>
+Addition of options for sweep path is favourable.</p></li>
 </ol>
 </div>
 <div class="section" id="meshing-rules">
@@ -388,7 +388,7 @@ edge construction lines, a feature to be introduced to <a class="reference inter
 In tandem with this, the <code class="xref py py-class docutils literal notranslate"><span class="pre">EdgeControlPoints</span></code> class will need to be reviewed as current edge control points
 are only recognized as end supports - catering to current meshing procedures for single span configuration.</p>
 <p>The developers also acknowledges that there are conflicts between the adopted coordinate system of <em>ospgrillage</em> and the default
-coordinate system for the <cite>OpenSees</cite>’s <cite>ops_vis</cite> module. The <cite>ops_vis</cite> module default isotropic angle is x - y with z axis plane
+coordinate system for the OpenSees’s <cite>ops_vis</cite> module. The <cite>ops_vis</cite> module default isotropic angle is x - y with z axis plane
 being the model plane of a 2-D model in 3-D space. Currently it is not easy to alter the coordinate system of
 <em>ospgrillage</em>. However, the developers are hoping that <cite>ops_vis</cite> can cater to
 multi isotropic views of the model space as oppose to the current fixed coordinate system.

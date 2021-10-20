@@ -45,16 +45,17 @@ The following methods can be called on the :class:`ospgrillage.osp_grillage.OspG
 
 Load module API
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The following methods can be called from the respective Load class objects in the Load module.
+The following methods can be called from the respective class objects of the Load module.
 
 .. autosummary::
     :toctree: generated/
 
 
     ospgrillage.load.CompoundLoad.set_global_coord
+    ospgrillage.load.CompoundLoad.add_load
     ospgrillage.load.LoadCase.add_load
     ospgrillage.load.MovingLoad.set_path
-    ospgrillage.load.MovingLoad.add_loads
+    ospgrillage.load.MovingLoad.add_load
     ospgrillage.load.MovingLoad.query
 
 
