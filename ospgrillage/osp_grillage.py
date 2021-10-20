@@ -43,8 +43,14 @@ def create_grillage(**kwargs):
     :type edge_beam_dist: int or float
     :param mesh_type: Type of mesh either "Ortho" or "Oblique" - default "Ortho"
     :type mesh_type: string
+    :param kwargs: See below
 
-    Depending ont eh ``model_type`` argument, this function returns the relevant concrete class of
+    :keyword:
+
+    * ext_to_int_dist: (Int or Float) distance between internal beams and exterior main beams (on both sides)
+
+
+    Depending on the ``model_type`` argument, this function returns the relevant concrete class of
     :class:`~ospgrillage.osp_grillage.OspGrillage`.
 
     :returns: :class:`~ospgrillage.osp_grillage.OspGrillageBeam` or :class:`~ospgrillage.osp_grillage.OspGrillageShell`
@@ -100,6 +106,12 @@ class OspGrillage:
         :type edge_beam_dist: int or float
         :param mesh_type: Type of mesh either "Ortho" for orthogonal mesh or "Oblique" for oblique mesh
         :type mesh_type: string
+        :param kwargs: See below
+
+        :keyword:
+
+        * ext_to_int_dist: (Int or Float) distance between internal beams and exterior main beams (on both sides)
+
 
         :raises ValueError: If skew angle is greater than 90. If number of transverse grid line is less than 2.
 
@@ -108,7 +120,7 @@ class OspGrillage:
         # store geometry input
         self.mesh_type = mesh_type  # mesh type either orthogonal or oblique
         self.model_name = bridge_name  # name string
-        self.long_dim = long_dim  # span , also c/c between support bearings
+        self.long_dim = long_dim  # span , defined c/c between support bearings
         self.width = width  # length of the bearing support - if skew  = 0 , this corresponds to width of bridge
         self.num_long_gird = num_long_grid  # number of longitudinal beams
         self.num_trans_grid = num_trans_grid  # number of grids for transverse members

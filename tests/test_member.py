@@ -41,9 +41,9 @@ def test_section_command(ref_bridge_properties):
     # construct grillage model
     example_bridge = og.create_grillage(bridge_name="shelllink_10m", long_dim=10, width=7, skew=0,
                                         num_long_grid=6, num_trans_grid=11, edge_beam_dist=1, mesh_type="Orth",
-                                        model_type="shell", max_mesh_size_z=1, max_mesh_size_x=1,
+                                        model_type="shell_beam", max_mesh_size_z=1, max_mesh_size_x=1,
                                         offset_beam_y_dist=0.499,
-                                        link_nodes_width=0.89)
+                                        beam_width=0.89)
 
     # set beams
     example_bridge.set_member(I_beam, member="interior_main_beam")

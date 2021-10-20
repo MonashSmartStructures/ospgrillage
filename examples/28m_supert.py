@@ -102,7 +102,7 @@ bridge_28.create_osp_model(pyfile=pyfile)
 front_wheel = og.PointLoad(name="front wheel", point1=og.LoadPoint(2, 0, 2, 50))  # Single point load 50 N
 single_path = og.Path(start_point=og.Point(0, 0, 2), end_point=og.Point(29, 0, 3))  # create path object
 move_point = og.MovingLoad(name="single_moving_point")
-move_point.add_loads(load_obj=front_wheel, path_obj=single_path.get_path_points())
+move_point.add_load(load_obj=front_wheel, path_obj=single_path.get_path_points())
 move_point.parse_moving_load_cases()
 bridge_28.add_moving_load_case(move_point)
 

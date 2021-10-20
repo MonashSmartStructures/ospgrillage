@@ -10,7 +10,7 @@ be reported by raising an issue in the main repository.
 Grillage model
 ====================
 
-The *ospgrillage* module generates a two-dimensional (2D) grillage model of a bridge deck in `OpenSees` - see Figure 1.
+The *ospgrillage* module generates a two-dimensional (2D) grillage model of a bridge deck in OpenSees - see Figure 1.
 
 ..  figure:: ../../_images/Figure_1.png
     :align: center
@@ -23,9 +23,9 @@ Model space
 
 By default the :class:`~ospgrillage.osp_grillage.OpsGrillage` object creates a 2-D grillage model that exist in the 3-D model space.
 The model has 6 degrees-of-freedom at each nodes. The grillage model plane lies in the x-z plane of the coordinate system.
-For a 2-D model space, the model plane is the x-y plane.
+For a 2-D model, the model plane is the x-y plane.
 
-Development for 1-D models in 2-D space is yet to complete but we welcome any pull request for it.
+Development for 1-D models in 2-D space is yet to complete in release 0.1.0 but we welcome any pull request for it.
 
 Coordinate system
 ---------------------
@@ -46,16 +46,16 @@ Two reasons behind selecting the coordinate system:
 #. To be consistent with 1D problems where the working axis for 1-D models is typically *x* (horizontal axis) and *y* (vertical axis).
 
 ====================
-Meshing Procedure
+Meshing
 ====================
 
-The :class:`~ospgrillage.osp_grillage.OpsGrillage` class handles a :class:`~ospgrillage.mesh.Mesh` class object which stores information of the grillage mesh, such as:
+The :class:`~ospgrillage.osp_grillage.OspGrillage` class handles a :class:`~ospgrillage.mesh.Mesh` class object which stores information of the grillage mesh, such as:
 
 * Nodes
 * Elements
-* Element local transformation of sections and materials
+* Transformation of sections and materials
 * Grouping of grillage elements for calculating properties and assigning members.
-* width and distance between
+* Dimensions of mesh
 
 
 Meshing algorithm
@@ -67,25 +67,25 @@ Figure 2 shows an bridge mesh nodes as an explanatory example.
     :align: center
     :scale: 75 %
 
-    Figure 2: Meshing construction lines, showing start edge construction line (Blue), end edge construction line (Green), sweep path (Black) and sweeping nodes (Red).
+    Figure 2: Meshing construction lines, showing start control line (Blue), end end control line (Green), sweep path (Black) and sweeping nodes (Red).
 
 Meshing algorithm is controlled by the :class:`~ospgrillage.mesh.Mesh` class object. The following components are generated to
 define the nodes and elements of the mesh:
 
-#. **Construction line at edge of model @ the start of the span (start_span_edge)**
+#. **Line of control points at start of the span (start_span_edge)**
    A construction line consisting of the edge of the model is first defined. Construction line consist of nodes that
    coincide with the number and position of longitudinal beams in the model. The angle of the construction line is based on skew angle
    (skew_1). By default, the reference point of the construction line coincide with the origin [0,0,0] of the model space.
 
-#. **Construction line at edge of model @ the end of the span (end_span_edge)**
+#. **Line of control points at the end of the span (end_span_edge)**
    Similar to (1), the construction line at the end of the span is created based on number of longitudinal beam. The
    spacing of the nodes in the z direction is identical to that of the first construction line. By default the skew angle
-   of this second construction (skew_2) can be different. In constrast, the reference point of second construction line
+   of this second construction (skew_2) can be different. In contrast, the reference point of second construction line
    is [L, 0 ,f(L)] where L is the length of the model, and f(L) is the z coordinate of the reference node based on
    the defined sweep path of the model - this is next explained
 
 #. **Sweep Path** By default, the sweep path of the model is a straight line of y = 0 which starts at the origin [0,0,0] of model space.
-   A few option
+   Addition of options for sweep path is favourable.
 
 
 Meshing Rules
@@ -232,7 +232,7 @@ In tandem with this, the :class:`~ospgrillage.mesh.EdgeControlPoints` class will
 are only recognized as end supports - catering to current meshing procedures for single span configuration.
 
 The developers also acknowledges that there are conflicts between the adopted coordinate system of *ospgrillage* and the default
-coordinate system for the `OpenSees`'s `ops_vis` module. The `ops_vis` module default isotropic angle is x - y with z axis plane
+coordinate system for the OpenSees's `ops_vis` module. The `ops_vis` module default isotropic angle is x - y with z axis plane
 being the model plane of a 2-D model in 3-D space. Currently it is not easy to alter the coordinate system of
 *ospgrillage*. However, the developers are hoping that `ops_vis` can cater to
 multi isotropic views of the model space as oppose to the current fixed coordinate system.

@@ -278,7 +278,7 @@ def add_analysis_to_simple_grid(create_grillage):
     moving_truck = ospg.create_moving_load(name=load_name[4])
     # Set path and loads
     moving_truck.set_path(single_path)
-    moving_truck.add_loads(two_axle_truck)
+    moving_truck.add_load(two_axle_truck)
     simple_grid.add_load_case(moving_truck)  # assign
 
     ## load combination
@@ -364,7 +364,7 @@ def test_line_load_results(add_analysis_to_simple_grid):
                                                                                 Component="Mz_i")))
 
     # load combo
-    mid_comb = np.sum(np.array(combo_results[0].forces.sel(Element=ele_set,Component="Mz_i")))
+    mid_comb = np.sum(np.array(combo_results.forces.sel(Element=ele_set,Component="Mz_i")))
 
 
     comp_calcs = list(mid_sta) + [mid_mov] + [mid_comb]

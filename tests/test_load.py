@@ -528,7 +528,7 @@ def test_moving_load_case(bridge_model_42_negative):
                                         end_point=og.Point(4, 0, 3))  # create path object
     move_point = og.create_moving_load(name="single_moving_point")
     move_point.set_path(single_path)
-    move_point.add_loads(load_obj=front_wheel)
+    move_point.add_load(load_obj=front_wheel)
     example_bridge.add_load_case(move_point)
 
     example_bridge.analyze()
@@ -558,7 +558,7 @@ def test_moving_load_and_basic_load_together(bridge_model_42_negative):
                                         end_point=og.Point(4, 0, 3))  # create path object
     move_point = og.create_moving_load(name="single_moving_point")
     move_point.set_path(single_path)
-    move_point.add_loads(load_obj=front_wheel)
+    move_point.add_load(load_obj=front_wheel)
     example_bridge.add_load_case(move_point)
 
     # example_bridge.analyze(all=True)
@@ -586,7 +586,7 @@ def test_moving_compound_load(bridge_model_42_negative):
     truck = og.create_moving_load(name="Truck 1")
     single_path = og.create_moving_path(start_point=og.Point(2, 0, 2), end_point=og.Point(4, 0, 2))  # Path object
     truck.set_path(path_obj=single_path)
-    truck.add_loads(load_obj=M1600)
+    truck.add_load(load_obj=M1600)
 
     example_bridge.add_load_case(truck)
     example_bridge.analyze()

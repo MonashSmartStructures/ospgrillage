@@ -160,7 +160,7 @@ moving_truck = og.create_moving_load(name="Moving Two Axle Truck")
 # Set path to all loads defined within moving_truck
 moving_truck.set_path(single_path)
 # note: it is possible to set different paths for different compound loads in one moving load object
-moving_truck.add_loads(two_axle_truck)
+moving_truck.add_load(two_axle_truck)
 
 # Assign
 simple_grid.add_load_case(moving_truck)

@@ -19,15 +19,18 @@ from ospgrillage.mesh import *
 def create_load_vertex(**kwargs):
     """
     User interface function to create load vertex of various load types.
+    :param kwargs: Keyword arg, see below.
 
-    :returns: namedTuple LoadPoint(x,y,z,p)
-    :except: ValueError if missing one or more keyword arguments.
     :keyword:
 
     * x (`float` or `int`): Value of x coordinate
     * y (`float` or `int`): Value of y coordinate. Default is model plane y = 0
     * z (`float` or `int`): Value of z coordinate
     * p (`float` or `int`): Magnitude of vertical load in y direction.
+
+    :returns: namedTuple LoadPoint(x,y,z,p)
+
+    :except: ValueError if missing one or more keyword arguments.
 
     """
     x = kwargs.get("x",None)
@@ -44,34 +47,43 @@ def create_load_vertex(**kwargs):
 def create_point(**kwargs):
     """
     User interface function to create a Point namedTuple.
-    :param kwargs:
-    :return: Point namedTuple
+    :param kwargs: See below
+    :keyword:
+
+    * x (`float` or `int`): Value of x coordinate
+    * y (`float` or `int`): Value of y coordinate. Default is y = 0
+    * z (`float` or `int`): Value of z coordinate
+
+    :return: Point(x,y,z) namedTuple
     """
     x = kwargs.get("x",None)
     y = kwargs.get("y",0)
     z = kwargs.get("z",None)
     return Point(x,y,z)
 
+
 def create_load_case(**kwargs):
     """
-    User interface function to create load case/ LoadCase objects. This function creates the Load case object, users
-    are to add loads to LoadCase object via ``add_load_groups()``.
+    User interface function to create LoadCase objects. Following this function, users
+    are required add loads to LoadCase object via :func:`~ospgrillage.load.LoadCase.add_load`.
 
     :keyword:
     * name(`str`): Name string of Load case object
 
-    :returns LoadCase:
+    :returns: :class:`~ospgrillage.load.LoadCase` object
     """
     return LoadCase(**kwargs)
 
 
 def create_compound_load(**kwargs):
     """
-    User interface function to create compound load/ CompoundLoad objects
+    User interface function to create CompoundLoad object. Following this function users are required to
+    add loads to object via :func:`~ospgrillage.load.CompoundLoad.add_load`.
 
     :keyword:
     name (`str`): Name string of compound load
-    :returns CompoundLoad:
+
+    :returns: :class:`~ospgrillage.load.CompoundLoad`
     """
     return CompoundLoad(**kwargs)
 
@@ -117,17 +129,19 @@ def create_load(**kwargs):
 
 def create_moving_load(**kwargs):
     """
-    User interface function to create Moving Load object.
+    User interface function to create Moving Load object. Following this function, users are required to:
 
-    :return: `MovingLoad` object
+    *. Set a common path to object via :func:`~ospgrillage.load.MovingLoad.set_path`
+    *. Add loads to object via :func:`~ospgrillage.load.MovingLoad.add_load`
+
+    :return: :class:`~ospgrillage.load.MovingLoad` object
 
     :keyword:
 
     * common_path(`Path`): Path object for all load groups added to the Moving load object to traverse
     * global_increment(`float` or `int`): Number of increments to discretize Path object. This keyword is only used in
-    advance usage where Moving Load contains multiple load groups each with unique path objects.
+      advance usage where Moving Load contains multiple load groups each with unique path objects.
 
-    See :ref:`Loads` or :ref:`Running_analysis` for more information on this.
     """
     return MovingLoad(**kwargs)
 
@@ -143,7 +157,7 @@ def create_moving_path(**kwargs):
     * increments (`int`): Increment of path steps. Default is 50
     * mid_point (`Point`): Default = None
 
-    :returns Path:
+    :returns: :class:`~ospgrillage.load.Path`
     """
     return Path(**kwargs)
 
@@ -236,7 +250,6 @@ class Loads:
         self.spec = dict(name=self.name, global_points=self.point_list,
                          ref_point=self.ref_point)  # dict {node number: {Fx:val, Fy:val, Fz:val, Mx:val, My:val, Mz:val}}
         self.load_counter = 0  # counter for compound load
-
 
     # function called by Moving load module to move the load group
     def move_load(self, ref_point: Point):
@@ -725,12 +738,14 @@ class LoadCase:
 
     def add_load(self, load_obj: Union[Loads, CompoundLoad], **kwargs):
         """
+        Function to add load objects to LoadCase
 
         :param load_obj: Load or Compound load object
         :param kwargs: keyword arguments
         :keyword:
+
         * global_coord_of_load_obj (`Point` namedTuple): if load objects are defined in local coordinate, this parameter
-            is required to set the origin of local coordinate of load groups onto the global coordiante of the grillage
+          is required to set the origin of local coordinate of load groups onto the global coordinate of the grillage
 
         """
         load_dict = dict()
@@ -785,6 +800,7 @@ class MovingLoad:
         self.common_path = kwargs.get("common_path", None)
         self.global_increment = kwargs.get("global_increment", None)  # for advance use
         self.parse = False  # flag for if query option is available
+        self.incremental_name = None  # init variable of query method
 
     def set_path(self, path_obj):
         """
@@ -802,7 +818,7 @@ class MovingLoad:
         # else, valid input for setting a basic moving load - proceed setting common path variable
         self.common_path = path_obj
 
-    def add_loads(self, load_obj: Union[Loads, CompoundLoad], path_obj=None):
+    def add_load(self, load_obj: Union[Loads, CompoundLoad], path_obj=None):
         """
         Function to set a load type (Loads class object) with its path (Path class object). Function accepts compound load (Compound load class) as a load input, which in turn sets the path object to all loads within the compound
         load group.
@@ -829,9 +845,6 @@ class MovingLoad:
 
     # function to create incremental load cases for each step of the moving loads. Function handled by OspGrillage
     def parse_moving_load_cases(self):
-
-
-
 
         # loop through all load-path pairs and identify static loads
         for load_pair_dict in self.load_case_dict_list:
@@ -865,6 +878,8 @@ class MovingLoad:
     def query(self,incremental_lc_name,**kwargs):
         """
         Function to query properties of moving load
+        :param incremental_lc_name: Name string of load case to query properties
+        :type incremental_lc_name: str
         :param kwargs:
         :return:
         """
