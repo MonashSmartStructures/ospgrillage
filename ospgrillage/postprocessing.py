@@ -154,7 +154,8 @@ def plot_force(ospgrillage_obj, result_obj=None, component = None,
     :type member: str
     :param option:
     :type option: str
-    :return: Matplotlib plot
+    :return: Matplotlib figure
+    :rtype: (:class:`matplotlib.figure.Figure`)
     """
     # instantiate component dict
     comp_dict = {"Fx":0,"Fy":1,"Fz":2,"Mx":3,"My":4,"Mz":5}
@@ -210,8 +211,8 @@ def plot_defo(ospgrillage_obj, result_obj=None,
     :param option: option of :func:`~ospgrillage.osp_grillage.OspGrillage.get_element`, either "nodes" or "element"
                    (Default nodes)
     :type option: str
-    :return: Matplotlib plot
-
+    :return: Matplotlib figure
+    :rtype: (:class:`matplotlib.figure.Figure`)
     """
     # init vars
     previous_def = None

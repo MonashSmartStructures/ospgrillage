@@ -13,11 +13,12 @@ analysis purposes.
 
 ## Installation
 
-To run the wrapper, download from github [link](https://github.com/MonashSmartStructures/ospgrillage.git) and import the following files:
+Install using pip
+
+    pip install git+https://github.com/MonashSmartStructures/ops-grillage.git
+
     
-    import ospgrillage as og
-    
-For detailed information on installation, refer to [installation](https://monashsmartstructures.github.io/ospgrillage/rst/Installation.html)
+For more information on installation, refer to [installation](https://monashsmartstructures.github.io/ospgrillage/rst/Installation.html)
 
 
 ## Documentation
@@ -26,23 +27,22 @@ See [link](https://monashsmartstructures.github.io/ospgrillage/index.html) to do
 
 ## Current Capabilities
 
-### Bridge model features
-- [x] Single-span
-- [x] Longitudinal beam elements
-- [x] Edge beams
-- [x] Transverse slabs
-- [x] Allow for diaphragm / end slab
-- [x] Allow for unit width properties for transverse slab
-- [x] Pinned and roller supports
+### Model types available
+- [x] Beam elements
+- [x] Beam elements with rigid links
+- [x] Shell and beam elements
 
 ### Mesh features
-- [x] Skewed(Oblique) and Orthogonal meshes
-- [x] Positive and negative skew angle
+- [x] Single-span
+- [x] Skewed (Oblique) and Orthogonal meshes
+- [x] Positive and negative skew angles
 - [x] Allow for skew mesh to be set up to 30 degrees
 - [x] Allow for orthogonal mesh to be set no less than 11 degrees
 - [x] Grillage elements grouped automatically for easy assignment of properties
 - [x] Autodetect edge of spans as supporting nodes
-- [ ] Mesh with offset beam elements tied with rigid links
+- [x] Allow for diaphragm / end slab
+- [x] Allow for unit width properties for transverse slab/members
+- [x] Pinned and roller supports
 
 ### Element types
 The following OpenSees element types are/will be supported in releases:
@@ -51,23 +51,27 @@ The following OpenSees element types are/will be supported in releases:
 - [ ] nonlinearBeamColumn
 - [ ] Shell elements
 
+## Materials
+- [x] JSON material file for codified material properties
+
 
 ### Utilities
-#### Loading Utilities
+#### Load types definition
 - [x] Nodal loads
 - [x] Point loads
 - [x] Line loads
 - [x] Patch loads
 - [x] Compound loads (any combination of the above load types) 
 
-#### Load cases
-- [x] Assign multiple load utilities in single load case
-- [x] Moving load cases
+#### Analysis utilities
+- [x] Allow for load case to add multiple load types, including compound loads
+- [x] Allow for moving load case
 
-#### Result output
-- [x] Utilise python's xarray features i.e. dataArrays
-- [x] Envelope function
-- [x] Query options for load types
+#### Post-processing utilities
+- [x] Output results utilise python's xarray DataSet
+- [x] Retrieve envelopes from xarray results
+- [x] Query options for moving load 
+- [x] Plotting displacement and force component from xarray results
 
 ### Development wishlist
 - [ ] Curved meshes

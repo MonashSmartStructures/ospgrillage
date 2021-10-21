@@ -314,6 +314,7 @@ def test_line_load_results(add_analysis_to_simple_grid):
     kN = kilo * N
     MPa = N / ((mm) ** 2)
     GPa = kilo * MPa
+    # read from json file
     with open('super_t_28.json') as f:
         bridge = json.load(f)
     grid_prop = bridge["grid"]
@@ -370,10 +371,6 @@ def test_line_load_results(add_analysis_to_simple_grid):
     comp_calcs = list(mid_sta) + [mid_mov] + [mid_comb]
 
     diff = np.array(hand_calcs) - np.array(comp_calcs)  # diff between hand calcs and ospg
-
-    print(hand_calcs)
-    print(comp_calcs)
-    print(diff)
 
     # read pickle
     # var = pickle.load(open("Lusas_Outputs_cleaned.p", "rb"))

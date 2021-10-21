@@ -246,7 +246,7 @@ class Mesh:
             # reset counter and recorder for next loop x increment
             self.global_x_grid_count += 1
             assigned_node_tag = []
-        print("Meshing completed....")
+        print("Oblique meshing completed....")
 
     def _orthogonal_meshing(self):
         """
@@ -573,7 +573,7 @@ class Mesh:
                     self._assign_longitudinal_members(pre_node=pre_node, cur_node=cur_node,
                                                       cur_z_group=cur_z_group)
                     break
-        print("orthogonal meshing complete")
+        print("Orthogonal meshing complete")
 
     # ------------------------------------------------------------------------------------------
     # ------------------------------------------------------------------------------------------

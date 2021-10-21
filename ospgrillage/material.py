@@ -38,14 +38,14 @@ def create_material(**kwargs):
 
 class Material:
     """
-    This class stores information and provides methods to parse input material properties into ```OpenSeesPy``` Material()
-    commands. ```OpenSeesPy``` has two types of material objects, namely UniaxialMaterial() and NDMaterial().
+    This class stores information and provides methods to parse input material properties into ``OpenSeesPy`` Material
+    commands. ``OpenSeesPy`` has two types of material objects, namely UniaxialMaterial and NDMaterial.
 
     `Here <https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html>`_ are the information about OpenSees
     Material objects.
 
-    For the intended modelling objects of *ospgrillage* (bridge decks), concrete and steel makes up the primary
-    materials. In turn, UniAxialMaterial object of ```OpenSeesPy``` is wrapped and used by Material class since it contains
+    As *ospgrillage* is mainly intended for bridge decks , concrete and steel makes up the primary
+    materials. In turn, UniAxialMaterial object of ``OpenSeesPy`` is wrapped and used by Material class since it contains
     options for Concrete and Steel.
 
     The Material class also allow users to create codified material properties (e.g. AS5100).
@@ -86,9 +86,9 @@ class Material:
 
         For developers wishing to add more material properties:
 
-        #. if the material is a codified material, modify mat_lib.json file by adding the material according to the file format.
-        #. if the material is a `OpenSees` Material that wasn't added previously, add properties under ``get_mat_args()``
-            function. Then check the commands in _write_material() of `OspGrillage` class.
+        #. if the material is a codified material, modify mat_lib.json file by adding the material following its json format.
+        #. if the material is a ``OpenSees`` Material that wasn't added previously, first add its properties under :func:`get_mat_args`
+            function. Then check the commands in :func:`_write_material` of :class:`OspGrillage` class.
 
         """
         # Instantiate variables
@@ -127,7 +127,8 @@ class Material:
 
     def parse_material_command(self):
         """
-        Function to parse the material inputs into OpenSeesPy commands
+        Function to parse the material inputs into OpenSeesPy commands - this function is handled by
+        :class:`ospgrillage.osp_grillage.OspGrillage`.
         """
         # check if code material is selected, if yes read from material library json
         if self.code:
@@ -155,7 +156,8 @@ class Material:
 
     def get_material_args(self):
         """
-        Function to get material arguments. This function is handled by opsgrillage during set_material()
+        Function to get material arguments. This function is handled by
+        :class:`ospgrillage.osp_grillage.OspGrillage`.
         """
         if self.mat_type == "Concrete01":
             self.op_mat_arg = [self.fpc, self.epsc0, self.fpcu, self.epsU]
@@ -245,52 +247,4 @@ class Material:
             mat_lib = self._create_default_dict()
             self._write_mat_lib(mat_lib)
         return mat_lib
-
-
-class UniAxialElasticMaterial(Material):
-    """
-    .. note::
-        This class is to be deprecated in Beta release
-
-    Main class for OpenSees UniAxialElasticMaterial objects. This class acts as a wrapper to parse input parameters
-    and returns command lines to generate the prescribe materials in OpenSees material library.
-
-
-    """
-
-    def __init__(self, mat_type, **kwargs):
-        # super(UniAxialElasticMaterial, self).__init__(length, length)
-        super().__init__(mat_type, **kwargs)
-
-    def get_uni_material_arg_str(self):
-        if self.mat_type == "Concrete01":
-            self.op_mat_arg = [self.fpc, self.epsc0, self.fpcu, self.epsU]
-        elif self.mat_type == "Steel01":
-            self.op_mat_arg = [
-                self.Fy,
-                self.E0,
-                self.b,
-                self.a1,
-                self.a2,
-                self.a3,
-                self.a4,
-            ]
-        # check if None in entries
-        if None in self.op_mat_arg:
-            raise Exception(
-                "One or more missing/non-numeric parameters for Material: {} ".format(
-                    self.mat_type
-                )
-            )
-        return self.mat_type, self.op_mat_arg
-
-    def get_uni_mat_ops_commands(self, material_tag):
-
-        # e.g. concrete01 or steel01
-        mat_str = None
-        if self.mat_type == "Concrete01" or self.mat_type == "Steel01":
-            mat_str = 'ops.uniaxialMaterial("{type}", {tag}, *{vec})\n'.format(
-                type=self.mat_type, tag=material_tag, vec=self.op_mat_arg
-            )
-        return mat_str
 

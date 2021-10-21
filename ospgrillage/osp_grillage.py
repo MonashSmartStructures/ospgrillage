@@ -1470,12 +1470,18 @@ class OspGrillage:
                                             corresponding load factor as value.
         :type load_case_and_factor_dict: str
 
-        Example format of input dict for add_load_combination
+        Example format of input dict for add_load_combination::
 
-        load_comb = {"name_of_load_case_1":1.2, "name_of_load_case_2": 1.5}
+            load_comb = {"name_of_load_case_1":1.2, "name_of_load_case_2": 1.5}
+
+        .. note::
+
+            As of release 0.1.0, load combinations can be directly obtained (calculated on the fly) by specifying
+            ``combination`` kwarg in :func:`~ospgrillage.osp_grillage.OspGrillage.get_results`. Hence, `add_combination`
+            is here for adding and storing information of load combination to  :class:`~ospgrillage.osp_grillage.OspGrillage`
+            object.
 
         """
-        load_case_dict = None # instantiate
         load_case_dict_list = []  # list of dict: structure of dict See line
         # create dict with key (combination name) and val (list of dict of load cases)
         for load_case_name, combination_load_factor in load_case_and_factor_dict.items():
@@ -1566,7 +1572,7 @@ class OspGrillage:
             if not isinstance(comb, dict):
                 raise Exception("Combination argument requires a dict or a list of dict: e.g. {'DL':1.2,'SIDL':1.5}")
 
-            #for load_case_dict_list in comb:  # {0:[{'loadcase':LoadCase object, 'load_command': list of str}
+            # for load_case_dict_list in comb:  # {0:[{'loadcase':LoadCase object, 'load_command': list of str}
             print("Obtaining load combinations ....")
 
             summation_array = None  # instantiate
@@ -1607,9 +1613,8 @@ class OspGrillage:
                 combination_array = summation_array
             else:  # comb has moving load, assign the coordinates along the load case dimension for identification
                 combination_array = factored_array.assign_coords(Loadcase=coordinate_name_list)
-            #output_load_comb_dict.append(combination_array)
             return combination_array
-            #return output_load_comb_dict  # list of data array
+
         else:
             # return raw data array for manual post processing
             if save_filename:
@@ -1628,7 +1633,7 @@ class OspGrillage:
         * x_group_num (`int`): ditto for z_group_num but for x_group
         * edge_group_num(`int`): ditto for z_group_num but for edge groups
 
-        :return: List of element data
+        :return: List of element data (tag)
         """
         # get query member details
         namestring = kwargs.get("member", None)
@@ -1641,10 +1646,10 @@ class OspGrillage:
         # instantiate variables 
         sorted_return_list = []
         extracted_ele = []
-        # options
+        # read kwargs
         options = kwargs.get("options", node_option)  # similar to ops_vis, "nodes","element","node_i","node_j"
         if not options:
-            raise Exception("Options not defined: Hint pass option=  \"nodes\",\"element\",\"node_i\",\"node_j\"")
+            raise Exception("Options not defined: Hint arg option=  \"nodes\",\"element\",\"node_i\",\"node_j\"")
 
         # reading common elements off namestring
         if namestring == "transverse_slab":

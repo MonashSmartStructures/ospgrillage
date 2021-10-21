@@ -138,8 +138,8 @@ def create_moving_load(**kwargs):
 
     :keyword:
 
-    * common_path(`Path`): Path object for all load groups added to the Moving load object to traverse
-    * global_increment(`float` or `int`): Number of increments to discretize Path object. This keyword is only used in
+    * **common_path**(`Path`): Path object for all load groups added to the Moving load object to traverse
+    * **global_increment**(`float` or `int`): Number of increments to discretize Path object. This keyword is only used in
       advance usage where Moving Load contains multiple load groups each with unique path objects.
 
     """
@@ -157,7 +157,7 @@ def create_moving_path(**kwargs):
     * increments (`int`): Increment of path steps. Default is 50
     * mid_point (`Point`): Default = None
 
-    :returns: :class:`~ospgrillage.load.Path`
+    :returns: :class:`~ospgrillage.load.Path` object
     """
     return Path(**kwargs)
 
