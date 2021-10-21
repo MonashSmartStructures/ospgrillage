@@ -347,8 +347,17 @@ corresponding load factor as value.</p></li>
 </ul>
 </dd>
 </dl>
-<p>Example format of input dict for add_load_combination</p>
-<p>load_comb = {“name_of_load_case_1”:1.2, “name_of_load_case_2”: 1.5}</p>
+<p>Example format of input dict for add_load_combination:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">load_comb</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name_of_load_case_1&quot;</span><span class="p">:</span><span class="mf">1.2</span><span class="p">,</span> <span class="s2">&quot;name_of_load_case_2&quot;</span><span class="p">:</span> <span class="mf">1.5</span><span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>As of release 0.1.0, load combinations can be directly obtained (calculated on the fly) by specifying
+<code class="docutils literal notranslate"><span class="pre">combination</span></code> kwarg in <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_results()</span></code></a>. Hence, <cite>add_combination</cite>
+is here for adding and storing information of load combination to  <a class="reference internal" href="#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a>
+object.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -400,7 +409,7 @@ within this “interior_main_beam” element group.</p>
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of element data</p>
+<dd class="field-odd"><p>List of element data (tag)</p>
 </dd>
 </dl>
 </dd></dl>

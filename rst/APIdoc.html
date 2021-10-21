@@ -488,8 +488,17 @@ corresponding load factor as value.</p></li>
 </ul>
 </dd>
 </dl>
-<p>Example format of input dict for add_load_combination</p>
-<p>load_comb = {“name_of_load_case_1”:1.2, “name_of_load_case_2”: 1.5}</p>
+<p>Example format of input dict for add_load_combination:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">load_comb</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name_of_load_case_1&quot;</span><span class="p">:</span><span class="mf">1.2</span><span class="p">,</span> <span class="s2">&quot;name_of_load_case_2&quot;</span><span class="p">:</span> <span class="mf">1.5</span><span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>As of release 0.1.0, load combinations can be directly obtained (calculated on the fly) by specifying
+<code class="docutils literal notranslate"><span class="pre">combination</span></code> kwarg in <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_results()</span></code></a>. Hence, <cite>add_combination</cite>
+is here for adding and storing information of load combination to  <a class="reference internal" href="OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a>
+object.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -541,7 +550,7 @@ within this “interior_main_beam” element group.</p>
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of element data</p>
+<dd class="field-odd"><p>List of element data (tag)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -679,12 +688,12 @@ Class object is accessed within OspGrillage class object.</p>
 <dt class="sig sig-object py" id="ospgrillage.material.Material">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.material.</span></span><span class="sig-name descname"><span class="pre">Material</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.material.Material" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>This class stores information and provides methods to parse input material properties into <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> Material()
-commands. <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> has two types of material objects, namely UniaxialMaterial() and NDMaterial().</p>
+<p>This class stores information and provides methods to parse input material properties into <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code> Material
+commands. <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code> has two types of material objects, namely UniaxialMaterial and NDMaterial.</p>
 <p><a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html">Here</a> are the information about OpenSees
 Material objects.</p>
-<p>For the intended modelling objects of <em>ospgrillage</em> (bridge decks), concrete and steel makes up the primary
-materials. In turn, UniAxialMaterial object of <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> is wrapped and used by Material class since it contains
+<p>As <em>ospgrillage</em> is mainly intended for bridge decks , concrete and steel makes up the primary
+materials. In turn, UniAxialMaterial object of <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code> is wrapped and used by Material class since it contains
 options for Concrete and Steel.</p>
 <p>The Material class also allow users to create codified material properties (e.g. AS5100).
 These material properties are stored in a material library file (mat_lib.json) for which is to the users to pass in
@@ -722,9 +731,9 @@ to a4.</p></li>
 </ul>
 <p>For developers wishing to add more material properties:</p>
 <ol class="arabic simple">
-<li><p>if the material is a codified material, modify mat_lib.json file by adding the material according to the file format.</p></li>
+<li><p>if the material is a codified material, modify mat_lib.json file by adding the material following its json format.</p></li>
 <li><dl class="simple">
-<dt>if the material is a <cite>OpenSees</cite> Material that wasn’t added previously, add properties under <code class="docutils literal notranslate"><span class="pre">get_mat_args()</span></code></dt><dd><p>function. Then check the commands in _write_material() of <cite>OspGrillage</cite> class.</p>
+<dt>if the material is a <code class="docutils literal notranslate"><span class="pre">OpenSees</span></code> Material that wasn’t added previously, first add its properties under <code class="xref py py-func docutils literal notranslate"><span class="pre">get_mat_args()</span></code></dt><dd><p>function. Then check the commands in <code class="xref py py-func docutils literal notranslate"><span class="pre">_write_material()</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code> class.</p>
 </dd>
 </dl>
 </li>
@@ -732,13 +741,15 @@ to a4.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="ospgrillage.material.Material.parse_material_command">
 <span class="sig-name descname"><span class="pre">parse_material_command</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.material.Material.parse_material_command" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to parse the material inputs into OpenSeesPy commands</p>
+<dd><p>Function to parse the material inputs into OpenSeesPy commands - this function is handled by
+<a class="reference internal" href="OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">ospgrillage.osp_grillage.OspGrillage</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ospgrillage.material.Material.get_material_args">
 <span class="sig-name descname"><span class="pre">get_material_args</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.material.Material.get_material_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to get material arguments. This function is handled by opsgrillage during set_material()</p>
+<dd><p>Function to get material arguments. This function is handled by
+<a class="reference internal" href="OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">ospgrillage.osp_grillage.OspGrillage</span></code></a>.</p>
 </dd></dl>
 
 </dd></dl>
