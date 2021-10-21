@@ -28,7 +28,7 @@ jobs:
       - name: Set up python env
         uses: actions/setup-python@v1
         with:
-          python-version: '3.x'
+          python-version: '3.8'
       - name: Upgrade pip 
         run: 
           python -m pip install --upgrade pip
