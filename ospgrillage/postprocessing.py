@@ -8,7 +8,7 @@ addition to the currently available post processing module of OpenSeesPy - this 
 
 import matplotlib.pyplot as plt
 import opsvis as opsv
-import openseespyvis as opsplt
+import openseespyvis.Get_Rendering as opsplt
 
 
 def create_envelope(**kwargs):
