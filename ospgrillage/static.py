@@ -38,17 +38,15 @@ def find_circle(x1, y1, x2, y2, x3, y3):
     sx21 = pow(x2, 2) - pow(x1, 2)
     sy21 = pow(y2, 2) - pow(y1, 2)
 
-    f = (((sx13) * (x12) + (sy13) *
-          (x12) + (sx21) * (x13) +
-          (sy21) * (x13)) // (2 *
-                              ((y31) * (x12) - (y21) * (x13))))
+    f = ((sx13) * (x12) + (sy13) * (x12) + (sx21) * (x13) + (sy21) * (x13)) // (
+        2 * ((y31) * (x12) - (y21) * (x13))
+    )
 
-    g = (((sx13) * (y12) + (sy13) * (y12) +
-          (sx21) * (y13) + (sy21) * (y13)) //
-         (2 * ((x31) * (y12) - (x21) * (y13))))
+    g = ((sx13) * (y12) + (sy13) * (y12) + (sx21) * (y13) + (sy21) * (y13)) // (
+        2 * ((x31) * (y12) - (x21) * (y13))
+    )
 
-    c = (-pow(x1, 2) - pow(y1, 2) -
-         2 * g * x1 - 2 * f * y1)
+    c = -pow(x1, 2) - pow(y1, 2) - 2 * g * x1 - 2 * f * y1
 
     # eqn of circle be x^2 + y^2 + 2*g*x + 2*f*y + c = 0
     # where centre is (h = -g, k = -f) and
@@ -69,6 +67,7 @@ def find_circle(x1, y1, x2, y2, x3, y3):
 # -----------------------------------------------------------------------------------------------------------------------
 # Sweep path equations - Add future functions here
 # which the given three points lie
+
 
 def line_func(m, c, x):
     if type(x) is list:
@@ -110,9 +109,9 @@ def x_intcp_two_lines(m1, m2, c1, c2):
 
 
 def line(p1, p2):
-    A = (p1[1] - p2[1])
-    B = (p2[0] - p1[0])
-    C = (p1[0] * p2[1] - p2[0] * p1[1])
+    A = p1[1] - p2[1]
+    B = p2[0] - p1[0]
+    C = p1[0] * p2[1] - p2[0] * p1[1]
     return A, B, -C
 
 
@@ -170,14 +169,22 @@ def solve_zeta_eta(xp, zp, x1, z1, x2, z2, x3, z3, x4, z4):
 
     def obj_func(x, xp, zp, x1, x2, x3, x4, z1, z2, z3, z4):
         eta = 4 * zp - (
-                (1 - x[0]) * (1 - x[1]) * z1 + (1 + x[0]) * (1 - x[1]) * z2 + (1 + x[0]) * (1 + x[1]) * z3 + (
-                1 - x[0]) * (1 + x[1]) * z4)
+            (1 - x[0]) * (1 - x[1]) * z1
+            + (1 + x[0]) * (1 - x[1]) * z2
+            + (1 + x[0]) * (1 + x[1]) * z3
+            + (1 - x[0]) * (1 + x[1]) * z4
+        )
         zeta = 4 * xp - (
-                (1 - x[0]) * (1 - x[1]) * x1 + (1 + x[0]) * (1 - x[1]) * x2 + (1 + x[0]) * (1 + x[1]) * x3 + (
-                1 - x[0]) * (1 + x[1]) * x4)
+            (1 - x[0]) * (1 - x[1]) * x1
+            + (1 + x[0]) * (1 - x[1]) * x2
+            + (1 + x[0]) * (1 + x[1]) * x3
+            + (1 - x[0]) * (1 + x[1]) * x4
+        )
         return eta, zeta
 
-    root = fsolve(obj_func, np.array([1, 1]), args=(xp, zp, x1, x2, x3, x4, z1, z2, z3, z4))
+    root = fsolve(
+        obj_func, np.array([1, 1]), args=(xp, zp, x1, x2, x3, x4, z1, z2, z3, z4)
+    )
 
     eta = root[0]
     zeta = root[1]
@@ -226,13 +233,22 @@ def check_point_in_grid(inside_point, point_list):
         inside = False
         return inside
     # check if point is clockwise via sign of signed_area
-    signed_area = check_points_direction(point_list)  # sign area < 0 means points are clockwise, and vice versa
+    signed_area = check_points_direction(
+        point_list
+    )  # sign area < 0 means points are clockwise, and vice versa
     for count, point0 in enumerate(pt0):
-        side = (inside_point.z - point0.z) * (pt1[count].x - point0.x) - (inside_point.x - point0.x) * (
-                pt1[count].z - point0.z)
+        side = (inside_point.z - point0.z) * (pt1[count].x - point0.x) - (
+            inside_point.x - point0.x
+        ) * (pt1[count].z - point0.z)
         # check if point is outside
-        if any([side < 0 <= signed_area,  # side > 0 means left, side < 0 means right, side = 0 means on the line path
-                side > 0 > signed_area]):  # nodes are counterclockwise and point to right (outside)
+        if any(
+            [
+                side
+                < 0
+                <= signed_area,  # side > 0 means left, side < 0 means right, side = 0 means on the line path
+                side > 0 > signed_area,
+            ]
+        ):  # nodes are counterclockwise and point to right (outside)
             inside = False  # nodes are clockwise and point to the left (outside) these condition
     return inside  # return line = outside
 
@@ -258,7 +274,7 @@ def check_points_direction(point_list):
         else:
             x2 = point_list[counter + 1].x
             z2 = point_list[counter + 1].z
-        signed_area += (x1 * z2 - x2 * z1)
+        signed_area += x1 * z2 - x2 * z1
 
         last_point = point  # set current point as last point
     return signed_area
@@ -268,8 +284,12 @@ def check_points_direction(point_list):
 # function to check intersection of line segments
 def onSegment(p, q, r):
     # point nameTuple p, q and r
-    if ((q.x <= max(p.x, r.x)) and (q.x >= min(p.x, r.x)) and
-            (q.y <= max(p.z, r.z)) and (q.z >= min(p.z, r.z))):
+    if (
+        (q.x <= max(p.x, r.x))
+        and (q.x >= min(p.x, r.x))
+        and (q.y <= max(p.z, r.z))
+        and (q.z >= min(p.z, r.z))
+    ):
         return True
     return False
 
@@ -429,7 +449,7 @@ def check_dict_same_keys(d_1, d_2):
     return merged
 
 
-def sort_list_into_four_groups(group_list:list, option:str=None):
+def sort_list_into_four_groups(group_list: list, option: str = None):
     """
     Function to sort a list of group number into four groups , returns a dict with keys [0,1,2,3] placing the ordered
     group_list into each key. Purpose is to distinguish main grillage elements based on the group positioning
@@ -441,26 +461,25 @@ def sort_list_into_four_groups(group_list:list, option:str=None):
     output_dict = dict()
     if option == "shell":
         # add two proxy element at start and end of group list
-        group_list = [group_list[0]-1] + group_list + [group_list[-1]+1]
+        group_list = [group_list[0] - 1] + group_list + [group_list[-1] + 1]
 
     # edges
     output_dict[0] = [group_list[0], group_list[-1]]
     # instantiate
     exterior_beam_group_1 = [group_list[1]]
     exterior_beam_group_2 = [group_list[-2]]
-    interior_beam_group = group_list[2:len(group_list)-2]
+    interior_beam_group = group_list[2 : len(group_list) - 2]
 
     # check for special cases
     if len(group_list) > 2:
-        if len(group_list) == 3: # 2 edge and 1 interior
+        if len(group_list) == 3:  # 2 edge and 1 interior
             interior_beam_group = [group_list[1]]
             exterior_beam_group_1 = []
             exterior_beam_group_2 = []
-        elif len(group_list)==4: # 2 edge, ext_1 and ext_2
+        elif len(group_list) == 4:  # 2 edge, ext_1 and ext_2
             interior_beam_group = []
 
     output_dict[1] = exterior_beam_group_1
     output_dict[2] = interior_beam_group
     output_dict[3] = exterior_beam_group_2
     return output_dict
-

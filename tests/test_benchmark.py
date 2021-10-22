@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# coding: utf-8
+# -*- coding: utf-8 -*-
 """
 This test contains a validation against a numerical bridge model made in LUSAS software. Note the test portion of this file are
 specific to the comparison i.e. 28m model between LUSAS model outputs and ospg outputs - hence is not advisable to copy-paste
@@ -11,11 +11,8 @@ import pickle
 import json
 import numpy as np
 import pandas
-# import openseespy.postprocessing.ops_vis as opsv
-
-# importing ospgrillage
-import sys
-
+import sys,os
+sys.path.insert(0, os.path.abspath('../'))
 import ospgrillage as ospg
 
 

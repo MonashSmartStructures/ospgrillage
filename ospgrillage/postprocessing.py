@@ -70,23 +70,34 @@ class Envelope:
             return
 
         # instantiate variables
-        self.load_effect = load_effect  # array load effect either displacements or forces
+        self.load_effect = (
+            load_effect  # array load effect either displacements or forces
+        )
         self.envelope_ds = None
         self.format_string = None
         # main command strings
-        self.eval_string = "self.ds.{array}.{xarray_command}(dim=\"Loadcase\").sel({component_command})"
+        self.eval_string = (
+            'self.ds.{array}.{xarray_command}(dim="Loadcase").sel({component_command})'
+        )
         self.component_string = "Component={},"
         self.element_string = "Element={},"
         self.load_case_string = ""
         self.component_command = ""  # instantiate command string
         # default xarray function name
-        self.xarray_command = {"query": ["idxmax", "idxmin"], "minmax value": ["max", "min"],
-                               "index": ["argmax", "argmin"]}
+        self.xarray_command = {
+            "query": ["idxmax", "idxmin"],
+            "minmax value": ["max", "min"],
+            "index": ["argmax", "argmin"],
+        }
         self.selected_xarray_command = []
         # get keyword args
-        self.elements = kwargs.get("elements", None)  # specific elements to query/envelope
+        self.elements = kwargs.get(
+            "elements", None
+        )  # specific elements to query/envelope
         self.nodes = kwargs.get("nodes", None)  # specific nodes to query/envelope
-        self.component = kwargs.get("load_effect", None)  # specific load effect to query
+        self.component = kwargs.get(
+            "load_effect", None
+        )  # specific load effect to query
         self.array = kwargs.get("array", "displacements")
         self.value_mode = kwargs.get("value_mode", False)
         self.query_mode = kwargs.get("query_mode", True)  # default query mode
@@ -94,17 +105,25 @@ class Envelope:
 
         # check variables
         if self.load_effect is None:
-            raise Exception("Missing argument for load_effect=: Hint requires a namestring of load effect type based"
-                            "on the Component dimension of the ospgrillage data set result format")
+            raise Exception(
+                "Missing argument for load_effect=: Hint requires a namestring of load effect type based"
+                "on the Component dimension of the ospgrillage data set result format"
+            )
 
         # process variables
         self.extrema_index = 0 if self.extrema is "max" else 1  # minima
         if self.query_mode:
-            self.selected_xarray_command = self.xarray_command["query"][self.extrema_index]
+            self.selected_xarray_command = self.xarray_command["query"][
+                self.extrema_index
+            ]
         elif self.value_mode:
-            self.selected_xarray_command = self.xarray_command["minmax value"][self.extrema_index]
+            self.selected_xarray_command = self.xarray_command["minmax value"][
+                self.extrema_index
+            ]
         else:  # default to argmax/ argmin
-            self.selected_xarray_command = self.xarray_command["index"][self.extrema_index]
+            self.selected_xarray_command = self.xarray_command["index"][
+                self.extrema_index
+            ]
 
         # convert to lists
         if not isinstance(self.elements, list):
@@ -127,8 +146,11 @@ class Envelope:
             self.component_command = self.element_string
 
         # format xarray command to be eval()
-        self.format_string = self.eval_string.format(array=self.array, xarray_command=self.selected_xarray_command,
-                                                     component_command=self.component_command)
+        self.format_string = self.eval_string.format(
+            array=self.array,
+            xarray_command=self.selected_xarray_command,
+            component_command=self.component_command,
+        )
 
     def get(self):
         """
@@ -139,8 +161,13 @@ class Envelope:
         return eval(self.format_string)
 
 
-def plot_force(ospgrillage_obj, result_obj=None, component = None,
-               member: str = None, option: str = "elements"):
+def plot_force(
+    ospgrillage_obj,
+    result_obj=None,
+    component=None,
+    member: str = None,
+    option: str = "elements",
+):
     """
     Function to plot 2D diagrams from force component of specific elements from results xarray DataSet
 
@@ -158,45 +185,68 @@ def plot_force(ospgrillage_obj, result_obj=None, component = None,
     :rtype: (:class:`matplotlib.figure.Figure`)
     """
     # instantiate component dict
-    comp_dict = {"Fx":0,"Fy":1,"Fz":2,"Mx":3,"My":4,"Mz":5}
+    comp_dict = {"Fx": 0, "Fy": 1, "Fz": 2, "Mx": 3, "My": 4, "Mz": 5}
     if member is None:
         print("Missing argument member=")
         return
     component_index = component
-    if not isinstance(component,int):
+    if not isinstance(component, int):
         component_index = comp_dict[component]
 
     ax = plt.figure  # create plot window
     nodes = ospgrillage_obj.get_nodes()  # extract node information of model
-    eletag = ospgrillage_obj.get_element(member=member,
-                                         options=option)  # get ele tag of grillage elements
+    eletag = ospgrillage_obj.get_element(
+        member=member, options=option
+    )  # get ele tag of grillage elements
     # loop ele tags of ele
     for ele in eletag:
         # get force components
-        ele_components = result_obj.forces.sel(Element=ele,
-                                               Component=["Vx_i", "Vy_i", "Vz_i", "Mx_i", "My_i", "Mz_i", "Vx_j",
-                                                          "Vy_j", "Vz_j", "Mx_j", "My_j",
-                                                          "Mz_j"])[0].values
+        ele_components = result_obj.forces.sel(
+            Element=ele,
+            Component=[
+                "Vx_i",
+                "Vy_i",
+                "Vz_i",
+                "Mx_i",
+                "My_i",
+                "Mz_i",
+                "Vx_j",
+                "Vy_j",
+                "Vz_j",
+                "Mx_j",
+                "My_j",
+                "Mz_j",
+            ],
+        )[0].values
         # get nodes of ele
         ele_node = result_obj.ele_nodes.sel(Element=ele)
         # create arrays for x y and z for plots
-        xx = [nodes[n]['coordinate'][0] for n in ele_node.values]
-        yy = [nodes[n]['coordinate'][1] for n in ele_node.values]
-        zz = [nodes[n]['coordinate'][2] for n in ele_node.values]
+        xx = [nodes[n]["coordinate"][0] for n in ele_node.values]
+        yy = [nodes[n]["coordinate"][1] for n in ele_node.values]
+        zz = [nodes[n]["coordinate"][2] for n in ele_node.values]
         # use ops_vis module to get force distribution on element
-        s, al = opsv.section_force_distribution_3d(ex=xx, ey=yy, ez=zz, pl=ele_components)
+        s, al = opsv.section_force_distribution_3d(
+            ex=xx, ey=yy, ez=zz, pl=ele_components
+        )
         # plot element force component
-        plt.plot(xx, s[:, component_index],'-k')  # Here change int accordingly: {0:Fx,1:Fy,2:Fz,3:Mx,4:My,5:Mz}
+        plt.plot(
+            xx, s[:, component_index], "-k"
+        )  # Here change int accordingly: {0:Fx,1:Fy,2:Fz,3:Mx,4:My,5:Mz}
         # fill area between horizontal axis and line
-        plt.fill_between(xx,s[:, component_index],[0,0],color='k', alpha=0.4)
+        plt.fill_between(xx, s[:, component_index], [0, 0], color="k", alpha=0.4)
     plt.title(member)
     plt.xlabel("x (m) ")
     plt.ylabel(component)
     plt.show()
 
 
-def plot_defo(ospgrillage_obj, result_obj=None,
-              member: str = None, component:str=None,option: str = "nodes"):
+def plot_defo(
+    ospgrillage_obj,
+    result_obj=None,
+    member: str = None,
+    component: str = None,
+    option: str = "nodes",
+):
     """
     Function to plot 2D diagrams of displacement components of specific grillage element from result xarray DataSet
 
@@ -236,14 +286,20 @@ def plot_defo(ospgrillage_obj, result_obj=None,
     # get all node information
     nodes = ospgrillage_obj.get_nodes()  # dictionary containing information of nodes
     # get specific nodes for specific element
-    nodes_to_plot = ospgrillage_obj.get_element(member=member, options=plot_option)[0]  # list of list
+    nodes_to_plot = ospgrillage_obj.get_element(member=member, options=plot_option)[
+        0
+    ]  # list of list
     # loop through nodes to plot
     for node in nodes_to_plot:
-        disp = result_obj.displacements.sel(Component=dis_comp, Node=node)[0].values  # get node disp value
-        xx = nodes[node]['coordinate'][0]  # get x coord
-        zz = nodes[node]['coordinate'][2]  # get z coord (for 3D plots)
+        disp = result_obj.displacements.sel(Component=dis_comp, Node=node)[
+            0
+        ].values  # get node disp value
+        xx = nodes[node]["coordinate"][0]  # get x coord
+        zz = nodes[node]["coordinate"][2]  # get z coord (for 3D plots)
         if previous_def is not None:
-            plt.plot([previous_xx,xx], [previous_def,disp], '-b')  # here plot accordingly, we plot a 1-D plot of all nodes in grillage element
+            plt.plot(
+                [previous_xx, xx], [previous_def, disp], "-b"
+            )  # here plot accordingly, we plot a 1-D plot of all nodes in grillage element
         previous_def = disp
         previous_xx = xx
         previous_zz = zz

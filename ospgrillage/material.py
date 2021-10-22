@@ -93,7 +93,7 @@ class Material:
         """
         # Instantiate variables
         self.mat_type = None  # this is the os convention for materials e.g. Concrete01
-        self.op_mat_arg = None # arguments according to OpenSeesPy
+        self.op_mat_arg = None  # arguments according to OpenSeesPy
         self.units = None  # default SI units
         # assigns variables for all kwargs for codified material types
         self.code = kwargs.get("code", None)
@@ -103,7 +103,7 @@ class Material:
         self.elastic_modulus = kwargs.get("E", None)
         self.shear_modulus = kwargs.get("G", None)
         self.poisson_ratio = kwargs.get("v", None)
-        self.density = kwargs.get("rho",None)
+        self.density = kwargs.get("rho", None)
 
         # properties for Concrete - symbols according to OpenSees uniaxialMaterial/Concrete
         self.fpc = kwargs.get("fpc", None)
@@ -116,7 +116,9 @@ class Material:
         self.E0 = kwargs.get("E0", None)
         self.b = kwargs.get("b", None)  # strain -hardening ratio.
         self.a1 = kwargs.get("a1", None)
-        self.a2 = kwargs.get("a2", None)  # isotropic hardening parameter , see Ops Steel01
+        self.a2 = kwargs.get(
+            "a2", None
+        )  # isotropic hardening parameter , see Ops Steel01
         self.a3 = kwargs.get("a3", None)
         self.a4 = kwargs.get("a4", None)
 
@@ -132,11 +134,19 @@ class Material:
         """
         # check if code material is selected, if yes read from material library json
         if self.code:
-            self.poisson_ratio = self._mat_lib[self.material_type][self.code][self.material_grade]['v']
-            self.elastic_modulus = self._mat_lib[self.material_type][self.code][self.material_grade]['E']
-            self.fpc = self._mat_lib[self.material_type][self.code][self.material_grade]['fc']
-            self.density = self._mat_lib[self.material_type][self.code][self.material_grade]['rho']
-            self.units = self._mat_lib[self.material_type][self.code]['units']
+            self.poisson_ratio = self._mat_lib[self.material_type][self.code][
+                self.material_grade
+            ]["v"]
+            self.elastic_modulus = self._mat_lib[self.material_type][self.code][
+                self.material_grade
+            ]["E"]
+            self.fpc = self._mat_lib[self.material_type][self.code][
+                self.material_grade
+            ]["fc"]
+            self.density = self._mat_lib[self.material_type][self.code][
+                self.material_grade
+            ]["rho"]
+            self.units = self._mat_lib[self.material_type][self.code]["units"]
         else:  # a custom material
             pass
 
@@ -150,9 +160,13 @@ class Material:
             self.shear_modulus = self.elastic_modulus / (2 * (1 + self.poisson_ratio))
 
         if self.material_type == "concrete":
-            self.mat_type = "Concrete01"  # default opensees material type to represent concrete
+            self.mat_type = (
+                "Concrete01"  # default opensees material type to represent concrete
+            )
         elif self.material_type == "steel":
-            self.mat_type = "Steel01"  # default opensees material type to represent steel
+            self.mat_type = (
+                "Steel01"  # default opensees material type to represent steel
+            )
 
     def get_material_args(self):
         """
@@ -162,14 +176,25 @@ class Material:
         if self.mat_type == "Concrete01":
             self.op_mat_arg = [self.fpc, self.epsc0, self.fpcu, self.epsU]
         elif self.mat_type == "Steel01":
-            self.op_mat_arg = [self.Fy, self.E0, self.b, self.a1, self.a2, self.a3, self.a4]
+            self.op_mat_arg = [
+                self.Fy,
+                self.E0,
+                self.b,
+                self.a1,
+                self.a2,
+                self.a3,
+                self.a4,
+            ]
 
         # TO ADD for MORE materials
 
         # check if None in entries
         if None in self.op_mat_arg:
             raise Exception(
-                "One or more missing/non-numeric parameters for Material: {} ".format(self.mat_type))
+                "One or more missing/non-numeric parameters for Material: {} ".format(
+                    self.mat_type
+                )
+            )
         return self.mat_type, self.op_mat_arg
 
     @staticmethod
@@ -247,4 +272,3 @@ class Material:
             mat_lib = self._create_default_dict()
             self._write_mat_lib(mat_lib)
         return mat_lib
-

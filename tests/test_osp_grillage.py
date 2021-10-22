@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pytest
 import ospgrillage as og
 import sys, os

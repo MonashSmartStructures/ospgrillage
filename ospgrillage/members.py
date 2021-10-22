@@ -72,13 +72,13 @@ class Section:
     """
 
     def __init__(
-            self,
-            op_ele_type="elasticBeamColumn",
-            mass=0,
-            c_mass_flag=False,
-            unit_width=False,
-            op_section_type="Elastic",
-            **kwargs
+        self,
+        op_ele_type="elasticBeamColumn",
+        mass=0,
+        c_mass_flag=False,
+        unit_width=False,
+        op_section_type="Elastic",
+        **kwargs
     ):
         """
         The constructor takes in two types of keyword arguments.
@@ -110,7 +110,9 @@ class Section:
 
         """
         # OpenSees py section type
-        self.op_section_type = op_section_type  # section tag based on OpenSeesPy - default is elastic
+        self.op_section_type = (
+            op_section_type  # section tag based on OpenSeesPy - default is elastic
+        )
         self.section_command_flag = False  # flag for parsing , check if section() command is needed. default False
         # OpenSeesPy section arguments
         # standard geometric properties
@@ -149,7 +151,9 @@ class Section:
         E = kwargs.get("E", None)
         G = kwargs.get("G", None)
         if any([E, G]):
-            raise ValueError("E or G is provided to Section object. Hint: E and G are attributes of Material Object")
+            raise ValueError(
+                "E or G is provided to Section object. Hint: E and G are attributes of Material Object"
+            )
         self.parse_section_properties()
 
     def parse_section_properties(self):
@@ -166,6 +170,7 @@ class Section:
 
 
 # ----------------------------------------------------------------------------------------------------------------
+
 
 class GrillageMember:
     """
@@ -186,7 +191,14 @@ class GrillageMember:
 
     """
 
-    def __init__(self, section: Section, material, member_name="Undefined", quad_ele_flag=False, tri_ele_flag=False):
+    def __init__(
+        self,
+        section: Section,
+        material,
+        member_name="Undefined",
+        quad_ele_flag=False,
+        tri_ele_flag=False,
+    ):
         """
         Constructor takes two input object. A Material, and Section object.
 
@@ -204,10 +216,20 @@ class GrillageMember:
         self.tri_ele_flag = tri_ele_flag
         self.section_command_flag = True
         self.material_command_flag = True
-        if any([self.section.op_ele_type == "ElasticTimoshenkoBeam", self.section.op_ele_type == "elasticBeamColumn"]):
+        if any(
+            [
+                self.section.op_ele_type == "ElasticTimoshenkoBeam",
+                self.section.op_ele_type == "elasticBeamColumn",
+            ]
+        ):
             self.material_command_flag = False
             self.section_command_flag = False  #
-        elif any([self.section.op_ele_type == 'ShellMITC4', self.section.op_ele_type == 'ShellDKGQ']):
+        elif any(
+            [
+                self.section.op_ele_type == "ShellMITC4",
+                self.section.op_ele_type == "ShellDKGQ",
+            ]
+        ):
             self.material_command_flag = False
 
     def get_member_prop_arguments(self, width=1):
@@ -223,10 +245,21 @@ class GrillageMember:
 
         # if elastic Beam column elements, return str of section input
         if self.section.op_ele_type == "ElasticTimoshenkoBeam":
-            if None in [self.material.elastic_modulus, self.material.shear_modulus, self.section.A, self.section.J,
-                        self.section.Iy,
-                        self.section.Iz, self.section.Ay, self.section.Az]:
-                raise ValueError("One or more missing arguments for Section: {}".format(self.section.op_ele_type))
+            if None in [
+                self.material.elastic_modulus,
+                self.material.shear_modulus,
+                self.section.A,
+                self.section.J,
+                self.section.Iy,
+                self.section.Iz,
+                self.section.Ay,
+                self.section.Az,
+            ]:
+                raise ValueError(
+                    "One or more missing arguments for Section: {}".format(
+                        self.section.op_ele_type
+                    )
+                )
             asterisk_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(
                 self.material.elastic_modulus,
                 self.material.shear_modulus,
@@ -235,35 +268,62 @@ class GrillageMember:
                 self.section.Iy * width,
                 self.section.Iz * width,
                 self.section.Ay * width,
-                self.section.Az * width)
+                self.section.Az * width,
+            )
         elif self.section.op_ele_type == "elasticBeamColumn":  # eleColumn
-            if None in [self.material.elastic_modulus, self.material.shear_modulus, self.section.A, self.section.J,
-                        self.section.Iy,
-                        self.section.Iz]:
-                raise ValueError("One or more missing arguments for Section: {}".format(self.section.op_ele_type))
-            asterisk_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.material.elastic_modulus,
-                                                                                       self.material.shear_modulus,
-                                                                                       self.section.A * width,
-                                                                                       self.section.J * width,
-                                                                                       self.section.Iy * width,
-                                                                                       self.section.Iz * width)
+            if None in [
+                self.material.elastic_modulus,
+                self.material.shear_modulus,
+                self.section.A,
+                self.section.J,
+                self.section.Iy,
+                self.section.Iz,
+            ]:
+                raise ValueError(
+                    "One or more missing arguments for Section: {}".format(
+                        self.section.op_ele_type
+                    )
+                )
+            asterisk_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(
+                self.material.elastic_modulus,
+                self.material.shear_modulus,
+                self.section.A * width,
+                self.section.J * width,
+                self.section.Iy * width,
+                self.section.Iz * width,
+            )
 
-            asterisk_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(self.section.A * width,
-                                                                                       self.material.elastic_modulus,
-                                                                                       self.material.shear_modulus,
-                                                                                       self.section.J * width,
-                                                                                       self.section.Iy * width,
-                                                                                       self.section.Iz * width)
+            asterisk_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(
+                self.section.A * width,
+                self.material.elastic_modulus,
+                self.material.shear_modulus,
+                self.section.J * width,
+                self.section.Iy * width,
+                self.section.Iz * width,
+            )
 
         elif self.section.op_ele_type == "ModElasticBeam2d":
-            if None in [self.section.A, self.material.elastic_modulus, self.section.Iz * width, self.section.K11,
-                        self.section.K33,
-                        self.section.K44]:
-                raise ValueError("One or more missing arguments for Section: {}".format(self.section.op_section_type))
-            asterisk_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(
-                self.section.A * width, self.material.elastic_modulus, self.section.Iz * width, self.section.K11,
+            if None in [
+                self.section.A,
+                self.material.elastic_modulus,
+                self.section.Iz * width,
+                self.section.K11,
                 self.section.K33,
-                self.section.K44)
+                self.section.K44,
+            ]:
+                raise ValueError(
+                    "One or more missing arguments for Section: {}".format(
+                        self.section.op_section_type
+                    )
+                )
+            asterisk_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(
+                self.section.A * width,
+                self.material.elastic_modulus,
+                self.section.Iz * width,
+                self.section.K11,
+                self.section.K33,
+                self.section.K44,
+            )
 
         # TO be populated with more inputs for various element types
 
@@ -274,9 +334,16 @@ class GrillageMember:
         section_args = None
 
         if self.section.op_section_type == "Elastic":
-            section_args = [self.material.elastic_modulus, self.section.A, self.section.Iz, self.section.Iy,
-                            self.material.shear_modulus,
-                            self.section.J, self.section.alpha_y, self.section.alpha_z]
+            section_args = [
+                self.material.elastic_modulus,
+                self.section.A,
+                self.section.Iz,
+                self.section.Iy,
+                self.material.shear_modulus,
+                self.section.J,
+                self.section.alpha_y,
+                self.section.alpha_z,
+            ]
 
         return section_args
 
@@ -289,26 +356,41 @@ class GrillageMember:
         if section_type == "Elastic":
             # section type, section tag, argument entries from self.get_asterisk_input()
             sec_arg = self.get_section_arguments(ele_width=ele_width)
-            sec_str = "ops.section(\"{type}\", {tag}, *{arg})\n".format(type=section_type, tag=section_tag,
-                                                                        arg=repr(sec_arg))
+            sec_str = 'ops.section("{type}", {tag}, *{arg})\n'.format(
+                type=section_type, tag=section_tag, arg=repr(sec_arg)
+            )
         elif section_type == "ElasticMembranePlateSection":
             # section type, section tag, E_mod, nu, h, rho
-            sec_str = "ops.section(\"{type}\", {tag}, {E_mod}, {nu}, {h}, {rho})\n".format(type=section_type,
-                                                                                           tag=section_tag,
-                                                                                           E_mod=self.material.elastic_modulus,
-                                                                                           nu=self.material.poisson_ratio,
-                                                                                           h=self.section.h_depth,
-                                                                                           rho=self.material.density)
+            sec_str = (
+                'ops.section("{type}", {tag}, {E_mod}, {nu}, {h}, {rho})\n'.format(
+                    type=section_type,
+                    tag=section_tag,
+                    E_mod=self.material.elastic_modulus,
+                    nu=self.material.poisson_ratio,
+                    h=self.section.h_depth,
+                    rho=self.material.density,
+                )
+            )
         elif section_type == "PlateFiber":
             # section type, section tag, E_mod, nu, h, rho
-            sec_str = "ops.section(\"{type}\", {tag}, {mat_tag}, {h})\n".format(type=section_type, tag=section_tag,
-                                                                                h=self.section.h_depth,
-                                                                                mat_tag=material_tag)
+            sec_str = 'ops.section("{type}", {tag}, {mat_tag}, {h})\n'.format(
+                type=section_type,
+                tag=section_tag,
+                h=self.section.h_depth,
+                mat_tag=material_tag,
+            )
 
         return sec_str
 
-    def get_element_command_str(self, ele_tag, node_tag_list, transf_tag=None, ele_width=1, materialtag=None,
-                                sectiontag=None) -> str:
+    def get_element_command_str(
+        self,
+        ele_tag,
+        node_tag_list,
+        transf_tag=None,
+        ele_width=1,
+        materialtag=None,
+        sectiontag=None,
+    ) -> str:
 
         # Function called within OpsGrillage class `set_member()` function.
         #
@@ -326,38 +408,69 @@ class GrillageMember:
         ele_str = None
         if self.section.op_ele_type == "ElasticTimoshenkoBeam":
             section_input = self.get_member_prop_arguments(ele_width)
-            ele_str = "ops.element(\"{type}\", {tag}, *{node_tag_list}, *{memberprop}, {transftag}, {mass})\n".format(
-                type=self.section.op_ele_type, tag=ele_tag, node_tag_list=node_tag_list, memberprop=section_input,
+            ele_str = 'ops.element("{type}", {tag}, *{node_tag_list}, *{memberprop}, {transftag}, {mass})\n'.format(
+                type=self.section.op_ele_type,
+                tag=ele_tag,
+                node_tag_list=node_tag_list,
+                memberprop=section_input,
                 transftag=transf_tag,
-                mass=self.section.mass)
+                mass=self.section.mass,
+            )
         elif self.section.op_ele_type == "elasticBeamColumn":
             section_input = self.get_member_prop_arguments(ele_width)
-            ele_str = "ops.element(\"{type}\", {tag}, *{node_tag_list}, *{memberprop}, {transftag}, {mass})\n".format(
-                type=self.section.op_ele_type, tag=ele_tag, node_tag_list=node_tag_list, memberprop=section_input,
+            ele_str = 'ops.element("{type}", {tag}, *{node_tag_list}, *{memberprop}, {transftag}, {mass})\n'.format(
+                type=self.section.op_ele_type,
+                tag=ele_tag,
+                node_tag_list=node_tag_list,
+                memberprop=section_input,
                 transftag=transf_tag,
-                mass=self.section.mass)
+                mass=self.section.mass,
+            )
         elif self.section.op_ele_type == "nonlinearBeamColumn":
-            ele_str = "ops.element(\"{type}\",{tag},*{node_tag_list},{num_int_pt},{sectag},{transftag},{mass})\n".format(
-                type=self.section.op_ele_type, tag=ele_tag, node_tag_list=node_tag_list,
+            ele_str = 'ops.element("{type}",{tag},*{node_tag_list},{num_int_pt},{sectag},{transftag},{mass})\n'.format(
+                type=self.section.op_ele_type,
+                tag=ele_tag,
+                node_tag_list=node_tag_list,
                 num_int_pt=self.section.num_int_pt,
-                sectag=sectiontag, transftag=transf_tag, mass=self.section.mass)
+                sectag=sectiontag,
+                transftag=transf_tag,
+                mass=self.section.mass,
+            )
 
         # for shell element option
         elif self.section.op_ele_type == "ShellMITC4":
-            ele_str = "ops.element(\"{type}\", {tag}, *{node_tag_list}, {sectag})\n".format(
-                type=self.section.op_ele_type, tag=ele_tag, node_tag_list=node_tag_list, sectag=sectiontag)
+            ele_str = (
+                'ops.element("{type}", {tag}, *{node_tag_list}, {sectag})\n'.format(
+                    type=self.section.op_ele_type,
+                    tag=ele_tag,
+                    node_tag_list=node_tag_list,
+                    sectag=sectiontag,
+                )
+            )
 
         elif self.section.op_ele_type == "ShellDKGQ":
             if len(node_tag_list) == 3:
                 ele_type = "ShellDKGT"
             else:  # 4 node
                 ele_type = "ShellDKGQ"
-            ele_str = "ops.element(\"{type}\", {tag}, *{node_tag_list}, {sectag})\n".format(
-                type=ele_type, tag=ele_tag, node_tag_list=node_tag_list, sectag=sectiontag)
+            ele_str = (
+                'ops.element("{type}", {tag}, *{node_tag_list}, {sectag})\n'.format(
+                    type=ele_type,
+                    tag=ele_tag,
+                    node_tag_list=node_tag_list,
+                    sectag=sectiontag,
+                )
+            )
 
         elif self.section.op_ele_type == "ShellDKGT":
-            ele_str = "ops.element(\"{type}\", {tag}, *{node_tag_list}, {sectag})\n".format(
-                type=self.section.op_ele_type, tag=ele_tag, node_tag_list=node_tag_list, sectag=sectiontag)
+            ele_str = (
+                'ops.element("{type}", {tag}, *{node_tag_list}, {sectag})\n'.format(
+                    type=self.section.op_ele_type,
+                    tag=ele_tag,
+                    node_tag_list=node_tag_list,
+                    sectag=sectiontag,
+                )
+            )
 
         # HERE TO POPULATE WITH MORE ELEMENT TYPES
 
