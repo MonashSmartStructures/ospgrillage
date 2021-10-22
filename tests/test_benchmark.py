@@ -12,8 +12,10 @@ import json
 import numpy as np
 import pandas
 import sys,os
-sys.path.insert(0, os.path.abspath('../'))
 import ospgrillage as ospg
+from pathlib import Path
+
+sys.path.insert(0, os.path.abspath('../'))
 
 
 def create_json_bridge():
@@ -439,7 +441,11 @@ def test_line_load_results(add_analysis_to_simple_grid):
     # extract line load test ospg
 
     # read from 28m result lusas
-    point_load_disp_lusas = pandas.read_csv(r'28m results\28m_super_t_displacement\2_Points_Test_Case.csv')
+    point_lusas_disp_path = ["tests","28m results","28m_super_t_displacement","2_Points_Test_Case.csv"]
+    line_lusas_disp_path = ["tests","28m results","28m_super_t_displacement","3_Line_Test_Case.csv"]
+    line_lusas_force_path = ["tests","28m results","28m_super_t_forces","3_Line_Test_Case.csv"]
+    print(Path.cwd())
+    point_load_disp_lusas = pandas.read_csv(Path.cwd().joinpath(*point_lusas_disp_path))
     # get ospg point load case
     point_load_disp_ospg = all_results["displacements"].sel(Loadcase='Points Test (Global)',
                                                             Component=['dx', 'dy', 'dz', 'theta_x', 'theta_y',
@@ -451,14 +457,7 @@ def test_line_load_results(add_analysis_to_simple_grid):
     sorted_zip_ospg_node = sort_array_by_node_mapping(list_of_node=node_ospg,
                                                       data_of_node=point_load_disp_ospg.sel(Component='dy').values)
 
-    # Plotting for visual
-    ospg.plt.plot(lusas_def)
-    ospg.plt.plot(sorted_zip_ospg_node)
-    ospg.plt.xlabel("ospg-lusas node pairs")
-    ospg.plt.ylabel("vertical deflection (m)")
-    ospg.plt.legend(["LUSAS", "ospg"])
-
-    line_load_disp_lusas = pandas.read_csv(r'28m results\28m_super_t_displacement\3_Line_Test_Case.csv')
+    line_load_disp_lusas = pandas.read_csv(Path.cwd().joinpath(*line_lusas_disp_path))
     lusas_def = reduce_lusas_node_result(pd_data=line_load_disp_lusas['DZ[m]'], node_to_extract_list=node_lusas)
     line_load_disp_ospg = all_results["displacements"].sel(Loadcase='Line Test',
                                                            Component=['dx', 'dy', 'dz', 'theta_x', 'theta_y',
@@ -466,7 +465,7 @@ def test_line_load_results(add_analysis_to_simple_grid):
     sorted_zip_ospg_node = sort_array_by_node_mapping(list_of_node=node_ospg,
                                                       data_of_node=line_load_disp_ospg.sel(Component='dy').values)
     # lusas bending z
-    line_load_force_lusas = pandas.read_csv(r'28m results\28m_super_t_forces\3_Line_Test_Case.csv')
+    line_load_force_lusas = pandas.read_csv(Path.cwd().joinpath(*line_lusas_force_path))
     single_component_line_lusas = extract_lusas_ele_forces(list_of_ele=a, df_force=line_load_force_lusas,
                                                            component="My[N.m]")
     # ospg bending z
