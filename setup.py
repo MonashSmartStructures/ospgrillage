@@ -9,7 +9,7 @@ def read(fname):
 
 
 setup(
-    name="osp-grillage",
+    name="ospgrillage",
     version=version,
     description=("Bridge deck grillage analysis using OpenSeesPy"),
     license="MIT",
