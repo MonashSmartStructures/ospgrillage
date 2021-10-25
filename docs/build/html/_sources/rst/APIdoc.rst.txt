@@ -4,8 +4,8 @@ API reference
 
 User interface functions - API
 ------------------------------------------
-This module comprised of user interface functions to take user inputs and returns its corresponding object creation.
-Here is a summary of these functions.
+*ospgrillage* comprised of user interface functions callable from the main module. Following section summarizes
+the functions callable from all modules within *ospgrillage*.
 
 Top level interface functions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -24,12 +24,14 @@ Top level interface functions
     ospgrillage.load.create_compound_load
     ospgrillage.load.create_moving_path
     ospgrillage.load.create_moving_load
-
+    ospgrillage.postprocessing.plot_force
+    ospgrillage.postprocessing.plot_defo
+    ospgrillage.postprocessing.create_envelope
 
 
 Grillage model interface API
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The following methods can be called on the :class:`OspGrillage` object.
+The following methods can be called on the :class:`ospgrillage.osp_grillage.OspGrillage` object.
 
 .. autosummary::
     :toctree: generated/
@@ -41,17 +43,19 @@ The following methods can be called on the :class:`OspGrillage` object.
     ospgrillage.osp_grillage.OspGrillage.get_element
 
 
-Load utility API
+Load module API
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The following methods can be called from the respective class objects of the Load module.
 
 .. autosummary::
     :toctree: generated/
 
 
     ospgrillage.load.CompoundLoad.set_global_coord
+    ospgrillage.load.CompoundLoad.add_load
     ospgrillage.load.LoadCase.add_load
     ospgrillage.load.MovingLoad.set_path
-    ospgrillage.load.MovingLoad.add_loads
+    ospgrillage.load.MovingLoad.add_load
     ospgrillage.load.MovingLoad.query
 
 
@@ -65,8 +69,22 @@ For information regarding the procedures in :class:`~OpsGrillage` class, see
     :members:
     :show-inheritance:
 
+OspGrillageBeam class
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: ospgrillage.osp_grillage.OspGrillageBeam
+    :show-inheritance:
+    :noindex:
+
+OspGrillageShell class
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: ospgrillage.osp_grillage.OspGrillageShell
+    :show-inheritance:
+    :noindex:
+
 Analysis class
-^^^^^^^^^^^^^^^^
+---------------------------
 
 .. autoclass:: ospgrillage.osp_grillage.Analysis
     :members:
@@ -74,7 +92,7 @@ Analysis class
 
 
 Result class
-^^^^^^^^^^^^^^^^
+---------------------------
 .. autoclass:: ospgrillage.osp_grillage.Results
     :members:
     :show-inheritance:
@@ -83,7 +101,6 @@ Result class
 
 Material class
 ------------------------------------------
-
 
 .. autoclass:: ospgrillage.material.Material
     :members:
@@ -126,21 +143,21 @@ PointLoad
 ^^^^^^^^^^^^^^^^
 
 .. autoclass:: ospgrillage.load.PointLoad
-
+    :show-inheritance:
 
 
 LineLoading
 ^^^^^^^^^^^^^^^^
 
 .. autoclass:: ospgrillage.load.LineLoading
-
+    :show-inheritance:
 
 
 PatchLoading
 ^^^^^^^^^^^^^^^^
 
 .. autoclass:: ospgrillage.load.PatchLoading
-
+    :show-inheritance:
 
 
 CompoundLoad
@@ -179,7 +196,7 @@ Path for moving loads
 Envelope
 ^^^^^^^^^^^
 
-.. autoclass:: ospgrillage.static.Envelope
+.. autoclass:: ospgrillage.postprocessing.Envelope
     :members:
 
 

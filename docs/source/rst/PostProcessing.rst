@@ -253,7 +253,7 @@ Plotting functions
 For this section, we will refer to an exemplar 28 m super-T bridge (Figure 1). The bridge grillage has been created
 and its :class:`~ospgrillage.osp_grillage.OspGrillage` object is defined as ``bridge_28``.
 
-..  figure:: ../../_images/28m_bridge.png
+..  figure:: ../../_images/28m_bridge.PNG
     :align: center
     :scale: 25 %
 

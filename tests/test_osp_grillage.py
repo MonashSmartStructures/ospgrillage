@@ -126,7 +126,7 @@ def test_model_instance(bridge_model_42_negative):
     og.opsv.plot_model(az_el=(-90, 0),element_labels=0)
     og.plt.show()
     assert og.ops.nodeCoord(18)  # check if model node exist in OpenSees model space
-    og.ops.wipe()
+    # og.ops.wipe()
     a = example_bridge.get_element(member="exterior_main_beam_2",options="nodes")
     assert a
 
@@ -134,13 +134,13 @@ def test_model_instance(bridge_model_42_negative):
 #  test creating beam model with rigid links
 def test_create_beam_link_model(beam_link_bridge):
     beam_link_model = beam_link_bridge
-    og.opsv.plot_model(az_el=(-90, 0), element_labels=0)
-    og.plt.show()
+    # og.opsv.plot_model(az_el=(-90, 0), element_labels=0)
+    # og.plt.show()
     assert og.ops.eleNodes(100)
 
 
 # test creating model using shell link
 def test_create_shell_link_model(shell_link_bridge):
     shell_link_model = shell_link_bridge
-    og.opsplt.plot_model("nodes")
+    # og.opsplt.plot_model("nodes")
     assert og.ops.getNodeTags()

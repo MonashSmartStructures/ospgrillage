@@ -1,6 +1,7 @@
+![alt text](https://github.com/MonashSmartStructures/ospgrillage/tree/gh-pages/_images/ospgrillage_logo.png)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![GitHub release](https://img.shields.io/github/release/Naereen/StrapDown.js.svg)](https://GitHub.com/Naereen/StrapDown.js/releases/)
+[![GitHub release](https://img.shields.io/github/release/Naereen/StrapDown.js.svg)](https://github.com/MonashSmartStructures/ospgrillage/releases)
 
 
 # Overview
@@ -19,7 +20,7 @@ analysis purposes.
 
 Install using pip
 
-    pip install git+https://github.com/MonashSmartStructures/ops-grillage.git
+    pip install ospgrillage
 
     
 For more information on installation, refer to [installation](https://monashsmartstructures.github.io/ospgrillage/rst/Installation.html)
@@ -27,7 +28,7 @@ For more information on installation, refer to [installation](https://monashsmar
 
 ## Documentation
 
-See [link](https://monashsmartstructures.github.io/ospgrillage/index.html) to docs
+You can find link to the documentations [here](https://monashsmartstructures.github.io/ospgrillage/index.html).
 
 ## Current Capabilities
 
