@@ -61,6 +61,7 @@ pluggy==0.13.1
 py==1.9.0
 pyasn1==0.4.8
 pycparser==2.20
+pydata-sphinx-theme==0.7.1
 pyEMA==0.23
 pyFRF==0.40
 Pygments==2.7.4
