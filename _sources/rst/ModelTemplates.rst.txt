@@ -23,7 +23,7 @@ This is the default model if ``model_type`` keyword argument is not specified to
                                     num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
 
 
-General information of this model type can be found `here<https://www.steelconstruction.info/Modelling_and_analysis_of_beam_bridges>`_.
+General information of this model type can be found `here <https://www.steelconstruction.info/Modelling_and_analysis_of_beam_bridges>`_.
 
 
 Beam with Rigid Links - :class:`beam_link`
@@ -32,15 +32,6 @@ This is a modified version of the traditional beam element model with the follow
 
 * Offsets (in x-z plane) for start and end nodes along direction of transverse members - using joint offset.
 * Offsets (in vertical y direction) for start and end nodes of longitudinal members - again using joint offsets.
-
-To create this model, have :func:`~ospgrillage.osp_grillage.create_grillage` keyword for ``model_type`` set to **beam_link**.
-
-.. code-block:: python
-
-    example_bridge = og.create_grillage(bridge_name="Modified bridge grillage", long_dim=10, width=7, skew=-12,
-                                        num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho",
-                                        model_type="beam_link",
-                                        beam_width=1, web_thick=0.02, centroid_dist_y=0.499)
 
 Figure 2 shows the details of the aforementioned model type. Figure 3 shows the model type created in an external
 software - i.e. SPACEGASS.
@@ -57,7 +48,17 @@ software - i.e. SPACEGASS.
 
     Figure 3: Beam grillage with rigid links model from SPACEGASS software.
 
-Joint offsets are linked via a rigid link. Information for joint offsets can be found in `OpenSeesPy`'s `geomtransf <https://openseespydoc.readthedocs.io/en/latest/src/LinearTransf.html>`_
+To create this model, have :func:`~ospgrillage.osp_grillage.create_grillage` keyword for ``model_type`` set to **beam_link**.
+
+.. code-block:: python
+
+    example_bridge = og.create_grillage(bridge_name="Modified bridge grillage", long_dim=10, width=7, skew=-12,
+                                        num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho",
+                                        model_type="beam_link",
+                                        beam_width=1, web_thick=0.02, centroid_dist_y=0.499)
+
+
+The joint offsets are rigid links. Information can be found in `OpenSeesPy`'s `geomtransf <https://openseespydoc.readthedocs.io/en/latest/src/LinearTransf.html>`_
 
 Table 1 outlines the specific variables of :func:`~ospgrillage.osp_grillage.create_grillage` for beam link model.
 
@@ -110,13 +111,13 @@ users are required to define and assign shell elements. The following example co
     slab_shell_section = og.create_section(h=0.2) # h = thickness
     # shell elements for slab
     slab_shell = og.create_member(section=slab_shell_section, material=concrete)
-    # set shell members to shell elements
-    example_bridge.set_shell_members(slab_shell)
     # create grillage with shell model type
     example_bridge = og.create_grillage(bridge_name="Shell grillage", long_dim=10, width=7, skew=0,
                                         num_long_grid=6, num_trans_grid=11, edge_beam_dist=1, mesh_type="Orth",
                                         model_type="shell_beam", max_mesh_size_z=0.5, offset_beam_y_dist=0.499,
                                         link_nodes_width=0.89)
+    # set shell members to shell elements
+    example_bridge.set_shell_members(slab_shell)
 
 Table 2 outlines the variable types in :func:`~ospgrillage.osp_grillage.create_grillage` for shell hybrid model.
 
