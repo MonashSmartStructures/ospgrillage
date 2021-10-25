@@ -1,0 +1,4 @@
+# https://pypi.org/project/oldest-supported-numpy/
+# see: https://github.com/scipy/oldest-supported-numpy/blob/master/setup.cfg
+[build-system]
+requires = ["wheel", "setuptools", "oldest-supported-numpy"]
