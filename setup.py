@@ -28,6 +28,6 @@ setup(
         "Programming Language :: Python :: 3 :: Only",
         "License :: OSI Approved :: MIT License",
     ],
-    install_requires=["openseespy", "xarray","opsvis","openseespyvis"],
+    install_requires=["openseespy", "xarray", "opsvis", "openseespyvis"],
     tests_require=["pytest"],
 )
