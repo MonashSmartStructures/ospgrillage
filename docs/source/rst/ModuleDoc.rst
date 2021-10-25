@@ -1,5 +1,5 @@
 #####################
-Module design
+Package design
 #####################
 
 This page details the design decisions of *ospgrillage* module. In outlining these processes,

@@ -99,15 +99,19 @@ bridge_28.set_member(end_tranverse_slab, member="end_edge")
 bridge_28.create_osp_model(pyfile=pyfile)
 
 # Moving Load Analysis
-front_wheel = og.PointLoad(name="front wheel", point1=og.LoadPoint(2, 0, 2, 50))  # Single point load 50 N
-single_path = og.Path(start_point=og.Point(0, 0, 2), end_point=og.Point(29, 0, 3))  # create path object
+front_wheel = og.PointLoad(
+    name="front wheel", point1=og.LoadPoint(2, 0, 2, 50)
+)  # Single point load 50 N
+single_path = og.Path(
+    start_point=og.Point(0, 0, 2), end_point=og.Point(29, 0, 3)
+)  # create path object
 move_point = og.MovingLoad(name="single_moving_point")
 move_point.add_load(load_obj=front_wheel, path_obj=single_path.get_path_points())
 move_point.parse_moving_load_cases()
 bridge_28.add_moving_load_case(move_point)
 
 # Analyze and get the results out
-bridge_28.analyze('all')
+bridge_28.analyze("all")
 non_moving_results, moving_load_results = bridge_28.get_results()
 
 # Results
@@ -115,9 +119,9 @@ non_moving_results, moving_load_results = bridge_28.get_results()
 moving_point_load_result = moving_load_results[0]
 # Here we can slice data to get a reduced data array for the outputs
 # query mid point shear force during truck movement
-moving_point_load_result.sel(Node=63,Component='dy')
+moving_point_load_result.sel(Node=63, Component="dy")
 # query max of slice
-moving_point_load_result.sel(Node=63,Component='dy').idxmax()
+moving_point_load_result.sel(Node=63, Component="dy").idxmax()
 # query max and min envelopes of displacement for all nodes - this is done by max/min function across the 'Loadcase' dimension.
-max_dY = moving_point_load_result.sel(Component='dy').max(dim='Loadcase')
-min_dY = moving_point_load_result.sel(Component='dy').max(dim='Loadcase')
+max_dY = moving_point_load_result.sel(Component="dy").max(dim="Loadcase")
+min_dY = moving_point_load_result.sel(Component="dy").max(dim="Loadcase")
