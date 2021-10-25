@@ -1,4 +1,35 @@
+[project]
+requires-python = ">=3.8,<=3.9"
+
 # https://pypi.org/project/oldest-supported-numpy/
 # see: https://github.com/scipy/oldest-supported-numpy/blob/master/setup.cfg
 [build-system]
-requires = ["wheel", "setuptools", "oldest-supported-numpy"]
+requires = ["wheel", 
+            "setuptools", 
+            "oldest-supported-numpy", 
+            "matplotlib",
+            "openseespy>=3.2.2.6",
+            "opsvis~=0.95.5",
+            "openseespyvis>=0.0.6",
+            "pandas",
+            "pytest",
+            "scipy",
+            "xarray",
+            "setuptools",
+            "Pillow==8.3.0",
+            ]
+
+[tool.cibuildwheel]
+# Run the package tests using `pytest`
+test-command = "pytest {package}/tests"
+
+[tool.cibuildwheel.linux]
+before-all = [
+    "yum install -y libstdc++* libjpeg-turbo-devel zlib*",
+    # "apt install libjpeg8-dev zlib1g-dev",
+]
+
+#[tool.cibuildwheel.macos]
+#before-all = [
+#    "brew install libjpeg zlib",
+#]
