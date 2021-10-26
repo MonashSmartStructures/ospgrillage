@@ -41,17 +41,21 @@ By default, `y` is `0` i.e. the grillage model plane.
 
 Depending on the load type, a minimum number of LoadPoint namedTuple are required.
 These are set to each load type's `point#=` variable for the load type's coordinate system,
-where # is a digit from 1 to 9.
+where # is a digit from 1 to 9. Following sections will further elaborate the load vertices for each load type.
 
 Loads are generally defined in the global coordinate system with respect to the created grillage model.
 However, a user-defined local coordinate system is required when defining `Compound load`_ later on.
 
+
+
 Nodal loads
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Nodal loads are load applied directly onto nodes of grillage model.
 Nodal loads are defined using :func:`~ospgrillage.load.create_load`, specifying ``type= "nodal"``. There are six degrees-of-freedom (DOFs) for
-acting loads in each node. Nodal loads do not require a load vertex, instead it requires a `NodalForce(Fx,Fy,Fz,Mx,My,Mz)` namedtuple.
+acting loads in each node of the grillage model.
 
+Nodal loads do not require a load vertex, instead it requires a `NodalForce(Fx,Fy,Fz,Mx,My,Mz)` namedtuple.
 The following example creates a `NodalFroce` namedtuple and a nodal load on Node 13 of a model, with 10 unit force in both transverse X and Y directions.
 
 .. code-block:: python
@@ -68,7 +72,6 @@ The following example creates a `NodalFroce` namedtuple and a nodal load on Node
 
 Point Loads
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 Point load is a force applied on a single infinitesimal point of the grillage model.
 Point loads are used represent a large range of loads, such as truck axle, or superimposed dead load on a deck.
 
@@ -146,8 +149,7 @@ Using eight tuples allows a curve surface loading profile.
 
 
 The following example code creates a constant 5 force per area unit patch load
-in the global coordinate system. 
-To position the load instead in a user defined local coordinate system, the variable `localpoint` instead of `point` is used.
+in the global coordinate system.
 
 .. code-block:: python
 
@@ -256,10 +258,11 @@ Users repeat this step for any defined load cases.
 
 Moving load
 ------------------------
-For moving load analysis, users create moving load objects using :class:`~ospgrillage.load.MovingLoad` class. The moving load class takes a load type object (`Point`_, `Line`_, `Patch`_, `Compound load`_) and moves the load
-through a path points described by a :class:`Path` object and obtained by the :func:`get_path_points` method.
-Path are defined using two namedTuple :class:`Point(x,y,z)` to describe its start and end position. Figure 6 summarizes the relationship between moving loads
-, paths and the position of the loads on the grillage model.
+For moving load analysis, users create moving load objects using :class:`~ospgrillage.load.MovingLoad` class.
+The moving load class takes a load type object (`Point`_, `Line`_, `Patch`_, `Compound load`_) and moves the load
+through a path points described by a :class:`~ospgrillage.load.Path` object.
+
+Figure 6 summarizes the relationship between moving loads, paths and the position of the loads on the grillage model.
 
 ..  figure:: ../../_images/movingload.png
     :align: center
@@ -267,8 +270,22 @@ Path are defined using two namedTuple :class:`Point(x,y,z)` to describe its star
 
     Figure 6: Moving load
 
+Moving path
+^^^^^^^^^^^^^^^^^^
+:class:`~ospgrillage.load.Path` object is created using :func:`~ospgrillage.load.create_moving_path`.
 
-The following example code is two point loads defined as a moving load travelling a path from 2 to 4 distance units in the global coordinate system.
+:class:`~ospgrillage.load.Path` requires two namedTuple :class:`Point(x,y,z)` to describe its start and end position.
+The following example creates a path from 2 to 4 distance units in the global coordinate system.
+
+.. code-block:: python
+
+    single_path = og.create_moving_path(start_point=og.Point(2,0,2), end_point= og.Point(4,0,2))
+
+
+Creating moving load
+^^^^^^^^^^^^^^^^^^^^^
+
+The following example code creates a compound load consisting of two point loads moving along the defined **single_path**
 
 .. code-block:: python
 
@@ -277,8 +294,7 @@ The following example code is two point loads defined as a moving load travellin
     back_wheel = og.create_load_vertices(x=-1, z=0, p=6)
     Line = og.create_load(type="line",point1=front_wheel,point2=back_wheel)
     tandem = og.create_compound_load("Two wheel vehicle")
-    # create path object
-    single_path = og.create_moving_path(start_point=og.Point(2,0,2), end_point= og.Point(4,0,2))
+
     move_line = og.create_moving_load(name="Line Load moving") # moving load obj
     move_line.set_path(single_path)   # set path
     move_line.add_loads(load_obj=Line)  # add compound load to moving load
@@ -292,7 +308,6 @@ creates multiple incremental `load cases`_ each of which corresponds to the incr
     example_bridge.add_load_case(move_point)
 
 
-
 Advance usage
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -304,7 +319,7 @@ For this, the setup for :class:`~ospgrillage.load.MovingLoad` requires definitio
 :class:`Path` object of basic load has the same ``global_increment``. Following, each basic load added via :func:`~ospgrillage.load.MovingLoad.add_loads`
 takes a second argument ``path_obj``, which is its corresponding :class:`Path` object.
 
-Following example outline this procedure:
+Following example shows this procedure:
 
 .. code-block:: python
 
@@ -324,7 +339,7 @@ Once all defined load cases (static and moving) have been added to the grillage 
 To analyse load case(s), users run the class function :func:`~ospgrillage.osp_grillage.OspGrillage.analyze`. By default
 :func:`~ospgrillage.osp_grillage.OspGrillage.analyze` will run all defined load cases.
 If users wish to run only a specific set of load cases, pass a list of load case name str to ``loadcase=``  keyword.
-This will analyse all load cases of the list. Following code are few examples of :func:`~ospgrillage.osp_grillage.OspGrillage.analyze`.
+This will analyse all load cases of the list. Following example shows the various options for :func:`~ospgrillage.osp_grillage.OspGrillage.analyze`.
 
 
 .. code-block:: python

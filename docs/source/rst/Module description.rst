@@ -1,8 +1,9 @@
 ========================
 Creating grillage models
 ========================
-The *ospgrillage* module contains user **interface functions** which can be called after the module syntax. These interface functions
-generally have  ``set_``, ``create_`` or ``get_`` in their syntax. For example, users create a material with :func:`~ospgrillage.material.create_material`.
+The *ospgrillage* module contains **interface functions** which can be called after the module syntax. These interface functions
+generally have  ``set_``, ``create_`` or ``get_`` in their syntax. For example, :func:`~ospgrillage.material.create_material` creates
+a material object for the grillage model.
 
 A list of all interface functions can be found in :doc:`APIdoc`.
 Although users can opt to interact with module objects directly, we recommend the more pythonic interface functions.
@@ -26,7 +27,7 @@ In general, there are three steps to create a grillage model with *ospgrillage*:
 #. Assigning the defined grillage members to the elements of grillage model object.
 
 
-We will detail these steps by creating a grillage model of a bridge deck as shown in Figure 1.
+We will detail these steps by creating a grillage model of a bridge deck as shown in Figure 2.
 
 .. _Figure 2:
 
@@ -37,7 +38,7 @@ We will detail these steps by creating a grillage model of a bridge deck as show
     Figure 2: Grillage model created using `OpenSeesPy`
 
 
-To begin, import `ospgrillage` as either ``ospg`` or ``og``.
+To begin, import `ospgrillage` as either ``ospg`` or ``og`` as shown in the following code block.
 As will be needed later, we also prepared the unit convention of variables for this example as shown in the same code block.
 
 .. code-block:: python
@@ -60,19 +61,20 @@ As will be needed later, we also prepared the unit convention of variables for t
 
 Defining elements of grillage model
 ------------------------------------------------------------------
-A grillage element is created using the interface function :func:`~ospgrillage.members.create_member`. The following example code line instantiates
-an *I_beam* element to represent some intermediate concrete I-beam, with material and section definitions explained later on.
+A grillage element is created using the :func:`~ospgrillage.members.create_member` interface function.
+This function returns a :class:`~ospgrillage.members.GrillageMember` object,
+which requires two other objects as inputs, namely:
+
+#. *material* = A :class:`~ospgrillage.material.Material` class object, and
+#. *section* = A :class:`~ospgrillage.members.Section` class object.
+
+The following example code instantiates an *I_beam* grillage element to represent some
+intermediate concrete I-beam, with material and section definitions explained later on.
 
 .. code-block:: python
 
     I_beam = og.create_member(member_name="Intermediate I-beams", section=I_beam_section, material=concrete)
 
-This function parses the keyword inputs and returns a
-:class:`~ospgrillage.members.GrillageMember` object, which requires two objects as inputs passed
-as keyword arguments, namely:
-
-#. *material* = A :class:`~ospgrillage.material.Material` class object, and
-#. *section* = A :class:`~ospgrillage.members.Section` class object.
 
 The *member_name* string input is optional.
 
@@ -80,7 +82,7 @@ When setting up grillage members, it is often a good idea to first instantiate a
 and :class:`~ospgrillage.material.Material` class objects before creating
 each :class:`~ospgrillage.members.GrillageMember` class objects.
 
-For the example bridge, lets define all its elements i.e. *slab*, *edge_beam*, and *edge_slab*.
+For the example bridge of Figure 2, lets define all its elements i.e. *slab*, *edge_beam*, and *edge_slab*.
 
 .. code-block:: python
 
@@ -90,59 +92,54 @@ For the example bridge, lets define all its elements i.e. *slab*, *edge_beam*, a
 
 Creating material objects
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-To create a material, users call the :func:`~ospgrillage.material.create_material`.
-The following code line creates the a *concrete* material needed for`defining Grillage member`_.
+The :class:`~ospgrillage.material.Material` object is created using :func:`~ospgrillage.material.create_material`.
+The following code line creates the a *concrete* material needed in`defining Grillage member`_ previously.
 
 .. code-block:: python
 
     concrete = og.create_material(type="concrete", code="AS5100-2017", grade="50MPa")
 
-For most bridges made of steel and concrete, material properties of either concrete and steel can be defined using
-keyword "steel" or "concrete" passed as an argument to :class:`~Material` class.
+On release 0.1.0, users can choose between steel or concrete material - by passing
+keyword "steel" or "concrete" argument to :func:`~ospgrillage.material.create_material`. Users can specify
+properties of steel and concrete by passing its respective keyword argument to :func:`~ospgrillage.material.create_material`.
 In addition, *ospgrillage* offers a library of codified material properties for steel and concrete to be selected.
 On first release, it has library for two code namely the Australia standard AS5100 and AASHTO LRFD-8th.
 
-As an alternative to material library, users can specify custom properties of steel and concrete by passing in keyword arguments.
-The following code shows how a concrete material can be created using keyword arguments:
+The following example creates the required *concrete* material for the example bridge.
 
 .. code-block:: python
 
     concrete = og.create_material(E=30*GPa, G = 20*GPa, v= 0.2)
 
-This command wraps OpenSees material commands and chooses the appropriate material model in OpenSees to represent the material.
-For example, *Concrete01* and *Steel01* of OpenSees library is used to represent most concrete and steel material.
-
-Material model can be found in `OpenSees database for concrete and steel <https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html#steel-reinforcing-steel-materials>`_.
-Being a module wrapper, users familiar with this database can directly input the keywords of exact material models to ``create_material()`` function.
+The :class:`~ospgrillage.material.Material` object wraps `OpenSees` material commands, and selects appropriate `OpenSees` material model to represent the material.
+As of release 0.1.0, *Concrete01* and *Steel01* of OpenSees library are used to represent most concrete and steel material respectively.
+Other material model can be found in `OpenSees database for concrete and steel <https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html#steel-reinforcing-steel-materials>`_.
 
 Creating section objects
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-A :class:`~ospgrillage.members.Section` object is needed when `defining Grillage member`_.
+The :class:`~ospgrillage.members.Section` object for `defining Grillage member`_ is created using
+:func:`~ospgrillage.members.create_section` function.
 
-To create sections, users call the :func:`~ospgrillage.members.create_section` function which returns a :class:`~ospgrillage.members.Section` object.
-
-The following code line creates a :class:`~ospgrillage.members.Section` object called *I_beam_section*, which is earlier passed as input for its corresponding object, i.e. *I_beam*:
+The following code line creates the :class:`~ospgrillage.members.Section` object called *I_beam_section*,
+which is earlier passed as input for its corresponding *I_beam* :class:`~ospgrillage.members.GrillageMember` object:
 
 .. code-block:: python
 
     I_beam_section = og.create_section(A=0.896*m2, J=0.133*m4, Iy=0.213*m4, Iz=0.259*m4, Ay=0.233*m2, Az=0.58*m2)
 
-The module's :class:`~ospgrillage.members.Section` object wraps `OpenSees`'s `element()` command.
-Similar to :class:`~ospgrillage.material.Material`, users familiar with certain OpenSees element can pass its input parameters as keyword arguments
-based on OpenSees definition of element types.
-Here's a link to `OpenSees element command <https://openseespydoc.readthedocs.io/en/latest/src/element.html>`_ for specifics on the
-element types and inputs.
+The module's :class:`~ospgrillage.members.Section` object wraps
+`OpenSees element command <https://openseespydoc.readthedocs.io/en/latest/src/element.html>`_.
 
-The following codes creates the rest of the sections for the grillage model:
+The following codes creates the sections for the other grillage elements specified previously:
 
 .. code-block:: python
 
     edge_beam_section = og.create_section(A=0.044625*m2,J=2.28e-3*m4, Iy=2.23e-1*m4,Iz=1.2e-3*m4, Ay=3.72e-2*m2, Az=3.72e-2*m2)
     edge_slab_section = og.create_section(A=0.039375*m2,J=0.21e-3*m4, Iy=0.1e-3*m2,Iz=0.166e-3*m2,Ay=0.0328*m2, Az=0.0328*m2))
 
-For transverse members, a **unit width option** is available - properties defined as based on unit width. When enabled, *ospgrillage* will automatically
-assigns these properties of slab section based on the spacing of transverse members. This is recommended for orthogonal mesh with skewed
-edges.
+For transverse members, there is an option to define **unit width properties**. This is done by passing True to keyword argument
+``unit_width``. When enabled, *ospgrillage* will automatically
+assigns these properties of slab section based on the spacing of transverse members.
 
 .. code-block:: python
 
@@ -150,12 +147,14 @@ edges.
 
 .. note::
 
+    **unit width** is required when creating grillages with skewed angle edges.
+
     For release 0.1.0, Non-prismatic members are currently not supported.
 
 
 Creating the grillage model
 -------------------------------------------
-To create the grillage model instance, users run the :func:`~ospgrillage.osp_grillage.create_grillage` interface function.
+After creating the grillag elements, users create the grillage model using :func:`~ospgrillage.osp_grillage.create_grillage` interface function.
 
 In version 0.1.0, grillage models typically represent a simply-supported
 beam-and-slab bridge deck. The model comprises of standard grillage members which includes:
@@ -174,8 +173,7 @@ Figure 3 illustrates these standard grillage members and their position on an ex
 
     Figure 3: Standard elements supported by *ospgrillage*
 
-Supports are automatically set at nodes  along grid A (2 to 6) and grid E (9 to 13)  as pinned and roller respectively.
-
+**Supports are automatically set at nodes  along grid A (2 to 6) and grid E (9 to 13)  as pinned and roller respectively.**
 
 The :class:`~ospgrillage.osp_grillage.OspGrillage` class takes the following keyword arguments:
 
@@ -305,7 +303,7 @@ Note that in doing so, the model instance in `OpenSees` space is not created.
 
 Visualize grillage model
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-To check that we created the model in OpenSees space, we can plot the model using `OpenSeesPy`'s visualization module `ops_vis`.
+To check that we created the model in `OpenSees` space, we can plot the model using `OpenSeesPy`'s visualization module `ops_vis`.
 The *ospgrillage* module already imports the `ops_vis` module. Therefore, one can run access `ops_vis` by running
 the following code line and a plot like in `Figure 2`_ will be returned:
 
