@@ -15,19 +15,23 @@ requires = ["wheel",
             "pytest",
             "scipy",
             "xarray",
-            "setuptools",
-            "Pillow==8.3.0",
+            # "Pillow==8.3.0",
+            # "setuptools",
             ]
 
 [tool.cibuildwheel]
 # Run the package tests using `pytest`
 test-command = "pytest {package}/tests"
+# Min. requirement for opensees
+manylinux-x86_64-image = "manylinux2014"
+# Get detailed output
+build-verbosity = 1
 
-[tool.cibuildwheel.linux]
-before-all = [
-    "yum install -y libstdc++* libjpeg-turbo-devel zlib*",
-    # "apt install libjpeg8-dev zlib1g-dev",
-]
+# [tool.cibuildwheel.linux]
+# before-all = [
+#     "yum install -y libgfortran5 libgcc glibc",
+#     "yum update -y libstdc++",
+# ]
 
 #[tool.cibuildwheel.macos]
 #before-all = [
