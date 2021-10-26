@@ -186,6 +186,21 @@ are returned. The following is printed to the terminal when ``disp_env`` is prin
       * Component  (Component) <U7 'Mx_i' 'Mx_j' 'My_i' ... 'theta_y' 'theta_z'
       * Node       (Node) int32 1 2 3 4 5 6 7 8 9 10 ... 69 70 71 72 73 74 75 76 77
 
+One can read the coordinates to understand the valid ``load_effect`` kwargs. The following example prints the array of
+coordinates:
+
+.. code-block:: python
+
+    max_disp.coords['Components'].values
+
+The following is returned and printed to terminal.
+
+.. code-block:: python
+
+    array(['Mx_i', 'Mx_j', 'My_i', 'My_j', 'Mz_i', 'Mz_j', 'Vx_i', 'Vx_j',
+       'Vy_i', 'Vy_j', 'Vz_i', 'Vz_j', 'dx', 'dy', 'dz', 'theta_x',
+       'theta_y', 'theta_z'], dtype='<U7')
+
 
 For more information on the inputs and options, see :func:`~ospgrillage.postprocessing.create_envelope`.
 
