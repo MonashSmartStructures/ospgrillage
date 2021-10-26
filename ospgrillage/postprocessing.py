@@ -34,7 +34,7 @@ def create_envelope(**kwargs):
 
     :return: :class:`Envelope` Object
     """
-    return Envelope(kwargs)
+    return Envelope(**kwargs)
 
 
 class Envelope:
@@ -55,9 +55,9 @@ class Envelope:
         :keyword:
 
         * array: either 'displacement' or 'forces'
-        * value_mode: - True or False
-        * query_mode: - True or False
-        * extrema: either "min" or "max"
+        * value_mode (`Bool`): Flag for envelope to return raw values - default True
+        * query_mode (`Bool`): Flag for envelope to return loadcase coordinate for maxima - default False
+        * extrema (`str`): either "min" or "max"
         * elements:
         * nodes
         * array
@@ -99,8 +99,8 @@ class Envelope:
             "load_effect", None
         )  # specific load effect to query
         self.array = kwargs.get("array", "displacements")
-        self.value_mode = kwargs.get("value_mode", False)
-        self.query_mode = kwargs.get("query_mode", True)  # default query mode
+        self.value_mode = kwargs.get("value_mode", True)
+        self.query_mode = kwargs.get("query_mode", False)  # default query mode
         self.extrema = kwargs.get("extrema", "max")
 
         # check variables
