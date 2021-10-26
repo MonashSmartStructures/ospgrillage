@@ -26,6 +26,8 @@ test-command = "pytest {package}/tests"
 manylinux-x86_64-image = "manylinux2014"
 # Get detailed output
 build-verbosity = 1
+# Only build on CPython 3.8
+build = "cp38-*"
 
 # [tool.cibuildwheel.linux]
 # before-all = [
