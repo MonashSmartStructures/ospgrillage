@@ -10,12 +10,12 @@ For all example code in this page, *ospgrillage* is imported as ``og``
 
 Beam Elements Only - :class:`beam_only`
 --------------------------------------
-This is the traditional modelling approach of grillage model that comprise of beam elements lay out in a grid pattern, with:
+This is the traditional modelling approach that comprise of beam elements lay out in a grid pattern, with:
 
-* longitudinal members representing composite section along longitudinal direction (e.g. main beams)
+* longitudinal members representing composite sections along longitudinal direction (e.g. main beams)
 * transverse members representing slabs or secondary beam sections.
 
-This is the default model if ``model_type`` keyword argument is not specified to :func:`~ospgrillage.osp_grillage.create_grillage`
+This is the default model type if ``model_type`` keyword argument is not specified to :func:`~ospgrillage.osp_grillage.create_grillage`
 
 .. code-block:: python
 
@@ -23,7 +23,7 @@ This is the default model if ``model_type`` keyword argument is not specified to
                                     num_long_grid=7, num_trans_grid=5, edge_beam_dist=1, mesh_type="Ortho")
 
 
-General information of this model type can be found `here <https://www.steelconstruction.info/Modelling_and_analysis_of_beam_bridges>`_.
+More information of this model type can be found `here <https://www.steelconstruction.info/Modelling_and_analysis_of_beam_bridges>`_.
 
 
 Beam with Rigid Links - :class:`beam_link`
@@ -60,7 +60,7 @@ To create this model, have :func:`~ospgrillage.osp_grillage.create_grillage` key
 
 The joint offsets are rigid links. Information can be found in `OpenSeesPy`'s `geomtransf <https://openseespydoc.readthedocs.io/en/latest/src/LinearTransf.html>`_
 
-Table 1 outlines the specific variables of :func:`~ospgrillage.osp_grillage.create_grillage` for beam link model.
+Table 1 outlines the specific variables for beam link model.
 
 .. list-table:: Table: 1 Input arguments for shell hybrid model
    :widths: 50 50
@@ -91,7 +91,7 @@ This is a more refined model using two element types - shell and beam elements -
 * Beam elements linked to shell elements at two corresponding locations using constraint equations - `OpenSeesPy`'s **rigidLink** command
 
 This model has advantageous in modelling slabs using shell elements which are well-suited to represent two-dimensional slab behaviour.
-Figure 4 shows the details of the shell beam hybrid model.
+Figure 4 shows the details and variables of the shell beam hybrid model.
 
 ..  figure:: ../../_images/shell_beam_idealization.PNG
     :align: center
@@ -119,7 +119,7 @@ users are required to define and assign shell elements. The following example co
     # set shell members to shell elements
     example_bridge.set_shell_members(slab_shell)
 
-Table 2 outlines the variable types in :func:`~ospgrillage.osp_grillage.create_grillage` for shell hybrid model.
+Table 2 outlines the specific variable for shell hybrid model.
 
 .. list-table:: Table: 2 Input arguments for shell hybrid model
    :widths: 50 50

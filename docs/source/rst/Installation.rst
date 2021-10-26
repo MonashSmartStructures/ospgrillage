@@ -44,7 +44,7 @@ To create a working environment with all required dependencies, run the followin
 Tests
 -------------------
 The module comes with a pytest protocol for each sub module py file, which users can run `pytest` in the root directory of the module
-to run all
+to tests all modules.
 
 .. code-block:: python
 
