@@ -412,6 +412,17 @@ are returned. The following is printed to the terminal when <code class="docutil
   <span class="o">*</span> <span class="n">Node</span>       <span class="p">(</span><span class="n">Node</span><span class="p">)</span> <span class="n">int32</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span> <span class="mi">8</span> <span class="mi">9</span> <span class="mi">10</span> <span class="o">...</span> <span class="mi">69</span> <span class="mi">70</span> <span class="mi">71</span> <span class="mi">72</span> <span class="mi">73</span> <span class="mi">74</span> <span class="mi">75</span> <span class="mi">76</span> <span class="mi">77</span>
 </pre></div>
 </div>
+<p>One can read the coordinates to understand the valid <code class="docutils literal notranslate"><span class="pre">load_effect</span></code> kwargs. The following example prints the array of
+coordinates:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">max_disp</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s1">&#39;Components&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+</pre></div>
+</div>
+<p>The following is returned and printed to terminal.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;Mx_i&#39;</span><span class="p">,</span> <span class="s1">&#39;Mx_j&#39;</span><span class="p">,</span> <span class="s1">&#39;My_i&#39;</span><span class="p">,</span> <span class="s1">&#39;My_j&#39;</span><span class="p">,</span> <span class="s1">&#39;Mz_i&#39;</span><span class="p">,</span> <span class="s1">&#39;Mz_j&#39;</span><span class="p">,</span> <span class="s1">&#39;Vx_i&#39;</span><span class="p">,</span> <span class="s1">&#39;Vx_j&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;Vy_i&#39;</span><span class="p">,</span> <span class="s1">&#39;Vy_j&#39;</span><span class="p">,</span> <span class="s1">&#39;Vz_i&#39;</span><span class="p">,</span> <span class="s1">&#39;Vz_j&#39;</span><span class="p">,</span> <span class="s1">&#39;dx&#39;</span><span class="p">,</span> <span class="s1">&#39;dy&#39;</span><span class="p">,</span> <span class="s1">&#39;dz&#39;</span><span class="p">,</span> <span class="s1">&#39;theta_x&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;theta_y&#39;</span><span class="p">,</span> <span class="s1">&#39;theta_z&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;&lt;U7&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>For more information on the inputs and options, see <a class="reference internal" href="generated/ospgrillage.postprocessing.create_envelope.html#ospgrillage.postprocessing.create_envelope" title="ospgrillage.postprocessing.create_envelope"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_envelope()</span></code></a>.</p>
 </div>
 <div class="section" id="getting-specific-properties-of-model">
