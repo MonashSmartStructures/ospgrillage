@@ -2,7 +2,11 @@
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
+[![version](https://img.shields.io/github/downloads/MonashSmartStructures/ospgrillage/total?label=version)]() 
+[![codecov](https://img.shields.io/gitlab/coverage/MonashSmartStructures/ospgrillage/main?label=codecov)]()
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/MonashSmartStructures/ospgrillage/CI?label=CI)
+![GitHub issues](https://img.shields.io/github/issues/MonashSmartStructures/ospgrillage?logoColor=yellowgreen)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/MonashSmartStructures/ospgrillage?color=yellowgreen)
 
 # Overview
 
@@ -18,12 +22,12 @@ analysis purposes.
 
 ## Installation
 
-Install using pip
+Install using pip.
 
     pip install ospgrillage
 
     
-For more information on installation, refer to [installation](https://monashsmartstructures.github.io/ospgrillage/rst/Installation.html)
+For more information on installation, refer to [installation](https://monashsmartstructures.github.io/ospgrillage/rst/Installation.html).
 
 
 ## Documentation
@@ -33,54 +37,54 @@ You can find link to the documentations [here](https://monashsmartstructures.git
 ## Current Capabilities
 
 ### Model types available
-- [x] Beam elements
-- [x] Beam elements with rigid links
-- [x] Shell and beam elements
+-  [x] Beam elements
+-  [x] Beam elements with rigid links
+-  [x] Shell and beam elements
 
 ### Mesh features
-- [x] Single-span
-- [x] Skewed (Oblique) and Orthogonal meshes
-- [x] Positive and negative skew angles
-- [x] Allow for skew mesh to be set up to 30 degrees
-- [x] Allow for orthogonal mesh to be set no less than 11 degrees
-- [x] Grillage elements grouped automatically for easy assignment of properties
-- [x] Autodetect edge of spans as supporting nodes
-- [x] Allow for diaphragm / end slab
-- [x] Allow for unit width properties for transverse slab/members
-- [x] Pinned and roller supports
+-  [x] Single-span
+-  [x] Skewed (Oblique) and Orthogonal meshes
+-  [x] Positive and negative skew angles
+-  [x] Allow for skew mesh to be set up to 30 degrees
+-  [x] Allow for orthogonal mesh to be set no less than 11 degrees
+-  [x] Grillage elements grouped automatically for easy assignment of properties
+-  [x] Autodetect edge of spans as supporting nodes
+-  [x] Allow for diaphragm / end slab
+-  [x] Allow for unit width properties for transverse slab/members
+-  [x] Pinned and roller supports
 
 ### Element types
 The following OpenSees element types are/will be supported in releases:
-- [x] elasticBeamColumn
-- [x] TimoshenkoBeamColumn  
-- [ ] nonlinearBeamColumn
-- [ ] Shell elements
+-  [x] elasticBeamColumn
+-  [x] TimoshenkoBeamColumn  
+-  [ ] nonlinearBeamColumn
+-  [x] Shell elements
 
 ## Materials
-- [x] JSON material file for codified material properties
+-  [x] JSON material file for codified material properties
 
 
 ### Utilities
 #### Load types definition
-- [x] Nodal loads
-- [x] Point loads
-- [x] Line loads
-- [x] Patch loads
-- [x] Compound loads (any combination of the above load types) 
+-  [x] Nodal loads
+-  [x] Point loads
+-  [x] Line loads
+-  [x] Patch loads
+-  [x] Compound loads (any combination of the above load types) 
 
 #### Analysis utilities
-- [x] Allow for load case to add multiple load types, including compound loads
-- [x] Allow for moving load case
+-  [x] Allow for load case to add multiple load types, including compound loads
+-  [x] Allow for moving load case
 
 #### Post-processing utilities
-- [x] Output results utilise python's xarray DataSet
-- [x] Retrieve envelopes from xarray results
-- [x] Query options for moving load 
-- [x] Plotting displacement and force component from xarray results
+-  [x] Output results utilise python's xarray format
+-  [x] Retrieve result envelopes from xarray results
+-  [x] Query options for moving load 
+-  [x] Plotting displacement and force component from xarray results
 
 ### Development wishlist
-- [ ] Curved meshes
-- [ ] Definition of mesh control points - e.g. ability to shift origin of mesh generation
-- [ ] Enabling multi-span definition 
+-  [ ] Curved meshes
+-  [ ] Definition of mesh control points - e.g. ability to shift origin of mesh generation
+-  [ ] Enabling multi-span definition 
 
 

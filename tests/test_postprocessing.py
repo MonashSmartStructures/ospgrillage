@@ -148,10 +148,7 @@ def test_envelope(bridge_model_42_negative):
     move_point.add_load(load_obj=front_wheel)
     example_bridge.add_load_case(move_point)
 
-    # example_bridge.analyze()
     example_bridge.analyze()
-    # og.opsv.plot_defo()
-    og.plt.show()
     results = example_bridge.get_results()
     comb_results = example_bridge.get_results(
         combinations={"Barrier": 1, "single_moving_point": 2}

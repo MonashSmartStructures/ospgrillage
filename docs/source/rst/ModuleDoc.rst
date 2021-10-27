@@ -3,14 +3,16 @@ Package design
 #####################
 
 This page details the design decisions of *ospgrillage* module. In outlining these processes,
-the developers welcome any improvements to its procedures via pull requests. Also, any issues with each process can
+the developers welcome any improvements to its procedures via pull requests. Also, any issues within each process can
 be reported by raising an issue in the main repository.
 
 ====================
 Grillage model
 ====================
 
-The *ospgrillage* module generates a two-dimensional (2D) grillage model of a bridge deck in OpenSees - see Figure 1.
+The *ospgrillage* module generates a two-dimensional (2-D) grillage model of a bridge deck in OpenSees - a plot of 2-D
+mesh nodes is shown in Figure 1. All information pertaining grillage model is handled by the
+:class:`~ospgrillage.osp_grillage.OpsGrillage` object.
 
 ..  figure:: ../../_images/Figure_1.png
     :align: center
@@ -21,11 +23,9 @@ The *ospgrillage* module generates a two-dimensional (2D) grillage model of a br
 Model space
 ---------------------
 
-By default the :class:`~ospgrillage.osp_grillage.OpsGrillage` object creates a 2-D grillage model that exist in the 3-D model space.
-The model has 6 degrees-of-freedom at each nodes. The grillage model plane lies in the x-z plane of the coordinate system.
-For a 2-D model, the model plane is the x-y plane.
-
-Development for 1-D models in 2-D space is yet to complete in release 0.1.0 but we welcome any pull request for it.
+The model has 6 degrees-of-freedom at each nodes. The grillage plane lies in the x-z plane of the coordinate system.
+For a 2-D model, the intended model plane is the x-y plane. Development for one-dimensional (1-D) models in 2-D space is yet to complete
+in release 0.1.0 but we welcome any pull request for it.
 
 Coordinate system
 ---------------------
@@ -38,30 +38,32 @@ The module adopts the following coordinate system for grillage models:
 
 * global y direction is the vertical axis - typically the direction of loads
 
-Two reasons behind selecting the coordinate system:
+The main reason behind selecting the coordinate system is consistency:
 
-#. To be consistent with geometric transformation (from local to global) of OpenSees. The geometric transformation is used in Section definition, with local X being the axial direction
+#. The selected coordinate system is consistent with geometric transformation (from local to global) of ``OpenSees``.
+   The geometric transformation is used in Section definition, with local X being the axial direction
    of beam/truss members; where y and z axes being the vertical and horizontal axis of the local coordinate system respectively.
 
-#. To be consistent with 1D problems where the working axis for 1-D models is typically *x* (horizontal axis) and *y* (vertical axis).
+#. The selected coordinate system is consistent between 1-D and 2-D problems where the working axis for 1-D models is
+   typically *x* (horizontal axis) and *y* (vertical axis).
 
 ====================
 Meshing
 ====================
 
-The :class:`~ospgrillage.osp_grillage.OspGrillage` class handles a :class:`~ospgrillage.mesh.Mesh` class object which stores information of the grillage mesh, such as:
+A :class:`~ospgrillage.mesh.Mesh` class object handles and stores information of the grillage mesh, such as:
 
+* Mesh dimension
 * Nodes
 * Elements
-* Transformation of sections and materials
-* Grouping of grillage elements for calculating properties and assigning members.
-* Dimensions of mesh
-
+* Transformation of sections
+* Control points for mesh
+* Grouping of common grillage elements
 
 Meshing algorithm
 ---------------------
 
-Figure 2 shows an bridge mesh nodes as an explanatory example.
+Figure 2 shows an annotated diagram of the bridge mesh nodes in Figure 1 which we will use as an explanatory example.
 
 ..  figure:: ../../_images/Moduledoc_1.PNG
     :align: center
@@ -69,39 +71,52 @@ Figure 2 shows an bridge mesh nodes as an explanatory example.
 
     Figure 2: Meshing construction lines, showing start control line (Blue), end end control line (Green), sweep path (Black) and sweeping nodes (Red).
 
-Meshing algorithm is controlled by the :class:`~ospgrillage.mesh.Mesh` class object. The following components are generated to
-define the nodes and elements of the mesh:
+Meshing algorithm is controlled by the :class:`~ospgrillage.mesh.Mesh` class object. The following components are generated at pre-meshing stage:
 
-#. **Line of control points at start of the span (start_span_edge)**
-   A construction line consisting of the edge of the model is first defined. Construction line consist of nodes that
-   coincide with the number and position of longitudinal beams in the model. The angle of the construction line is based on skew angle
-   (skew_1). By default, the reference point of the construction line coincide with the origin [0,0,0] of the model space.
+#. **Control points at start of the span (start_span_edge)**.
+   A line of nodes/points located at the starting edge of the model. The positions of points are determined based on the number of longitudinal
+   members, width of mesh, and skew angle of starting edge. By default, this line of nodes have a reference point coinciding the origin of global coordinate system
+   i.e. [0,0,0].
 
-#. **Line of control points at the end of the span (end_span_edge)**
-   Similar to (1), the construction line at the end of the span is created based on number of longitudinal beam. The
-   spacing of the nodes in the z direction is identical to that of the first construction line. By default the skew angle
-   of this second construction (skew_2) can be different. In contrast, the reference point of second construction line
-   is [L, 0 ,f(L)] where L is the length of the model, and f(L) is the z coordinate of the reference node based on
-   the defined sweep path of the model - this is next explained
+#. **Control points at the end of the span (end_span_edge)**.
+   A line of nodes located at the end edge of the model. The positions of points are determined similar to *start_span_edge*.
+   By default, skew angle is set to equal that of *start_span_edge* - unless specified otherwise by users.
+   In contrast to *start_span_edge*, the reference point of second construction line
+   is [L, 0 ,f(L)] where `L` is the length of the model, and `f(L)` is the z coordinate of the reference node based on
+   the defined sweep path of the model - this is next explained.
 
-#. **Sweep Path** By default, the sweep path of the model is a straight line of y = 0 which starts at the origin [0,0,0] of model space.
-   Addition of options for sweep path is favourable.
+#. **Sweep Path**.
+   A line of nodes which dictates the sweeping of mesh points of *start_span_edge* and *end_span_edge*.
+   By default, the sweep path of the model is a straight line which starts at the origin of model space (also the
+   reference point of *start_span_edge*) and ends at the reference point of *end_span_edge*.
+   Current version of *ospgrillage* supports a straight line, curve line option can be a good addition to the module
+   later on.
 
 
-Meshing Rules
+Meshing types and rules
 ---------------------
-In grillages, transverse members are often arranged orthogonally to longitudinal members. When skew angles are small
-(less than 30 degrees angle), orthogonal mesh can be impractical and a skew (Oblique) mesh is usually selected instead.
+There are two types of meshing algorithm (and its respective kwarg for ``mesh_type=``), namely:
+
+* orthogonal meshing - :class:`Ortho`
+* oblique meshing - - :class:`Oblique`
+
+A rule is applied to both meshing type:
+
+* When skew angles are sufficiently small
+  (less than 30 degrees angle), orthogonal mesh is not allowed and meshing proceeds with oblique type as the selected meshing type.
+* When skew angles are sufficiently large (greater than 12 degree angle), oblique mesh is not allowed and meshing preceeds
+  with orthogonal mesh as the selected meshing type.
+
+An error exception will be returned when the above rules are not met.
 
 .. note::
-    Up to version 0.1.0, the grillage wizard allow users to freely choose between orthogonal and oblique meshes for
-    angles between 11 to 30 degrees. An error exception will be returned when users select "orthogonal mesh"
-    but having skew angle less than "11 degrees" - and vice versa. The numbers of 11 and 30 degrees are selected based
+    As of version 0.1.0, the grillage wizard allow users to freely choose between orthogonal and oblique meshes for
+    angles between 11 to 30 degrees.  The numbers of 11 and 30 degrees are selected based
     on common industrial practice of grillage analysis.
 
 Meshing steps
 ---------------------
-#. Starting at first construction line, algorithm checks the angle of the construction line relative to the tangent/slope
+#. Starting at *start_span_edge*, algorithm checks the angle of the construction line relative to the tangent/slope
  of the sweep line at the first position (i.e. @ [0,0,0])
 
 #. If mesh type for the given angle of construction line is permitted, a for loop procedure is initiated.
@@ -127,7 +142,7 @@ Longitudinal elements are linked by recording the nodes with common z grid group
 
 Grid groups
 ---------------------
-Grid groups for elements in the z direct is defined based on the number of longitudinal beams. For the example bridge,
+Grid groups for elements in the z direction is defined based on the number of longitudinal beams. For the example bridge,
 there are 7 longitudinal beams (2 edge, 2 exterior and 3 interior beams). Therefore, starting from 0, the nodes that
 coincide with edge beams are numbered 0 and 6, while nodes for exterior beams are 1 and 5. The interior beam consist
 of the remaining groups (2,3,4) by this default.

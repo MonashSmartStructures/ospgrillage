@@ -17,7 +17,7 @@ The easiest way to install is to use python package index `pip`.
 
 .. code-block:: python
 
-    pip install git+https://github.com/MonashSmartStructures/ops-grillage.git
+    pip install ospgrillage
 
 For users wishing to develop/contribute, install as follows:
 
@@ -25,8 +25,7 @@ For users wishing to develop/contribute, install as follows:
 
     git clone https://github.com/MonashSmartStructures/ospgrillage.git
     cd ospgrillage
-    pip install -e
-
+    pip setup.py install -e
 
 
 Installing dependencies
