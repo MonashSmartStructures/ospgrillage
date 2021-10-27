@@ -4,9 +4,12 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![version](https://img.shields.io/github/downloads/MonashSmartStructures/ospgrillage/total?label=version)]() 
 [![codecov](https://img.shields.io/gitlab/coverage/MonashSmartStructures/ospgrillage/main?label=codecov)]()
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/MonashSmartStructures/ospgrillage/CI?label=CI)
 ![GitHub issues](https://img.shields.io/github/issues/MonashSmartStructures/ospgrillage?logoColor=yellowgreen)
 ![GitHub pull requests](https://img.shields.io/github/issues-pr/MonashSmartStructures/ospgrillage?color=yellowgreen)
+[![PyPI](https://img.shields.io/pypi/v/ospgrillage)]()
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/MonashSmartStructures/ospgrillage/Build%20and%20deploy)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/MonashSmartStructures/ospgrillage/Deploy%20to%20GitHub%20Pages?label=gh%20page%20build)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/MonashSmartStructures/ospgrillage/Tests?label=Tests)
 
 # Overview
 
