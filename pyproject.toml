@@ -1,41 +1,16 @@
 [project]
 requires-python = ">=3.8,<=3.9"
 
-# https://pypi.org/project/oldest-supported-numpy/
-# see: https://github.com/scipy/oldest-supported-numpy/blob/master/setup.cfg
 [build-system]
-requires = ["wheel", 
-            "setuptools", 
+requires = ["wheel >= 0.29.0", 
+            "setuptools >= 48", 
             "oldest-supported-numpy", 
-            "matplotlib",
-            "openseespy>=3.2.2.6",
-            "opsvis~=0.95.5",
-            "openseespyvis>=0.0.6",
-            "pandas",
-            "pytest",
-            "scipy",
-            "xarray",
-            # "Pillow==8.3.0",
-            # "setuptools",
             ]
+build-backend = "setuptools.build_meta"
 
-[tool.cibuildwheel]
-# Run the package tests using `pytest`
-test-command = "pytest {package}/tests"
-# Min. requirement for opensees
-manylinux-x86_64-image = "manylinux2014"
-# Get detailed output
-build-verbosity = 1
-# Only build on CPython 3.8
-build = "cp38-*"
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = [
+    "tests"
+]
 
-# [tool.cibuildwheel.linux]
-# before-all = [
-#     "yum install -y libgfortran5 libgcc glibc",
-#     "yum update -y libstdc++",
-# ]
-
-#[tool.cibuildwheel.macos]
-#before-all = [
-#    "brew install libjpeg zlib",
-#]
