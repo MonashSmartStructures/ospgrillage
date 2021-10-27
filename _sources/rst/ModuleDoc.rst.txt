@@ -117,7 +117,7 @@ An error exception will be returned when the above rules are not met.
 Meshing steps
 ---------------------
 #. Starting at *start_span_edge*, algorithm checks the angle of the construction line relative to the tangent/slope
- of the sweep line at the first position (i.e. @ [0,0,0])
+   of the sweep line at the first position (i.e. @ [0,0,0])
 
 #. If mesh type for the given angle of construction line is permitted, a for loop procedure is initiated.
    The iteration: (1) goes through every point in the construction line, (2) find the point on the sweep path whose normal vector
