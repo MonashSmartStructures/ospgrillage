@@ -41,8 +41,12 @@ jobs:
         name: artifact
         path: dist
 
-    - uses: pypa/gh-action-pypi-publish@v1.4.2
+    - name: Publish distribution 📦 to PyPI
+      uses: pypa/gh-action-pypi-publish@v1.4.2
       with:
+        #password: ${{ secrets.PYPI_API_TOKEN_TEMP }}
+        # remove following once testing complete
         user: __token__
         password: ${{ secrets.TEST_PYPI_API_TOKEN }}
         repository_url: https://test.pypi.org/legacy/
+
