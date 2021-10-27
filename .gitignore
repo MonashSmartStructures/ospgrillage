@@ -27,6 +27,9 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+tags/
+wheelhouse/
+tags
 
 # Sphinx documentation
 docs/source/_static/
