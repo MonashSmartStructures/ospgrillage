@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Package design &#8212; ospgrillage module 0.1.0 documentation</title>
+    <title>Package design &#8212; ospgrillage module 0.0.2 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -201,8 +201,8 @@
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#meshing-rules">
-     Meshing Rules
+    <a class="reference internal nav-link" href="#meshing-types-and-rules">
+     Meshing types and rules
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
@@ -273,21 +273,22 @@
   <div class="section" id="package-design">
 <h1>Package design<a class="headerlink" href="#package-design" title="Permalink to this headline">¶</a></h1>
 <p>This page details the design decisions of <em>ospgrillage</em> module. In outlining these processes,
-the developers welcome any improvements to its procedures via pull requests. Also, any issues with each process can
+the developers welcome any improvements to its procedures via pull requests. Also, any issues within each process can
 be reported by raising an issue in the main repository.</p>
 <div class="section" id="grillage-model">
 <h2>Grillage model<a class="headerlink" href="#grillage-model" title="Permalink to this headline">¶</a></h2>
-<p>The <em>ospgrillage</em> module generates a two-dimensional (2D) grillage model of a bridge deck in OpenSees - see Figure 1.</p>
+<p>The <em>ospgrillage</em> module generates a two-dimensional (2-D) grillage model of a bridge deck in OpenSees - a plot of 2-D
+mesh nodes is shown in Figure 1. All information pertaining grillage model is handled by the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> object.</p>
 <div class="figure align-center" id="id1">
 <a class="reference internal image-reference" href="../_images/Figure_1.png"><img alt="../_images/Figure_1.png" src="../_images/Figure_1.png" /></a>
 <p class="caption"><span class="caption-text">Figure 1: Typical grillage model nodes.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </div>
 <div class="section" id="model-space">
 <h3>Model space<a class="headerlink" href="#model-space" title="Permalink to this headline">¶</a></h3>
-<p>By default the <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> object creates a 2-D grillage model that exist in the 3-D model space.
-The model has 6 degrees-of-freedom at each nodes. The grillage model plane lies in the x-z plane of the coordinate system.
-For a 2-D model, the model plane is the x-y plane.</p>
-<p>Development for 1-D models in 2-D space is yet to complete in release 0.1.0 but we welcome any pull request for it.</p>
+<p>The model has 6 degrees-of-freedom at each nodes. The grillage plane lies in the x-z plane of the coordinate system.
+For a 2-D model, the intended model plane is the x-y plane. Development for one-dimensional (1-D) models in 2-D space is yet to complete
+in release 0.1.0 but we welcome any pull request for it.</p>
 </div>
 <div class="section" id="coordinate-system">
 <h3>Coordinate system<a class="headerlink" href="#coordinate-system" title="Permalink to this headline">¶</a></h3>
@@ -297,64 +298,80 @@ For a 2-D model, the model plane is the x-y plane.</p>
 <li><p>global z direction defines the width of the bridge model - the slabs elements are layed in this axis direction.</p></li>
 <li><p>global y direction is the vertical axis - typically the direction of loads</p></li>
 </ul>
-<p>Two reasons behind selecting the coordinate system:</p>
+<p>The main reason behind selecting the coordinate system is consistency:</p>
 <ol class="arabic simple">
-<li><p>To be consistent with geometric transformation (from local to global) of OpenSees. The geometric transformation is used in Section definition, with local X being the axial direction
+<li><p>The selected coordinate system is consistent with geometric transformation (from local to global) of <code class="docutils literal notranslate"><span class="pre">OpenSees</span></code>.
+The geometric transformation is used in Section definition, with local X being the axial direction
 of beam/truss members; where y and z axes being the vertical and horizontal axis of the local coordinate system respectively.</p></li>
-<li><p>To be consistent with 1D problems where the working axis for 1-D models is typically <em>x</em> (horizontal axis) and <em>y</em> (vertical axis).</p></li>
+<li><p>The selected coordinate system is consistent between 1-D and 2-D problems where the working axis for 1-D models is
+typically <em>x</em> (horizontal axis) and <em>y</em> (vertical axis).</p></li>
 </ol>
 </div>
 </div>
 <div class="section" id="meshing">
 <h2>Meshing<a class="headerlink" href="#meshing" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a> class handles a <a class="reference internal" href="APIdoc.html#ospgrillage.mesh.Mesh" title="ospgrillage.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a> class object which stores information of the grillage mesh, such as:</p>
+<p>A <a class="reference internal" href="APIdoc.html#ospgrillage.mesh.Mesh" title="ospgrillage.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a> class object handles and stores information of the grillage mesh, such as:</p>
 <ul class="simple">
+<li><p>Mesh dimension</p></li>
 <li><p>Nodes</p></li>
 <li><p>Elements</p></li>
-<li><p>Transformation of sections and materials</p></li>
-<li><p>Grouping of grillage elements for calculating properties and assigning members.</p></li>
-<li><p>Dimensions of mesh</p></li>
+<li><p>Transformation of sections</p></li>
+<li><p>Control points for mesh</p></li>
+<li><p>Grouping of common grillage elements</p></li>
 </ul>
 <div class="section" id="meshing-algorithm">
 <h3>Meshing algorithm<a class="headerlink" href="#meshing-algorithm" title="Permalink to this headline">¶</a></h3>
-<p>Figure 2 shows an bridge mesh nodes as an explanatory example.</p>
+<p>Figure 2 shows an annotated diagram of the bridge mesh nodes in Figure 1 which we will use as an explanatory example.</p>
 <div class="figure align-center" id="id2">
 <a class="reference internal image-reference" href="../_images/Moduledoc_1.PNG"><img alt="../_images/Moduledoc_1.PNG" src="../_images/Moduledoc_1.PNG" /></a>
 <p class="caption"><span class="caption-text">Figure 2: Meshing construction lines, showing start control line (Blue), end end control line (Green), sweep path (Black) and sweeping nodes (Red).</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
-<p>Meshing algorithm is controlled by the <a class="reference internal" href="APIdoc.html#ospgrillage.mesh.Mesh" title="ospgrillage.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a> class object. The following components are generated to
-define the nodes and elements of the mesh:</p>
+<p>Meshing algorithm is controlled by the <a class="reference internal" href="APIdoc.html#ospgrillage.mesh.Mesh" title="ospgrillage.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a> class object. The following components are generated at pre-meshing stage:</p>
 <ol class="arabic simple">
-<li><p><strong>Line of control points at start of the span (start_span_edge)</strong>
-A construction line consisting of the edge of the model is first defined. Construction line consist of nodes that
-coincide with the number and position of longitudinal beams in the model. The angle of the construction line is based on skew angle
-(skew_1). By default, the reference point of the construction line coincide with the origin [0,0,0] of the model space.</p></li>
-<li><p><strong>Line of control points at the end of the span (end_span_edge)</strong>
-Similar to (1), the construction line at the end of the span is created based on number of longitudinal beam. The
-spacing of the nodes in the z direction is identical to that of the first construction line. By default the skew angle
-of this second construction (skew_2) can be different. In contrast, the reference point of second construction line
-is [L, 0 ,f(L)] where L is the length of the model, and f(L) is the z coordinate of the reference node based on
-the defined sweep path of the model - this is next explained</p></li>
-<li><p><strong>Sweep Path</strong> By default, the sweep path of the model is a straight line of y = 0 which starts at the origin [0,0,0] of model space.
-Addition of options for sweep path is favourable.</p></li>
+<li><p><strong>Control points at start of the span (start_span_edge)</strong>.
+A line of nodes/points located at the starting edge of the model. The positions of points are determined based on the number of longitudinal
+members, width of mesh, and skew angle of starting edge. By default, this line of nodes have a reference point coinciding the origin of global coordinate system
+i.e. [0,0,0].</p></li>
+<li><p><strong>Control points at the end of the span (end_span_edge)</strong>.
+A line of nodes located at the end edge of the model. The positions of points are determined similar to <em>start_span_edge</em>.
+By default, skew angle is set to equal that of <em>start_span_edge</em> - unless specified otherwise by users.
+In contrast to <em>start_span_edge</em>, the reference point of second construction line
+is [L, 0 ,f(L)] where <cite>L</cite> is the length of the model, and <cite>f(L)</cite> is the z coordinate of the reference node based on
+the defined sweep path of the model - this is next explained.</p></li>
+<li><p><strong>Sweep Path</strong>.
+A line of nodes which dictates the sweeping of mesh points of <em>start_span_edge</em> and <em>end_span_edge</em>.
+By default, the sweep path of the model is a straight line which starts at the origin of model space (also the
+reference point of <em>start_span_edge</em>) and ends at the reference point of <em>end_span_edge</em>.
+Current version of <em>ospgrillage</em> supports a straight line, curve line option can be a good addition to the module
+later on.</p></li>
 </ol>
 </div>
-<div class="section" id="meshing-rules">
-<h3>Meshing Rules<a class="headerlink" href="#meshing-rules" title="Permalink to this headline">¶</a></h3>
-<p>In grillages, transverse members are often arranged orthogonally to longitudinal members. When skew angles are small
-(less than 30 degrees angle), orthogonal mesh can be impractical and a skew (Oblique) mesh is usually selected instead.</p>
+<div class="section" id="meshing-types-and-rules">
+<h3>Meshing types and rules<a class="headerlink" href="#meshing-types-and-rules" title="Permalink to this headline">¶</a></h3>
+<p>There are two types of meshing algorithm (and its respective kwarg for <code class="docutils literal notranslate"><span class="pre">mesh_type=</span></code>), namely:</p>
+<ul class="simple">
+<li><p>orthogonal meshing - <code class="xref py py-class docutils literal notranslate"><span class="pre">Ortho</span></code></p></li>
+<li><p>oblique meshing - - <code class="xref py py-class docutils literal notranslate"><span class="pre">Oblique</span></code></p></li>
+</ul>
+<p>A rule is applied to both meshing type:</p>
+<ul class="simple">
+<li><p>When skew angles are sufficiently small
+(less than 30 degrees angle), orthogonal mesh is not allowed and meshing proceeds with oblique type as the selected meshing type.</p></li>
+<li><p>When skew angles are sufficiently large (greater than 12 degree angle), oblique mesh is not allowed and meshing preceeds
+with orthogonal mesh as the selected meshing type.</p></li>
+</ul>
+<p>An error exception will be returned when the above rules are not met.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Up to version 0.1.0, the grillage wizard allow users to freely choose between orthogonal and oblique meshes for
-angles between 11 to 30 degrees. An error exception will be returned when users select “orthogonal mesh”
-but having skew angle less than “11 degrees” - and vice versa. The numbers of 11 and 30 degrees are selected based
+<p>As of version 0.1.0, the grillage wizard allow users to freely choose between orthogonal and oblique meshes for
+angles between 11 to 30 degrees.  The numbers of 11 and 30 degrees are selected based
 on common industrial practice of grillage analysis.</p>
 </div>
 </div>
 <div class="section" id="meshing-steps">
 <h3>Meshing steps<a class="headerlink" href="#meshing-steps" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
-<li><p>Starting at first construction line, algorithm checks the angle of the construction line relative to the tangent/slope</p></li>
+<li><p>Starting at <em>start_span_edge</em>, algorithm checks the angle of the construction line relative to the tangent/slope</p></li>
 </ol>
 <blockquote>
 <div><p>of the sweep line at the first position (i.e. &#64; [0,0,0])</p>
@@ -378,7 +395,7 @@ Longitudinal elements are linked by recording the nodes with common z grid group
 </div>
 <div class="section" id="grid-groups">
 <h3>Grid groups<a class="headerlink" href="#grid-groups" title="Permalink to this headline">¶</a></h3>
-<p>Grid groups for elements in the z direct is defined based on the number of longitudinal beams. For the example bridge,
+<p>Grid groups for elements in the z direction is defined based on the number of longitudinal beams. For the example bridge,
 there are 7 longitudinal beams (2 edge, 2 exterior and 3 interior beams). Therefore, starting from 0, the nodes that
 coincide with edge beams are numbered 0 and 6, while nodes for exterior beams are 1 and 5. The interior beam consist
 of the remaining groups (2,3,4) by this default.</p>
