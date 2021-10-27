@@ -5,6 +5,7 @@ from ospgrillage import __version__ as version
 
 sys.path.insert(0, os.path.abspath("../"))
 
+
 @pytest.fixture
 def ref_bridge_properties():
     concrete = og.create_material(type="concrete", code="AS5100-2017", grade="50MPa")
@@ -38,7 +39,6 @@ def ref_bridge_properties():
         material=concrete,
     )
     return I_beam, slab, exterior_I_beam, concrete
-
 
 
 @pytest.fixture
@@ -157,7 +157,9 @@ def test_envelope(bridge_model_42_negative):
         combinations={"Barrier": 1, "single_moving_point": 2}
     )
     # maxY = results.sel(Component='dy').max()
-    envelope = og.create_envelope(ds=comb_results, load_effect="dy", array="displacements")
+    envelope = og.create_envelope(
+        ds=comb_results, load_effect="dy", array="displacements"
+    )
     max_disp = envelope.get()
     print(max_disp)
     move_point.query(
