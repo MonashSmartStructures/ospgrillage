@@ -16,26 +16,21 @@
 
 # Overview
 
-*ospgrillage* is a python wrapper of *OpenSeesPy* module to create structural grillage models. OpenSeesPy 
-is a Python interpreter of Open System for Earthquake Engineering Simulation (OpenSees) software framework.
-*ospgrillage* provides a simple python API which allow python users to: 
+*ospgrillage* is a python wrapper of *OpenSeesPy* module to speed up the creation of bridge deck grillage models. OpenSeesPy is a Python interpreter of Open System for Earthquake Engineering Simulation (OpenSees) software framework. *ospgrillage* provides a simple python API which allow python users to:
 
-1. quickly generate a grillage model in *OpenSeesPy* model space; 
-2. export an executable py file containing all relevent *OpenSeesPy* command, which on execute,
-   creates the prescribed *OpenSeesPy* grillage model model.
-   
-   
+1. quickly generate a grillage model in *OpenSeesPy* model space;
+2. export an executable py file containing all relevent *OpenSeesPy* command, which on execute, creates the prescribed *OpenSeesPy* grillage model model.
+
 ## Documentation
 
 *ospgrillage*'s full documentation can be found [here](https://monashsmartstructures.github.io/ospgrillage/index.html).
 
 ## Installation
 
-### Windows
 Install using pip.
-
+```bash
     pip install ospgrillage
-
+```
     
 For more information on installation, refer to [installation](https://monashsmartstructures.github.io/ospgrillage/rst/Installation.html).
 
@@ -91,4 +86,4 @@ The following OpenSees element types are/will be supported in releases:
 
 ### Contributing guidelines
 
-Check out our [contributing guide][contributing] to learn more on contributing, coding rules and more.
+Check out our [contributing guide](https://github.com/MonashSmartStructures/ospgrillage/blob/main/.github/CONTRIBUTING.md) to learn more on contributing, coding rules and more.
