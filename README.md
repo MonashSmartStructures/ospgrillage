@@ -10,21 +10,28 @@
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/MonashSmartStructures/ospgrillage/Build%20and%20deploy)
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/MonashSmartStructures/ospgrillage/Deploy%20to%20GitHub%20Pages?label=gh%20page%20build)
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/MonashSmartStructures/ospgrillage/Tests?label=Tests)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/MonashSmartStructures/ospgrillage)
+![GitHub last commit](https://img.shields.io/github/last-commit/MonashSmartStructures/ospgrillage?color=ff69b4)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md)
 
 # Overview
 
-The `ospgrillage` module is a python wrapper of ```OpenSeesPy``` module  to create structural grillage models. ```OpenSeesPy``` 
+*ospgrillage* is a python wrapper of *OpenSeesPy* module to create structural grillage models. OpenSeesPy 
 is a Python interpreter of Open System for Earthquake Engineering Simulation (OpenSees) software framework.
-`ospgrillage` allow python users to generate grillage model in ```OpenSeesPy``` model space or create an output executable py file 
-which on execute, creates the prescribed ```OpenSeesPy``` model instead.
+*ospgrillage* provides a simple python API which allow python users to: 
 
-A typical output py file from the wizard contains relevant ```OpenSeesPy``` commands for constructing a 
-model in OpenSees domain. The wrapper allows quick generation of py file with few basic command lines in Python 
-interface. This module lowers the bar for research, education, and training of the software for structural
-analysis purposes.
+1. quickly generate a grillage model in *OpenSeesPy* model space; 
+2. export an executable py file containing all relevent *OpenSeesPy* command, which on execute,
+   creates the prescribed *OpenSeesPy* grillage model model.
+   
+   
+## Documentation
+
+*ospgrillage*'s full documentation can be found [here](https://monashsmartstructures.github.io/ospgrillage/index.html).
 
 ## Installation
 
+### Windows
 Install using pip.
 
     pip install ospgrillage
@@ -32,10 +39,6 @@ Install using pip.
     
 For more information on installation, refer to [installation](https://monashsmartstructures.github.io/ospgrillage/rst/Installation.html).
 
-
-## Documentation
-
-You can find link to the documentations [here](https://monashsmartstructures.github.io/ospgrillage/index.html).
 
 ## Current Capabilities
 
@@ -85,9 +88,7 @@ The following OpenSees element types are/will be supported in releases:
 -  [x] Query options for moving load 
 -  [x] Plotting displacement and force component from xarray results
 
-### Development wishlist
--  [ ] Curved meshes
--  [ ] Definition of mesh control points - e.g. ability to shift origin of mesh generation
--  [ ] Enabling multi-span definition 
 
+### Contributing guidelines
 
+Check out our [contributing guide][contributing] to learn more on contributing, coding rules and more.
