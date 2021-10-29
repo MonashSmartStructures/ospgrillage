@@ -1,6 +1,6 @@
-========================
+================
 Getting Results
-========================
+================
 
 For all example code in this page, *ospgrillage* is imported as ``og``
 
@@ -9,7 +9,7 @@ For all example code in this page, *ospgrillage* is imported as ``og``
     import ospgrillage as og
 
 Extracting results
---------------------------------------
+------------------
 
 After analysis, results are obtained using :func:`~ospgrillage.osp_grillage.OspGrillage.get_results` function.
 The following example extracts results for all defined analysis of ``example_bridge`` - all results and one of a specific load case only.
@@ -41,7 +41,7 @@ The following is printed to terminal after printing ``all_result``:
 
 
 Structure of xarray DataSet
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Figure 1 shows the structure of the `xarray` DataSet for results.
 The dataset contains two `xarray DataArray <http://xarray.pydata.org/en/stable/generated/xarray.DataArray.html#xarray.DataArray>`_.
@@ -77,7 +77,7 @@ Similarly, **ele_nodes** will be split into **ele_nodes_beam** and **ele_nodes_s
 .. _access results:
 
 Accessing and querying data
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 From the data arrays, users can access various component in each load effect using `xarray`'s data array commands.
 Information on indexing and selecting DataArray data can be found `here <http://xarray.pydata.org/en/stable/user-guide/indexing.html>`_
@@ -116,7 +116,7 @@ incremental load case. Following example shows the various method of `xarray` to
 .. _load combinations:
 
 Getting combinations
---------------------------------------
+--------------------
 Load combinations are computed on the fly in :func:`~ospgrillage.osp_grillage.OspGrillage.get_results` by specifying a keyword argument for ``combinations``.
 The keyword argument accepts a ``dict`` with load case name strings as key, and corresponding load factor as value. The returned DataArray
 will have load case multiplied by prescribed load factors and summed along the load case dimension (for each load case in load combination).
@@ -154,7 +154,7 @@ incremental load case of the moving load.
 
 
 Getting load envelope
---------------------------------------
+---------------------
 Load envelope is generated from load combination results for extrema of load effect using :func:`~ospgrillage.postprocessing.create_envelope` function.
 Envelope are chosen based on user selected component (*array* keyword) as either "displacements" or "forces", extrema as either maximum or minimum,
 and load effect component (e.g. "dy" for displacements). The following example uses creates a :class:`~ospgrillage.postprocessing.Envelope` object
@@ -206,16 +206,16 @@ For more information on the inputs and options, see :func:`~ospgrillage.postproc
 
 
 Getting specific properties of model
---------------------------------------
+------------------------------------
 
 Node
-^^^^^^^^^^^^^^^^^^^
+^^^^
 
 .. automethod:: ospgrillage.OspGrillage.get_nodes()
     :noindex:
 
 Element
-^^^^^^^^^^^^^^^^^^^
+^^^^^^^
 
 .. automethod:: ospgrillage.OspGrillage.get_element()
     :noindex:
@@ -223,10 +223,10 @@ Element
 
 
 Plotting results of DataArrays
---------------------------------------
+------------------------------
 
 Current limitation of `OpenSees` visualization module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 `OpenSeesPy`'s visualization module - `ops_vis` - offers comprehensive visualization analysis results in `OpenSees`.
 However, `ops_vis` operates only for a single model instance (and analysis) in `OpenSees`
@@ -253,7 +253,7 @@ using `ops_vis`:
 
 
 *ospgrillage* post-processing module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 For users wishing to plot results from `xarray` DataSet (multiple analysis),
 *ospgrillage* contains a dedicated post-processing module as of version 0.1.0 to visualize these results.
 
@@ -263,7 +263,7 @@ For users wishing to plot results from `xarray` DataSet (multiple analysis),
     it is sufficient to plot components from the xarray DataSets.
 
 Plotting functions
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^
 
 For this section, we will refer to an exemplar 28 m super-T bridge (Figure 1). The bridge grillage has been created
 and its :class:`~ospgrillage.osp_grillage.OspGrillage` object is defined as ``bridge_28``.

@@ -1,6 +1,6 @@
-========================
+===================
 Performing analysis
-========================
+===================
 
 *ospgrillage* contains a load module which wraps `OpenSeesPy` commands to perform load analysis.
 
@@ -12,7 +12,7 @@ For all example code in this page, *ospgrillage* is imported as ``og``
 
 
 Load analysis workflow
-------------------------
+----------------------
 
 Figure 1 shows the flowchart for the load module of *ospgrillage*.
 
@@ -24,7 +24,7 @@ Figure 1 shows the flowchart for the load module of *ospgrillage*.
 
 
 Defining loads
-------------------------
+--------------
 
 Loads are created with the interface function :func:`~ospgrillage.load.create_load`. Users pass argument for `type=` to specify the load type.
 Available loads types include `Point`_, `Line`_, and `Patch`_ loads.
@@ -49,7 +49,7 @@ However, a user-defined local coordinate system is required when defining `Compo
 
 
 Nodal loads
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^
 
 Nodal loads are load applied directly onto nodes of grillage model.
 Nodal loads are defined using :func:`~ospgrillage.load.create_load`, specifying ``type= "nodal"``. There are six degrees-of-freedom (DOFs) for
@@ -71,7 +71,7 @@ The following example creates a `NodalFroce` namedtuple and a nodal load on Node
 .. _Point:
 
 Point Loads
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^
 Point load is a force applied on a single infinitesimal point of the grillage model.
 Point loads are used represent a large range of loads, such as truck axle, or superimposed dead load on a deck.
 
@@ -98,7 +98,7 @@ The following example code creates a 20 force unit point load located at (5,0,2)
 .. _Line:
 
 Line Loads
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^
 Line loads are loads exerted along a line. Line loads are useful to represent loads such as self weight of longitudinal beams or
 distributed load along beam elements.
 
@@ -131,7 +131,7 @@ in the global coordinate system from -1 to 11 distance units in the `x`-axis and
 .. _Patch:
 
 Patch loads
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^
 Patch loads are useful to represent loads distributed uniformly over a certain area such as traffic lanes.
 
 Patch loads are instantiated :func:`~ospgrillage.load.create_load`, specifying ``type = "patch"``.
@@ -165,7 +165,7 @@ in the global coordinate system.
 .. _Compound load:
 
 Compound loads
-------------------------
+--------------
 Two or more of the basic load types can be combined to form a Compound load. All load types are applied in the direction of the global `y`-axis.
 Loads in other directions and applied moments are currently not supported.
 
@@ -226,7 +226,7 @@ input conditions
 .. _load cases:
 
 Load cases
-------------------------
+----------
 Load cases are a set of load types (`Point`_, `Line`_, `Patch`_, `Compound load`_) used to define a particular loading condition. Compound loads are treated as a single load group within a load case
 having same reference points (e.g. tandem axle) and properties (e.g. load factor)
 
@@ -257,7 +257,7 @@ Users repeat this step for any defined load cases.
 .. _Moving load:
 
 Moving load
-------------------------
+-----------
 For moving load analysis, users create moving load objects using :class:`~ospgrillage.load.MovingLoad` class.
 The moving load class takes a load type object (`Point`_, `Line`_, `Patch`_, `Compound load`_) and moves the load
 through a path points described by a :class:`~ospgrillage.load.Path` object.
@@ -271,7 +271,7 @@ Figure 6 summarizes the relationship between moving loads, paths and the positio
     Figure 6: Moving load
 
 Moving path
-^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^
 :class:`~ospgrillage.load.Path` object is created using :func:`~ospgrillage.load.create_moving_path`.
 
 :class:`~ospgrillage.load.Path` requires two namedTuple :class:`Point(x,y,z)` to describe its start and end position.
@@ -283,7 +283,7 @@ The following example creates a path from 2 to 4 distance units in the global co
 
 
 Creating moving load
-^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
 
 The following example code creates a compound load consisting of two point loads moving along the defined **single_path**
 
@@ -309,7 +309,7 @@ creates multiple incremental `load cases`_ each of which corresponds to the incr
 
 
 Advance usage
-^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^
 
 All basic load added to a :class:`~ospgrillage.load.MovingLoad` class via :func:`~ospgrillage.load.MovingLoad.add_loads` function
 are assigned with a single common :class:`Path` object.
@@ -332,7 +332,7 @@ Following example shows this procedure:
 
 
 Running analysis
-------------------------
+----------------
 
 Once all defined load cases (static and moving) have been added to the grillage object, analysis can be conducted.
 

@@ -9,7 +9,7 @@ A list of all interface functions can be found in :doc:`APIdoc`.
 Although users can opt to interact with module objects directly, we recommend the more pythonic interface functions.
 
 Workflow overview
-------------------------------------------------------------------
+-----------------
 
 Figure 1 summarizes the workflow of creating a grillage model using *ospgrillage*.
 
@@ -60,7 +60,7 @@ As will be needed later, we also prepared the unit convention of variables for t
 .. _defining Grillage member:
 
 Defining elements of grillage model
-------------------------------------------------------------------
+-----------------------------------
 A grillage element is created using the :func:`~ospgrillage.members.create_member` interface function.
 This function returns a :class:`~ospgrillage.members.GrillageMember` object,
 which requires two other objects as inputs, namely:
@@ -91,7 +91,7 @@ For the example bridge of Figure 2, lets define all its elements i.e. *slab*, *e
     edge_slab = og.create_member(member_name="edge slab", section=edge_slab_section,material=concrete)
 
 Creating material objects
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^
 The :class:`~ospgrillage.material.Material` object is created using :func:`~ospgrillage.material.create_material`.
 The following code line creates the a *concrete* material needed in`defining Grillage member`_ previously.
 
@@ -116,7 +116,7 @@ As of release 0.1.0, *Concrete01* and *Steel01* of OpenSees library are used to 
 Other material model can be found in `OpenSees database for concrete and steel <https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html#steel-reinforcing-steel-materials>`_.
 
 Creating section objects
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^
 The :class:`~ospgrillage.members.Section` object for `defining Grillage member`_ is created using
 :func:`~ospgrillage.members.create_section` function.
 
@@ -153,7 +153,7 @@ assigns these properties of slab section based on the spacing of transverse memb
 
 
 Creating the grillage model
--------------------------------------------
+---------------------------
 After creating the grillag elements, users create the grillage model using :func:`~ospgrillage.osp_grillage.create_grillage` interface function.
 
 In version 0.1.0, grillage models typically represent a simply-supported
@@ -204,13 +204,13 @@ For the example bridge in Figure 2, the following code line creates its :class:`
 
 
 Coordinate System
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^
 In an orthogonal mesh, longitudinal members run along the :math:`x`-axis direction and transverse members are in the :math:`z`-axis direction.
 Vertical (normal to grid) loads are applied in the :math:`y`-axis.
 
 
 Assigning grillage members
--------------------------------------------------
+--------------------------
 The :class:`~ospgrillage.members.GrillageMember` objects are assigned to the grillage model using :class:`~ospgrillage.osp_grillage.OspGrillage` object's
 :func:`~ospgrillage.osp_grillage.OspGrillage.set_member` function. In addition to a :class:`~ospgrillage.members.GrillageMember` argument,
 the function requires a member name string argument.
@@ -278,7 +278,7 @@ input.
 This is a useful tool for switching all grillage members to the same material after previously defining with perhaps a different material.
 
 Creating/exporting OpenSees Model
-----------------------------
+---------------------------------
 Only once the :class:`~ospgrillage.osp_grillage.OspGrillage` is created and members are assigned, we can either:
 
 (i) create the model in OpenSees software space for further grillage analysis, or;
@@ -302,7 +302,7 @@ creates the model instance in OpenSees which can edited and later used to perfor
 Note that in doing so, the model instance in `OpenSees` space is not created.
 
 Visualize grillage model
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^
 To check that we created the model in `OpenSees` space, we can plot the model using `OpenSeesPy`'s visualization module `ops_vis`.
 The *ospgrillage* module already imports the `ops_vis` module. Therefore, one can run access `ops_vis` by running
 the following code line and a plot like in `Figure 2`_ will be returned:
