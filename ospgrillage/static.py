@@ -414,9 +414,10 @@ def get_patch_centroid(point_list):
         mx += point.x * point.p
         mz += point.z * point.p
         my += point.y * point.p
-    xc = mx / sum(m_total)
-    zc = mz / sum(m_total)
-    yc = my / sum(m_total)
+    sum_m = sum(m_total)if sum(m_total)>0 else 1
+    xc = mx / sum_m
+    zc = mz / sum_m
+    yc = my / sum_m
     return xc, yc, zc
 
 

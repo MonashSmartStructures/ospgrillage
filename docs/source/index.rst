@@ -3,9 +3,16 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-================================================
+
+.. image:: http://raw.githubusercontent.com/MonashSmartStructures/ospgrillage/main/docs/source/images/ospgrillage_logo.png
+  :width: 100 %
+  :alt: ospgrillage
+  :align: left
+
+
+===========================================
 OpenSeesPy Grillage wizard - *ospgrillage*
-================================================
+===========================================
 
 The `ospgrillage` module is a python module wrapper for the `OpenSeesPy` python package. `ospgrillage` can be used to:
 
@@ -35,7 +42,10 @@ Documentation
 
 
 Support
-=============
-For technical support, please email colin.caprani@monash.edu or jun.ngan@monash.edu. Otherwise, you can raise an issue on the github page.
+=======
+For technical support, please raise an issue on the `main repository <https://github.com/MonashSmartStructures/ospgrillage>`_
 
-If you wish to contribute a feature to *ospgrillage* module, please do not hesitate to contact us.
+Contributing
+============
+If you wish to contribute to *ospgrillage* module, please do not hesitate to raise an issue
+discussing your contribution with us. We advice you check out our `contributing guidelines <https://github.com/MonashSmartStructures/ospgrillage/blob/main/.github/CONTRIBUTING.md>`_.

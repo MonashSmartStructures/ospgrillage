@@ -6,9 +6,9 @@ This page details the design decisions of *ospgrillage* module. In outlining the
 the developers welcome any improvements to its procedures via pull requests. Also, any issues within each process can
 be reported by raising an issue in the main repository.
 
-====================
+==============
 Grillage model
-====================
+==============
 
 The *ospgrillage* module generates a two-dimensional (2-D) grillage model of a bridge deck in OpenSees - a plot of 2-D
 mesh nodes is shown in Figure 1. All information pertaining grillage model is handled by the
@@ -21,14 +21,14 @@ mesh nodes is shown in Figure 1. All information pertaining grillage model is ha
     Figure 1: Typical grillage model nodes.
 
 Model space
----------------------
+-----------
 
 The model has 6 degrees-of-freedom at each nodes. The grillage plane lies in the x-z plane of the coordinate system.
 For a 2-D model, the intended model plane is the x-y plane. Development for one-dimensional (1-D) models in 2-D space is yet to complete
 in release 0.1.0 but we welcome any pull request for it.
 
 Coordinate system
----------------------
+-----------------
 
 The module adopts the following coordinate system for grillage models:
 
@@ -47,9 +47,9 @@ The main reason behind selecting the coordinate system is consistency:
 #. The selected coordinate system is consistent between 1-D and 2-D problems where the working axis for 1-D models is
    typically *x* (horizontal axis) and *y* (vertical axis).
 
-====================
+=======
 Meshing
-====================
+=======
 
 A :class:`~ospgrillage.mesh.Mesh` class object handles and stores information of the grillage mesh, such as:
 
@@ -61,7 +61,7 @@ A :class:`~ospgrillage.mesh.Mesh` class object handles and stores information of
 * Grouping of common grillage elements
 
 Meshing algorithm
----------------------
+-----------------
 
 Figure 2 shows an annotated diagram of the bridge mesh nodes in Figure 1 which we will use as an explanatory example.
 
@@ -94,7 +94,7 @@ Meshing algorithm is controlled by the :class:`~ospgrillage.mesh.Mesh` class obj
 
 
 Meshing types and rules
----------------------
+-----------------------
 There are two types of meshing algorithm (and its respective kwarg for ``mesh_type=``), namely:
 
 * orthogonal meshing - :class:`Ortho`
@@ -115,7 +115,7 @@ An error exception will be returned when the above rules are not met.
     on common industrial practice of grillage analysis.
 
 Meshing steps
----------------------
+-------------
 #. Starting at *start_span_edge*, algorithm checks the angle of the construction line relative to the tangent/slope
    of the sweep line at the first position (i.e. @ [0,0,0])
 
@@ -141,7 +141,7 @@ Longitudinal elements are linked by recording the nodes with common z grid group
 
 
 Grid groups
----------------------
+-----------
 Grid groups for elements in the z direction is defined based on the number of longitudinal beams. For the example bridge,
 there are 7 longitudinal beams (2 edge, 2 exterior and 3 interior beams). Therefore, starting from 0, the nodes that
 coincide with edge beams are numbered 0 and 6, while nodes for exterior beams are 1 and 5. The interior beam consist
@@ -154,7 +154,7 @@ and (2) number of transverse beams.
 All nodes defined during an iteration step for an intersecting point is set to have the same x grid group.
 
 Mesh variables
----------------------
+--------------
 * Nodes information are stored as dictionaries
 
 * Elements are specified by list. A typical element list is like this [2, 2, 3, 0, 2]
@@ -168,9 +168,9 @@ Dictionaries are used to store information of mesh:
 * node tag as key, return x spacings between vicinity nodes
 * node tag as key, return the z spacings between vicinity nodes
 
-====================
+=================================
 Local vs global coordinate system
-====================
+=================================
 In *ospgrillage*, local coordinate system refers to a basic coordinate system of components which is independent of the global coordinate system i.e. the coordinate system of the
 grillage model space.
 
@@ -206,9 +206,9 @@ Links to module components
    :hidden:
 
 
-==========================
+=========================
 Links to useful resources
-==========================
+=========================
 Use the following links for more on:
 
 * `Grillage modelling <http://bridgedesign.org.uk/tutorial/bs-grillage.php>`_
@@ -219,14 +219,14 @@ Use the following links for more on:
 
 
 References
----------------------
+----------
 
 * Caprani, Colin & Melhem, Mayer & Siamphukdee, Kanjana. (2017). Reliability analysis of a Super-T prestressed concrete
   girder at serviceability limit state to AS 5100:2017. Australian Journal of Structural Engineering. 18. 1-13. 10.1080/13287982.2017.1332843.
 
-====================
+===================
 Further development
-====================
+===================
 *ospgrillage* is developed as a open-source package. In turn, the developers welcome contributors to add/improve on
 the current release of *ospgrillage*.
 
