@@ -3,7 +3,6 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![version](https://img.shields.io/github/downloads/MonashSmartStructures/ospgrillage/total?label=version)]() 
-[![codecov](https://img.shields.io/gitlab/coverage/MonashSmartStructures/ospgrillage/main?label=codecov)]()
 ![GitHub issues](https://img.shields.io/github/issues/MonashSmartStructures/ospgrillage?logoColor=yellowgreen)
 ![GitHub pull requests](https://img.shields.io/github/issues-pr/MonashSmartStructures/ospgrillage?color=yellowgreen)
 [![PyPI](https://img.shields.io/pypi/v/ospgrillage)]()
@@ -13,6 +12,7 @@
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/MonashSmartStructures/ospgrillage)
 ![GitHub last commit](https://img.shields.io/github/last-commit/MonashSmartStructures/ospgrillage?color=ff69b4)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md)
+[![codecov](https://codecov.io/gh/MonashSmartStructures/ospgrillage/branch/main/graph/badge.svg?token=dUTOmPBnyP)](https://codecov.io/gh/MonashSmartStructures/ospgrillage)
 
 # Overview
 
