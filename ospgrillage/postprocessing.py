@@ -111,7 +111,7 @@ class Envelope:
             )
 
         # process variables
-        self.extrema_index = 0 if self.extrema is "max" else 1  # minima
+        self.extrema_index = 0 if self.extrema == "max" else 1  # minima
         if self.query_mode:
             self.selected_xarray_command = self.xarray_command["query"][
                 self.extrema_index
