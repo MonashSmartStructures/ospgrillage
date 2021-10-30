@@ -226,15 +226,15 @@
                 
   <div class="section" id="model-types-available">
 <h1>Model types available<a class="headerlink" href="#model-types-available" title="Permalink to this headline">¶</a></h1>
-<p>For all example code in this page, <em>ospgrillage</em> is imported as <code class="docutils literal notranslate"><span class="pre">og</span></code></p>
+<p>For the example code on this page, <em>ospgrillage</em> is imported as <code class="docutils literal notranslate"><span class="pre">og</span></code></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ospgrillage</span> <span class="k">as</span> <span class="nn">og</span>
 </pre></div>
 </div>
 <div class="section" id="beam-elements-only-beam-only">
 <h2>Beam Elements Only - <code class="xref py py-class docutils literal notranslate"><span class="pre">beam_only</span></code><a class="headerlink" href="#beam-elements-only-beam-only" title="Permalink to this headline">¶</a></h2>
-<p>This is the traditional modelling approach that comprise of beam elements lay out in a grid pattern, with:</p>
+<p>This is the traditional modelling approach that is comprised of beam elements lay out in a grid pattern, with:</p>
 <ul class="simple">
-<li><p>longitudinal members representing composite sections along longitudinal direction (e.g. main beams)</p></li>
+<li><p>longitudinal members representing composite sections along longitudinal direction (e.g. main beams);</p></li>
 <li><p>transverse members representing slabs or secondary beam sections.</p></li>
 </ul>
 <p>This is the default model type if <code class="docutils literal notranslate"><span class="pre">model_type</span></code> keyword argument is not specified to <a class="reference internal" href="generated/ospgrillage.osp_grillage.create_grillage.html#ospgrillage.osp_grillage.create_grillage" title="ospgrillage.osp_grillage.create_grillage"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_grillage()</span></code></a></p>
@@ -251,8 +251,7 @@
 <li><p>Offsets (in x-z plane) for start and end nodes along direction of transverse members - using joint offset.</p></li>
 <li><p>Offsets (in vertical y direction) for start and end nodes of longitudinal members - again using joint offsets.</p></li>
 </ul>
-<p>Figure 2 shows the details of the aforementioned model type. Figure 3 shows the model type created in an external
-software - i.e. SPACEGASS.</p>
+<p>Figure 2 shows the details of the aforementioned model type. Figure 3 shows the model type created in a similar commercial software SPACEGASS.</p>
 <div class="figure align-center" id="id1">
 <a class="reference internal image-reference" href="../_images/beam_link_idealization.PNG"><img alt="../_images/beam_link_idealization.PNG" src="../_images/beam_link_idealization.PNG" /></a>
 <p class="caption"><span class="caption-text">Figure 2: Beam grillage with rigid links - idealization.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>

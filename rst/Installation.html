@@ -240,15 +240,12 @@
 </div>
 <div class="section" id="installing-dependencies">
 <h2>Installing dependencies<a class="headerlink" href="#installing-dependencies" title="Permalink to this headline">¶</a></h2>
-<p>A list of modules for a working python environment is found in the <em>requirement.txt</em> file.</p>
-<p>To create a working environment with all required dependencies, run the following command line in terminal</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
-</pre></div>
-</div>
+<p>Dependencies are automatically installed when using <code class="code docutils literal notranslate"><span class="pre">pip</span></code>.
+The dependencies can be seen in the <em>setup.cfg</em> file in the project repository.</p>
 </div>
 <div class="section" id="tests">
 <h2>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h2>
-<p>The module comes with a pytest protocol for each sub module py file, which users can run <cite>pytest</cite> in the root directory of the module
+<p>The module comes with a <code class="docutils literal notranslate"><span class="pre">pytest</span></code> protocol for each sub module <code class="docutils literal notranslate"><span class="pre">py</span></code> file, which users can run <code class="docutils literal notranslate"><span class="pre">pytest</span></code> in the root directory of the module
 to tests all modules.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pytest</span>
 </pre></div>

@@ -31,6 +31,7 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Change Log" href="ChangeLog.html" />
@@ -263,11 +264,11 @@
                 
   <div class="section" id="examples">
 <h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
-<p>Here are some examples of what you can do with <em>ospgrillage</em> module.</p>
+<p>Here are some examples of what you can do with <em>ospgrillage</em>.</p>
 <div class="section" id="super-t-bridge-model">
 <h2>Super T bridge model<a class="headerlink" href="#super-t-bridge-model" title="Permalink to this headline">¶</a></h2>
 <p>This example reproduces the grillage model of a super-T bridge from Caprani et al. (2017). In that study,
-the LUSAS commercial software is used to create the grillage model. Figure 1 shows the Super-T deck cross-section.</p>
+the commercial software LUSAS is used to create the grillage model. Figure 1 shows the Super-T deck cross-section.</p>
 <div class="figure align-center" id="id1">
 <a class="reference internal image-reference" href="../_images/example_cross_section.PNG"><img alt="../_images/example_cross_section.PNG" src="../_images/example_cross_section.PNG" /></a>
 <p class="caption"><span class="caption-text">Figure 1: Super-T deck cross section (after Caprani et al., 2017).</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
@@ -378,7 +379,7 @@ the LUSAS commercial software is used to create the grillage model. Figure 1 sho
 <span class="n">og</span><span class="o">.</span><span class="n">opsv</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">az_el</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>  <span class="c1"># plotting using ops_vis</span>
 </pre></div>
 </div>
-<p>Figure 2 shows the plotted model in OpenSees model space.</p>
+<p>Figure 2 shows the model plotted in OpenSees model space.</p>
 <div class="figure align-center" id="id2">
 <a class="reference internal image-reference" href="../_images/33m_bridge.PNG"><img alt="../_images/33m_bridge.PNG" src="../_images/33m_bridge.PNG" /></a>
 <p class="caption"><span class="caption-text">Figure 2: Grillage model of the exemplar 33.5 m bridge.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
@@ -387,7 +388,7 @@ the LUSAS commercial software is used to create the grillage model. Figure 1 sho
 <div class="section" id="adding-load-cases-to-model">
 <h3>Adding load cases to model<a class="headerlink" href="#adding-load-cases-to-model" title="Permalink to this headline">¶</a></h3>
 <p>Here we create and add load cases to the <cite>simple_grid</cite> model for analysis.</p>
-<p>First load case is a line load running along mid span width.</p>
+<p>The first load case is a simple line load running along mid span width, to check that the model is behaving appropriately.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># reference unit load for various load types</span>
 <span class="n">P</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">kN</span>
 <span class="c1"># name strings of load cases to be created</span>
@@ -414,7 +415,7 @@ the LUSAS commercial software is used to create the grillage model. Figure 1 sho
 <span class="n">simple_grid</span><span class="o">.</span><span class="n">add_load_case</span><span class="p">(</span><span class="n">line_case</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Second load case comprise of Compounded point loads</p>
+<p>The second load case is comprised of several point loads, added into a single Compound Load type, so they can be manipulated as a group.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compound point loads along midspan width (P is kN)</span>
 <span class="c1"># working in global coordinate system</span>
 <span class="n">p_list</span> <span class="o">=</span> <span class="p">[</span>
@@ -444,8 +445,7 @@ the LUSAS commercial software is used to create the grillage model. Figure 1 sho
 <span class="n">simple_grid</span><span class="o">.</span><span class="n">add_load_case</span><span class="p">(</span><span class="n">points_case</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Third load case is identical to the second load case with Compounded point loads, but this time defining Compound loads
-in Local coordinates then setting the local coordinate system of compound load to global of grillage.</p>
+<p>The third load case is identical to the second load case with Compounded point loads, but this time defining Compound loads in Local coordinates then mapping the local coordinate system of the compound load to the global coordinates of the grillage model.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compound point loads along midspan width</span>
 <span class="c1"># working in user-defined local coordinate (in point load)</span>
 <span class="n">test_points_load</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_compound_load</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Points Test Case (Local in Point)&quot;</span><span class="p">)</span>
@@ -468,7 +468,7 @@ in Local coordinates then setting the local coordinate system of compound load t
 <span class="n">simple_grid</span><span class="o">.</span><span class="n">add_load_case</span><span class="p">(</span><span class="n">points_case</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Fourth load case entails a patch load</p>
+<p>The fourth load case entails a patch load:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Patch load over entire bridge deck (P is kN/m2)</span>
 <span class="n">patch_point_1</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">P</span><span class="p">)</span>
 <span class="n">patch_point_2</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">L</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">P</span><span class="p">)</span>
@@ -492,7 +492,8 @@ in Local coordinates then setting the local coordinate system of compound load t
 </div>
 <div class="section" id="adding-a-moving-load-analysis">
 <h3>Adding a moving load analysis<a class="headerlink" href="#adding-a-moving-load-analysis" title="Permalink to this headline">¶</a></h3>
-<p>Here’s how we create and add a moving load (e.g. a truck) to the 28 m bridge model.</p>
+<p>For bridge loading, it is imperative to model loads that move, and to consider the static analysis of the bridge deck under each position of the moving load.
+Here’s how we create and add a moving load (e.g. a truck) to the 28 m bridge model.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 2 axle truck (equal loads, 2x2 spacing centre line running)</span>
 <span class="n">axl_w</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">m</span>  <span class="c1"># axle width</span>
 <span class="n">axl_s</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">m</span>  <span class="c1"># axle spacing</span>
@@ -541,7 +542,7 @@ in Local coordinates then setting the local coordinate system of compound load t
 </div>
 <div class="section" id="analysis">
 <h3>Analysis<a class="headerlink" href="#analysis" title="Permalink to this headline">¶</a></h3>
-<p>Analyzing all defined load case</p>
+<p>Next, analyze all load cases added to the model:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run analysis</span>
 <span class="n">simple_grid</span><span class="o">.</span><span class="n">analyze</span><span class="p">()</span>
 </pre></div>
@@ -549,14 +550,15 @@ in Local coordinates then setting the local coordinate system of compound load t
 </div>
 <div class="section" id="getting-load-case-results">
 <h3>Getting load case results<a class="headerlink" href="#getting-load-case-results" title="Permalink to this headline">¶</a></h3>
-<p>Get <cite>xarray</cite> DataSet of results.</p>
+<p>Finally, get the <cite>xarray</cite> DataSet of the results:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">simple_grid</span><span class="o">.</span><span class="n">get_results</span><span class="p">()</span> <span class="c1"># gets basic results</span>
 </pre></div>
 </div>
-<p>For information on <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_results()</span></code></a> variable, see <span class="xref std std-ref">PostProcessing</span>.</p>
+<p>For information on the returned object from <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_results()</span></code></a>, see <span class="xref std std-ref">PostProcessing</span>.</p>
 </div>
 <div class="section" id="getting-load-combination-results">
 <h3>Getting load combination results<a class="headerlink" href="#getting-load-combination-results" title="Permalink to this headline">¶</a></h3>
+<p>With the results of the basic load cases now known, we can calculate factored combinations of these load cases that are of interest:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">l_factor</span> <span class="o">=</span> <span class="mf">2.3</span>
 <span class="n">p_factor</span> <span class="o">=</span> <span class="mf">0.5</span>
 <span class="c1"># combination with line load case and patch load case</span>
@@ -569,18 +571,17 @@ in Local coordinates then setting the local coordinate system of compound load t
 <div class="section" id="data-processing">
 <h3>Data processing<a class="headerlink" href="#data-processing" title="Permalink to this headline">¶</a></h3>
 <p>Having the results be in <cite>xarray</cite> DataSet, we can do many things with it such as slicing and query its data.</p>
-<p>The following example shows how to extract bending moments in midspan - the critical location for the defined load cases.</p>
-<p>First for static load cases, we extract moments in global z for each <cite>i</cite> node of grillage member (since <cite>i</cite> node correspond to the nodes in the mid span).</p>
+<p>The following example shows how to extract bending moments at midspan - the critical location for the defined load cases.</p>
+<p>First for static load cases, we extract bending moments about the global <span class="math notranslate nohighlight">\(z\)</span>-axis for each <cite>i</cite> node of grillage member (since <cite>i</cite> node correspond to the nodes in the mid span).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get list of longitudinal element tags along/near mid_span i.e. 84 to 90 in Figure 1</span>
 <span class="n">ele_set</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">84</span><span class="p">,</span> <span class="mi">90</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
 <span class="c1"># query</span>
 <span class="n">extracted_bending</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">forces</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Loadcase</span><span class="o">=</span><span class="n">static_cases_names</span><span class="p">,</span> <span class="n">Element</span><span class="o">=</span><span class="n">ele_set</span><span class="p">,</span> <span class="n">Component</span><span class="o">=</span><span class="s2">&quot;Mz_i&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><cite>extracted_bending</cite> variable holds the load case for ‘Line Test Case’, ‘Point Test Case(Global)’, ‘Points Test Case (Local in Point)’,
+<p>The <cite>extracted_bending</cite> variable holds the load case for ‘Line Test Case’, ‘Point Test Case(Global)’, ‘Points Test Case (Local in Point)’,
 ‘Points Test Case (Local in Compound)’, ‘Patch Test Case’.</p>
-<p>Should we sum the nodal forces from members on one side, we expect approximate equal PL/4 (similar) or sum of the following
-lusas plot</p>
+<p>Should we sum the nodal forces from members on one side, we expect it to approximately equal PL/4:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
 <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
     <span class="n">results</span><span class="o">.</span><span class="n">forces</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span>
@@ -611,10 +612,8 @@ lusas plot</p>
 <span class="n">move_results</span> <span class="o">=</span> <span class="n">simple_grid</span><span class="o">.</span><span class="n">get_results</span><span class="p">(</span><span class="n">load_case</span><span class="o">=</span><span class="s2">&quot;Moving Two Axle Truck&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>One can query results at specific position of the moving load by looking up the index of load case. The following example
-we query the bending moment about z-axis component, with
-load case corresponding to where the load groups are at/near midspan L = 16.75 m, and the longitudinal elements along/near
-mid-span, i.e. element 84 to 90 in Figure 1:</p>
+<p>One can query results at specific position of the moving load by looking up the index of load case.</p>
+<p>In the following example we query the bending moment about <span class="math notranslate nohighlight">\(z\)</span>-axis component, with the load case corresponding to where the load groups are at/near midspan L = 16.75 m, and the longitudinal elements along/near mid-span, i.e. element 84 to 90 in Figure 1:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># selecting load case of specific load position</span>
 <span class="n">integer</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
     <span class="n">L</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span>
@@ -641,11 +640,12 @@ mid-span, i.e. element 84 to 90 in Figure 1:</p>
 <span class="n">bending_z_theoretical</span> <span class="o">=</span> <span class="mf">31500.0</span>
 </pre></div>
 </div>
+<p>and these are a good match.</p>
 </div>
 </div>
 <div class="section" id="super-t-bridge-model-using-shell-hybrid-model-type">
 <h2>Super-T bridge model using shell hybrid model type<a class="headerlink" href="#super-t-bridge-model-using-shell-hybrid-model-type" title="Permalink to this headline">¶</a></h2>
-<p>Here we recreate the previous 33.5 m super-T bridge using the shell hybrid model type.</p>
+<p>Here we recreate the previous 33.5 m super-T bridge using the shell-beam hybrid model type.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">ospgrillage</span> <span class="k">as</span> <span class="nn">og</span>
 
@@ -808,7 +808,7 @@ mid-span, i.e. element 84 to 90 in Figure 1:</p>
 <div class="section" id="skew-edges-of-mesh">
 <h2>Skew edges of mesh<a class="headerlink" href="#skew-edges-of-mesh" title="Permalink to this headline">¶</a></h2>
 <p>Here is an example showing the types of edge skew you can produce with <em>ospgrillage</em>.
-A version the aforementioned 28m grillage model example is given but
+A version the aforementioned 28 m grillage model example is given but
 with different parameters for its grillage object i.e. <code class="xref py py-func docutils literal notranslate"><span class="pre">create_grillage()</span></code>.
 This time we have varied span to 10 m, and edge skew angles - left edge is 42 degrees, right edge is 0 degrees (orthogonal).</p>
 <p>The following portion of the code is altered which then produces a grillage model with mesh as shown in Figure 6:</p>

@@ -1,12 +1,12 @@
 ========================
 Examples
 ========================
-Here are some examples of what you can do with *ospgrillage* module.
+Here are some examples of what you can do with *ospgrillage*.
 
 Super T bridge model
 ------------------------------------------------------------
 This example reproduces the grillage model of a super-T bridge from Caprani et al. (2017). In that study,
-the LUSAS commercial software is used to create the grillage model. Figure 1 shows the Super-T deck cross-section.
+the commercial software LUSAS is used to create the grillage model. Figure 1 shows the Super-T deck cross-section.
 
 ..  figure:: ../../_images/example_cross_section.PNG
     :align: center
@@ -125,7 +125,7 @@ For this example, the five super-T beams and two edge beams (parapets) of Figure
     og.opsv.plot_model(az_el=(-90, 0))  # plotting using ops_vis
 
 
-Figure 2 shows the plotted model in OpenSees model space.
+Figure 2 shows the model plotted in OpenSees model space.
 
 ..  figure:: ../../_images/33m_bridge.PNG
     :align: center
@@ -137,7 +137,7 @@ Adding load cases to model
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Here we create and add load cases to the `simple_grid` model for analysis.
 
-First load case is a line load running along mid span width.
+The first load case is a simple line load running along mid span width, to check that the model is behaving appropriately.
 
 .. code-block:: python
 
@@ -167,7 +167,7 @@ First load case is a line load running along mid span width.
     simple_grid.add_load_case(line_case)
 
 
-Second load case comprise of Compounded point loads
+The second load case is comprised of several point loads, added into a single Compound Load type, so they can be manipulated as a group.
 
 .. code-block:: python
 
@@ -200,8 +200,7 @@ Second load case comprise of Compounded point loads
     simple_grid.add_load_case(points_case)
 
 
-Third load case is identical to the second load case with Compounded point loads, but this time defining Compound loads
-in Local coordinates then setting the local coordinate system of compound load to global of grillage.
+The third load case is identical to the second load case with Compounded point loads, but this time defining Compound loads in Local coordinates then mapping the local coordinate system of the compound load to the global coordinates of the grillage model.
 
 .. code-block:: python
 
@@ -226,7 +225,7 @@ in Local coordinates then setting the local coordinate system of compound load t
 
     simple_grid.add_load_case(points_case)
 
-Fourth load case entails a patch load
+The fourth load case entails a patch load:
 
 .. code-block:: python
 
@@ -252,6 +251,7 @@ Fourth load case entails a patch load
 
 Adding a moving load analysis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+For bridge loading, it is imperative to model loads that move, and to consider the static analysis of the bridge deck under each position of the moving load. 
 Here's how we create and add a moving load (e.g. a truck) to the 28 m bridge model.
 
 .. code-block:: python
@@ -305,7 +305,7 @@ Here's how we create and add a moving load (e.g. a truck) to the 28 m bridge mod
 Analysis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Analyzing all defined load case
+Next, analyze all load cases added to the model:
 
 .. code-block:: python
 
@@ -316,16 +316,17 @@ Analyzing all defined load case
 Getting load case results
 ^^^^^^^^^^^^^^^^^^^
 
-Get `xarray` DataSet of results.
+Finally, get the `xarray` DataSet of the results:
 
 .. code-block:: python
 
     results = simple_grid.get_results() # gets basic results
 
-For information on :func:`~ospgrillage.osp_grillage.OspGrillage.get_results` variable, see :ref:`PostProcessing`.
+For information on the returned object from :func:`~ospgrillage.osp_grillage.OspGrillage.get_results`, see :ref:`PostProcessing`.
 
 Getting load combination results
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+With the results of the basic load cases now known, we can calculate factored combinations of these load cases that are of interest:
 
 .. code-block:: python
 
@@ -341,9 +342,9 @@ Data processing
 ^^^^^^^^^^^^^^^^^^^
 Having the results be in `xarray` DataSet, we can do many things with it such as slicing and query its data.
 
-The following example shows how to extract bending moments in midspan - the critical location for the defined load cases.
+The following example shows how to extract bending moments at midspan - the critical location for the defined load cases.
 
-First for static load cases, we extract moments in global z for each `i` node of grillage member (since `i` node correspond to the nodes in the mid span).
+First for static load cases, we extract bending moments about the global :math:`z`-axis for each `i` node of grillage member (since `i` node correspond to the nodes in the mid span).
 
 .. code-block:: python
 
@@ -353,11 +354,10 @@ First for static load cases, we extract moments in global z for each `i` node of
     extracted_bending = results.forces.sel(Loadcase=static_cases_names, Element=ele_set, Component="Mz_i")
 
 
-`extracted_bending` variable holds the load case for 'Line Test Case', 'Point Test Case(Global)', 'Points Test Case (Local in Point)',
+The `extracted_bending` variable holds the load case for 'Line Test Case', 'Point Test Case(Global)', 'Points Test Case (Local in Point)',
 'Points Test Case (Local in Compound)', 'Patch Test Case'.
 
-Should we sum the nodal forces from members on one side, we expect approximate equal PL/4 (similar) or sum of the following
-lusas plot
+Should we sum the nodal forces from members on one side, we expect it to approximately equal PL/4:
 
 .. code-block:: python
 
@@ -392,10 +392,9 @@ Here we :ref:`access results` of the moving load case.
     # call the results and
     move_results = simple_grid.get_results(load_case="Moving Two Axle Truck")
 
-One can query results at specific position of the moving load by looking up the index of load case. The following example
-we query the bending moment about z-axis component, with
-load case corresponding to where the load groups are at/near midspan L = 16.75 m, and the longitudinal elements along/near
-mid-span, i.e. element 84 to 90 in Figure 1:
+One can query results at specific position of the moving load by looking up the index of load case. 
+
+In the following example we query the bending moment about :math:`z`-axis component, with the load case corresponding to where the load groups are at/near midspan L = 16.75 m, and the longitudinal elements along/near mid-span, i.e. element 84 to 90 in Figure 1:
 
 .. code-block:: python
 
@@ -430,10 +429,11 @@ The following is printed to terminal (units in N m) :
     bending_z = 31499.999999999913
     bending_z_theoretical = 31500.0
 
+and these are a good match.
 
 Super-T bridge model using shell hybrid model type
 ------------------------------------------------------------
-Here we recreate the previous 33.5 m super-T bridge using the shell hybrid model type.
+Here we recreate the previous 33.5 m super-T bridge using the shell-beam hybrid model type.
 
 .. code-block:: python
 
@@ -610,7 +610,7 @@ Here are some more examples showing the two types of meshes by altering the ``me
 Skew edges of mesh
 --------------------
 Here is an example showing the types of edge skew you can produce with *ospgrillage*.
-A version the aforementioned 28m grillage model example is given but
+A version the aforementioned 28 m grillage model example is given but
 with different parameters for its grillage object i.e. :func:`~ospgrillage.osp_grillage.OspGrillage.create_grillage`.
 This time we have varied span to 10 m, and edge skew angles - left edge is 42 degrees, right edge is 0 degrees (orthogonal).
 

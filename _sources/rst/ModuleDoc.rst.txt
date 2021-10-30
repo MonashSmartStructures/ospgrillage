@@ -2,16 +2,17 @@
 Package design
 #####################
 
-This page details the design decisions of *ospgrillage* module. In outlining these processes,
-the developers welcome any improvements to its procedures via pull requests. Also, any issues within each process can
-be reported by raising an issue in the main repository.
+This page details the design decisions of *ospgrillage* module.
+In outlining these processes, the developers welcome any improvements to its procedures via pull requests.
+Also, any issues within each process can be reported by raising an issue in the main repository.
 
 ==============
 Grillage model
 ==============
 
 The *ospgrillage* module generates a two-dimensional (2-D) grillage model of a bridge deck in OpenSees - a plot of 2-D
-mesh nodes is shown in Figure 1. All information pertaining grillage model is handled by the
+mesh nodes is shown in Figure 1.
+All information pertaining grillage model is handled by the
 :class:`~ospgrillage.osp_grillage.OpsGrillage` object.
 
 ..  figure:: ../../_images/Figure_1.png
@@ -23,9 +24,10 @@ mesh nodes is shown in Figure 1. All information pertaining grillage model is ha
 Model space
 -----------
 
-The model has 6 degrees-of-freedom at each nodes. The grillage plane lies in the x-z plane of the coordinate system.
-For a 2-D model, the intended model plane is the x-y plane. Development for one-dimensional (1-D) models in 2-D space is yet to complete
-in release 0.1.0 but we welcome any pull request for it.
+The model has 6 degrees-of-freedom at each nodes.
+The grillage plane lies in the x-z plane of the coordinate system.
+For a 2-D model, the intended model plane is the x-y plane.
+Development for one-dimensional (1-D) models in 2-D space is yet to complete in release 0.1.0 but we welcome any pull request for it.
 
 Coordinate system
 -----------------
@@ -71,15 +73,19 @@ Figure 2 shows an annotated diagram of the bridge mesh nodes in Figure 1 which w
 
     Figure 2: Meshing construction lines, showing start control line (Blue), end end control line (Green), sweep path (Black) and sweeping nodes (Red).
 
-Meshing algorithm is controlled by the :class:`~ospgrillage.mesh.Mesh` class object. The following components are generated at pre-meshing stage:
+Meshing algorithm is controlled by the :class:`~ospgrillage.mesh.Mesh` class object.
+The following components are generated at pre-meshing stage:
 
 #. **Control points at start of the span (start_span_edge)**.
-   A line of nodes/points located at the starting edge of the model. The positions of points are determined based on the number of longitudinal
-   members, width of mesh, and skew angle of starting edge. By default, this line of nodes have a reference point coinciding the origin of global coordinate system
+   A line of nodes/points located at the starting edge of the model.
+   The positions of points are determined based on the number of longitudinal
+   members, width of mesh, and skew angle of starting edge.
+   By default, this line of nodes have a reference point coinciding the origin of global coordinate system
    i.e. [0,0,0].
 
 #. **Control points at the end of the span (end_span_edge)**.
-   A line of nodes located at the end edge of the model. The positions of points are determined similar to *start_span_edge*.
+   A line of nodes located at the end edge of the model.
+   The positions of points are determined similar to *start_span_edge*.
    By default, skew angle is set to equal that of *start_span_edge* - unless specified otherwise by users.
    In contrast to *start_span_edge*, the reference point of second construction line
    is [L, 0 ,f(L)] where `L` is the length of the model, and `f(L)` is the z coordinate of the reference node based on
@@ -110,9 +116,8 @@ A rule is applied to both meshing type:
 An error exception will be returned when the above rules are not met.
 
 .. note::
-    As of version 0.1.0, the grillage wizard allow users to freely choose between orthogonal and oblique meshes for
-    angles between 11 to 30 degrees.  The numbers of 11 and 30 degrees are selected based
-    on common industrial practice of grillage analysis.
+    As of version 0.1.0, the grillage wizard allow users to freely choose between orthogonal and oblique meshes for angles between 11 to 30 degrees.
+    The numbers of 11 and 30 degrees are selected based on common industrial practice of grillage analysis.
 
 Meshing steps
 -------------
@@ -122,19 +127,21 @@ Meshing steps
 #. If mesh type for the given angle of construction line is permitted, a for loop procedure is initiated.
    The iteration: (1) goes through every point in the construction line, (2) find the point on the sweep path whose normal vector
    intersects the current point of the construction line, (3) create the nodes bounded between the current point and the intersection
-   point on the sweep line - see figure below. If mesh type is not valid, the process skips to step 3.
+   point on the sweep line - see figure below.
+   If mesh type is not valid, the process skips to step 3.
 
-#. If angle is not permitted, the construction line is taken as the sweep node line. An iteration goes
-   through all points on construction line and assigns them as nodes. Then the process move to the step 4.
+#. If angle is not permitted, the construction line is taken as the sweep node line.
+   An iteration goes through all points on construction line and assigns them as nodes.
+   Then the process move to the step 4.
 
 #. Similar to step 2, step 4 comprise the process of step 2 but conducted for the second construction line instead.
 
-#. Remaining uniformly spaced nodes between the two construction lines are now defined. The algorithm spaces the nodes
-   evenly based on the number of transverse beam specified.
+#. Remaining uniformly spaced nodes between the two construction lines are now defined.
+   The algorithm spaces the nodes evenly based on the number of transverse beam specified.
 
-While nodes are generated, elements are also created by linking the generated nodes. Node linking is based on the grid numbering
-allocated to each node. For example, A node with x grid = 1 and z grid = 1 forms a longitudinal beam element with node having
-x grid = 2 and z_grid = 1.
+While nodes are generated, elements are also created by linking the generated nodes.
+Node linking is based on the grid numbering allocated to each node.
+For example, A node with x grid = 1 and z grid = 1 forms a longitudinal beam element with node having x grid = 2 and z_grid = 1.
 
 During element generation, elements are characterized into Longitudinal, Transverse, and Edge elements.
 Longitudinal elements are linked by recording the nodes with common z grid grouping across the sweep path.
@@ -142,14 +149,14 @@ Longitudinal elements are linked by recording the nodes with common z grid group
 
 Grid groups
 -----------
-Grid groups for elements in the z direction is defined based on the number of longitudinal beams. For the example bridge,
-there are 7 longitudinal beams (2 edge, 2 exterior and 3 interior beams). Therefore, starting from 0, the nodes that
-coincide with edge beams are numbered 0 and 6, while nodes for exterior beams are 1 and 5. The interior beam consist
-of the remaining groups (2,3,4) by this default.
+Grid groups for elements in the z direction is defined based on the number of longitudinal beams.
+For the example bridge, there are 7 longitudinal beams (2 edge, 2 exterior and 3 interior beams).
+Therefore, starting from 0, the nodes that coincide with edge beams are numbered 0 and 6, while nodes for exterior beams are 1 and 5.
+The interior beam consist of the remaining groups (2,3,4) by this default.
 
 Grid groups for elements in x direction is defined based on the number of times (or loops) through each intersection point
-with the sweep path. In other words, the total number of groups for x grid varies depending on the (1) number of long beams
-and (2) number of transverse beams.
+with the sweep path.
+In other words, the total number of groups for x grid varies depending on the (1) number of long beams and (2) number of transverse beams.
 
 All nodes defined during an iteration step for an intersecting point is set to have the same x grid group.
 
@@ -157,8 +164,9 @@ Mesh variables
 --------------
 * Nodes information are stored as dictionaries
 
-* Elements are specified by list. A typical element list is like this [2, 2, 3, 0, 2]
-  The entries are the element tag, node_i, node_j, grouping (based on list), and geometric transformation tag.
+* Elements are specified by list.
+   A typical element list is like this ``[2, 2, 3, 0, 2]``.
+   The entries are the element tag, ``node_i``, ``node_j``, grouping (based on list), and geometric transformation tag.
 
 Dictionaries are used to store information of mesh:
 
@@ -171,8 +179,7 @@ Dictionaries are used to store information of mesh:
 =================================
 Local vs global coordinate system
 =================================
-In *ospgrillage*, local coordinate system refers to a basic coordinate system of components which is independent of the global coordinate system i.e. the coordinate system of the
-grillage model space.
+In *ospgrillage*, local coordinate system refers to a basic coordinate system of components which is independent of the global coordinate system i.e. the coordinate system of the grillage model space.
 
 The definition of the following components within *ops-grillage* requires attention between basic and global coordinate system
 
@@ -181,8 +188,8 @@ The definition of the following components within *ops-grillage* requires attent
 * Compound load object - defined in local and set to global via :func:`~ospgrillage.load.CompoundLoad.set_global_coord`
 
 
-For :class:`~ospgrillage.load.LoadCase`, all load object inputs can be either local or global. Note when local coordinate is defined for a load object, a global reference coordinate needs to be defined or else
-the module raises an Error regarding its point/vertices values.
+For :class:`~ospgrillage.load.LoadCase`, all load object inputs can be either local or global.
+Note when local coordinate is defined for a load object, a global reference coordinate needs to be defined or else the module raises an Error regarding its point/vertices values.
 
 ..  figure:: ../../_images/coordinate_system_mapping.PNG
     :align: center
@@ -221,8 +228,7 @@ Use the following links for more on:
 References
 ----------
 
-* Caprani, Colin & Melhem, Mayer & Siamphukdee, Kanjana. (2017). Reliability analysis of a Super-T prestressed concrete
-  girder at serviceability limit state to AS 5100:2017. Australian Journal of Structural Engineering. 18. 1-13. 10.1080/13287982.2017.1332843.
+* Caprani, Colin & Melhem, Mayer & Siamphukdee, Kanjana. (2017). Reliability analysis of a Super-T prestressed concrete girder at serviceability limit state to AS 5100:2017. Australian Journal of Structural Engineering. 18. 1-13. 10.1080/13287982.2017.1332843.
 
 ===================
 Further development
