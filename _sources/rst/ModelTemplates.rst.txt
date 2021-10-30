@@ -9,7 +9,7 @@ For the example code on this page, *ospgrillage* is imported as ``og``
     import ospgrillage as og
 
 Beam Elements Only - :class:`beam_only`
---------------------------------------
+---------------------------------------
 This is the traditional modelling approach that is comprised of beam elements lay out in a grid pattern, with:
 
 * longitudinal members representing composite sections along longitudinal direction (e.g. main beams);
@@ -27,7 +27,7 @@ More information of this model type can be found `here <https://www.steelconstru
 
 
 Beam with Rigid Links - :class:`beam_link`
---------------------------------------
+------------------------------------------
 This is a modified version of the traditional beam element model with the following features:
 
 * Offsets (in x-z plane) for start and end nodes along direction of transverse members - using joint offset.

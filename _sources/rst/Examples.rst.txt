@@ -314,7 +314,7 @@ Next, analyze all load cases added to the model:
 
 
 Getting load case results
-^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Finally, get the `xarray` DataSet of the results:
 
@@ -339,7 +339,7 @@ With the results of the basic load cases now known, we can calculate factored co
 Refer to :ref:`Running_analysis` for more information on the `xarray` formats for load combinations.
 
 Data processing
-^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^
 Having the results be in `xarray` DataSet, we can do many things with it such as slicing and query its data.
 
 The following example shows how to extract bending moments at midspan - the critical location for the defined load cases.
@@ -373,7 +373,7 @@ Should we sum the nodal forces from members on one side, we expect it to approxi
 
 
 Process load combinations results
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Here we sum the nodal forces from the mid span - `i` node
 .. code-block:: python
@@ -383,8 +383,9 @@ Here we sum the nodal forces from the mid span - `i` node
     )
 
 
+
 Extract and process moving load results
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Here we :ref:`access results` of the moving load case.
 
 .. code-block:: python
