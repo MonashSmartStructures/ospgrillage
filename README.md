@@ -1,4 +1,4 @@
-![alt text](./docs/source/images/ospgrillage_logo.png?raw=true)
+![ospgrillage logo](https://raw.githubusercontent.com/MonashSmartStructures/ospgrillage/main/docs/source/images/ospgrillage_logo.png)
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -38,7 +38,7 @@ Refer to [installation](https://monashsmartstructures.github.io/ospgrillage/rst/
 
 ## Contributions
 
-Check out our [contributing guide](https://github.com/MonashSmartStructures/ospgrillage/blob/main/.github/CONTRIBUTING.md) to learn more on contributing, coding rules, community Code of COnduct and more.
+Check out our [contributing guide](https://github.com/MonashSmartStructures/ospgrillage/blob/main/.github/CONTRIBUTING.md) to learn more on contributing, coding rules, community Code of Conduct and more.
 
 
 # Capabilities
@@ -46,46 +46,46 @@ Check out our [contributing guide](https://github.com/MonashSmartStructures/ospg
 ## Modelling
 
 ### Bridge Deck Models
--  [x] Beam elements only - a traditional form of model
--  [x] Beam elements with rigid links - a modification of the traditional form for box sections
--  [x] Shell and beam elements - the modern form of modelling, but with more complex results interpretation
+-  Beam elements only - a traditional form of model
+-  Beam elements with rigid links - a modification of the traditional form for box sections
+-  Shell and beam elements - the modern form of modelling, but with more complex results interpretation
 
 ### Meshing
--  [x] Single-span decks
--  [x] Skewed (Oblique) and Orthogonal meshes
--  [x] Positive and negative skew angles
--  [x] Allows for skew mesh to be set up to 30 degrees
--  [x] Allows for orthogonal mesh to be set no less than 11 degrees
--  [x] Grillage elements grouped automatically for easy assignment of properties
--  [x] Autodetect edges of spans as supporting nodes
--  [x] Allows for diaphragms / end slabs
--  [x] Allows for unit width properties for transverse slab/members
--  [x] Pinned and roller supports
+-  Single-span decks
+-  Skewed (Oblique) and Orthogonal meshes
+-  Positive and negative skew angles
+-  Allows for skew mesh to be set up to 30 degrees
+-  Allows for orthogonal mesh to be set no less than 11 degrees
+-  Grillage elements grouped automatically for easy assignment of properties
+-  Autodetect edges of spans as supporting nodes
+-  Allows for diaphragms / end slabs
+-  Allows for unit width properties for transverse slab/members
+-  Pinned and roller supports
 
 ### Element types
-The following OpenSees element types are supported:
--  [x] elasticBeamColumn
--  [x] TimoshenkoBeamColumn  
--  [x] Shell elements
+The following *OpenSees* element types are supported:
+-  `elasticBeamColumn`
+-  `TimoshenkoBeamColumn`  
+-  Shell elements
 
 ## Materials
--  [x] A JSON materials library file for codified common material properties
+-  A JSON materials library file for codified common material properties
 
 ## Utilities
 
 ### Load types
--  [x] Nodal loads
--  [x] Point loads
--  [x] Line loads
--  [x] Patch loads
--  [x] Compound loads (any combination of the above load types) 
+-  Nodal loads
+-  Point loads
+-  Line loads
+-  Patch loads
+-  Compound loads (any combination of the above load types) 
 
 ### Analysis
--  [x] Load cases contain arbitrary multiple load types, including compound loads
--  [x] Moving load analysis of arbitrary load types through compound loads
+-  Load cases contain arbitrary multiple load types, including compound loads
+-  Moving load analysis of arbitrary load types through compound loads
 
 ### Post-processing
--  [x] Output results utilise python's `xarray` format
--  [x] Retrieve result envelopes from `xarray` results
--  [x] Query options for moving load 
--  [x] Plotting displacement and force component from the results
+-  Output results utilise python's `xarray` format
+-  Retrieve result envelopes from `xarray` results
+-  Query options for moving load 
+-  Plotting displacement and force component from the results
