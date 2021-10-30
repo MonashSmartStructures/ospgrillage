@@ -82,6 +82,30 @@ html_theme = "pydata_sphinx_theme"
 html_theme_path = [
     "_themes",
 ]
+
+html_theme_options = {
+    "icon_links": [
+        {
+            "name": "GitHub",
+            "url":  "https://github.com/MonashSmartStructures/ospgrillage",
+            "icon": "fab fa-github-square",
+        },
+        {
+            "name": "Twitter",
+            "url": "https://twitter.com/ccaprani",
+            "icon": "fab fa-twitter-square",
+        },
+    ],
+    "navbar_start": ["navbar-logo", "navbar-version"],
+    "use_edit_page_button": True,
+}
+html_context = {
+    "github_user": "MonashSmartStructures",
+    "github_repo": "ospgrillage",
+    "github_version": "main",
+    "doc_path": "docs/source/",
+}
+
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
 html_logo = "./images/ospgrillage_logo.png"
