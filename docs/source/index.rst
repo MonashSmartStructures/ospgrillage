@@ -15,8 +15,8 @@
 |Github issues|
 |Github pull requests|
 |PyPI|
-|GitHub Workflow Status|
-|GitHub Workflow Status|
+|GitHub Workflow Deploy|
+|GitHub Workflow Build|
 |GitHub Workflow Status|
 |GitHub commit activity|
 |GitHub last commit|
@@ -37,9 +37,9 @@
 
 .. |PyPI| image:: https://img.shields.io/pypi/v/ospgrillage
 
-.. |GitHub Workflow Status| image:: https://img.shields.io/github/workflow/status/MonashSmartStructures/ospgrillage/Build%20and%20deploy
+.. |GitHub Workflow Deploy| image:: https://img.shields.io/github/workflow/status/MonashSmartStructures/ospgrillage/Build%20and%20deploy
 
-.. |GitHub Workflow Status| image:: https://img.shields.io/github/workflow/status/MonashSmartStructures/ospgrillage/Deploy%20to%20GitHub%20Pages?label=gh%20page%20build
+.. |GitHub Workflow Build| image:: https://img.shields.io/github/workflow/status/MonashSmartStructures/ospgrillage/Deploy%20to%20GitHub%20Pages?label=gh%20page%20build
 
 .. |GitHub Workflow Status| image:: https://img.shields.io/github/workflow/status/MonashSmartStructures/ospgrillage/Tests?label=Tests
 
@@ -60,7 +60,7 @@ OpenSeesPy Grillage wizard - *ospgrillage*
 ===========================================
 
 *ospgrillage* is a python wrapper of the *OpenSeesPy* package to speed up the creation of bridge deck grillage models.
-`OpenSeesPy <openseespydoc.readthedocs.io>`_ is a python interpreter of the well-know Open System for Earthquake Engineering Simulation (`*OpenSees* <https://opensees.berkeley.edu/>`_) software framework.
+`OpenSeesPy <openseespydoc.readthedocs.io>`_ is a python interpreter of the well-know Open System for Earthquake Engineering Simulation (`OpenSees <https://opensees.berkeley.edu/>`_) software framework.
 *ospgrillage* provides a simple python API which allows users to:
 
 1. Quickly generate and analyze a bridge deck grillage model in the *OpenSeesPy* model space, including many forms of loading and load cases;
