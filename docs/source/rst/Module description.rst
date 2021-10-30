@@ -1,9 +1,9 @@
 ========================
 Creating grillage models
 ========================
-The *ospgrillage* module contains **interface functions** which can be called after the module syntax. These interface functions
-generally have  ``set_``, ``create_`` or ``get_`` in their syntax. For example, :func:`~ospgrillage.material.create_material` creates
-a material object for the grillage model.
+The *ospgrillage* module contains **interface functions** which can be called following the module syntax. 
+These interface functions generally have  ``set_``, ``create_`` or ``get_`` in their syntax. 
+For example, :func:`~ospgrillage.material.create_material` creates a material object for the grillage model.
 
 A list of all interface functions can be found in :doc:`APIdoc`.
 Although users can opt to interact with module objects directly, we recommend the more pythonic interface functions.
@@ -68,8 +68,7 @@ which requires two other objects as inputs, namely:
 #. *material* = A :class:`~ospgrillage.material.Material` class object, and
 #. *section* = A :class:`~ospgrillage.members.Section` class object.
 
-The following example code instantiates an *I_beam* grillage element to represent some
-intermediate concrete I-beam, with material and section definitions explained later on.
+The following example code instantiates an *I_beam* grillage element to represent some intermediate concrete I-beam, with material and section definitions explained later on.
 
 .. code-block:: python
 
@@ -93,17 +92,17 @@ For the example bridge of Figure 2, lets define all its elements i.e. *slab*, *e
 Creating material objects
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 The :class:`~ospgrillage.material.Material` object is created using :func:`~ospgrillage.material.create_material`.
-The following code line creates the a *concrete* material needed in`defining Grillage member`_ previously.
+The following code line creates the *concrete* material needed in`defining Grillage member`_ previously.
 
 .. code-block:: python
 
     concrete = og.create_material(type="concrete", code="AS5100-2017", grade="50MPa")
 
-On release 0.1.0, users can choose between steel or concrete material - by passing
-keyword "steel" or "concrete" argument to :func:`~ospgrillage.material.create_material`. Users can specify
-properties of steel and concrete by passing its respective keyword argument to :func:`~ospgrillage.material.create_material`.
+Users can choose between steel or concrete material - by passing
+keyword "steel" or "concrete" argument to :func:`~ospgrillage.material.create_material`. 
+Users can specify properties of steel and concrete by passing its respective keyword argument to :func:`~ospgrillage.material.create_material`.
 In addition, *ospgrillage* offers a library of codified material properties for steel and concrete to be selected.
-On first release, it has library for two code namely the Australia standard AS5100 and AASHTO LRFD-8th.
+At the moment, it has library for two code namely the Australia standard AS5100 and AASHTO LRFD-8th.
 
 The following example creates the required *concrete* material for the example bridge.
 
@@ -112,7 +111,7 @@ The following example creates the required *concrete* material for the example b
     concrete = og.create_material(E=30*GPa, G = 20*GPa, v= 0.2)
 
 The :class:`~ospgrillage.material.Material` object wraps `OpenSees` material commands, and selects appropriate `OpenSees` material model to represent the material.
-As of release 0.1.0, *Concrete01* and *Steel01* of OpenSees library are used to represent most concrete and steel material respectively.
+Presently, *Concrete01* and *Steel01* of OpenSees library are used to represent most concrete and steel material respectively.
 Other material model can be found in `OpenSees database for concrete and steel <https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html#steel-reinforcing-steel-materials>`_.
 
 Creating section objects
@@ -137,9 +136,9 @@ The following codes creates the sections for the other grillage elements specifi
     edge_beam_section = og.create_section(A=0.044625*m2,J=2.28e-3*m4, Iy=2.23e-1*m4,Iz=1.2e-3*m4, Ay=3.72e-2*m2, Az=3.72e-2*m2)
     edge_slab_section = og.create_section(A=0.039375*m2,J=0.21e-3*m4, Iy=0.1e-3*m2,Iz=0.166e-3*m2,Ay=0.0328*m2, Az=0.0328*m2))
 
-For transverse members, there is an option to define **unit width properties**. This is done by passing True to keyword argument
-``unit_width``. When enabled, *ospgrillage* will automatically
-assigns these properties of slab section based on the spacing of transverse members.
+For transverse members, there is an option to define **unit width properties**. 
+This is done by passing True to keyword argument ``unit_width``.
+When enabled, *ospgrillage* will automatically assigns these properties of slab section based on the spacing of transverse members.
 
 .. code-block:: python
 
@@ -154,10 +153,11 @@ assigns these properties of slab section based on the spacing of transverse memb
 
 Creating the grillage model
 ---------------------------
-After creating the grillag elements, users create the grillage model using :func:`~ospgrillage.osp_grillage.create_grillage` interface function.
+After creating the grillage elements, users create the grillage model using :func:`~ospgrillage.osp_grillage.create_grillage` interface function.
 
-In version 0.1.0, grillage models typically represent a simply-supported
-beam-and-slab bridge deck. The model comprises of standard grillage members which includes:
+Presently, grillage models typically represent a simply-supported
+beam-and-slab bridge deck.
+The model comprises of standard grillage members which includes:
 
 - Two longitudinal edge beams
 - Two longitudinal exterior beams
@@ -180,11 +180,17 @@ The :class:`~ospgrillage.osp_grillage.OspGrillage` class takes the following key
 - ``bridge_name``: A :py:class:`str` of the grillage model name.
 - ``long_dim``: A :py:class:`float` of the longitudinal length of the grillage model.
 - ``width``: A :py:class:`float` of the transverse width of the grillage model.
-- ``skew``: A :py:class:`float` of the skew angle at the ends of grillage model. This variable can take in a :py:class:`list` of of 2 skew angles - this in turn creates the grillage model having edges with different skew angles. Moreover, it is limited to :math:`\arctan`(``long_dim``/``width``)
-- ``num_long_grid``: An :py:class:`int` of the number of grid lines along the longitudinal direction - each grid line represents the total number of longitduinal members. Lines are evenly spaced, except for the spacing between the edge beam and exterior beam
+- ``skew``: A :py:class:`float` of the skew angle at the ends of grillage model.
+This variable can take in a :py:class:`list` of of 2 skew angles - this in turn creates the grillage model having edges with different skew angles.
+Moreover, it is limited to :math:`\arctan`(``long_dim``/``width``) - ``num_long_grid``: An :py:class:`int` of the number of grid lines along the longitudinal direction - each grid line represents the total number of longitduinal members. 
+Lines are evenly spaced, except for the spacing between the edge beam and exterior beam
 - ``num_trans_grid``: An :py:class:`int` of the number of grid lines to be uniformly spaced along the transverse direction - each grid line represents the total number of transverse members.
 - ``edge_beam_dist``: A :py:class:`float` of the distance between exterior longitudinal beams to edge beam.
-- ``mesh_type``: Mesh type of grillage model. Must take a :py:class:`str` input of either "Ortho" or "Oblique". The default is "Ortho" (an orthogonal mesh). However, "Ortho" is not accepted for certain skew angles. The threshold for orthogonal mesh is greater than 11 degree- less than 11 degree the mesh will change to Oblique
+- ``mesh_type``: Mesh type of grillage model.
+Must take a :py:class:`str` input of either "Ortho" or "Oblique".
+The default is "Ortho" (an orthogonal mesh).
+However, "Ortho" is not accepted for certain skew angles.
+The threshold for orthogonal mesh is greater than 11 degree- less than 11 degree the mesh will change to Oblique
 
 Figure 4 shows how the grid numbers and skew angles affects the output mesh of grillage model.
 
@@ -212,11 +218,11 @@ Vertical (normal to grid) loads are applied in the :math:`y`-axis.
 Assigning grillage members
 --------------------------
 The :class:`~ospgrillage.members.GrillageMember` objects are assigned to the grillage model using :class:`~ospgrillage.osp_grillage.OspGrillage` object's
-:func:`~ospgrillage.osp_grillage.OspGrillage.set_member` function. In addition to a :class:`~ospgrillage.members.GrillageMember` argument,
-the function requires a member name string argument.
+:func:`~ospgrillage.osp_grillage.OspGrillage.set_member` function.
+In addition to a :class:`~ospgrillage.members.GrillageMember` argument, the function requires a member name string argument.
 
-The member string specifies the standard grillage element for which the :class:`~ospgrillage.members.GrillageMember` is assigned. Table 1
-summarizes the name strings available for *ospgrillage*.
+The member string specifies the standard grillage element for which the :class:`~ospgrillage.members.GrillageMember` is assigned.
+Table 1 summarizes the name strings available for *ospgrillage*.
 
 
 .. list-table:: Table: 1 Current supported member string and tags
@@ -225,19 +231,19 @@ summarizes the name strings available for *ospgrillage*.
 
    * - Grillage name String
      - Description
-   * - `edge_beam`
+   * - ``edge_beam``
      - Elements along x axis at top and bottom edges of mesh (z = 0, z = width)
-   * - `exterior_main_beam_1`
+   * - ``exterior_main_beam_1``
      - Elements along first grid line after bottom edge (z = 0)
-   * - `exterior_main_beam_2`
+   * - ``exterior_main_beam_2``
      - Elements along first grid line after top edge (z = width)
-   * - `interior_main_beam`
+   * - ``interior_main_beam``
      - For all elements in x direction between grid lines of exterior_main_beam_1 and exterior_main_beam_2
-   * - `start_edge`
+   * - ``start_edge``
      - Elements along z axis where longitudinal grid line x = 0
-   * - `end_edge`
+   * - ``end_edge``
      - Elements along z axis where longitudinal grid line x = Length
-   * - `transverse_slab`
+   * - ``transverse_slab``
      - For all elements in transverse direction between start_edge and end_edge
 
 
@@ -263,11 +269,12 @@ For orthogonal meshes, nodes in the transverse direction have varied spacing bas
 The properties of transverse members based on unit metre width is required for its definition section properties.
 The module automatically implement the unit width properties based on the spacing of nodes in the skew edge regions.
 
-The module checks if all element groups in the grillages are defined by the user. If missing element groups are detected,
-a warning message is printed on the terminal.
+The module checks if all element groups in the grillages are defined by the user. 
+If missing element groups are detected, a warning message is printed on the terminal.
 
 The :class:`~ospgrillage.osp_grillage.OspGrillage` class also allows for global material definition - e.g. an entire bridge made of the same
-material. To do this, users run the function :func:`~set_material` passing the :class:`~Material` class object as the
+material. 
+To do this, users run the function :func:`~set_material` passing the :class:`~Material` class object as the
 input.
 
 .. code-block:: python
@@ -281,7 +288,7 @@ Creating/exporting OpenSees Model
 ---------------------------------
 Only once the :class:`~ospgrillage.osp_grillage.OspGrillage` is created and members are assigned, we can either:
 
-(i) create the model in OpenSees software space for further grillage analysis, or;
+(i) create the model in `OpenSees` software space for further grillage analysis, or;
 (ii) export an executable python file that can be edited and used for a more complex analysis.
 
 These are achieved by calling the :func:`~ospgrillage.osp_grillage.OspGrillage.create_osp_model` function.
@@ -297,22 +304,22 @@ After model is instantiated in `OpenSees`, users can run any `OpenSeesPy` comman
 to interact with the `OpenSees` grillage model.
 
 When `pyfile=` parameter is set to `True`, an executable py file will be generated instead.
-The executable py file contains all relevant `OpenSeesPy` command from which when executed,
-creates the model instance in OpenSees which can edited and later used to perform more complex analysis.
+The executable py file contains all relevant `OpenSeesPy` command from which when executed, creates the model instance in OpenSees which can edited and later used to perform more complex analysis.
 Note that in doing so, the model instance in `OpenSees` space is not created.
 
 Visualize grillage model
 ^^^^^^^^^^^^^^^^^^^^^^^^
 To check that we created the model in `OpenSees` space, we can plot the model using `OpenSeesPy`'s visualization module `ops_vis`.
-The *ospgrillage* module already imports the `ops_vis` module. Therefore, one can run access `ops_vis` by running
-the following code line and a plot like in `Figure 2`_ will be returned:
+The *ospgrillage* module already imports the `ops_vis` module.
+Therefore, one can run access `ops_vis` by running the following code line and a plot like in `Figure 2`_ will be returned:
 
 .. code-block:: python
 
     og.opsplt.plot_model("nodes") # using Get Rendering module
     og.opsv.plot_model(az_el=(-90, 0)) # using osp_vis
 
-Whilst all nodes will be visualized, only the assigned members are visualized. This is a good way to check if desired members are assigned
-and hence, shown on the plot. Failure to not have all members assigned will affect subsequent analysis.
+Whilst all nodes will be visualized, only the assigned members are visualized.
+This is a good way to check if desired members are assigned and hence, shown on the plot.
+Failure to not have all members assigned will affect subsequent analysis.
 
 Here are more details of `ops_vis module <https://openseespydoc.readthedocs.io/en/latest/src/ops_vis.html>`_

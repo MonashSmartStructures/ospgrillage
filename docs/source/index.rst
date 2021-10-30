@@ -9,25 +9,40 @@
   :alt: ospgrillage
   :align: left
 
+.. |Code style: black| image:: https://img.shields.io/badge/code%20style-black-000000.svg :target: https://github.com/psf/black
+.. |License: MIT| image:: https://img.shields.io/badge/License-MIT-yellow.svg :target: https://opensource.org/licenses/MIT
+.. |version| image:: https://img.shields.io/github/downloads/MonashSmartStructures/ospgrillage/total?label=version
+.. |GitHub issues| image:: https://img.shields.io/github/issues/MonashSmartStructures/ospgrillage?logoColor=yellowgreen
+.. |GitHub pull requests| image:: https://img.shields.io/github/issues-pr/MonashSmartStructures/ospgrillage?color=yellowgreen
+.. |PyPI| image:: https://img.shields.io/pypi/v/ospgrillage
+.. |GitHub Workflow Status| image:: https://img.shields.io/github/workflow/status/MonashSmartStructures/ospgrillage/Build%20and%20deploy
+.. |GitHub Workflow Status| image:: https://img.shields.io/github/workflow/status/MonashSmartStructures/ospgrillage/Deploy%20to%20GitHub%20Pages?label=gh%20page%20build
+.. |GitHub Workflow Status| image:: https://img.shields.io/github/workflow/status/MonashSmartStructures/ospgrillage/Tests?label=Tests
+.. |GitHub commit activity| image:: https://img.shields.io/github/commit-activity/m/MonashSmartStructures/ospgrillage
+.. |GitHub last commit| image:: https://img.shields.io/github/last-commit/MonashSmartStructures/ospgrillage?color=ff69b4
+.. |Contributor Covenant| image:: https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg :target: code_of_conduct.md
+.. |codecov| image:: https://codecov.io/gh/MonashSmartStructures/ospgrillage/branch/main/graph/badge.svg?token=dUTOmPBnyP :target: https://codecov.io/gh/MonashSmartStructures/ospgrillage
+
 
 ===========================================
 OpenSeesPy Grillage wizard - *ospgrillage*
 ===========================================
 
-The `ospgrillage` module is a python module wrapper for the `OpenSeesPy` python package. `ospgrillage` can be used to:
+*ospgrillage* is a python wrapper of the *OpenSeesPy* package to speed up the creation of bridge deck grillage models.
+`OpenSeesPy <openseespydoc.readthedocs.io>`_ is a python interpreter of the well-know Open System for Earthquake Engineering Simulation (`*OpenSees* <https://opensees.berkeley.edu/>`_) software framework.
+*ospgrillage* provides a simple python API which allows users to:
 
-1) Output an executable python scripts containing commands to create a specified grillage model for use in Open System for Earthquake Engineering Simulation (OpenSees) software framework.
+1. Quickly generate and analyze a bridge deck grillage model in the *OpenSeesPy* model space, including many forms of loading and load cases;
+2. Export a :code:`*.py` file containing the *OpenSeesPy* commands, which on execution, creates the prescribed *OpenSeesPy* grillage model.
 
-2) Perform a grillage analysis for the current supported model types, member types, support types, and loading types as detailed in this documentation.
-
+The ability to use *ospgrillage* directly to do bridge deck analysis, or to export the *OpenSeesPy* command file for further editing, facilities an enormous range of use cases in both practice and research.
 
 Documentation
 =============
 
 .. toctree::
    :maxdepth: 1
-   :caption: Contents:
-
+   
    rst/Installation
    rst/Module description
    rst/ModelTemplates
@@ -39,13 +54,11 @@ Documentation
    rst/ChangeLog
 
 
-
-
 Support
 =======
-For technical support, please raise an issue on the `main repository <https://github.com/MonashSmartStructures/ospgrillage>`_
+For technical support, please raise an issue at the `Github repository <https://github.com/MonashSmartStructures/ospgrillage>`_
 
 Contributing
 ============
-If you wish to contribute to *ospgrillage* module, please do not hesitate to raise an issue
-discussing your contribution with us. We advice you check out our `contributing guidelines <https://github.com/MonashSmartStructures/ospgrillage/blob/main/.github/CONTRIBUTING.md>`_.
+We really value and welcome contributions to the *ospgrillage* package.
+Please check out our `contributing guidelines <https://github.com/MonashSmartStructures/ospgrillage/blob/main/.github/CONTRIBUTING.md>`_.

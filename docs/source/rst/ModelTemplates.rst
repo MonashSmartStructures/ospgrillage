@@ -2,7 +2,7 @@
 Model types available
 ========================================
 
-For all example code in this page, *ospgrillage* is imported as ``og``
+For the example code on this page, *ospgrillage* is imported as ``og``
 
 .. code-block:: python
 
@@ -10,9 +10,9 @@ For all example code in this page, *ospgrillage* is imported as ``og``
 
 Beam Elements Only - :class:`beam_only`
 --------------------------------------
-This is the traditional modelling approach that comprise of beam elements lay out in a grid pattern, with:
+This is the traditional modelling approach that is comprised of beam elements lay out in a grid pattern, with:
 
-* longitudinal members representing composite sections along longitudinal direction (e.g. main beams)
+* longitudinal members representing composite sections along longitudinal direction (e.g. main beams);
 * transverse members representing slabs or secondary beam sections.
 
 This is the default model type if ``model_type`` keyword argument is not specified to :func:`~ospgrillage.osp_grillage.create_grillage`
@@ -33,8 +33,7 @@ This is a modified version of the traditional beam element model with the follow
 * Offsets (in x-z plane) for start and end nodes along direction of transverse members - using joint offset.
 * Offsets (in vertical y direction) for start and end nodes of longitudinal members - again using joint offsets.
 
-Figure 2 shows the details of the aforementioned model type. Figure 3 shows the model type created in an external
-software - i.e. SPACEGASS.
+Figure 2 shows the details of the aforementioned model type. Figure 3 shows the model type created in a similar commercial software SPACEGASS.
 
 ..  figure:: ../../_images/beam_link_idealization.PNG
     :align: center

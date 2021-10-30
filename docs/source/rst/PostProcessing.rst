@@ -97,8 +97,8 @@ Following example shows how to extract results for specific load cases of specif
     force_array.sel(Loadcase="Barrier", Element=[2,3,4])
 
 
-If the load case is part of a :ref:`Moving load` i.e. an incremental load cases, there are several ways to lookup the respective
-incremental load case. Following example shows the various method of `xarray` to extract and select **force** data:
+If the load case is part of a :ref:`Moving load` i.e. an incremental load cases, there are several ways to lookup the respective incremental load case.
+Following example shows the various method of `xarray` to extract and select **force** data:
 
 .. code-block:: python
 
@@ -118,8 +118,8 @@ incremental load case. Following example shows the various method of `xarray` to
 Getting combinations
 --------------------
 Load combinations are computed on the fly in :func:`~ospgrillage.osp_grillage.OspGrillage.get_results` by specifying a keyword argument for ``combinations``.
-The keyword argument accepts a ``dict`` with load case name strings as key, and corresponding load factor as value. The returned DataArray
-will have load case multiplied by prescribed load factors and summed along the load case dimension (for each load case in load combination).
+The keyword argument accepts a ``dict`` with load case name strings as key, and corresponding load factor as value.
+The returned *DataArray* will have load case multiplied by prescribed load factors and summed along the load case dimension (for each load case in load combination).
 
 The following example code defines a load combinations which comprise of two load cases.
 
@@ -142,7 +142,7 @@ The following is printed to the terminal.
       * Node           (Node) int32 1 2 3 4 5 6 7 8 9 ... 69 70 71 72 73 74 75 76 77
       * Element        (Element) int32 1 2 3 4 5 6 7 ... 136 137 138 139 140 141 142
       * Nodes          (Nodes) <U1 'i' 'j'
-      * Loadcase       (Loadcase) <U55 'moving_truck at global position [2...
+      * Loadcase       (Loadcase) <U55 'moving_truck at global position [2...'
     Data variables:
         displacements  (Loadcase, Node, Component) float64 nan nan ... 0.0 7.688e-05
         forces         (Loadcase, Element, Component) float64 36.18 -156.9 ... nan
@@ -157,8 +157,8 @@ Getting load envelope
 ---------------------
 Load envelope is generated from load combination results for extrema of load effect using :func:`~ospgrillage.postprocessing.create_envelope` function.
 Envelope are chosen based on user selected component (*array* keyword) as either "displacements" or "forces", extrema as either maximum or minimum,
-and load effect component (e.g. "dy" for displacements). The following example uses creates a :class:`~ospgrillage.postprocessing.Envelope` object
-and uses its class function to :func:`~ospgrillage.postprocessing.Envelope.get` the enveloped DataArray:
+and load effect component (e.g. "dy" for displacements).
+The following example uses creates a :class:`~ospgrillage.postprocessing.Envelope` object and uses its class function to :func:`~ospgrillage.postprocessing.Envelope.get` the enveloped DataArray:
 
 .. code-block:: python
 
@@ -167,7 +167,8 @@ and uses its class function to :func:`~ospgrillage.postprocessing.Envelope.get` 
 
 
 By default, :class:`~ospgrillage.postprocessing.Envelope` is in query mode whereby the load case corresponding to the maxima
-are returned. The following is printed to the terminal when ``disp_env`` is printed:
+are returned.
+The following is printed to the terminal when ``disp_env`` is printed:
 
 .. code-block:: python
 
@@ -186,8 +187,8 @@ are returned. The following is printed to the terminal when ``disp_env`` is prin
       * Component  (Component) <U7 'Mx_i' 'Mx_j' 'My_i' ... 'theta_y' 'theta_z'
       * Node       (Node) int32 1 2 3 4 5 6 7 8 9 10 ... 69 70 71 72 73 74 75 76 77
 
-One can read the coordinates to understand the valid ``load_effect`` kwargs. The following example prints the array of
-coordinates:
+One can read the coordinates to understand the valid ``load_effect`` kwargs.
+The following example prints the array of coordinates:
 
 .. code-block:: python
 
@@ -230,16 +231,13 @@ Current limitation of `OpenSees` visualization module
 
 `OpenSeesPy`'s visualization module - `ops_vis` - offers comprehensive visualization analysis results in `OpenSees`.
 However, `ops_vis` operates only for a single model instance (and analysis) in `OpenSees`
-framework. In other words, results from `xarray` DataSet (of :func:`~ospgrillage.osp_grillage.OspGrillage.get_results)
-cannot be plotted using the current visualization module.
-Additionally, `ops_vis` does not contain enveloping feature across multiple analysis - especially for moving
-load analysis comprise of multiple incremental load case for each moving load position.
+framework.
+In other words, results from `xarray` DataSet (of :func:`~ospgrillage.osp_grillage.OspGrillage.get_results`) cannot be plotted using the current visualization module.
+Additionally, `ops_vis` does not contain enveloping feature across multiple analysis - especially for moving load analysis comprise of multiple incremental load case for each moving load position.
 
-If needed, users can still utilize `ops_vis` however only in a specific condition i.e. only a single load case is defined
-and :func:`~ospgrillage.osp_grillage.OspGrillage.analyze` in the `OpenSees` framework.
-With only a single load case and analysis, users can directly access the model results
-and plot using `ops_vis`. The following code example plots the results of the **current analysis instance **
-using `ops_vis`:
+If needed, users can still utilize `ops_vis` however only in a specific condition i.e. only a single load case is defined and :func:`~ospgrillage.osp_grillage.OspGrillage.analyze` in the `OpenSees` framework.
+With only a single load case and analysis, users can directly access the model results and plot using `ops_vis`.
+The following code example plots the results of the **current analysis instance** using `ops_vis`:
 
 .. code-block:: python
 
@@ -248,8 +246,8 @@ using `ops_vis`:
 
 .. note::
 
-    `opsv` only works for model template 1 (beam grillage) and 2 (beam grillage with rigid links). Plotting of shell model
-    type is not supported as of *ospgrillage* version 0.1.0
+    `opsv` only works for model template 1 (beam grillage) and 2 (beam grillage with rigid links).
+    Plotting of shell model type is not supported as of *ospgrillage* version 0.1.0
 
 
 *ospgrillage* post-processing module
@@ -259,14 +257,14 @@ For users wishing to plot results from `xarray` DataSet (multiple analysis),
 
 .. note::
 
-    The plotting functions of post-processing module is at alpha development stage as compared to other modules. As of version 0.1.0,
-    it is sufficient to plot components from the xarray DataSets.
+    The plotting functions of post-processing module is at alpha development stage as compared to other modules.
+    As of version 0.1.0, it is sufficient to plot components from the xarray DataSets.
 
 Plotting functions
 ^^^^^^^^^^^^^^^^^^
 
-For this section, we will refer to an exemplar 28 m super-T bridge (Figure 1). The bridge grillage has been created
-and its :class:`~ospgrillage.osp_grillage.OspGrillage` object is defined as ``bridge_28``.
+For this section, we will refer to an exemplar 28 m super-T bridge (Figure 1).
+The bridge grillage has been created and its :class:`~ospgrillage.osp_grillage.OspGrillage` object is defined as ``bridge_28``.
 
 ..  figure:: ../../_images/28m_bridge.PNG
     :align: center
@@ -275,10 +273,9 @@ and its :class:`~ospgrillage.osp_grillage.OspGrillage` object is defined as ``br
     Figure 1: 28 m super-T bridge model.
 
 
-To plot deflection components from **displacement** DataArray, use :func:`~ospgrillage.postprocessing.plot_defo`. To use this function
-users need to specify the specific grillage member - this function returns a 2-D plot of displacement diagram.
-Following example plots the vertical deflection of ``bridge_28``, for "exterior_main_beam_2" member - plot shown in
-Figure 2:
+To plot deflection components from **displacement** DataArray, use :func:`~ospgrillage.postprocessing.plot_defo`.
+To use this function users need to specify the specific grillage member - this function returns a 2-D plot of displacement diagram.
+Following example plots the vertical deflection of ``bridge_28``, for "exterior_main_beam_2" member - plot shown in Figure 2:
 
 .. code-block:: python
 
@@ -291,8 +288,8 @@ Figure 2:
     Figure 2: Deflected shape of of exterior main beam 2.
 
 
-To plot force components from **forces** DataArray, use :func:`~ospgrillage.postprocessing.plot_force`. Similar to
-:func:`~ospgrillage.postprocessing.plot_defo`, users need to specify name string of specific grillage member.
+To plot force components from **forces** DataArray, use :func:`~ospgrillage.postprocessing.plot_force`.
+Similar to :func:`~ospgrillage.postprocessing.plot_defo`, users need to specify name string of specific grillage member.
 Following example plots the bending moment "Mz" of "exterior_main_beam_2" in ``bridge_28`` - plot shown in Figure 3:
 
 .. code-block:: python
