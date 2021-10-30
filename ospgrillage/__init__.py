@@ -6,4 +6,4 @@ from ospgrillage.members import *
 from ospgrillage.osp_grillage import *
 from ospgrillage.postprocessing import *
 
-__version__ = "0.0.2"
+__version__ = "0.1.0"
