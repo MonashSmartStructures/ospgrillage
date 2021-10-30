@@ -87,7 +87,7 @@ html_theme_options = {
     "icon_links": [
         {
             "name": "GitHub",
-            "url":  "https://github.com/MonashSmartStructures/ospgrillage",
+            "url": "https://github.com/MonashSmartStructures/ospgrillage",
             "icon": "fab fa-github-square",
         },
         {
