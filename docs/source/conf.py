@@ -96,7 +96,6 @@ html_theme_options = {
             "icon": "fab fa-twitter-square",
         },
     ],
-    "navbar_start": ["navbar-logo", "navbar-version"],
     "use_edit_page_button": True,
 }
 html_context = {
