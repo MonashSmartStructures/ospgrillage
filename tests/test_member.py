@@ -7,7 +7,9 @@ sys.path.insert(0, os.path.abspath("../"))
 # Fixtures
 @pytest.fixture
 def ref_bridge_properties():
-    concrete = og.create_material(material="concrete", code="AS5100-2017", grade="50MPa")
+    concrete = og.create_material(
+        material="concrete", code="AS5100-2017", grade="50MPa"
+    )
     # define sections
     I_beam_section = og.create_section(
         A=0.896, J=0.133, Iy=0.213, Iz=0.259, Ay=0.233, Az=0.58
