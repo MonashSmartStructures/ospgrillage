@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.abspath("../"))
 
 @pytest.fixture
 def ref_bridge_properties():
-    concrete = og.create_material(type="concrete", code="AS5100-2017", grade="50MPa")
+    concrete = og.create_material(material="concrete", code="AS5100-2017", grade="50MPa")
     # define sections
     I_beam_section = og.create_section(
         A=0.896, J=0.133, Iy=0.213, Iz=0.259, Ay=0.233, Az=0.58
@@ -92,19 +92,19 @@ def test_envelope(bridge_model_42_negative):
         name="front wheel", point1=og.LoadPoint(2, 0, 2, 50)
     )  # Single point load 50 N
     Barrier = og.create_load(
-        type="line",
+        loadtype="line",
         name="Barrier curb load",
         point1=barrierpoint_1,
         point2=barrierpoint_2,
     )
     Barrier2 = og.create_load(
-        type="line", name="Barrieload", point1=barrierpoint_3, point2=barrierpoint_4
+        loadtype="line", name="Barrieload", point1=barrierpoint_3, point2=barrierpoint_4
     )
     Barrier3 = og.create_load(
-        type="line", name="Barrieload", point1=barrierpoint_5, point2=barrierpoint_6
+        loadtype="line", name="Barrieload", point1=barrierpoint_5, point2=barrierpoint_6
     )
     Patch1 = og.create_load(
-        type="patch",
+        loadtype="patch",
         point1=barrierpoint_1,
         point2=barrierpoint_3,
         point3=barrierpoint_2,
@@ -117,7 +117,7 @@ def test_envelope(bridge_model_42_negative):
     barrierpoint_4 = og.create_load_vertex(x=6, z=6, p=0)
 
     Patch2 = og.create_load(
-        type="patch",
+        loadtype="patch",
         point1=barrierpoint_1,
         point2=barrierpoint_3,
         point3=barrierpoint_2,

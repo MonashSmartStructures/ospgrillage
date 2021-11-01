@@ -102,7 +102,7 @@ def create_load(**kwargs):
 
     :return: PointLoad, LineLoading, PatchLoading, or NodalForces
     """
-    type = kwargs.get("type", None)
+    type = kwargs.get("loadtype", None)
     if type == "point":
         return PointLoad(**kwargs)
     elif type == "line":

@@ -13,8 +13,8 @@ def ref_28m_bridge():
     pyfile = False
     # reference super T bridge 28m for validation purpose
     # Members
-    concrete = og.create_material(type="concrete", code="AS5100-2017", grade="50MPa")
-    # concrete = og.Material(type="concrete", code="AS5100-2017", grade="50MPa")
+    concrete = og.create_material(material="concrete", code="AS5100-2017", grade="50MPa")
+    # concrete = og.Material(loadtype="concrete", code="AS5100-2017", grade="50MPa")
     # define sections
     super_t_beam_section = og.create_section(
         A=1.0447, J=0.230698, Iy=0.231329, Iz=0.533953, Ay=0.397032, Az=0.434351
@@ -80,7 +80,7 @@ def ref_28m_bridge():
 
 @pytest.fixture
 def ref_bridge_properties():
-    concrete = og.create_material(type="concrete", code="AS5100-2017", grade="50MPa")
+    concrete = og.create_material(material="concrete", code="AS5100-2017", grade="50MPa")
     # define sections
     I_beam_section = og.create_section(
         A=0.896, J=0.133, Iy=0.213, Iz=0.259, Ay=0.233, Az=0.58
@@ -214,7 +214,7 @@ def bridge_model_42_positive(ref_bridge_properties):
 def test_compound_load_positions():
     #
     location = og.create_load_vertex(x=5, z=-2, p=20)  # create load point
-    Single = og.create_load(type="point", name="single point", point1=location)
+    Single = og.create_load(loadtype="point", name="single point", point1=location)
     # front_wheel = PointLoad(name="front wheel", localpoint1=LoadPoint(2, 0, 2, 50))
     # Line load
     barrierpoint_1 = og.create_load_vertex(x=-1, z=0, p=2)
@@ -264,7 +264,7 @@ def test_point_load_getter(
     # create reference point load
     location = og.create_load_vertex(x=5, y=0, z=2, p=20)
     Single = og.create_load(
-        type="point", name="single point", point1=location, shape_function="hermite"
+        loadtype="point", name="single point", point1=location, shape_function="hermite"
     )
     ULS_DL = og.create_load_case(name="Point")
     ULS_DL.add_load(Single)  # ch
@@ -283,7 +283,7 @@ def test_point_load_getter(
 def test_point_load_outside_straight_mesh(bridge_model_42_negative):
     example_bridge = bridge_model_42_negative
     location = og.create_load_vertex(x=5, y=0, z=-2, p=20)
-    Single = og.create_load(type="point", name="single point", point1=location)
+    Single = og.create_load(loadtype="point", name="single point", point1=location)
     ULS_DL = og.create_load_case(name="Point")
     ULS_DL.add_load(Single)  # ch
     example_bridge.add_load_case(ULS_DL)
@@ -298,7 +298,7 @@ def test_line_load(bridge_model_42_negative):
     barrierpoint_1 = og.create_load_vertex(x=3, y=0, z=3, p=2)
     barrierpoint_2 = og.create_load_vertex(x=10, y=0, z=3, p=2)
     Barrier = og.create_load(
-        type="line",
+        loadtype="line",
         name="Barrier curb load",
         point1=barrierpoint_1,
         point2=barrierpoint_2,
@@ -396,7 +396,7 @@ def test_line_load_vertical_and_cross_outside_mesh(bridge_model_42_negative):
     barrierpoint_1 = og.create_load_vertex(x=2, y=0, z=-3, p=2)
     barrierpoint_2 = og.create_load_vertex(x=2, y=0, z=8, p=2)
     Barrier = og.create_load(
-        type="line",
+        loadtype="line",
         name="Barrier curb load",
         point1=barrierpoint_1,
         point2=barrierpoint_2,
@@ -430,7 +430,7 @@ def test_line_load_coincide_long_edge(bridge_model_42_negative):
     barrierpoint_1 = og.create_load_vertex(x=4, y=0, z=1, p=2)
     barrierpoint_2 = og.create_load_vertex(x=10, y=0, z=1, p=2)
     Barrier = og.create_load(
-        type="line",
+        loadtype="line",
         name="Barrier curb load",
         point1=barrierpoint_1,
         point2=barrierpoint_2,
@@ -491,7 +491,7 @@ def test_line_load_coincide_transverse_member(bridge_42_0_angle_mesh):
     # barrierpoint_1 = og.create_load_vertices(x=7.5, y=0, z=1, p=2)
     barrierpoint_2 = og.create_load_vertex(x=7.5, y=0, z=6, p=2)
     Barrier = og.create_load(
-        type="line",
+        loadtype="line",
         name="Barrier curb load",
         point1=barrierpoint_1,
         point2=barrierpoint_2,
@@ -537,7 +537,7 @@ def test_line_load_coincide_edge_beam(bridge_model_42_negative):
     barrierpoint_1 = og.create_load_vertex(x=5, y=0, z=1, p=2)
     barrierpoint_2 = og.create_load_vertex(x=10, y=0, z=1, p=2)
     Barrier = og.create_load(
-        type="line",
+        loadtype="line",
         name="Barrier curb load",
         point1=barrierpoint_1,
         point2=barrierpoint_2,
@@ -596,7 +596,7 @@ def test_line_load_outside_of_mesh(bridge_model_42_negative):
     barrierpoint_1 = og.create_load_vertex(x=3, y=0, z=-1, p=2)
     barrierpoint_2 = og.create_load_vertex(x=10, y=0, z=-1, p=2)
     Barrier = og.create_load(
-        type="line",
+        loadtype="line",
         point1=barrierpoint_1,
         point2=barrierpoint_2,
         shape_function="hermite",
@@ -616,7 +616,7 @@ def test_patch_load(bridge_model_42_negative):
     lane_point_3 = og.create_load_vertex(x=8, z=5, p=5)
     lane_point_4 = og.create_load_vertex(x=5, z=5, p=5)
     Lane = og.create_load(
-        type="patch",
+        loadtype="patch",
         point1=lane_point_1,
         point2=lane_point_2,
         point3=lane_point_3,
@@ -688,7 +688,7 @@ def test_patch_load_using_linear_shape_function(bridge_model_42_negative):
     lane_point_3 = og.create_load_vertex(x=8, y=0, z=5, p=5)
     lane_point_4 = og.create_load_vertex(x=5, y=0, z=5, p=5)
     Lane = og.create_load(
-        type="patch",
+        loadtype="patch",
         point1=lane_point_1,
         point2=lane_point_2,
         point3=lane_point_3,
@@ -753,13 +753,13 @@ def test_patch_load_using_linear_shape_function(bridge_model_42_negative):
 def test_local_vs_global_coord_settings():
     location = og.create_load_vertex(x=5, y=0, z=-2, p=20)  # create load point
     local_point = og.create_load(
-        type="point",
+        loadtype="point",
         name="single point",
         localpoint1=location,
         shape_function="hermite",
     )  # defined for local coordinate
     global_point = og.create_load(
-        type="point", name="single point", point1=location, shape_function="hermite"
+        loadtype="point", name="single point", point1=location, shape_function="hermite"
     )  # defined for local coordinate
 
     M1600 = og.CompoundLoad("Truck model")
@@ -780,7 +780,7 @@ def test_moving_load_case(bridge_model_42_negative):
     example_bridge = bridge_model_42_negative
 
     front_wheel = og.create_load(
-        type="point",
+        loadtype="point",
         name="front wheel",
         point1=og.LoadPoint(2, 0, 2, 50),
         shape_function="hermite",
@@ -809,7 +809,7 @@ def test_moving_load_and_basic_load_together(bridge_model_42_negative):
     barrierpoint_1 = og.create_load_vertex(x=5, y=0, z=1, p=2)
     barrierpoint_2 = og.create_load_vertex(x=10, y=0, z=1, p=2)
     Barrier = og.create_load(
-        type="line",
+        loadtype="line",
         name="Barrier curb load",
         point1=barrierpoint_1,
         point2=barrierpoint_2,
@@ -847,13 +847,13 @@ def test_moving_compound_load(bridge_model_42_negative):
 
     M1600 = og.CompoundLoad("M1600 LM")
     back_wheel = og.create_load(
-        type="point",
+        loadtype="point",
         name="single point",
         point1=og.LoadPoint(5, 0, 2, 20),
         shape_function="hermite",
     )  # Single point load 20 N
     front_wheel = og.create_load(
-        type="point",
+        loadtype="point",
         name="front wheel",
         point1=og.LoadPoint(2, 0, 2, 50),
         shape_function="hermite",
@@ -884,7 +884,7 @@ def test_patch_partially_outside_mesh(bridge_model_42_negative):
     lane_point_3 = og.create_load_vertex(x=8, z=5, p=5)
     lane_point_4 = og.create_load_vertex(x=-5, z=5, p=5)
     Lane = og.create_load(
-        type="patch",
+        loadtype="patch",
         name="Lane 1",
         point1=lane_point_1,
         point2=lane_point_2,

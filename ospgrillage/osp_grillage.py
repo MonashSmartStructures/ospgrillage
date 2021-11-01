@@ -259,9 +259,10 @@ class OspGrillage:
         # calculate edge length of grillage
         self.trans_dim = self.width / math.cos(self.skew_a / 180 * math.pi)
 
-        # Mesh objects and pyfile flag
+        # Mesh objects, pyfile flag, and verbose flag
         self.pyfile = None
         self.results = None
+        self.diagnostics = kwargs.get("diagnostics", False) # flag for diagnostics printed to terminal
 
         # kwargs for rigid link modelling option
         self.model_type = kwargs.get(
@@ -300,6 +301,8 @@ class OspGrillage:
             mesh_obj = BeamMesh(**kwargs)
         else:
             mesh_obj = None
+        if self.diagnostics:
+            print("Meshing complete")
         return mesh_obj
 
     # interface function
@@ -578,11 +581,12 @@ class OspGrillage:
             )
             self.material_command_list.append(mat_str)
         else:  # material tag defined, skip, print to terminal
-            print(
-                "Material {} with tag {} has been previously defined".format(
-                    material_type, material_tag
+            if self.diagnostics:
+                print(
+                    "Material {} with tag {} has been previously defined".format(
+                        material_type, material_tag
+                    )
                 )
-            )
         return material_tag
 
     def _write_section(self, grillage_member_obj: GrillageMember) -> int:
@@ -618,15 +622,17 @@ class OspGrillage:
             self.section_command_list.append(sec_str)
 
             # print to terminal
-            print(
-                "Section {}, of tag {} created".format(section_type, sectiontagcounter)
-            )
-        else:
-            print(
-                "Section {} with tag {} has been previously defined".format(
-                    section_type, sectiontagcounter
+            if self.diagnostics:
+                print(
+                    "Section {}, of tag {} created".format(section_type, sectiontagcounter)
                 )
-            )
+        else:
+            if self.diagnostics:
+                print(
+                    "Section {} with tag {} has been previously defined".format(
+                        section_type, sectiontagcounter
+                    )
+                )
         return sectiontagcounter
 
     def _create_standard_element_list(self):
@@ -674,7 +680,8 @@ class OspGrillage:
 
         :raises: ValueError If missing argument for member=
         """
-        print("Setting member: {} of model".format(member))
+        if self.diagnostics:
+            print("Setting member: {} of model".format(member))
         if member is None:
             raise ValueError(
                 "Missing target elements of grillage model to be assigned. Hint, member="
@@ -1683,7 +1690,8 @@ class OspGrillage:
             }  # FORMATTING HERE
 
             self.load_case_list.append(load_case_dict)
-            print("Load Case: {} added".format(load_case_obj.name))
+            if self.diagnostics:
+                print("Load Case: {} added".format(load_case_obj.name))
         elif isinstance(load_case_obj, MovingLoad):
             # get the list of individual load cases
             list_of_incr_load_case_dict = []
@@ -1708,7 +1716,8 @@ class OspGrillage:
                     moving_load_obj.name
                 ] = list_of_incr_load_case_dict
 
-            print("Moving load case: {} created".format(moving_load_obj.name))
+            if self.diagnostics:
+                print("Moving load case: {} created".format(moving_load_obj.name))
         else:
             raise ValueError(
                 "Input of add_load_case not a valid object. Hint:accepts only LoadCase or MovingLoad "
@@ -1723,6 +1732,7 @@ class OspGrillage:
 
         * all (`bool`): If True, runs all load cases. If not provided, default to True.
         * load_case ('list' or 'str'): String or list of name strings for selected load case to be analyzed.
+        * set_verbose(`bool`): If True, incremental load case report is not printed to terminal (default True)
 
         :except: raise ValueError if missing arguments for either load_case=, or all=
 
@@ -1736,8 +1746,8 @@ class OspGrillage:
             all_flag = False  # overwrite all flag to be false
         selected_moving_load_lc_list = None
         # check if kwargs other than load_case are specified
-        if all([kwargs, selected_load_case is None]):
-            raise Exception("Error in analyze(options): only accepts load_case= ")
+        # if all([kwargs, selected_load_case is None]):
+        #     raise Exception("Error in analyze(options): only accepts load_case= ")
 
         # if selected_load_case kwargs given, filter and select load case from load case list to run
         # if given selected load case as a list, select load cases matching names in list
@@ -1746,10 +1756,10 @@ class OspGrillage:
                 lc for lc in self.load_case_list if lc["name"] in selected_load_case
             ]
             selected_moving_load_lc_list = [
-                lc
+                {ml_name:lc}
                 for ml_name, lc in self.moving_load_case_dict.items()
                 if ml_name in selected_load_case
-            ]  # list of load case
+            ][0]  # list of load case
 
         # if single string of load case name
         elif isinstance(selected_load_case, str):
@@ -1757,13 +1767,13 @@ class OspGrillage:
                 lc for lc in self.load_case_list if lc["name"] == selected_load_case
             ]
             selected_moving_load_lc_list = [
-                lc
+                {ml_name:lc}
                 for (ml_name, lc) in self.moving_load_case_dict.items()
                 if ml_name == selected_load_case
-            ]
+            ][0]
         elif all_flag:  # else, run all load case in list
             selected_basic_lc = self.load_case_list
-            selected_moving_load_lc_list = list(self.moving_load_case_dict.values())
+            selected_moving_load_lc_list = self.moving_load_case_dict
         else:
             raise Exception(
                 "missing kwargs for run options: hint: requires input for `load_case=`"
@@ -1794,13 +1804,16 @@ class OspGrillage:
                 node_disp,
                 ele_force,
             ) = load_case_analysis.evaluate_analysis()
+            # print to terminal
+            if self.diagnostics:
+                print("Analysis: {} completed".format(load_case_obj.name))
             # store result in Recorder object
             self.results.insert_analysis_results(analysis_obj=load_case_analysis)
 
         # run moving load case
         list_of_inc_analysis = []
         # for moving_load_obj, load_case_dict_list in self.moving_load_case_dict.items():
-        for load_case_dict_list in selected_moving_load_lc_list:
+        for ml_name,load_case_dict_list in selected_moving_load_lc_list.items():
             for load_case_dict in load_case_dict_list:
                 load_case_obj = load_case_dict["loadcase"]  # maybe unused
                 load_command = load_case_dict["load_command"]
@@ -1826,11 +1839,14 @@ class OspGrillage:
                     ele_force,
                 ) = incremental_analysis.evaluate_analysis()
                 list_of_inc_analysis.append(incremental_analysis)
-
+                if self.diagnostics:
+                    print("Analysis: {} completed".format(load_case_obj.name))
                 # store result in Recorder object
             self.results.insert_analysis_results(
                 list_of_inc_analysis=list_of_inc_analysis
             )
+            if self.diagnostics:
+                print("Analysis: {} completed".format(ml_name))
 
     def add_load_combination(
         self, load_combination_name: str, load_case_and_factor_dict: dict
@@ -1887,7 +1903,8 @@ class OspGrillage:
         self.load_combination_dict.setdefault(
             load_combination_name, load_case_dict_list
         )
-        print("Load Combination: {} created".format(load_combination_name))
+        if self.diagnostics:
+            print("Load Combination: {} created".format(load_combination_name))
 
     def get_results(self, **kwargs):
         """
@@ -1934,7 +1951,8 @@ class OspGrillage:
                             storing_da = xr.concat(
                                 [storing_da, extract_da], dim="Loadcase"
                             )
-                        print("Extracted load case data for : {}".format(name))
+                        if self.diagnostics:
+                            print("Extracted load case data for : {}".format(name))
                 # lookup in moving load cases
                 for moving_name in self.moving_load_case_dict.keys():
                     if load_case_name == moving_name:
@@ -1950,11 +1968,7 @@ class OspGrillage:
                                 storing_da = xr.concat(
                                     [storing_da, extract_da], dim="Loadcase"
                                 )
-                        print(
-                            "Extracted moving load case results : {}".format(
-                                moving_name
-                            )
-                        )
+
             basic_da = (
                 storing_da  # Overwrite basic_da, proceed to check/evaluate combinations
             )
@@ -1971,7 +1985,8 @@ class OspGrillage:
                 )
 
             # for load_case_dict_list in comb:  # {0:[{'loadcase':LoadCase object, 'load_command': list of str}
-            print("Obtaining load combinations ....")
+            if self.diagnostics:
+                print("Obtaining load combinations ....")
 
             summation_array = None  # instantiate
             factored_array = None  # instantiate
@@ -2291,7 +2306,6 @@ class Analysis:
             eval(self.analysis_command)
             eval(self.analyze_command)
 
-        print("Analysis: {} completed".format(self.analysis_name))
 
         # extract results
         self.extract_grillage_responses()
@@ -2330,11 +2344,6 @@ class Analysis:
                 )
             )
 
-        print(
-            "Extraction of results completed for Analysis:{} ".format(
-                self.analysis_name
-            )
-        )
 
 
 class Results:

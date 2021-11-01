@@ -323,7 +323,6 @@ class Mesh:
             # reset counter and recorder for next loop x increment
             self.global_x_grid_count += 1
             assigned_node_tag = []
-        print("Oblique meshing completed....")
 
     def _orthogonal_meshing(self):
         """
@@ -384,7 +383,7 @@ class Mesh:
                     self.first_connecting_region_nodes = self.assigned_node_tag
             self.global_x_grid_count += 1
             self.assigned_node_tag = []  # reset variable
-            print("Edge mesh @ start span completed")
+            # print("Edge mesh @ start span completed")
         else:  # perform edge meshing with variable distance between transverse members by looping through all control
             # points of edgecontrolline
             # loop for each control point of edge line with sweep nodes
@@ -754,7 +753,7 @@ class Mesh:
                         pre_node=pre_node, cur_node=cur_node, cur_z_group=cur_z_group
                     )
                     break
-        print("Orthogonal meshing complete")
+
 
     # ------------------------------------------------------------------------------------------
     # ------------------------------------------------------------------------------------------

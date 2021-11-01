@@ -15,7 +15,7 @@ MPa = N / ((mm) ** 2)
 GPa = kilo * MPa
 
 # define material
-concrete = og.create_material(type="concrete", code="AS5100-2017", grade="65MPa")
+concrete = og.create_material(material="concrete", code="AS5100-2017", grade="65MPa")
 
 # define sections (parameters from LUSAS model)
 edge_longitudinal_section = og.create_section(
@@ -117,7 +117,7 @@ static_cases_names = [
 line_point_1 = og.create_load_vertex(x=L / 2, z=0, p=P)
 line_point_2 = og.create_load_vertex(x=L / 2, z=w, p=P)
 test_line_load = og.create_load(
-    type="line", name="Test Load", point1=line_point_1, point2=line_point_2
+    loadtype="line", name="Test Load", point1=line_point_1, point2=line_point_2
 )
 
 # Create load case, add loads, and assign
@@ -142,7 +142,7 @@ test_points_load = og.create_compound_load(name="Points Test Case (Global)")
 
 for p in p_list:
     point = og.create_load(
-        type="point", name="Point", point1=og.create_load_vertex(x=L / 2, z=p, p=P)
+        loadtype="point", name="Point", point1=og.create_load_vertex(x=L / 2, z=p, p=P)
     )
     test_points_load.add_load(load_obj=point)
 
@@ -158,7 +158,7 @@ test_points_load = og.create_compound_load(name="Points Test Case (Local in Poin
 
 for p in p_list:
     point = og.create_load(
-        type="point", name="Point", point1=og.create_load_vertex(x=0, z=p, p=P)
+        loadtype="point", name="Point", point1=og.create_load_vertex(x=0, z=p, p=P)
     )
     test_points_load.add_load(load_obj=point)
 
@@ -176,7 +176,7 @@ patch_point_2 = og.create_load_vertex(x=L, z=0, p=P)
 patch_point_3 = og.create_load_vertex(x=L, z=w, p=P)
 patch_point_4 = og.create_load_vertex(x=0, z=w, p=P)
 test_patch_load = og.create_load(
-    type="patch",
+    loadtype="patch",
     name="Test Load",
     point1=patch_point_1,
     point2=patch_point_2,
@@ -198,16 +198,16 @@ veh_l = axl_s  # vehicle length
 two_axle_truck = og.create_compound_load(name="Two Axle Truck")
 # note here we show that we can directly interact and create load vertex using LoadPoint namedtuple instead of create_load_vertex()
 point1 = og.create_load(
-    type="point", name="Point", point1=og.LoadPoint(x=0, y=0, z=0, p=P)
+    loadtype="point", name="Point", point1=og.LoadPoint(x=0, y=0, z=0, p=P)
 )
 point2 = og.create_load(
-    type="point", name="Point", point1=og.LoadPoint(x=0, y=0, z=axl_w, p=P)
+    loadtype="point", name="Point", point1=og.LoadPoint(x=0, y=0, z=axl_w, p=P)
 )
 point3 = og.create_load(
-    type="point", name="Point", point1=og.LoadPoint(x=axl_s, y=0, z=axl_w, p=P)
+    loadtype="point", name="Point", point1=og.LoadPoint(x=axl_s, y=0, z=axl_w, p=P)
 )
 point4 = og.create_load(
-    type="point", name="Point", point1=og.LoadPoint(x=axl_s, y=0, z=0, p=P)
+    loadtype="point", name="Point", point1=og.LoadPoint(x=axl_s, y=0, z=0, p=P)
 )
 
 
@@ -242,6 +242,7 @@ move_results = simple_grid.get_results(load_case="Moving Two Axle Truck")
 
 print(move_results)
 
+# Here is how to extract nodes of grillage elements
 ele_set1 = simple_grid.get_element(member="exterior_main_beam_1")[0]
 ele_set2 = simple_grid.get_element(member="exterior_main_beam_2")[0]
 interior1 = simple_grid.get_element(member="interior_main_beam", z_group_num=2)[0]

@@ -97,7 +97,7 @@ class Material:
         self.units = None  # default SI units
         # assigns variables for all kwargs for codified material types
         self.code = kwargs.get("code", None)
-        self.material_type = kwargs.get("type", None)
+        self.material_type = kwargs.get("material", None)
         self.material_grade = kwargs.get("grade", None)
         # assign generic material properties
         self.elastic_modulus = kwargs.get("E", None)

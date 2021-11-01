@@ -143,7 +143,7 @@ def create_grillage():
 
     # define material #
     concrete = ospg.create_material(
-        type=material_prop["mat_type"],
+        material=material_prop["mat_type"],
         code=material_prop["code_use"],
         grade=material_prop["mat_grade"],
     )
@@ -280,7 +280,7 @@ def add_analysis_to_simple_grid(create_grillage):
     line_point_1 = ospg.create_load_vertex(x=L / 2, z=0, p=P)
     line_point_2 = ospg.create_load_vertex(x=L / 2, z=w, p=P)
     test_line_load = ospg.create_load(
-        type="line", name=load_name[0], point1=line_point_1, point2=line_point_2
+        loadtype="line", name=load_name[0], point1=line_point_1, point2=line_point_2
     )
 
     line_case = ospg.create_load_case(name=load_name[0])
@@ -302,7 +302,7 @@ def add_analysis_to_simple_grid(create_grillage):
 
     for p in p_list:
         point = ospg.create_load(
-            type="point",
+            loadtype="point",
             name="Point",
             point1=ospg.create_load_vertex(x=L / 2, z=p, p=P),
         )
@@ -317,7 +317,7 @@ def add_analysis_to_simple_grid(create_grillage):
 
     for p in p_list:
         point = ospg.create_load(
-            type="point", name="Point", point1=ospg.create_load_vertex(x=0, z=p, p=P)
+            loadtype="point", name="Point", point1=ospg.create_load_vertex(x=0, z=p, p=P)
         )
         test_points_load.add_load(load_obj=point)
 
@@ -334,7 +334,7 @@ def add_analysis_to_simple_grid(create_grillage):
     patch_point_3 = ospg.create_load_vertex(x=L, z=w, p=P)
     patch_point_4 = ospg.create_load_vertex(x=0, z=w, p=P)
     test_patch_load = ospg.create_load(
-        type="patch",
+        loadtype="patch",
         name=load_name[3],
         point1=patch_point_1,
         point2=patch_point_2,
@@ -351,7 +351,7 @@ def add_analysis_to_simple_grid(create_grillage):
     # create truck in local coordinate system
     two_axle_truck = ospg.create_compound_load(name=load_name[4])
     point = ospg.create_load(
-        type="point", name="Point", point1=ospg.create_load_vertex(x=0, y=0, z=0, p=P)
+        loadtype="point", name="Point", point1=ospg.create_load_vertex(x=0, y=0, z=0, p=P)
     )
 
     axl_w = 2 * m  # axle width
@@ -364,7 +364,7 @@ def add_analysis_to_simple_grid(create_grillage):
     for i, _ in enumerate(xs):
         truck_point = ospg.create_load_vertex(x=xs[i], z=zs[i], p=P)
         two_axle_truck.add_load(
-            load_obj=ospg.create_load(type="point", name="Point", point1=truck_point)
+            load_obj=ospg.create_load(loadtype="point", name="Point", point1=truck_point)
         )
 
     # create path object in global coordinate system

@@ -40,7 +40,7 @@ For this example, the five super-T beams and two edge beams (parapets) of Figure
     GPa = kilo * MPa
 
     # define material
-    concrete = og.create_material(type="concrete", code="AS5100-2017", grade="65MPa")
+    concrete = og.create_material(material="concrete", code="AS5100-2017", grade="65MPa")
 
     # define sections (parameters from LUSAS model)
     edge_longitudinal_section = og.create_section(
@@ -123,7 +123,7 @@ For this example, the five super-T beams and two edge beams (parapets) of Figure
     )  # pyfile will not (False) be generated for further analysis (should be create_osp?)
     og.opsplt.plot_model("nodes")  # plotting using Get_rendering
     og.opsv.plot_model(az_el=(-90, 0))  # plotting using ops_vis
-
+    og.plt.show()
 
 Figure 2 shows the model plotted in OpenSees model space.
 
@@ -148,7 +148,6 @@ The first load case is a simple line load running along mid span width, to check
         "Line Test Case",
         "Points Test Case (Global)",
         "Points Test Case (Local in Point)",
-        "Points Test Case (Local in Compound)",
         "Patch Test Case",
     ]
 
@@ -157,7 +156,7 @@ The first load case is a simple line load running along mid span width, to check
     line_point_1 = og.create_load_vertex(x=L / 2, z=0, p=P)
     line_point_2 = og.create_load_vertex(x=L / 2, z=w, p=P)
     test_line_load = og.create_load(
-        type="line", name="Test Load", point1=line_point_1, point2=line_point_2
+        loadtype="line", name="Test Load", point1=line_point_1, point2=line_point_2
     )
 
     # Create load case, add loads, and assign
@@ -188,7 +187,7 @@ The second load case is comprised of several point loads, added into a single Co
     # create point load in global coordinate
     for p in p_list:
         point = og.create_load(
-            type="point", name="Point", point1=og.create_load_vertex(x=L / 2, z=p, p=P)
+            loadtype="point", name="Point", point1=og.create_load_vertex(x=L / 2, z=p, p=P)
         )
         # add to compound load
         test_points_load.add_load(load_obj=point)
@@ -211,7 +210,7 @@ The third load case is identical to the second load case with Compounded point l
     # create point load in local coordinate space
     for p in p_list:
         point = og.create_load(
-            type="point", name="Point", point1=og.create_load_vertex(x=0, z=p, p=P)
+            loadtype="point", name="Point", point1=og.create_load_vertex(x=0, z=p, p=P)
         )
         # add to compound load
         test_points_load.add_load(load_obj=point)
@@ -235,7 +234,7 @@ The fourth load case entails a patch load:
     patch_point_3 = og.create_load_vertex(x=L, z=w, p=P)
     patch_point_4 = og.create_load_vertex(x=0, z=w, p=P)
     test_patch_load = og.create_load(
-        type="patch",
+        loadtype="patch",
         name="Test Load",
         point1=patch_point_1,
         point2=patch_point_2,
@@ -244,7 +243,7 @@ The fourth load case entails a patch load:
     )
 
     # Create load case, add loads, and assign
-    patch_case = og.create_load_case(name=static_cases_names[4])
+    patch_case = og.create_load_case(name=static_cases_names[3])
     patch_case.add_load(test_patch_load)
     simple_grid.add_load_case(patch_case)
 
@@ -264,16 +263,16 @@ Here's how we create and add a moving load (e.g. a truck) to the 28 m bridge mod
     two_axle_truck = og.create_compound_load(name="Two Axle Truck")
     # note here we show that we can directly interact and create load vertex using LoadPoint namedtuple instead of create_load_vertex()
     point1 = og.create_load(
-        type="point", name="Point", point1=og.LoadPoint(x=0, y=0, z=0, p=P)
+        loadtype="point", name="Point", point1=og.LoadPoint(x=0, y=0, z=0, p=P)
     )
     point2 = og.create_load(
-        type="point", name="Point", point1=og.LoadPoint(x=0, y=0, z=axl_w, p=P)
+        loadtype="point", name="Point", point1=og.LoadPoint(x=0, y=0, z=axl_w, p=P)
     )
     point3 = og.create_load(
-        type="point", name="Point", point1=og.LoadPoint(x=axl_s, y=0, z=axl_w, p=P)
+        loadtype="point", name="Point", point1=og.LoadPoint(x=axl_s, y=0, z=axl_w, p=P)
     )
     point4 = og.create_load(
-        type="point", name="Point", point1=og.LoadPoint(x=axl_s, y=0, z=0, p=P)
+        loadtype="point", name="Point", point1=og.LoadPoint(x=axl_s, y=0, z=0, p=P)
     )
 
     two_axle_truck.add_load(load_obj=point1)
@@ -286,7 +285,7 @@ Here's how we create and add a moving load (e.g. a truck) to the 28 m bridge mod
     single_path = og.create_moving_path(
         start_point=og.Point(0 - axl_w, 0, w / 2 - axl_w / 2),
         end_point=og.Point(L, 0, w / 2 - axl_w / 2),
-        increments=int(L + veh_l + 1),
+        increments=int(np.round(L) + veh_l + 1),
     )
 
     # create moving load (and case)
@@ -295,7 +294,7 @@ Here's how we create and add a moving load (e.g. a truck) to the 28 m bridge mod
     # Set path to all loads defined within moving_truck
     moving_truck.set_path(single_path)
     # note: it is possible to set different paths for different compound loads in one moving load object
-    moving_truck.add_loads(two_axle_truck)
+    moving_truck.add_load(two_axle_truck)
 
     # Assign
     simple_grid.add_load_case(moving_truck)
@@ -379,7 +378,7 @@ Here we sum the nodal forces from the mid span - `i` node
 .. code-block:: python
 
     sum_node_force = np.sum(
-        np.array(combo_results.forces.sel(Element=ele_set, Component="Mz_i"))
+        np.array(combination_results.forces.sel(Element=ele_set, Component="Mz_i"))
     )
 
 
@@ -418,7 +417,7 @@ Finally, summing the query of bending moment and comparing with theoretical calc
     bending_z = np.sum(np.array(mid_span_bending))
 
     # Hand calc:
-    bending_z_theoretical = 2*P*(L/2-axl_s/2) # 31500
+    bending_z_theoretical = 2 * P * (L / 2 - axl_s / 2)  # 31500
 
     print("bending_z ={}".format(bending_z))
     print("bending_z_theoretical ={}".format(bending_z_theoretical))
@@ -455,7 +454,7 @@ Here we recreate the previous 33.5 m super-T bridge using the shell-beam hybrid 
     GPa = kilo * MPa
 
     # define material
-    concrete = og.create_material(type="concrete", code="AS5100-2017", grade="65MPa")
+    concrete = og.create_material(material="concrete", code="AS5100-2017", grade="65MPa")
 
     # define sections (parameters from LUSAS model)
     edge_longitudinal_section = og.create_section(
