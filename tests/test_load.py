@@ -13,7 +13,9 @@ def ref_28m_bridge():
     pyfile = False
     # reference super T bridge 28m for validation purpose
     # Members
-    concrete = og.create_material(material="concrete", code="AS5100-2017", grade="50MPa")
+    concrete = og.create_material(
+        material="concrete", code="AS5100-2017", grade="50MPa"
+    )
     # concrete = og.Material(loadtype="concrete", code="AS5100-2017", grade="50MPa")
     # define sections
     super_t_beam_section = og.create_section(
@@ -80,7 +82,9 @@ def ref_28m_bridge():
 
 @pytest.fixture
 def ref_bridge_properties():
-    concrete = og.create_material(material="concrete", code="AS5100-2017", grade="50MPa")
+    concrete = og.create_material(
+        material="concrete", code="AS5100-2017", grade="50MPa"
+    )
     # define sections
     I_beam_section = og.create_section(
         A=0.896, J=0.133, Iy=0.213, Iz=0.259, Ay=0.233, Az=0.58

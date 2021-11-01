@@ -262,7 +262,9 @@ class OspGrillage:
         # Mesh objects, pyfile flag, and verbose flag
         self.pyfile = None
         self.results = None
-        self.diagnostics = kwargs.get("diagnostics", False) # flag for diagnostics printed to terminal
+        self.diagnostics = kwargs.get(
+            "diagnostics", False
+        )  # flag for diagnostics printed to terminal
 
         # kwargs for rigid link modelling option
         self.model_type = kwargs.get(
@@ -624,7 +626,9 @@ class OspGrillage:
             # print to terminal
             if self.diagnostics:
                 print(
-                    "Section {}, of tag {} created".format(section_type, sectiontagcounter)
+                    "Section {}, of tag {} created".format(
+                        section_type, sectiontagcounter
+                    )
                 )
         else:
             if self.diagnostics:
@@ -1756,10 +1760,12 @@ class OspGrillage:
                 lc for lc in self.load_case_list if lc["name"] in selected_load_case
             ]
             selected_moving_load_lc_list = [
-                {ml_name:lc}
+                {ml_name: lc}
                 for ml_name, lc in self.moving_load_case_dict.items()
                 if ml_name in selected_load_case
-            ][0]  # list of load case
+            ][
+                0
+            ]  # list of load case
 
         # if single string of load case name
         elif isinstance(selected_load_case, str):
@@ -1767,7 +1773,7 @@ class OspGrillage:
                 lc for lc in self.load_case_list if lc["name"] == selected_load_case
             ]
             selected_moving_load_lc_list = [
-                {ml_name:lc}
+                {ml_name: lc}
                 for (ml_name, lc) in self.moving_load_case_dict.items()
                 if ml_name == selected_load_case
             ][0]
@@ -1813,7 +1819,7 @@ class OspGrillage:
         # run moving load case
         list_of_inc_analysis = []
         # for moving_load_obj, load_case_dict_list in self.moving_load_case_dict.items():
-        for ml_name,load_case_dict_list in selected_moving_load_lc_list.items():
+        for ml_name, load_case_dict_list in selected_moving_load_lc_list.items():
             for load_case_dict in load_case_dict_list:
                 load_case_obj = load_case_dict["loadcase"]  # maybe unused
                 load_command = load_case_dict["load_command"]
@@ -2306,7 +2312,6 @@ class Analysis:
             eval(self.analysis_command)
             eval(self.analyze_command)
 
-
         # extract results
         self.extract_grillage_responses()
         # return time series and plain counter to update global time series and plain counter by by OspGrillage
@@ -2343,7 +2348,6 @@ class Analysis:
                     self.analysis_name
                 )
             )
-
 
 
 class Results:
