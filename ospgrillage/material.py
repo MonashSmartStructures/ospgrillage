@@ -272,3 +272,18 @@ class Material:
             mat_lib = self._create_default_dict()
             self._write_mat_lib(mat_lib)
         return mat_lib
+
+    def get_ops_material_command(self, material_tag):
+        """
+        Function to get ops material command
+        :param material_tag: tag of material
+        :type material_tag: int
+        :return: str of ops material command
+        """
+        # e.g. concrete01 or steel01
+        mat_str = None
+        if self.mat_type == "Concrete01" or self.mat_type == "Steel01":
+            mat_str = 'ops.uniaxialMaterial("{type}", {tag}, *{vec})\n'.format(
+                type=self.mat_type, tag=material_tag, vec=self.op_mat_arg
+            )
+        return mat_str

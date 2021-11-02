@@ -5,7 +5,6 @@ or executable py file. This is done by wrapping `OpenSeesPy` commands for creati
 This module also handles all load case assignment, analysis, and results by wrapping `OpenSeesPy` command for analysis
 """
 
-import math
 from datetime import datetime
 from itertools import combinations
 

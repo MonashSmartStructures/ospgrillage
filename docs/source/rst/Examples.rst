@@ -375,6 +375,7 @@ Process load combinations results
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Here we sum the nodal forces from the mid span - `i` node
+
 .. code-block:: python
 
     sum_node_force = np.sum(
