@@ -614,15 +614,12 @@ Here’s how we create and add a moving load (e.g. a truck) to the 28 m bridge m
 </div>
 <div class="section" id="process-load-combinations-results">
 <h3>Process load combinations results<a class="headerlink" href="#process-load-combinations-results" title="Permalink to this headline">¶</a></h3>
-<p>Here we sum the nodal forces from the mid span - <cite>i</cite> node
-.. code-block:: python</p>
-<blockquote>
-<div><dl class="simple">
-<dt>sum_node_force = np.sum(</dt><dd><p>np.array(combination_results.forces.sel(Element=ele_set, Component=”Mz_i”))</p>
-</dd>
-</dl>
-<p>)</p>
-</div></blockquote>
+<p>Here we sum the nodal forces from the mid span - <cite>i</cite> node</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sum_node_force</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">combination_results</span><span class="o">.</span><span class="n">forces</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Element</span><span class="o">=</span><span class="n">ele_set</span><span class="p">,</span> <span class="n">Component</span><span class="o">=</span><span class="s2">&quot;Mz_i&quot;</span><span class="p">))</span>
+<span class="p">)</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="extract-and-process-moving-load-results">
 <h3>Extract and process moving load results<a class="headerlink" href="#extract-and-process-moving-load-results" title="Permalink to this headline">¶</a></h3>
