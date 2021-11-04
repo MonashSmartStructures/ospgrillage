@@ -1430,11 +1430,13 @@ class OspGrillage:
                 p1 = ele[1]  # node tag i
                 p2 = ele[2]  # node tag j
                 # convert to point load tuple
-                p1_list = self.Mesh_obj.node_spec[p1]['coordinate']
-                p2_list = self.Mesh_obj.node_spec[p2]['coordinate']
-                p1_point = create_point(x=p1_list[0],z=p1_list[2])
-                p2_point = create_point(x=p2_list[0],z=p2_list[2])
-                L = get_distance(p1_point, p2_point)  # distance between two point tuples of ele
+                p1_list = self.Mesh_obj.node_spec[p1]["coordinate"]
+                p2_list = self.Mesh_obj.node_spec[p2]["coordinate"]
+                p1_point = create_point(x=p1_list[0], z=p1_list[2])
+                p2_point = create_point(x=p2_list[0], z=p2_list[2])
+                L = get_distance(
+                    p1_point, p2_point
+                )  # distance between two point tuples of ele
                 w1 = line_load_obj.load_point_1.p  # magnitude at vertex 1
                 w2 = line_load_obj.line_end_point.p  # magnitude at vertex 2
                 d1 = np.sum(width_dict.get(p1))  # width of node j
