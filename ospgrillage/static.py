@@ -484,3 +484,4 @@ def sort_list_into_four_groups(group_list: list, option: str = None):
     output_dict[2] = interior_beam_group
     output_dict[3] = exterior_beam_group_2
     return output_dict
+
