@@ -323,4 +323,3 @@ def plot_defo(
     fig.show()
 
     return fig
-
