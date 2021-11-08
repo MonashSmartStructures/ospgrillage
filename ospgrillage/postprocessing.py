@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-This module contains functions and classes related to post processing processes. The post processing module is an
-addition to the currently available post processing module of OpenSeesPy - this module fills in gaps to
+This module contains functions and classes related to post processing processes.
+The post processing module is an addition to the currently available post processing
+module of OpenSeesPy - this module fills in gaps to
 * create envelope from xarray DataSet
 * plot force and deflection diagrams from xarray DataSets
 """
 
 import matplotlib.pyplot as plt
 import opsvis as opsv
-import openseespyvis.Get_Rendering as opsplt
+
+# import openseespyvis.Get_Rendering as opsplt
 
 
 def create_envelope(**kwargs):
@@ -39,16 +41,19 @@ def create_envelope(**kwargs):
 
 class Envelope:
     """
-    Main class for envelope. This class takes a :class:`~ospgrillage.osp_grillage.OspGrillage` result
-    `xarray`, enveloping the `xarray` based on user options, return a modified `xarray`.
+    Main class for envelope. This class takes a
+    :class:`~ospgrillage.osp_grillage.OspGrillage` result `xarray`, enveloping the
+    `xarray` based on user options, return a modified `xarray`.
 
     """
 
     def __init__(self, ds, load_effect: str = None, **kwargs):
         """
-        Inits the Envelope class. The constructor takes an `xarray` DataSet and kwargs for enveloping options.
+        Inits the Envelope class. The constructor takes an `xarray` DataSet and kwargs
+        for enveloping options.
 
-        :param ds: Data set from :func:`~ospgrillage.osp_grillage.OspGrillage.get_results`
+        :param ds: Data set from
+                   :func:`~ospgrillage.osp_grillage.OspGrillage.get_results`
         :type ds: Xarray
         :param kwargs: See below.
 
@@ -56,7 +61,8 @@ class Envelope:
 
         * array: either 'displacement' or 'forces'
         * value_mode (`Bool`): Flag for envelope to return raw values - default True
-        * query_mode (`Bool`): Flag for envelope to return loadcase coordinate for maxima - default False
+        * query_mode (`Bool`): Flag for envelope to return loadcase coordinate for
+                               maxima - default False
         * extrema (`str`): either "min" or "max"
         * elements:
         * nodes
@@ -106,8 +112,9 @@ class Envelope:
         # check variables
         if self.load_effect is None:
             raise Exception(
-                "Missing argument for load_effect=: Hint requires a namestring of load effect type based"
-                "on the Component dimension of the ospgrillage data set result format"
+                "Missing argument for load_effect=: Hint requires a namestring of load"
+                "effect type based on the Component dimension of the ospgrillage data"
+                "set result format"
             )
 
         # process variables
@@ -132,15 +139,15 @@ class Envelope:
             self.component = [self.component]
 
         # check if empty
-        if not None in self.elements:
+        if None not in self.elements:
             self.element_string.format(self.elements)
-        if not None in self.component:
+        if None not in self.component:
             self.component_string.format(self.component)
 
         # check the combinations of inputs for query
         if not ("{" in self.element_string and "{" in self.component_string):
             self.component_command = self.component_string + self.element_string
-        elif "{" in self.element_string and not "{" in self.component_string:
+        elif "{" in self.element_string and "{" not in self.component_string:
             self.component_command = self.component_string
         elif not ("{" in self.element_string and "{" in self.component_string):
             self.component_command = self.element_string
@@ -169,7 +176,8 @@ def plot_force(
     option: str = "elements",
 ):
     """
-    Function to plot 2D diagrams from force component of specific elements from results xarray DataSet
+    Function to plot 2D diagrams from force component of specific elements from results
+    xarray DataSet
 
     :param ospgrillage_obj: Grillage model object
     :type ospgrillage_obj: OspGrillage
@@ -193,7 +201,7 @@ def plot_force(
     if not isinstance(component, int):
         component_index = comp_dict[component]
 
-    ax = plt.figure  # create plot window
+    fig, ax = plt.subplots()  # create plot window
     nodes = ospgrillage_obj.get_nodes()  # extract node information of model
     eletag = ospgrillage_obj.get_element(
         member=member, options=option
@@ -229,15 +237,18 @@ def plot_force(
             ex=xx, ey=yy, ez=zz, pl=ele_components
         )
         # plot element force component
-        plt.plot(
+        ax.plot(
             xx, s[:, component_index], "-k"
         )  # Here change int accordingly: {0:Fx,1:Fy,2:Fz,3:Mx,4:My,5:Mz}
         # fill area between horizontal axis and line
-        plt.fill_between(xx, s[:, component_index], [0, 0], color="k", alpha=0.4)
-    plt.title(member)
-    plt.xlabel("x (m) ")
-    plt.ylabel(component)
-    plt.show()
+        ax.fill_between(xx, s[:, component_index], [0, 0], color="k", alpha=0.4)
+    ax.set_title(member)
+    ax.set_xlabel("x (m) ")
+    ax.set_ylabel(component)
+    fig.tight_layout()
+    fig.show()
+
+    return fig
 
 
 def plot_defo(
@@ -248,7 +259,8 @@ def plot_defo(
     option: str = "nodes",
 ):
     """
-    Function to plot 2D diagrams of displacement components of specific grillage element from result xarray DataSet
+    Function to plot 2D diagrams of displacement components of specific grillage element
+    from result xarray DataSet
 
     :param ospgrillage_obj: Grillage model object
     :type ospgrillage_obj: OspGrillage
@@ -258,8 +270,8 @@ def plot_defo(
     :type component: str
     :param member: member
     :type member: str
-    :param option: option of :func:`~ospgrillage.osp_grillage.OspGrillage.get_element`, either "nodes" or "element"
-                   (Default nodes)
+    :param option: option of :func:`~ospgrillage.osp_grillage.OspGrillage.get_element`,
+                   either "nodes" or "element" (Default nodes)
     :type option: str
     :return: Matplotlib figure
     :rtype: (:class:`matplotlib.figure.Figure`)
@@ -283,6 +295,7 @@ def plot_defo(
     if component is None:
         dis_comp = "dy"  # default to dy
 
+    fig, ax = plt.subplots()
     # get all node information
     nodes = ospgrillage_obj.get_nodes()  # dictionary containing information of nodes
     # get specific nodes for specific element
@@ -297,13 +310,17 @@ def plot_defo(
         xx = nodes[node]["coordinate"][0]  # get x coord
         zz = nodes[node]["coordinate"][2]  # get z coord (for 3D plots)
         if previous_def is not None:
-            plt.plot(
+            ax.plot(
                 [previous_xx, xx], [previous_def, disp], "-b"
-            )  # here plot accordingly, we plot a 1-D plot of all nodes in grillage element
+            )  # plot a 1-D plot of all nodes in grillage element
         previous_def = disp
         previous_xx = xx
         previous_zz = zz
-    plt.title(member)
-    plt.xlabel("x (m) ")  # labels
-    plt.ylabel(dis_comp)  # labels
-    plt.show()
+    ax.set_title(member)
+    ax.set_xlabel("x (m) ")  # labels
+    ax.set_ylabel(dis_comp)  # labels
+    fig.tight_layout()
+    fig.show()
+
+    return fig
+
