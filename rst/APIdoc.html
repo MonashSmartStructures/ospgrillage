@@ -1368,13 +1368,16 @@ is required to set the origin of local coordinate of load groups onto the global
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.postprocessing.Envelope">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.postprocessing.</span></span><span class="sig-name descname"><span class="pre">Envelope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_effect</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.postprocessing.Envelope" title="Permalink to this definition">¶</a></dt>
-<dd><p>Main class for envelope. This class takes a <a class="reference internal" href="OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a> result
-<cite>xarray</cite>, enveloping the <cite>xarray</cite> based on user options, return a modified <cite>xarray</cite>.</p>
-<p>Inits the Envelope class. The constructor takes an <cite>xarray</cite> DataSet and kwargs for enveloping options.</p>
+<dd><p>Main class for envelope. This class takes a
+<a class="reference internal" href="OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a> result <cite>xarray</cite>, enveloping the
+<cite>xarray</cite> based on user options, return a modified <cite>xarray</cite>.</p>
+<p>Inits the Envelope class. The constructor takes an <cite>xarray</cite> DataSet and kwargs
+for enveloping options.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ds</strong> (<em>Xarray</em>) – Data set from <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_results()</span></code></a></p></li>
+<li><p><strong>ds</strong> (<em>Xarray</em>) – Data set from
+<a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_results()</span></code></a></p></li>
 <li><p><strong>kwargs</strong> – See below.</p></li>
 </ul>
 </dd>
@@ -1384,7 +1387,11 @@ is required to set the origin of local coordinate of load groups onto the global
 <ul class="simple">
 <li><p>array: either ‘displacement’ or ‘forces’</p></li>
 <li><p>value_mode (<cite>Bool</cite>): Flag for envelope to return raw values - default True</p></li>
-<li><p>query_mode (<cite>Bool</cite>): Flag for envelope to return loadcase coordinate for maxima - default False</p></li>
+<li><dl class="simple">
+<dt>query_mode (<cite>Bool</cite>): Flag for envelope to return loadcase coordinate for</dt><dd><p>maxima - default False</p>
+</dd>
+</dl>
+</li>
 <li><p>extrema (<cite>str</cite>): either “min” or “max”</p></li>
 <li><p>elements:</p></li>
 <li><p>nodes</p></li>
