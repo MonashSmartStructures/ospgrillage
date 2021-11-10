@@ -224,16 +224,6 @@ class Loads:
         self.load_point_7 = kwargs.get("point7", None)
         self.load_point_8 = kwargs.get("point8", None)
 
-        # # parse namedtuple of local coordinates # NOTE Local_point will be deprecated
-        # self.local_load_point_1 = kwargs.get('localpoint1', None)
-        # self.local_load_point_2 = kwargs.get('localpoint2', None)
-        # self.local_load_point_3 = kwargs.get('localpoint3', None)
-        # self.local_load_point_4 = kwargs.get('localpoint4', None)
-        # self.local_load_point_5 = kwargs.get('localpoint5', None)
-        # self.local_load_point_6 = kwargs.get('localpoint6', None)
-        # self.local_load_point_7 = kwargs.get('localpoint7', None)
-        # self.local_load_point_8 = kwargs.get('localpoint8', None)
-
         # shape function
         self.shape_function = kwargs.get("shape_function", "linear")
         # check if user skipped point 1 and defined point1 as point 2 instead
@@ -338,31 +328,6 @@ class Loads:
                 if self.load_point_8 is not None
                 else self.load_point_8
             )
-        # else:  # set global position by movign local coordinates by x (global) and z (global)
-        #     self.load_point_1 = self.local_load_point_1._replace(x=self.local_load_point_1.x + ref_point.x,
-        #                                                          z=self.local_load_point_1.z + ref_point.z) if self.local_load_point_1 is \
-        #                                                                                                        not None else self.local_load_point_1
-        #     self.load_point_2 = self.local_load_point_2._replace(x=self.local_load_point_2.x + ref_point.x,
-        #                                                          z=self.local_load_point_2.z + ref_point.z) if self.local_load_point_2 is \
-        #                                                                                                        not None else self.local_load_point_2
-        #     self.load_point_3 = self.local_load_point_3._replace(x=self.local_load_point_3.x + ref_point.x,
-        #                                                          z=self.local_load_point_3.z + ref_point.z) if self.local_load_point_3 is \
-        #                                                                                                        not None else self.local_load_point_3
-        #     self.load_point_4 = self.local_load_point_4._replace(x=self.local_load_point_4.x + ref_point.x,
-        #                                                          z=self.local_load_point_4.z + ref_point.z) if self.local_load_point_4 is \
-        #                                                                                                        not None else self.local_load_point_4
-        #     self.load_point_5 = self.local_load_point_5._replace(x=self.local_load_point_5.x + ref_point.x,
-        #                                                          z=self.local_load_point_5.z + ref_point.z) if self.local_load_point_5 is \
-        #                                                                                                        not None else self.local_load_point_5
-        #     self.load_point_6 = self.local_load_point_6._replace(x=self.local_load_point_6.x + ref_point.x,
-        #                                                          z=self.local_load_point_6.z + ref_point.z) if self.local_load_point_6 is \
-        #                                                                                                        not None else self.local_load_point_6
-        #     self.load_point_7 = self.local_load_point_7._replace(x=self.local_load_point_7.x + ref_point.x,
-        #                                                          z=self.local_load_point_7.z + ref_point.z) if self.local_load_point_7 is \
-        #                                                                                                        not None else self.local_load_point_7
-        #     self.load_point_8 = self.local_load_point_8._replace(x=self.local_load_point_8.x + ref_point.x,
-        #                                                          z=self.local_load_point_8.z + ref_point.z) if self.local_load_point_8 is \
-        #                                                                                                        not None else self.local_load_point_8
 
     def apply_load_factor(self, factor=1):
         """
@@ -1174,6 +1139,41 @@ class Path:
             [x, y, z] for (x, y, z) in zip(path_points_x, path_points_y, path_points_z)
         ]
         return path_point_list
+
+
+# ---------------------------------------------------------------------------------------------------------------
+def create_load_model():
+    """
+    Function to create a Compound load vehicle model
+    :return:
+    """
+    pass
+
+
+class LoadModel:
+    def __init__(self, gap=0):
+        pass
+
+    def create_axle_positions(self):
+        axle_dist = 0
+        left_group_dist = 0
+        right_group_dist = 0
+        gap = 0
+
+        load_positions_x = [
+            0,
+            axle_dist,
+            axle_dist * 2,
+            left_group_dist + axle_dist * 2,
+            left_group_dist + axle_dist * 2 + axle_dist,
+            left_group_dist + axle_dist * 2 + 2 * axle_dist,
+            gap + left_group_dist + axle_dist * 2,
+            gap + left_group_dist + axle_dist * 2 + axle_dist,
+            gap + left_group_dist + axle_dist * 2 + 2 * axle_dist,
+            right_group_dist + gap + left_group_dist + axle_dist * 2,
+            right_group_dist + gap + left_group_dist + axle_dist * 2 + axle_dist,
+            right_group_dist + gap + left_group_dist + axle_dist * 2 + 2 * axle_dist,
+        ]
 
 
 # ---------------------------------------------------------------------------------------------------------------

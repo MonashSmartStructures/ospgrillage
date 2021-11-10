@@ -237,6 +237,9 @@ moving_truck.add_load(two_axle_truck)
 simple_grid.add_load_case(moving_truck)
 
 simple_grid.analyze()
+results = simple_grid.get_results()
+og.plot_defo(simple_grid, results, member="exterior_main_beam_1", option="nodes")
+og.plot_force(simple_grid, results, member="exterior_main_beam_1", component="Mz")
 
 move_results = simple_grid.get_results(load_case="Moving Two Axle Truck")
 

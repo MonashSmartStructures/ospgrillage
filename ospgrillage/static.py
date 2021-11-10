@@ -455,6 +455,8 @@ def sort_list_into_four_groups(group_list: list, option: str = None):
     Function to sort a list of group number into four groups , returns a dict with keys [0,1,2,3] placing the ordered
     group_list into each key. Purpose is to distinguish main grillage elements based on the group positioning
     e.g. if group_list = [0,1,2,3,4,5,6], returns {0:[0,6], 1:[1],2:[2,3,4],3:[5]}
+    :param option: type of group sorting - default None for beam, "shell" for shell model
+    :type option: str
     :param group_list:
     :return: dict with keys [0,1,2,3] and values be the sorted group list as shown in description
     """

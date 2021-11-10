@@ -1447,7 +1447,7 @@ class OspGrillage:
                 # get mid point of line
                 x_bar = ((2 * w1 + w2) / (w1 + w2)) * L / 3  # from p2
                 load_point = line_load_obj.get_point_given_distance(
-                    xbar=x_bar, point_coordinate=[p2.x, p2.y, p2.z]
+                    xbar=x_bar, point_coordinate=[p2_point.x, p2_point.y, p2_point.z]
                 )
                 load_str = self._assign_point_to_four_node(point=load_point, mag=mag)
                 load_str_line += load_str  # append to major list for line load
@@ -1769,9 +1769,11 @@ class OspGrillage:
                 {ml_name: lc}
                 for ml_name, lc in self.moving_load_case_dict.items()
                 if ml_name in selected_load_case
-            ][
-                0
-            ]  # list of load case
+            ]
+            if selected_moving_load_lc_list:
+                selected_moving_load_lc_list = selected_moving_load_lc_list[
+                    0
+                ]  # get first entry
 
         # if single string of load case name
         elif isinstance(selected_load_case, str):
@@ -1782,7 +1784,12 @@ class OspGrillage:
                 {ml_name: lc}
                 for (ml_name, lc) in self.moving_load_case_dict.items()
                 if ml_name == selected_load_case
-            ][0]
+            ]
+            if selected_moving_load_lc_list:
+                selected_moving_load_lc_list = selected_moving_load_lc_list[
+                    0
+                ]  # get first entry
+
         elif all_flag:  # else, run all load case in list
             selected_basic_lc = self.load_case_list
             selected_moving_load_lc_list = self.moving_load_case_dict
@@ -1825,40 +1832,41 @@ class OspGrillage:
         # run moving load case
         list_of_inc_analysis = []
         # for moving_load_obj, load_case_dict_list in self.moving_load_case_dict.items():
-        for ml_name, load_case_dict_list in selected_moving_load_lc_list.items():
-            for load_case_dict in load_case_dict_list:
-                load_case_obj = load_case_dict["loadcase"]  # maybe unused
-                load_command = load_case_dict["load_command"]
-                load_factor = load_case_dict["load_factor"]
-                incremental_analysis = Analysis(
-                    analysis_name=load_case_obj.name,
-                    ops_grillage_name=self.model_name,
-                    pyfile=self.pyfile,
-                    time_series_counter=self.global_time_series_counter,
-                    pattern_counter=self.global_pattern_counter,
-                    node_counter=self.Mesh_obj.node_counter,
-                    ele_counter=self.Mesh_obj.element_counter,
-                    constraint_type=self.constraint_type,
-                    load_case=load_case_obj,
+        if selected_moving_load_lc_list:
+            for ml_name, load_case_dict_list in selected_moving_load_lc_list.items():
+                for load_case_dict in load_case_dict_list:
+                    load_case_obj = load_case_dict["loadcase"]  # maybe unused
+                    load_command = load_case_dict["load_command"]
+                    load_factor = load_case_dict["load_factor"]
+                    incremental_analysis = Analysis(
+                        analysis_name=load_case_obj.name,
+                        ops_grillage_name=self.model_name,
+                        pyfile=self.pyfile,
+                        time_series_counter=self.global_time_series_counter,
+                        pattern_counter=self.global_pattern_counter,
+                        node_counter=self.Mesh_obj.node_counter,
+                        ele_counter=self.Mesh_obj.element_counter,
+                        constraint_type=self.constraint_type,
+                        load_case=load_case_obj,
+                    )
+                    incremental_analysis.add_load_command(
+                        load_command, load_factor=load_factor
+                    )
+                    (
+                        self.global_time_series_counter,
+                        self.global_pattern_counter,
+                        node_disp,
+                        ele_force,
+                    ) = incremental_analysis.evaluate_analysis()
+                    list_of_inc_analysis.append(incremental_analysis)
+                    if self.diagnostics:
+                        print("Analysis: {} completed".format(load_case_obj.name))
+                    # store result in Recorder object
+                self.results.insert_analysis_results(
+                    list_of_inc_analysis=list_of_inc_analysis
                 )
-                incremental_analysis.add_load_command(
-                    load_command, load_factor=load_factor
-                )
-                (
-                    self.global_time_series_counter,
-                    self.global_pattern_counter,
-                    node_disp,
-                    ele_force,
-                ) = incremental_analysis.evaluate_analysis()
-                list_of_inc_analysis.append(incremental_analysis)
                 if self.diagnostics:
-                    print("Analysis: {} completed".format(load_case_obj.name))
-                # store result in Recorder object
-            self.results.insert_analysis_results(
-                list_of_inc_analysis=list_of_inc_analysis
-            )
-            if self.diagnostics:
-                print("Analysis: {} completed".format(ml_name))
+                    print("Analysis: {} completed".format(ml_name))
 
     def add_load_combination(
         self, load_combination_name: str, load_case_and_factor_dict: dict

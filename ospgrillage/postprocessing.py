@@ -10,7 +10,7 @@ module of OpenSeesPy - this module fills in gaps to
 import matplotlib.pyplot as plt
 import opsvis as opsv
 
-# import openseespyvis.Get_Rendering as opsplt
+import openseespyvis.Get_Rendering as opsplt
 
 
 def create_envelope(**kwargs):
@@ -323,4 +323,3 @@ def plot_defo(
     fig.show()
 
     return fig
-
