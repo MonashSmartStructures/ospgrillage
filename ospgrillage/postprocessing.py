@@ -177,7 +177,7 @@ def plot_force(
 ):
     """
     Function to plot 2D diagrams from force component of specific elements from results
-    xarray DataSet
+    xarray DataSet. For "shell" model, plot results of beam
 
     :param ospgrillage_obj: Grillage model object
     :type ospgrillage_obj: OspGrillage
@@ -207,9 +207,13 @@ def plot_force(
         member=member, options=option
     )  # get ele tag of grillage elements
     # loop ele tags of ele
+    if ospgrillage_obj.model_type == "shell":
+        force_result = result_obj.forces_beam
+    else:
+        force_result = result_obj.forces
     for ele in eletag:
         # get force components
-        ele_components = result_obj.forces.sel(
+        ele_components = force_result.sel(
             Element=ele,
             Component=[
                 "Vx_i",

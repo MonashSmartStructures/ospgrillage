@@ -3,6 +3,10 @@ Examples
 ========================
 Here are some examples of what you can do with *ospgrillage*.
 
+.. note::
+
+    All code herein are to version 0.1.0
+
 Super T bridge model
 ------------------------------------------------------------
 This example reproduces the grillage model of a super-T bridge from Caprani et al. (2017). In that study,
@@ -13,6 +17,7 @@ the commercial software LUSAS is used to create the grillage model. Figure 1 sho
     :scale: 25 %
 
     Figure 1: Super-T deck cross section (after Caprani et al., 2017).
+
 
 
 Creating the grillage
@@ -40,7 +45,7 @@ For this example, the five super-T beams and two edge beams (parapets) of Figure
     GPa = kilo * MPa
 
     # define material
-    concrete = og.create_material(material="concrete", code="AS5100-2017", grade="65MPa")
+    concrete = og.create_material(type="concrete", code="AS5100-2017", grade="65MPa")
 
     # define sections (parameters from LUSAS model)
     edge_longitudinal_section = og.create_section(
@@ -156,7 +161,7 @@ The first load case is a simple line load running along mid span width, to check
     line_point_1 = og.create_load_vertex(x=L / 2, z=0, p=P)
     line_point_2 = og.create_load_vertex(x=L / 2, z=w, p=P)
     test_line_load = og.create_load(
-        loadtype="line", name="Test Load", point1=line_point_1, point2=line_point_2
+        type="line", name="Test Load", point1=line_point_1, point2=line_point_2
     )
 
     # Create load case, add loads, and assign
@@ -187,7 +192,7 @@ The second load case is comprised of several point loads, added into a single Co
     # create point load in global coordinate
     for p in p_list:
         point = og.create_load(
-            loadtype="point", name="Point", point1=og.create_load_vertex(x=L / 2, z=p, p=P)
+            type="point", name="Point", point1=og.create_load_vertex(x=L / 2, z=p, p=P)
         )
         # add to compound load
         test_points_load.add_load(load_obj=point)
@@ -210,7 +215,7 @@ The third load case is identical to the second load case with Compounded point l
     # create point load in local coordinate space
     for p in p_list:
         point = og.create_load(
-            loadtype="point", name="Point", point1=og.create_load_vertex(x=0, z=p, p=P)
+            type="point", name="Point", point1=og.create_load_vertex(x=0, z=p, p=P)
         )
         # add to compound load
         test_points_load.add_load(load_obj=point)
@@ -234,7 +239,7 @@ The fourth load case entails a patch load:
     patch_point_3 = og.create_load_vertex(x=L, z=w, p=P)
     patch_point_4 = og.create_load_vertex(x=0, z=w, p=P)
     test_patch_load = og.create_load(
-        loadtype="patch",
+        type="patch",
         name="Test Load",
         point1=patch_point_1,
         point2=patch_point_2,
@@ -263,16 +268,16 @@ Here's how we create and add a moving load (e.g. a truck) to the 28 m bridge mod
     two_axle_truck = og.create_compound_load(name="Two Axle Truck")
     # note here we show that we can directly interact and create load vertex using LoadPoint namedtuple instead of create_load_vertex()
     point1 = og.create_load(
-        loadtype="point", name="Point", point1=og.LoadPoint(x=0, y=0, z=0, p=P)
+        type="point", name="Point", point1=og.LoadPoint(x=0, y=0, z=0, p=P)
     )
     point2 = og.create_load(
-        loadtype="point", name="Point", point1=og.LoadPoint(x=0, y=0, z=axl_w, p=P)
+        type="point", name="Point", point1=og.LoadPoint(x=0, y=0, z=axl_w, p=P)
     )
     point3 = og.create_load(
-        loadtype="point", name="Point", point1=og.LoadPoint(x=axl_s, y=0, z=axl_w, p=P)
+        type="point", name="Point", point1=og.LoadPoint(x=axl_s, y=0, z=axl_w, p=P)
     )
     point4 = og.create_load(
-        loadtype="point", name="Point", point1=og.LoadPoint(x=axl_s, y=0, z=0, p=P)
+        type="point", name="Point", point1=og.LoadPoint(x=axl_s, y=0, z=0, p=P)
     )
 
     two_axle_truck.add_load(load_obj=point1)
