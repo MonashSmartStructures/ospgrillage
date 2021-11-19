@@ -1142,11 +1142,12 @@ class Path:
 
 
 # ---------------------------------------------------------------------------------------------------------------
-def create_load_model():
+def create_load_model(**kwargs):
     """
-    Function to create a Compound load vehicle model
-    :return:
+    Function to create a CompoundLoad object of a vehicle load model model
+    :return: `LoadModel` object
     """
+    return LoadModel(**kwargs)
     pass
 
 
@@ -1174,6 +1175,30 @@ class LoadModel:
             right_group_dist + gap + left_group_dist + axle_dist * 2 + axle_dist,
             right_group_dist + gap + left_group_dist + axle_dist * 2 + 2 * axle_dist,
         ]
+
+    @staticmethod
+    def _create_load_model_json():
+        """
+        Function to create the default mat_lib.js file. The default version is 0.0.1.
+        Just to make sure the JSON file is formatted correctly
+
+        """
+
+        mat_lib = {
+            "AS5100": {
+                "AS5100-2017": {
+                    "units": "SI",
+                    "25MPa": {"fc": 25, "E": 26.7, "v": 0.2, "rho": 2.4e3},
+                    "32MPa": {"fc": 32, "E": 30.1, "v": 0.2, "rho": 2.4e3},
+                    "40MPa": {"fc": 40, "E": 32.8, "v": 0.2, "rho": 2.4e3},
+                    "50MPa": {"fc": 50, "E": 34.8, "v": 0.2, "rho": 2.4e3},
+                    "65MPa": {"fc": 65, "E": 37.4, "v": 0.2, "rho": 2.4e3},
+                    "80MPa": {"fc": 80, "E": 39.6, "v": 0.2, "rho": 2.4e3},
+                    "100MPa": {"fc": 100, "E": 42.2, "v": 0.2, "rho": 2.4e3},
+                }
+            },
+            "Eurocode": {},
+        }
 
 
 # ---------------------------------------------------------------------------------------------------------------

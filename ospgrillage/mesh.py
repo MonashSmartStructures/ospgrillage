@@ -76,6 +76,8 @@ class Mesh:
         self.trans_dim = trans_dim
         self.edge_width_a = edge_dist_a
         self.edge_width_b = edge_dist_b
+        self.ext_to_int_a = ext_to_int_a
+        self.ext_to_int_b = ext_to_int_b
         self.width = width
         self.num_trans_beam = num_trans_beam
         self.num_long_beam = num_long_beam
@@ -1249,7 +1251,10 @@ class EdgeControlLine:
         ext_to_int_b=None,
         **kwargs
     ):
-        # TODO add feature for edge const line to consider varying distance between nodes of exterior and interior beam
+
+        # distance between interior beam and exterior beam
+        self.ext_to_int_a = ext_to_int_a
+        self.ext_to_int_b = ext_to_int_b
         # set variables
         self.edge_ref_point = edge_ref_point
         self.width_z = width_z
@@ -1262,17 +1267,65 @@ class EdgeControlLine:
         # for shell
         self.z_group_master_pair_list = []
         self.node_z_pair_list_value = []
-        # get kwargs
+        # counter
+        self.customize = kwargs.get("custom", None)  # get the list
+        if self.customize and not isinstance(self.customize, list):
+            raise Exception(
+                "Invalid custom control point format: Hint - accepts list of float or int"
+            )
 
         # calculations
-
+        # TODO TEST
         # array containing z coordinate of edge construction line
-        last_girder = self.width_z - self.edge_width_b  # coord of exterior
-        nox_girder = np.linspace(
-            start=self.edge_width_a, stop=last_girder, num=self.num_long_beam - 2
+        last_girder = self.width_z - self.edge_width_b  # coord of exterior main beam 2
+
+        last_interior = (
+            last_girder - self.ext_to_int_b if self.ext_to_int_b is not None else None
+        )
+        first_interior = (
+            self.edge_width_a + self.ext_to_int_a
+            if self.ext_to_int_a is not None
+            else None
         )
 
-        #
+        # check cases of customize edge control points
+        if (
+            not first_interior and not last_interior
+        ):  # no custom dist between interior and exterior
+            nox_girder = np.linspace(
+                start=self.edge_width_a, stop=last_girder, num=self.num_long_beam - 2
+            )
+        elif first_interior and not last_interior:
+            nox_girder = np.hstack(
+                (
+                    edge_width_a,
+                    np.linspace(
+                        start=first_interior,
+                        stop=last_girder,
+                        num=self.num_long_beam - 2 - 1,
+                    ),
+                )
+            )
+        elif not first_interior and last_interior:
+            nox_girder = np.hstack(
+                (
+                    np.linspace(
+                        start=self.edge_width_a,
+                        stop=last_interior,
+                        num=self.num_long_beam - 2 - 1,
+                    ),
+                    last_girder,
+                )
+            )
+
+        else:  # both have custom interior ext distance
+            nox_girder = np.linspace(
+                start=first_interior, stop=last_interior, num=self.num_long_beam - 2
+            )
+            nox_girder = np.hstack((edge_width_a, nox_girder))
+            nox_girder = np.hstack((nox_girder, last_girder))
+
+        # create self.noz points
         self._create_trans_grid(nox_girder=nox_girder)
         # if self.feature == "standard":
         #     self.noz = np.hstack((np.hstack((0, nox_girder)), self.width_z))
