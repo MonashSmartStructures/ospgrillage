@@ -31,14 +31,14 @@ For users wishing to use jupyter notebook, install as follows:
 
 .. code-block:: python
 
-    1. pip install --user virtualenv
-    1.1 python -m venv ospg
-    2. Activate virtual env ospg\bin\activate
-    3. python -m pip install jupyterlab
-    4. pip install ipykernel
-    5. ipython kernel install --name "opsg" --user
-    6. pip install ospgrillage
-    7. jupyter-lab
+    1. Install virtualenv package using pip: pip install --user virtualenv
+    1.1 Create virtual env: python -m venv ospg
+    2. Activate virtual env: ospg\Scripts\activate
+    3. Install Jupyter lab: python -m pip install jupyterlab
+    4. Install kernels for linking with jupyter: pip install ipykernel
+    5. followed by: ipython kernel install --name "opsg" --user
+    6. Install ospgrillage: pip install ospgrillage
+    7. And run in the new env: jupyter-lab
 
 The following instructions are for jupyter notebook but with virtual environment created via `conda`:
 
