@@ -167,6 +167,38 @@ def shell_link_bridge(ref_bridge_properties):
     example_bridge.create_osp_model(pyfile=False)
 
 
+@pytest.fixture
+def bridge_model_42_negative_custom_spacing(ref_bridge_properties):
+    # reference bridge 10m long, 7m wide with common skew angle at both ends
+    # define material
+    I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
+
+    # construct grillage model
+    example_bridge = og.create_grillage(
+        bridge_name="SuperT_10m",
+        long_dim=10,
+        width=7,
+        skew=-42,
+        num_long_grid=7,
+        num_trans_grid=5,
+        edge_beam_dist=1.05,
+        mesh_type="Ortho",
+        ext_to_int_dist=1,
+    )
+
+    # set grillage member to element groups of grillage model
+    example_bridge.set_member(I_beam, member="interior_main_beam")
+    example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_1")
+    example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_2")
+    example_bridge.set_member(exterior_I_beam, member="edge_beam")
+    example_bridge.set_member(slab, member="transverse_slab")
+    example_bridge.set_member(exterior_I_beam, member="start_edge")
+    example_bridge.set_member(exterior_I_beam, member="end_edge")
+
+    example_bridge.create_osp_model(pyfile=False)
+    return example_bridge
+
+
 # --------------------------------
 # test creating a basic beam grillage model
 def test_model_instance(bridge_model_42_negative):
@@ -193,3 +225,11 @@ def test_create_shell_link_model(shell_link_bridge):
     shell_link_model = shell_link_bridge
     # og.opsplt.plot_model("nodes")
     assert og.ops.getNodeTags()
+
+
+# test creating default beam model with customize ext to int beam spacings
+def test_ext_to_int_spacing(bridge_model_42_negative_custom_spacing):
+    example_bridge = bridge_model_42_negative_custom_spacing
+    og.opsv.plot_model(az_el=(-90, 0), element_labels=0)
+    og.plt.show()
+    assert all(example_bridge.Mesh_obj.noz == [0, 1.05, 2.05, 3.5, 4.95, 5.95, 7])

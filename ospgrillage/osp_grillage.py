@@ -46,7 +46,7 @@ def create_grillage(**kwargs):
 
     :keyword:
 
-    * ext_to_int_dist: (Int or Float) distance between internal beams and exterior main beams (on both sides)
+    * ext_to_int_dist: (Int or Float, or a List of Int or Float) distance between internal beams and exterior main beams (on both sides)
 
 
     Depending on the ``model_type`` argument, this function returns the relevant concrete class of
@@ -119,7 +119,7 @@ class OspGrillage:
 
         :keyword:
 
-        * ext_to_int_dist: (Int or Float) distance between internal beams and exterior main beams (on both sides)
+        * ext_to_int_dist: (Int or Float, or a List of Int or Float) distance between internal beams and exterior main beams (on both sides)
 
 
         :raises ValueError: If skew angle is greater than 90. If number of transverse grid line is less than 2.

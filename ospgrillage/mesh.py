@@ -182,6 +182,8 @@ class Mesh:
             edge_angle=self.skew_1,
             num_long_beam=self.num_long_beam,
             model_plane_y=self.y_elevation,
+            ext_to_int_a=self.ext_to_int_a,
+            ext_to_int_b=self.ext_to_int_b,
             **kwargs
         )
 
@@ -196,6 +198,8 @@ class Mesh:
             edge_angle=self.skew_2,
             num_long_beam=self.num_long_beam,
             model_plane_y=self.y_elevation,
+            ext_to_int_a=self.ext_to_int_a,
+            ext_to_int_b=self.ext_to_int_b,
             **kwargs
         )
         # ------------------------------------------------------------------------------------------
@@ -1320,7 +1324,7 @@ class EdgeControlLine:
 
         else:  # both have custom interior ext distance
             nox_girder = np.linspace(
-                start=first_interior, stop=last_interior, num=self.num_long_beam - 2
+                start=first_interior, stop=last_interior, num=self.num_long_beam - 4
             )
             nox_girder = np.hstack((edge_width_a, nox_girder))
             nox_girder = np.hstack((nox_girder, last_girder))

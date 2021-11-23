@@ -174,6 +174,7 @@ def plot_force(
     component=None,
     member: str = None,
     option: str = "elements",
+    loadcase: str = None,
 ):
     """
     Function to plot 2D diagrams from force component of specific elements from results
@@ -189,18 +190,22 @@ def plot_force(
     :type member: str
     :param option:
     :type option: str
+    :param loadcase: name string of load case to plot. If not provided, plots from first load case in the order of
+                     xarray loadcase coordinate
+    :type loadcase: str
     :return: Matplotlib figure
     :rtype: (:class:`matplotlib.figure.Figure`)
     """
     # instantiate component dict
     comp_dict = {"Fx": 0, "Fy": 1, "Fz": 2, "Mx": 3, "My": 4, "Mz": 5}
+    comp_factor = {"Fx": 1, "Fy": 1, "Fz": 1, "Mx": 1, "My": 1, "Mz": -1}
     if member is None:
         print("Missing argument member=")
         return
     component_index = component
     if not isinstance(component, int):
         component_index = comp_dict[component]
-
+    factor = comp_factor[component]
     fig, ax = plt.subplots()  # create plot window
     nodes = ospgrillage_obj.get_nodes()  # extract node information of model
     eletag = ospgrillage_obj.get_element(
@@ -211,25 +216,46 @@ def plot_force(
         force_result = result_obj.forces_beam
     else:
         force_result = result_obj.forces
+
     for ele in eletag:
         # get force components
-        ele_components = force_result.sel(
-            Element=ele,
-            Component=[
-                "Vx_i",
-                "Vy_i",
-                "Vz_i",
-                "Mx_i",
-                "My_i",
-                "Mz_i",
-                "Vx_j",
-                "Vy_j",
-                "Vz_j",
-                "Mx_j",
-                "My_j",
-                "Mz_j",
-            ],
-        )[0].values
+        if loadcase:
+            ele_components = force_result.sel(
+                Loadcase=loadcase,
+                Element=ele,
+                Component=[
+                    "Vx_i",
+                    "Vy_i",
+                    "Vz_i",
+                    "Mx_i",
+                    "My_i",
+                    "Mz_i",
+                    "Vx_j",
+                    "Vy_j",
+                    "Vz_j",
+                    "Mx_j",
+                    "My_j",
+                    "Mz_j",
+                ],
+            ).values
+        else:
+            ele_components = force_result.sel(
+                Element=ele,
+                Component=[
+                    "Vx_i",
+                    "Vy_i",
+                    "Vz_i",
+                    "Mx_i",
+                    "My_i",
+                    "Mz_i",
+                    "Vx_j",
+                    "Vy_j",
+                    "Vz_j",
+                    "Mx_j",
+                    "My_j",
+                    "Mz_j",
+                ],
+            )[0].values
         # get nodes of ele
         ele_node = result_obj.ele_nodes.sel(Element=ele)
         # create arrays for x y and z for plots
@@ -241,16 +267,16 @@ def plot_force(
             ex=xx, ey=yy, ez=zz, pl=ele_components
         )
         # plot element force component
-        ax.plot(
-            xx, s[:, component_index], "-k"
-        )  # Here change int accordingly: {0:Fx,1:Fy,2:Fz,3:Mx,4:My,5:Mz}
+        ax.plot(xx, s[:, component_index] * factor, "-k")
         # fill area between horizontal axis and line
-        ax.fill_between(xx, s[:, component_index], [0, 0], color="k", alpha=0.4)
+        ax.fill_between(
+            xx, s[:, component_index] * factor, [0, 0], color="k", alpha=0.4
+        )
     ax.set_title(member)
     ax.set_xlabel("x (m) ")
     ax.set_ylabel(component)
     fig.tight_layout()
-    fig.show()
+    # fig.show()
 
     return fig
 
@@ -261,6 +287,7 @@ def plot_defo(
     member: str = None,
     component: str = None,
     option: str = "nodes",
+    loadcase: str = None,
 ):
     """
     Function to plot 2D diagrams of displacement components of specific grillage element
@@ -277,6 +304,9 @@ def plot_defo(
     :param option: option of :func:`~ospgrillage.osp_grillage.OspGrillage.get_element`,
                    either "nodes" or "element" (Default nodes)
     :type option: str
+    :param loadcase: name string of load case to plot. If not provided, plots from first load case in the order of
+                 xarray loadcase coordinate
+    :type loadcase: str
     :return: Matplotlib figure
     :rtype: (:class:`matplotlib.figure.Figure`)
     """
@@ -308,9 +338,14 @@ def plot_defo(
     ]  # list of list
     # loop through nodes to plot
     for node in nodes_to_plot:
-        disp = result_obj.displacements.sel(Component=dis_comp, Node=node)[
-            0
-        ].values  # get node disp value
+        if loadcase:
+            disp = result_obj.displacements.sel(
+                Component=dis_comp, Node=node, Loadcase=loadcase
+            ).values  # get node disp value
+        else:
+            disp = result_obj.displacements.sel(Component=dis_comp, Node=node)[
+                0
+            ].values  # get node disp value
         xx = nodes[node]["coordinate"][0]  # get x coord
         zz = nodes[node]["coordinate"][2]  # get z coord (for 3D plots)
         if previous_def is not None:
@@ -324,6 +359,6 @@ def plot_defo(
     ax.set_xlabel("x (m) ")  # labels
     ax.set_ylabel(dis_comp)  # labels
     fig.tight_layout()
-    fig.show()
+    # fig.show()
 
     return fig
