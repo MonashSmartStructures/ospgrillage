@@ -264,6 +264,11 @@
    ospgrillage.osp_grillage.OspGrillage.get_element
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.clear_load_cases.html">
+   ospgrillage.osp_grillage.OspGrillage.clear_load_cases
+  </a>
+ </li>
 </ul>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
@@ -560,6 +565,9 @@ the functions callable from all modules within <em>ospgrillage</em>.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_element.html#ospgrillage.osp_grillage.OspGrillage.get_element" title="ospgrillage.osp_grillage.OspGrillage.get_element"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.osp_grillage.OspGrillage.get_element</span></code></a>(…)</p></td>
 <td><p>Function to query properties of elements in grillage model.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.clear_load_cases.html#ospgrillage.osp_grillage.OspGrillage.clear_load_cases" title="ospgrillage.osp_grillage.OspGrillage.clear_load_cases"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.osp_grillage.OspGrillage.clear_load_cases</span></code></a>(…)</p></td>
+<td><p>Function to remove all/specific load cases from model.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -588,7 +596,7 @@ the functions callable from all modules within <em>ospgrillage</em>.</p>
 <td><p>Function to set a load type (Loads class object) with its path (Path class object).</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.query.html#ospgrillage.load.MovingLoad.query" title="ospgrillage.load.MovingLoad.query"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ospgrillage.load.MovingLoad.query</span></code></a>(…)</p></td>
-<td><p>Function to query properties of moving load :param incremental_lc_name: Name string of load case to query properties :type incremental_lc_name: str :param kwargs: :return:</p></td>
+<td><p>Function to query properties of moving load</p></td>
 </tr>
 </tbody>
 </table>
@@ -807,6 +815,13 @@ within this “interior_main_beam” element group.</p>
 <dd class="field-odd"><p>dict contain node information</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.osp_grillage.OspGrillage.clear_load_cases">
+<span class="sig-name descname"><span class="pre">clear_load_cases</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OspGrillage.clear_load_cases" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to remove all/specific load cases from model. This function also resets the results stored in the
+model - users are require to re- <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze.html#ospgrillage.osp_grillage.OspGrillage.analyze" title="ospgrillage.osp_grillage.OspGrillage.analyze"><code class="xref py py-func docutils literal notranslate"><span class="pre">analyze()</span></code></a>.</p>
 </dd></dl>
 
 </dd></dl>
@@ -1293,11 +1308,18 @@ load group.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ospgrillage.load.MovingLoad.query">
 <span class="sig-name descname"><span class="pre">query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incremental_lc_name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.MovingLoad.query" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to query properties of moving load
-:param incremental_lc_name: Name string of load case to query properties
-:type incremental_lc_name: str
-:param kwargs:
-:return:</p>
+<dd><p>Function to query properties of moving load</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>incremental_lc_name</strong> (<em>str</em>) – Name string of load case to query properties</p></li>
+<li><p><strong>kwargs</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -1377,7 +1399,7 @@ for enveloping options.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ds</strong> (<em>Xarray</em>) – Data set from
-<a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_results()</span></code></a></p></li>
+<a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_results()</span></code></a> . note Combination</p></li>
 <li><p><strong>kwargs</strong> – See below.</p></li>
 </ul>
 </dd>
