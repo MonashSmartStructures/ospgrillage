@@ -53,7 +53,7 @@ class Envelope:
         for enveloping options.
 
         :param ds: Data set from
-                   :func:`~ospgrillage.osp_grillage.OspGrillage.get_results`
+                   :func:`~ospgrillage.osp_grillage.OspGrillage.get_results` . note Combination
         :type ds: Xarray
         :param kwargs: See below.
 
@@ -82,6 +82,7 @@ class Envelope:
         self.envelope_ds = None
         self.format_string = None
         # main command strings
+
         self.eval_string = (
             'self.ds.{array}.{xarray_command}(dim="Loadcase").sel({component_command})'
         )
@@ -212,7 +213,7 @@ def plot_force(
         member=member, options=option
     )  # get ele tag of grillage elements
     # loop ele tags of ele
-    if ospgrillage_obj.model_type == "shell":
+    if ospgrillage_obj.model_type == "shell_beam":
         force_result = result_obj.forces_beam
     else:
         force_result = result_obj.forces

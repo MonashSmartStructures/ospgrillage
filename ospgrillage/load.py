@@ -1047,6 +1047,7 @@ class MovingLoad:
     def query(self, incremental_lc_name, **kwargs):
         """
         Function to query properties of moving load
+
         :param incremental_lc_name: Name string of load case to query properties
         :type incremental_lc_name: str
         :param kwargs:
@@ -1152,6 +1153,14 @@ def create_load_model(**kwargs):
 
 
 class LoadModel:
+    """
+    Class to handle load model generator. This contains library of load models and creates load model using
+    `CompoundLoad` class.
+
+    For users wishing to contribute/add load models, do so herein by adding the load model to the library.
+
+    """
+
     def __init__(self, gap=0):
         pass
 
@@ -1184,21 +1193,11 @@ class LoadModel:
 
         """
 
-        mat_lib = {
-            "AS5100": {
-                "AS5100-2017": {
-                    "units": "SI",
-                    "25MPa": {"fc": 25, "E": 26.7, "v": 0.2, "rho": 2.4e3},
-                    "32MPa": {"fc": 32, "E": 30.1, "v": 0.2, "rho": 2.4e3},
-                    "40MPa": {"fc": 40, "E": 32.8, "v": 0.2, "rho": 2.4e3},
-                    "50MPa": {"fc": 50, "E": 34.8, "v": 0.2, "rho": 2.4e3},
-                    "65MPa": {"fc": 65, "E": 37.4, "v": 0.2, "rho": 2.4e3},
-                    "80MPa": {"fc": 80, "E": 39.6, "v": 0.2, "rho": 2.4e3},
-                    "100MPa": {"fc": 100, "E": 42.2, "v": 0.2, "rho": 2.4e3},
-                }
-            },
+        lm_lib = {
+            "AS5100": {"AS5100-2017": {}},
             "Eurocode": {},
         }
+        return lm_lib
 
 
 # ---------------------------------------------------------------------------------------------------------------

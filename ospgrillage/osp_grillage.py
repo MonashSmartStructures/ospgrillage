@@ -199,8 +199,8 @@ class OspGrillage:
         self.long_member_index = 4  # 0,1,2,3 correspond to edge, ext_a, interior_beam,
         # dict storing information
         self.common_grillage_element = dict()  # of common grillage
-        self.section_dict = {}  #  of section tags
-        self.material_dict = {}  #  of material tags
+        self.section_dict = {}  # of section tags
+        self.material_dict = {}  # of material tags
         # variables related to analysis - which can be unique to element/material/ types
         self.constraint_type = "Plain"  # base class - plain
         # collect mesh groups
@@ -2158,6 +2158,30 @@ class OspGrillage:
         :return: dict contain node information
         """
         return self.Mesh_obj.node_spec
+
+    def clear_load_cases(self, **kwargs):
+        """
+        Function to remove all/specific load cases from model. This function also resets the results stored in the
+        model - users are require to re- :func:`~ospgrillage.osp_grillage.OspGrillage.analyze`.
+
+        """
+        specific_lc = kwargs.get("load_case", None)
+        if isinstance(specific_lc, str):
+            specific_lc = [specific_lc]
+        if specific_lc:
+            for lc in specific_lc:
+                check_match = [lc in lc_name["name"] for lc_name in self.load_case_list]
+                if any(check_match):
+                    ind = [i for i, x in enumerate(check_match) if x][
+                        0
+                    ]  # list of 1 element
+                    self.load_case_list.pop(ind)
+
+        else:
+            self.load_case_list = []  # reset load case
+
+        # remove all results
+        self.results = Results(self.Mesh_obj)  # reset results
 
 
 # ---------------------------------------------------------------------------------------------------------------------

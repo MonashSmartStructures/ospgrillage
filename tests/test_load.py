@@ -211,6 +211,49 @@ def bridge_model_42_positive(ref_bridge_properties):
     return example_bridge
 
 
+@pytest.fixture
+def shell_link_bridge(ref_bridge_properties):
+    # reference bridge 10m long, 7m wide with common skew angle at both ends
+    I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
+
+    # create material of slab shell
+    slab_shell_mat = og.create_material(
+        material="concrete", code="AS5100-2017", grade="50MPa", rho=2400
+    )
+
+    # create section of slab shell
+    slab_shell_section = og.create_section(h=0.2)
+    # shell elements for slab
+    slab_shell = og.create_member(section=slab_shell_section, material=slab_shell_mat)
+
+    # construct grillage model
+    example_bridge = og.create_grillage(
+        bridge_name="shelllink_10m",
+        long_dim=10,
+        width=7,
+        skew=0,
+        num_long_grid=6,
+        num_trans_grid=11,
+        edge_beam_dist=1,
+        mesh_type="Orth",
+        model_type="shell_beam",
+        max_mesh_size_z=1,
+        max_mesh_size_x=1,
+        offset_beam_y_dist=0.499,
+        beam_width=0.89,
+    )
+
+    # set beams
+    example_bridge.set_member(I_beam, member="interior_main_beam")
+    example_bridge.set_member(I_beam, member="exterior_main_beam_1")
+    example_bridge.set_member(I_beam, member="exterior_main_beam_2")
+    # set shell
+    example_bridge.set_shell_members(slab_shell)
+
+    example_bridge.create_osp_model(pyfile=False)
+    return example_bridge
+
+
 # =====================================================================================================================
 # Tests
 # =====================================================================================================================
@@ -961,3 +1004,53 @@ def test_patch_partially_outside_mesh(bridge_model_42_negative):
         "ops.load(62, *[0, 0.016175126143378623, 0, -0.010398295377886262, 0, -0.008087563071689334])\n",
         "ops.load(27, *[0, 0.01617512614337889, 0, -0.010398295377886436, 0, 0.008087563071689424])\n",
     ]
+
+
+def test_clearing_results(bridge_model_42_negative):
+    example_bridge = bridge_model_42_negative
+    lane_point_1 = og.create_load_vertex(x=-5, z=3, p=5)
+    lane_point_2 = og.create_load_vertex(x=8, z=3, p=5)
+    lane_point_3 = og.create_load_vertex(x=8, z=5, p=5)
+    lane_point_4 = og.create_load_vertex(x=-5, z=5, p=5)
+    Lane = og.create_load(
+        loadtype="patch",
+        name="Lane 1",
+        point1=lane_point_1,
+        point2=lane_point_2,
+        point3=lane_point_3,
+        point4=lane_point_4,
+        shape_function="hermite",
+    )
+    ULS_DL = og.create_load_case(name="Lane")
+    ULS_DL.add_load(Lane)  # ch
+    example_bridge.add_load_case(ULS_DL)
+    example_bridge.analyze()
+    results = example_bridge.get_results()
+    assert example_bridge.results.basic_load_case_record != {}
+    assert example_bridge.load_case_list != []
+    example_bridge.clear_load_cases(load_case="Lane")
+    assert example_bridge.results.basic_load_case_record == {}
+    assert example_bridge.load_case_list == []
+
+
+def test_load_analysis_shell_model(shell_link_bridge):
+    shell_link_model = shell_link_bridge
+    # og.opsplt.plot_model("nodes")
+
+    lane_point_1 = og.create_load_vertex(x=5, y=0, z=3, p=5)
+    lane_point_2 = og.create_load_vertex(x=8, y=0, z=3, p=5)
+    lane_point_3 = og.create_load_vertex(x=8, y=0, z=5, p=5)
+    lane_point_4 = og.create_load_vertex(x=5, y=0, z=5, p=5)
+    Lane = og.PatchLoading(
+        point1=lane_point_1,
+        point2=lane_point_2,
+        point3=lane_point_3,
+        point4=lane_point_4,
+    )
+    ULS_DL = og.LoadCase(name="Lane")
+    ULS_DL.add_load(Lane)  # ch
+    shell_link_model.add_load_case(ULS_DL)
+    shell_link_model.analyze()
+
+    results = shell_link_model.get_results()
+    print(results)

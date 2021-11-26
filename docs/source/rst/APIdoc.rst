@@ -41,6 +41,7 @@ The following methods can be called on the :class:`ospgrillage.osp_grillage.OspG
     ospgrillage.osp_grillage.OspGrillage.get_results
     ospgrillage.osp_grillage.OspGrillage.get_nodes
     ospgrillage.osp_grillage.OspGrillage.get_element
+    ospgrillage.osp_grillage.OspGrillage.clear_load_cases
 
 
 Load module API
