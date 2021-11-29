@@ -5,7 +5,8 @@ This module holds all static methods used in other modules. Most methods herein 
 
 import numpy as np
 from scipy.spatial import distance
-from scipy.optimize import fsolve
+from scipy.optimize import fsolve, root
+import warnings
 
 
 def diff(li1, li2):
@@ -167,6 +168,7 @@ def get_slope(pt1, pt2):
 def solve_zeta_eta(xp, zp, x1, z1, x2, z2, x3, z3, x4, z4):
     # create function to solve for eta and zeta - dynamically for varying parameters x1-x4, z1-z4, zp,xp
 
+    # mapping of natural coordinate eta{-1:1}, zeta{-1:1} to global coordinate (x,z)
     def obj_func(x, xp, zp, x1, x2, x3, x4, z1, z2, z3, z4):
         eta = 4 * zp - (
             (1 - x[0]) * (1 - x[1]) * z1
@@ -182,12 +184,21 @@ def solve_zeta_eta(xp, zp, x1, z1, x2, z2, x3, z3, x4, z4):
         )
         return eta, zeta
 
-    root = fsolve(
-        obj_func, np.array([1, 1]), args=(xp, zp, x1, x2, x3, x4, z1, z2, z3, z4)
-    )
+    # if initial xp zp is very close (order 1e-8) to the centre (0,0,0) of natural coordinate,
+    # avoid fsolve RunTimeWarning by
+    if all([np.isclose(xp, (x1 + x2) / 2), np.isclose(zp, (z1 + z3) / 2)]):
+        root_func = [0, 0]
 
-    eta = root[0]
-    zeta = root[1]
+    else:
+        root_func = fsolve(
+            obj_func,
+            np.array([-0.4444444444444, 0.99999999]),
+            args=(xp, zp, x1, x2, x3, x4, z1, z2, z3, z4),
+        )  # here the initial values are chosen to avoid RunTimeWarning where initial guess is very close
+        # to the final solution of eta and zeta
+
+    eta = root_func[0]
+    zeta = root_func[1]
     return eta, zeta
 
 

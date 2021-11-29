@@ -2629,9 +2629,9 @@ class Results:
                     ele_tag = list(inc_resp_list_of_2_dict[2].keys())
                     extracted_ele_nodes_list = True
         # convert to np array format
-        basic_array = np.array(basic_array_list)
-        force_array = np.array(basic_ele_force_list)
-        ele_array = np.array(ele_nodes_list)
+        basic_array = np.array(basic_array_list, dtype=object)
+        force_array = np.array(basic_ele_force_list, dtype=object)
+        ele_array = np.array(ele_nodes_list, dtype=object)
         ele_array_shell = [e for e in ele_array if len(e) > 2]
         ele_array_beam = [e for e in ele_array if len(e) == 2]
         ele_tag = np.array(ele_tag)

@@ -1157,19 +1157,58 @@ class LoadModel:
     Class to handle load model generator. This contains library of load models and creates load model using
     `CompoundLoad` class.
 
-    For users wishing to contribute/add load models, do so herein by adding the load model to the library.
+    For users wishing to contribute/add load models, do so herein by adding the load model as a function to
+    this class.
 
     """
 
-    def __init__(self, gap=0):
-        pass
+    def __init__(self, gap=0, **kwargs):
+        """
+        Init the class.
 
-    def create_axle_positions(self):
-        axle_dist = 0
-        left_group_dist = 0
-        right_group_dist = 0
-        gap = 0
+        :param gap: Gap between axle (specific to M1600)
+        :param kwargs: See below
+        """
+        self.gap = gap
+        self.model_type = kwargs.get("model_type", None)
+        self.units = kwargs.get("units", "SI")
+        self.origin = kwargs.get("origin", Point(0, 0, 0))
+        # create unit dict
+        self.unit_dict = {"m": 1, "kN": 1e3}
+        # create variables
+        self.x_offset = self.origin.x
+        self.z_offset = self.origin.z
+        # default y offset is zero
 
+        # checks
+        if self.origin is None:
+            self.x_offset = 0
+
+    def create(self):
+        if self.model_type == "M1600":
+            return self.create_m1600_vehicle(self.gap)
+
+    def create_m1600_vehicle(self, gap):
+        """
+        AS5100 Australian load model.
+
+        :param gap: Gap between axle group
+        :return: :class:`~ospgrillage.load.CompoundLoad` object of a M1600 vehicle in local coordinate.
+        """
+        # default SI units
+        m = 1
+        kN = 1e3
+        if self.units == "SI":  # if SI, de-activate converter variables
+            ft_convert = 1
+            ton_convert = 1
+        else:  # Imperial units
+            ft_convert = 3.28084
+            ton_convert = 0.10036113565668
+
+        axle_dist = 1.25 * m * ft_convert
+        left_group_dist = 3.75 * m * ft_convert
+        right_group_dist = 5 * m * ft_convert
+        wheel_load = 60 * kN * ton_convert
         load_positions_x = [
             0,
             axle_dist,
@@ -1184,20 +1223,19 @@ class LoadModel:
             right_group_dist + gap + left_group_dist + axle_dist * 2 + axle_dist,
             right_group_dist + gap + left_group_dist + axle_dist * 2 + 2 * axle_dist,
         ]
+        load_positions_x = [point + self.x_offset for point in load_positions_x]
 
-    @staticmethod
-    def _create_load_model_json():
-        """
-        Function to create the default mat_lib.js file. The default version is 0.0.1.
-        Just to make sure the JSON file is formatted correctly
+        load_positions_z = [-1, 1]
+        load_positions_z = [point + self.z_offset for point in load_positions_z]
 
-        """
+        M1600_vehicle = create_compound_load(name="M1600 Vehicle")
+        for z in load_positions_z:
+            for x in load_positions_x:
+                vert = create_load_vertex(x=x, z=z, p=wheel_load)
+                point = create_load(loadtype="point", name="M1600 point", point1=vert)
+                M1600_vehicle.add_load(load_obj=point)
 
-        lm_lib = {
-            "AS5100": {"AS5100-2017": {}},
-            "Eurocode": {},
-        }
-        return lm_lib
+        return M1600_vehicle
 
 
 # ---------------------------------------------------------------------------------------------------------------
