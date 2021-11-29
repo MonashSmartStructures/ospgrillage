@@ -903,15 +903,39 @@ load group.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.load.LoadModel">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">LoadModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LoadModel" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">LoadModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LoadModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Class to handle load model generator. This contains library of load models and creates load model using
 <cite>CompoundLoad</cite> class.</p>
-<p>For users wishing to contribute/add load models, do so herein by adding the load model to the library.</p>
+<p>For users wishing to contribute/add load models, do so herein by adding the load model as a function to
+this class.</p>
+<p>Init the class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gap</strong> – Gap between axle (specific to M1600)</p></li>
+<li><p><strong>kwargs</strong> – See below</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="ospgrillage.load.LoadModel.create_axle_positions">
-<span class="sig-name descname"><span class="pre">create_axle_positions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LoadModel.create_axle_positions" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ospgrillage.load.LoadModel.create">
+<span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LoadModel.create" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.load.LoadModel.create_m1600_vehicle">
+<span class="sig-name descname"><span class="pre">create_m1600_vehicle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gap</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LoadModel.create_m1600_vehicle" title="Permalink to this definition">¶</a></dt>
+<dd><p>AS5100 Australian load model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>gap</strong> – Gap between axle group</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><a class="reference internal" href="#ospgrillage.load.CompoundLoad" title="ospgrillage.load.CompoundLoad"><code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundLoad</span></code></a> object of a M1600 vehicle in local coordinate.</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
