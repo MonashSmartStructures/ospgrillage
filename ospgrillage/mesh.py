@@ -241,6 +241,8 @@ class Mesh:
         # standard correspond to base model technique - grillage with beam element
         return EdgeControlLine(**kwargs)
 
+    # ------------------------------------------------------------------------------------------
+    # main meshing algorithms (straight mesh)
     def _fixed_sweep_node_meshing(self):
         assigned_node_tag = []
         previous_node_tag = []
@@ -1234,6 +1236,13 @@ class Mesh:
 
         return start_point_x, z0
 
+    # ------------------------------------------------------------------------------------------
+    # curve meshing algorithm
+
+    def _mesh_curve(self):
+
+        pass
+
 
 class EdgeControlLine:
     """
@@ -1272,14 +1281,13 @@ class EdgeControlLine:
         self.z_group_master_pair_list = []
         self.node_z_pair_list_value = []
         # counter
-        self.customize = kwargs.get("custom", None)  # get the list
+        self.customize = kwargs.get("custom", None)  # get a list of custom spacings
         if self.customize and not isinstance(self.customize, list):
             raise Exception(
                 "Invalid custom control point format: Hint - accepts list of float or int"
             )
 
         # calculations
-        # TODO TEST
         # array containing z coordinate of edge construction line
         last_girder = self.width_z - self.edge_width_b  # coord of exterior main beam 2
 
@@ -1331,9 +1339,6 @@ class EdgeControlLine:
 
         # create self.noz points
         self._create_trans_grid(nox_girder=nox_girder)
-        # if self.feature == "standard":
-        #     self.noz = np.hstack((np.hstack((0, nox_girder)), self.width_z))
-        # elif self.feature == "shell_link":
 
         # if negative angle, create edge_node_x based on negative angle algorithm, else positive angle algorithm
         if self.edge_angle <= 0:
@@ -1484,7 +1489,7 @@ class SweepPath:
     across its path. The constuctor is handled by Mesh classes ( either base or concrete classes)
     """
 
-    def __init__(self, pt1: Point, pt2: Point, pt3: Point = None):
+    def __init__(self, pt1: Point, pt2: Point, pt3: Point = None, **kwargs):
         """
 
         :param pt1: Namedtuple Point of first coordinate
@@ -1495,13 +1500,19 @@ class SweepPath:
         self.pt2 = pt2  # default second / last for linear line
         self.pt3 = pt3  # default mid point of a curved line defined using 3 points
         self.decimal_lim = 4
-        self.curve_path = False
-        # return variables
+
+        # instantiate variables
         self.zeta = None
         self.m = None
         self.c = 0  # Default:0 , sweep path intersects origin
+        # properties for curve sweep path - obtained from kwargs
+        self.curve_path_dict: dict = kwargs.get("curve_path_dict", None)
 
     def get_sweep_line_properties(self):
+        """
+        Parse input to get sweep line properties
+
+        """
         if self.pt3 is not None:
             try:
                 self.d = find_circle(
@@ -1512,7 +1523,7 @@ class SweepPath:
                     x3=self.pt3.x,
                     y3=self.pt3.z,
                 )
-                self.curve_path = True
+
             except ZeroDivisionError:
                 return Exception(
                     "Zero div error. Point 3 not valid to construct curve line"
@@ -1541,12 +1552,28 @@ class SweepPath:
         return self.zeta, self.m, self.c
 
     def get_line_function(self, x):
-        if not self.curve_path:
+        if not self.curve_path_dict:
             # straight line
             return line_func(self.m, self.c, x)
         else:
             # TODO for curve line
-            pass
+            r = self.curve_path_dict["radius"]  # radius of sector
+            angle = self.curve_path_dict["angle"]  # angle sector
+            cartesian_angle = 90 - angle
+            rotation = self.curve_path_dict[
+                "rotation"
+            ]  # rotating direction, num either 1 or 0 [
+            # determine end point x, z of path
+            if rotation > 0:
+                curve_center_xz = [0, -r]
+            else:
+                curve_center_xz = [0, r]
+
+            return arc_func(
+                h=curve_center_xz[0], v=curve_center_xz[0], R=curve_center_xz[1], x=x
+            )
+
+            # determine length of arc
 
 
 # ---------------------------------------------------------------------------------------------------------------------
