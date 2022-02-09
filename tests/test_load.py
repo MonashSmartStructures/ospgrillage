@@ -303,7 +303,7 @@ def test_compound_load_positions():
 
 
 def test_point_load_getter(
-    bridge_model_42_negative,
+        bridge_model_42_negative,
 ):  # test get_point_load_nodes() function
     # test if setter and getter is correct              # and assign_point_to_node() function
 
@@ -431,8 +431,15 @@ def test_line_load(bridge_model_42_negative):
             },
         }
     ]
+    for grid_key, intersect_dict in example_bridge.global_line_int_dict[0].items():
+        assert grid_key in ref_answer[0].keys()  # check keys is correct
 
-    assert example_bridge.global_line_int_dict == ref_answer
+        for intersect_type, grid_val in intersect_dict.items():
+            # check values
+            if grid_val:
+                assert grid_val[0] == pytest.approx(
+                    ref_answer[0][grid_key][intersect_type][0]
+                )
 
 
 # test line load function with line load is vertical (slope = infinite) and start end points
@@ -466,7 +473,15 @@ def test_line_load_vertical_and_cross_outside_mesh(bridge_model_42_negative):
             "ends": [],
         },
     }
-    assert example_bridge.global_line_int_dict[0] == ref_ans
+    for grid_key, intersect_dict in example_bridge.global_line_int_dict[0].items():
+        assert grid_key in ref_ans.keys()  # check keys is correct
+
+        for intersect_type, grid_val in intersect_dict.items():
+            # check values
+            if grid_val:
+                assert grid_val[0] == pytest.approx(
+                    ref_ans[grid_key][intersect_type][0]
+                )
 
 
 # test a line load which coincide with edge z = 0 or z = 7
@@ -486,7 +501,7 @@ def test_line_load_coincide_long_edge(bridge_model_42_negative):
     ULS_DL.add_load(Barrier)  # ch
     example_bridge.add_load_case(ULS_DL)
 
-    assert example_bridge.global_line_int_dict == [
+    ref_answer = [
         {
             5: {
                 "long_intersect": [],
@@ -526,6 +541,15 @@ def test_line_load_coincide_long_edge(bridge_model_42_negative):
             },
         }
     ]
+    for grid_key, intersect_dict in example_bridge.global_line_int_dict[0].items():
+        assert grid_key in ref_answer[0].keys()  # check keys is correct
+
+        for intersect_type, grid_val in intersect_dict.items():
+            # check values
+            if grid_val:
+                assert grid_val[0] == pytest.approx(
+                    ref_answer[0][grid_key][intersect_type][0]
+                )
 
 
 def test_line_load_coincide_transverse_member(bridge_42_0_angle_mesh):
@@ -547,8 +571,7 @@ def test_line_load_coincide_transverse_member(bridge_42_0_angle_mesh):
     ULS_DL = og.create_load_case(name="Barrier")
     ULS_DL.add_load(Barrier)  # ch
     example_bridge.add_load_case(ULS_DL)
-
-    assert example_bridge.load_case_list[0]["load_command"] == [
+    ref_answer = [
         "ops.load(51, *[0, 0.0, 0, 0, 0, 0])\n",
         "ops.load(30, *[0, 0.0, 0, 0, 0, 0])\n",
         "ops.load(31, *[0, 0.0, 0, 0, 0, 0])\n",
@@ -575,6 +598,15 @@ def test_line_load_coincide_transverse_member(bridge_42_0_angle_mesh):
         "ops.load(56, *[0, 0.0, 0, 0, 0, 0])\n",
     ]
 
+    for i, load_command in enumerate(example_bridge.load_case_list[0]["load_command"]):
+        start = load_command.find("[")
+        end = load_command.find("]")
+        pos = eval(load_command[start: (end + 1)])
+        start_ref = ref_answer[i].find("[")
+        end_ref = ref_answer[i].find("]")
+        pos_ref = eval(ref_answer[i][start_ref: (end_ref + 1)])
+        assert pos == pytest.approx(pos_ref)
+
 
 def test_line_load_coincide_edge_beam(bridge_model_42_negative):
     # when set line load z coordinate to z = 0 , test if line returns correct coincide node lines
@@ -594,7 +626,7 @@ def test_line_load_coincide_edge_beam(bridge_model_42_negative):
     ULS_DL.add_load(Barrier)  # ch
     example_bridge.add_load_case(ULS_DL)
 
-    assert example_bridge.global_line_int_dict == [
+    ref_ans = [
         {
             9: {
                 "long_intersect": [],
@@ -634,6 +666,16 @@ def test_line_load_coincide_edge_beam(bridge_model_42_negative):
             },
         }
     ]
+
+    for grid_key, intersect_dict in example_bridge.global_line_int_dict[0].items():
+        assert grid_key in ref_ans[0].keys()  # check keys is correct
+
+        for intersect_type, grid_val in intersect_dict.items():
+            # check values
+            if grid_val:
+                assert grid_val[0] == pytest.approx(
+                    ref_ans[0][grid_key][intersect_type][0]
+                )
 
 
 def test_line_load_outside_of_mesh(bridge_model_42_negative):
@@ -675,7 +717,7 @@ def test_patch_load(bridge_model_42_negative):
     example_bridge.add_load_case(ULS_DL)
     example_bridge.analyze()
 
-    assert example_bridge.load_case_list[0]["load_command"] == [
+    ref_answer = [
         "ops.load(19, *[0, 1.4068813192153762, 0, 0.7034406596076881, 0, 0.7034406596076881])\n",
         "ops.load(25, *[0, 1.4068813192153762, 0, 0.7034406596076881, 0, -0.7034406596076881])\n",
         "ops.load(26, *[0, 1.4068813192153762, 0, -0.7034406596076881, 0, -0.7034406596076881])\n",
@@ -725,6 +767,15 @@ def test_patch_load(bridge_model_42_negative):
         "ops.load(15, *[0, 0.10620730762527884, 0, -0.05310365381263942, 0, 0.06601456784167829])\n",
     ]
 
+    for i, load_command in enumerate(example_bridge.load_case_list[0]["load_command"]):
+        start = load_command.find("[")
+        end = load_command.find("]")
+        pos = eval(load_command[start: (end + 1)])
+        start_ref = ref_answer[i].find("[")
+        end_ref = ref_answer[i].find("]")
+        pos_ref = eval(ref_answer[i][start_ref: (end_ref + 1)])
+        assert pos == pytest.approx(pos_ref)  # check each pos
+
 
 # test for patch load with linear shape function for load distribution
 def test_patch_load_using_linear_shape_function(bridge_model_42_negative):
@@ -746,7 +797,7 @@ def test_patch_load_using_linear_shape_function(bridge_model_42_negative):
     ULS_DL.add_load(Lane)  # ch
     example_bridge.add_load_case(ULS_DL)
     example_bridge.analyze()
-    assert example_bridge.load_case_list[0]["load_command"] == [
+    ref_answer = [
         "ops.load(19, *[0, 1.4068813192153762, 0, 0, 0, 0])\n",
         "ops.load(25, *[0, 1.4068813192153762, 0, 0, 0, 0])\n",
         "ops.load(26, *[0, 1.4068813192153762, 0, 0, 0, 0])\n",
@@ -796,28 +847,40 @@ def test_patch_load_using_linear_shape_function(bridge_model_42_negative):
         "ops.load(15, *[0, 0.22482308181507565, 0, 0, 0, 0])\n",
     ]
 
+    for i, load_command in enumerate(example_bridge.load_case_list[0]["load_command"]):
+        start = load_command.find("[")
+        end = load_command.find("]")
+        pos = eval(load_command[start: (end + 1)])
+        start_ref = ref_answer[i].find("[")
+        end_ref = ref_answer[i].find("]")
+        pos_ref = eval(ref_answer[i][start_ref: (end_ref + 1)])
+        assert pos == pytest.approx(pos_ref)
+
 
 def test_local_vs_global_coord_settings():
     location = og.create_load_vertex(x=5, y=0, z=-2, p=20)  # create load point
-    local_point = og.create_load(
+    local_location = og.create_load_vertex(x=0, y=0, z=0, p=20)
+    local_point_load = og.create_load(
         loadtype="point",
         name="single point",
-        localpoint1=location,
+        point1=local_location,
         shape_function="hermite",
     )  # defined for local coordinate
-    global_point = og.create_load(
+    global_point_load = og.create_load(
         loadtype="point", name="single point", point1=location, shape_function="hermite"
     )  # defined for local coordinate
 
-    M1600 = og.CompoundLoad("Truck model")
-    M1600.add_load(
-        load_obj=local_point
+    M1600_local = og.CompoundLoad("Truck model")
+    M1600_local.add_load(
+        load_obj=local_point_load
     )  # if local_coord is set, append the local coordinate of the point load
+    M1600_local.set_global_coord(og.Point(5, 0, -2))
 
-    assert M1600.compound_load_obj_list[0].load_point_1 is None
-    M1600.add_load(load_obj=global_point)
-    assert M1600.compound_load_obj_list[1].load_point_1 == og.LoadPoint(
-        x=5, y=0, z=-2, p=20
+    M1600_global = og.CompoundLoad("Truck model global")
+    M1600_global.add_load(load_obj=global_point_load)
+    assert (
+            M1600_local.compound_load_obj_list[0].load_point_1
+            == M1600_global.compound_load_obj_list[0].load_point_1
     )
 
 
@@ -945,7 +1008,7 @@ def test_patch_partially_outside_mesh(bridge_model_42_negative):
     example_bridge.analyze()
     results = example_bridge.get_results()
 
-    assert example_bridge.load_case_list[0]["load_command"] == [
+    ref_answer = [
         "ops.load(10, *[0, 1.1724010993461413, 0, 0.0, 0, 0.0])\n",
         "ops.load(14, *[0, 1.1724010993461444, 0, 0.0, 0, 0.0])\n",
         "ops.load(15, *[0, 1.172401099346146, 0, 0.0, 0, 0.0])\n",
@@ -1004,6 +1067,15 @@ def test_patch_partially_outside_mesh(bridge_model_42_negative):
         "ops.load(62, *[0, 0.01617512614337903, 0, -0.010398295377886516, 0, -0.008087563071689525])\n",
         "ops.load(27, *[0, 0.016175126143379157, 0, -0.0103982953778866, 0, 0.008087563071689568])\n",
     ]
+
+    for i, load_command in enumerate(example_bridge.load_case_list[0]["load_command"]):
+        start = load_command.find("[")
+        end = load_command.find("]")
+        pos = eval(load_command[start: (end + 1)])
+        start_ref = ref_answer[i].find("[")
+        end_ref = ref_answer[i].find("]")
+        pos_ref = eval(ref_answer[i][start_ref: (end_ref + 1)])
+        assert pos == pytest.approx(pos_ref)
 
 
 def test_clearing_results(bridge_model_42_negative):

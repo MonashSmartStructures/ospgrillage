@@ -89,3 +89,6 @@ The following *OpenSees* element types are supported:
 -  Retrieve result envelopes from `xarray` results
 -  Query options for moving load 
 -  Plotting displacement and force component from the results
+
+# Credits
+- Mayer Melhem for producing the documentation illustrations and the design of the *ospgrillage* logo.
