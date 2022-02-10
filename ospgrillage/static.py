@@ -90,6 +90,24 @@ def arc_func(h, v, R, x, r=0):
     return y
 
 
+def create_arc_points(point1, radius, length, num_inc):
+    # function to create points along arc `length` of a sector with `angle`
+    start_angle = np.pi / 2  # 90 degrees
+    angle = length / radius  # calculate angle of sector
+    end_angle = (
+        start_angle - angle
+    )  # difference is the end point's angle (about center_point)
+    center_point = [point1.x, -radius]  # x z , model plane = 0 default
+    # find point2
+    angle_inc = np.linspace(start_angle, end_angle, num_inc)
+    # point2 = [center_point[0] + radius*np.cos(end_angle), center_point[1] + radius * np.sin(end_angle)]
+
+    x_curve = [center_point[0] + radius * np.cos(ang) for ang in angle_inc]
+    z_curve = [center_point[1] + radius * np.sin(ang) for ang in angle_inc]
+
+    return x_curve, z_curve
+
+
 # -----------------------------------------------------------------------------------------------------------------------
 # -----------------------------------------------------------------------------------------------------------------------
 def select_segment_function(curve_flag, d, x, r=0, m=0, c=0):

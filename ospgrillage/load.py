@@ -103,11 +103,19 @@ def create_load(**kwargs):
     :return: PointLoad, LineLoading, PatchLoading, or NodalForces
     """
     type = kwargs.get("loadtype", None)
-    if type == "point":
+
+    vertice_list = []
+    for i in range(4):
+        vertice_string = f"point{i + 1}"
+        vertice_list.append(kwargs.get(vertice_string, None))
+
+    vertice_count = sum([1 for vertex in vertice_list if vertex])
+
+    if vertice_count == 1:
         return PointLoad(**kwargs)
-    elif type == "line":
+    elif vertice_count == 2:
         return LineLoading(**kwargs)
-    elif type == "patch":
+    elif vertice_count >= 4:
         return PatchLoading(**kwargs)
     elif type == "nodal":
         fx = kwargs.get("Fx", 0)
@@ -464,27 +472,6 @@ class LineLoading(Loads):
         self.long_beam_ele_load_flag = kwargs.get("long_beam_element_load", False)
         self.trans_beam_ele_load_flag = kwargs.get("trans_beam_element_load", False)
 
-        # if local coordinate is defined, create parameters based on local coordinates. later, if add_global_coord()
-        # is called, set their load_point_
-        # if not any(self.point_list) and any(self.local_point_list):
-        #     if self.local_load_point_3 is not None:  # curve
-        #         # findCircle assumes model plane is y = 0, ignores y input, y in this case is a 2D view of x z plane
-        #         self.d = findCircle(x1=self.local_load_point_1.x, y1=self.local_load_point_1.z,
-        #                             x2=self.local_load_point_2.x, y2=self.local_load_point_2.z,
-        #                             x3=self.local_load_point_3.x, y3=self.local_load_point_3.z)
-        #         # return a function variable
-        #         self.line_end_point = self.local_load_point_3
-        #     else:  # straight line with 2 points
-        #         self.m_local, self.phi_local = get_slope(
-        #             [self.local_load_point_1.x, self.local_load_point_1.y, self.local_load_point_1.z],
-        #             [self.local_load_point_2.x, self.local_load_point_2.y, self.local_load_point_2.z])
-        #         self.c_local = get_y_intcp(m=self.m_local, x=self.local_load_point_1.x, y=self.local_load_point_1.z)
-        #         self.angle_local = np.arctan(self.m_local) if self.m_local is not None else np.pi / 2  # in radian
-        #         self.line_end_point = self.local_load_point_2
-        #         # namedTuple Line
-        #         self.line_equation = Line(self.m_local, self.c_local, self.phi_local)
-
-        # elif not any(self.local_point_list) and any(self.point_list):
         # if three points are defined, set line as curved circular line with point 2 (x2,y2,z2) in the centre of
         # curve
         if self.load_point_3 is not None:  # curve

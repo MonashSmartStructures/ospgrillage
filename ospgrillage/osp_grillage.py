@@ -46,7 +46,9 @@ def create_grillage(**kwargs):
 
     :keyword:
 
-    * ext_to_int_dist: (Int or Float, or a List of Int or Float) distance between internal beams and exterior main beams (on both sides)
+    * ext_to_int_dist: (Int or Float, or a List of Int or Float) distance between internal beams and
+    exterior main beams. If list is provided (usually size 2), apply each distinct distance to left and right
+         side respectively.
 
 
     Depending on the ``model_type`` argument, this function returns the relevant concrete class of
@@ -119,7 +121,9 @@ class OspGrillage:
 
         :keyword:
 
-        * ext_to_int_dist: (Int or Float, or a List of Int or Float) distance between internal beams and exterior main beams (on both sides)
+        * ext_to_int_dist: (Int or Float, or a List of Int or Float) distance between internal beams
+         and exterior main beams. If list is provided (usually size 2), apply each distinct distance to left and right
+         side respectively.
 
 
         :raises ValueError: If skew angle is greater than 90. If number of transverse grid line is less than 2.
@@ -1830,10 +1834,10 @@ class OspGrillage:
             self.results.insert_analysis_results(analysis_obj=load_case_analysis)
 
         # run moving load case
-        list_of_inc_analysis = []
         # for moving_load_obj, load_case_dict_list in self.moving_load_case_dict.items():
         if selected_moving_load_lc_list:
             for ml_name, load_case_dict_list in selected_moving_load_lc_list.items():
+                list_of_inc_analysis = []
                 for load_case_dict in load_case_dict_list:
                     load_case_obj = load_case_dict["loadcase"]  # maybe unused
                     load_command = load_case_dict["load_command"]
