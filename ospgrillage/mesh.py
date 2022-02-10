@@ -1171,7 +1171,7 @@ class Mesh:
         x = zi
         z = -xi
         # normalize vector
-        length = np.sqrt(x ** 2 + z ** 2)
+        length = np.sqrt(x**2 + z**2)
         x1 = x / length
 
         z1 = z / length

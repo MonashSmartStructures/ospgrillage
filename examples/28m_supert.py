@@ -6,8 +6,8 @@ pyfile = False
 m = 1.0
 N = 1.0
 sec = 1.0
-MPa = 1e9 * N / m ** 2
-g = 9.81 * m / sec ** 2  # 9.81 m/s2
+MPa = 1e9 * N / m**2
+g = 9.81 * m / sec**2  # 9.81 m/s2
 
 
 # variables
@@ -15,7 +15,7 @@ E = 34.7 * MPa
 G = 20e9 * MPa  # Pa
 v = 0.3
 
-q = 40e9 * N / m ** 2
+q = 40e9 * N / m**2
 
 L = 28 * m
 H = 7 * m
