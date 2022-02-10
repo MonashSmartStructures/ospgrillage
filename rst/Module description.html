@@ -412,7 +412,8 @@ Lines are evenly spaced, except for the spacing between the edge beam and exteri
 - <code class="docutils literal notranslate"><span class="pre">num_trans_grid</span></code>: An <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code> of the number of grid lines to be uniformly spaced along the transverse direction - each grid line represents the total number of transverse members.
 - <code class="docutils literal notranslate"><span class="pre">edge_beam_dist</span></code>: A <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code> of the distance between exterior longitudinal beams to edge beam.
 - <code class="docutils literal notranslate"><span class="pre">mesh_type</span></code>: Mesh type of grillage model.
-Must take a <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> input of either “Ortho” or “Oblique”.
+- <code class="docutils literal notranslate"><span class="pre">ext_to_int_dist</span></code>: A <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code> of the distance between exterior longitudinal beams to adjacent interior beams.</p>
+<p>Must take a <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> input of either “Ortho” or “Oblique”.
 The default is “Ortho” (an orthogonal mesh).
 However, “Ortho” is not accepted for certain skew angles.
 The threshold for orthogonal mesh is greater than 11 degree- less than 11 degree the mesh will change to Oblique</p>

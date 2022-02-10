@@ -93,3 +93,7 @@ Contributing
 ============
 We really value and welcome contributions to the *ospgrillage* package.
 Please check out our `contributing guidelines <https://github.com/MonashSmartStructures/ospgrillage/blob/main/.github/CONTRIBUTING.md>`_.
+
+Credits
+=======
+* Mayer Melhem for producing the documentation illustrations and the design of the *ospgrillage* logo.

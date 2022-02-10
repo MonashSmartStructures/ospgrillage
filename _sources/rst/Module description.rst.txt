@@ -187,6 +187,8 @@ Lines are evenly spaced, except for the spacing between the edge beam and exteri
 - ``num_trans_grid``: An :py:class:`int` of the number of grid lines to be uniformly spaced along the transverse direction - each grid line represents the total number of transverse members.
 - ``edge_beam_dist``: A :py:class:`float` of the distance between exterior longitudinal beams to edge beam.
 - ``mesh_type``: Mesh type of grillage model.
+- ``ext_to_int_dist``: A :py:class:`float` of the distance between exterior longitudinal beams to adjacent interior beams.
+
 Must take a :py:class:`str` input of either "Ortho" or "Oblique".
 The default is "Ortho" (an orthogonal mesh).
 However, "Ortho" is not accepted for certain skew angles.
