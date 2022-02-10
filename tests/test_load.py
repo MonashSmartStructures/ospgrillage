@@ -303,7 +303,7 @@ def test_compound_load_positions():
 
 
 def test_point_load_getter(
-        bridge_model_42_negative,
+    bridge_model_42_negative,
 ):  # test get_point_load_nodes() function
     # test if setter and getter is correct              # and assign_point_to_node() function
 
@@ -601,10 +601,10 @@ def test_line_load_coincide_transverse_member(bridge_42_0_angle_mesh):
     for i, load_command in enumerate(example_bridge.load_case_list[0]["load_command"]):
         start = load_command.find("[")
         end = load_command.find("]")
-        pos = eval(load_command[start: (end + 1)])
+        pos = eval(load_command[start : (end + 1)])
         start_ref = ref_answer[i].find("[")
         end_ref = ref_answer[i].find("]")
-        pos_ref = eval(ref_answer[i][start_ref: (end_ref + 1)])
+        pos_ref = eval(ref_answer[i][start_ref : (end_ref + 1)])
         assert pos == pytest.approx(pos_ref)
 
 
@@ -770,10 +770,10 @@ def test_patch_load(bridge_model_42_negative):
     for i, load_command in enumerate(example_bridge.load_case_list[0]["load_command"]):
         start = load_command.find("[")
         end = load_command.find("]")
-        pos = eval(load_command[start: (end + 1)])
+        pos = eval(load_command[start : (end + 1)])
         start_ref = ref_answer[i].find("[")
         end_ref = ref_answer[i].find("]")
-        pos_ref = eval(ref_answer[i][start_ref: (end_ref + 1)])
+        pos_ref = eval(ref_answer[i][start_ref : (end_ref + 1)])
         assert pos == pytest.approx(pos_ref)  # check each pos
 
 
@@ -850,10 +850,10 @@ def test_patch_load_using_linear_shape_function(bridge_model_42_negative):
     for i, load_command in enumerate(example_bridge.load_case_list[0]["load_command"]):
         start = load_command.find("[")
         end = load_command.find("]")
-        pos = eval(load_command[start: (end + 1)])
+        pos = eval(load_command[start : (end + 1)])
         start_ref = ref_answer[i].find("[")
         end_ref = ref_answer[i].find("]")
-        pos_ref = eval(ref_answer[i][start_ref: (end_ref + 1)])
+        pos_ref = eval(ref_answer[i][start_ref : (end_ref + 1)])
         assert pos == pytest.approx(pos_ref)
 
 
@@ -879,8 +879,8 @@ def test_local_vs_global_coord_settings():
     M1600_global = og.CompoundLoad("Truck model global")
     M1600_global.add_load(load_obj=global_point_load)
     assert (
-            M1600_local.compound_load_obj_list[0].load_point_1
-            == M1600_global.compound_load_obj_list[0].load_point_1
+        M1600_local.compound_load_obj_list[0].load_point_1
+        == M1600_global.compound_load_obj_list[0].load_point_1
     )
 
 
@@ -1071,10 +1071,10 @@ def test_patch_partially_outside_mesh(bridge_model_42_negative):
     for i, load_command in enumerate(example_bridge.load_case_list[0]["load_command"]):
         start = load_command.find("[")
         end = load_command.find("]")
-        pos = eval(load_command[start: (end + 1)])
+        pos = eval(load_command[start : (end + 1)])
         start_ref = ref_answer[i].find("[")
         end_ref = ref_answer[i].find("]")
-        pos_ref = eval(ref_answer[i][start_ref: (end_ref + 1)])
+        pos_ref = eval(ref_answer[i][start_ref : (end_ref + 1)])
         assert pos == pytest.approx(pos_ref)
 
 
