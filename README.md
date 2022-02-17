@@ -13,6 +13,8 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/MonashSmartStructures/ospgrillage?color=ff69b4)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md)
 [![codecov](https://codecov.io/gh/MonashSmartStructures/ospgrillage/branch/main/graph/badge.svg?token=dUTOmPBnyP)](https://codecov.io/gh/MonashSmartStructures/ospgrillage)
+[![status](https://joss.theoj.org/papers/d44339b03dc4f1add2678167c1a1b6de/status.svg)](https://joss.theoj.org/papers/d44339b03dc4f1add2678167c1a1b6de)
+
 
 # Overview
 
