@@ -22,6 +22,7 @@
 |GitHub last commit|
 |Contributor Covenant|
 |codecov|
+|JOSS|
 
 .. |Code style: black| image:: https://img.shields.io/badge/code%20style-black-000000.svg 
    :target: https://github.com/psf/black
@@ -53,6 +54,8 @@
 .. |codecov| image:: https://codecov.io/gh/MonashSmartStructures/ospgrillage/branch/main/graph/badge.svg?token=dUTOmPBnyP 
    :target: https://codecov.io/gh/MonashSmartStructures/ospgrillage
 
+.. |JOSS| image:: https://joss.theoj.org/papers/d44339b03dc4f1add2678167c1a1b6de/status.svg
+   :target: https://joss.theoj.org/papers/d44339b03dc4f1add2678167c1a1b6de
 
 
 ===========================================
