@@ -124,7 +124,13 @@ class OspGrillage:
         * ext_to_int_dist: (Int or Float, or a List of Int or Float) distance between internal beams
          and exterior main beams. If list is provided (usually size 2), apply each distinct distance to left and right
          side respectively.
-
+        * multi_span_dist_list: (List of Int/Float) List of distance (x dir) correspond to span length of each multi span
+        * multi_span_num_points: (List of Int) Num of transverse member correspond to spans of each element in multi_span_dist_list
+         If not specified, takes int var for num_trans_beam and assigns to all spans of multi_span_dist_list
+        * continuous: (Bool) To set continuity of spans. Default True. If False, separate spans by non_cont_spacing_x
+        * stitch_slab_elements: (Bool) To set stictch elements between spans. Elements are set using `set_member()` with
+         member= "stich_elements"
+        * non_cont_spacing_x: (float) sets spacing or length of stitch elements.
 
         :raises ValueError: If skew angle is greater than 90. If number of transverse grid line is less than 2.
 
@@ -197,6 +203,7 @@ class OspGrillage:
             "exterior_main_beam_2",
             "start_edge",
             "end_edge",
+            "stitch_elements",
             "transverse_slab",
         ]
         # prefix index of members after longitudinal members
@@ -294,6 +301,13 @@ class OspGrillage:
         # create dict of standard elements from the generated Mesh obj
         self._create_standard_element_list()  # base class method, concrete classes may overwrite this
 
+        # flag for OpenSees model instance
+        self.model_instance = False  # default false before creating
+
+        # list storing all commands and str
+        self.model_command_list = []  # to be populated
+        self.analysis_command = None
+
     def _create_mesh(self, **kwargs):
         """
         Private function to create mesh. Creates the concrete Mesh class based on mesh type specified
@@ -335,7 +349,7 @@ class OspGrillage:
                 now = datetime.now()
                 dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
                 file_handle.write("# Constructed on:{}\n".format(dt_string))
-                # write imports
+                # necessary imports
                 file_handle.write(
                     "import numpy as np\nimport math\nimport openseespy.opensees as ops"
                     "\nimport openseespy.postprocessing.Get_Rendering as opsplt\n"
@@ -351,9 +365,9 @@ class OspGrillage:
     # function to run mesh generation
     def _run_mesh_generation(self):
         """
-        Private function to write / execute commands. This function communicates with OpenSees framework
+        Private function to write / execute commands. This function handles relevant OpenSeesPy commands
         """
-        # 2 generate command lines in output py file
+        # write / execute model commands
         self._write_op_node(self.Mesh_obj)  # write node() commands
         self._write_op_fix(self.Mesh_obj)  # write fix() command for support nodes
         self._write_geom_transf(self.Mesh_obj)  # x dir members
@@ -365,6 +379,8 @@ class OspGrillage:
                     file_handle.write(mat_str)
             else:
                 eval(mat_str)
+                self.model_command_list.append(mat_str)
+
         for sec_str in self.section_command_list:
             if self.pyfile:
                 with open(self.filename, "a") as file_handle:
@@ -372,6 +388,7 @@ class OspGrillage:
                     file_handle.write(sec_str)
             else:
                 eval(sec_str)
+                self.model_command_list.append(sec_str)
 
         # write /execute element commands
         for ele_dict in self.element_command_list:
@@ -382,10 +399,14 @@ class OspGrillage:
                             file_handle.write(ele_str)
                     else:
                         eval(ele_str)
+                        self.model_command_list.append(ele_str)
+        # if created OpenSees instance, set instance flag
+        if not self.pyfile:
+            self.model_instance = True
 
     # interface function
     def set_boundary_condition(
-        self, edge_group_counter=[1], new_restraint_vector=None, group_to_exclude=[0]
+        self, edge_group_counter=None, new_restraint_vector=None, group_to_exclude=[0]
     ):
         """
         Function to set or modify customized support conditions.
@@ -393,11 +414,19 @@ class OspGrillage:
         .. note::
             This feature to be available for future release.
         """
+
+        if not self.model_instance:
+            self.Mesh_obj.edge_node_recorder
+            pass
+        else:
+            raise Exception(
+                "Model instance have been created - append boundary conditions won't be applied: Hint - "
+                "first set_boundary_condition() before create_osp_model()"
+            )
         if new_restraint_vector:
             self.fix_val_pin = [1, 1, 1, 0, 0, 0]  # pinned
             self.fix_val_roller_x = [0, 1, 1, 0, 0, 0]  # roller
             self.fix_val_fixed = [1, 1, 1, 1, 1, 1]
-        pass
 
     # private functions to write ops commands to output py file.
     def _write_geom_transf(self, mesh_obj, transform_type="Linear"):
@@ -417,34 +446,34 @@ class OspGrillage:
                 offset_list = eval(
                     offset
                 )  # list of global offset of node i entry 0 and node j entry 1
+                geom_tranfs_str = 'ops.geomTransf("{type}", {tag}, *{vxz}, {offset_i}, {offset_j})\n'.format(
+                    type=transform_type,
+                    tag=v,
+                    vxz=eval(vxz),
+                    offset_i=offset_list[0],
+                    offset_j=offset_list[1],
+                )
+
                 if self.pyfile:
                     with open(self.filename, "a") as file_handle:
-                        file_handle.write(
-                            'ops.geomTransf("{type}", {tag}, *{vxz}, {offset_i}, {offset_j})\n'.format(
-                                type=transform_type,
-                                tag=v,
-                                vxz=eval(vxz),
-                                offset_i=offset_list[0],
-                                offset_j=offset_list[1],
-                            )
-                        )
+                        file_handle.write(geom_tranfs_str)
                 else:
-                    ops.geomTransf(
-                        transform_type, v, *eval(vxz), *offset_list[0], *offset_list[1]
-                    )
+                    eval(geom_tranfs_str)
+
             else:
+                geom_tranfs_str = 'ops.geomTransf("{type}", {tag}, *{vxz})\n'.format(
+                    type=transform_type, tag=v, vxz=eval(vxz)
+                )
                 if self.pyfile:
                     with open(self.filename, "a") as file_handle:
                         file_handle.write("# create transformation {}\n".format(v))
-                        file_handle.write(
-                            'ops.geomTransf("{type}", {tag}, *{vxz})\n'.format(
-                                type=transform_type, tag=v, vxz=eval(vxz)
-                            )
-                        )
-                else:
-                    ops.geomTransf(transform_type, v, *eval(vxz))
+                        file_handle.write(geom_tranfs_str)
 
-        # loop to add geom transf obj for additional transformation i.e. element with rigid links
+                else:
+                    eval(geom_tranfs_str)
+
+            # store to global list
+            self.model_command_list.append(geom_tranfs_str)
 
     def _write_op_model(self):
         """
@@ -456,18 +485,22 @@ class OspGrillage:
             For 3-D model, the default model dimension and node degree-of-freedoms are 3 and 6 respectively.
             This method automatically sets the aforementioned parameters to 2 and 4 respectively, for a 2-D problem.
         """
+        wipe_str = "ops.wipe()\n"
+        model_str = "ops.model('basic', '-ndm', {ndm}, '-ndf', {ndf})\n".format(
+            ndm=self.__ndm, ndf=self.__ndf
+        )
         # check if write or eval command
         if self.pyfile:
             with open(self.filename, "a") as file_handle:
-                file_handle.write("ops.wipe()\n")
-                file_handle.write(
-                    "ops.model('basic', '-ndm', {ndm}, '-ndf', {ndf})\n".format(
-                        ndm=self.__ndm, ndf=self.__ndf
-                    )
-                )
+                file_handle.write(wipe_str)
+                file_handle.write(model_str)
         else:
-            ops.wipe()
-            ops.model("basic", "-ndm", self.__ndm, "-ndf", self.__ndf)
+            eval(wipe_str)
+            eval(model_str)
+            self.model_command_list.append(wipe_str)
+            self.model_command_list.append(model_str)
+            # ops.wipe()
+            # ops.model("basic", "-ndm", self.__ndm, "-ndf", self.__ndf)
 
     def _write_op_node(self, mesh_obj):
         """
@@ -487,18 +520,19 @@ class OspGrillage:
             nested_v,
         ) in mesh_obj.node_spec.items():
             coordinate = nested_v["coordinate"]
+            node_str = "ops.node({tag}, {x:.4f}, {y:.4f}, {z:.4f})\n".format(
+                tag=nested_v["tag"],
+                x=coordinate[0],
+                y=coordinate[1],
+                z=coordinate[2],
+            )
             if self.pyfile:
                 with open(self.filename, "a") as file_handle:
-                    file_handle.write(
-                        "ops.node({tag}, {x:.4f}, {y:.4f}, {z:.4f})\n".format(
-                            tag=nested_v["tag"],
-                            x=coordinate[0],
-                            y=coordinate[1],
-                            z=coordinate[2],
-                        )
-                    )
+                    file_handle.write(node_str)
             else:  # indices correspondence . 0 - x , 1 - y, 2 - z
-                ops.node(nested_v["tag"], coordinate[0], coordinate[1], coordinate[2])
+                eval(node_str)
+                self.model_command_list.append(node_str)
+                # ops.node(nested_v["tag"], coordinate[0], coordinate[1], coordinate[2])
 
     def _write_op_fix(self, mesh_obj):
         """
@@ -519,25 +553,28 @@ class OspGrillage:
             ):  # here [0] is first group
                 pass  # move to next node in edge recorder
             elif edge_group_num == 0:  # 0 is edge of start of span
+
+                fix_str = "ops.fix({}, *{})\n".format(
+                    node_tag, self.fixity_vector["pin"]
+                )
                 if self.pyfile:  # if writing py file
                     with open(self.filename, "a") as file_handle:
-                        file_handle.write(
-                            "ops.fix({}, *{})\n".format(
-                                node_tag, self.fixity_vector["pin"]
-                            )
-                        )
+                        file_handle.write(fix_str)
                 else:  # run instance
-                    ops.fix(node_tag, *self.fixity_vector["pin"])
-            elif edge_group_num == 1:  # 1 is edge of end of span
+                    eval(fix_str)
+                    self.model_command_list.append(fix_str)
+                    # ops.fix(node_tag, *self.fixity_vector["pin"])
+            else:  # 1 is edge of end of span
+                fix_str = "ops.fix({}, *{})\n".format(
+                    node_tag, self.fixity_vector["roller"]
+                )
                 if self.pyfile:  # if writing py file
                     with open(self.filename, "a") as file_handle:
-                        file_handle.write(
-                            "ops.fix({}, *{})\n".format(
-                                node_tag, self.fixity_vector["roller"]
-                            )
-                        )
+                        file_handle.write(fix_str)
                 else:  # run instance
-                    ops.fix(node_tag, *self.fixity_vector["roller"])
+                    eval(fix_str)
+                    self.model_command_list.append(fix_str)
+                    # ops.fix(node_tag, *self.fixity_vector["roller"])
 
     def _write_material(
         self, member: GrillageMember = None, material: Material = None
@@ -785,14 +822,25 @@ class OspGrillage:
                         material_tag=material_tag,
                         section_tag=section_tag,
                     )
-            # check if non-unit width transverse slab assigment
+            # check if non-unit width transverse slab assignment
             elif member == self.common_grillage_element_keys[-1]:
-                ele_command_list = self._get_element_command_list(
+                ele_command_list += self._get_element_command_list(
                     grillage_member_obj=grillage_member_obj,
                     list_of_ele=self.Mesh_obj.trans_ele,
                     material_tag=material_tag,
                     section_tag=section_tag,
                 )
+            elif (
+                member == self.common_grillage_element_keys[-2]
+            ):  # if stitch slabs, assign GrillageMmber to connector
+                # elements
+                ele_command_list = self._get_element_command_list(
+                    grillage_member_obj=grillage_member_obj,
+                    list_of_ele=self.Mesh_obj.connect_ele,
+                    material_tag=material_tag,
+                    section_tag=section_tag,
+                )
+
             else:  # longitudinal members
                 for z_group in self.common_grillage_element[member]:
                     ele_command_list += self._get_element_command_list(
@@ -801,11 +849,15 @@ class OspGrillage:
                         material_tag=material_tag,
                         section_tag=section_tag,
                     )
-
+        # store into dict or replace existing
         ele_command_dict[member] = ele_command_list
+        if member in [keys_name.keys() for keys_name in self.element_command_list]:
+            # if already defined, remove the previous element commands for the common element groups
+            replace_tag = [i for i, keys_name in enumerate(self.element_command_list) if member in keys_name.keys()][0]
+            self.element_command_list.pop(replace_tag)
         self.element_command_list.append(ele_command_dict)
 
-    # subfunctions of set_member function
+    # sub-functions of set_member function
     @staticmethod
     def _get_element_command_list(
         grillage_member_obj, list_of_ele, material_tag, section_tag
@@ -1826,6 +1878,7 @@ class OspGrillage:
                 self.global_pattern_counter,
                 node_disp,
                 ele_force,
+                self.analysis_command,
             ) = load_case_analysis.evaluate_analysis()
             # print to terminal
             if self.diagnostics:
@@ -1861,6 +1914,7 @@ class OspGrillage:
                         self.global_pattern_counter,
                         node_disp,
                         ele_force,
+                        self.analysis_command,
                     ) = incremental_analysis.evaluate_analysis()
                     list_of_inc_analysis.append(incremental_analysis)
                     if self.diagnostics:
@@ -2259,6 +2313,7 @@ class Analysis:
         self.analyze_command = "ops.analyze(1)\n"  # default 1 step
         self.analysis_command = 'ops.analysis("{}")\n'.format(analysis_type)
         self.intergrator_command = "ops.integrator('LoadControl', 1)\n"
+        self.sensitivity_integrator_command = "ops."
         self.mesh_node_counter = node_counter  # set node counter based on current Mesh
         self.mesh_ele_counter = ele_counter  # set ele counter based on current Mesh
         self.remove_pattern_command = (
@@ -2266,6 +2321,8 @@ class Analysis:
         )
         # save deepcopy of load case object
         self.load_cases_obj = deepcopy(load_case)
+        # var to store all eval command
+        self.all_command = []
         # if true for pyfile, create pyfile for analysis command
         if self.pyfile:
             with open(self.analysis_file_name, "w") as file_handle:
@@ -2335,17 +2392,22 @@ class Analysis:
                 file_handle.write(self.analyze_command)
         else:
             eval(self.wipe_command)
+            self.all_command.append(self.wipe_command)
             if (
                 self.plain_counter - 1 != 1
             ):  # plain counter increments by 1 upon self.pattern_command function, so -1 here
                 for count in range(1, self.plain_counter - 1):
                     remove_command = self.remove_pattern_command.format(count)
                     eval(remove_command)  # remove previous load pattern if any
+                    self.all_command.append(remove_command)
             for load_dict in self.load_cases_dict_list:
                 eval(load_dict["time_series"])
+                self.all_command.append(load_dict["time_series"])
                 eval(load_dict["pattern"])
+                self.all_command.append(load_dict["pattern"])
                 for load_command in load_dict["load_command"]:
                     eval(load_command)
+                    self.all_command.append(load_command)
             eval(self.intergrator_command)
             eval(self.numberer_command)
             eval(self.system_command)
@@ -2353,6 +2415,13 @@ class Analysis:
             eval(self.algorithm_command)
             eval(self.analysis_command)
             eval(self.analyze_command)
+            self.all_command.append(self.intergrator_command)
+            self.all_command.append(self.numberer_command)
+            self.all_command.append(self.system_command)
+            self.all_command.append(self.constraint_command)
+            self.all_command.append(self.algorithm_command)
+            self.all_command.append(self.analysis_command)
+            self.all_command.append(self.analyze_command)
 
         # extract results
         self.extract_grillage_responses()
@@ -2362,6 +2431,7 @@ class Analysis:
             self.plain_counter,
             self.node_disp,
             self.ele_force,
+            self.all_command,
         )
 
     # function to extract grillage model responses (dx,dy,dz,rotx,roty,rotz,N,Vy,Vz,Mx,My,Mz) and store to Result class
@@ -2842,6 +2912,7 @@ class OspGrillageShell(OspGrillage):
         self._write_rigid_link()
         # create the result file for the Mesh object
         self.results = Results(self.Mesh_obj)
+        # flag
 
     # overwrites base class for beam element grillage - specific for Shell model
     def _create_standard_element_list(self):

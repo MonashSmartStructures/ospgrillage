@@ -7,6 +7,8 @@ by OspGrillage class.
 """
 import math
 
+import numpy as np
+
 from ospgrillage.static import *
 from collections import namedtuple
 
@@ -107,21 +109,22 @@ class Mesh:
         self.skew_threshold = [11, 30]
         self.curve = False
         self.search_x_inc = 0.001
+        self.y_elevation = 0  # plane position of grillage
         # initiate list for nodes and elements
         self.long_ele = []
         self.trans_ele = []
         self.edge_span_ele = []
-        self.y_elevation = 0
-        self.mesh_design_line = []
+        self.connect_ele = []
         # dict for node and ele transform
         self.transform_dict = dict()  # key: vector xz, val: transform tag
         self.node_spec = (
             dict()
         )  # key: node tag, val: dict of node details - see technical notes
         # variables for curve mesh
+        # if multiple curve centers are presented, assign each curve to respective spans of multi_span_dist_list
         self.curve_center = []
         self.curve_radius = []
-        # line / circle equation variables - instantiate
+        # init line / circle equation variables
         self.m = 0
         self.c = 0
         self.r = 0
@@ -132,21 +135,63 @@ class Mesh:
             self.mesh_origin = [0, 0, 0]
         else:
             self.mesh_origin = mesh_origin  # default origin
-        # meshing variables
+        # init meshing variables
         self.first_connecting_region_nodes = []
         self.end_connecting_region_nodes = []
         self.sweep_nodes = []
         self.z_group_recorder = []
         # quad elements flag
         self.quad_ele = quad_ele
-        self.max_grid_dim = None  #
-        # rigid link parameters - to be assigned to beam elements representing longitudinal beams
+        # get custom rigid link parameters - for future feature of beam_link model
         self.rigid_dist_y = kwargs.get("rigid_dist_y")
         self.rigid_dist_z = kwargs.get("rigid_dist_z")
         self.rigid_dist_x = kwargs.get("rigid_dist_x")
+
+        # multi span feature
+        self.multi_span_dist_list = kwargs.get("multi_span_dist_list", [self.long_dim])
+        self.multi_span_num_points = kwargs.get(
+            "multi_span_num_points",
+            [self.num_trans_beam for a in self.multi_span_dist_list],
+        )
+        self.continuous = kwargs.get("continuous", True)
+        self.stitch_slab_elements = kwargs.get("stitch_slab_elements", False)
+        self.non_cont_spacing_x = kwargs.get("non_cont_spacing_x", None)
+        # init storing var for multi span
+        self.support_points_x = [
+            sum(self.multi_span_dist_list[:n])
+            for n in range(len(self.multi_span_dist_list) + 1)
+        ]
+        self.multi_span_control_point_list = []
+        self.non_cont_support_points_x = [self.support_points_x[0]]
+        # check inputs for multi span feature
+        if len(self.multi_span_dist_list) == 1 and not self.continuous:
+            raise Exception(
+                "Combination of multi_span_dist_list and non continuous option not valid:"
+                "Hint - use only either (1) Continuous for multi span or (2) have more than"
+                "one multi_span_dist in list and non continuous option"
+            )
+
+        # if non continuous is specified, populate new variable non_cont_suport_points_x for later usage
+        if not self.continuous and self.non_cont_spacing_x:
+            for i, x_point in enumerate(self.support_points_x):
+                if (
+                    i > 0 and i != len(self.support_points_x) - 1
+                ):  # if not the first and last element, split and store into
+                    # non_cont_support_points_x
+                    left = x_point - self.non_cont_spacing_x
+                    right = x_point + self.non_cont_spacing_x
+                    self.non_cont_support_points_x.append(left)
+                    self.non_cont_support_points_x.append(right)
+            self.non_cont_support_points_x.append(self.support_points_x[-1])
+
+        # var to store x groups in spans
+        self.span_group_to_x_groups = {
+            key: [] for key in range(len(self.support_points_x) - 1)
+        }
+
         # ------------------------------------------------------------------------------------------
         # Create sweep path obj
-        self.sweep_path = SweepPath(self.pt1, self.pt2, self.pt3)
+        self.sweep_path = SweepPath(self.pt1, self.pt2, self.pt3, **kwargs)
         (
             self.zeta,
             self.m,
@@ -186,6 +231,11 @@ class Mesh:
             ext_to_int_b=self.ext_to_int_b,
             **kwargs
         )
+        # intermediate construction lines for
+        if self.multi_span_dist_list and self.orthogonal:
+            # create control points for orthogonal meshing about intermediate supports
+            # TODO
+            self.multi_span_control_point_list.append(None)
 
         # ------------------------------------------------------------------------------------------
         # edge construction line 2
@@ -218,7 +268,48 @@ class Mesh:
         else:  # skew
             # sweep line of skew mesh == edge_construction line
             self.sweeping_nodes = self.start_edge_line.node_list
-        self.nox = np.linspace(0, self.long_dim, self.num_trans_beam)
+        if self.continuous:
+            self.nox = np.array([0])  # init
+        else:
+            self.nox = []
+
+        # check and modify support spacing var
+        if not self.continuous and self.non_cont_spacing_x:
+            # split support_point_x intermediate points into 2 based on
+            pass
+            # else do nothing and continue
+
+        for i, num_x_point in enumerate(self.multi_span_num_points):
+            # TODO check if straight line or equation of arc
+            # arc
+
+            # straight line
+            if self.continuous:
+                self.nox = np.concatenate(
+                    (
+                        self.nox,
+                        np.linspace(
+                            self.support_points_x[i],
+                            self.support_points_x[i + 1],
+                            num_x_point,
+                        )[1:],
+                    )
+                )
+
+            # multi span straight line, non continuous mesh
+            else:
+                # multi_span_num_point wil always have -2 number of elements to non_cont_support_point_x
+                self.nox = np.concatenate(
+                    (
+                        self.nox,
+                        np.linspace(
+                            self.non_cont_support_points_x[2 * i],
+                            self.non_cont_support_points_x[2 * i + 1],
+                            num_x_point,
+                        ),
+                    )
+                )
+
         # ------------------------------------------------------------------------------------------
         # create nodes and elements
         # if orthogonal, orthogonal mesh only be slayed onto a curve mesh, if skew mesh curved/arc line segment must be
@@ -246,7 +337,22 @@ class Mesh:
     def _fixed_sweep_node_meshing(self):
         assigned_node_tag = []
         previous_node_tag = []
+        if self.continuous:
+            support_points = self.support_points_x
+        else:
+            support_points = self.non_cont_support_points_x
+        # begin creating nodes, assigning long members / stitch slab long elements between nodes
         for x_count, x_inc in enumerate(self.nox):
+            # store x_group based on span group
+            span_group_key = [
+                i
+                for i, point_x in enumerate(self.support_points_x[1:])
+                if x_inc <= point_x
+            ][0]
+            x_group_list = self.span_group_to_x_groups[span_group_key]
+            x_group_list.append(x_count)
+
+            # create nodes and store in node spec
             for z_count, ref_point in enumerate(self.sweeping_nodes):
                 # offset x and y in all points in ref points
                 z_inc = np.round(
@@ -298,16 +404,47 @@ class Mesh:
             # create longitudinal ele by linking assigned nodes @ current step with assigned nodes from previous step
             if x_count == 0:
                 previous_node_tag = assigned_node_tag
-                # record
+                # record all nodes in first x count as support - edge count 0
                 for nodes in previous_node_tag:
                     self.edge_node_recorder.setdefault(nodes, self.global_edge_count)
                 self.global_edge_count += 1
             elif x_count > 0:
+                # create longitudinal elements
                 for pre_node in previous_node_tag:
                     for cur_node in assigned_node_tag:
                         cur_z_group = self.node_spec[cur_node]["z_group"]
                         prev_z_group = self.node_spec[pre_node]["z_group"]
+                        # check for non-continuous, if elements are between two support points,
+                        # either: (1) do not assign long ele or (2) assign a connector beam element to represent
+                        # some form of continuity e.g. stitch slabs
+
                         if cur_z_group == prev_z_group:
+                            if not self.continuous and self.non_cont_spacing_x:
+                                # create beam element between supports
+                                x_start = self.node_spec[cur_node]["coordinate"][0]
+                                x_end = self.node_spec[pre_node]["coordinate"][0]
+                                if (
+                                    x_start in self.non_cont_support_points_x
+                                    and x_end in self.non_cont_support_points_x
+                                ):
+                                    # assign a connector beam element between non-continuous span supports
+                                    tag = self._get_geo_transform_tag(
+                                        [pre_node, cur_node]
+                                    )
+                                    self.connect_ele.append(
+                                        [
+                                            self.element_counter,
+                                            pre_node,
+                                            cur_node,
+                                            cur_z_group,
+                                            tag,
+                                        ]
+                                    )
+                                    self.element_counter += 1
+
+                                    # check
+                                    break
+
                             tag = self._get_geo_transform_tag([pre_node, cur_node])
                             self.long_ele.append(
                                 [
@@ -322,7 +459,9 @@ class Mesh:
                             break  # break assign long ele loop (cur node)
                 # here updates the record for previous node tag step
                 previous_node_tag = assigned_node_tag
-                if x_count == len(self.nox) - 1:
+                if (
+                    x_inc in support_points
+                ):  # if x inc is a support roll (intermediate) set all nodes as support
                     for nodes in previous_node_tag:
                         self.edge_node_recorder.setdefault(
                             nodes, self.global_edge_count
@@ -1516,16 +1655,17 @@ class SweepPath:
         self.pt3 = pt3  # default mid point of a curved line defined using 3 points
         self.decimal_lim = 4
 
+        # properties for curve sweep path - obtained from kwargs
+        self.curve_path_dict: dict = kwargs.get("curve_path_dict", None)
+
         # instantiate variables
         self.zeta = None
         self.m = None
         self.c = 0  # Default:0 , sweep path intersects origin
-        # properties for curve sweep path - obtained from kwargs
-        self.curve_path_dict: dict = kwargs.get("curve_path_dict", None)
 
     def get_sweep_line_properties(self):
         """
-        Parse input to get sweep line properties
+        Parse input to get Straight sweep line properties
 
         """
         if self.pt3 is not None:
@@ -1537,7 +1677,7 @@ class SweepPath:
                     y2=self.pt2.z,
                     x3=self.pt3.x,
                     y3=self.pt3.z,
-                )
+                )  # [[h,v] , r]
 
             except ZeroDivisionError:
                 return Exception(
@@ -1562,7 +1702,6 @@ class SweepPath:
                 m
             )  # initial angle of inclination of sweep line about mesh origin
             self.zeta = zeta / np.pi * 180  # rad to degrees
-            self.eta_angle = self.zeta
 
         return self.zeta, self.m, self.c
 
@@ -1580,9 +1719,9 @@ class SweepPath:
             ]  # rotating direction, num either 1 or 0 [
             # determine end point x, z of path
             if rotation > 0:
-                curve_center_xz = [0, -r]
+                curve_center_xz = [0, -r]  # curve centre x and z are 0
             else:
-                curve_center_xz = [0, r]
+                curve_center_xz = [0, r]  # curve centre x and z are 0
 
             return arc_func(
                 h=curve_center_xz[0], v=curve_center_xz[0], R=curve_center_xz[1], x=x
@@ -1688,12 +1827,13 @@ class BeamLinkMesh(Mesh):
         """
         # instantiate variables specific for beam link model
         self.beam_width = kwargs.get("beam_width", None)
-        self.web_thick = kwargs.get("web_thick", None)
+        self.web_thick = kwargs.get("web_thick", None)  # to be used in future feature
         self.centroid_dist_y = kwargs.get("centroid_dist_y", 0)
-        if any([self.beam_width is None and self.web_thick is None]):
+        # offset_z_dist is the equal distance from beam positions (global z dir) to be set for rigid link z distance
+        if not self.beam_width:
             self.offset_z_dist = 0
         else:
-            self.offset_z_dist = self.beam_width / 2 - self.web_thick / 2
+            self.offset_z_dist = self.beam_width / 2
 
         # super init to create mesh of grillage @ model plane = 0 using base class init
         super().__init__(
