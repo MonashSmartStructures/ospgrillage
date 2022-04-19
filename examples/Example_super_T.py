@@ -36,7 +36,6 @@ longitudinal_section = og.create_section(
     Ay=0.0371902 * m2,
 )
 
-
 transverse_section = og.create_section(
     A=0.504 * m2,
     J=5.22303e-3 * m3,
@@ -75,6 +74,10 @@ ext_to_int_dist = (
     2.2775 * m
 )  # distance between first exterior beam and first interior beam
 angle = 0  # skew angle
+mesh_type = "Oblique"
+# a new feature for multi span
+spans = [9.144, 12.192, 9.144]  # list of float representing distance of each span
+# spans = [L]
 
 # create grillage
 simple_grid = og.create_grillage(
@@ -86,6 +89,7 @@ simple_grid = og.create_grillage(
     num_trans_grid=n_t,
     edge_beam_dist=edge_dist,
     ext_to_int_dist=ext_to_int_dist,
+    mesh_type=mesh_type,
 )
 
 # assign grillage member to element groups of grillage model
@@ -102,7 +106,7 @@ simple_grid.create_osp_model(
     pyfile=False
 )  # pyfile will not (False) be generated for further analysis (should be create_osp?)
 # og.opsplt.plot_model("nodes") # plotting using Get_rendering
-og.opsv.plot_model(az_el=(-90, 0))  # plotting using ops_vis
+og.opsv.plot_model(element_labels=0, az_el=(-90, 0))  # plotting using ops_vis
 og.plt.show()
 
 # reference unit load for various load types
@@ -213,7 +217,6 @@ point3 = og.create_load(
 point4 = og.create_load(
     loadtype="point", name="Point", point1=og.LoadPoint(x=axl_s, y=0, z=0, p=P)
 )
-
 
 # add load to Compound load
 two_axle_truck.add_load(load_obj=point1)
