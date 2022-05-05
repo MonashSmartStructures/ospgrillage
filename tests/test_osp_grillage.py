@@ -230,7 +230,7 @@ def test_ext_to_int_spacing(bridge_model_42_negative_custom_spacing):
     example_bridge = bridge_model_42_negative_custom_spacing
     og.opsv.plot_model(az_el=(-90, 0), element_labels=0)
     og.plt.show()
-    assert all(example_bridge.Mesh_obj.noz == [0., 1., 2.25, 3.5, 4.75, 6., 7.])
+    assert all(example_bridge.Mesh_obj.noz == [0.0, 1.0, 2.25, 3.5, 4.75, 6.0, 7.0])
 
 
 def test_custom_beam_spacing_points(ref_bridge_properties):
@@ -251,7 +251,7 @@ def test_custom_beam_spacing_points(ref_bridge_properties):
         skew=0,
         num_trans_grid=5,
         mesh_type="Ortho",
-        beam_z_spacing=custom_spacing
+        beam_z_spacing=custom_spacing,
     )
 
     # set grillage member to element groups of grillage model
@@ -270,7 +270,7 @@ def test_custom_beam_spacing_points(ref_bridge_properties):
     assert example_bridge.Mesh_obj.noz == [0, 1, 3, 4, 5, 7]
 
 
-def test_custom_transverse_spacing(ref_bridge_properties):
+def test_custom_transverse_and_long_spacing(ref_bridge_properties):
     # create a grillage with
     custom_transver_spacing = [1, 2, 1, 1, 2]  # first spacing starts at z = 0 direction
     custom_spacing = [1, 2, 1, 1, 2]
@@ -283,11 +283,9 @@ def test_custom_transverse_spacing(ref_bridge_properties):
         long_dim=10,
         width=7,
         skew=20,
-        num_long_grid=7,
-        num_trans_grid=5,
         mesh_type="Oblique",
         beam_x_spacing=custom_transver_spacing,
-        beam_z_spacing=custom_spacing
+        beam_z_spacing=custom_spacing,
     )
 
     # set grillage member to element groups of grillage model
@@ -305,3 +303,45 @@ def test_custom_transverse_spacing(ref_bridge_properties):
 
     assert example_bridge.Mesh_obj.nox == [0, 1, 3, 4, 5, 7]
     assert example_bridge.Mesh_obj.noz == [0, 1, 3, 4, 5, 7]
+
+
+def test_inputs_custom_spacings_on_ortho_mesh(ref_bridge_properties):
+    # test if ortho mesh is provided , name error is raised. Note to change this if feature for ortho + custom spacing
+    # is developed.
+
+    # create a grillage with
+    with pytest.raises(NameError) as e_info:
+        custom_transver_spacing = [
+            1,
+            2,
+            1,
+            1,
+            2,
+        ]  # first spacing starts at z = 0 direction
+        custom_spacing = [1, 2, 1, 1, 2]
+        # define material
+        I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
+
+        # construct grillage model
+        example_bridge = og.create_grillage(
+            bridge_name="SuperT_10m",
+            long_dim=10,
+            width=7,
+            skew=20,
+            mesh_type="Ortho",
+            beam_x_spacing=custom_transver_spacing,
+            beam_z_spacing=custom_spacing,
+        )
+
+        # set grillage member to element groups of grillage model
+        example_bridge.set_member(I_beam, member="interior_main_beam")
+        example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_1")
+        example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_2")
+        example_bridge.set_member(exterior_I_beam, member="edge_beam")
+        example_bridge.set_member(slab, member="transverse_slab")
+        example_bridge.set_member(exterior_I_beam, member="start_edge")
+        example_bridge.set_member(exterior_I_beam, member="end_edge")
+
+        example_bridge.create_osp_model(pyfile=False)
+        og.opsv.plot_model(az_el=(-90, 0), element_labels=0)
+        og.plt.show()

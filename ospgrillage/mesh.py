@@ -152,8 +152,12 @@ class Mesh:
             [self.num_trans_beam for a in self.multi_span_dist_list],
         )
 
-        self.continuous = kwargs.get("continuous", True)  # checks if multi span meshes are linked or split
-        self.stitch_element_spacing_x = kwargs.get("non_cont_spacing_x", None)  # spacing between mesh of each spans
+        self.continuous = kwargs.get(
+            "continuous", True
+        )  # checks if multi span meshes are linked or split
+        self.stitch_element_spacing_x = kwargs.get(
+            "non_cont_spacing_x", None
+        )  # spacing between mesh of each spans
 
         # init storing vars for multi span
         self.mesh_edge_x_positions = [
@@ -174,9 +178,7 @@ class Mesh:
         if not self.continuous and self.stitch_element_spacing_x:
             for i, x_point in enumerate(self.mesh_edge_x_positions):
                 # search intermediate support points
-                if (
-                    i > 0 and i != len(self.mesh_edge_x_positions) - 1
-                ):
+                if i > 0 and i != len(self.mesh_edge_x_positions) - 1:
                     # split node point into two, equally spaced by self.stitch_element_spacing_x
                     left = x_point - self.stitch_element_spacing_x
                     right = x_point + self.stitch_element_spacing_x
@@ -193,6 +195,10 @@ class Mesh:
         self.transverse_mbr_x_spacing_list = kwargs.get("beam_x_spacing", None)
 
         # check inputs
+        if not self.transverse_mbr_x_spacing_list and not self.num_trans_beam:
+            ValueError(
+                "Missing inputs for either num_trans_grid or beam_x_spacing kwargs."
+            )
 
         # ------------------------------------------------------------------------------------------
         # Create sweep path obj
@@ -297,10 +303,7 @@ class Mesh:
     def _create_custom_transverse_spacings(self):
         self.nox = [0]
         for x_dist in self.transverse_mbr_x_spacing_list:
-            self.nox.append(
-                self.nox[-1] + x_dist
-            )
-
+            self.nox.append(self.nox[-1] + x_dist)
 
     def _create_transverse_spacings(self):
         # loop through the first to nth span
@@ -1750,8 +1753,7 @@ class BeamMesh(Mesh):
         :param num_long_beam:
         :param skew_1:
         :param skew_2:
-        :param ext_to_int_a:
-        :param ext_to_int_b:
+
         """
         # instantiate variables specific for current mesh subclass
 
@@ -1802,8 +1804,7 @@ class BeamLinkMesh(Mesh):
         :param num_long_beam:
         :param skew_1:
         :param skew_2:
-        :param ext_to_int_a:
-        :param ext_to_int_b:
+
         """
         # instantiate variables specific for beam link model
         self.beam_width = kwargs.get("beam_width", None)
@@ -1930,8 +1931,7 @@ class ShellLinkMesh(Mesh):
         :param num_long_beam:
         :param skew_1:
         :param skew_2:
-        :param ext_to_int_a:
-        :param ext_to_int_b:
+
         """
         # instantiate variables specific for shell mesh subclass
         self.long_ele_offset = []
