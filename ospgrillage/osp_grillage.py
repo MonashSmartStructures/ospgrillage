@@ -177,17 +177,6 @@ class OspGrillage:
             self.edge_width_a = edge_beam_dist
             self.edge_width_b = edge_beam_dist
 
-        # exterior to interior beam distance, get from kwargs
-        ext_to_int_dist = kwargs.get("ext_to_int_dist", None)
-        if isinstance(ext_to_int_dist, list):
-            self.ext_to_int_a = ext_to_int_dist[0]
-            if len(ext_to_int_dist) >= 2:
-                self.ext_to_int_b = ext_to_int_dist[1]
-            else:
-                self.ext_to_int_b = ext_to_int_dist[0]
-        else:  # set same
-            self.ext_to_int_a = ext_to_int_dist
-            self.ext_to_int_b = ext_to_int_dist
         # instantiate variables
         self.global_mat_object = []  # material matrix
         self.global_line_int_dict = []
@@ -288,8 +277,6 @@ class OspGrillage:
             trans_dim=self.trans_dim,
             num_trans_beam=self.num_trans_grid,
             num_long_beam=self.num_long_gird,
-            ext_to_int_a=self.ext_to_int_a,
-            ext_to_int_b=self.ext_to_int_b,
             skew_1=self.skew_a,
             edge_dist_a=self.edge_width_a,
             edge_dist_b=self.edge_width_b,
@@ -853,7 +840,11 @@ class OspGrillage:
         ele_command_dict[member] = ele_command_list
         if member in [keys_name.keys() for keys_name in self.element_command_list]:
             # if already defined, remove the previous element commands for the common element groups
-            replace_tag = [i for i, keys_name in enumerate(self.element_command_list) if member in keys_name.keys()][0]
+            replace_tag = [
+                i
+                for i, keys_name in enumerate(self.element_command_list)
+                if member in keys_name.keys()
+            ][0]
             self.element_command_list.pop(replace_tag)
         self.element_command_list.append(ele_command_dict)
 
@@ -2794,10 +2785,10 @@ class OspGrillageBeam(OspGrillage):
         bridge_name,
         long_dim,
         width,
-        skew: Union[list, float, int],
-        num_long_grid: int,
-        num_trans_grid: int,
-        edge_beam_dist: Union[list, float, int],
+        skew: Union[list, float, int] = 0,
+        num_long_grid: int = 0,
+        num_trans_grid: int = 0,
+        edge_beam_dist: Union[list, float, int] = 1,
         mesh_type="Ortho",
         model="3D",
         **kwargs
