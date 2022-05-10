@@ -120,16 +120,19 @@ class OspGrillage:
         :param kwargs: See below
 
         :keyword:
-
+        * beam_z_spacing: (list of int or float) Custom distance of longitudinal members (global z - direction). Note
+          this parameter supercedes num_long_grid.
+        * beam_x_spacing: (list of int or float) Custom distance of transverse members (global x - direction). Note
+          this parameter supercedes num_trans_grid.
         * ext_to_int_dist: (Int or Float, or a List of Int or Float) distance between internal beams
-         and exterior main beams. If list is provided (usually size 2), apply each distinct distance to left and right
-         side respectively.
+          and exterior main beams. If list is provided (usually size 2), apply each distinct distance to left and right
+          side respectively.
         * multi_span_dist_list: (List of Int/Float) List of distance (x dir) correspond to span length of each multi span
         * multi_span_num_points: (List of Int) Num of transverse member correspond to spans of each element in multi_span_dist_list
-         If not specified, takes int var for num_trans_beam and assigns to all spans of multi_span_dist_list
+          If not specified, takes int var for num_trans_beam and assigns to all spans of multi_span_dist_list
         * continuous: (Bool) To set continuity of spans. Default True. If False, separate spans by non_cont_spacing_x
         * stitch_slab_elements: (Bool) To set stictch elements between spans. Elements are set using `set_member()` with
-         member= "stich_elements"
+          member= "stich_elements"
         * non_cont_spacing_x: (float) sets spacing or length of stitch elements.
 
         :raises ValueError: If skew angle is greater than 90. If number of transverse grid line is less than 2.
@@ -159,12 +162,6 @@ class OspGrillage:
                 "Skew angle either start or end edge exceeds 90 degrees. Allowable range is -90 to 90"
             )
         # next check if arctan (L/w)
-        # check if transverse grid lines is not less than or equal to 2
-        if num_trans_grid <= 2:
-            raise ValueError(
-                "invalid num_trans_grid value - hint: should be greater than 2 to have at least 3 grid "
-                "lines"
-            )
 
         # check if edge beam dist is provided as a list of size 2, set to edge_beam a and edge_beam b respectively
         if isinstance(edge_beam_dist, list):
@@ -177,17 +174,6 @@ class OspGrillage:
             self.edge_width_a = edge_beam_dist
             self.edge_width_b = edge_beam_dist
 
-        # exterior to interior beam distance, get from kwargs
-        ext_to_int_dist = kwargs.get("ext_to_int_dist", None)
-        if isinstance(ext_to_int_dist, list):
-            self.ext_to_int_a = ext_to_int_dist[0]
-            if len(ext_to_int_dist) >= 2:
-                self.ext_to_int_b = ext_to_int_dist[1]
-            else:
-                self.ext_to_int_b = ext_to_int_dist[0]
-        else:  # set same
-            self.ext_to_int_a = ext_to_int_dist
-            self.ext_to_int_b = ext_to_int_dist
         # instantiate variables
         self.global_mat_object = []  # material matrix
         self.global_line_int_dict = []
@@ -288,8 +274,6 @@ class OspGrillage:
             trans_dim=self.trans_dim,
             num_trans_beam=self.num_trans_grid,
             num_long_beam=self.num_long_gird,
-            ext_to_int_a=self.ext_to_int_a,
-            ext_to_int_b=self.ext_to_int_b,
             skew_1=self.skew_a,
             edge_dist_a=self.edge_width_a,
             edge_dist_b=self.edge_width_b,
@@ -853,7 +837,11 @@ class OspGrillage:
         ele_command_dict[member] = ele_command_list
         if member in [keys_name.keys() for keys_name in self.element_command_list]:
             # if already defined, remove the previous element commands for the common element groups
-            replace_tag = [i for i, keys_name in enumerate(self.element_command_list) if member in keys_name.keys()][0]
+            replace_tag = [
+                i
+                for i, keys_name in enumerate(self.element_command_list)
+                if member in keys_name.keys()
+            ][0]
             self.element_command_list.pop(replace_tag)
         self.element_command_list.append(ele_command_dict)
 
@@ -2794,10 +2782,10 @@ class OspGrillageBeam(OspGrillage):
         bridge_name,
         long_dim,
         width,
-        skew: Union[list, float, int],
-        num_long_grid: int,
-        num_trans_grid: int,
-        edge_beam_dist: Union[list, float, int],
+        skew: Union[list, float, int] = 0,
+        num_long_grid: int = 0,
+        num_trans_grid: int = 0,
+        edge_beam_dist: Union[list, float, int] = 1,
         mesh_type="Ortho",
         model="3D",
         **kwargs

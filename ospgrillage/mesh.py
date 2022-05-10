@@ -58,8 +58,6 @@ class Mesh:
         num_long_beam,
         skew_1,
         skew_2,
-        ext_to_int_a,
-        ext_to_int_b,
         pt1=Point(0, 0, 0),
         pt2=Point(0, 0, 0),
         pt3=None,
@@ -78,8 +76,6 @@ class Mesh:
         self.trans_dim = trans_dim
         self.edge_width_a = edge_dist_a
         self.edge_width_b = edge_dist_b
-        self.ext_to_int_a = ext_to_int_a
-        self.ext_to_int_b = ext_to_int_b
         self.width = width
         self.num_trans_beam = num_trans_beam
         self.num_long_beam = num_long_beam
@@ -146,23 +142,30 @@ class Mesh:
         self.rigid_dist_y = kwargs.get("rigid_dist_y")
         self.rigid_dist_z = kwargs.get("rigid_dist_z")
         self.rigid_dist_x = kwargs.get("rigid_dist_x")
-
-        # multi span feature
+        # ---------------------------------------------------------------------------------------------
+        # var pertaining multi span feature
+        # list containing length (x) for each nth span, default creates a list of single element based on long_dim
         self.multi_span_dist_list = kwargs.get("multi_span_dist_list", [self.long_dim])
+        # list of number of transverse beams in each span, default set num_trans_beam to each span if not provided
         self.multi_span_num_points = kwargs.get(
             "multi_span_num_points",
             [self.num_trans_beam for a in self.multi_span_dist_list],
         )
-        self.continuous = kwargs.get("continuous", True)
-        self.stitch_slab_elements = kwargs.get("stitch_slab_elements", False)
-        self.non_cont_spacing_x = kwargs.get("non_cont_spacing_x", None)
-        # init storing var for multi span
-        self.support_points_x = [
+
+        self.continuous = kwargs.get(
+            "continuous", True
+        )  # checks if multi span meshes are linked or split
+        self.stitch_element_spacing_x = kwargs.get(
+            "non_cont_spacing_x", None
+        )  # spacing between mesh of each spans
+
+        # init storing vars for multi span
+        self.mesh_edge_x_positions = [
             sum(self.multi_span_dist_list[:n])
             for n in range(len(self.multi_span_dist_list) + 1)
-        ]
+        ]  # list of support points in x dir of mesh
         self.multi_span_control_point_list = []
-        self.non_cont_support_points_x = [self.support_points_x[0]]
+        self.mesh_edge_x_positions_non_cont = [self.mesh_edge_x_positions[0]]
         # check inputs for multi span feature
         if len(self.multi_span_dist_list) == 1 and not self.continuous:
             raise Exception(
@@ -171,23 +174,31 @@ class Mesh:
                 "one multi_span_dist in list and non continuous option"
             )
 
-        # if non continuous is specified, populate new variable non_cont_suport_points_x for later usage
-        if not self.continuous and self.non_cont_spacing_x:
-            for i, x_point in enumerate(self.support_points_x):
-                if (
-                    i > 0 and i != len(self.support_points_x) - 1
-                ):  # if not the first and last element, split and store into
-                    # non_cont_support_points_x
-                    left = x_point - self.non_cont_spacing_x
-                    right = x_point + self.non_cont_spacing_x
-                    self.non_cont_support_points_x.append(left)
-                    self.non_cont_support_points_x.append(right)
-            self.non_cont_support_points_x.append(self.support_points_x[-1])
+        # preprocess incorporate stitch element spacings to multi span edge points x
+        if not self.continuous and self.stitch_element_spacing_x:
+            for i, x_point in enumerate(self.mesh_edge_x_positions):
+                # search intermediate support points
+                if i > 0 and i != len(self.mesh_edge_x_positions) - 1:
+                    # split node point into two, equally spaced by self.stitch_element_spacing_x
+                    left = x_point - self.stitch_element_spacing_x
+                    right = x_point + self.stitch_element_spacing_x
+                    self.mesh_edge_x_positions_non_cont.append(left)
+                    self.mesh_edge_x_positions_non_cont.append(right)
+            self.mesh_edge_x_positions_non_cont.append(self.mesh_edge_x_positions[-1])
 
-        # var to store x groups in spans
+        # dict to store x groups (val) in respective span number (key)
         self.span_group_to_x_groups = {
-            key: [] for key in range(len(self.support_points_x) - 1)
+            key: [] for key in range(len(self.mesh_edge_x_positions) - 1)
         }
+
+        # custom transverse member spacings
+        self.transverse_mbr_x_spacing_list = kwargs.get("beam_x_spacing", None)
+
+        # check inputs
+        if not self.transverse_mbr_x_spacing_list and not self.num_trans_beam:
+            ValueError(
+                "Missing inputs for either num_trans_grid or beam_x_spacing kwargs."
+            )
 
         # ------------------------------------------------------------------------------------------
         # Create sweep path obj
@@ -227,8 +238,6 @@ class Mesh:
             edge_angle=self.skew_1,
             num_long_beam=self.num_long_beam,
             model_plane_y=self.y_elevation,
-            ext_to_int_a=self.ext_to_int_a,
-            ext_to_int_b=self.ext_to_int_b,
             **kwargs
         )
         # intermediate construction lines for
@@ -248,8 +257,6 @@ class Mesh:
             edge_angle=self.skew_2,
             num_long_beam=self.num_long_beam,
             model_plane_y=self.y_elevation,
-            ext_to_int_a=self.ext_to_int_a,
-            ext_to_int_b=self.ext_to_int_b,
             **kwargs
         )
         # ------------------------------------------------------------------------------------------
@@ -259,8 +266,10 @@ class Mesh:
         # of sweep nodes. slope of sweep nodes is always ORTHOGONAL to tangent of sweep path at intersection with ref
         # point
         self.sweeping_nodes = []
-        # z coordinate of ref sweep nodes (relative to origin)
+        # get z coordinate of start edge nodes
         self.noz = self.start_edge_line.noz
+
+        # create sweeping nodes of either meshing style
         if self.orthogonal:
             self.sweeping_nodes = self._rotate_sweep_nodes(
                 self.zeta / 180 * np.pi
@@ -268,29 +277,49 @@ class Mesh:
         else:  # skew
             # sweep line of skew mesh == edge_construction line
             self.sweeping_nodes = self.start_edge_line.node_list
+
+        # check if continuous multispan feature
         if self.continuous:
-            self.nox = np.array([0])  # init
+            # first element of nox is 0 origin point
+            self.nox = np.array([0])
         else:
+            # init empty list
             self.nox = []
 
         # check and modify support spacing var
-        if not self.continuous and self.non_cont_spacing_x:
+        if not self.continuous and self.stitch_element_spacing_x:
             # split support_point_x intermediate points into 2 based on
             pass
             # else do nothing and continue
+        if self.transverse_mbr_x_spacing_list:
+            self._create_custom_transverse_spacings()
+        else:
+            self._create_transverse_spacings()
 
+        # ------------------------------------------------------------------------------------------
+        # create nodes and elements
+        self._mesh_grillage()
+
+    def _create_custom_transverse_spacings(self):
+        self.nox = [0]
+        for x_dist in self.transverse_mbr_x_spacing_list:
+            self.nox.append(self.nox[-1] + x_dist)
+
+    def _create_transverse_spacings(self):
+        # loop through the first to nth span
         for i, num_x_point in enumerate(self.multi_span_num_points):
             # TODO check if straight line or equation of arc
             # arc
 
             # straight line
             if self.continuous:
+                # create nox equally spaced between edge x positions
                 self.nox = np.concatenate(
                     (
                         self.nox,
                         np.linspace(
-                            self.support_points_x[i],
-                            self.support_points_x[i + 1],
+                            self.mesh_edge_x_positions[i],
+                            self.mesh_edge_x_positions[i + 1],
                             num_x_point,
                         )[1:],
                     )
@@ -298,20 +327,20 @@ class Mesh:
 
             # multi span straight line, non continuous mesh
             else:
-                # multi_span_num_point wil always have -2 number of elements to non_cont_support_point_x
+                # create nox equally spaced between edge x positions of non_cont edge points
+                # note: multi_span_num_point wil always have -2 number of elements to mesh_edge_x_positions_non_cont
                 self.nox = np.concatenate(
                     (
                         self.nox,
                         np.linspace(
-                            self.non_cont_support_points_x[2 * i],
-                            self.non_cont_support_points_x[2 * i + 1],
+                            self.mesh_edge_x_positions_non_cont[2 * i],
+                            self.mesh_edge_x_positions_non_cont[2 * i + 1],
                             num_x_point,
                         ),
                     )
                 )
 
-        # ------------------------------------------------------------------------------------------
-        # create nodes and elements
+    def _mesh_grillage(self):
         # if orthogonal, orthogonal mesh only be slayed onto a curve mesh, if skew mesh curved/arc line segment must be
         # false
         if self.orthogonal:
@@ -338,15 +367,15 @@ class Mesh:
         assigned_node_tag = []
         previous_node_tag = []
         if self.continuous:
-            support_points = self.support_points_x
+            support_points = self.mesh_edge_x_positions
         else:
-            support_points = self.non_cont_support_points_x
+            support_points = self.mesh_edge_x_positions_non_cont
         # begin creating nodes, assigning long members / stitch slab long elements between nodes
         for x_count, x_inc in enumerate(self.nox):
             # store x_group based on span group
             span_group_key = [
                 i
-                for i, point_x in enumerate(self.support_points_x[1:])
+                for i, point_x in enumerate(self.mesh_edge_x_positions[1:])
                 if x_inc <= point_x
             ][0]
             x_group_list = self.span_group_to_x_groups[span_group_key]
@@ -419,13 +448,13 @@ class Mesh:
                         # some form of continuity e.g. stitch slabs
 
                         if cur_z_group == prev_z_group:
-                            if not self.continuous and self.non_cont_spacing_x:
+                            if not self.continuous and self.stitch_element_spacing_x:
                                 # create beam element between supports
                                 x_start = self.node_spec[cur_node]["coordinate"][0]
                                 x_end = self.node_spec[pre_node]["coordinate"][0]
                                 if (
-                                    x_start in self.non_cont_support_points_x
-                                    and x_end in self.non_cont_support_points_x
+                                    x_start in self.mesh_edge_x_positions_non_cont
+                                    and x_end in self.mesh_edge_x_positions_non_cont
                                 ):
                                     # assign a connector beam element between non-continuous span supports
                                     tag = self._get_geo_transform_tag(
@@ -510,6 +539,7 @@ class Mesh:
                     # self.__assign_transverse_members(pre_node=self.assigned_node_tag[z_count_int - 1],
                     #                                  cur_node=self.assigned_node_tag[z_count_int])
                     if not self.beam_element_flag:
+                        # skip and go to next x position
                         continue
                     if len(self.assigned_node_tag) >= 1:
                         self._assign_edge_trans_members(
@@ -1379,7 +1409,7 @@ class Mesh:
     # curve meshing algorithm
 
     def _mesh_curve(self):
-
+        # TODO
         pass
 
 
@@ -1399,14 +1429,9 @@ class EdgeControlLine:
         num_long_beam,
         model_plane_y,
         feature="standard",
-        ext_to_int_a=None,
-        ext_to_int_b=None,
         **kwargs
     ):
 
-        # distance between interior beam and exterior beam
-        self.ext_to_int_a = ext_to_int_a
-        self.ext_to_int_b = ext_to_int_b
         # set variables
         self.edge_ref_point = edge_ref_point
         self.width_z = width_z
@@ -1414,82 +1439,50 @@ class EdgeControlLine:
         self.edge_width_b = edge_width_b
         self.num_long_beam = num_long_beam
         self.edge_angle = edge_angle
-        self.feature = feature
+        self.feature = feature  # for future variants of edge control lines
 
         # for shell
         self.z_group_master_pair_list = []
         self.node_z_pair_list_value = []
-        self.customize = kwargs.get(
-            "custom_z_distance", None
+
+        self.custom_beam_z_spacing = kwargs.get(
+            "beam_z_spacing", None
         )  # get a list of custom spacings
         # check validity of custom points
-        if self.customize and not isinstance(self.customize, list):
+        if self.custom_beam_z_spacing and not isinstance(
+            self.custom_beam_z_spacing, list
+        ):
             raise Exception(
                 "Invalid custom control point format: Hint - accepts list of float or int"
             )
 
-        if not self.customize:
+        # create longitudinal node points (z coordinate) list,
+        if not self.custom_beam_z_spacing:
             # calculations
             # array containing z coordinate of edge construction line
             last_girder = (
                 self.width_z - self.edge_width_b
             )  # coord of exterior main beam 2
 
-            last_interior = (
-                last_girder - self.ext_to_int_b
-                if self.ext_to_int_b is not None
-                else None
-            )
-            first_interior = (
-                self.edge_width_a + self.ext_to_int_a
-                if self.ext_to_int_a is not None
-                else None
-            )
-
-            # check cases of customize edge control points
-            if (
-                not first_interior and not last_interior
-            ):  # no custom dist between interior and exterior
+            # check if edge dist is provided
+            if not self.edge_width_a:
+                # create evenly spaced nox girder from 0 to width
+                self.noz = np.linspace(
+                    start=0, stop=self.width_z, num=self.num_long_beam
+                )
+            else:
+                # create evenly spaced nox girder for all beams between first and last girder, then assemble list
                 nox_girder = np.linspace(
-                    start=self.edge_width_a,
-                    stop=last_girder,
-                    num=self.num_long_beam - 2,
+                    start=edge_width_a, stop=last_girder, num=self.num_long_beam - 2
                 )
-            elif first_interior and not last_interior:
-                nox_girder = np.hstack(
-                    (
-                        edge_width_a,
-                        np.linspace(
-                            start=first_interior,
-                            stop=last_girder,
-                            num=self.num_long_beam - 2 - 1,
-                        ),
-                    )
-                )
-            elif not first_interior and last_interior:
-                nox_girder = np.hstack(
-                    (
-                        np.linspace(
-                            start=self.edge_width_a,
-                            stop=last_interior,
-                            num=self.num_long_beam - 2 - 1,
-                        ),
-                        last_girder,
-                    )
-                )
+                # nox_girder = np.hstack((0, nox_girder))
+                # nox_girder = np.hstack((nox_girder, self.width_z))
 
-            else:  # both have custom interior ext distance
-                nox_girder = np.linspace(
-                    start=first_interior, stop=last_interior, num=self.num_long_beam - 4
-                )
-                nox_girder = np.hstack((edge_width_a, nox_girder))
-                nox_girder = np.hstack((nox_girder, last_girder))
-
-            # create self.noz points
-            self._create_trans_grid(nox_girder=nox_girder)
+                # create self.noz points
+                self._create_trans_grid(nox_girder=nox_girder)
         else:  # create and store custom points from custom distance list
             self.noz = [0]
-            for dist in self.customize:
+            for dist in self.custom_beam_z_spacing:
                 self.noz.append(
                     self.noz[-1] + dist
                 )  # note this overwrites the self.width_z
@@ -1559,8 +1552,6 @@ class ShellEdgeControlLine(EdgeControlLine):
         num_long_beam,
         model_plane_y,
         feature="standard",
-        ext_to_int_a=None,
-        ext_to_int_b=None,
         **kwargs
     ):
         # get properties specific to shell mesh
@@ -1582,8 +1573,6 @@ class ShellEdgeControlLine(EdgeControlLine):
             num_long_beam,
             model_plane_y,
             feature,
-            ext_to_int_a,
-            ext_to_int_b,
             **kwargs
         )
 
@@ -1748,8 +1737,6 @@ class BeamMesh(Mesh):
         num_long_beam,
         skew_1,
         skew_2,
-        ext_to_int_a,
-        ext_to_int_b,
         **kwargs
     ):
         """
@@ -1766,8 +1753,7 @@ class BeamMesh(Mesh):
         :param num_long_beam:
         :param skew_1:
         :param skew_2:
-        :param ext_to_int_a:
-        :param ext_to_int_b:
+
         """
         # instantiate variables specific for current mesh subclass
 
@@ -1782,8 +1768,6 @@ class BeamMesh(Mesh):
             num_long_beam,
             skew_1,
             skew_2,
-            ext_to_int_a,
-            ext_to_int_b,
             **kwargs
         )
 
@@ -1804,8 +1788,6 @@ class BeamLinkMesh(Mesh):
         num_long_beam,
         skew_1,
         skew_2,
-        ext_to_int_a,
-        ext_to_int_b,
         **kwargs
     ):
         """
@@ -1822,8 +1804,7 @@ class BeamLinkMesh(Mesh):
         :param num_long_beam:
         :param skew_1:
         :param skew_2:
-        :param ext_to_int_a:
-        :param ext_to_int_b:
+
         """
         # instantiate variables specific for beam link model
         self.beam_width = kwargs.get("beam_width", None)
@@ -1846,8 +1827,6 @@ class BeamLinkMesh(Mesh):
             num_long_beam,
             skew_1,
             skew_2,
-            ext_to_int_a,
-            ext_to_int_b,
             **kwargs
         )
 
@@ -1937,8 +1916,6 @@ class ShellLinkMesh(Mesh):
         num_long_beam,
         skew_1,
         skew_2,
-        ext_to_int_a,
-        ext_to_int_b,
         link_type="beam",
         **kwargs
     ):
@@ -1954,8 +1931,7 @@ class ShellLinkMesh(Mesh):
         :param num_long_beam:
         :param skew_1:
         :param skew_2:
-        :param ext_to_int_a:
-        :param ext_to_int_b:
+
         """
         # instantiate variables specific for shell mesh subclass
         self.long_ele_offset = []
@@ -1993,8 +1969,6 @@ class ShellLinkMesh(Mesh):
             num_long_beam,
             skew_1,
             skew_2,
-            ext_to_int_a,
-            ext_to_int_b,
             **kwargs
         )
 
