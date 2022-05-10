@@ -285,27 +285,19 @@ and its mesh.</p>
 <dd class="field-even"><p></p></dd>
 </dl>
 <ul class="simple">
-<li><p>ext_to_int_dist: (Int or Float, or a List of Int or Float) distance between internal beams</p></li>
-</ul>
-<blockquote>
-<div><p>and exterior main beams. If list is provided (usually size 2), apply each distinct distance to left and right
-side respectively.</p>
-</div></blockquote>
-<ul class="simple">
+<li><p>beam_z_spacing: (list of int or float) Custom distance of longitudinal members (global z - direction). Note
+this parameter supercedes num_long_grid.</p></li>
+<li><p>beam_x_spacing: (list of int or float) Custom distance of transverse members (global x - direction). Note
+this parameter supercedes num_trans_grid.</p></li>
+<li><p>ext_to_int_dist: (Int or Float, or a List of Int or Float) distance between internal beams
+and exterior main beams. If list is provided (usually size 2), apply each distinct distance to left and right
+side respectively.</p></li>
 <li><p>multi_span_dist_list: (List of Int/Float) List of distance (x dir) correspond to span length of each multi span</p></li>
-<li><p>multi_span_num_points: (List of Int) Num of transverse member correspond to spans of each element in multi_span_dist_list</p></li>
-</ul>
-<blockquote>
-<div><p>If not specified, takes int var for num_trans_beam and assigns to all spans of multi_span_dist_list</p>
-</div></blockquote>
-<ul class="simple">
+<li><p>multi_span_num_points: (List of Int) Num of transverse member correspond to spans of each element in multi_span_dist_list
+If not specified, takes int var for num_trans_beam and assigns to all spans of multi_span_dist_list</p></li>
 <li><p>continuous: (Bool) To set continuity of spans. Default True. If False, separate spans by non_cont_spacing_x</p></li>
-<li><p>stitch_slab_elements: (Bool) To set stictch elements between spans. Elements are set using <cite>set_member()</cite> with</p></li>
-</ul>
-<blockquote>
-<div><p>member= “stich_elements”</p>
-</div></blockquote>
-<ul class="simple">
+<li><p>stitch_slab_elements: (Bool) To set stictch elements between spans. Elements are set using <cite>set_member()</cite> with
+member= “stich_elements”</p></li>
 <li><p>non_cont_spacing_x: (float) sets spacing or length of stitch elements.</p></li>
 </ul>
 <dl class="field-list simple">
@@ -536,7 +528,7 @@ Class object is accessed within OspGrillage class object.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.osp_grillage.OspGrillageBeam">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.osp_grillage.</span></span><span class="sig-name descname"><span class="pre">OspGrillageBeam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bridge_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">long_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skew</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_long_grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_trans_grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_beam_dist</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Ortho'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'3D'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OspGrillageBeam" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.osp_grillage.</span></span><span class="sig-name descname"><span class="pre">OspGrillageBeam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bridge_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">long_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skew</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_long_grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_trans_grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_beam_dist</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Ortho'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'3D'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OspGrillageBeam" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">ospgrillage.osp_grillage.OspGrillage</span></code></a></p>
 <p>Concrete class for beam grillage model type.</p>
 <p>Init the OspGrillage class</p>
@@ -558,27 +550,19 @@ Class object is accessed within OspGrillage class object.</p>
 <dd class="field-even"><p></p></dd>
 </dl>
 <ul class="simple">
-<li><p>ext_to_int_dist: (Int or Float, or a List of Int or Float) distance between internal beams</p></li>
-</ul>
-<blockquote>
-<div><p>and exterior main beams. If list is provided (usually size 2), apply each distinct distance to left and right
-side respectively.</p>
-</div></blockquote>
-<ul class="simple">
+<li><p>beam_z_spacing: (list of int or float) Custom distance of longitudinal members (global z - direction). Note
+this parameter supercedes num_long_grid.</p></li>
+<li><p>beam_x_spacing: (list of int or float) Custom distance of transverse members (global x - direction). Note
+this parameter supercedes num_trans_grid.</p></li>
+<li><p>ext_to_int_dist: (Int or Float, or a List of Int or Float) distance between internal beams
+and exterior main beams. If list is provided (usually size 2), apply each distinct distance to left and right
+side respectively.</p></li>
 <li><p>multi_span_dist_list: (List of Int/Float) List of distance (x dir) correspond to span length of each multi span</p></li>
-<li><p>multi_span_num_points: (List of Int) Num of transverse member correspond to spans of each element in multi_span_dist_list</p></li>
-</ul>
-<blockquote>
-<div><p>If not specified, takes int var for num_trans_beam and assigns to all spans of multi_span_dist_list</p>
-</div></blockquote>
-<ul class="simple">
+<li><p>multi_span_num_points: (List of Int) Num of transverse member correspond to spans of each element in multi_span_dist_list
+If not specified, takes int var for num_trans_beam and assigns to all spans of multi_span_dist_list</p></li>
 <li><p>continuous: (Bool) To set continuity of spans. Default True. If False, separate spans by non_cont_spacing_x</p></li>
-<li><p>stitch_slab_elements: (Bool) To set stictch elements between spans. Elements are set using <cite>set_member()</cite> with</p></li>
-</ul>
-<blockquote>
-<div><p>member= “stich_elements”</p>
-</div></blockquote>
-<ul class="simple">
+<li><p>stitch_slab_elements: (Bool) To set stictch elements between spans. Elements are set using <cite>set_member()</cite> with
+member= “stich_elements”</p></li>
 <li><p>non_cont_spacing_x: (float) sets spacing or length of stitch elements.</p></li>
 </ul>
 <dl class="field-list simple">
@@ -612,27 +596,19 @@ side respectively.</p>
 <dd class="field-even"><p></p></dd>
 </dl>
 <ul class="simple">
-<li><p>ext_to_int_dist: (Int or Float, or a List of Int or Float) distance between internal beams</p></li>
-</ul>
-<blockquote>
-<div><p>and exterior main beams. If list is provided (usually size 2), apply each distinct distance to left and right
-side respectively.</p>
-</div></blockquote>
-<ul class="simple">
+<li><p>beam_z_spacing: (list of int or float) Custom distance of longitudinal members (global z - direction). Note
+this parameter supercedes num_long_grid.</p></li>
+<li><p>beam_x_spacing: (list of int or float) Custom distance of transverse members (global x - direction). Note
+this parameter supercedes num_trans_grid.</p></li>
+<li><p>ext_to_int_dist: (Int or Float, or a List of Int or Float) distance between internal beams
+and exterior main beams. If list is provided (usually size 2), apply each distinct distance to left and right
+side respectively.</p></li>
 <li><p>multi_span_dist_list: (List of Int/Float) List of distance (x dir) correspond to span length of each multi span</p></li>
-<li><p>multi_span_num_points: (List of Int) Num of transverse member correspond to spans of each element in multi_span_dist_list</p></li>
-</ul>
-<blockquote>
-<div><p>If not specified, takes int var for num_trans_beam and assigns to all spans of multi_span_dist_list</p>
-</div></blockquote>
-<ul class="simple">
+<li><p>multi_span_num_points: (List of Int) Num of transverse member correspond to spans of each element in multi_span_dist_list
+If not specified, takes int var for num_trans_beam and assigns to all spans of multi_span_dist_list</p></li>
 <li><p>continuous: (Bool) To set continuity of spans. Default True. If False, separate spans by non_cont_spacing_x</p></li>
-<li><p>stitch_slab_elements: (Bool) To set stictch elements between spans. Elements are set using <cite>set_member()</cite> with</p></li>
-</ul>
-<blockquote>
-<div><p>member= “stich_elements”</p>
-</div></blockquote>
-<ul class="simple">
+<li><p>stitch_slab_elements: (Bool) To set stictch elements between spans. Elements are set using <cite>set_member()</cite> with
+member= “stich_elements”</p></li>
 <li><p>non_cont_spacing_x: (float) sets spacing or length of stitch elements.</p></li>
 </ul>
 <dl class="field-list simple">
