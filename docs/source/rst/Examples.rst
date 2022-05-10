@@ -6,8 +6,8 @@ Examples
 .. toctree::
    :maxdepth: 1
 
-   ../notebooks/Super_T_bridge_model
-   ../notebooks/Super_T_bridge_model_shell_beam
-   ../notebooks/mesh_feature
-   ../../../examples/workshop/super-t_example_final
+   ../notebooks/super_t_analysis_workflow
+   ../notebooks/mesh_showcase
+   ../notebooks/multi_span
+   ../../../examples/workshop/super-t_example-final
 

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Load &#8212; ospgrillage module 0.1.0 documentation</title>
+    <title>Load &#8212; ospgrillage module 0.1.1 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -31,6 +31,7 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -52,7 +53,7 @@
     
 
 <a class="navbar-brand" href="../index.html">
-  <img src="../_static/ospgrillage_logo.PNG" class="logo" alt="logo">
+  <img src="../_static/ospgrillage_logo.png" class="logo" alt="logo">
 </a>
 
 
@@ -107,7 +108,7 @@
 
 <li class="toctree-l1 nav-item">
  <a class="reference internal nav-link" href="ModuleDoc.html">
-  Module design
+  Package design
  </a>
 </li>
 
@@ -133,6 +134,18 @@
       
       <div class="navbar-end-item">
         <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/MonashSmartStructures/ospgrillage" rel="noopener" target="_blank" title="GitHub">
+            <span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://twitter.com/ccaprani" rel="noopener" target="_blank" title="Twitter">
+            <span><i class="fab fa-twitter-square"></i></span>
+            <label class="sr-only">Twitter</label>
+          </a>
+        </li>
       </ul>
       </div>
       
@@ -173,6 +186,13 @@
               
               <div class="toc-item">
                 
+
+<div class="tocsection editthispage">
+    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/rst/Loads.rst">
+        <i class="fas fa-pencil-alt"></i> Edit this page
+    </a>
+</div>
+
               </div>
               
             
@@ -194,7 +214,7 @@ comprise the user interface functions. Following are the classes of various load
 moving load and moving load path.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="ospgrillage.load.create_load_vertex">
-<span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">create_load_vertex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.create_load_vertex" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">create_load_vertex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.create_load_vertex" title="Permalink to this definition">¶</a></dt>
 <dd><p>User interface function to create load vertex of various load types.
 :param kwargs: Keyword arg, see below.</p>
 <dl class="field-list simple">
@@ -219,7 +239,7 @@ moving load and moving load path.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ospgrillage.load.create_point">
-<span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">create_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.create_point" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">create_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.create_point" title="Permalink to this definition">¶</a></dt>
 <dd><p>User interface function to create a Point namedTuple.
 :param kwargs: See below
 :keyword:</p>
@@ -237,7 +257,7 @@ moving load and moving load path.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ospgrillage.load.create_load_case">
-<span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">create_load_case</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.create_load_case" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">create_load_case</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.create_load_case" title="Permalink to this definition">¶</a></dt>
 <dd><p>User interface function to create LoadCase objects. Following this function, users
 are required add loads to LoadCase object via <a class="reference internal" href="generated/ospgrillage.load.LoadCase.add_load.html#ospgrillage.load.LoadCase.add_load" title="ospgrillage.load.LoadCase.add_load"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_load()</span></code></a>.</p>
 <dl class="field-list simple">
@@ -256,7 +276,7 @@ are required add loads to LoadCase object via <a class="reference internal" href
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ospgrillage.load.create_compound_load">
-<span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">create_compound_load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.create_compound_load" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">create_compound_load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.create_compound_load" title="Permalink to this definition">¶</a></dt>
 <dd><p>User interface function to create CompoundLoad object. Following this function users are required to
 add loads to object via <a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.add_load.html#ospgrillage.load.CompoundLoad.add_load" title="ospgrillage.load.CompoundLoad.add_load"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_load()</span></code></a>.</p>
 <dl class="field-list simple">
@@ -273,7 +293,7 @@ add loads to object via <a class="reference internal" href="generated/ospgrillag
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ospgrillage.load.create_load">
-<span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">create_load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.create_load" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">create_load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.create_load" title="Permalink to this definition">¶</a></dt>
 <dd><p>User interface function to create load types.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Keyword</dt>
@@ -295,7 +315,7 @@ requires a different minimum LoadPoint.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ospgrillage.load.create_moving_load">
-<span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">create_moving_load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.create_moving_load" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">create_moving_load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.create_moving_load" title="Permalink to this definition">¶</a></dt>
 <dd><p>User interface function to create Moving Load object. Following this function, users are required to:</p>
 <p><a href="#id1"><span class="problematic" id="id2">*</span></a>. Set a common path to object via <a class="reference internal" href="generated/ospgrillage.load.MovingLoad.set_path.html#ospgrillage.load.MovingLoad.set_path" title="ospgrillage.load.MovingLoad.set_path"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_path()</span></code></a>
 <a href="#id3"><span class="problematic" id="id4">*</span></a>. Add loads to object via <a class="reference internal" href="generated/ospgrillage.load.MovingLoad.add_load.html#ospgrillage.load.MovingLoad.add_load" title="ospgrillage.load.MovingLoad.add_load"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_load()</span></code></a></p>
@@ -315,7 +335,7 @@ advance usage where Moving Load contains multiple load groups each with unique p
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ospgrillage.load.create_moving_path">
-<span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">create_moving_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.create_moving_path" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">create_moving_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.create_moving_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>User interface function to create Path object for moving load.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Keyword</dt>
@@ -336,25 +356,25 @@ advance usage where Moving Load contains multiple load groups each with unique p
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ospgrillage.load.LoadPoint">
-<span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">LoadPoint</span></span><a class="headerlink" href="#ospgrillage.load.LoadPoint" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">LoadPoint</span></span><a class="headerlink" href="#ospgrillage.load.LoadPoint" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">ospgrillage.load.Point</span></code></p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ospgrillage.load.NodeForces">
-<span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">NodeForces</span></span><a class="headerlink" href="#ospgrillage.load.NodeForces" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">NodeForces</span></span><a class="headerlink" href="#ospgrillage.load.NodeForces" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">ospgrillage.load.node_forces</span></code></p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ospgrillage.load.Line">
-<span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">Line</span></span><a class="headerlink" href="#ospgrillage.load.Line" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">Line</span></span><a class="headerlink" href="#ospgrillage.load.Line" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">ospgrillage.load.line</span></code></p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.load.Loads">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">Loads</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.Loads" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Loads</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.Loads" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Base class for Point, Line , and Patch loads</p>
 <dl class="field-list simple">
@@ -441,7 +461,7 @@ advance usage where Moving Load contains multiple load groups each with unique p
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.load.NodalLoad">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">NodalLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_tag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.NodalLoad" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">NodalLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_tag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.NodalLoad" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ospgrillage.load.Loads" title="ospgrillage.load.Loads"><code class="xref py py-class docutils literal notranslate"><span class="pre">ospgrillage.load.Loads</span></code></a></p>
 <p>Main class for nodal load. Derived from Loads base class</p>
 <p>Nodal load takes a node tag and namedtuple NodalForce(Fx,Fy,Fz,Mx,My,Mz) as input.</p>
@@ -504,7 +524,7 @@ advance usage where Moving Load contains multiple load groups each with unique p
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.load.PointLoad">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">PointLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.PointLoad" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">PointLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.PointLoad" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ospgrillage.load.Loads" title="ospgrillage.load.Loads"><code class="xref py py-class docutils literal notranslate"><span class="pre">ospgrillage.load.Loads</span></code></a></p>
 <p>Class for Point loads. Derived from based <a class="reference internal" href="#ospgrillage.load.Loads" title="ospgrillage.load.Loads"><code class="xref py py-class docutils literal notranslate"><span class="pre">Loads</span></code></a> class</p>
 <dl class="field-list simple">
@@ -559,7 +579,7 @@ advance usage where Moving Load contains multiple load groups each with unique p
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.load.LineLoading">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">LineLoading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LineLoading" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">LineLoading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LineLoading" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ospgrillage.load.Loads" title="ospgrillage.load.Loads"><code class="xref py py-class docutils literal notranslate"><span class="pre">ospgrillage.load.Loads</span></code></a></p>
 <p>Class for line loading. Derived from based Loads class</p>
 <dl class="field-list simple">
@@ -634,7 +654,7 @@ advance usage where Moving Load contains multiple load groups each with unique p
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.load.PatchLoading">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">PatchLoading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.PatchLoading" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">PatchLoading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.PatchLoading" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ospgrillage.load.Loads" title="ospgrillage.load.Loads"><code class="xref py py-class docutils literal notranslate"><span class="pre">ospgrillage.load.Loads</span></code></a></p>
 <p>Main class for Patch loads. Derived from base Loads class.</p>
 <p>Patch load can take up to 8 load points. By default requires at least 4 load point for patch (quadrilateral)</p>
@@ -690,7 +710,7 @@ advance usage where Moving Load contains multiple load groups each with unique p
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.load.CompoundLoad">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">CompoundLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.CompoundLoad" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">CompoundLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.CompoundLoad" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Main class for Compound load definition.</p>
 <p>When a Load object is pass as an input, CompoundLoad treats the initial positions (load_points) of the Load classes
@@ -738,7 +758,7 @@ The global coordinate is set to all local load points (i.e. it adds the global c
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.load.LoadCase">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">LoadCase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LoadCase" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">LoadCase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LoadCase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Main class for load cases. Each load case holds information about:
 #. Load object types (point line patch or combination i.e. compound load)
@@ -786,7 +806,7 @@ is required to set the origin of local coordinate of load groups onto the global
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.load.MovingLoad">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">MovingLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.MovingLoad" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">MovingLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.MovingLoad" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Main class of moving load case. MovingLoad class parses and creates multiple loadcase object corresponding to
 traversing the input load groups - be it compound or single. Moving load is able to set various path (defined by
@@ -842,18 +862,25 @@ load group.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ospgrillage.load.MovingLoad.query">
 <span class="sig-name descname"><span class="pre">query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incremental_lc_name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.MovingLoad.query" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to query properties of moving load
-:param incremental_lc_name: Name string of load case to query properties
-:type incremental_lc_name: str
-:param kwargs:
-:return:</p>
+<dd><p>Function to query properties of moving load</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>incremental_lc_name</strong> (<em>str</em>) – Name string of load case to query properties</p></li>
+<li><p><strong>kwargs</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.load.Path">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">Path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_point</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">ospgrillage.mesh.Point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_point</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">ospgrillage.mesh.Point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">increments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid_point</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ospgrillage.mesh.Point</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.Path" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_point</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">ospgrillage.mesh.Point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_point</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">ospgrillage.mesh.Point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">increments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid_point</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ospgrillage.mesh.Point</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.Path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Main class to define path of a moving load object</p>
 <dl class="py method">
@@ -868,9 +895,54 @@ load group.</p>
 
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="ospgrillage.load.create_load_model">
+<span class="sig-name descname"><span class="pre">create_load_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.create_load_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to create a CompoundLoad object of a vehicle load model model
+:return: <cite>LoadModel</cite> object</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ospgrillage.load.LoadModel">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">LoadModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LoadModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class to handle load model generator. This contains library of load models and creates load model using
+<cite>CompoundLoad</cite> class.</p>
+<p>For users wishing to contribute/add load models, do so herein by adding the load model as a function to
+this class.</p>
+<p>Init the class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gap</strong> – Gap between axle (specific to M1600)</p></li>
+<li><p><strong>kwargs</strong> – See below</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.load.LoadModel.create">
+<span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LoadModel.create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.load.LoadModel.create_m1600_vehicle">
+<span class="sig-name descname"><span class="pre">create_m1600_vehicle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gap</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LoadModel.create_m1600_vehicle" title="Permalink to this definition">¶</a></dt>
+<dd><p>AS5100 Australian load model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>gap</strong> – Gap between axle group</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><a class="reference internal" href="#ospgrillage.load.CompoundLoad" title="ospgrillage.load.CompoundLoad"><code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundLoad</span></code></a> object of a M1600 vehicle in local coordinate.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.load.ShapeFunction">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">ShapeFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_three_node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'triangle_linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">option_four_node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hermite'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.ShapeFunction" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">ShapeFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_three_node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'triangle_linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">option_four_node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hermite'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.ShapeFunction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Class for shape functions. The role of Shape functions in ospgrillage is to distribute loads to nodes.</p>
 <p>Here developers can add more shape functions to this class by:
