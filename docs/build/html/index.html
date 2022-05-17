@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>OpenSeesPy Grillage wizard - ospgrillage &#8212; ospgrillage module 0.1.0 documentation</title>
+    <title>OpenSeesPy Grillage wizard - ospgrillage &#8212; ospgrillage module 0.1.1 documentation</title>
     
   <link href="_static/css/theme.css" rel="stylesheet">
   <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -31,6 +31,7 @@
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Installation" href="rst/Installation.html" />
@@ -53,7 +54,7 @@
     
 
 <a class="navbar-brand" href="#">
-  <img src="_static/ospgrillage_logo.PNG" class="logo" alt="logo">
+  <img src="_static/ospgrillage_logo.png" class="logo" alt="logo">
 </a>
 
 
@@ -108,7 +109,7 @@
 
 <li class="toctree-l1 nav-item">
  <a class="reference internal nav-link" href="rst/ModuleDoc.html">
-  Module design
+  Package design
  </a>
 </li>
 
@@ -134,6 +135,18 @@
       
       <div class="navbar-end-item">
         <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/MonashSmartStructures/ospgrillage" rel="noopener" target="_blank" title="GitHub">
+            <span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://twitter.com/ccaprani" rel="noopener" target="_blank" title="Twitter">
+            <span><i class="fab fa-twitter-square"></i></span>
+            <label class="sr-only">Twitter</label>
+          </a>
+        </li>
       </ul>
       </div>
       
@@ -182,6 +195,16 @@
    Support
   </a>
  </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#contributing">
+   Contributing
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#credits">
+   Credits
+  </a>
+ </li>
 </ul>
 
 </nav>
@@ -189,6 +212,13 @@
               
               <div class="toc-item">
                 
+
+<div class="tocsection editthispage">
+    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/index.rst">
+        <i class="fas fa-pencil-alt"></i> Edit this page
+    </a>
+</div>
+
               </div>
               
             
@@ -203,17 +233,33 @@
               
               <div>
                 
-  <div class="section" id="openseespy-grillage-wizard-ospgrillage">
+  <a class="reference internal image-reference" href="http://raw.githubusercontent.com/MonashSmartStructures/ospgrillage/main/docs/source/images/ospgrillage_logo.png"><img alt="ospgrillage" class="align-center" src="http://raw.githubusercontent.com/MonashSmartStructures/ospgrillage/main/docs/source/images/ospgrillage_logo.png" style="width: 80%;" /></a>
+<p><a class="reference external" href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg" /></a>
+<a class="reference external" href="https://opensource.org/licenses/MIT"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" /></a>
+<img alt="version" src="https://img.shields.io/github/downloads/MonashSmartStructures/ospgrillage/total?label=version" />
+<img alt="GitHub issues" src="https://img.shields.io/github/issues/MonashSmartStructures/ospgrillage?logoColor=yellowgreen" />
+<img alt="GitHub pull requests" src="https://img.shields.io/github/issues-pr/MonashSmartStructures/ospgrillage?color=yellowgreen" />
+<img alt="PyPI" src="https://img.shields.io/pypi/v/ospgrillage" />
+<img alt="GitHub Workflow Deploy" src="https://img.shields.io/github/workflow/status/MonashSmartStructures/ospgrillage/Build%20and%20deploy" />
+<img alt="GitHub Workflow Build" src="https://img.shields.io/github/workflow/status/MonashSmartStructures/ospgrillage/Deploy%20to%20GitHub%20Pages?label=gh%20page%20build" />
+<img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/MonashSmartStructures/ospgrillage/Tests?label=Tests" />
+<img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/MonashSmartStructures/ospgrillage" />
+<img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/MonashSmartStructures/ospgrillage?color=ff69b4" />
+<a class="reference external" href="code_of_conduct.md"><img alt="Contributor Covenant" src="https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg" /></a>
+<a class="reference external" href="https://codecov.io/gh/MonashSmartStructures/ospgrillage"><img alt="codecov" src="https://codecov.io/gh/MonashSmartStructures/ospgrillage/branch/main/graph/badge.svg?token=dUTOmPBnyP" /></a></p>
+<div class="section" id="openseespy-grillage-wizard-ospgrillage">
 <h1>OpenSeesPy Grillage wizard - <em>ospgrillage</em><a class="headerlink" href="#openseespy-grillage-wizard-ospgrillage" title="Permalink to this headline">¶</a></h1>
-<p>The <cite>ospgrillage</cite> module is a python module wrapper for the <cite>OpenSeesPy</cite> python package. <cite>ospgrillage</cite> can be used to:</p>
+<p><em>ospgrillage</em> is a python wrapper of the <em>OpenSeesPy</em> package to speed up the creation of bridge deck grillage models.
+<a class="reference external" href="openseespydoc.readthedocs.io">OpenSeesPy</a> is a python interpreter of the well-know Open System for Earthquake Engineering Simulation (<a class="reference external" href="https://opensees.berkeley.edu/">OpenSees</a>) software framework.
+<em>ospgrillage</em> provides a simple python API which allows users to:</p>
 <ol class="arabic simple">
-<li><p>Output an executable python scripts containing commands to create a specified grillage model for use in Open System for Earthquake Engineering Simulation (OpenSees) software framework.</p></li>
-<li><p>Perform a grillage analysis for the current supported model types, member types, support types, and loading types as detailed in this documentation.</p></li>
+<li><p>Quickly generate and analyze a bridge deck grillage model in the <em>OpenSeesPy</em> model space, including many forms of loading and load cases;</p></li>
+<li><p>Export a <code class="code docutils literal notranslate"><span class="pre">*.py</span></code> file containing the <em>OpenSeesPy</em> commands, which on execution, creates the prescribed <em>OpenSeesPy</em> grillage model.</p></li>
 </ol>
+<p>The ability to use <em>ospgrillage</em> directly to do bridge deck analysis, or to export the <em>OpenSeesPy</em> command file for further editing, facilities an enormous range of use-cases in both bridge engineering practice and research.</p>
 <div class="section" id="documentation">
 <h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="rst/Installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rst/Module%20description.html">Creating grillage models</a></li>
@@ -221,7 +267,7 @@
 <li class="toctree-l1"><a class="reference internal" href="rst/Running_analysis.html">Performing analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rst/PostProcessing.html">Getting Results</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rst/APIdoc.html">API reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="rst/ModuleDoc.html">Module design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rst/ModuleDoc.html">Package design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rst/Examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rst/ChangeLog.html">Change Log</a></li>
 </ul>
@@ -229,8 +275,18 @@
 </div>
 <div class="section" id="support">
 <h2>Support<a class="headerlink" href="#support" title="Permalink to this headline">¶</a></h2>
-<p>For technical support, please email <a class="reference external" href="mailto:colin&#46;caprani&#37;&#52;&#48;monash&#46;edu">colin<span>&#46;</span>caprani<span>&#64;</span>monash<span>&#46;</span>edu</a> or <a class="reference external" href="mailto:jun&#46;ngan&#37;&#52;&#48;monash&#46;edu">jun<span>&#46;</span>ngan<span>&#64;</span>monash<span>&#46;</span>edu</a>. Otherwise, you can raise an issue on the github page.</p>
-<p>If you wish to contribute a feature to <em>ospgrillage</em> module, please do not hesitate to contact us.</p>
+<p>For technical support, please raise an issue at the <a class="reference external" href="https://github.com/MonashSmartStructures/ospgrillage">Github repository</a></p>
+</div>
+<div class="section" id="contributing">
+<h2>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h2>
+<p>We really value and welcome contributions to the <em>ospgrillage</em> package.
+Please check out our <a class="reference external" href="https://github.com/MonashSmartStructures/ospgrillage/blob/main/.github/CONTRIBUTING.md">contributing guidelines</a>.</p>
+</div>
+<div class="section" id="credits">
+<h2>Credits<a class="headerlink" href="#credits" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Mayer Melhem for producing the documentation illustrations and the design of the <em>ospgrillage</em> logo.</p></li>
+</ul>
 </div>
 </div>
 
