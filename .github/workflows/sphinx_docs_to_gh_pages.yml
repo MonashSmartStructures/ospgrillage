@@ -18,6 +18,8 @@ jobs:
     - uses: ammaraskar/sphinx-action@master
       with:
         docs-folder: "docs/"
+        pre-build-command: "apt-get install -y pandoc && python -m pip install sphinx-autodoc-typehints && python -m pip install nbsphinx"
+        
     - name: Commit documentation changes
       run: |
         git clone https://github.com/MonashSmartStructures/ops-grillage.git --single localbranch --branch gh-pages 
