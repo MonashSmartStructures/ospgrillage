@@ -7,8 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Creating grillage models &#8212; ospgrillage module 0.1.1 documentation</title>
     
-  <link href="../_static/css/theme.css" rel="stylesheet">
-  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 
     
   <link rel="stylesheet"
@@ -18,20 +19,18 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
     href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
-    
-      
-
-    
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/css/blank.css" />
     
-  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Model types available" href="ModelTemplates.html" />
@@ -43,7 +42,7 @@
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -137,16 +136,12 @@
       <div class="navbar-end-item">
         <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
         <li class="nav-item">
-          <a class="nav-link" href="https://github.com/MonashSmartStructures/ospgrillage" rel="noopener" target="_blank" title="GitHub">
-            <span><i class="fab fa-github-square"></i></span>
-            <label class="sr-only">GitHub</label>
-          </a>
+          <a class="nav-link" href="https://github.com/MonashSmartStructures/ospgrillage" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="https://twitter.com/ccaprani" rel="noopener" target="_blank" title="Twitter">
-            <span><i class="fab fa-twitter-square"></i></span>
-            <label class="sr-only">Twitter</label>
-          </a>
+          <a class="nav-link" href="https://twitter.com/ccaprani" rel="noopener" target="_blank" title="Twitter"><span><i class="fab fa-twitter-square"></i></span>
+            <label class="sr-only">Twitter</label></a>
         </li>
       </ul>
       </div>
@@ -162,7 +157,8 @@
           
             
             <!-- Only show if we have sidebars configured, else just a small margin  -->
-            <div class="col-12 col-md-3 bd-sidebar"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -170,6 +166,9 @@
     
   </div>
 </nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
             </div>
             
           
@@ -180,7 +179,7 @@
               
               <div class="toc-item">
                 
-<div class="tocsection onthispage pt-5 pb-3">
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
 
@@ -266,18 +265,18 @@
               <div>
                 
   <div class="section" id="creating-grillage-models">
-<h1>Creating grillage models<a class="headerlink" href="#creating-grillage-models" title="Permalink to this headline">¶</a></h1>
+<h1>Creating grillage models<a class="headerlink" href="#creating-grillage-models" title="Permalink to this headline">#</a></h1>
 <p>The <em>ospgrillage</em> module contains <strong>interface functions</strong> which can be called following the module syntax.
 These interface functions generally have  <code class="docutils literal notranslate"><span class="pre">set_</span></code>, <code class="docutils literal notranslate"><span class="pre">create_</span></code> or <code class="docutils literal notranslate"><span class="pre">get_</span></code> in their syntax.
 For example, <a class="reference internal" href="generated/ospgrillage.material.create_material.html#ospgrillage.material.create_material" title="ospgrillage.material.create_material"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_material()</span></code></a> creates a material object for the grillage model.</p>
 <p>A list of all interface functions can be found in <a class="reference internal" href="APIdoc.html"><span class="doc">API reference</span></a>.
 Although users can opt to interact with module objects directly, we recommend the more pythonic interface functions.</p>
 <div class="section" id="workflow-overview">
-<h2>Workflow overview<a class="headerlink" href="#workflow-overview" title="Permalink to this headline">¶</a></h2>
+<h2>Workflow overview<a class="headerlink" href="#workflow-overview" title="Permalink to this headline">#</a></h2>
 <p>Figure 1 summarizes the workflow of creating a grillage model using <em>ospgrillage</em>.</p>
 <div class="figure align-center" id="id1">
 <a class="reference internal image-reference" href="../_images/grillage_workflow.png"><img alt="../_images/grillage_workflow.png" src="../_images/grillage_workflow.png" /></a>
-<p class="caption"><span class="caption-text">Figure 1: Grillage model creation flow chart</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 1: Grillage model creation flow chart</span><a class="headerlink" href="#id1" title="Permalink to this image">#</a></p>
 </div>
 <p>In general, there are three steps to create a grillage model with <em>ospgrillage</em>:</p>
 <ol class="arabic simple">
@@ -288,7 +287,7 @@ Although users can opt to interact with module objects directly, we recommend th
 <p>We will detail these steps by creating a grillage model of a bridge deck as shown in Figure 2.</p>
 <div class="figure align-center" id="id2">
 <span id="figure-2"></span><a class="reference internal image-reference" href="../_images/42degnegative10m.png"><img alt="../_images/42degnegative10m.png" src="../_images/42degnegative10m.png" /></a>
-<p class="caption"><span class="caption-text">Figure 2: Grillage model created using <cite>OpenSeesPy</cite></span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 2: Grillage model created using <cite>OpenSeesPy</cite></span><a class="headerlink" href="#id2" title="Permalink to this image">#</a></p>
 </div>
 <p>To begin, import <cite>ospgrillage</cite> as either <code class="docutils literal notranslate"><span class="pre">ospg</span></code> or <code class="docutils literal notranslate"><span class="pre">og</span></code> as shown in the following code block.
 As will be needed later, we also prepared the unit convention of variables for this example as shown in the same code block.</p>
@@ -309,7 +308,7 @@ As will be needed later, we also prepared the unit convention of variables for t
 </div>
 </div>
 <div class="section" id="defining-elements-of-grillage-model">
-<span id="defining-grillage-member"></span><h2>Defining elements of grillage model<a class="headerlink" href="#defining-elements-of-grillage-model" title="Permalink to this headline">¶</a></h2>
+<span id="defining-grillage-member"></span><h2>Defining elements of grillage model<a class="headerlink" href="#defining-elements-of-grillage-model" title="Permalink to this headline">#</a></h2>
 <p>A grillage element is created using the <a class="reference internal" href="generated/ospgrillage.members.create_member.html#ospgrillage.members.create_member" title="ospgrillage.members.create_member"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_member()</span></code></a> interface function.
 This function returns a <a class="reference internal" href="APIdoc.html#ospgrillage.members.GrillageMember" title="ospgrillage.members.GrillageMember"><code class="xref py py-class docutils literal notranslate"><span class="pre">GrillageMember</span></code></a> object,
 which requires two other objects as inputs, namely:</p>
@@ -332,7 +331,7 @@ each <a class="reference internal" href="APIdoc.html#ospgrillage.members.Grillag
 </pre></div>
 </div>
 <div class="section" id="creating-material-objects">
-<h3>Creating material objects<a class="headerlink" href="#creating-material-objects" title="Permalink to this headline">¶</a></h3>
+<h3>Creating material objects<a class="headerlink" href="#creating-material-objects" title="Permalink to this headline">#</a></h3>
 <p>The <a class="reference internal" href="APIdoc.html#ospgrillage.material.Material" title="ospgrillage.material.Material"><code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code></a> object is created using <a class="reference internal" href="generated/ospgrillage.material.create_material.html#ospgrillage.material.create_material" title="ospgrillage.material.create_material"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_material()</span></code></a>.
 The following code line creates the <em>concrete</em> material needed in`defining Grillage member`_ previously.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">concrete</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_material</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;concrete&quot;</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="s2">&quot;AS5100-2017&quot;</span><span class="p">,</span> <span class="n">grade</span><span class="o">=</span><span class="s2">&quot;50MPa&quot;</span><span class="p">)</span>
@@ -352,7 +351,7 @@ Presently, <em>Concrete01</em> and <em>Steel01</em> of OpenSees library are used
 Other material model can be found in <a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html#steel-reinforcing-steel-materials">OpenSees database for concrete and steel</a>.</p>
 </div>
 <div class="section" id="creating-section-objects">
-<h3>Creating section objects<a class="headerlink" href="#creating-section-objects" title="Permalink to this headline">¶</a></h3>
+<h3>Creating section objects<a class="headerlink" href="#creating-section-objects" title="Permalink to this headline">#</a></h3>
 <p>The <a class="reference internal" href="APIdoc.html#ospgrillage.members.Section" title="ospgrillage.members.Section"><code class="xref py py-class docutils literal notranslate"><span class="pre">Section</span></code></a> object for <a class="reference internal" href="#defining-grillage-member">defining Grillage member</a> is created using
 <a class="reference internal" href="generated/ospgrillage.members.create_section.html#ospgrillage.members.create_section" title="ospgrillage.members.create_section"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_section()</span></code></a> function.</p>
 <p>The following code line creates the <a class="reference internal" href="APIdoc.html#ospgrillage.members.Section" title="ospgrillage.members.Section"><code class="xref py py-class docutils literal notranslate"><span class="pre">Section</span></code></a> object called <em>I_beam_section</em>,
@@ -381,7 +380,7 @@ When enabled, <em>ospgrillage</em> will automatically assigns these properties o
 </div>
 </div>
 <div class="section" id="creating-the-grillage-model">
-<h2>Creating the grillage model<a class="headerlink" href="#creating-the-grillage-model" title="Permalink to this headline">¶</a></h2>
+<h2>Creating the grillage model<a class="headerlink" href="#creating-the-grillage-model" title="Permalink to this headline">#</a></h2>
 <p>After creating the grillage elements, users create the grillage model using <a class="reference internal" href="generated/ospgrillage.osp_grillage.create_grillage.html#ospgrillage.osp_grillage.create_grillage" title="ospgrillage.osp_grillage.create_grillage"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_grillage()</span></code></a> interface function.</p>
 <p>Presently, grillage models typically represent a simply-supported
 beam-and-slab bridge deck.
@@ -396,7 +395,7 @@ The model comprises of standard grillage members which includes:</p>
 <p>Figure 3 illustrates these standard grillage members and their position on an exemplar orthogonal grillage mesh.</p>
 <div class="figure align-center" id="id3">
 <a class="reference internal image-reference" href="../_images/grillage_elements.png"><img alt="../_images/grillage_elements.png" src="../_images/grillage_elements.png" /></a>
-<p class="caption"><span class="caption-text">Figure 3: Standard elements supported by <em>ospgrillage</em></span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 3: Standard elements supported by <em>ospgrillage</em></span><a class="headerlink" href="#id3" title="Permalink to this image">#</a></p>
 </div>
 <p><strong>Supports are automatically set at nodes  along grid A (2 to 6) and grid E (9 to 13)  as pinned and roller respectively.</strong></p>
 <p>The <a class="reference internal" href="OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a> class takes the following keyword arguments:</p>
@@ -420,7 +419,7 @@ The threshold for orthogonal mesh is greater than 11 degree- less than 11 degree
 <p>Figure 4 shows how the grid numbers and skew angles affects the output mesh of grillage model.</p>
 <div class="figure align-center" id="id4">
 <a class="reference internal image-reference" href="../_images/grillage_dimensions.png"><img alt="../_images/grillage_dimensions.png" src="../_images/grillage_dimensions.png" /></a>
-<p class="caption"><span class="caption-text">Figure 4: Example grid numbers and edge angles</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 4: Example grid numbers and edge angles</span><a class="headerlink" href="#id4" title="Permalink to this image">#</a></p>
 </div>
 <p>For the example bridge in Figure 2, the following code line creates its <a class="reference internal" href="OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a> object i.e. <em>example_bridge</em>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_grillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;SuperT_10m&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">skew</span><span class="o">=-</span><span class="mi">21</span><span class="p">,</span>
@@ -428,20 +427,20 @@ The threshold for orthogonal mesh is greater than 11 degree- less than 11 degree
 </pre></div>
 </div>
 <div class="section" id="coordinate-system">
-<h3>Coordinate System<a class="headerlink" href="#coordinate-system" title="Permalink to this headline">¶</a></h3>
+<h3>Coordinate System<a class="headerlink" href="#coordinate-system" title="Permalink to this headline">#</a></h3>
 <p>In an orthogonal mesh, longitudinal members run along the <span class="math notranslate nohighlight">\(x\)</span>-axis direction and transverse members are in the <span class="math notranslate nohighlight">\(z\)</span>-axis direction.
 Vertical (normal to grid) loads are applied in the <span class="math notranslate nohighlight">\(y\)</span>-axis.</p>
 </div>
 </div>
 <div class="section" id="assigning-grillage-members">
-<h2>Assigning grillage members<a class="headerlink" href="#assigning-grillage-members" title="Permalink to this headline">¶</a></h2>
+<h2>Assigning grillage members<a class="headerlink" href="#assigning-grillage-members" title="Permalink to this headline">#</a></h2>
 <p>The <a class="reference internal" href="APIdoc.html#ospgrillage.members.GrillageMember" title="ospgrillage.members.GrillageMember"><code class="xref py py-class docutils literal notranslate"><span class="pre">GrillageMember</span></code></a> objects are assigned to the grillage model using <a class="reference internal" href="OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a> object’s
 <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.set_member.html#ospgrillage.osp_grillage.OspGrillage.set_member" title="ospgrillage.osp_grillage.OspGrillage.set_member"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_member()</span></code></a> function.
 In addition to a <a class="reference internal" href="APIdoc.html#ospgrillage.members.GrillageMember" title="ospgrillage.members.GrillageMember"><code class="xref py py-class docutils literal notranslate"><span class="pre">GrillageMember</span></code></a> argument, the function requires a member name string argument.</p>
 <p>The member string specifies the standard grillage element for which the <a class="reference internal" href="APIdoc.html#ospgrillage.members.GrillageMember" title="ospgrillage.members.GrillageMember"><code class="xref py py-class docutils literal notranslate"><span class="pre">GrillageMember</span></code></a> is assigned.
 Table 1 summarizes the name strings available for <em>ospgrillage</em>.</p>
 <table class="colwidths-given table" id="id5">
-<caption><span class="caption-text">Table: 1 Current supported member string and tags</span><a class="headerlink" href="#id5" title="Permalink to this table">¶</a></caption>
+<caption><span class="caption-text">Table: 1 Current supported member string and tags</span><a class="headerlink" href="#id5" title="Permalink to this table">#</a></caption>
 <colgroup>
 <col style="width: 50%" />
 <col style="width: 50%" />
@@ -501,7 +500,7 @@ input.</p>
 <p>This is a useful tool for switching all grillage members to the same material after previously defining with perhaps a different material.</p>
 </div>
 <div class="section" id="creating-exporting-opensees-model">
-<h2>Creating/exporting OpenSees Model<a class="headerlink" href="#creating-exporting-opensees-model" title="Permalink to this headline">¶</a></h2>
+<h2>Creating/exporting OpenSees Model<a class="headerlink" href="#creating-exporting-opensees-model" title="Permalink to this headline">#</a></h2>
 <p>Only once the <a class="reference internal" href="OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a> is created and members are assigned, we can either:</p>
 <ol class="lowerroman simple">
 <li><p>create the model in <cite>OpenSees</cite> software space for further grillage analysis, or;</p></li>
@@ -519,7 +518,7 @@ to interact with the <cite>OpenSees</cite> grillage model.</p>
 The executable py file contains all relevant <cite>OpenSeesPy</cite> command from which when executed, creates the model instance in OpenSees which can edited and later used to perform more complex analysis.
 Note that in doing so, the model instance in <cite>OpenSees</cite> space is not created.</p>
 <div class="section" id="visualize-grillage-model">
-<h3>Visualize grillage model<a class="headerlink" href="#visualize-grillage-model" title="Permalink to this headline">¶</a></h3>
+<h3>Visualize grillage model<a class="headerlink" href="#visualize-grillage-model" title="Permalink to this headline">#</a></h3>
 <p>To check that we created the model in <cite>OpenSees</cite> space, we can plot the model using <cite>OpenSeesPy</cite>’s visualization module <cite>ops_vis</cite>.
 The <em>ospgrillage</em> module already imports the <cite>ops_vis</cite> module.
 Therefore, one can run access <cite>ops_vis</cite> by running the following code line and a plot like in <a class="reference internal" href="#figure-2">Figure 2</a> will be returned:</p>
@@ -540,7 +539,7 @@ Failure to not have all members assigned will affect subsequent analysis.</p>
               
               
               <!-- Previous / next buttons -->
-<div class='prev-next-area'> 
+<div class='prev-next-area'>
     <a class='left-prev' id="prev-link" href="Installation.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
@@ -563,7 +562,8 @@ Failure to not have all members assigned will affect subsequent analysis.</p>
       </div>
     </div>
   
-  <script src="../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
 <footer class="footer mt-5 mt-md-0">
   <div class="container">
     
@@ -575,7 +575,7 @@ Failure to not have all members assigned will affect subsequent analysis.</p>
     
     <div class="footer-item">
       <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.0.2.<br>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
 </p>
     </div>
     

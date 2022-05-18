@@ -7,8 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Package design &#8212; ospgrillage module 0.1.1 documentation</title>
     
-  <link href="../_static/css/theme.css" rel="stylesheet">
-  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 
     
   <link rel="stylesheet"
@@ -18,19 +19,16 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
     href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
-    
-      
-
-    
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/css/blank.css" />
     
-  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Examples" href="Examples.html" />
@@ -42,7 +40,7 @@
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -136,16 +134,12 @@
       <div class="navbar-end-item">
         <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
         <li class="nav-item">
-          <a class="nav-link" href="https://github.com/MonashSmartStructures/ospgrillage" rel="noopener" target="_blank" title="GitHub">
-            <span><i class="fab fa-github-square"></i></span>
-            <label class="sr-only">GitHub</label>
-          </a>
+          <a class="nav-link" href="https://github.com/MonashSmartStructures/ospgrillage" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="https://twitter.com/ccaprani" rel="noopener" target="_blank" title="Twitter">
-            <span><i class="fab fa-twitter-square"></i></span>
-            <label class="sr-only">Twitter</label>
-          </a>
+          <a class="nav-link" href="https://twitter.com/ccaprani" rel="noopener" target="_blank" title="Twitter"><span><i class="fab fa-twitter-square"></i></span>
+            <label class="sr-only">Twitter</label></a>
         </li>
       </ul>
       </div>
@@ -161,7 +155,8 @@
           
             
             <!-- Only show if we have sidebars configured, else just a small margin  -->
-            <div class="col-12 col-md-3 bd-sidebar"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -169,6 +164,9 @@
     
   </div>
 </nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
             </div>
             
           
@@ -179,7 +177,7 @@
               
               <div class="toc-item">
                 
-<div class="tocsection onthispage pt-5 pb-3">
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
 
@@ -290,29 +288,29 @@
               <div>
                 
   <div class="section" id="package-design">
-<h1>Package design<a class="headerlink" href="#package-design" title="Permalink to this headline">¶</a></h1>
+<h1>Package design<a class="headerlink" href="#package-design" title="Permalink to this headline">#</a></h1>
 <p>This page details the design decisions of <em>ospgrillage</em> module.
 In outlining these processes, the developers welcome any improvements to its procedures via pull requests.
 Also, any issues within each process can be reported by raising an issue in the main repository.</p>
 <div class="section" id="grillage-model">
-<h2>Grillage model<a class="headerlink" href="#grillage-model" title="Permalink to this headline">¶</a></h2>
+<h2>Grillage model<a class="headerlink" href="#grillage-model" title="Permalink to this headline">#</a></h2>
 <p>The <em>ospgrillage</em> module generates a two-dimensional (2-D) grillage model of a bridge deck in OpenSees - a plot of 2-D
 mesh nodes is shown in Figure 1.
 All information pertaining grillage model is handled by the
 <code class="xref py py-class docutils literal notranslate"><span class="pre">OpsGrillage</span></code> object.</p>
 <div class="figure align-center" id="id1">
 <a class="reference internal image-reference" href="../_images/Figure_1.png"><img alt="../_images/Figure_1.png" src="../_images/Figure_1.png" /></a>
-<p class="caption"><span class="caption-text">Figure 1: Typical grillage model nodes.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 1: Typical grillage model nodes.</span><a class="headerlink" href="#id1" title="Permalink to this image">#</a></p>
 </div>
 <div class="section" id="model-space">
-<h3>Model space<a class="headerlink" href="#model-space" title="Permalink to this headline">¶</a></h3>
+<h3>Model space<a class="headerlink" href="#model-space" title="Permalink to this headline">#</a></h3>
 <p>The model has 6 degrees-of-freedom at each nodes.
 The grillage plane lies in the x-z plane of the coordinate system.
 For a 2-D model, the intended model plane is the x-y plane.
 Development for one-dimensional (1-D) models in 2-D space is yet to complete in release 0.1.0 but we welcome any pull request for it.</p>
 </div>
 <div class="section" id="coordinate-system">
-<h3>Coordinate system<a class="headerlink" href="#coordinate-system" title="Permalink to this headline">¶</a></h3>
+<h3>Coordinate system<a class="headerlink" href="#coordinate-system" title="Permalink to this headline">#</a></h3>
 <p>The module adopts the following coordinate system for grillage models:</p>
 <ul class="simple">
 <li><p>global x direction defines the length of the bridge model - typically the span of the model.</p></li>
@@ -330,7 +328,7 @@ typically <em>x</em> (horizontal axis) and <em>y</em> (vertical axis).</p></li>
 </div>
 </div>
 <div class="section" id="meshing">
-<h2>Meshing<a class="headerlink" href="#meshing" title="Permalink to this headline">¶</a></h2>
+<h2>Meshing<a class="headerlink" href="#meshing" title="Permalink to this headline">#</a></h2>
 <p>A <a class="reference internal" href="APIdoc.html#ospgrillage.mesh.Mesh" title="ospgrillage.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a> class object handles and stores information of the grillage mesh, such as:</p>
 <ul class="simple">
 <li><p>Mesh dimension</p></li>
@@ -341,11 +339,11 @@ typically <em>x</em> (horizontal axis) and <em>y</em> (vertical axis).</p></li>
 <li><p>Grouping of common grillage elements</p></li>
 </ul>
 <div class="section" id="meshing-algorithm">
-<h3>Meshing algorithm<a class="headerlink" href="#meshing-algorithm" title="Permalink to this headline">¶</a></h3>
+<h3>Meshing algorithm<a class="headerlink" href="#meshing-algorithm" title="Permalink to this headline">#</a></h3>
 <p>Figure 2 shows an annotated diagram of the bridge mesh nodes in Figure 1 which we will use as an explanatory example.</p>
 <div class="figure align-center" id="id2">
 <a class="reference internal image-reference" href="../_images/Moduledoc_1.PNG"><img alt="../_images/Moduledoc_1.PNG" src="../_images/Moduledoc_1.PNG" /></a>
-<p class="caption"><span class="caption-text">Figure 2: Meshing construction lines, showing start control line (Blue), end end control line (Green), sweep path (Black) and sweeping nodes (Red).</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 2: Meshing construction lines, showing start control line (Blue), end end control line (Green), sweep path (Black) and sweeping nodes (Red).</span><a class="headerlink" href="#id2" title="Permalink to this image">#</a></p>
 </div>
 <p>Meshing algorithm is controlled by the <a class="reference internal" href="APIdoc.html#ospgrillage.mesh.Mesh" title="ospgrillage.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a> class object.
 The following components are generated at pre-meshing stage:</p>
@@ -372,7 +370,7 @@ later on.</p></li>
 </ol>
 </div>
 <div class="section" id="meshing-types-and-rules">
-<h3>Meshing types and rules<a class="headerlink" href="#meshing-types-and-rules" title="Permalink to this headline">¶</a></h3>
+<h3>Meshing types and rules<a class="headerlink" href="#meshing-types-and-rules" title="Permalink to this headline">#</a></h3>
 <p>There are two types of meshing algorithm (and its respective kwarg for <code class="docutils literal notranslate"><span class="pre">mesh_type=</span></code>), namely:</p>
 <ul class="simple">
 <li><p>orthogonal meshing - <code class="xref py py-class docutils literal notranslate"><span class="pre">Ortho</span></code></p></li>
@@ -393,7 +391,7 @@ The numbers of 11 and 30 degrees are selected based on common industrial practic
 </div>
 </div>
 <div class="section" id="meshing-steps">
-<h3>Meshing steps<a class="headerlink" href="#meshing-steps" title="Permalink to this headline">¶</a></h3>
+<h3>Meshing steps<a class="headerlink" href="#meshing-steps" title="Permalink to this headline">#</a></h3>
 <ol class="arabic simple">
 <li><p>Starting at <em>start_span_edge</em>, algorithm checks the angle of the construction line relative to the tangent/slope
 of the sweep line at the first position (i.e. &#64; [0,0,0])</p></li>
@@ -416,7 +414,7 @@ For example, A node with x grid = 1 and z grid = 1 forms a longitudinal beam ele
 Longitudinal elements are linked by recording the nodes with common z grid grouping across the sweep path.</p>
 </div>
 <div class="section" id="grid-groups">
-<h3>Grid groups<a class="headerlink" href="#grid-groups" title="Permalink to this headline">¶</a></h3>
+<h3>Grid groups<a class="headerlink" href="#grid-groups" title="Permalink to this headline">#</a></h3>
 <p>Grid groups for elements in the z direction is defined based on the number of longitudinal beams.
 For the example bridge, there are 7 longitudinal beams (2 edge, 2 exterior and 3 interior beams).
 Therefore, starting from 0, the nodes that coincide with edge beams are numbered 0 and 6, while nodes for exterior beams are 1 and 5.
@@ -427,7 +425,7 @@ In other words, the total number of groups for x grid varies depending on the (1
 <p>All nodes defined during an iteration step for an intersecting point is set to have the same x grid group.</p>
 </div>
 <div class="section" id="mesh-variables">
-<h3>Mesh variables<a class="headerlink" href="#mesh-variables" title="Permalink to this headline">¶</a></h3>
+<h3>Mesh variables<a class="headerlink" href="#mesh-variables" title="Permalink to this headline">#</a></h3>
 <ul class="simple">
 <li><p>Nodes information are stored as dictionaries</p></li>
 <li><dl class="simple">
@@ -448,7 +446,7 @@ The entries are the element tag, <code class="docutils literal notranslate"><spa
 </div>
 </div>
 <div class="section" id="local-vs-global-coordinate-system">
-<h2>Local vs global coordinate system<a class="headerlink" href="#local-vs-global-coordinate-system" title="Permalink to this headline">¶</a></h2>
+<h2>Local vs global coordinate system<a class="headerlink" href="#local-vs-global-coordinate-system" title="Permalink to this headline">#</a></h2>
 <p>In <em>ospgrillage</em>, local coordinate system refers to a basic coordinate system of components which is independent of the global coordinate system i.e. the coordinate system of the grillage model space.</p>
 <p>The definition of the following components within <em>ops-grillage</em> requires attention between basic and global coordinate system</p>
 <ul class="simple">
@@ -460,11 +458,11 @@ The entries are the element tag, <code class="docutils literal notranslate"><spa
 Note when local coordinate is defined for a load object, a global reference coordinate needs to be defined or else the module raises an Error regarding its point/vertices values.</p>
 <div class="figure align-center" id="id3">
 <a class="reference internal image-reference" href="../_images/coordinate_system_mapping.PNG"><img alt="../_images/coordinate_system_mapping.PNG" src="../_images/coordinate_system_mapping.PNG" /></a>
-<p class="caption"><span class="caption-text">Figure 3: Mapping of local coordinate of Load/Path objects to global coordinate.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 3: Mapping of local coordinate of Load/Path objects to global coordinate.</span><a class="headerlink" href="#id3" title="Permalink to this image">#</a></p>
 </div>
 </div>
 <div class="section" id="links-to-module-components">
-<h2>Links to module components<a class="headerlink" href="#links-to-module-components" title="Permalink to this headline">¶</a></h2>
+<h2>Links to module components<a class="headerlink" href="#links-to-module-components" title="Permalink to this headline">#</a></h2>
 <ol class="arabic simple">
 <li><p><a class="reference internal" href="Module%20description.html"><span class="doc">Creating grillage models</span></a></p></li>
 <li><p><a class="reference internal" href="Examples.html"><span class="doc">Examples</span></a></p></li>
@@ -475,7 +473,7 @@ Note when local coordinate is defined for a load object, a global reference coor
 </div>
 </div>
 <div class="section" id="links-to-useful-resources">
-<h2>Links to useful resources<a class="headerlink" href="#links-to-useful-resources" title="Permalink to this headline">¶</a></h2>
+<h2>Links to useful resources<a class="headerlink" href="#links-to-useful-resources" title="Permalink to this headline">#</a></h2>
 <p>Use the following links for more on:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="http://bridgedesign.org.uk/tutorial/bs-grillage.php">Grillage modelling</a></p></li>
@@ -483,14 +481,14 @@ Note when local coordinate is defined for a load object, a global reference coor
 <li><p><a class="reference external" href="https://www.researchgate.net/publication/289736527_Effect_of_skew_angle_on_behavior_of_simply_supported_R_C_T-beam_bridge_decks">Example bridge with skew edges</a></p></li>
 </ul>
 <div class="section" id="references">
-<h3>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h3>
+<h3>References<a class="headerlink" href="#references" title="Permalink to this headline">#</a></h3>
 <ul class="simple">
 <li><p>Caprani, Colin &amp; Melhem, Mayer &amp; Siamphukdee, Kanjana. (2017). Reliability analysis of a Super-T prestressed concrete girder at serviceability limit state to AS 5100:2017. Australian Journal of Structural Engineering. 18. 1-13. 10.1080/13287982.2017.1332843.</p></li>
 </ul>
 </div>
 </div>
 <div class="section" id="further-development">
-<h2>Further development<a class="headerlink" href="#further-development" title="Permalink to this headline">¶</a></h2>
+<h2>Further development<a class="headerlink" href="#further-development" title="Permalink to this headline">#</a></h2>
 <p><em>ospgrillage</em> is developed as a open-source package. In turn, the developers welcome contributors to add/improve on
 the current release of <em>ospgrillage</em>.</p>
 <p><strong>Update Sept 2021</strong></p>
@@ -521,7 +519,7 @@ y axis.</p>
               
               
               <!-- Previous / next buttons -->
-<div class='prev-next-area'> 
+<div class='prev-next-area'>
     <a class='left-prev' id="prev-link" href="generated/ospgrillage.load.MovingLoad.query.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
@@ -544,7 +542,8 @@ y axis.</p>
       </div>
     </div>
   
-  <script src="../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
 <footer class="footer mt-5 mt-md-0">
   <div class="container">
     
@@ -556,7 +555,7 @@ y axis.</p>
     
     <div class="footer-item">
       <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.0.2.<br>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
 </p>
     </div>
     

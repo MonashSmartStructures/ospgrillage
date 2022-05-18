@@ -7,8 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Getting Results &#8212; ospgrillage module 0.1.1 documentation</title>
     
-  <link href="../_static/css/theme.css" rel="stylesheet">
-  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 
     
   <link rel="stylesheet"
@@ -18,19 +19,16 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
     href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
-    
-      
-
-    
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/css/blank.css" />
     
-  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="API reference" href="APIdoc.html" />
@@ -42,7 +40,7 @@
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -136,16 +134,12 @@
       <div class="navbar-end-item">
         <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
         <li class="nav-item">
-          <a class="nav-link" href="https://github.com/MonashSmartStructures/ospgrillage" rel="noopener" target="_blank" title="GitHub">
-            <span><i class="fab fa-github-square"></i></span>
-            <label class="sr-only">GitHub</label>
-          </a>
+          <a class="nav-link" href="https://github.com/MonashSmartStructures/ospgrillage" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="https://twitter.com/ccaprani" rel="noopener" target="_blank" title="Twitter">
-            <span><i class="fab fa-twitter-square"></i></span>
-            <label class="sr-only">Twitter</label>
-          </a>
+          <a class="nav-link" href="https://twitter.com/ccaprani" rel="noopener" target="_blank" title="Twitter"><span><i class="fab fa-twitter-square"></i></span>
+            <label class="sr-only">Twitter</label></a>
         </li>
       </ul>
       </div>
@@ -161,7 +155,8 @@
           
             
             <!-- Only show if we have sidebars configured, else just a small margin  -->
-            <div class="col-12 col-md-3 bd-sidebar"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -169,6 +164,9 @@
     
   </div>
 </nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
             </div>
             
           
@@ -179,7 +177,7 @@
               
               <div class="toc-item">
                 
-<div class="tocsection onthispage pt-5 pb-3">
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
 
@@ -287,13 +285,13 @@
               <div>
                 
   <div class="section" id="getting-results">
-<h1>Getting Results<a class="headerlink" href="#getting-results" title="Permalink to this headline">¶</a></h1>
+<h1>Getting Results<a class="headerlink" href="#getting-results" title="Permalink to this headline">#</a></h1>
 <p>For all example code in this page, <em>ospgrillage</em> is imported as <code class="docutils literal notranslate"><span class="pre">og</span></code></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ospgrillage</span> <span class="k">as</span> <span class="nn">og</span>
 </pre></div>
 </div>
 <div class="section" id="extracting-results">
-<h2>Extracting results<a class="headerlink" href="#extracting-results" title="Permalink to this headline">¶</a></h2>
+<h2>Extracting results<a class="headerlink" href="#extracting-results" title="Permalink to this headline">#</a></h2>
 <p>After analysis, results are obtained using <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_results()</span></code></a> function.
 The following example extracts results for all defined analysis of <code class="docutils literal notranslate"><span class="pre">example_bridge</span></code> - all results and one of a specific load case only.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">all_result</span> <span class="o">=</span> <span class="n">example_bridge</span><span class="o">.</span><span class="n">get_results</span><span class="p">()</span> <span class="c1"># this extracts all results</span>
@@ -318,7 +316,7 @@ The following example extracts results for all defined analysis of <code class="
 </pre></div>
 </div>
 <div class="section" id="structure-of-xarray-dataset">
-<h3>Structure of xarray DataSet<a class="headerlink" href="#structure-of-xarray-dataset" title="Permalink to this headline">¶</a></h3>
+<h3>Structure of xarray DataSet<a class="headerlink" href="#structure-of-xarray-dataset" title="Permalink to this headline">#</a></h3>
 <p>Figure 1 shows the structure of the <cite>xarray</cite> DataSet for results.
 The dataset contains two <a class="reference external" href="http://xarray.pydata.org/en/stable/generated/xarray.DataArray.html#xarray.DataArray">xarray DataArray</a>.
 that represent two groups of load effects:</p>
@@ -341,11 +339,11 @@ two separate DataArrays, namely <strong>forces_beam</strong> and <strong>forces_
 Similarly, <strong>ele_nodes</strong> will be split into <strong>ele_nodes_beam</strong> and <strong>ele_nodes_shell</strong>.</p>
 <div class="figure align-center" id="id3">
 <a class="reference internal image-reference" href="../_images/dataset_structure.png"><img alt="../_images/dataset_structure.png" src="../_images/dataset_structure.png" /></a>
-<p class="caption"><span class="caption-text">Figure 1: Structure of DataSet.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 1: Structure of DataSet.</span><a class="headerlink" href="#id3" title="Permalink to this image">#</a></p>
 </div>
 </div>
 <div class="section" id="accessing-and-querying-data">
-<span id="access-results"></span><h3>Accessing and querying data<a class="headerlink" href="#accessing-and-querying-data" title="Permalink to this headline">¶</a></h3>
+<span id="access-results"></span><h3>Accessing and querying data<a class="headerlink" href="#accessing-and-querying-data" title="Permalink to this headline">#</a></h3>
 <p>From the data arrays, users can access various component in each load effect using <cite>xarray</cite>’s data array commands.
 Information on indexing and selecting DataArray data can be found <a class="reference external" href="http://xarray.pydata.org/en/stable/user-guide/indexing.html">here</a></p>
 <p>Following example extracts the displacement ‘dy’ component using <cite>xarray</cite>’s  function.</p>
@@ -373,7 +371,7 @@ respect to the global grillage coordinate.</p>
 </div>
 </div>
 <div class="section" id="getting-combinations">
-<span id="load-combinations"></span><h2>Getting combinations<a class="headerlink" href="#getting-combinations" title="Permalink to this headline">¶</a></h2>
+<span id="load-combinations"></span><h2>Getting combinations<a class="headerlink" href="#getting-combinations" title="Permalink to this headline">#</a></h2>
 <p>Load combinations are computed on the fly in <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_results()</span></code></a> by specifying a keyword argument for <code class="docutils literal notranslate"><span class="pre">combinations</span></code>.
 The keyword argument accepts a <code class="docutils literal notranslate"><span class="pre">dict</span></code> with load case name strings as key, and corresponding load factor as value.
 The returned <em>DataArray</em> will have load case multiplied by prescribed load factors and summed along the load case dimension (for each load case in load combination).</p>
@@ -404,7 +402,7 @@ The returned <em>DataArray</em> will have load case multiplied by prescribed loa
 incremental load case of the moving load.</p>
 </div>
 <div class="section" id="getting-load-envelope">
-<h2>Getting load envelope<a class="headerlink" href="#getting-load-envelope" title="Permalink to this headline">¶</a></h2>
+<h2>Getting load envelope<a class="headerlink" href="#getting-load-envelope" title="Permalink to this headline">#</a></h2>
 <p>Load envelope is generated from load combination results for extrema of load effect using <a class="reference internal" href="generated/ospgrillage.postprocessing.create_envelope.html#ospgrillage.postprocessing.create_envelope" title="ospgrillage.postprocessing.create_envelope"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_envelope()</span></code></a> function.
 Envelope are chosen based on user selected component (<em>array</em> keyword) as either “displacements” or “forces”, extrema as either maximum or minimum,
 and load effect component (e.g. “dy” for displacements).
@@ -446,9 +444,9 @@ The following example prints the array of coordinates:</p>
 <p>For more information on the inputs and options, see <a class="reference internal" href="generated/ospgrillage.postprocessing.create_envelope.html#ospgrillage.postprocessing.create_envelope" title="ospgrillage.postprocessing.create_envelope"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_envelope()</span></code></a>.</p>
 </div>
 <div class="section" id="getting-specific-properties-of-model">
-<h2>Getting specific properties of model<a class="headerlink" href="#getting-specific-properties-of-model" title="Permalink to this headline">¶</a></h2>
+<h2>Getting specific properties of model<a class="headerlink" href="#getting-specific-properties-of-model" title="Permalink to this headline">#</a></h2>
 <div class="section" id="node">
-<h3>Node<a class="headerlink" href="#node" title="Permalink to this headline">¶</a></h3>
+<h3>Node<a class="headerlink" href="#node" title="Permalink to this headline">#</a></h3>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-prename descclassname"><span class="pre">OspGrillage.</span></span><span class="sig-name descname"><span class="pre">get_nodes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
@@ -462,7 +460,7 @@ The following example prints the array of coordinates:</p>
 
 </div>
 <div class="section" id="element">
-<h3>Element<a class="headerlink" href="#element" title="Permalink to this headline">¶</a></h3>
+<h3>Element<a class="headerlink" href="#element" title="Permalink to this headline">#</a></h3>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-prename descclassname"><span class="pre">OspGrillage.</span></span><span class="sig-name descname"><span class="pre">get_element</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
@@ -492,9 +490,9 @@ within this “interior_main_beam” element group.</p>
 </div>
 </div>
 <div class="section" id="plotting-results-of-dataarrays">
-<h2>Plotting results of DataArrays<a class="headerlink" href="#plotting-results-of-dataarrays" title="Permalink to this headline">¶</a></h2>
+<h2>Plotting results of DataArrays<a class="headerlink" href="#plotting-results-of-dataarrays" title="Permalink to this headline">#</a></h2>
 <div class="section" id="current-limitation-of-opensees-visualization-module">
-<h3>Current limitation of <cite>OpenSees</cite> visualization module<a class="headerlink" href="#current-limitation-of-opensees-visualization-module" title="Permalink to this headline">¶</a></h3>
+<h3>Current limitation of <cite>OpenSees</cite> visualization module<a class="headerlink" href="#current-limitation-of-opensees-visualization-module" title="Permalink to this headline">#</a></h3>
 <p><cite>OpenSeesPy</cite>’s visualization module - <cite>ops_vis</cite> - offers comprehensive visualization analysis results in <cite>OpenSees</cite>.
 However, <cite>ops_vis</cite> operates only for a single model instance (and analysis) in <cite>OpenSees</cite>
 framework.
@@ -513,7 +511,7 @@ Plotting of shell model type is not supported as of <em>ospgrillage</em> version
 </div>
 </div>
 <div class="section" id="ospgrillage-post-processing-module">
-<h3><em>ospgrillage</em> post-processing module<a class="headerlink" href="#ospgrillage-post-processing-module" title="Permalink to this headline">¶</a></h3>
+<h3><em>ospgrillage</em> post-processing module<a class="headerlink" href="#ospgrillage-post-processing-module" title="Permalink to this headline">#</a></h3>
 <p>For users wishing to plot results from <cite>xarray</cite> DataSet (multiple analysis),
 <em>ospgrillage</em> contains a dedicated post-processing module as of version 0.1.0 to visualize these results.</p>
 <div class="admonition note">
@@ -523,12 +521,12 @@ As of version 0.1.0, it is sufficient to plot components from the xarray DataSet
 </div>
 </div>
 <div class="section" id="plotting-functions">
-<h3>Plotting functions<a class="headerlink" href="#plotting-functions" title="Permalink to this headline">¶</a></h3>
+<h3>Plotting functions<a class="headerlink" href="#plotting-functions" title="Permalink to this headline">#</a></h3>
 <p>For this section, we will refer to an exemplar 28 m super-T bridge (Figure 1).
 The bridge grillage has been created and its <a class="reference internal" href="OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a> object is defined as <code class="docutils literal notranslate"><span class="pre">bridge_28</span></code>.</p>
 <div class="figure align-center" id="id4">
 <a class="reference internal image-reference" href="../_images/28m_bridge.PNG"><img alt="../_images/28m_bridge.PNG" src="../_images/28m_bridge.PNG" /></a>
-<p class="caption"><span class="caption-text">Figure 1: 28 m super-T bridge model.</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 1: 28 m super-T bridge model.</span><a class="headerlink" href="#id4" title="Permalink to this image">#</a></p>
 </div>
 <p>To plot deflection components from <strong>displacement</strong> DataArray, use <a class="reference internal" href="generated/ospgrillage.postprocessing.plot_defo.html#ospgrillage.postprocessing.plot_defo" title="ospgrillage.postprocessing.plot_defo"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_defo()</span></code></a>.
 To use this function users need to specify the specific grillage member - this function returns a 2-D plot of displacement diagram.
@@ -538,7 +536,7 @@ Following example plots the vertical deflection of <code class="docutils literal
 </div>
 <div class="figure align-center" id="id5">
 <a class="reference internal image-reference" href="../_images/example_deflected.PNG"><img alt="../_images/example_deflected.PNG" src="../_images/example_deflected.PNG" /></a>
-<p class="caption"><span class="caption-text">Figure 2: Deflected shape of of exterior main beam 2.</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 2: Deflected shape of of exterior main beam 2.</span><a class="headerlink" href="#id5" title="Permalink to this image">#</a></p>
 </div>
 <p>To plot force components from <strong>forces</strong> DataArray, use <a class="reference internal" href="generated/ospgrillage.postprocessing.plot_force.html#ospgrillage.postprocessing.plot_force" title="ospgrillage.postprocessing.plot_force"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_force()</span></code></a>.
 Similar to <a class="reference internal" href="generated/ospgrillage.postprocessing.plot_defo.html#ospgrillage.postprocessing.plot_defo" title="ospgrillage.postprocessing.plot_defo"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_defo()</span></code></a>, users need to specify name string of specific grillage member.
@@ -548,7 +546,7 @@ Following example plots the bending moment “Mz” of “exterior_main_beam_2�
 </div>
 <div class="figure align-center" id="id6">
 <a class="reference internal image-reference" href="../_images/example_bmd.PNG"><img alt="../_images/example_bmd.PNG" src="../_images/example_bmd.PNG" /></a>
-<p class="caption"><span class="caption-text">Figure 3: Bending moment about z axis of exterior main beam 2 .</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 3: Bending moment about z axis of exterior main beam 2 .</span><a class="headerlink" href="#id6" title="Permalink to this image">#</a></p>
 </div>
 </div>
 </div>
@@ -559,7 +557,7 @@ Following example plots the bending moment “Mz” of “exterior_main_beam_2�
               
               
               <!-- Previous / next buttons -->
-<div class='prev-next-area'> 
+<div class='prev-next-area'>
     <a class='left-prev' id="prev-link" href="Running_analysis.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
@@ -582,7 +580,8 @@ Following example plots the bending moment “Mz” of “exterior_main_beam_2�
       </div>
     </div>
   
-  <script src="../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
 <footer class="footer mt-5 mt-md-0">
   <div class="container">
     
@@ -594,7 +593,7 @@ Following example plots the bending moment “Mz” of “exterior_main_beam_2�
     
     <div class="footer-item">
       <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.0.2.<br>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
 </p>
     </div>
     

@@ -1,0 +1,1148 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Standard workflow template - Super-T girder bridge &#8212; ospgrillage module 0.1.1 documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Mesh features" href="mesh_showcase.html" />
+    <link rel="prev" title="Examples" href="../rst/Examples.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+
+<a class="navbar-brand" href="../index.html">
+  <img src="../_static/ospgrillage_logo.png" class="logo" alt="logo">
+</a>
+
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../rst/Installation.html">
+  Installation
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../rst/Module%20description.html">
+  Creating grillage models
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../rst/ModelTemplates.html">
+  Model types available
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../rst/Running_analysis.html">
+  Performing analysis
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../rst/PostProcessing.html">
+  Getting Results
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../rst/APIdoc.html">
+  API reference
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../rst/ModuleDoc.html">
+  Package design
+ </a>
+</li>
+
+<li class="toctree-l1 current active nav-item">
+ <a class="reference internal nav-link" href="../rst/Examples.html">
+  Examples
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../rst/ChangeLog.html">
+  Change Log
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/MonashSmartStructures/ospgrillage" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://twitter.com/ccaprani" rel="noopener" target="_blank" title="Twitter"><span><i class="fab fa-twitter-square"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    <ul class="current nav bd-sidenav">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Standard workflow template - Super-T girder bridge
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="mesh_showcase.html">
+   Mesh features
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="multi_span.html">
+   Multi - span feature
+  </a>
+ </li>
+</ul>
+
+  </div>
+</nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
+
+<nav id="bd-toc-nav">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#Creating-the-grillage">
+   Creating the grillage
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#Adding-load-cases-to-model">
+   Adding load cases to model
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#Adding-a-moving-load-analysis">
+   Adding a moving load analysis
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#Analysis">
+   Analysis
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#Getting-load-case-results">
+   Getting load case results
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#Getting-load-combination-results">
+   Getting load combination results
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#Data-processing">
+   Data processing
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#Process-load-combinations-results">
+     Process load combinations results
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#Extract-and-process-moving-load-results">
+     Extract and process moving load results
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+
+<div class="tocsection editthispage">
+    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/notebooks/super_t_analysis_workflow.ipynb">
+        <i class="fas fa-pencil-alt"></i> Edit this page
+    </a>
+</div>
+
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt .copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+</style>
+<div class="section" id="Standard-workflow-template---Super-T-girder-bridge">
+<h1>Standard workflow template - Super-T girder bridge<a class="headerlink" href="#Standard-workflow-template---Super-T-girder-bridge" title="Permalink to this headline">#</a></h1>
+<p>This example reproduces the grillage model of a super-T bridge from Caprani et al. (2017). In that study, the commercial software LUSAS is used to create the grillage model. Figure 1 shows the Super-T deck cross-section</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import sys
+sys.path.insert(0, &#39;C:\\Users\\Nicni\\PycharmProjects\\ospgrillage&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import numpy as np
+import ospgrillage as og
+from IPython import display  # to display images in this notebook
+%matplotlib inline
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>display.Image(&quot;../images/example_cross_section.PNG&quot;,width=800)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_super_t_analysis_workflow_3_0.png" class="no-scaled-link" src="../_images/notebooks_super_t_analysis_workflow_3_0.png" style="width: 800px;" />
+</div>
+</div>
+<div class="section" id="Creating-the-grillage">
+<h2>Creating the grillage<a class="headerlink" href="#Creating-the-grillage" title="Permalink to this headline">#</a></h2>
+<p>For this example, the five super-T beams and two edge beams (parapets) of Figure 1 are being modelled similar to Caprani et al. (2017) - with the number of longitudinal and transverse grid lines being 7 and 11 respectively.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Adopted units: N and m
+kilo = 1e3
+milli = 1e-3
+N = 1
+m = 1
+mm = milli * m
+m2 = m ** 2
+m3 = m ** 3
+m4 = m ** 4
+kN = kilo * N
+MPa = N / ((mm) ** 2)
+GPa = kilo * MPa
+
+# parameters of bridge grillage
+L = 33.5 * m  # span
+w = 11.565 * m  # width
+n_l = 7  # number of longitudinal members
+n_t = 11  # number of transverse members
+edge_dist = 1.05 * m  # distance between edge beam and first exterior beam
+angle = 0  # skew angle
+</pre></div>
+</div>
+</div>
+<p>Create <code class="docutils literal notranslate"><span class="pre">Material</span></code> object of grillage members. Here the same material is defined for all grillage members.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># define material
+concrete = og.create_material(material=&quot;concrete&quot;, code=&quot;AS5100-2017&quot;, grade=&quot;65MPa&quot;)
+</pre></div>
+</div>
+</div>
+<p>Create <code class="docutils literal notranslate"><span class="pre">Section</span></code> object for each grillage elements. The values of parameters are taken from the LUSAS model used in Colin et al (2017).</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>edge_longitudinal_section = og.create_section(
+    A=0.934 * m2,
+    J=0.1857 * m3,
+    Iz=0.3478 * m4,
+    Iy=0.213602 * m4,
+    Az=0.444795 * m2,
+    Ay=0.258704 * m2,
+)
+
+longitudinal_section = og.create_section(
+    A=1.025 * m2,
+    J=0.1878 * m3,
+    Iz=0.3694 * m4,
+    Iy=0.113887e-3 * m4,
+    Az=0.0371929 * m2,
+    Ay=0.0371902 * m2,
+)
+
+transverse_section = og.create_section(
+    A=0.504 * m2,
+    J=5.22303e-3 * m3,
+    Iy=0.32928 * m4,
+    Iz=1.3608e-3 * m4,
+    Ay=0.42 * m2,
+    Az=0.42 * m2,
+)
+
+end_transverse_section = og.create_section(
+    A=0.504 / 2 * m2,
+    J=2.5012e-3 * m3,
+    Iy=0.04116 * m4,
+    Iz=0.6804e-3 * m4,
+    Ay=0.21 * m2,
+    Az=0.21 * m2,
+)
+</pre></div>
+</div>
+</div>
+<p>Then, create <code class="docutils literal notranslate"><span class="pre">GrillageMember</span></code> objects with the prescribed <code class="docutils literal notranslate"><span class="pre">Section</span></code> and <code class="docutils literal notranslate"><span class="pre">Material</span></code> objects as inputs.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># define grillage members
+longitudinal_beam = og.create_member(section=longitudinal_section, material=concrete)
+edge_longitudinal_beam = og.create_member(
+    section=edge_longitudinal_section, material=concrete
+)
+transverse_slab = og.create_member(section=transverse_section, material=concrete)
+end_transverse_slab = og.create_member(
+    section=end_transverse_section, material=concrete
+)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># create grillage
+simple_grid = og.create_grillage(
+    bridge_name=&quot;Super-T 33_5m&quot;,
+    long_dim=L,
+    width=w,
+    skew=angle,
+    num_long_grid=n_l,
+    num_trans_grid=n_t,
+    edge_beam_dist=edge_dist,
+)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># assign grillage member to element groups of grillage model
+simple_grid.set_member(longitudinal_beam, member=&quot;interior_main_beam&quot;)
+simple_grid.set_member(longitudinal_beam, member=&quot;exterior_main_beam_1&quot;)
+simple_grid.set_member(longitudinal_beam, member=&quot;exterior_main_beam_2&quot;)
+simple_grid.set_member(edge_longitudinal_beam, member=&quot;edge_beam&quot;)
+simple_grid.set_member(transverse_slab, member=&quot;transverse_slab&quot;)
+simple_grid.set_member(end_transverse_slab, member=&quot;start_edge&quot;)
+simple_grid.set_member(end_transverse_slab, member=&quot;end_edge&quot;)
+
+# create the model in OpenSees
+simple_grid.create_osp_model(
+    pyfile=False
+)  # pyfile will not (False) be generated for further analysis (should be create_osp?)
+og.opsplt.plot_model(&quot;nodes&quot;)  # plotting using Get_rendering
+og.opsv.plot_model(az_el=(-90, 0))  # plotting using ops_vis
+og.plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+No Model_ODB specified, trying to get data from the active model.
+3D model
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_super_t_analysis_workflow_13_1.png" src="../_images/notebooks_super_t_analysis_workflow_13_1.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_super_t_analysis_workflow_13_2.png" src="../_images/notebooks_super_t_analysis_workflow_13_2.png" />
+</div>
+</div>
+<p>Figure 2 shows the model plotted in OpenSees model space.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>display.Image(&quot;../images/33m_bridge.PNG&quot;,width=800)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_super_t_analysis_workflow_15_0.png" class="no-scaled-link" src="../_images/notebooks_super_t_analysis_workflow_15_0.png" style="width: 800px;" />
+</div>
+</div>
+</div>
+<div class="section" id="Adding-load-cases-to-model">
+<h2>Adding load cases to model<a class="headerlink" href="#Adding-load-cases-to-model" title="Permalink to this headline">#</a></h2>
+<p>Here we create and add load cases to the simple_grid model for analysis.</p>
+<p>The first load case is a simple line load running along mid span width, to check that the model is behaving appropriately.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># reference unit load for various load types
+P = 1 * kN
+# name strings of load cases to be created
+static_cases_names = [
+    &quot;Line Test Case&quot;,
+    &quot;Points Test Case (Global)&quot;,
+    &quot;Points Test Case (Local in Point)&quot;,
+    &quot;Patch Test Case&quot;,
+]
+
+# Line load running along midspan width (P is kN/m)
+# Create vertical load points in global coordinate system
+line_point_1 = og.create_load_vertex(x=L / 2, z=0, p=P)
+line_point_2 = og.create_load_vertex(x=L / 2, z=w, p=P)
+test_line_load = og.create_load(
+    name=&quot;Test Load&quot;, point1=line_point_1, point2=line_point_2
+)
+
+# Create load case, add loads, and assign
+line_case = og.create_load_case(name=static_cases_names[0])
+line_case.add_load(test_line_load)
+
+simple_grid.add_load_case(line_case)
+</pre></div>
+</div>
+</div>
+<p>The second load case is comprised of several point loads, added into a single Compound Load type, so they can be manipulated as a group.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Compound point loads along midspan width (P is kN)
+# working in global coordinate system
+p_list = [
+    0,
+    edge_dist,
+    edge_dist + 2 * m,
+    edge_dist + 4 * m,
+    edge_dist + 6 * m,
+    w - edge_dist,
+    w,
+]  # creating list of load position
+
+test_points_load = og.create_compound_load(name=&quot;Points Test Case (Global)&quot;)
+
+# create point load in global coordinate
+for p in p_list:
+    point = og.create_load(
+        name=&quot;Point&quot;, point1=og.create_load_vertex(x=L / 2, z=p, p=P)
+    )
+    # add to compound load
+    test_points_load.add_load(load_obj=point)
+
+# Create load case, add loads, and assign
+points_case = og.create_load_case(name=static_cases_names[1])
+points_case.add_load(test_points_load)
+
+simple_grid.add_load_case(points_case)
+</pre></div>
+</div>
+</div>
+<p>The third load case is identical to the second load case with Compounded point loads, but this time defining Compound loads in Local coordinates then mapping the local coordinate system of the compound load to the global coordinates of the grillage model.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Compound point loads along midspan width
+# working in user-defined local coordinate (in point load)
+test_points_load = og.create_compound_load(name=&quot;Points Test Case (Local in Point)&quot;)
+
+# create point load in local coordinate space
+for p in p_list:
+    point = og.create_load(
+        name=&quot;Point&quot;, point1=og.create_load_vertex(x=0, z=p, p=P)
+    )
+    # add to compound load
+    test_points_load.add_load(load_obj=point)
+
+# shift from local to global
+test_points_load.set_global_coord(og.Point(L / 2, 0, 0))
+
+# Create load case, add loads, and assign
+points_case = og.create_load_case(name=static_cases_names[2])
+points_case.add_load(test_points_load)
+
+simple_grid.add_load_case(points_case)
+</pre></div>
+</div>
+</div>
+<p>The fourth load case entails a patch load over the entire deck surface:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Patch load over entire bridge deck (P is kN/m2)
+patch_point_1 = og.create_load_vertex(x=0, z=0, p=P)
+patch_point_2 = og.create_load_vertex(x=L, z=0, p=P)
+patch_point_3 = og.create_load_vertex(x=L, z=w, p=P)
+patch_point_4 = og.create_load_vertex(x=0, z=w, p=P)
+test_patch_load = og.create_load(
+    loadtype=&quot;patch&quot;,
+    name=&quot;Test Load&quot;,
+    point1=patch_point_1,
+    point2=patch_point_2,
+    point3=patch_point_3,
+    point4=patch_point_4,
+)
+
+# Create load case, add loads, and assign
+patch_case = og.create_load_case(name=static_cases_names[3])
+patch_case.add_load(test_patch_load)
+simple_grid.add_load_case(patch_case)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Adding-a-moving-load-analysis">
+<h2>Adding a moving load analysis<a class="headerlink" href="#Adding-a-moving-load-analysis" title="Permalink to this headline">#</a></h2>
+<p>For bridge loading, it is imperative to model loads that move, and to consider the static analysis of the bridge deck under each position of the moving load. Here’s how we create and add a moving load (e.g. a truck) to the 28 m bridge model.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># 2 axle truck (equal loads, 2x2 spacing centre line running)
+axl_w = 2 * m  # axle width
+axl_s = 2 * m  # axle spacing
+veh_l = axl_s  # vehicle length
+# create truck in local coordinate system
+two_axle_truck = og.create_compound_load(name=&quot;Two Axle Truck&quot;)
+# note here we show that we can directly interact and create load vertex using LoadPoint namedtuple instead of create_load_vertex()
+point1 = og.create_load(
+    name=&quot;Point&quot;, point1=og.LoadPoint(x=0, y=0, z=0, p=P)
+)
+point2 = og.create_load(
+    name=&quot;Point&quot;, point1=og.LoadPoint(x=0, y=0, z=axl_w, p=P)
+)
+point3 = og.create_load(
+    name=&quot;Point&quot;, point1=og.LoadPoint(x=axl_s, y=0, z=axl_w, p=P)
+)
+point4 = og.create_load(
+    name=&quot;Point&quot;, point1=og.LoadPoint(x=axl_s, y=0, z=0, p=P)
+)
+
+two_axle_truck.add_load(load_obj=point1)
+two_axle_truck.add_load(load_obj=point2)
+two_axle_truck.add_load(load_obj=point3)
+two_axle_truck.add_load(load_obj=point4)
+
+# create path object in global coordinate system - centre line running of entire span
+# when local coord: the path describes where the moving load *origin* is to start and end
+single_path = og.create_moving_path(
+    start_point=og.Point(0 - axl_w, 0, w / 2 - axl_w / 2),
+    end_point=og.Point(L, 0, w / 2 - axl_w / 2),
+    increments=int(np.round(L) + veh_l + 1),
+)
+
+# create moving load (and case)
+moving_truck = og.create_moving_load(name=&quot;Moving Two Axle Truck&quot;)
+
+# Set path to all loads defined within moving_truck
+moving_truck.set_path(single_path)
+# note: it is possible to set different paths for different compound loads in one moving load object
+moving_truck.add_load(two_axle_truck)
+
+# Assign
+simple_grid.add_load_case(moving_truck)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Analysis">
+<h2>Analysis<a class="headerlink" href="#Analysis" title="Permalink to this headline">#</a></h2>
+<p>Next, analyze all load cases added to the model:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>simple_grid.analyze()
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Getting-load-case-results">
+<h2>Getting load case results<a class="headerlink" href="#Getting-load-case-results" title="Permalink to this headline">#</a></h2>
+<p>Finally, get the xarray DataSet of the results:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>results = simple_grid.get_results() # gets basic results
+<br/></pre></div>
+</div>
+</div>
+<p>For information on the returned object from :func:<code class="docutils literal notranslate"><span class="pre">~ospgrillage.osp_grillage.OspGrillage.get_results</span></code>,see :ref:<code class="docutils literal notranslate"><span class="pre">PostProcessing</span></code>.</p>
+</div>
+<div class="section" id="Getting-load-combination-results">
+<h2>Getting load combination results<a class="headerlink" href="#Getting-load-combination-results" title="Permalink to this headline">#</a></h2>
+<p>With the results of the basic load cases now known, we can calculate factored combinations of these load cases that are of interest:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>l_factor = 2.3
+p_factor = 0.5
+# combination with line load case and patch load case
+load_combinations = {static_cases_names[0]:l_factor,static_cases_names[-1]:p_factor}
+combination_results = simple_grid.get_results(combinations=load_combinations)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Data-processing">
+<h2>Data processing<a class="headerlink" href="#Data-processing" title="Permalink to this headline">#</a></h2>
+<p>Having the results be in xarray DataSet, we can do many things with it such as slicing and query its data.</p>
+<p>The following example shows how to extract bending moments at midspan - the critical location for the defined load cases.</p>
+<p>First for static load cases, we extract bending moments about the global -axis for each i node of grillage member (since i node correspond to the nodes in the mid span).</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># get list of longitudinal element tags along/near mid_span i.e. 84 to 90 in Figure 1
+ele_set = list(range(84, 90 + 1))
+# query
+extracted_bending = results.forces.sel(Loadcase=static_cases_names, Element=ele_set, Component=&quot;Mz_i&quot;)
+</pre></div>
+</div>
+</div>
+<p>The extracted_bending variable holds the load case for ‘Line Test Case’, ‘Point Test Case(Global)’, ‘Points Test Case (Local in Point)’, ‘Points Test Case (Local in Compound)’, ‘Patch Test Case’.</p>
+<p>Should we sum the nodal forces from members on one side, we expect it to approximately equal PL/4:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>np.sum(
+np.array(
+    results.forces.sel(
+        Loadcase=static_cases_names, Element=ele_set, Component=&quot;Mz_i&quot;
+    )
+),
+axis=1,
+)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([  96856.875     ,   58625.        ,   58625.        ,
+       1634136.28124999])
+</pre></div></div>
+</div>
+<div class="section" id="Process-load-combinations-results">
+<h3>Process load combinations results<a class="headerlink" href="#Process-load-combinations-results" title="Permalink to this headline">#</a></h3>
+<p>Here we sum the nodal forces from the mid span - i node</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sum_node_force = np.sum(
+    np.array(combination_results.forces.sel(Element=ele_set, Component=&quot;Mz_i&quot;))
+)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Extract-and-process-moving-load-results">
+<h3>Extract and process moving load results<a class="headerlink" href="#Extract-and-process-moving-load-results" title="Permalink to this headline">#</a></h3>
+<p>Here we are accessing and querying data of the moving load case.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>move_results = simple_grid.get_results(load_case=&quot;Moving Two Axle Truck&quot;)
+</pre></div>
+</div>
+</div>
+<p>One can query results at specific position of the moving load by looking up the index of load case.</p>
+<p>In the following example we query the bending moment about -axis component, with the load case corresponding to where the load groups are at/near midspan L = 16.75 m, and the longitudinal elements along/near mid-span, i.e. element 84 to 90 in Figure 1:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># selecting load case of specific load position
+integer = int(
+    L / 2 - 1 + 2
+)  # here we choose when the load groups are at/near mid span L = 14m i.e. 17
+
+# query
+mid_span_bending = move_results.forces.isel(Loadcase=integer).sel(
+    Element=ele_set, Component=&quot;Mz_i&quot;
+)
+</pre></div>
+</div>
+</div>
+<p>Finally, summing the query of bending moment and comparing with theoretical calculation:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bending_z = np.sum(np.array(mid_span_bending))
+
+# Hand calc:
+bending_z_theoretical = 2 * P * (L / 2 - axl_s / 2)  # 31500
+
+print(&quot;bending_z ={}&quot;.format(bending_z))
+print(&quot;bending_z_theoretical ={}&quot;.format(bending_z_theoretical))
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+bending_z =31499.99999999989
+bending_z_theoretical =31500.0
+</pre></div></div>
+</div>
+<p>The following is printed to terminal (units in N m) :</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bending_z = 31499.999999999913
+bending_z_theoretical = 31500.0
+</pre></div>
+</div>
+</div>
+<p>and these are a good match.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="../rst/Examples.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Examples</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="mesh_showcase.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Mesh features</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2021, Justin Ngan, Colin Caprani.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>

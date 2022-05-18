@@ -7,8 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Model types available &#8212; ospgrillage module 0.1.1 documentation</title>
     
-  <link href="../_static/css/theme.css" rel="stylesheet">
-  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 
     
   <link rel="stylesheet"
@@ -18,19 +19,16 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
     href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
-    
-      
-
-    
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/css/blank.css" />
     
-  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Performing analysis" href="Running_analysis.html" />
@@ -42,7 +40,7 @@
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -136,16 +134,12 @@
       <div class="navbar-end-item">
         <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
         <li class="nav-item">
-          <a class="nav-link" href="https://github.com/MonashSmartStructures/ospgrillage" rel="noopener" target="_blank" title="GitHub">
-            <span><i class="fab fa-github-square"></i></span>
-            <label class="sr-only">GitHub</label>
-          </a>
+          <a class="nav-link" href="https://github.com/MonashSmartStructures/ospgrillage" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="https://twitter.com/ccaprani" rel="noopener" target="_blank" title="Twitter">
-            <span><i class="fab fa-twitter-square"></i></span>
-            <label class="sr-only">Twitter</label>
-          </a>
+          <a class="nav-link" href="https://twitter.com/ccaprani" rel="noopener" target="_blank" title="Twitter"><span><i class="fab fa-twitter-square"></i></span>
+            <label class="sr-only">Twitter</label></a>
         </li>
       </ul>
       </div>
@@ -161,7 +155,8 @@
           
             
             <!-- Only show if we have sidebars configured, else just a small margin  -->
-            <div class="col-12 col-md-3 bd-sidebar"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -169,6 +164,9 @@
     
   </div>
 </nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
             </div>
             
           
@@ -179,7 +177,7 @@
               
               <div class="toc-item">
                 
-<div class="tocsection onthispage pt-5 pb-3">
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
 
@@ -244,13 +242,13 @@
               <div>
                 
   <div class="section" id="model-types-available">
-<h1>Model types available<a class="headerlink" href="#model-types-available" title="Permalink to this headline">¶</a></h1>
+<h1>Model types available<a class="headerlink" href="#model-types-available" title="Permalink to this headline">#</a></h1>
 <p>For the example code on this page, <em>ospgrillage</em> is imported as <code class="docutils literal notranslate"><span class="pre">og</span></code></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ospgrillage</span> <span class="k">as</span> <span class="nn">og</span>
 </pre></div>
 </div>
 <div class="section" id="beam-elements-only-beam-only">
-<h2>Beam Elements Only - <code class="xref py py-class docutils literal notranslate"><span class="pre">beam_only</span></code><a class="headerlink" href="#beam-elements-only-beam-only" title="Permalink to this headline">¶</a></h2>
+<h2>Beam Elements Only - <code class="xref py py-class docutils literal notranslate"><span class="pre">beam_only</span></code><a class="headerlink" href="#beam-elements-only-beam-only" title="Permalink to this headline">#</a></h2>
 <p>This is the traditional modelling approach that is comprised of beam elements lay out in a grid pattern, with:</p>
 <ul class="simple">
 <li><p>longitudinal members representing composite sections along longitudinal direction (e.g. main beams);</p></li>
@@ -264,7 +262,7 @@
 <p>More information of this model type can be found <a class="reference external" href="https://www.steelconstruction.info/Modelling_and_analysis_of_beam_bridges">here</a>.</p>
 </div>
 <div class="section" id="beam-with-rigid-links-beam-link">
-<h2>Beam with Rigid Links - <code class="xref py py-class docutils literal notranslate"><span class="pre">beam_link</span></code><a class="headerlink" href="#beam-with-rigid-links-beam-link" title="Permalink to this headline">¶</a></h2>
+<h2>Beam with Rigid Links - <code class="xref py py-class docutils literal notranslate"><span class="pre">beam_link</span></code><a class="headerlink" href="#beam-with-rigid-links-beam-link" title="Permalink to this headline">#</a></h2>
 <p>This is a modified version of the traditional beam element model with the following features:</p>
 <ul class="simple">
 <li><p>Offsets (in x-z plane) for start and end nodes along direction of transverse members - using joint offset.</p></li>
@@ -273,11 +271,11 @@
 <p>Figure 2 shows the details of the aforementioned model type. Figure 3 shows the model type created in a similar commercial software SPACEGASS.</p>
 <div class="figure align-center" id="id1">
 <a class="reference internal image-reference" href="../_images/beam_link_idealization.PNG"><img alt="../_images/beam_link_idealization.PNG" src="../_images/beam_link_idealization.PNG" /></a>
-<p class="caption"><span class="caption-text">Figure 2: Beam grillage with rigid links - idealization.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 2: Beam grillage with rigid links - idealization.</span><a class="headerlink" href="#id1" title="Permalink to this image">#</a></p>
 </div>
 <div class="figure align-center" id="id2">
 <a class="reference internal image-reference" href="../_images/spacegass.PNG"><img alt="../_images/spacegass.PNG" src="../_images/spacegass.PNG" /></a>
-<p class="caption"><span class="caption-text">Figure 3: Beam grillage with rigid links model from SPACEGASS software.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 3: Beam grillage with rigid links model from SPACEGASS software.</span><a class="headerlink" href="#id2" title="Permalink to this image">#</a></p>
 </div>
 <p>To create this model, have <a class="reference internal" href="generated/ospgrillage.osp_grillage.create_grillage.html#ospgrillage.osp_grillage.create_grillage" title="ospgrillage.osp_grillage.create_grillage"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_grillage()</span></code></a> keyword for <code class="docutils literal notranslate"><span class="pre">model_type</span></code> set to <strong>beam_link</strong>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_grillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;Modified bridge grillage&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">skew</span><span class="o">=-</span><span class="mi">12</span><span class="p">,</span>
@@ -289,7 +287,7 @@
 <p>The joint offsets are rigid links. Information can be found in <cite>OpenSeesPy</cite>’s <a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/LinearTransf.html">geomtransf</a></p>
 <p>Table 1 outlines the specific variables for beam link model.</p>
 <table class="colwidths-given table" id="id3">
-<caption><span class="caption-text">Table: 1 Input arguments for shell hybrid model</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
+<caption><span class="caption-text">Table: 1 Input arguments for shell hybrid model</span><a class="headerlink" href="#id3" title="Permalink to this table">#</a></caption>
 <colgroup>
 <col style="width: 50%" />
 <col style="width: 50%" />
@@ -317,7 +315,7 @@
 </div>
 </div>
 <div class="section" id="shell-beam-elements-shell-beam">
-<span id="shell-hybrid-model"></span><h2>Shell &amp; Beam Elements - <code class="xref py py-class docutils literal notranslate"><span class="pre">shell_beam</span></code><a class="headerlink" href="#shell-beam-elements-shell-beam" title="Permalink to this headline">¶</a></h2>
+<span id="shell-hybrid-model"></span><h2>Shell &amp; Beam Elements - <code class="xref py py-class docutils literal notranslate"><span class="pre">shell_beam</span></code><a class="headerlink" href="#shell-beam-elements-shell-beam" title="Permalink to this headline">#</a></h2>
 <p>This is a more refined model using two element types - shell and beam elements - with the following features:</p>
 <ul class="simple">
 <li><p>Shell elements lay in grids to represent bridge decks.</p></li>
@@ -328,7 +326,7 @@
 Figure 4 shows the details and variables of the shell beam hybrid model.</p>
 <div class="figure align-center" id="id4">
 <a class="reference internal image-reference" href="../_images/shell_beam_idealization.PNG"><img alt="../_images/shell_beam_idealization.PNG" src="../_images/shell_beam_idealization.PNG" /></a>
-<p class="caption"><span class="caption-text">Figure 4: Shell beam hybrid model idealization</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 4: Shell beam hybrid model idealization</span><a class="headerlink" href="#id4" title="Permalink to this image">#</a></p>
 </div>
 <p>When <code class="xref py py-func docutils literal notranslate"><span class="pre">shell_beam()</span></code> model type is selected, <em>ospgrillage</em> automatically determines the position of shell elements within the grillage plane.
 Users only have to define and assign the section of the shell element via <code class="xref py py-func docutils literal notranslate"><span class="pre">create_section()</span></code> and
@@ -350,7 +348,7 @@ users are required to define and assign shell elements. The following example co
 </div>
 <p>Table 2 outlines the specific variable for shell hybrid model.</p>
 <table class="colwidths-given table" id="id5">
-<caption><span class="caption-text">Table: 2 Input arguments for shell hybrid model</span><a class="headerlink" href="#id5" title="Permalink to this table">¶</a></caption>
+<caption><span class="caption-text">Table: 2 Input arguments for shell hybrid model</span><a class="headerlink" href="#id5" title="Permalink to this table">#</a></caption>
 <colgroup>
 <col style="width: 50%" />
 <col style="width: 50%" />
@@ -381,7 +379,7 @@ based on this variable and spacing of link nodes</p></td>
               
               
               <!-- Previous / next buttons -->
-<div class='prev-next-area'> 
+<div class='prev-next-area'>
     <a class='left-prev' id="prev-link" href="Module%20description.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
@@ -404,7 +402,8 @@ based on this variable and spacing of link nodes</p></td>
       </div>
     </div>
   
-  <script src="../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
 <footer class="footer mt-5 mt-md-0">
   <div class="container">
     
@@ -416,7 +415,7 @@ based on this variable and spacing of link nodes</p></td>
     
     <div class="footer-item">
       <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.0.2.<br>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
 </p>
     </div>
     

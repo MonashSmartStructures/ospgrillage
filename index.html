@@ -7,8 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>OpenSeesPy Grillage wizard - ospgrillage &#8212; ospgrillage module 0.1.1 documentation</title>
     
-  <link href="_static/css/theme.css" rel="stylesheet">
-  <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 
     
   <link rel="stylesheet"
@@ -18,19 +19,16 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
     href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
-    
-      
-
-    
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/css/blank.css" />
     
-  <link rel="preload" as="script" href="_static/js/index.be7d3bbb2ef33a8344ce.js">
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Installation" href="rst/Installation.html" />
@@ -41,7 +39,7 @@
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -135,16 +133,12 @@
       <div class="navbar-end-item">
         <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
         <li class="nav-item">
-          <a class="nav-link" href="https://github.com/MonashSmartStructures/ospgrillage" rel="noopener" target="_blank" title="GitHub">
-            <span><i class="fab fa-github-square"></i></span>
-            <label class="sr-only">GitHub</label>
-          </a>
+          <a class="nav-link" href="https://github.com/MonashSmartStructures/ospgrillage" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="https://twitter.com/ccaprani" rel="noopener" target="_blank" title="Twitter">
-            <span><i class="fab fa-twitter-square"></i></span>
-            <label class="sr-only">Twitter</label>
-          </a>
+          <a class="nav-link" href="https://twitter.com/ccaprani" rel="noopener" target="_blank" title="Twitter"><span><i class="fab fa-twitter-square"></i></span>
+            <label class="sr-only">Twitter</label></a>
         </li>
       </ul>
       </div>
@@ -160,7 +154,8 @@
           
             
             <!-- Only show if we have sidebars configured, else just a small margin  -->
-            <div class="col-12 col-md-3 bd-sidebar"><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -168,6 +163,9 @@
     
   </div>
 </nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
             </div>
             
           
@@ -178,7 +176,7 @@
               
               <div class="toc-item">
                 
-<div class="tocsection onthispage pt-5 pb-3">
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
 
@@ -248,7 +246,7 @@
 <a class="reference external" href="https://codecov.io/gh/MonashSmartStructures/ospgrillage"><img alt="codecov" src="https://codecov.io/gh/MonashSmartStructures/ospgrillage/branch/main/graph/badge.svg?token=dUTOmPBnyP" /></a>
 <a class="reference external" href="https://joss.theoj.org/papers/d44339b03dc4f1add2678167c1a1b6de"><img alt="JOSS" src="https://joss.theoj.org/papers/d44339b03dc4f1add2678167c1a1b6de/status.svg" /></a></p>
 <div class="section" id="openseespy-grillage-wizard-ospgrillage">
-<h1>OpenSeesPy Grillage wizard - <em>ospgrillage</em><a class="headerlink" href="#openseespy-grillage-wizard-ospgrillage" title="Permalink to this headline">¶</a></h1>
+<h1>OpenSeesPy Grillage wizard - <em>ospgrillage</em><a class="headerlink" href="#openseespy-grillage-wizard-ospgrillage" title="Permalink to this headline">#</a></h1>
 <p><em>ospgrillage</em> is a python wrapper of the <em>OpenSeesPy</em> package to speed up the creation of bridge deck grillage models.
 <a class="reference external" href="openseespydoc.readthedocs.io">OpenSeesPy</a> is a python interpreter of the well-know Open System for Earthquake Engineering Simulation (<a class="reference external" href="https://opensees.berkeley.edu/">OpenSees</a>) software framework.
 <em>ospgrillage</em> provides a simple python API which allows users to:</p>
@@ -258,7 +256,7 @@
 </ol>
 <p>The ability to use <em>ospgrillage</em> directly to do bridge deck analysis, or to export the <em>OpenSeesPy</em> command file for further editing, facilities an enormous range of use-cases in both bridge engineering practice and research.</p>
 <div class="section" id="documentation">
-<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="rst/Installation.html">Installation</a></li>
@@ -274,16 +272,16 @@
 </div>
 </div>
 <div class="section" id="support">
-<h2>Support<a class="headerlink" href="#support" title="Permalink to this headline">¶</a></h2>
+<h2>Support<a class="headerlink" href="#support" title="Permalink to this headline">#</a></h2>
 <p>For technical support, please raise an issue at the <a class="reference external" href="https://github.com/MonashSmartStructures/ospgrillage">Github repository</a></p>
 </div>
 <div class="section" id="contributing">
-<h2>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h2>
+<h2>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">#</a></h2>
 <p>We really value and welcome contributions to the <em>ospgrillage</em> package.
 Please check out our <a class="reference external" href="https://github.com/MonashSmartStructures/ospgrillage/blob/main/.github/CONTRIBUTING.md">contributing guidelines</a>.</p>
 </div>
 <div class="section" id="credits">
-<h2>Credits<a class="headerlink" href="#credits" title="Permalink to this headline">¶</a></h2>
+<h2>Credits<a class="headerlink" href="#credits" title="Permalink to this headline">#</a></h2>
 <ul class="simple">
 <li><p>Mayer Melhem for producing the documentation illustrations and the design of the <em>ospgrillage</em> logo.</p></li>
 </ul>
@@ -311,7 +309,8 @@ Please check out our <a class="reference external" href="https://github.com/Mona
       </div>
     </div>
   
-  <script src="_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
 <footer class="footer mt-5 mt-md-0">
   <div class="container">
     
@@ -323,7 +322,7 @@ Please check out our <a class="reference external" href="https://github.com/Mona
     
     <div class="footer-item">
       <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.0.2.<br>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
 </p>
     </div>
     

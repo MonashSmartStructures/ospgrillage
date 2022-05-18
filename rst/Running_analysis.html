@@ -7,8 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Performing analysis &#8212; ospgrillage module 0.1.1 documentation</title>
     
-  <link href="../_static/css/theme.css" rel="stylesheet">
-  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 
     
   <link rel="stylesheet"
@@ -18,20 +19,18 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
     href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
-    
-      
-
-    
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/css/blank.css" />
     
-  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Getting Results" href="PostProcessing.html" />
@@ -43,7 +42,7 @@
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -137,16 +136,12 @@
       <div class="navbar-end-item">
         <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
         <li class="nav-item">
-          <a class="nav-link" href="https://github.com/MonashSmartStructures/ospgrillage" rel="noopener" target="_blank" title="GitHub">
-            <span><i class="fab fa-github-square"></i></span>
-            <label class="sr-only">GitHub</label>
-          </a>
+          <a class="nav-link" href="https://github.com/MonashSmartStructures/ospgrillage" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="https://twitter.com/ccaprani" rel="noopener" target="_blank" title="Twitter">
-            <span><i class="fab fa-twitter-square"></i></span>
-            <label class="sr-only">Twitter</label>
-          </a>
+          <a class="nav-link" href="https://twitter.com/ccaprani" rel="noopener" target="_blank" title="Twitter"><span><i class="fab fa-twitter-square"></i></span>
+            <label class="sr-only">Twitter</label></a>
         </li>
       </ul>
       </div>
@@ -162,7 +157,8 @@
           
             
             <!-- Only show if we have sidebars configured, else just a small margin  -->
-            <div class="col-12 col-md-3 bd-sidebar"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -170,6 +166,9 @@
     
   </div>
 </nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
             </div>
             
           
@@ -180,7 +179,7 @@
               
               <div class="toc-item">
                 
-<div class="tocsection onthispage pt-5 pb-3">
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
 
@@ -284,22 +283,22 @@
               <div>
                 
   <div class="section" id="performing-analysis">
-<h1>Performing analysis<a class="headerlink" href="#performing-analysis" title="Permalink to this headline">¶</a></h1>
+<h1>Performing analysis<a class="headerlink" href="#performing-analysis" title="Permalink to this headline">#</a></h1>
 <p><em>ospgrillage</em> contains a load module which wraps <cite>OpenSeesPy</cite> commands to perform load analysis.</p>
 <p>For all example code in this page, <em>ospgrillage</em> is imported as <code class="docutils literal notranslate"><span class="pre">og</span></code></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ospgrillage</span> <span class="k">as</span> <span class="nn">og</span>
 </pre></div>
 </div>
 <div class="section" id="load-analysis-workflow">
-<h2>Load analysis workflow<a class="headerlink" href="#load-analysis-workflow" title="Permalink to this headline">¶</a></h2>
+<h2>Load analysis workflow<a class="headerlink" href="#load-analysis-workflow" title="Permalink to this headline">#</a></h2>
 <p>Figure 1 shows the flowchart for the load module of <em>ospgrillage</em>.</p>
 <div class="figure align-center" id="id3">
 <a class="reference internal image-reference" href="../_images/analysis_workflow.png"><img alt="../_images/analysis_workflow.png" src="../_images/analysis_workflow.png" /></a>
-<p class="caption"><span class="caption-text">Figure 1: Load analysis utility flow chart</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 1: Load analysis utility flow chart</span><a class="headerlink" href="#id3" title="Permalink to this image">#</a></p>
 </div>
 </div>
 <div class="section" id="defining-loads">
-<h2>Defining loads<a class="headerlink" href="#defining-loads" title="Permalink to this headline">¶</a></h2>
+<h2>Defining loads<a class="headerlink" href="#defining-loads" title="Permalink to this headline">#</a></h2>
 <p>Loads are created with the interface function <a class="reference internal" href="generated/ospgrillage.load.create_load.html#ospgrillage.load.create_load" title="ospgrillage.load.create_load"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_load()</span></code></a>.
 Users pass argument for <cite>type=</cite> to specify the load type.
 Available loads types include <a class="reference internal" href="#point">Point</a>, <a class="reference internal" href="#line">Line</a>, and <a class="reference internal" href="#patch">Patch</a> loads.</p>
@@ -317,7 +316,7 @@ Following sections will further elaborate the load vertices for each load type.<
 <p>Loads are generally defined in the global coordinate system with respect to the created grillage model.
 However, a user-defined local coordinate system is required when defining <a class="reference internal" href="#compound-load">Compound load</a> later on.</p>
 <div class="section" id="nodal-loads">
-<h3>Nodal loads<a class="headerlink" href="#nodal-loads" title="Permalink to this headline">¶</a></h3>
+<h3>Nodal loads<a class="headerlink" href="#nodal-loads" title="Permalink to this headline">#</a></h3>
 <p>Nodal loads are load applied directly onto nodes of grillage model.
 Nodal loads are defined using <a class="reference internal" href="generated/ospgrillage.load.create_load.html#ospgrillage.load.create_load" title="ospgrillage.load.create_load"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_load()</span></code></a>, specifying <code class="docutils literal notranslate"><span class="pre">type=</span> <span class="pre">&quot;nodal&quot;</span></code>.
 There are six degrees-of-freedom (DOFs) for acting loads in each node of the grillage model.</p>
@@ -334,7 +333,7 @@ Any non-specified component are defaulted to zero.</p>
 </div>
 </div>
 <div class="section" id="point-loads">
-<span id="point"></span><h3>Point Loads<a class="headerlink" href="#point-loads" title="Permalink to this headline">¶</a></h3>
+<span id="point"></span><h3>Point Loads<a class="headerlink" href="#point-loads" title="Permalink to this headline">#</a></h3>
 <p>Point load is a force applied on a single infinitesimal point of the grillage model.
 Point loads are used represent a large range of loads, such as truck axle, or superimposed dead load on a deck.</p>
 <p>Point loads are created using <a class="reference internal" href="generated/ospgrillage.load.create_load.html#ospgrillage.load.create_load" title="ospgrillage.load.create_load"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_load()</span></code></a>, passing <code class="docutils literal notranslate"><span class="pre">type</span> <span class="pre">=</span> <span class="pre">&quot;point&quot;</span></code>.
@@ -342,7 +341,7 @@ Point load takes only a single <cite>LoadPoint</cite> tuple. <cite>p</cite> in t
 - see Figure 2.</p>
 <div class="figure align-center" id="id4">
 <a class="reference internal image-reference" href="../_images/point.png"><img alt="../_images/point.png" src="../_images/point.png" style="width: 520.0px;" /></a>
-<p class="caption"><span class="caption-text">Figure 2: Point load</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 2: Point load</span><a class="headerlink" href="#id4" title="Permalink to this image">#</a></p>
 </div>
 <p>The following example code creates a 20 force unit point load located at (5,0,2) in the global coordinate system.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">point_load_location</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertices</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>  <span class="c1"># create load point</span>
@@ -351,7 +350,7 @@ Point load takes only a single <cite>LoadPoint</cite> tuple. <cite>p</cite> in t
 </div>
 </div>
 <div class="section" id="line-loads">
-<span id="line"></span><h3>Line Loads<a class="headerlink" href="#line-loads" title="Permalink to this headline">¶</a></h3>
+<span id="line"></span><h3>Line Loads<a class="headerlink" href="#line-loads" title="Permalink to this headline">#</a></h3>
 <p>Line loads are loads exerted along a line.
 Line loads are useful to represent loads such as self weight of longitudinal beams or distributed load along beam elements.</p>
 <p>Line loads are instantiated with <a class="reference internal" href="generated/ospgrillage.load.create_load.html#ospgrillage.load.create_load" title="ospgrillage.load.create_load"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_load()</span></code></a> passing <code class="docutils literal notranslate"><span class="pre">type</span> <span class="pre">=</span> <span class="pre">&quot;line&quot;</span></code> and required at least two <cite>LoadPoint`s (corresponds to the start and end of the line load) - see Figure 3.
@@ -359,7 +358,7 @@ Using more than two tuples allows a curve line loading profile.
 `p</cite> in the <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadPoint</span></code> tuple should have units of force per distance (eg. kN/m, kips/ft, etc).</p>
 <div class="figure align-center" id="id5">
 <a class="reference internal image-reference" href="../_images/line.png"><img alt="../_images/line.png" src="../_images/line.png" style="width: 520.0px;" /></a>
-<p class="caption"><span class="caption-text">Figure 3: Line load</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 3: Line load</span><a class="headerlink" href="#id5" title="Permalink to this image">#</a></p>
 </div>
 <p>The following example code is a constant Two force per distance unit line load (UDL)
 in the global coordinate system from -1 to 11 distance units in the <cite>x</cite>-axis and along the position in the <cite>z</cite>-axis at 3 distance units.</p>
@@ -374,7 +373,7 @@ in the global coordinate system from -1 to 11 distance units in the <cite>x</cit
 </div>
 </div>
 <div class="section" id="patch-loads">
-<span id="patch"></span><h3>Patch loads<a class="headerlink" href="#patch-loads" title="Permalink to this headline">¶</a></h3>
+<span id="patch"></span><h3>Patch loads<a class="headerlink" href="#patch-loads" title="Permalink to this headline">#</a></h3>
 <p>Patch loads are useful to represent loads distributed uniformly over a certain area such as traffic lanes.</p>
 <p>Patch loads are instantiated <a class="reference internal" href="generated/ospgrillage.load.create_load.html#ospgrillage.load.create_load" title="ospgrillage.load.create_load"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_load()</span></code></a>, specifying <code class="docutils literal notranslate"><span class="pre">type</span> <span class="pre">=</span> <span class="pre">&quot;patch&quot;</span></code>.
 Patch load requires at least four <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadPoint</span></code> tuple (corresponds to the vertices of the patch load) - see Figure 4.
@@ -382,7 +381,7 @@ Using eight tuples allows a curve surface loading profile.
 <cite>p</cite> in the <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadPoint</span></code> tuple should have units of force per area.</p>
 <div class="figure align-center" id="id6">
 <a class="reference internal image-reference" href="../_images/patch.png"><img alt="../_images/patch.png" src="../_images/patch.png" style="width: 520.0px;" /></a>
-<p class="caption"><span class="caption-text">Figure 4: Patch load</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 4: Patch load</span><a class="headerlink" href="#id6" title="Permalink to this image">#</a></p>
 </div>
 <p>The following example code creates a constant 5 force per area unit patch load
 in the global coordinate system.</p>
@@ -400,7 +399,7 @@ in the global coordinate system.</p>
 </div>
 </div>
 <div class="section" id="compound-loads">
-<span id="compound-load"></span><h2>Compound loads<a class="headerlink" href="#compound-loads" title="Permalink to this headline">¶</a></h2>
+<span id="compound-load"></span><h2>Compound loads<a class="headerlink" href="#compound-loads" title="Permalink to this headline">#</a></h2>
 <p>Two or more of the basic load types can be combined to form a Compound load.
 All load types are applied in the direction of the global <span class="math notranslate nohighlight">\(y\)</span>-axis.
 Loads in other directions and applied moments are currently not supported.</p>
@@ -410,7 +409,7 @@ This function creates a <a class="reference internal" href="Loads.html#ospgrilla
 Figure 5 shows the relationship and process of mapping local to global system of a compound load.</p>
 <div class="figure align-center" id="id7">
 <a class="reference internal image-reference" href="../_images/compoundload.png"><img alt="../_images/compoundload.png" src="../_images/compoundload.png" /></a>
-<p class="caption"><span class="caption-text">Figure 5: Compound load</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 5: Compound load</span><a class="headerlink" href="#id7" title="Permalink to this image">#</a></p>
 </div>
 <p>The following code creates a point and line load which is to be assigned as a Compound load.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># components in a compound load</span>
@@ -444,7 +443,7 @@ When pass as input into <code class="xref py py-class docutils literal notransla
 </div>
 </div>
 <div class="section" id="load-cases">
-<span id="id1"></span><h2>Load cases<a class="headerlink" href="#load-cases" title="Permalink to this headline">¶</a></h2>
+<span id="id1"></span><h2>Load cases<a class="headerlink" href="#load-cases" title="Permalink to this headline">#</a></h2>
 <p>Load cases are a set of load types (<a class="reference internal" href="#point">Point</a>, <a class="reference internal" href="#line">Line</a>, <a class="reference internal" href="#patch">Patch</a>, <a class="reference internal" href="#compound-load">Compound load</a>) used to define a particular loading condition.
 Compound loads are treated as a single load group within a load case having same reference points (e.g. tandem axle) and properties (e.g. load factor)</p>
 <p>After load type objects are created, users add the load objects to <a class="reference internal" href="Loads.html#ospgrillage.load.LoadCase" title="ospgrillage.load.LoadCase"><code class="xref py py-class docutils literal notranslate"><span class="pre">LoadCase</span></code></a> class objects.
@@ -467,16 +466,16 @@ Users repeat this step for any defined load cases.</p>
 </div>
 </div>
 <div class="section" id="moving-load">
-<span id="id2"></span><h2>Moving load<a class="headerlink" href="#moving-load" title="Permalink to this headline">¶</a></h2>
+<span id="id2"></span><h2>Moving load<a class="headerlink" href="#moving-load" title="Permalink to this headline">#</a></h2>
 <p>For moving load analysis, users create moving load objects using <a class="reference internal" href="Loads.html#ospgrillage.load.MovingLoad" title="ospgrillage.load.MovingLoad"><code class="xref py py-class docutils literal notranslate"><span class="pre">MovingLoad</span></code></a> class.
 The moving load class takes a load type object (<a class="reference internal" href="#point">Point</a>, <a class="reference internal" href="#line">Line</a>, <a class="reference internal" href="#patch">Patch</a>, <a class="reference internal" href="#compound-load">Compound load</a>) and moves the load through a path points described by a <a class="reference internal" href="Loads.html#ospgrillage.load.Path" title="ospgrillage.load.Path"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a> object.</p>
 <p>Figure 6 summarizes the relationship between moving loads, paths and the position of the loads on the grillage model.</p>
 <div class="figure align-center" id="id8">
 <a class="reference internal image-reference" href="../_images/movingload.png"><img alt="../_images/movingload.png" src="../_images/movingload.png" /></a>
-<p class="caption"><span class="caption-text">Figure 6: Moving load</span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Figure 6: Moving load</span><a class="headerlink" href="#id8" title="Permalink to this image">#</a></p>
 </div>
 <div class="section" id="moving-path">
-<h3>Moving path<a class="headerlink" href="#moving-path" title="Permalink to this headline">¶</a></h3>
+<h3>Moving path<a class="headerlink" href="#moving-path" title="Permalink to this headline">#</a></h3>
 <p><a class="reference internal" href="Loads.html#ospgrillage.load.Path" title="ospgrillage.load.Path"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a> object is created using <a class="reference internal" href="generated/ospgrillage.load.create_moving_path.html#ospgrillage.load.create_moving_path" title="ospgrillage.load.create_moving_path"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_moving_path()</span></code></a>.</p>
 <p><a class="reference internal" href="Loads.html#ospgrillage.load.Path" title="ospgrillage.load.Path"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a> requires two <cite>namedTuple</cite> <code class="xref py py-class docutils literal notranslate"><span class="pre">Point(x,y,z)</span></code> to describe its start and end position.
 The following example creates a path from 2 to 4 distance units in the global coordinate system.</p>
@@ -485,7 +484,7 @@ The following example creates a path from 2 to 4 distance units in the global co
 </div>
 </div>
 <div class="section" id="creating-moving-load">
-<h3>Creating moving load<a class="headerlink" href="#creating-moving-load" title="Permalink to this headline">¶</a></h3>
+<h3>Creating moving load<a class="headerlink" href="#creating-moving-load" title="Permalink to this headline">#</a></h3>
 <p>The following example code creates a compound load consisting of two point loads moving along the defined <strong>single_path</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># create components of compound load</span>
 <span class="n">front_wheel</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertices</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
@@ -505,7 +504,7 @@ Here, the function automatically creates multiple incremental <a class="referenc
 </div>
 </div>
 <div class="section" id="advance-usage">
-<h3>Advance usage<a class="headerlink" href="#advance-usage" title="Permalink to this headline">¶</a></h3>
+<h3>Advance usage<a class="headerlink" href="#advance-usage" title="Permalink to this headline">#</a></h3>
 <p>All basic load added to a <a class="reference internal" href="Loads.html#ospgrillage.load.MovingLoad" title="ospgrillage.load.MovingLoad"><code class="xref py py-class docutils literal notranslate"><span class="pre">MovingLoad</span></code></a> class via <code class="xref py py-func docutils literal notranslate"><span class="pre">add_loads()</span></code> function
 are assigned with a single common <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code> object.</p>
 <p><a class="reference internal" href="Loads.html#ospgrillage.load.MovingLoad" title="ospgrillage.load.MovingLoad"><code class="xref py py-class docutils literal notranslate"><span class="pre">MovingLoad</span></code></a> allows a more advance usage whereby individual moving path can be set to each basic load within <code class="xref py py-class docutils literal notranslate"><span class="pre">MovingLoad</span></code>.
@@ -524,7 +523,7 @@ Following, each basic load added via <code class="xref py py-func docutils liter
 </div>
 </div>
 <div class="section" id="running-analysis">
-<h2>Running analysis<a class="headerlink" href="#running-analysis" title="Permalink to this headline">¶</a></h2>
+<h2>Running analysis<a class="headerlink" href="#running-analysis" title="Permalink to this headline">#</a></h2>
 <p>Once all defined load cases (static and moving) have been added to the grillage object, analysis can be conducted.</p>
 <p>To analyse load case(s), users run the class function <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze.html#ospgrillage.osp_grillage.OspGrillage.analyze" title="ospgrillage.osp_grillage.OspGrillage.analyze"><code class="xref py py-func docutils literal notranslate"><span class="pre">analyze()</span></code></a>.
 By default <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze.html#ospgrillage.osp_grillage.OspGrillage.analyze" title="ospgrillage.osp_grillage.OspGrillage.analyze"><code class="xref py py-func docutils literal notranslate"><span class="pre">analyze()</span></code></a> will run all defined load cases.
@@ -549,7 +548,7 @@ Following example shows the various options for <a class="reference internal" hr
               
               
               <!-- Previous / next buttons -->
-<div class='prev-next-area'> 
+<div class='prev-next-area'>
     <a class='left-prev' id="prev-link" href="ModelTemplates.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
@@ -572,7 +571,8 @@ Following example shows the various options for <a class="reference internal" hr
       </div>
     </div>
   
-  <script src="../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
 <footer class="footer mt-5 mt-md-0">
   <div class="container">
     
@@ -584,7 +584,7 @@ Following example shows the various options for <a class="reference internal" hr
     
     <div class="footer-item">
       <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.0.2.<br>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
 </p>
     </div>
     
