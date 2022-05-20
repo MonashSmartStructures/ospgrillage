@@ -39,20 +39,19 @@ def create_material(**kwargs):
 class Material:
     """
     This class stores information and provides methods to parse input material properties into ``OpenSeesPy`` Material
-    commands. ``OpenSeesPy`` has two types of material objects, namely UniaxialMaterial and NDMaterial.
+    objects.
 
     `Here <https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html>`_ are the information about OpenSees
     Material objects.
 
     As *ospgrillage* is mainly intended for bridge decks , concrete and steel makes up the primary
-    materials. In turn, UniAxialMaterial object of ``OpenSeesPy`` is wrapped and used by Material class since it contains
+    materials. In turn, *ospgrillage* wraps the UniAxialMaterial object of ``OpenSeesPy`` since it contains the primary
     options for Concrete and Steel.
 
-    The Material class also allow users to create codified material properties (e.g. AS5100).
-    These material properties are stored in a material library file (mat_lib.json) for which is to the users to pass in
-    the appropriate keyword arguments to create the code defined materials.
-
-    Additionally, Material class provides method to create the mat_lib.json file, if file is not found in directory.
+    The Material class also allow users to utilize codified material properties (e.g. AS5100, ASHTOO).
+    These material properties are stored in a material library file (mat_lib.json). Users are required to pass in
+    the appropriate keyword arguments (dict keys) to select the desirable codified materials. Users may access
+    mat_lib.json. Additionally, this class is able create the mat_lib.json file and pass it through
 
     .. note::
 
@@ -61,14 +60,13 @@ class Material:
 
     def __init__(self, **kwargs):
         """
-        The constructor of Material takes in three types of keyword arguments:
+        The constructor of Material takes in three types of inputs:
 
-        #. Keyword for looking up the *ospgrillage* material library i.e. mat_lib.json.
+        #. Keywords for looking up the *ospgrillage* material library i.e. mat_lib.json.
         #. General material properties - such as E, and G
-        #. Material arguments of ```OpenSeesPy```. E.g. Opensees's Steel01 material takes isotropic hardening parameters a1
-           to a4.
+        #. Specific material arguments of ``OpenSeesPy``.
 
-        The following keywords are for item (1):
+        For (1), the following keywords are **required**:
 
         :keyword:
 
@@ -76,25 +74,23 @@ class Material:
         * type (`str`): Either "concrete" or "steel"
         * grade(`str`): Grade of material according to code
 
-        The following keywords are examples of general material properties:
+        For (2), the minimum required material properties are:
 
         :keyword:
 
         * E (`float`): Elastic modulus
         * G (`float`): Shear modulus
+        * v (`float`): Poisson's ratio
+        * rho (`float`): Density
 
+        For (3), refer to `OpenSeesPy <https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html>`_.
 
-        For developers wishing to add more material properties:
-
-        #. if the material is a codified material, modify mat_lib.json file by adding the material following its json format.
-        #. if the material is a ``OpenSees`` Material that wasn't added previously, first add its properties under :func:`get_mat_args`
-            function. Then check the commands in :func:`_write_material` of :class:`OspGrillage` class.
 
         """
         # Instantiate variables
-        self.mat_type = None  # this is the os convention for materials e.g. Concrete01
+        self.ops_mat_type = kwargs.get("ops_mat_type", None)  # this is the os convention for materials e.g. Concrete01
         self.op_mat_arg = None  # arguments according to OpenSeesPy
-        self.units = None  # default SI units
+        self.units = kwargs.get("units", None)  # default SI units
         # assigns variables for all kwargs for codified material types
         self.code = kwargs.get("code", None)
         self.material_type = kwargs.get("material", None)
@@ -104,6 +100,15 @@ class Material:
         self.shear_modulus = kwargs.get("G", None)
         self.poisson_ratio = kwargs.get("v", None)
         self.density = kwargs.get("rho", None)
+
+        # get mat lib file
+        self.default_mat = kwargs.get("default_material", True)
+        self._mat_lib = self._read_mat_lib()
+        # ----------------------------------------------------------------------------------
+        # material vars
+
+        # properties for Standard Elastic OpenSeesPy material
+
 
         # properties for Concrete - symbols according to OpenSees uniaxialMaterial/Concrete
         self.fpc = kwargs.get("fpc", None)
@@ -122,15 +127,14 @@ class Material:
         self.a3 = kwargs.get("a3", None)
         self.a4 = kwargs.get("a4", None)
 
-        # get mat lib file
-        self._mat_lib = self._read_mat_lib()
+        # ----------------------------------------------------------------------------------
         # process all inputs into relevant inputs for OpenSees material command
-        self.parse_material_command()
+        self._parse_material_command()
 
-    def parse_material_command(self):
+    def _parse_material_command(self):
         """
-        Function to parse the material inputs into OpenSeesPy commands - this function is handled by
-        :class:`ospgrillage.osp_grillage.OspGrillage`.
+        Checks and parse the material properties based on the input types - either codified, general, or OpenSeesPy
+        specific material inputs.
         """
         # check if code material is selected, if yes read from material library json
         if self.code:
@@ -155,27 +159,36 @@ class Material:
             self.elastic_modulus = self.elastic_modulus * 1e9
             self.fpc = self.fpc * 1e6
 
+        # check poison ratio
+        if not self.poisson_ratio:
+            print("Poisson's ratio not defined for general or custom OpenSeesPy material - a default value of 0.3 is"
+                  "set inplace")
+            self.poisson_ratio = 0.3
+
         # if G not defined, calculate using formula E/(2(1+v))
         if self.shear_modulus is None:
             self.shear_modulus = self.elastic_modulus / (2 * (1 + self.poisson_ratio))
 
         if self.material_type == "concrete":
-            self.mat_type = (
+            self.ops_mat_type = (
                 "Concrete01"  # default opensees material type to represent concrete
             )
         elif self.material_type == "steel":
-            self.mat_type = (
+            self.ops_mat_type = (
                 "Steel01"  # default opensees material type to represent steel
             )
 
     def get_material_args(self):
         """
-        Function to get material arguments. This function is handled by
+        Function to get OpenSeesPy material type and arguments. This function is handled by
         :class:`ospgrillage.osp_grillage.OspGrillage`.
+
+        :returns: Str of OpenSeesPy material type and list of material properties correspond to the inputs of
+         OpenSeesPy commands
         """
-        if self.mat_type == "Concrete01":
+        if self.ops_mat_type == "Concrete01":
             self.op_mat_arg = [self.fpc, self.epsc0, self.fpcu, self.epsU]
-        elif self.mat_type == "Steel01":
+        elif self.ops_mat_type == "Steel01":
             self.op_mat_arg = [
                 self.Fy,
                 self.E0,
@@ -192,10 +205,10 @@ class Material:
         if None in self.op_mat_arg:
             raise Exception(
                 "One or more missing/non-numeric parameters for Material: {} ".format(
-                    self.mat_type
+                    self.ops_mat_type
                 )
             )
-        return self.mat_type, self.op_mat_arg
+        return self.ops_mat_type, self.op_mat_arg
 
     @staticmethod
     def _create_default_dict():
@@ -263,6 +276,9 @@ class Material:
             json.dump(mat_lib, f, indent=4)
 
     def _read_mat_lib(self):
+        """
+        Read material library from json file
+        """
         mat_lib = {}
         try:
             with open("mat_lib.json", "r") as f:
@@ -275,15 +291,18 @@ class Material:
 
     def get_ops_material_command(self, material_tag):
         """
-        Function to get ops material command
-        :param material_tag: tag of material
+        Parse material properties into OpenSeesPy Material commands.
+
+        :param material_tag: tag of material defined in in OpenSeesPy space
         :type material_tag: int
-        :return: str of ops material command
+
+        :return: Str of OpenSees command to create material in OpenSeesPy
+
         """
         # e.g. concrete01 or steel01
         mat_str = None
-        if self.mat_type == "Concrete01" or self.mat_type == "Steel01":
+        if self.ops_mat_type == "Concrete01" or self.ops_mat_type == "Steel01":
             mat_str = 'ops.uniaxialMaterial("{type}", {tag}, *{vec})\n'.format(
-                type=self.mat_type, tag=material_tag, vec=self.op_mat_arg
+                type=self.ops_mat_type, tag=material_tag, vec=self.op_mat_arg
             )
         return mat_str

@@ -1564,6 +1564,11 @@ class ShellEdgeControlLine(EdgeControlLine):
         self.max_mesh_size_x = kwargs.get(
             "max_mesh_size_x"
         )  # information from kwargs of Shellmodel class
+
+        # check inputs
+        if not self.beam_width:
+            raise Exception("beam_width kwarg required")
+
         super().__init__(
             edge_ref_point,
             width_z,
