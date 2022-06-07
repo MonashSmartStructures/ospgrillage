@@ -257,6 +257,15 @@ def shell_link_bridge(ref_bridge_properties):
 # =====================================================================================================================
 # Tests
 # =====================================================================================================================
+def test_inputs():
+    # checks the functionality of interface functions, basic inputs and outputs.
+    vertex_1 = og.create_load_vertex(x=3, z=3,p=2)
+
+    with pytest.raises(ValueError) as e_info:
+        vertex_errors = og.create_load_vertex(x=3, y=0, z=3)
+
+
+
 # test to check compound load position relative to global are correct
 def test_compound_load_positions():
     #
@@ -983,10 +992,11 @@ def test_moving_compound_load(bridge_model_42_negative):
     example_bridge.add_load_case(truck)
     example_bridge.analyze()
     results = example_bridge.get_results()
+    print(results)
     print("finish test compound moving load")
 
 
-# test check correct distribution of a patch defined with bounds outside of grillage
+# checks if patch load is correctly-distributed when patch exceeds the bounds of the grillage
 def test_patch_partially_outside_mesh(bridge_model_42_negative):
     example_bridge = bridge_model_42_negative
     lane_point_1 = og.create_load_vertex(x=-5, z=3, p=5)
@@ -1079,6 +1089,7 @@ def test_patch_partially_outside_mesh(bridge_model_42_negative):
 
 
 def test_clearing_results(bridge_model_42_negative):
+    # test functionality of clearing load case after analysis
     example_bridge = bridge_model_42_negative
     lane_point_1 = og.create_load_vertex(x=-5, z=3, p=5)
     lane_point_2 = og.create_load_vertex(x=8, z=3, p=5)
@@ -1106,6 +1117,7 @@ def test_clearing_results(bridge_model_42_negative):
 
 
 def test_load_analysis_shell_model(shell_link_bridge):
+    # checks a benchmark analysis on a shell_beam model
     shell_link_model = shell_link_bridge
     # og.opsplt.plot_model("nodes")
 
@@ -1129,9 +1141,9 @@ def test_load_analysis_shell_model(shell_link_bridge):
 
 
 def test_load_analysis_shell_multi_span(ref_bridge_properties):
-    # test that creates the multi span shell model and adds a load cases for analysis.
+    # checks integration of load analysis with multi - span feature + shell beam model
     def create_multispan_shell_model(ref_bridge_properties):
-        # test multispan feature compatibility with shell model
+        # creates a reference shell beam model
         I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
 
         # Adopted units: N and m

@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-This module holds all static methods used in other modules. Most methods herein are not part of API.
+This module holds all static methods used in other modules. Static methods are general functions to perform
+calculations. Most methods herein are not part of API of ospgrillage - these functions are only called and accessed in
+ospgrillage for the purpose of its meshing and calculations. However, users may find some static methods to be useful
+for their workflow.
 """
 
 import numpy as np
@@ -70,11 +73,25 @@ def find_circle(x1, y1, x2, y2, x3, y3):
 # which the given three points lie
 
 
-def line_func(m, c, x):
-    if type(x) is list:
-        y = m * x[0] + c
+def line_func(m=None, c=None, x=None, h=None, v=None, R=None):
+    """
+    Line function. Returns y position given x.
+    """
+    curve = False
+    if not all([h is None, v is None, R is None]):
+        curve = True
+
+    if not curve:
+        # straight line
+        if type(x) is list:
+            y = m * x[0] + c
+        else:
+            y = m * x + c
+    elif curve:
+        y = np.sqrt((R) ** 2 - (x - h) ** 2) + v
     else:
-        y = m * x + c
+        raise Exception("line function missing arguments for valid function selection: check arguments")
+    
     return y
 
 

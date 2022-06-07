@@ -47,7 +47,7 @@ def ref_bridge_properties():
 
 
 def test_material_command(ref_bridge_properties):
-    # test material in creating model
+    # test created material in creating model
     I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
     # construct grillage model
     example_bridge = og.OspGrillage(
@@ -71,7 +71,6 @@ def test_material_command(ref_bridge_properties):
     example_bridge.set_member(exterior_I_beam, member="end_edge")
 
     example_bridge.create_osp_model(pyfile=False)
-
 
 
 def test_create_material():

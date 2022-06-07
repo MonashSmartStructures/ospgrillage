@@ -15,7 +15,9 @@ from collections import namedtuple
 
 def create_point(**kwargs):
     """
-    User interface function to create a point named tuple
+    User interface function to create a point named tuple - this is used in defining positions such as loads for
+    example.
+
     :keyword:
 
     * x (`float` or `int`): x coordinate
@@ -37,7 +39,7 @@ Point = namedtuple("Point", ["x", "y", "z"])
 class Mesh:
     """
     Base class for mesh class. The class holds information pertaining the mesh group such as element connectivity and nodes
-    of the mesh object. Positional arguments are handled by OspGrillage class.
+    of the mesh object. Positional arguments are handled by :class:`~ospgrillage.osp_grillage.OspGrillage` class.
 
     .. note::
 
@@ -121,29 +123,28 @@ class Mesh:
         self.curve_center = []
         self.curve_radius = []
         # init line / circle equation variables
-        self.m = 0
-        self.c = 0
-        self.r = 0
-        self.R = 0
+        self.m = 0  # gradient of linear line eq for sweep path
+        self.c = 0  # local y (global x) interp of line for sweep path
+        self.r = 0  # radius of arch for swee line
+        self.R = 0  # centre of circle
         self.d = None  # list of circle centre and circle radius [ c, r]
-        # meshing properties
+        # variables for meshing
         if mesh_origin is None:
             self.mesh_origin = [0, 0, 0]
         else:
             self.mesh_origin = mesh_origin  # default origin
-        # init meshing variables
         self.first_connecting_region_nodes = []
         self.end_connecting_region_nodes = []
         self.sweep_nodes = []
         self.z_group_recorder = []
         # quad elements flag
-        self.quad_ele = quad_ele
+        self.quad_ele = quad_ele  # bool
         # get custom rigid link parameters - for future feature of beam_link model
         self.rigid_dist_y = kwargs.get("rigid_dist_y")
         self.rigid_dist_z = kwargs.get("rigid_dist_z")
         self.rigid_dist_x = kwargs.get("rigid_dist_x")
         # ---------------------------------------------------------------------------------------------
-        # var pertaining multi span feature
+        # vars for multi span feature
         # list containing length (x) for each nth span, default creates a list of single element based on long_dim
         self.multi_span_dist_list = kwargs.get("multi_span_dist_list", [self.long_dim])
         # list of number of transverse beams in each span, default set num_trans_beam to each span if not provided
@@ -159,7 +160,7 @@ class Mesh:
             "non_cont_spacing_x", None
         )  # spacing between mesh of each spans
 
-        # init storing vars for multi span
+        # to store positions and points of spans
         self.mesh_edge_x_positions = [
             sum(self.multi_span_dist_list[:n])
             for n in range(len(self.multi_span_dist_list) + 1)
@@ -174,7 +175,9 @@ class Mesh:
                 "one multi_span_dist in list and non continuous option"
             )
 
-        # preprocess incorporate stitch element spacings to multi span edge points x
+        # preprocess to incorporate stitch element spacings to multi span edge points x
+        # node at support point is split into two (equally in both sides in x directions) nodes, which are assigned
+        # as supports later on. Stitch elements are subsequently assigned between the two new nodes.
         if not self.continuous and self.stitch_element_spacing_x:
             for i, x_point in enumerate(self.mesh_edge_x_positions):
                 # search intermediate support points
@@ -186,12 +189,12 @@ class Mesh:
                     self.mesh_edge_x_positions_non_cont.append(right)
             self.mesh_edge_x_positions_non_cont.append(self.mesh_edge_x_positions[-1])
 
-        # dict to store x groups (val) in respective span number (key)
+        # dict to store x groups (val) into respective span group (key)
         self.span_group_to_x_groups = {
             key: [] for key in range(len(self.mesh_edge_x_positions) - 1)
         }
 
-        # custom transverse member spacings
+        # for custom transverse member spacings
         self.transverse_mbr_x_spacing_list = kwargs.get("beam_x_spacing", None)
 
         # check inputs
@@ -202,7 +205,7 @@ class Mesh:
 
         # ------------------------------------------------------------------------------------------
         # Create sweep path obj
-        self.sweep_path = SweepPath(self.pt1, self.pt2, self.pt3, **kwargs)
+        self.sweep_path = SweepPath(pt1=self.pt1, pt2=self.pt2, pt3=self.pt3, **kwargs)
         (
             self.zeta,
             self.m,
@@ -861,9 +864,11 @@ class Mesh:
             # get slope, m at current point x
             z = self.sweep_path.get_line_function(x)
             # z = line_func(self.sweep_path.m, self.sweep_path.c, x)
+            current_angle = np.arctan(self.sweep_path.get_gradient(x))
             current_sweep_nodes = self._rotate_sweep_nodes(
-                self.zeta / 180 * np.pi
-            )  # rotating sweep nodes @ origin
+                current_angle )
+            #self.zeta / 180 * np.pi
+            # rotating sweep nodes about current nox increment point of uniform region
             # if angle less than threshold, assign nodes of edge member as it is
             for (z_count_int, nodes) in enumerate(current_sweep_nodes):
                 x_inc = x
@@ -1634,94 +1639,112 @@ class ShellEdgeControlLine(EdgeControlLine):
 class SweepPath:
     """
     Main class for sweep path. Sweep path is assigned to an EdgeControlLine class in order to create mesh of nodes
-    across its path. The constuctor is handled by Mesh classes ( either base or concrete classes)
+    across its path. The constructor is handled by Mesh classes ( either base or concrete classes)
     """
 
-    def __init__(self, pt1: Point, pt2: Point, pt3: Point = None, **kwargs):
+    def __init__(self, pt1: Point, pt2: Point, **kwargs):
         """
 
         :param pt1: Namedtuple Point of first coordinate
         :param pt2: Namedtuple Point of second coordinate
-        :param pt3: Namedtuple Point of third coordinate
+
         """
         self.pt1 = pt1  # default first
         self.pt2 = pt2  # default second / last for linear line
-        self.pt3 = pt3  # default mid point of a curved line defined using 3 points
+
         self.decimal_lim = 4
 
         # properties for curve sweep path - obtained from kwargs
         self.curve_path_dict: dict = kwargs.get("curve_path_dict", None)
+        self.mesh_radius = abs(kwargs.get("mesh_radius", None))
 
+        self.d = None  # list containing [r, Center] of arch
         # instantiate variables
         self.zeta = None
         self.m = None
-        self.c = 0  # Default:0 , sweep path intersects origin
+        self.c = 0  # list of circle centre and circle radius [ c, r]
+        self.curve_center_xz = None
 
     def get_sweep_line_properties(self):
         """
         Parse input to get Straight sweep line properties
 
         """
-        if self.pt3 is not None:
-            try:
-                self.d = find_circle(
-                    x1=0,
-                    y1=0,
-                    x2=self.pt2.x,
-                    y2=self.pt2.z,
-                    x3=self.pt3.x,
-                    y3=self.pt3.z,
-                )  # [[h,v] , r]
-
-            except ZeroDivisionError:
-                return Exception(
-                    "Zero div error. Point 3 not valid to construct curve line"
-                )
-            # procedure
-            # get tangent at origin
-            self.zeta = 0
-            # get tangent at end of curve line (intersect with second construction line)
-
-        else:
+        # if self.pt3 is not None:
+        #     try:
+        #         self.d = find_circle(
+        #             x1=0,
+        #             y1=0,
+        #             x2=self.pt2.x,
+        #             y2=self.pt2.z,
+        #             x3=self.pt3.x,
+        #             y3=self.pt3.z,
+        #         )  # [[h,v] , r]
+        #
+        #     except ZeroDivisionError:
+        #         return Exception(
+        #             "Zero div error. Point 3 not valid to construct curve line"
+        #         )
+        #     # procedure
+        #     # get tangent at origin
+        #     self.zeta = 0
+        #     # get tangent at end of curve line (intersect with second construction line)
+        #
+        # else:
             # construct straight line sweep path instead
-            self.d = None
-            # procedure to identify straight line segment pinpointing length of grillage
-            points = [(self.pt1.x, self.pt1.z), (self.pt2.x, self.pt2.z)]
-            x_coords, y_coords = zip(*points)
-            A = np.vstack([x_coords, np.ones(len(x_coords))]).T
-            m, c = np.linalg.lstsq(A, y_coords, rcond=None)[0]
-            self.m = round(m, self.decimal_lim)
-            # self.c = 0  # default 0  to avoid arithmetic error
-            zeta = np.arctan(
-                m
-            )  # initial angle of inclination of sweep line about mesh origin
-            self.zeta = zeta / np.pi * 180  # rad to degrees
+
+        # procedure to identify straight line segment pinpointing length of grillage
+        points = [(self.pt1.x, self.pt1.z), (self.pt2.x, self.pt2.z)]
+        x_coords, y_coords = zip(*points)
+        A = np.vstack([x_coords, np.ones(len(x_coords))]).T
+        m, c = np.linalg.lstsq(A, y_coords, rcond=None)[0]
+        self.m = round(m, self.decimal_lim)
+        # self.c = 0  # default 0  to avoid arithmetic error
+        zeta = np.arctan(
+            m
+        )  # initial angle of inclination of sweep line about mesh origin
+        self.zeta = zeta / np.pi * 180  # rad to degrees
 
         return self.zeta, self.m, self.c
 
     def get_line_function(self, x):
-        if not self.curve_path_dict:
+        """
+        Returns the y position of a linear equation given x.
+        """
+        if not self.mesh_radius:
             # straight line
-            return line_func(self.m, self.c, x)
-        else:
+            return line_func(m=self.m, c=self.c, x=x)
+        elif self.mesh_radius:
             # TODO for curve line
-            r = self.curve_path_dict["radius"]  # radius of sector
-            angle = self.curve_path_dict["angle"]  # angle sector
-            cartesian_angle = 90 - angle
-            rotation = self.curve_path_dict[
-                "rotation"
-            ]  # rotating direction, num either 1 or 0 [
-            # determine end point x, z of path
-            if rotation > 0:
-                curve_center_xz = [0, -r]  # curve centre x and z are 0
-            else:
-                curve_center_xz = [0, r]  # curve centre x and z are 0
+            # r = self.curve_path_dict["radius"]  # radius of sector
+            # angle = self.curve_path_dict["angle"]  # angle sector
+            # cartesian_angle = 90 - angle
+            # rotation = self.curve_path_dict[
+            #     "rotation"
+            # ]  # rotating direction, num either 1 or 0 [
+            # # determine end point x, z of path
+            # if rotation > 0:
+            #     curve_center_xz = [0, -r]  # curve centre x and z are 0
+            # else:
+            #     curve_center_xz = [0, r]  # curve centre x and z are 0
 
-            return arc_func(
-                h=curve_center_xz[0], v=curve_center_xz[0], R=curve_center_xz[1], x=x
-            )
+            self.curve_center_xz = [0, -self.mesh_radius]
 
-            # determine length of arc
+            return line_func(h=self.curve_center_xz[0], v=self.curve_center_xz[1], R=self.curve_center_xz[1], x=x,)
+
+    def get_gradient(self, x):
+
+        if self.mesh_radius:
+            # curve point, get tangent
+            y = line_func(h=self.curve_center_xz[0], v=self.curve_center_xz[0], R=self.curve_center_xz[1], x=x)
+            m_hat = (y - self.curve_center_xz[1]) / (x - self.curve_center_xz[0])
+            m = - 1/m_hat
+
+        else:
+            # straight line
+            m = self.m
+
+        return m
 
 
 # ---------------------------------------------------------------------------------------------------------------------

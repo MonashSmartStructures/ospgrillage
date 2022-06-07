@@ -267,6 +267,13 @@ class OspGrillage:
             "model_type", "beam_only"
         )  # accepts int type 1 or 2
 
+        # for curve mesh
+        self.mesh_radius = kwargs.get("mesh_radius", None)
+        # check inputs
+        if self.mesh_radius:
+            if self.mesh_radius < self.long_dim:
+                raise Exception("mesh_radius must be greater than long_dim of grillage")
+
         # create mesh object of grillage
         self.Mesh_obj = self._create_mesh(
             long_dim=self.long_dim,
@@ -516,7 +523,6 @@ class OspGrillage:
             else:  # indices correspondence . 0 - x , 1 - y, 2 - z
                 eval(node_str)
                 self.model_command_list.append(node_str)
-                # ops.node(nested_v["tag"], coordinate[0], coordinate[1], coordinate[2])
 
     def _write_op_fix(self, mesh_obj):
         """
@@ -1796,6 +1802,11 @@ class OspGrillage:
         # get run options from kwargs
         all_flag = True  # Default true
         selected_load_case: list = kwargs.get("load_case", None)  #
+
+        # check if any load cases are defined
+        if self.load_case_list == [] and self.moving_load_case_dict == {}:
+            raise Exception("No load cases were defined")
+
         if selected_load_case:
             all_flag = False  # overwrite all flag to be false
         selected_moving_load_lc_list = None

@@ -18,7 +18,10 @@ from ospgrillage.mesh import *
 
 def create_load_vertex(**kwargs):
     """
-    User interface function to create load vertex of various load types.
+    User interface function to create a load vertex. Load vertices are used in defining loads. For example,
+    a point load consist of a single load vertex while a patch load is defined using four load vertices for each of
+    its corner.
+
     :param kwargs: Keyword arg, see below.
 
     :keyword:
@@ -59,7 +62,11 @@ def create_point(**kwargs):
     x = kwargs.get("x", None)
     y = kwargs.get("y", 0)
     z = kwargs.get("z", None)
-    return Point(x, y, z)
+
+    if not any([x is None, z is None,]):
+        return Point(x, y, z)
+    else:
+        raise ValueError("Missing one or more keyword arguments for x=, z=, ")
 
 
 def create_load_case(**kwargs):
@@ -79,9 +86,6 @@ def create_compound_load(**kwargs):
     """
     User interface function to create CompoundLoad object. Following this function users are required to
     add loads to object via :func:`~ospgrillage.load.CompoundLoad.add_load`.
-
-    :keyword:
-    name (`str`): Name string of compound load
 
     :returns: :class:`~ospgrillage.load.CompoundLoad`
     """

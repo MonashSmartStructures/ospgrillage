@@ -248,7 +248,7 @@ def test_custom_beam_spacing_points(ref_bridge_properties):
         bridge_name="SuperT_10m",
         long_dim=10,
         width=7,
-        skew=0,
+        skew=12,
         num_trans_grid=5,
         mesh_type="Ortho",
         beam_z_spacing=custom_spacing,
@@ -495,3 +495,37 @@ def test_multispan_feat_shell(ref_bridge_properties):
     og.opsplt.plot_model()
     #og.opsv.plot_model(element_labels=0, az_el=(-90, 0))  # plotting using ops_vis
     #og.plt.show()
+
+
+def test_basic_curve_mesh(ref_bridge_properties):
+    # checks basic functionality of curve mesh generation
+
+    # standard model with oblique
+    # define material
+    I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
+
+    # construct grillage model - here without specifying edge distance
+    example_bridge = og.create_grillage(
+        bridge_name="SuperT_10m",
+        long_dim=10,
+        width=7,
+        skew=0,
+        num_long_grid=7,
+        num_trans_grid=5,
+        mesh_type="Ortho",
+        mesh_radius=11,
+    )
+
+    # set grillage member to element groups of grillage model
+    example_bridge.set_member(I_beam, member="interior_main_beam")
+    example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_1")
+    example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_2")
+    example_bridge.set_member(exterior_I_beam, member="edge_beam")
+    example_bridge.set_member(slab, member="transverse_slab")
+    example_bridge.set_member(exterior_I_beam, member="start_edge")
+    example_bridge.set_member(exterior_I_beam, member="end_edge")
+
+    example_bridge.create_osp_model(pyfile=False)
+
+    og.opsv.plot_model(element_labels=0, az_el=(-90, 0))
+    og.plt.show()

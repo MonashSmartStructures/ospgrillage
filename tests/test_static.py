@@ -20,3 +20,17 @@ def test_sort_vertices():
     ]
     actual, _ = og.sort_vertices(point_list)
     assert actual == ref_ans
+
+def test_create_arc_equation():
+    a = og.find_circle(
+        x1=0,
+        y1=0,
+        x2=1,
+        y2=1,
+        x3=2,
+        y3=0,)
+
+    print(a)
+
+    assert a[0] == [1, 0]
+    assert a[1] == 1
