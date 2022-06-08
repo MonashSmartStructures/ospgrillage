@@ -241,6 +241,7 @@ class Mesh:
             edge_angle=self.skew_1,
             num_long_beam=self.num_long_beam,
             model_plane_y=self.y_elevation,
+            sweep_path = self.sweep_path,
             **kwargs
         )
         # intermediate construction lines for
@@ -260,6 +261,7 @@ class Mesh:
             edge_angle=self.skew_2,
             num_long_beam=self.num_long_beam,
             model_plane_y=self.y_elevation,
+            sweep_path=self.sweep_path,
             **kwargs
         )
         # ------------------------------------------------------------------------------------------
@@ -304,14 +306,19 @@ class Mesh:
         self._mesh_grillage()
 
     def _create_custom_transverse_spacings(self):
+        # populate nox with custom spacing provided by users
         self.nox = [0]
         for x_dist in self.transverse_mbr_x_spacing_list:
             self.nox.append(self.nox[-1] + x_dist)
 
     def _create_transverse_spacings(self):
-        # loop through the first to nth span
+        # loop through each span group
         for i, num_x_point in enumerate(self.multi_span_num_points):
             # TODO check if straight line or equation of arc
+            if self.sweep_path.curve_path:  # if curve
+                pass
+            else:
+                pass
             # arc
 
             # straight line
@@ -365,6 +372,7 @@ class Mesh:
         return EdgeControlLine(**kwargs)
 
     # ------------------------------------------------------------------------------------------
+
     # main meshing algorithms (straight mesh)
     def _fixed_sweep_node_meshing(self):
         assigned_node_tag = []
@@ -520,6 +528,9 @@ class Mesh:
         if np.abs(self.skew_1 + self.zeta) < self.skew_threshold[0]:
             # if angle less than threshold, assign nodes of edge member as it is
             current_sweep_nodes = self.start_edge_line.node_list
+            # if curve mesh, rotate the edge sweep nodes
+            current_sweep_nodes = self._rotate_edge_sweep_nodes(current_sweep_nodes)
+
             for (z_count_int, nodes) in enumerate(current_sweep_nodes):
                 x_inc = start_point_x
                 z_inc = start_point_z
@@ -694,7 +705,12 @@ class Mesh:
         end_point_z = self.sweep_path.get_line_function(end_point_x)
         if np.abs(self.skew_2 + self.zeta) < self.skew_threshold[0]:
             # if angle less than threshold, assign nodes of edge member as it is
-            current_sweep_nodes = self.end_edge_line.node_list
+            current_sweep_nodes = self.start_edge_line.node_list
+            edge_angle = self.sweep_path.get_cartesian_angle(x=end_point_x)
+            # if curve mesh, rotate the edge sweep nodes
+            #current_sweep_nodes = self._rotate_sweep_nodes(-edge_angle)
+            current_sweep_nodes = self._rotate_edge_sweep_nodes(current_sweep_nodes,angle=-edge_angle)
+
             for (z_count_int, nodes) in enumerate(current_sweep_nodes):
                 x_inc = 0  # end_point_x
                 z_inc = 0  # end_point_z
@@ -750,6 +766,7 @@ class Mesh:
                 m_prime, phi = get_slope(
                     [ref_point_x, self.y_elevation, ref_point_z], int_point
                 )
+
                 # rotate sweep line such that parallel to m' line
                 current_sweep_nodes = self._rotate_sweep_nodes(np.pi / 2 - np.abs(phi))
                 # get z group of first node in current_sweep_nodes - for correct assignment in loop
@@ -863,17 +880,22 @@ class Mesh:
         for z_count, x in enumerate(self.uniform_region_x[1:-1]):
             # get slope, m at current point x
             z = self.sweep_path.get_line_function(x)
-            # z = line_func(self.sweep_path.m, self.sweep_path.c, x)
-            current_angle = np.arctan(self.sweep_path.get_gradient(x))
-            current_sweep_nodes = self._rotate_sweep_nodes(
-                current_angle )
-            #self.zeta / 180 * np.pi
+            # get sweep nodes
+            current_sweep_nodes = self.sweeping_nodes
+            # shift all points by +x and +z
+            shift_sweep_nodes = [[point[0] + x, point[1], point[2]+ z] for point in current_sweep_nodes]
+            # get angle #TODO not generalized, improve here
+            current_angle = - self.sweep_path.get_cartesian_angle(x)
+            # rotate all about point x,z
+            current_sweep_nodes = self._rotate_points(ref_point=shift_sweep_nodes[0],
+                                                      rotating_point_list=shift_sweep_nodes,angle=current_angle)
+
+            #current_sweep_nodes = self._rotate_edge_sweep_nodes(current_sweep_nodes, angle=-current_angle)
             # rotating sweep nodes about current nox increment point of uniform region
             # if angle less than threshold, assign nodes of edge member as it is
             for (z_count_int, nodes) in enumerate(current_sweep_nodes):
-                x_inc = x
-                z_inc = z
-                node_coordinate = [nodes[0] + x_inc, nodes[1], nodes[2] + z_inc]
+
+                node_coordinate = [nodes[0], nodes[1], nodes[2]]
                 self.node_spec.setdefault(
                     self.node_counter,
                     {
@@ -1355,22 +1377,50 @@ class Mesh:
         sweep_nodes_x = [0] * len(
             self.noz
         )  # line is orthogonal at the start of sweeping path
+        arc_origin_x = self.sweep_path.curve_center_xz[0] if self.sweep_path.curve_path else self.mesh_origin[0]
+        arc_origin_z = self.sweep_path.curve_center_xz[1] if self.sweep_path.curve_path else self.mesh_origin[2]
         # rotate for inclination at origin
         sweep_nodes_x = [
-            x * np.cos(zeta) - y * np.sin(zeta) for x, y in zip(sweep_nodes_x, self.noz)
+            (x-arc_origin_x) * np.cos(zeta) - (y-arc_origin_z) * np.sin(zeta) for x, y in zip(sweep_nodes_x, self.noz)
         ]
         sweep_nodes_z = [
-            y * np.cos(zeta) + x * np.sin(zeta) for x, y in zip(sweep_nodes_x, self.noz)
+            (y-arc_origin_z) * np.cos(zeta) + (x-arc_origin_x) * np.sin(zeta) for x, y in zip(sweep_nodes_x, self.noz)
         ]
 
         sweeping_nodes = [
-            [x + self.mesh_origin[0], y + self.mesh_origin[1], z + self.mesh_origin[2]]
+            [x + arc_origin_x, y + self.mesh_origin[1], z + arc_origin_z]
             for x, y, z in zip(
                 (sweep_nodes_x), [self.y_elevation] * len(self.noz), sweep_nodes_z
             )
         ]
 
         return sweeping_nodes
+
+    def _rotate_edge_sweep_nodes(self, current_sweep_nodes, angle=0):
+        # checks if sweep path is a curve path. If yes, rotate all points of the current sweep nodes by the angle
+        # of the ref point on the circle arc.
+        # note this is a 2D rotation involving axis x and z.
+        current_sweep_nodes_rotated = current_sweep_nodes
+        if self.sweep_path.curve_path:
+            place_holder = [rotate_point_about_point(center_x=self.sweep_path.curve_center_xz[0],
+                                                                    center_y=self.sweep_path.curve_center_xz[1],
+                                                                    angle=angle,
+                                                                    point=[point[0], point[2]]) for point in
+                                                        current_sweep_nodes]
+            current_sweep_nodes_rotated = [[rotate[0] , y_coord[1], rotate[1]] for (rotate,y_coord) in zip(place_holder,current_sweep_nodes)]
+        return current_sweep_nodes_rotated
+
+    def _rotate_points(self, ref_point:list,rotating_point_list:list,angle=0):
+        current_sweep_nodes_rotated = rotating_point_list
+        if self.sweep_path.curve_path:
+            place_holder = [rotate_point_about_point(center_x=ref_point[0],
+                                                     center_y=ref_point[2],
+                                                     angle=angle,
+                                                     point=[point[0], point[2]]) for point in
+                            rotating_point_list]
+            current_sweep_nodes_rotated = [[rotate[0], y_coord[1], rotate[1]] for (rotate, y_coord) in
+                                           zip(place_holder, rotating_point_list)]
+        return current_sweep_nodes_rotated
 
     def _search_x_point(self, int_point, start_point_y=0, line_function=None):
         start_point_x = int_point[0]
@@ -1411,11 +1461,6 @@ class Mesh:
         return start_point_x, z0
 
     # ------------------------------------------------------------------------------------------
-    # curve meshing algorithm
-
-    def _mesh_curve(self):
-        # TODO
-        pass
 
 
 class EdgeControlLine:
@@ -1445,7 +1490,7 @@ class EdgeControlLine:
         self.num_long_beam = num_long_beam
         self.edge_angle = edge_angle
         self.feature = feature  # for future variants of edge control lines
-
+        self.sweep_path_obj:SweepPath = kwargs.get("sweep_path",None)
         # for shell
         self.z_group_master_pair_list = []
         self.node_z_pair_list_value = []
@@ -1655,15 +1700,17 @@ class SweepPath:
         self.decimal_lim = 4
 
         # properties for curve sweep path - obtained from kwargs
-        self.curve_path_dict: dict = kwargs.get("curve_path_dict", None)
-        self.mesh_radius = abs(kwargs.get("mesh_radius", None))
+        self.curve_path = False
+        self.mesh_radius = kwargs.get("mesh_radius", None)
+        if self.mesh_radius:
+            self.curve_path = True
+            self.curve_center_xz = [0, -self.mesh_radius]
 
         self.d = None  # list containing [r, Center] of arch
         # instantiate variables
         self.zeta = None
         self.m = None
         self.c = 0  # list of circle centre and circle radius [ c, r]
-        self.curve_center_xz = None
 
     def get_sweep_line_properties(self):
         """
@@ -1728,14 +1775,13 @@ class SweepPath:
             # else:
             #     curve_center_xz = [0, r]  # curve centre x and z are 0
 
-            self.curve_center_xz = [0, -self.mesh_radius]
-
             return line_func(h=self.curve_center_xz[0], v=self.curve_center_xz[1], R=self.curve_center_xz[1], x=x,)
 
-    def get_gradient(self, x):
-
+    def get_tangent_gradient(self, x):
+        # get the tangent gradient at point x , where point x lies on a circle described by center self.curve_center_xz
+        # and radius (self.mesh_radius).
         if self.mesh_radius:
-            # curve point, get tangent
+            # curve point, get tangente
             y = line_func(h=self.curve_center_xz[0], v=self.curve_center_xz[0], R=self.curve_center_xz[1], x=x)
             m_hat = (y - self.curve_center_xz[1]) / (x - self.curve_center_xz[0])
             m = - 1/m_hat
@@ -1746,6 +1792,15 @@ class SweepPath:
 
         return m
 
+    def get_cartesian_angle(self, x):
+        # return the angle taking the vertical axis as the origin/zero ( left of axis is negative magnitude,
+        # right positive). equation based on alpha, where point on the circle/arc has coordinate described as [r sin
+        # alpha - circle_x_center, r cos alpha - circle_y_center] ' , note alpha angle in radians
+        alpha = 0
+        if self.mesh_radius:
+            alpha = np.arcsin((x - self.curve_center_xz[0] )/ self.mesh_radius)
+
+        return alpha
 
 # ---------------------------------------------------------------------------------------------------------------------
 # concrete classes of Mesh

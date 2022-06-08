@@ -43,11 +43,11 @@ def find_circle(x1, y1, x2, y2, x3, y3):
     sy21 = pow(y2, 2) - pow(y1, 2)
 
     f = ((sx13) * (x12) + (sy13) * (x12) + (sx21) * (x13) + (sy21) * (x13)) // (
-        2 * ((y31) * (x12) - (y21) * (x13))
+            2 * ((y31) * (x12) - (y21) * (x13))
     )
 
     g = ((sx13) * (y12) + (sy13) * (y12) + (sx21) * (y13) + (sy21) * (y13)) // (
-        2 * ((x31) * (y12) - (x21) * (y13))
+            2 * ((x31) * (y12) - (x21) * (y13))
     )
 
     c = -pow(x1, 2) - pow(y1, 2) - 2 * g * x1 - 2 * f * y1
@@ -91,7 +91,7 @@ def line_func(m=None, c=None, x=None, h=None, v=None, R=None):
         y = np.sqrt((R) ** 2 - (x - h) ** 2) + v
     else:
         raise Exception("line function missing arguments for valid function selection: check arguments")
-    
+
     return y
 
 
@@ -112,7 +112,7 @@ def create_arc_points(point1, radius, length, num_inc):
     start_angle = np.pi / 2  # 90 degrees
     angle = length / radius  # calculate angle of sector
     end_angle = (
-        start_angle - angle
+            start_angle - angle
     )  # difference is the end point's angle (about center_point)
     center_point = [point1.x, -radius]  # x z , model plane = 0 default
     # find point2
@@ -206,16 +206,16 @@ def solve_zeta_eta(xp, zp, x1, z1, x2, z2, x3, z3, x4, z4):
     # mapping of natural coordinate eta{-1:1}, zeta{-1:1} to global coordinate (x,z)
     def obj_func(x, xp, zp, x1, x2, x3, x4, z1, z2, z3, z4):
         eta = 4 * zp - (
-            (1 - x[0]) * (1 - x[1]) * z1
-            + (1 + x[0]) * (1 - x[1]) * z2
-            + (1 + x[0]) * (1 + x[1]) * z3
-            + (1 - x[0]) * (1 + x[1]) * z4
+                (1 - x[0]) * (1 - x[1]) * z1
+                + (1 + x[0]) * (1 - x[1]) * z2
+                + (1 + x[0]) * (1 + x[1]) * z3
+                + (1 - x[0]) * (1 + x[1]) * z4
         )
         zeta = 4 * xp - (
-            (1 - x[0]) * (1 - x[1]) * x1
-            + (1 + x[0]) * (1 - x[1]) * x2
-            + (1 + x[0]) * (1 + x[1]) * x3
-            + (1 - x[0]) * (1 + x[1]) * x4
+                (1 - x[0]) * (1 - x[1]) * x1
+                + (1 + x[0]) * (1 - x[1]) * x2
+                + (1 + x[0]) * (1 + x[1]) * x3
+                + (1 - x[0]) * (1 + x[1]) * x4
         )
         return eta, zeta
 
@@ -284,16 +284,16 @@ def check_point_in_grid(inside_point, point_list):
     )  # sign area < 0 means points are clockwise, and vice versa
     for count, point0 in enumerate(pt0):
         side = (inside_point.z - point0.z) * (pt1[count].x - point0.x) - (
-            inside_point.x - point0.x
+                inside_point.x - point0.x
         ) * (pt1[count].z - point0.z)
         # check if point is outside
         if any(
-            [
-                side
-                < 0
-                <= signed_area,  # side > 0 means left, side < 0 means right, side = 0 means on the line path
-                side > 0 > signed_area,
-            ]
+                [
+                    side
+                    < 0
+                    <= signed_area,  # side > 0 means left, side < 0 means right, side = 0 means on the line path
+                    side > 0 > signed_area,
+                ]
         ):  # nodes are counterclockwise and point to right (outside)
             inside = False  # nodes are clockwise and point to the left (outside) these condition
     return inside  # return line = outside
@@ -331,10 +331,10 @@ def check_points_direction(point_list):
 def onSegment(p, q, r):
     # point nameTuple p, q and r
     if (
-        (q.x <= max(p.x, r.x))
-        and (q.x >= min(p.x, r.x))
-        and (q.y <= max(p.z, r.z))
-        and (q.z >= min(p.z, r.z))
+            (q.x <= max(p.x, r.x))
+            and (q.x >= min(p.x, r.x))
+            and (q.y <= max(p.z, r.z))
+            and (q.z >= min(p.z, r.z))
     ):
         return True
     return False
@@ -517,7 +517,7 @@ def sort_list_into_four_groups(group_list: list, option: str = None):
     # instantiate
     exterior_beam_group_1 = [group_list[1]]
     exterior_beam_group_2 = [group_list[-2]]
-    interior_beam_group = group_list[2 : len(group_list) - 2]
+    interior_beam_group = group_list[2: len(group_list) - 2]
 
     # check for special cases
     if len(group_list) > 2:
@@ -532,3 +532,31 @@ def sort_list_into_four_groups(group_list: list, option: str = None):
     output_dict[2] = interior_beam_group
     output_dict[3] = exterior_beam_group_2
     return output_dict
+
+
+def rotate_point_about_point(center_x, center_y, angle, point: list):
+    """
+    Rotates point about a second point at [center_x, center_y] by angle in the coordinate system
+
+    param point: list containing the x and y coordinate
+    type point: list
+    param angle: Angle in radians
+    type angle: int or float
+    returns: list of coordinate for the rotated point
+    """
+
+    s = np.sin(angle)  # rad
+    c = np.cos(angle)  # rad
+    if isinstance(point, list):
+        x_or = point[0] - center_x
+        y_or = point[1] - center_y
+
+        x_rot = x_or * c - y_or * s
+        y_rot = x_or * s + y_or * c
+
+        # translate back to origin and store to var
+        rotated_point = [x_rot + center_x, y_rot + center_y]
+    else:
+        raise Exception("point= requires a valid list or tuple")
+
+    return rotated_point

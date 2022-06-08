@@ -511,9 +511,9 @@ def test_basic_curve_mesh(ref_bridge_properties):
         width=7,
         skew=0,
         num_long_grid=7,
-        num_trans_grid=5,
+        num_trans_grid=15,
         mesh_type="Ortho",
-        mesh_radius=11,
+        mesh_radius=20,
     )
 
     # set grillage member to element groups of grillage model
