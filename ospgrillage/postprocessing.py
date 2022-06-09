@@ -272,11 +272,11 @@ def plot_force(
             ele_node = result_obj.ele_nodes_shell.sel(Element=ele)
             if all(np.isnan(result_obj.ele_nodes_shell.sel(Element=ele))):
                 ele_node = result_obj.ele_nodes_beam.sel(Element=ele)
+            # remove nans elements in the 4 node list (shell) for beam (2 elements)
+            ele_node = ele_node[~np.isnan(ele_node)]
         else:
             ele_node = result_obj.ele_nodes.sel(Element=ele)
 
-        # remove nans
-        ele_node = ele_node[~np.isnan(ele_node)]
 
         # create arrays for x y and z for plots
         xx = [nodes[n]["coordinate"][0] for n in ele_node.values]

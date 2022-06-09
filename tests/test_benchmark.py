@@ -223,7 +223,8 @@ def create_grillage():
     simple_grid.set_member(end_tranverse_slab, member="end_edge")
 
     simple_grid.create_osp_model(pyfile=False)
-    # ospg.opsplt.plot_model("element")
+    ospg.opsplt.plot_model("element")
+
     return simple_grid, bridge
 
 
@@ -241,6 +242,7 @@ def add_analysis_to_simple_grid(create_grillage):
     MPa = N / ((mm) ** 2)
     GPa = kilo * MPa
     simple_grid, bridge = create_grillage
+
 
     grid_prop = bridge["grid"]
     L = grid_prop["span"] * m  # span

@@ -705,11 +705,20 @@ class Mesh:
         end_point_z = self.sweep_path.get_line_function(end_point_x)
         if np.abs(self.skew_2 + self.zeta) < self.skew_threshold[0]:
             # if angle less than threshold, assign nodes of edge member as it is
-            current_sweep_nodes = self.start_edge_line.node_list
-            edge_angle = self.sweep_path.get_cartesian_angle(x=end_point_x)
-            # if curve mesh, rotate the edge sweep nodes
-            #current_sweep_nodes = self._rotate_sweep_nodes(-edge_angle)
-            current_sweep_nodes = self._rotate_edge_sweep_nodes(current_sweep_nodes,angle=-edge_angle)
+            current_sweep_nodes = self.end_edge_line.node_list
+
+            # get angle #TODO not generalized, improve here
+            current_angle = - self.sweep_path.get_cartesian_angle(end_point_x)
+            # rotate all about point x,z
+            current_sweep_nodes = self._rotate_points(ref_point=current_sweep_nodes[0],
+                                                      rotating_point_list=current_sweep_nodes, angle=current_angle)
+
+
+
+            # edge_angle = self.sweep_path.get_cartesian_angle(x=end_point_x)
+            # # if curve mesh, rotate the edge sweep nodes
+            # #current_sweep_nodes = self._rotate_sweep_nodes(-edge_angle)
+            # current_sweep_nodes = self._rotate_edge_sweep_nodes(current_sweep_nodes,angle=-edge_angle)
 
             for (z_count_int, nodes) in enumerate(current_sweep_nodes):
                 x_inc = 0  # end_point_x

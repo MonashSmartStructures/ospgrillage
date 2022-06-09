@@ -215,7 +215,9 @@ def test_plot_force(bridge_model_42_negative):
     # test functionality of plot_force and its output
     og.ops.wipeAnalysis()
     example_bridge = bridge_model_42_negative
-
+    og.opsv.plot_model(
+    )
+    og.plt.show()
     # create reference line load
     p = 10000
     p2 = 20000
