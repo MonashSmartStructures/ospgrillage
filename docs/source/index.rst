@@ -77,15 +77,12 @@ Documentation
 .. toctree::
    :maxdepth: 1
    
-   rst/Installation
-   rst/Module description
-   rst/ModelTemplates
-   rst/Running_analysis
-   rst/PostProcessing
+
+   rst/user_guide
    rst/APIdoc
    rst/ModuleDoc
-   rst/Examples
    rst/ChangeLog
+
 
 
 Support
