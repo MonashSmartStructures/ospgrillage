@@ -189,7 +189,7 @@ class Mesh:
                     self.mesh_edge_x_positions_non_cont.append(right)
             self.mesh_edge_x_positions_non_cont.append(self.mesh_edge_x_positions[-1])
 
-        # dict to store x groups (val) into respective span group (key)
+        # init dict to store x groups (val) into respective span group (key)
         self.span_group_to_x_groups = {
             key: [] for key in range(len(self.mesh_edge_x_positions) - 1)
         }
@@ -450,51 +450,61 @@ class Mesh:
                 self.global_edge_count += 1
             elif x_count > 0:
                 # create longitudinal elements
-                for pre_node in previous_node_tag:
-                    for cur_node in assigned_node_tag:
-                        cur_z_group = self.node_spec[cur_node]["z_group"]
-                        prev_z_group = self.node_spec[pre_node]["z_group"]
+
+                for previous_node in previous_node_tag:
+                    for current_node in assigned_node_tag:
+                        current_z_group = self.node_spec[current_node]["z_group"]
+                        previous_z_group = self.node_spec[previous_node]["z_group"]
+                        current_x_group = self.node_spec[current_node]["x_group"]
+                        previous_x_group = self.node_spec[previous_node]["x_group"]
                         # check for non-continuous, if elements are between two support points,
                         # either: (1) do not assign long ele or (2) assign a connector beam element to represent
                         # some form of continuity e.g. stitch slabs
+                        previous_x_span_group= [key for key,value in self.span_group_to_x_groups.items() if previous_x_group in value][0]
+                        current_x_span_group= [key for key,value in self.span_group_to_x_groups.items() if current_x_group in value][0]
 
-                        if cur_z_group == prev_z_group:
-                            if not self.continuous and self.stitch_element_spacing_x:
-                                # create beam element between supports
-                                x_start = self.node_spec[cur_node]["coordinate"][0]
-                                x_end = self.node_spec[pre_node]["coordinate"][0]
-                                if (
-                                    x_start in self.mesh_edge_x_positions_non_cont
-                                    and x_end in self.mesh_edge_x_positions_non_cont
-                                ):
-                                    # assign a connector beam element between non-continuous span supports
-                                    tag = self._get_geo_transform_tag(
-                                        [pre_node, cur_node]
-                                    )
+                        if current_z_group == previous_z_group:
+                            tag = self._get_geo_transform_tag(
+                                [previous_node, current_node]
+                            )
+                            if not previous_x_span_group == current_x_span_group:
+                                # current step is in between two span groups
+                                # check to either create
+                                if not self.continuous and self.stitch_element_spacing_x:
+                                    # create beam element between supports
+                                    x_start = self.node_spec[current_node]["coordinate"][0]
+                                    x_end = self.node_spec[previous_node]["coordinate"][0]
+
                                     self.connect_ele.append(
                                         [
                                             self.element_counter,
-                                            pre_node,
-                                            cur_node,
-                                            cur_z_group,
+                                            previous_node,
+                                            current_node,
+                                            current_z_group,
                                             tag,
                                         ]
                                     )
-                                    self.element_counter += 1
+                                else:
+                                    self.long_ele.append(
+                                        [
+                                            self.element_counter,
+                                            previous_node,
+                                            current_node,
+                                            current_z_group,
+                                            tag,
+                                        ]
+                                    )
 
-                                    # check
-                                    break
-
-                            tag = self._get_geo_transform_tag([pre_node, cur_node])
-                            self.long_ele.append(
-                                [
-                                    self.element_counter,
-                                    pre_node,
-                                    cur_node,
-                                    cur_z_group,
-                                    tag,
-                                ]
-                            )
+                            else:
+                                self.long_ele.append(
+                                    [
+                                        self.element_counter,
+                                        previous_node,
+                                        current_node,
+                                        current_z_group,
+                                        tag,
+                                    ]
+                                )
                             self.element_counter += 1
                             break  # break assign long ele loop (cur node)
                 # here updates the record for previous node tag step
