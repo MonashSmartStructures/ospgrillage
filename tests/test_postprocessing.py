@@ -74,6 +74,7 @@ def bridge_model_42_negative(ref_bridge_properties):
     example_bridge.create_osp_model(pyfile=pyfile)
     return example_bridge
 
+
 @pytest.fixture
 def shell_link_bridge(ref_bridge_properties):
     # reference bridge 10m long, 7m wide with common skew angle at both ends
@@ -215,8 +216,7 @@ def test_plot_force(bridge_model_42_negative):
     # test functionality of plot_force and its output
     og.ops.wipeAnalysis()
     example_bridge = bridge_model_42_negative
-    og.opsv.plot_model(
-    )
+    og.opsv.plot_model()
     og.plt.show()
     # create reference line load
     p = 10000
@@ -292,11 +292,12 @@ def test_plot_force(bridge_model_42_negative):
     example_bridge.analyze()
     results = example_bridge.get_results()
 
-    f = og.plot_force(ospgrillage_obj=example_bridge,
-                  result_obj=results,
-                  component="Mx",
-                    member="exterior_main_beam_1"
-                  )
+    f = og.plot_force(
+        ospgrillage_obj=example_bridge,
+        result_obj=results,
+        component="Mx",
+        member="exterior_main_beam_1",
+    )
 
     f.show()
 
@@ -306,8 +307,12 @@ def test_shell_plot_force(shell_link_bridge):
     shell_link_model = shell_link_bridge
     # create and add load case comprise of single point load
     P = 20e3
-    point_load_location = og.create_load_vertex(x=4.5, y=0, z=6.5, p=P)  # about midspan of span 1
-    point_load = og.create_load(loadtype="point", name="single point", point1=point_load_location)
+    point_load_location = og.create_load_vertex(
+        x=4.5, y=0, z=6.5, p=P
+    )  # about midspan of span 1
+    point_load = og.create_load(
+        loadtype="point", name="single point", point1=point_load_location
+    )
     point_lc = og.create_load_case(name="pointload")
     point_lc.add_load(point_load)
     shell_link_model.add_load_case(point_lc)
@@ -315,10 +320,11 @@ def test_shell_plot_force(shell_link_bridge):
     # extract results
     result = shell_link_model.get_results()
     print(result)
-    f = og.plot_force(ospgrillage_obj=shell_link_model,
-                  result_obj=result,
-                  component="Mx",
-                    member="exterior_main_beam_1"
-                  )
+    f = og.plot_force(
+        ospgrillage_obj=shell_link_model,
+        result_obj=result,
+        component="Mx",
+        member="exterior_main_beam_1",
+    )
 
     f.show()

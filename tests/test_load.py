@@ -259,11 +259,10 @@ def shell_link_bridge(ref_bridge_properties):
 # =====================================================================================================================
 def test_inputs():
     # checks the functionality of interface functions, basic inputs and outputs.
-    vertex_1 = og.create_load_vertex(x=3, z=3,p=2)
+    vertex_1 = og.create_load_vertex(x=3, z=3, p=2)
 
     with pytest.raises(ValueError) as e_info:
         vertex_errors = og.create_load_vertex(x=3, y=0, z=3)
-
 
 
 # test to check compound load position relative to global are correct
@@ -1150,9 +1149,9 @@ def test_load_analysis_shell_multi_span(ref_bridge_properties):
         kilo = 1e3
         milli = 1e-3
         m = 1
-        m2 = m ** 2
-        m3 = m ** 3
-        m4 = m ** 4
+        m2 = m**2
+        m3 = m**3
+        m4 = m**4
 
         # parameters of bridge grillage
         L = 30 * m  # span
@@ -1196,7 +1195,9 @@ def test_load_analysis_shell_multi_span(ref_bridge_properties):
 
         # create section of slab shell
         slab_shell_section = og.create_section(h=0.2)
-        slab_shell = og.create_member(section=slab_shell_section, material=slab_shell_mat)
+        slab_shell = og.create_member(
+            section=slab_shell_section, material=slab_shell_mat
+        )
 
         # create stitch slab conencting elements
         stitch_slab_section = og.create_section(
@@ -1227,8 +1228,12 @@ def test_load_analysis_shell_multi_span(ref_bridge_properties):
 
     # create and add load case comprise of single point load
     P = 20e3
-    point_load_location = og.create_load_vertex(x=4.5, y=0, z=6.5, p=P)  # about midspan of span 1
-    point_load = og.create_load(loadtype="point", name="single point", point1=point_load_location)
+    point_load_location = og.create_load_vertex(
+        x=4.5, y=0, z=6.5, p=P
+    )  # about midspan of span 1
+    point_load = og.create_load(
+        loadtype="point", name="single point", point1=point_load_location
+    )
     point_lc = og.create_load_case(name="pointload")
     point_lc.add_load(point_load)
     shell_bridge.add_load_case(point_lc)
@@ -1236,5 +1241,3 @@ def test_load_analysis_shell_multi_span(ref_bridge_properties):
     # extract results
     result = shell_bridge.get_results()
     print(result)
-
-
