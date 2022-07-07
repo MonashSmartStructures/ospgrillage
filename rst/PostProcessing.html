@@ -6,12 +6,16 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Getting Results &#8212; ospgrillage module 0.1.1 documentation</title>
-    
-  <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<script>
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
+</script>
 
-    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+
+
   <link rel="stylesheet"
     href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
   <link rel="preload" as="font" type="font/woff2" crossorigin
@@ -20,47 +24,55 @@
     href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    
+
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="API reference" href="APIdoc.html" />
+    <link rel="next" title="Examples" href="Examples.html" />
     <link rel="prev" title="Performing analysis" href="Running_analysis.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en">
-    
-
-    <!-- Google Analytics -->
-    
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="en">
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-    
-    <div class="container-fluid" id="banner"></div>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+    <div class="bd-header-announcement container-fluid" id="banner">
+      
+
+    </div>
 
     
-    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
 
   <div id="navbar-start">
     
     
+  
 
-<a class="navbar-brand" href="../index.html">
-  <img src="../_static/ospgrillage_logo.png" class="logo" alt="logo">
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+    <img src="../_static/ospgrillage_logo.png" class="logo__image only-light" alt="Logo image">
+    <img src="../_static/ospgrillage_logo.png" class="logo__image only-dark" alt="Logo image">
+  
+  
 </a>
-
-
     
   </div>
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
+    <span class="fas fa-bars"></span>
   </button>
 
   
@@ -69,33 +81,9 @@
       
       <div class="navbar-center-item">
         <ul id="navbar-main-elements" class="navbar-nav">
-    <li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="Installation.html">
-  Installation
- </a>
-</li>
-
-<li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="Module%20description.html">
-  Creating grillage models
- </a>
-</li>
-
-<li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="ModelTemplates.html">
-  Model types available
- </a>
-</li>
-
-<li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="Running_analysis.html">
-  Performing analysis
- </a>
-</li>
-
-<li class="toctree-l1 current active nav-item">
- <a class="current reference internal nav-link" href="#">
-  Getting Results
+    <li class="toctree-l1 current active nav-item">
+ <a class="reference internal nav-link" href="user_guide.html">
+  User Guide
  </a>
 </li>
 
@@ -112,14 +100,8 @@
 </li>
 
 <li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="Examples.html">
-  Examples
- </a>
-</li>
-
-<li class="toctree-l1 nav-item">
  <a class="reference internal nav-link" href="ChangeLog.html">
-  Change Log
+  Releases
  </a>
 </li>
 
@@ -130,6 +112,14 @@
     </div>
 
     <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <span id="theme-switch" class="btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
       
       <div class="navbar-end-item">
         <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
@@ -150,33 +140,105 @@
     </nav>
     
 
-    <div class="container-xl">
-      <div class="row">
+    <div class="bd-container container-xl">
+      <div class="bd-container__inner row">
           
-            
-            <!-- Only show if we have sidebars configured, else just a small margin  -->
-            <div class="col-12 col-md-3 bd-sidebar">
-              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
+  <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
-    
+    <ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="Installation.html">
+   Installation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Module%20description.html">
+   Creating grillage models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="ModelTemplates.html">
+   Model types available
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="mesh_feature.html">
+   Mesh features
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../notebooks/mesh_showcase.html">
+     Mesh features
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../notebooks/multi_span.html">
+     Multi - span feature
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../notebooks/curve_mesh.html">
+     Curve Mesh
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Running_analysis.html">
+   Performing analysis
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Getting Results
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="Examples.html">
+   Examples
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../notebooks/super_t_analysis_workflow.html">
+     Standard workflow template - Super-T girder bridge
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
   </div>
 </nav>
-              </div>
-              <div class="sidebar-end-items">
-              </div>
-            </div>
-            
-          
+  </div>
+  <div class="sidebar-end-items">
+  </div>
+</div>
+
 
           
-          <div class="d-none d-xl-block col-xl-2 bd-toc">
-            
-              
-              <div class="toc-item">
-                
+
+
+<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
+  
+    
+    <div class="toc-item">
+      
 <div class="tocsection onthispage mt-5 pt-1 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
@@ -259,10 +321,10 @@
 </ul>
 
 </nav>
-              </div>
-              
-              <div class="toc-item">
-                
+    </div>
+    
+    <div class="toc-item">
+      
 
 <div class="tocsection editthispage">
     <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/rst/PostProcessing.rst">
@@ -270,28 +332,26 @@
     </a>
 </div>
 
-              </div>
-              
-            
-          </div>
-          
+    </div>
+    
+  
+</div>
+
 
           
           
-            
-          
-          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+          <div class="bd-content col-12 col-md-9 col-xl-7">
               
-              <div>
+              <article class="bd-article" role="main">
                 
   <div class="section" id="getting-results">
-<h1>Getting Results<a class="headerlink" href="#getting-results" title="Permalink to this headline">#</a></h1>
+<h1>Getting Results<a class="headerlink" href="#getting-results" title="Permalink to this heading">#</a></h1>
 <p>For all example code in this page, <em>ospgrillage</em> is imported as <code class="docutils literal notranslate"><span class="pre">og</span></code></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ospgrillage</span> <span class="k">as</span> <span class="nn">og</span>
 </pre></div>
 </div>
 <div class="section" id="extracting-results">
-<h2>Extracting results<a class="headerlink" href="#extracting-results" title="Permalink to this headline">#</a></h2>
+<h2>Extracting results<a class="headerlink" href="#extracting-results" title="Permalink to this heading">#</a></h2>
 <p>After analysis, results are obtained using <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_results()</span></code></a> function.
 The following example extracts results for all defined analysis of <code class="docutils literal notranslate"><span class="pre">example_bridge</span></code> - all results and one of a specific load case only.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">all_result</span> <span class="o">=</span> <span class="n">example_bridge</span><span class="o">.</span><span class="n">get_results</span><span class="p">()</span> <span class="c1"># this extracts all results</span>
@@ -316,7 +376,7 @@ The following example extracts results for all defined analysis of <code class="
 </pre></div>
 </div>
 <div class="section" id="structure-of-xarray-dataset">
-<h3>Structure of xarray DataSet<a class="headerlink" href="#structure-of-xarray-dataset" title="Permalink to this headline">#</a></h3>
+<h3>Structure of xarray DataSet<a class="headerlink" href="#structure-of-xarray-dataset" title="Permalink to this heading">#</a></h3>
 <p>Figure 1 shows the structure of the <cite>xarray</cite> DataSet for results.
 The dataset contains two <a class="reference external" href="http://xarray.pydata.org/en/stable/generated/xarray.DataArray.html#xarray.DataArray">xarray DataArray</a>.
 that represent two groups of load effects:</p>
@@ -343,7 +403,7 @@ Similarly, <strong>ele_nodes</strong> will be split into <strong>ele_nodes_beam<
 </div>
 </div>
 <div class="section" id="accessing-and-querying-data">
-<span id="access-results"></span><h3>Accessing and querying data<a class="headerlink" href="#accessing-and-querying-data" title="Permalink to this headline">#</a></h3>
+<span id="access-results"></span><h3>Accessing and querying data<a class="headerlink" href="#accessing-and-querying-data" title="Permalink to this heading">#</a></h3>
 <p>From the data arrays, users can access various component in each load effect using <cite>xarray</cite>’s data array commands.
 Information on indexing and selecting DataArray data can be found <a class="reference external" href="http://xarray.pydata.org/en/stable/user-guide/indexing.html">here</a></p>
 <p>Following example extracts the displacement ‘dy’ component using <cite>xarray</cite>’s  function.</p>
@@ -371,7 +431,7 @@ respect to the global grillage coordinate.</p>
 </div>
 </div>
 <div class="section" id="getting-combinations">
-<span id="load-combinations"></span><h2>Getting combinations<a class="headerlink" href="#getting-combinations" title="Permalink to this headline">#</a></h2>
+<span id="load-combinations"></span><h2>Getting combinations<a class="headerlink" href="#getting-combinations" title="Permalink to this heading">#</a></h2>
 <p>Load combinations are computed on the fly in <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_results()</span></code></a> by specifying a keyword argument for <code class="docutils literal notranslate"><span class="pre">combinations</span></code>.
 The keyword argument accepts a <code class="docutils literal notranslate"><span class="pre">dict</span></code> with load case name strings as key, and corresponding load factor as value.
 The returned <em>DataArray</em> will have load case multiplied by prescribed load factors and summed along the load case dimension (for each load case in load combination).</p>
@@ -402,7 +462,7 @@ The returned <em>DataArray</em> will have load case multiplied by prescribed loa
 incremental load case of the moving load.</p>
 </div>
 <div class="section" id="getting-load-envelope">
-<h2>Getting load envelope<a class="headerlink" href="#getting-load-envelope" title="Permalink to this headline">#</a></h2>
+<h2>Getting load envelope<a class="headerlink" href="#getting-load-envelope" title="Permalink to this heading">#</a></h2>
 <p>Load envelope is generated from load combination results for extrema of load effect using <a class="reference internal" href="generated/ospgrillage.postprocessing.create_envelope.html#ospgrillage.postprocessing.create_envelope" title="ospgrillage.postprocessing.create_envelope"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_envelope()</span></code></a> function.
 Envelope are chosen based on user selected component (<em>array</em> keyword) as either “displacements” or “forces”, extrema as either maximum or minimum,
 and load effect component (e.g. “dy” for displacements).
@@ -444,9 +504,9 @@ The following example prints the array of coordinates:</p>
 <p>For more information on the inputs and options, see <a class="reference internal" href="generated/ospgrillage.postprocessing.create_envelope.html#ospgrillage.postprocessing.create_envelope" title="ospgrillage.postprocessing.create_envelope"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_envelope()</span></code></a>.</p>
 </div>
 <div class="section" id="getting-specific-properties-of-model">
-<h2>Getting specific properties of model<a class="headerlink" href="#getting-specific-properties-of-model" title="Permalink to this headline">#</a></h2>
+<h2>Getting specific properties of model<a class="headerlink" href="#getting-specific-properties-of-model" title="Permalink to this heading">#</a></h2>
 <div class="section" id="node">
-<h3>Node<a class="headerlink" href="#node" title="Permalink to this headline">#</a></h3>
+<h3>Node<a class="headerlink" href="#node" title="Permalink to this heading">#</a></h3>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-prename descclassname"><span class="pre">OspGrillage.</span></span><span class="sig-name descname"><span class="pre">get_nodes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
@@ -460,7 +520,7 @@ The following example prints the array of coordinates:</p>
 
 </div>
 <div class="section" id="element">
-<h3>Element<a class="headerlink" href="#element" title="Permalink to this headline">#</a></h3>
+<h3>Element<a class="headerlink" href="#element" title="Permalink to this heading">#</a></h3>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-prename descclassname"><span class="pre">OspGrillage.</span></span><span class="sig-name descname"><span class="pre">get_element</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
@@ -490,9 +550,9 @@ within this “interior_main_beam” element group.</p>
 </div>
 </div>
 <div class="section" id="plotting-results-of-dataarrays">
-<h2>Plotting results of DataArrays<a class="headerlink" href="#plotting-results-of-dataarrays" title="Permalink to this headline">#</a></h2>
+<h2>Plotting results of DataArrays<a class="headerlink" href="#plotting-results-of-dataarrays" title="Permalink to this heading">#</a></h2>
 <div class="section" id="current-limitation-of-opensees-visualization-module">
-<h3>Current limitation of <cite>OpenSees</cite> visualization module<a class="headerlink" href="#current-limitation-of-opensees-visualization-module" title="Permalink to this headline">#</a></h3>
+<h3>Current limitation of <cite>OpenSees</cite> visualization module<a class="headerlink" href="#current-limitation-of-opensees-visualization-module" title="Permalink to this heading">#</a></h3>
 <p><cite>OpenSeesPy</cite>’s visualization module - <cite>ops_vis</cite> - offers comprehensive visualization analysis results in <cite>OpenSees</cite>.
 However, <cite>ops_vis</cite> operates only for a single model instance (and analysis) in <cite>OpenSees</cite>
 framework.
@@ -511,7 +571,7 @@ Plotting of shell model type is not supported as of <em>ospgrillage</em> version
 </div>
 </div>
 <div class="section" id="ospgrillage-post-processing-module">
-<h3><em>ospgrillage</em> post-processing module<a class="headerlink" href="#ospgrillage-post-processing-module" title="Permalink to this headline">#</a></h3>
+<h3><em>ospgrillage</em> post-processing module<a class="headerlink" href="#ospgrillage-post-processing-module" title="Permalink to this heading">#</a></h3>
 <p>For users wishing to plot results from <cite>xarray</cite> DataSet (multiple analysis),
 <em>ospgrillage</em> contains a dedicated post-processing module as of version 0.1.0 to visualize these results.</p>
 <div class="admonition note">
@@ -521,7 +581,7 @@ As of version 0.1.0, it is sufficient to plot components from the xarray DataSet
 </div>
 </div>
 <div class="section" id="plotting-functions">
-<h3>Plotting functions<a class="headerlink" href="#plotting-functions" title="Permalink to this headline">#</a></h3>
+<h3>Plotting functions<a class="headerlink" href="#plotting-functions" title="Permalink to this heading">#</a></h3>
 <p>For this section, we will refer to an exemplar 28 m super-T bridge (Figure 1).
 The bridge grillage has been created and its <a class="reference internal" href="OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a> object is defined as <code class="docutils literal notranslate"><span class="pre">bridge_28</span></code>.</p>
 <div class="figure align-center" id="id4">
@@ -553,51 +613,55 @@ Following example plots the bending moment “Mz” of “exterior_main_beam_2�
 </div>
 
 
-              </div>
+              </article>
               
-              
-              <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="Running_analysis.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Performing analysis</p>
-        </div>
-    </a>
-    <a class='right-next' id="next-link" href="APIdoc.html" title="next page">
-    <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">API reference</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
-</div>
-              
-          </main>
-          
 
+              
+              <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+  <a class='left-prev' id="prev-link" href="Running_analysis.html" title="previous page">
+      <i class="fas fa-angle-left"></i>
+      <div class="prev-next-info">
+          <p class="prev-next-subtitle">previous</p>
+          <p class="prev-next-title">Performing analysis</p>
+      </div>
+  </a>
+  <a class='right-next' id="next-link" href="Examples.html" title="next page">
+  <div class="prev-next-info">
+      <p class="prev-next-subtitle">next</p>
+      <p class="prev-next-title">Examples</p>
+  </div>
+  <i class="fas fa-angle-right"></i>
+  </a>
+</div>
+              </footer>
+              
+          </div>
+          
       </div>
     </div>
+
+  
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-<footer class="footer mt-5 mt-md-0">
-  <div class="container">
-    
-    <div class="footer-item">
-      <p class="copyright">
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
+
+<footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    <p class="copyright">
     &copy; Copyright 2021, Justin Ngan, Colin Caprani.<br>
 </p>
-    </div>
-    
-    <div class="footer-item">
-      <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
-</p>
-    </div>
-    
   </div>
+  
+  <div class="footer-item">
+    <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.0.2.<br>
+</p>
+  </div>
+  
+</div>
 </footer>
   </body>
 </html>

@@ -6,12 +6,16 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Standard workflow template - Super-T girder bridge &#8212; ospgrillage module 0.1.1 documentation</title>
-    
-  <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<script>
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
+</script>
 
-    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+
+
   <link rel="stylesheet"
     href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
   <link rel="preload" as="font" type="font/woff2" crossorigin
@@ -20,49 +24,57 @@
     href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    
+
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Mesh features" href="mesh_showcase.html" />
+    <link rel="next" title="API reference" href="../rst/APIdoc.html" />
     <link rel="prev" title="Examples" href="../rst/Examples.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en">
-    
-
-    <!-- Google Analytics -->
-    
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="en">
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-    
-    <div class="container-fluid" id="banner"></div>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+    <div class="bd-header-announcement container-fluid" id="banner">
+      
+
+    </div>
 
     
-    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
 
   <div id="navbar-start">
     
     
+  
 
-<a class="navbar-brand" href="../index.html">
-  <img src="../_static/ospgrillage_logo.png" class="logo" alt="logo">
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+    <img src="../_static/ospgrillage_logo.png" class="logo__image only-light" alt="Logo image">
+    <img src="../_static/ospgrillage_logo.png" class="logo__image only-dark" alt="Logo image">
+  
+  
 </a>
-
-
     
   </div>
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
+    <span class="fas fa-bars"></span>
   </button>
 
   
@@ -71,33 +83,9 @@
       
       <div class="navbar-center-item">
         <ul id="navbar-main-elements" class="navbar-nav">
-    <li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="../rst/Installation.html">
-  Installation
- </a>
-</li>
-
-<li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="../rst/Module%20description.html">
-  Creating grillage models
- </a>
-</li>
-
-<li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="../rst/ModelTemplates.html">
-  Model types available
- </a>
-</li>
-
-<li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="../rst/Running_analysis.html">
-  Performing analysis
- </a>
-</li>
-
-<li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="../rst/PostProcessing.html">
-  Getting Results
+    <li class="toctree-l1 current active nav-item">
+ <a class="reference internal nav-link" href="../rst/user_guide.html">
+  User Guide
  </a>
 </li>
 
@@ -113,15 +101,9 @@
  </a>
 </li>
 
-<li class="toctree-l1 current active nav-item">
- <a class="reference internal nav-link" href="../rst/Examples.html">
-  Examples
- </a>
-</li>
-
 <li class="toctree-l1 nav-item">
  <a class="reference internal nav-link" href="../rst/ChangeLog.html">
-  Change Log
+  Releases
  </a>
 </li>
 
@@ -132,6 +114,14 @@
     </div>
 
     <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <span id="theme-switch" class="btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
       
       <div class="navbar-end-item">
         <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
@@ -152,50 +142,105 @@
     </nav>
     
 
-    <div class="container-xl">
-      <div class="row">
+    <div class="bd-container container-xl">
+      <div class="bd-container__inner row">
           
-            
-            <!-- Only show if we have sidebars configured, else just a small margin  -->
-            <div class="col-12 col-md-3 bd-sidebar">
-              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
+  <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
     <ul class="current nav bd-sidenav">
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   Standard workflow template - Super-T girder bridge
+ <li class="toctree-l1">
+  <a class="reference internal" href="../rst/Installation.html">
+   Installation
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="mesh_showcase.html">
+  <a class="reference internal" href="../rst/Module%20description.html">
+   Creating grillage models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../rst/ModelTemplates.html">
+   Model types available
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../rst/mesh_feature.html">
    Mesh features
   </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="mesh_showcase.html">
+     Mesh features
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="multi_span.html">
+     Multi - span feature
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="curve_mesh.html">
+     Curve Mesh
+    </a>
+   </li>
+  </ul>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="multi_span.html">
-   Multi - span feature
+  <a class="reference internal" href="../rst/Running_analysis.html">
+   Performing analysis
   </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../rst/PostProcessing.html">
+   Getting Results
+  </a>
+ </li>
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="../rst/Examples.html">
+   Examples
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     Standard workflow template - Super-T girder bridge
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 
   </div>
 </nav>
-              </div>
-              <div class="sidebar-end-items">
-              </div>
-            </div>
-            
-          
+  </div>
+  <div class="sidebar-end-items">
+  </div>
+</div>
+
 
           
-          <div class="d-none d-xl-block col-xl-2 bd-toc">
-            
-              
-              <div class="toc-item">
-                
+
+
+<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
+  
+    
+    <div class="toc-item">
+      
 <div class="tocsection onthispage mt-5 pt-1 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
@@ -252,10 +297,10 @@
 </ul>
 
 </nav>
-              </div>
-              
-              <div class="toc-item">
-                
+    </div>
+    
+    <div class="toc-item">
+      
 
 <div class="tocsection editthispage">
     <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/notebooks/super_t_analysis_workflow.ipynb">
@@ -263,19 +308,17 @@
     </a>
 </div>
 
-              </div>
-              
-            
-          </div>
-          
+    </div>
+    
+  
+</div>
+
 
           
           
-            
-          
-          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+          <div class="bd-content col-12 col-md-9 col-xl-7">
               
-              <div>
+              <article class="bd-article" role="main">
                 
   
 <style>
@@ -492,6 +535,7 @@ div.nboutput.container div.output_area > div[class^='highlight']{
 }
 
 /* Some additional styling taken form the Jupyter notebook CSS */
+.jp-RenderedHTMLCommon table,
 div.rendered_html table {
   border: none;
   border-collapse: collapse;
@@ -500,10 +544,14 @@ div.rendered_html table {
   font-size: 12px;
   table-layout: fixed;
 }
+.jp-RenderedHTMLCommon thead,
 div.rendered_html thead {
   border-bottom: 1px solid black;
   vertical-align: bottom;
 }
+.jp-RenderedHTMLCommon tr,
+.jp-RenderedHTMLCommon th,
+.jp-RenderedHTMLCommon td,
 div.rendered_html tr,
 div.rendered_html th,
 div.rendered_html td {
@@ -515,28 +563,22 @@ div.rendered_html td {
   max-width: none;
   border: none;
 }
+.jp-RenderedHTMLCommon th,
 div.rendered_html th {
   font-weight: bold;
 }
+.jp-RenderedHTMLCommon tbody tr:nth-child(odd),
 div.rendered_html tbody tr:nth-child(odd) {
   background: #f5f5f5;
 }
+.jp-RenderedHTMLCommon tbody tr:hover,
 div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
 </style>
 <div class="section" id="Standard-workflow-template---Super-T-girder-bridge">
-<h1>Standard workflow template - Super-T girder bridge<a class="headerlink" href="#Standard-workflow-template---Super-T-girder-bridge" title="Permalink to this headline">#</a></h1>
+<h1>Standard workflow template - Super-T girder bridge<a class="headerlink" href="#Standard-workflow-template---Super-T-girder-bridge" title="Permalink to this heading">#</a></h1>
 <p>This example reproduces the grillage model of a super-T bridge from Caprani et al. (2017). In that study, the commercial software LUSAS is used to create the grillage model. Figure 1 shows the Super-T deck cross-section</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import sys
-sys.path.insert(0, &#39;C:\\Users\\Nicni\\PycharmProjects\\ospgrillage&#39;)
-</pre></div>
-</div>
-</div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
@@ -549,7 +591,7 @@ from IPython import display  # to display images in this notebook
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>display.Image(&quot;../images/example_cross_section.PNG&quot;,width=800)
@@ -557,15 +599,14 @@ from IPython import display  # to display images in this notebook
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
-</pre></div>
+<div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_super_t_analysis_workflow_3_0.png" class="no-scaled-link" src="../_images/notebooks_super_t_analysis_workflow_3_0.png" style="width: 800px;" />
+<img alt="../_images/notebooks_super_t_analysis_workflow_2_0.png" class="no-scaled-link" src="../_images/notebooks_super_t_analysis_workflow_2_0.png" style="width: 800px;" />
 </div>
 </div>
 <div class="section" id="Creating-the-grillage">
-<h2>Creating the grillage<a class="headerlink" href="#Creating-the-grillage" title="Permalink to this headline">#</a></h2>
+<h2>Creating the grillage<a class="headerlink" href="#Creating-the-grillage" title="Permalink to this heading">#</a></h2>
 <p>For this example, the five super-T beams and two edge beams (parapets) of Figure 1 are being modelled similar to Caprani et al. (2017) - with the number of longitudinal and transverse grid lines being 7 and 11 respectively.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
@@ -717,14 +758,14 @@ No Model_ODB specified, trying to get data from the active model.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_super_t_analysis_workflow_13_1.png" src="../_images/notebooks_super_t_analysis_workflow_13_1.png" />
+<img alt="../_images/notebooks_super_t_analysis_workflow_12_1.png" src="../_images/notebooks_super_t_analysis_workflow_12_1.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_super_t_analysis_workflow_13_2.png" src="../_images/notebooks_super_t_analysis_workflow_13_2.png" />
+<img alt="../_images/notebooks_super_t_analysis_workflow_12_2.png" src="../_images/notebooks_super_t_analysis_workflow_12_2.png" />
 </div>
 </div>
 <p>Figure 2 shows the model plotted in OpenSees model space.</p>
@@ -741,12 +782,12 @@ No Model_ODB specified, trying to get data from the active model.
 </pre></div>
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_super_t_analysis_workflow_15_0.png" class="no-scaled-link" src="../_images/notebooks_super_t_analysis_workflow_15_0.png" style="width: 800px;" />
+<img alt="../_images/notebooks_super_t_analysis_workflow_14_0.png" class="no-scaled-link" src="../_images/notebooks_super_t_analysis_workflow_14_0.png" style="width: 800px;" />
 </div>
 </div>
 </div>
 <div class="section" id="Adding-load-cases-to-model">
-<h2>Adding load cases to model<a class="headerlink" href="#Adding-load-cases-to-model" title="Permalink to this headline">#</a></h2>
+<h2>Adding load cases to model<a class="headerlink" href="#Adding-load-cases-to-model" title="Permalink to this heading">#</a></h2>
 <p>Here we create and add load cases to the simple_grid model for analysis.</p>
 <p>The first load case is a simple line load running along mid span width, to check that the model is behaving appropriately.</p>
 <div class="nbinput nblast docutils container">
@@ -870,7 +911,7 @@ simple_grid.add_load_case(patch_case)
 </div>
 </div>
 <div class="section" id="Adding-a-moving-load-analysis">
-<h2>Adding a moving load analysis<a class="headerlink" href="#Adding-a-moving-load-analysis" title="Permalink to this headline">#</a></h2>
+<h2>Adding a moving load analysis<a class="headerlink" href="#Adding-a-moving-load-analysis" title="Permalink to this heading">#</a></h2>
 <p>For bridge loading, it is imperative to model loads that move, and to consider the static analysis of the bridge deck under each position of the moving load. Here’s how we create and add a moving load (e.g. a truck) to the 28 m bridge model.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
@@ -924,7 +965,7 @@ simple_grid.add_load_case(moving_truck)
 </div>
 </div>
 <div class="section" id="Analysis">
-<h2>Analysis<a class="headerlink" href="#Analysis" title="Permalink to this headline">#</a></h2>
+<h2>Analysis<a class="headerlink" href="#Analysis" title="Permalink to this heading">#</a></h2>
 <p>Next, analyze all load cases added to the model:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
@@ -936,7 +977,7 @@ simple_grid.add_load_case(moving_truck)
 </div>
 </div>
 <div class="section" id="Getting-load-case-results">
-<h2>Getting load case results<a class="headerlink" href="#Getting-load-case-results" title="Permalink to this headline">#</a></h2>
+<h2>Getting load case results<a class="headerlink" href="#Getting-load-case-results" title="Permalink to this heading">#</a></h2>
 <p>Finally, get the xarray DataSet of the results:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
@@ -949,7 +990,7 @@ simple_grid.add_load_case(moving_truck)
 <p>For information on the returned object from :func:<code class="docutils literal notranslate"><span class="pre">~ospgrillage.osp_grillage.OspGrillage.get_results</span></code>,see :ref:<code class="docutils literal notranslate"><span class="pre">PostProcessing</span></code>.</p>
 </div>
 <div class="section" id="Getting-load-combination-results">
-<h2>Getting load combination results<a class="headerlink" href="#Getting-load-combination-results" title="Permalink to this headline">#</a></h2>
+<h2>Getting load combination results<a class="headerlink" href="#Getting-load-combination-results" title="Permalink to this heading">#</a></h2>
 <p>With the results of the basic load cases now known, we can calculate factored combinations of these load cases that are of interest:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
@@ -965,7 +1006,7 @@ combination_results = simple_grid.get_results(combinations=load_combinations)
 </div>
 </div>
 <div class="section" id="Data-processing">
-<h2>Data processing<a class="headerlink" href="#Data-processing" title="Permalink to this headline">#</a></h2>
+<h2>Data processing<a class="headerlink" href="#Data-processing" title="Permalink to this heading">#</a></h2>
 <p>Having the results be in xarray DataSet, we can do many things with it such as slicing and query its data.</p>
 <p>The following example shows how to extract bending moments at midspan - the critical location for the defined load cases.</p>
 <p>First for static load cases, we extract bending moments about the global -axis for each i node of grillage member (since i node correspond to the nodes in the mid span).</p>
@@ -1008,7 +1049,7 @@ array([  96856.875     ,   58625.        ,   58625.        ,
 </pre></div></div>
 </div>
 <div class="section" id="Process-load-combinations-results">
-<h3>Process load combinations results<a class="headerlink" href="#Process-load-combinations-results" title="Permalink to this headline">#</a></h3>
+<h3>Process load combinations results<a class="headerlink" href="#Process-load-combinations-results" title="Permalink to this heading">#</a></h3>
 <p>Here we sum the nodal forces from the mid span - i node</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
@@ -1022,7 +1063,7 @@ array([  96856.875     ,   58625.        ,   58625.        ,
 </div>
 </div>
 <div class="section" id="Extract-and-process-moving-load-results">
-<h3>Extract and process moving load results<a class="headerlink" href="#Extract-and-process-moving-load-results" title="Permalink to this headline">#</a></h3>
+<h3>Extract and process moving load results<a class="headerlink" href="#Extract-and-process-moving-load-results" title="Permalink to this heading">#</a></h3>
 <p>Here we are accessing and querying data of the moving load case.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
@@ -1098,51 +1139,55 @@ bending_z_theoretical = 31500.0
 </div>
 
 
-              </div>
+              </article>
               
-              
-              <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="../rst/Examples.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Examples</p>
-        </div>
-    </a>
-    <a class='right-next' id="next-link" href="mesh_showcase.html" title="next page">
-    <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Mesh features</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
-</div>
-              
-          </main>
-          
 
+              
+              <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+  <a class='left-prev' id="prev-link" href="../rst/Examples.html" title="previous page">
+      <i class="fas fa-angle-left"></i>
+      <div class="prev-next-info">
+          <p class="prev-next-subtitle">previous</p>
+          <p class="prev-next-title">Examples</p>
+      </div>
+  </a>
+  <a class='right-next' id="next-link" href="../rst/APIdoc.html" title="next page">
+  <div class="prev-next-info">
+      <p class="prev-next-subtitle">next</p>
+      <p class="prev-next-title">API reference</p>
+  </div>
+  <i class="fas fa-angle-right"></i>
+  </a>
+</div>
+              </footer>
+              
+          </div>
+          
       </div>
     </div>
+
+  
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-<footer class="footer mt-5 mt-md-0">
-  <div class="container">
-    
-    <div class="footer-item">
-      <p class="copyright">
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
+
+<footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    <p class="copyright">
     &copy; Copyright 2021, Justin Ngan, Colin Caprani.<br>
 </p>
-    </div>
-    
-    <div class="footer-item">
-      <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
-</p>
-    </div>
-    
   </div>
+  
+  <div class="footer-item">
+    <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.0.2.<br>
+</p>
+  </div>
+  
+</div>
 </footer>
   </body>
 </html>
