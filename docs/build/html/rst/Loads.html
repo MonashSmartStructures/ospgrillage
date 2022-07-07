@@ -71,32 +71,8 @@
       <div class="navbar-center-item">
         <ul id="navbar-main-elements" class="navbar-nav">
     <li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="Installation.html">
-  Installation
- </a>
-</li>
-
-<li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="Module%20description.html">
-  Creating grillage models
- </a>
-</li>
-
-<li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="ModelTemplates.html">
-  Model types available
- </a>
-</li>
-
-<li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="Running_analysis.html">
-  Performing analysis
- </a>
-</li>
-
-<li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="PostProcessing.html">
-  Getting Results
+ <a class="reference internal nav-link" href="user_guide.html">
+  User Guide
  </a>
 </li>
 
@@ -113,14 +89,8 @@
 </li>
 
 <li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="Examples.html">
-  Examples
- </a>
-</li>
-
-<li class="toctree-l1 nav-item">
  <a class="reference internal nav-link" href="ChangeLog.html">
-  Change Log
+  Releases
  </a>
 </li>
 
@@ -215,11 +185,15 @@ moving load and moving load path.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="ospgrillage.load.create_load_vertex">
 <span class="sig-name descname"><span class="pre">create_load_vertex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.create_load_vertex" title="Permalink to this definition">¶</a></dt>
-<dd><p>User interface function to create load vertex of various load types.
-:param kwargs: Keyword arg, see below.</p>
+<dd><p>User interface function to create a load vertex. Load vertices are used in defining loads. For example,
+a point load consist of a single load vertex while a patch load is defined using four load vertices for each of
+its corner.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Keyword</dt>
-<dd class="field-odd"><p></p></dd>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>kwargs</strong> – Keyword arg, see below.</p>
+</dd>
+<dt class="field-even">Keyword</dt>
+<dd class="field-even"><p></p></dd>
 </dl>
 <ul class="simple">
 <li><p>x (<cite>float</cite> or <cite>int</cite>): Value of x coordinate</p></li>
@@ -279,11 +253,6 @@ are required add loads to LoadCase object via <a class="reference internal" href
 <span class="sig-name descname"><span class="pre">create_compound_load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.create_compound_load" title="Permalink to this definition">¶</a></dt>
 <dd><p>User interface function to create CompoundLoad object. Following this function users are required to
 add loads to object via <a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.add_load.html#ospgrillage.load.CompoundLoad.add_load" title="ospgrillage.load.CompoundLoad.add_load"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_load()</span></code></a>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Keyword</dt>
-<dd class="field-odd"><p></p></dd>
-</dl>
-<p>name (<cite>str</cite>): Name string of compound load</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#ospgrillage.load.CompoundLoad" title="ospgrillage.load.CompoundLoad"><code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundLoad</span></code></a></p>

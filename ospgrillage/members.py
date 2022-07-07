@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-This module manages user interface functions and class definitions for the
+This module manages user interface functions and class definitions for
 grillage members. In our terminology, we define a section as the geometrical
 properties of the structural elements, and the member as the combination of
 the section and material properties.
@@ -9,7 +9,7 @@ the section and material properties.
 
 def create_section(**kwargs):
     """
-    User interface to create :class:`Section` object.
+    User interface function to create :class:`Section` object.
 
     The constructor :class:`Section` takes the following arguments.
 
@@ -20,7 +20,7 @@ def create_section(**kwargs):
     :param unit_width: Flag for unit width properties
     :type unit_width: bool
 
-    The constructor also takes in ``kwargs`` which is summarized as follows:
+    The constructor of :class:`Section` takes the following ``kwargs``:
 
     :keyword:
 
@@ -39,10 +39,10 @@ def create_section(**kwargs):
 
 def create_member(**kwargs):
     """
-    User interface to create :class:`GrillageMember` object.
+    User interface function to create :class:`GrillageMember` object.
 
     A grillage member requires a :class:`~ospgrillage.material.Material` and a
-    :class:`~ospgrillage.members.Section`
+    :class:`~ospgrillage.members.Section`.
 
     :param section: Section class object
     :type section: :class:`Section`
@@ -58,16 +58,12 @@ def create_member(**kwargs):
 
 class Section:
     """
-    Class for sections. Stores geometric properties of cross sections. These information parsed into relevant
-    ```OpenSeesPy``` command, creating sections in OpenSees framework.
+    Class for structural sections of grillage model. Stores geometric properties of cross sections. This class also
+    parses section inputs into relevant
+    ``OpenSeesPy`` command for creating sections in OpenSees framework.
 
-    This class does have methods which wraps ```OpenSeesPy``` Section() commands - this is handled by
-    the GrillageMember class instead.
-
-    For developers wishing to expand the library of sections, introduce under the constructor init:
-
-    #. The name for the new sections.
-    #. The keyword arguments for the new section plus any OpenSeesPy Section keyword which is tied to.
+    This class wraps ```OpenSeesPy``` Section() commands - methods for generating commands are handled by the
+    higher hierarchy:class:`~ospgrillage.member.GrillageMember` class
 
     """
 
@@ -85,7 +81,7 @@ class Section:
 
         #. General section properties - such as A, I, J for example. These properties are parses into the appropriate
            OpenSees section arguments.
-        #. ```OpenSeespy``` section arguments - i.e. specific keyword for a specific ops.section() type.
+        #. ``OpenSeespy`` section arguments - i.e. specific keyword for a specific ops.section() type.
 
         `Section <https://openseespydoc.readthedocs.io/en/latest/src/section.html>`_  information of OpenSeesPy
 
@@ -95,10 +91,10 @@ class Section:
         :type op_ele_type: str
         :param op_section_type: OpenSees section type - default Elastic
         :type op_section_type: str
-        :param unit_width: Flag for unit width properties
+        :param unit_width: Flag for if unit width properties are defined.
         :type unit_width: bool
 
-        Constructor also takes the follwoing keyword arguments for defining a section.
+        Constructor also takes the following keyword arguments for a section.
 
         :keyword:
         * A (``float``): Cross sectional area
@@ -108,6 +104,9 @@ class Section:
         * Az (``float``): Cross sectional area in the local z direction
         * Ay (``float``): Cross sectional area in the local y direction
 
+        .. note::
+        Section properties are defined in local coordinate x y and z which are later transformed according to orientation
+        of the defined GrillageMember object in the grillage model.
         """
         # OpenSees py section type
         self.op_section_type = (
@@ -174,20 +173,21 @@ class Section:
 
 class GrillageMember:
     """
-    Base class for defining a Grillage member. Provides methods to wrap ```OpenSeesPy``` Element() command.
+    Base class for defining the grillage members of the grillage model.
 
-    Some ```OpenSeesPy``` element() command takes in directly both material and section properties, while some requires
-    first defining an ```OpenSeesPy``` material, or OpenSees section object. The role of this class is to parse the material
-    and section information into its corresponding ```OpenSeesPy``` Element() command.
+    This class parses material and section properties of grillage members into corresponding ``OpenSeesPy`` Element()
+    command.
 
-    `Here <https://openseespydoc.readthedocs.io/en/latest/src/element.html>`_ is more information about ```OpenSeesPy```
-    Element definition.
+    `Refer here <https://openseespydoc.readthedocs.io/en/latest/src/element.html>`_ for more information about
+     ``OpenSeesPy`` Element types and definition workflow.
 
-    For developers wishing to expand the library of elements, introduce in this class:
+    For developers wishing to expand the library of elements wrapped by GrillageMember, introduce in this class:
 
-    #. The ```OpenSeesPy``` section() command for the desire section - under ``get_ops_section_command()`` method
-    #. The ```OpenSeesPy``` element() command for the element - under ``get_element_command_str()`` method
-
+    #. The argument input orders of new element in :func:`~ospgrillage.member.GrillageMember.get_member_prop_arguments`
+     method.
+    #. If the element requires the definition of Section in ``OpenSeesPy``, add its Section's list of input arguments
+     command generation to :func:`~ospgrillage.member.GrillageMember.get_section_arguments` and
+     :func:`~ospgrillage.member.GrillageMember.get_ops_section_command`.
 
     """
 
@@ -200,7 +200,8 @@ class GrillageMember:
         tri_ele_flag=False,
     ):
         """
-        Constructor takes two input object. A Material, and Section object.
+        Constructor of GrillageMember requires two input objects i.e. A :class:`~ospgrillage.material.Material`, and
+        :class:`Section`.
 
         :param section: Section class object
         :type section: :class:`~ospgrillage.members.Section`
@@ -234,13 +235,11 @@ class GrillageMember:
 
     def get_member_prop_arguments(self, width=1):
         # """
-        # Function to output list of arguments for element type requiring list of arguments (with preceding asterisk).
-        # specifically for ElasticTimoshenkoBeam, elasticBeamColumn - which no section and material tag are required
-        # for developers, add the inputs for OpenSees elements here that does not require section and material tag
-        # i.e. the element command directly takes in both geometrical and material properties as arguments
-        # inputs
+        # Function to sort and parse the list input arguments for the prescribed op_element_type of the GrillageMember.
+        #
         # :return: str containing member properties in accordance with convention of OpenSees element type
         # """
+
         asterisk_input = None
 
         # if elastic Beam column elements, return str of section input
@@ -331,6 +330,12 @@ class GrillageMember:
 
     # Function to return argument, handled by OspGrillage
     def get_section_arguments(self, ele_width=1):
+        # """
+        # Function to obtain input arguments for ``OpenSeesPy`` Section command if the prescribe element type of the
+        # GrillageMember requires the defition of an ``OpenSeesPy`` Section object.
+        #
+        # :return: str containing Section command properties in accordance with convention of OpenSees element type
+        # """
         section_args = None
 
         if self.section.op_section_type == "Elastic":
@@ -348,9 +353,12 @@ class GrillageMember:
         return section_args
 
     def get_ops_section_command(self, section_tag=1, material_tag=None, ele_width=1):
-        # here sort based on section type , return sec_str which will be populated by OpsGrillage
-        # in general first format entry {} is section type, second {} is section tag, each specific entries are
-        # explained in comments below each condition
+        # """
+        # Function to obtain the ``OpenSeesPy`` Section command required for the prescribed element type defined for the
+        # GrillageMember object.
+        #
+        # :return: str containing the ``OpenSeesPy`` Section command
+        # """
         sec_str = None
         section_type = self.section.op_section_type
         if section_type == "Elastic":
@@ -391,11 +399,10 @@ class GrillageMember:
         materialtag=None,
         sectiontag=None,
     ) -> str:
-
+        # ```
         # Function called within OpsGrillage class `set_member()` function.
         #
-        # For shell elements, n1 n2 n3 n4 are counter clockwise node (n1 being node in quadrant -1 , -1 ). This is checked
-        # using sort_vertices function.
+        # For shell elements, n1 n2 n3 n4 are counter clockwise node (n1 being node in quadrant -1 , -1 ).
         #
         # Procedure to be called
         # 1) OpsGrillage assigns the material and section first, then returns the tag of material and section
@@ -404,6 +411,7 @@ class GrillageMember:
 
         # format of each ele sublist
         # [node i, node j, ele group, ele tag, transtag]
+        # ```
         section_input = None
         ele_str = None
         if self.section.op_ele_type == "ElasticTimoshenkoBeam":

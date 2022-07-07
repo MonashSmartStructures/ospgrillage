@@ -257,6 +257,15 @@ def shell_link_bridge(ref_bridge_properties):
 # =====================================================================================================================
 # Tests
 # =====================================================================================================================
+def test_inputs():
+    # checks the functionality of interface functions, basic inputs and outputs.
+    vertex_1 = og.create_load_vertex(x=3, z=3,p=2)
+
+    with pytest.raises(ValueError) as e_info:
+        vertex_errors = og.create_load_vertex(x=3, y=0, z=3)
+
+
+
 # test to check compound load position relative to global are correct
 def test_compound_load_positions():
     #
@@ -983,10 +992,11 @@ def test_moving_compound_load(bridge_model_42_negative):
     example_bridge.add_load_case(truck)
     example_bridge.analyze()
     results = example_bridge.get_results()
+    print(results)
     print("finish test compound moving load")
 
 
-# test check correct distribution of a patch defined with bounds outside of grillage
+# checks if patch load is correctly-distributed when patch exceeds the bounds of the grillage
 def test_patch_partially_outside_mesh(bridge_model_42_negative):
     example_bridge = bridge_model_42_negative
     lane_point_1 = og.create_load_vertex(x=-5, z=3, p=5)
@@ -1079,6 +1089,7 @@ def test_patch_partially_outside_mesh(bridge_model_42_negative):
 
 
 def test_clearing_results(bridge_model_42_negative):
+    # test functionality of clearing load case after analysis
     example_bridge = bridge_model_42_negative
     lane_point_1 = og.create_load_vertex(x=-5, z=3, p=5)
     lane_point_2 = og.create_load_vertex(x=8, z=3, p=5)
@@ -1106,6 +1117,7 @@ def test_clearing_results(bridge_model_42_negative):
 
 
 def test_load_analysis_shell_model(shell_link_bridge):
+    # checks a benchmark analysis on a shell_beam model
     shell_link_model = shell_link_bridge
     # og.opsplt.plot_model("nodes")
 
@@ -1126,3 +1138,103 @@ def test_load_analysis_shell_model(shell_link_bridge):
 
     results = shell_link_model.get_results()
     print(results)
+
+
+def test_load_analysis_shell_multi_span(ref_bridge_properties):
+    # checks integration of load analysis with multi - span feature + shell beam model
+    def create_multispan_shell_model(ref_bridge_properties):
+        # creates a reference shell beam model
+        I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
+
+        # Adopted units: N and m
+        kilo = 1e3
+        milli = 1e-3
+        m = 1
+        m2 = m ** 2
+        m3 = m ** 3
+        m4 = m ** 4
+
+        # parameters of bridge grillage
+        L = 30 * m  # span
+        w = 10 * m  # width
+        n_l = 7  # number of longitudinal members
+        n_t = 11  # number of transverse members
+        edge_dist = 1.05 * m  # distance between edge beam and first exterior beam
+        bridge_name = "multi span showcase"
+        angle = 20  # degree
+        mesh_type = "Oblique"
+        model_type = "shell_beam"
+        # multispan specific vars
+        spans = [9 * m, 12 * m, 9 * m]
+        nl_multi = [20, 10, 20]
+        stich_slab_x_spacing = 0.5 * m
+
+        variant_one_model = og.create_grillage(
+            bridge_name=bridge_name,
+            long_dim=L,
+            width=w,
+            skew=angle,
+            num_long_grid=n_l,
+            num_trans_grid=n_t,
+            edge_beam_dist=edge_dist,
+            mesh_type=mesh_type,
+            model_type=model_type,
+            multi_span_dist_list=spans,
+            multi_span_num_points=nl_multi,
+            continuous=False,
+            non_cont_spacing_x=stich_slab_x_spacing,
+            max_mesh_size_z=1,
+            max_mesh_size_x=1,
+            offset_beam_y_dist=0.499,
+            beam_width=0.89,
+        )
+
+        # create material of slab shell
+        slab_shell_mat = og.create_material(
+            material="concrete", code="AS5100-2017", grade="50MPa", rho=2400
+        )
+
+        # create section of slab shell
+        slab_shell_section = og.create_section(h=0.2)
+        slab_shell = og.create_member(section=slab_shell_section, material=slab_shell_mat)
+
+        # create stitch slab conencting elements
+        stitch_slab_section = og.create_section(
+            A=0.504 * m2,
+            J=5.22303e-3 * m3,
+            Iy=0.32928 * m4,
+            Iz=1.3608e-3 * m4,
+            Ay=0.42 * m2,
+            Az=0.42 * m2,
+        )
+        stitch_slab = og.create_member(section=stitch_slab_section, material=concrete)
+
+        # set shell
+        variant_one_model.set_shell_members(slab_shell)
+
+        # assign grillage member to element groups of grillage model
+        variant_one_model.set_member(I_beam, member="interior_main_beam")
+        variant_one_model.set_member(I_beam, member="exterior_main_beam_1")
+        variant_one_model.set_member(I_beam, member="exterior_main_beam_2")
+        variant_one_model.set_member(exterior_I_beam, member="edge_beam")
+        # variant_one_model.set_member(stitch_slab, member="stitch_elements")
+
+        variant_one_model.create_osp_model(pyfile=False)
+
+        return variant_one_model
+
+    shell_bridge = create_multispan_shell_model(ref_bridge_properties)
+
+    # create and add load case comprise of single point load
+    P = 20e3
+    point_load_location = og.create_load_vertex(x=4.5, y=0, z=6.5, p=P)  # about midspan of span 1
+    point_load = og.create_load(loadtype="point", name="single point", point1=point_load_location)
+    point_lc = og.create_load_case(name="pointload")
+    point_lc.add_load(point_load)
+    shell_bridge.add_load_case(point_lc)
+    shell_bridge.analyze()
+    # extract results
+    result = shell_bridge.get_results()
+    print(result)
+
+

@@ -71,32 +71,8 @@
       <div class="navbar-center-item">
         <ul id="navbar-main-elements" class="navbar-nav">
     <li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="Installation.html">
-  Installation
- </a>
-</li>
-
-<li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="Module%20description.html">
-  Creating grillage models
- </a>
-</li>
-
-<li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="ModelTemplates.html">
-  Model types available
- </a>
-</li>
-
-<li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="Running_analysis.html">
-  Performing analysis
- </a>
-</li>
-
-<li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="PostProcessing.html">
-  Getting Results
+ <a class="reference internal nav-link" href="user_guide.html">
+  User Guide
  </a>
 </li>
 
@@ -113,14 +89,8 @@
 </li>
 
 <li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="Examples.html">
-  Examples
- </a>
-</li>
-
-<li class="toctree-l1 nav-item">
  <a class="reference internal nav-link" href="ChangeLog.html">
-  Change Log
+  Releases
  </a>
 </li>
 
@@ -286,27 +256,19 @@ and its mesh.</p>
 <dd class="field-even"><p></p></dd>
 </dl>
 <ul class="simple">
-<li><p>ext_to_int_dist: (Int or Float, or a List of Int or Float) distance between internal beams</p></li>
-</ul>
-<blockquote>
-<div><p>and exterior main beams. If list is provided (usually size 2), apply each distinct distance to left and right
-side respectively.</p>
-</div></blockquote>
-<ul class="simple">
+<li><p>beam_z_spacing: (list of int or float) Custom distance of longitudinal members (global z - direction). Note
+this parameter supercedes num_long_grid.</p></li>
+<li><p>beam_x_spacing: (list of int or float) Custom distance of transverse members (global x - direction). Note
+this parameter supercedes num_trans_grid.</p></li>
+<li><p>ext_to_int_dist: (Int or Float, or a List of Int or Float) distance between internal beams
+and exterior main beams. If list is provided (usually size 2), apply each distinct distance to left and right
+side respectively.</p></li>
 <li><p>multi_span_dist_list: (List of Int/Float) List of distance (x dir) correspond to span length of each multi span</p></li>
-<li><p>multi_span_num_points: (List of Int) Num of transverse member correspond to spans of each element in multi_span_dist_list</p></li>
-</ul>
-<blockquote>
-<div><p>If not specified, takes int var for num_trans_beam and assigns to all spans of multi_span_dist_list</p>
-</div></blockquote>
-<ul class="simple">
+<li><p>multi_span_num_points: (List of Int) Num of transverse member correspond to spans of each element in multi_span_dist_list
+If not specified, takes int var for num_trans_beam and assigns to all spans of multi_span_dist_list</p></li>
 <li><p>continuous: (Bool) To set continuity of spans. Default True. If False, separate spans by non_cont_spacing_x</p></li>
-<li><p>stitch_slab_elements: (Bool) To set stictch elements between spans. Elements are set using <cite>set_member()</cite> with</p></li>
-</ul>
-<blockquote>
-<div><p>member= “stich_elements”</p>
-</div></blockquote>
-<ul class="simple">
+<li><p>stitch_slab_elements: (Bool) To set stictch elements between spans. Elements are set using <cite>set_member()</cite> with
+member= “stich_elements”</p></li>
 <li><p>non_cont_spacing_x: (float) sets spacing or length of stitch elements.</p></li>
 </ul>
 <dl class="field-list simple">
@@ -559,27 +521,19 @@ Class object is accessed within OspGrillage class object.</p>
 <dd class="field-even"><p></p></dd>
 </dl>
 <ul class="simple">
-<li><p>ext_to_int_dist: (Int or Float, or a List of Int or Float) distance between internal beams</p></li>
-</ul>
-<blockquote>
-<div><p>and exterior main beams. If list is provided (usually size 2), apply each distinct distance to left and right
-side respectively.</p>
-</div></blockquote>
-<ul class="simple">
+<li><p>beam_z_spacing: (list of int or float) Custom distance of longitudinal members (global z - direction). Note
+this parameter supercedes num_long_grid.</p></li>
+<li><p>beam_x_spacing: (list of int or float) Custom distance of transverse members (global x - direction). Note
+this parameter supercedes num_trans_grid.</p></li>
+<li><p>ext_to_int_dist: (Int or Float, or a List of Int or Float) distance between internal beams
+and exterior main beams. If list is provided (usually size 2), apply each distinct distance to left and right
+side respectively.</p></li>
 <li><p>multi_span_dist_list: (List of Int/Float) List of distance (x dir) correspond to span length of each multi span</p></li>
-<li><p>multi_span_num_points: (List of Int) Num of transverse member correspond to spans of each element in multi_span_dist_list</p></li>
-</ul>
-<blockquote>
-<div><p>If not specified, takes int var for num_trans_beam and assigns to all spans of multi_span_dist_list</p>
-</div></blockquote>
-<ul class="simple">
+<li><p>multi_span_num_points: (List of Int) Num of transverse member correspond to spans of each element in multi_span_dist_list
+If not specified, takes int var for num_trans_beam and assigns to all spans of multi_span_dist_list</p></li>
 <li><p>continuous: (Bool) To set continuity of spans. Default True. If False, separate spans by non_cont_spacing_x</p></li>
-<li><p>stitch_slab_elements: (Bool) To set stictch elements between spans. Elements are set using <cite>set_member()</cite> with</p></li>
-</ul>
-<blockquote>
-<div><p>member= “stich_elements”</p>
-</div></blockquote>
-<ul class="simple">
+<li><p>stitch_slab_elements: (Bool) To set stictch elements between spans. Elements are set using <cite>set_member()</cite> with
+member= “stich_elements”</p></li>
 <li><p>non_cont_spacing_x: (float) sets spacing or length of stitch elements.</p></li>
 </ul>
 <dl class="field-list simple">
@@ -613,27 +567,19 @@ side respectively.</p>
 <dd class="field-even"><p></p></dd>
 </dl>
 <ul class="simple">
-<li><p>ext_to_int_dist: (Int or Float, or a List of Int or Float) distance between internal beams</p></li>
-</ul>
-<blockquote>
-<div><p>and exterior main beams. If list is provided (usually size 2), apply each distinct distance to left and right
-side respectively.</p>
-</div></blockquote>
-<ul class="simple">
+<li><p>beam_z_spacing: (list of int or float) Custom distance of longitudinal members (global z - direction). Note
+this parameter supercedes num_long_grid.</p></li>
+<li><p>beam_x_spacing: (list of int or float) Custom distance of transverse members (global x - direction). Note
+this parameter supercedes num_trans_grid.</p></li>
+<li><p>ext_to_int_dist: (Int or Float, or a List of Int or Float) distance between internal beams
+and exterior main beams. If list is provided (usually size 2), apply each distinct distance to left and right
+side respectively.</p></li>
 <li><p>multi_span_dist_list: (List of Int/Float) List of distance (x dir) correspond to span length of each multi span</p></li>
-<li><p>multi_span_num_points: (List of Int) Num of transverse member correspond to spans of each element in multi_span_dist_list</p></li>
-</ul>
-<blockquote>
-<div><p>If not specified, takes int var for num_trans_beam and assigns to all spans of multi_span_dist_list</p>
-</div></blockquote>
-<ul class="simple">
+<li><p>multi_span_num_points: (List of Int) Num of transverse member correspond to spans of each element in multi_span_dist_list
+If not specified, takes int var for num_trans_beam and assigns to all spans of multi_span_dist_list</p></li>
 <li><p>continuous: (Bool) To set continuity of spans. Default True. If False, separate spans by non_cont_spacing_x</p></li>
-<li><p>stitch_slab_elements: (Bool) To set stictch elements between spans. Elements are set using <cite>set_member()</cite> with</p></li>
-</ul>
-<blockquote>
-<div><p>member= “stich_elements”</p>
-</div></blockquote>
-<ul class="simple">
+<li><p>stitch_slab_elements: (Bool) To set stictch elements between spans. Elements are set using <cite>set_member()</cite> with
+member= “stich_elements”</p></li>
 <li><p>non_cont_spacing_x: (float) sets spacing or length of stitch elements.</p></li>
 </ul>
 <dl class="field-list simple">
@@ -649,6 +595,23 @@ executable pyfile for generating the grillage model in OpenSees model space.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>pyfile</strong> (<em>bool</em>) – if True returns an executable py file instead of creating OpenSees instance of model.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.osp_grillage.OspGrillageShell.set_member">
+<span class="sig-name descname"><span class="pre">set_member</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grillage_member_obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="APIdoc.html#ospgrillage.members.GrillageMember" title="ospgrillage.members.GrillageMember"><span class="pre">ospgrillage.members.GrillageMember</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">member</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OspGrillageShell.set_member" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to set grillage member class object to elements of grillage members.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>grillage_member_obj</strong> (<a class="reference internal" href="APIdoc.html#ospgrillage.members.GrillageMember" title="ospgrillage.members.GrillageMember"><em>GrillageMember</em></a>) – <cite>GrillageMember</cite> class object</p></li>
+<li><p><strong>member</strong> – str of member category - see below table for the available name strings</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p>ValueError If missing argument for member=</p>
 </dd>
 </dl>
 </dd></dl>

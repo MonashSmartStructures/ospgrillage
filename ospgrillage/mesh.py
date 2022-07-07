@@ -15,7 +15,9 @@ from collections import namedtuple
 
 def create_point(**kwargs):
     """
-    User interface function to create a point named tuple
+    User interface function to create a point named tuple - this is used in defining positions such as loads for
+    example.
+
     :keyword:
 
     * x (`float` or `int`): x coordinate
@@ -37,7 +39,7 @@ Point = namedtuple("Point", ["x", "y", "z"])
 class Mesh:
     """
     Base class for mesh class. The class holds information pertaining the mesh group such as element connectivity and nodes
-    of the mesh object. Positional arguments are handled by OspGrillage class.
+    of the mesh object. Positional arguments are handled by :class:`~ospgrillage.osp_grillage.OspGrillage` class.
 
     .. note::
 
@@ -121,29 +123,28 @@ class Mesh:
         self.curve_center = []
         self.curve_radius = []
         # init line / circle equation variables
-        self.m = 0
-        self.c = 0
-        self.r = 0
-        self.R = 0
+        self.m = 0  # gradient of linear line eq for sweep path
+        self.c = 0  # local y (global x) interp of line for sweep path
+        self.r = 0  # radius of arch for swee line
+        self.R = 0  # centre of circle
         self.d = None  # list of circle centre and circle radius [ c, r]
-        # meshing properties
+        # variables for meshing
         if mesh_origin is None:
             self.mesh_origin = [0, 0, 0]
         else:
             self.mesh_origin = mesh_origin  # default origin
-        # init meshing variables
         self.first_connecting_region_nodes = []
         self.end_connecting_region_nodes = []
         self.sweep_nodes = []
         self.z_group_recorder = []
         # quad elements flag
-        self.quad_ele = quad_ele
+        self.quad_ele = quad_ele  # bool
         # get custom rigid link parameters - for future feature of beam_link model
         self.rigid_dist_y = kwargs.get("rigid_dist_y")
         self.rigid_dist_z = kwargs.get("rigid_dist_z")
         self.rigid_dist_x = kwargs.get("rigid_dist_x")
         # ---------------------------------------------------------------------------------------------
-        # var pertaining multi span feature
+        # vars for multi span feature
         # list containing length (x) for each nth span, default creates a list of single element based on long_dim
         self.multi_span_dist_list = kwargs.get("multi_span_dist_list", [self.long_dim])
         # list of number of transverse beams in each span, default set num_trans_beam to each span if not provided
@@ -159,7 +160,7 @@ class Mesh:
             "non_cont_spacing_x", None
         )  # spacing between mesh of each spans
 
-        # init storing vars for multi span
+        # to store positions and points of spans
         self.mesh_edge_x_positions = [
             sum(self.multi_span_dist_list[:n])
             for n in range(len(self.multi_span_dist_list) + 1)
@@ -174,7 +175,9 @@ class Mesh:
                 "one multi_span_dist in list and non continuous option"
             )
 
-        # preprocess incorporate stitch element spacings to multi span edge points x
+        # preprocess to incorporate stitch element spacings to multi span edge points x
+        # node at support point is split into two (equally in both sides in x directions) nodes, which are assigned
+        # as supports later on. Stitch elements are subsequently assigned between the two new nodes.
         if not self.continuous and self.stitch_element_spacing_x:
             for i, x_point in enumerate(self.mesh_edge_x_positions):
                 # search intermediate support points
@@ -186,12 +189,12 @@ class Mesh:
                     self.mesh_edge_x_positions_non_cont.append(right)
             self.mesh_edge_x_positions_non_cont.append(self.mesh_edge_x_positions[-1])
 
-        # dict to store x groups (val) in respective span number (key)
+        # init dict to store x groups (val) into respective span group (key)
         self.span_group_to_x_groups = {
             key: [] for key in range(len(self.mesh_edge_x_positions) - 1)
         }
 
-        # custom transverse member spacings
+        # for custom transverse member spacings
         self.transverse_mbr_x_spacing_list = kwargs.get("beam_x_spacing", None)
 
         # check inputs
@@ -202,7 +205,7 @@ class Mesh:
 
         # ------------------------------------------------------------------------------------------
         # Create sweep path obj
-        self.sweep_path = SweepPath(self.pt1, self.pt2, self.pt3, **kwargs)
+        self.sweep_path = SweepPath(pt1=self.pt1, pt2=self.pt2, pt3=self.pt3, **kwargs)
         (
             self.zeta,
             self.m,
@@ -238,6 +241,7 @@ class Mesh:
             edge_angle=self.skew_1,
             num_long_beam=self.num_long_beam,
             model_plane_y=self.y_elevation,
+            sweep_path = self.sweep_path,
             **kwargs
         )
         # intermediate construction lines for
@@ -257,6 +261,7 @@ class Mesh:
             edge_angle=self.skew_2,
             num_long_beam=self.num_long_beam,
             model_plane_y=self.y_elevation,
+            sweep_path=self.sweep_path,
             **kwargs
         )
         # ------------------------------------------------------------------------------------------
@@ -301,14 +306,19 @@ class Mesh:
         self._mesh_grillage()
 
     def _create_custom_transverse_spacings(self):
+        # populate nox with custom spacing provided by users
         self.nox = [0]
         for x_dist in self.transverse_mbr_x_spacing_list:
             self.nox.append(self.nox[-1] + x_dist)
 
     def _create_transverse_spacings(self):
-        # loop through the first to nth span
+        # loop through each span group
         for i, num_x_point in enumerate(self.multi_span_num_points):
             # TODO check if straight line or equation of arc
+            if self.sweep_path.curve_path:  # if curve
+                pass
+            else:
+                pass
             # arc
 
             # straight line
@@ -362,6 +372,7 @@ class Mesh:
         return EdgeControlLine(**kwargs)
 
     # ------------------------------------------------------------------------------------------
+
     # main meshing algorithms (straight mesh)
     def _fixed_sweep_node_meshing(self):
         assigned_node_tag = []
@@ -439,51 +450,61 @@ class Mesh:
                 self.global_edge_count += 1
             elif x_count > 0:
                 # create longitudinal elements
-                for pre_node in previous_node_tag:
-                    for cur_node in assigned_node_tag:
-                        cur_z_group = self.node_spec[cur_node]["z_group"]
-                        prev_z_group = self.node_spec[pre_node]["z_group"]
+
+                for previous_node in previous_node_tag:
+                    for current_node in assigned_node_tag:
+                        current_z_group = self.node_spec[current_node]["z_group"]
+                        previous_z_group = self.node_spec[previous_node]["z_group"]
+                        current_x_group = self.node_spec[current_node]["x_group"]
+                        previous_x_group = self.node_spec[previous_node]["x_group"]
                         # check for non-continuous, if elements are between two support points,
                         # either: (1) do not assign long ele or (2) assign a connector beam element to represent
                         # some form of continuity e.g. stitch slabs
+                        previous_x_span_group= [key for key,value in self.span_group_to_x_groups.items() if previous_x_group in value][0]
+                        current_x_span_group= [key for key,value in self.span_group_to_x_groups.items() if current_x_group in value][0]
 
-                        if cur_z_group == prev_z_group:
-                            if not self.continuous and self.stitch_element_spacing_x:
-                                # create beam element between supports
-                                x_start = self.node_spec[cur_node]["coordinate"][0]
-                                x_end = self.node_spec[pre_node]["coordinate"][0]
-                                if (
-                                    x_start in self.mesh_edge_x_positions_non_cont
-                                    and x_end in self.mesh_edge_x_positions_non_cont
-                                ):
-                                    # assign a connector beam element between non-continuous span supports
-                                    tag = self._get_geo_transform_tag(
-                                        [pre_node, cur_node]
-                                    )
+                        if current_z_group == previous_z_group:
+                            tag = self._get_geo_transform_tag(
+                                [previous_node, current_node]
+                            )
+                            if not previous_x_span_group == current_x_span_group:
+                                # current step is in between two span groups
+                                # check to either create
+                                if not self.continuous and self.stitch_element_spacing_x:
+                                    # create beam element between supports
+                                    x_start = self.node_spec[current_node]["coordinate"][0]
+                                    x_end = self.node_spec[previous_node]["coordinate"][0]
+
                                     self.connect_ele.append(
                                         [
                                             self.element_counter,
-                                            pre_node,
-                                            cur_node,
-                                            cur_z_group,
+                                            previous_node,
+                                            current_node,
+                                            current_z_group,
                                             tag,
                                         ]
                                     )
-                                    self.element_counter += 1
+                                else:
+                                    self.long_ele.append(
+                                        [
+                                            self.element_counter,
+                                            previous_node,
+                                            current_node,
+                                            current_z_group,
+                                            tag,
+                                        ]
+                                    )
 
-                                    # check
-                                    break
-
-                            tag = self._get_geo_transform_tag([pre_node, cur_node])
-                            self.long_ele.append(
-                                [
-                                    self.element_counter,
-                                    pre_node,
-                                    cur_node,
-                                    cur_z_group,
-                                    tag,
-                                ]
-                            )
+                            else:
+                                self.long_ele.append(
+                                    [
+                                        self.element_counter,
+                                        previous_node,
+                                        current_node,
+                                        current_z_group,
+                                        tag,
+                                    ]
+                                )
                             self.element_counter += 1
                             break  # break assign long ele loop (cur node)
                 # here updates the record for previous node tag step
@@ -517,6 +538,9 @@ class Mesh:
         if np.abs(self.skew_1 + self.zeta) < self.skew_threshold[0]:
             # if angle less than threshold, assign nodes of edge member as it is
             current_sweep_nodes = self.start_edge_line.node_list
+            # if curve mesh, rotate the edge sweep nodes
+            current_sweep_nodes = self._rotate_edge_sweep_nodes(current_sweep_nodes)
+
             for (z_count_int, nodes) in enumerate(current_sweep_nodes):
                 x_inc = start_point_x
                 z_inc = start_point_z
@@ -692,6 +716,20 @@ class Mesh:
         if np.abs(self.skew_2 + self.zeta) < self.skew_threshold[0]:
             # if angle less than threshold, assign nodes of edge member as it is
             current_sweep_nodes = self.end_edge_line.node_list
+
+            # get angle #TODO not generalized, improve here
+            current_angle = - self.sweep_path.get_cartesian_angle(end_point_x)
+            # rotate all about point x,z
+            current_sweep_nodes = self._rotate_points(ref_point=current_sweep_nodes[0],
+                                                      rotating_point_list=current_sweep_nodes, angle=current_angle)
+
+
+
+            # edge_angle = self.sweep_path.get_cartesian_angle(x=end_point_x)
+            # # if curve mesh, rotate the edge sweep nodes
+            # #current_sweep_nodes = self._rotate_sweep_nodes(-edge_angle)
+            # current_sweep_nodes = self._rotate_edge_sweep_nodes(current_sweep_nodes,angle=-edge_angle)
+
             for (z_count_int, nodes) in enumerate(current_sweep_nodes):
                 x_inc = 0  # end_point_x
                 z_inc = 0  # end_point_z
@@ -747,6 +785,7 @@ class Mesh:
                 m_prime, phi = get_slope(
                     [ref_point_x, self.y_elevation, ref_point_z], int_point
                 )
+
                 # rotate sweep line such that parallel to m' line
                 current_sweep_nodes = self._rotate_sweep_nodes(np.pi / 2 - np.abs(phi))
                 # get z group of first node in current_sweep_nodes - for correct assignment in loop
@@ -860,15 +899,22 @@ class Mesh:
         for z_count, x in enumerate(self.uniform_region_x[1:-1]):
             # get slope, m at current point x
             z = self.sweep_path.get_line_function(x)
-            # z = line_func(self.sweep_path.m, self.sweep_path.c, x)
-            current_sweep_nodes = self._rotate_sweep_nodes(
-                self.zeta / 180 * np.pi
-            )  # rotating sweep nodes @ origin
+            # get sweep nodes
+            current_sweep_nodes = self.sweeping_nodes
+            # shift all points by +x and +z
+            shift_sweep_nodes = [[point[0] + x, point[1], point[2]+ z] for point in current_sweep_nodes]
+            # get angle #TODO not generalized, improve here
+            current_angle = - self.sweep_path.get_cartesian_angle(x)
+            # rotate all about point x,z
+            current_sweep_nodes = self._rotate_points(ref_point=shift_sweep_nodes[0],
+                                                      rotating_point_list=shift_sweep_nodes,angle=current_angle)
+
+            #current_sweep_nodes = self._rotate_edge_sweep_nodes(current_sweep_nodes, angle=-current_angle)
+            # rotating sweep nodes about current nox increment point of uniform region
             # if angle less than threshold, assign nodes of edge member as it is
             for (z_count_int, nodes) in enumerate(current_sweep_nodes):
-                x_inc = x
-                z_inc = z
-                node_coordinate = [nodes[0] + x_inc, nodes[1], nodes[2] + z_inc]
+
+                node_coordinate = [nodes[0], nodes[1], nodes[2]]
                 self.node_spec.setdefault(
                     self.node_counter,
                     {
@@ -1350,22 +1396,50 @@ class Mesh:
         sweep_nodes_x = [0] * len(
             self.noz
         )  # line is orthogonal at the start of sweeping path
+        arc_origin_x = self.sweep_path.curve_center_xz[0] if self.sweep_path.curve_path else self.mesh_origin[0]
+        arc_origin_z = self.sweep_path.curve_center_xz[1] if self.sweep_path.curve_path else self.mesh_origin[2]
         # rotate for inclination at origin
         sweep_nodes_x = [
-            x * np.cos(zeta) - y * np.sin(zeta) for x, y in zip(sweep_nodes_x, self.noz)
+            (x-arc_origin_x) * np.cos(zeta) - (y-arc_origin_z) * np.sin(zeta) for x, y in zip(sweep_nodes_x, self.noz)
         ]
         sweep_nodes_z = [
-            y * np.cos(zeta) + x * np.sin(zeta) for x, y in zip(sweep_nodes_x, self.noz)
+            (y-arc_origin_z) * np.cos(zeta) + (x-arc_origin_x) * np.sin(zeta) for x, y in zip(sweep_nodes_x, self.noz)
         ]
 
         sweeping_nodes = [
-            [x + self.mesh_origin[0], y + self.mesh_origin[1], z + self.mesh_origin[2]]
+            [x + arc_origin_x, y + self.mesh_origin[1], z + arc_origin_z]
             for x, y, z in zip(
                 (sweep_nodes_x), [self.y_elevation] * len(self.noz), sweep_nodes_z
             )
         ]
 
         return sweeping_nodes
+
+    def _rotate_edge_sweep_nodes(self, current_sweep_nodes, angle=0):
+        # checks if sweep path is a curve path. If yes, rotate all points of the current sweep nodes by the angle
+        # of the ref point on the circle arc.
+        # note this is a 2D rotation involving axis x and z.
+        current_sweep_nodes_rotated = current_sweep_nodes
+        if self.sweep_path.curve_path:
+            place_holder = [rotate_point_about_point(center_x=self.sweep_path.curve_center_xz[0],
+                                                                    center_y=self.sweep_path.curve_center_xz[1],
+                                                                    angle=angle,
+                                                                    point=[point[0], point[2]]) for point in
+                                                        current_sweep_nodes]
+            current_sweep_nodes_rotated = [[rotate[0] , y_coord[1], rotate[1]] for (rotate,y_coord) in zip(place_holder,current_sweep_nodes)]
+        return current_sweep_nodes_rotated
+
+    def _rotate_points(self, ref_point:list,rotating_point_list:list,angle=0):
+        current_sweep_nodes_rotated = rotating_point_list
+        if self.sweep_path.curve_path:
+            place_holder = [rotate_point_about_point(center_x=ref_point[0],
+                                                     center_y=ref_point[2],
+                                                     angle=angle,
+                                                     point=[point[0], point[2]]) for point in
+                            rotating_point_list]
+            current_sweep_nodes_rotated = [[rotate[0], y_coord[1], rotate[1]] for (rotate, y_coord) in
+                                           zip(place_holder, rotating_point_list)]
+        return current_sweep_nodes_rotated
 
     def _search_x_point(self, int_point, start_point_y=0, line_function=None):
         start_point_x = int_point[0]
@@ -1406,11 +1480,6 @@ class Mesh:
         return start_point_x, z0
 
     # ------------------------------------------------------------------------------------------
-    # curve meshing algorithm
-
-    def _mesh_curve(self):
-        # TODO
-        pass
 
 
 class EdgeControlLine:
@@ -1440,7 +1509,7 @@ class EdgeControlLine:
         self.num_long_beam = num_long_beam
         self.edge_angle = edge_angle
         self.feature = feature  # for future variants of edge control lines
-
+        self.sweep_path_obj:SweepPath = kwargs.get("sweep_path",None)
         # for shell
         self.z_group_master_pair_list = []
         self.node_z_pair_list_value = []
@@ -1564,6 +1633,11 @@ class ShellEdgeControlLine(EdgeControlLine):
         self.max_mesh_size_x = kwargs.get(
             "max_mesh_size_x"
         )  # information from kwargs of Shellmodel class
+
+        # check inputs
+        if not self.beam_width:
+            raise Exception("beam_width kwarg required")
+
         super().__init__(
             edge_ref_point,
             width_z,
@@ -1629,95 +1703,123 @@ class ShellEdgeControlLine(EdgeControlLine):
 class SweepPath:
     """
     Main class for sweep path. Sweep path is assigned to an EdgeControlLine class in order to create mesh of nodes
-    across its path. The constuctor is handled by Mesh classes ( either base or concrete classes)
+    across its path. The constructor is handled by Mesh classes ( either base or concrete classes)
     """
 
-    def __init__(self, pt1: Point, pt2: Point, pt3: Point = None, **kwargs):
+    def __init__(self, pt1: Point, pt2: Point, **kwargs):
         """
 
         :param pt1: Namedtuple Point of first coordinate
         :param pt2: Namedtuple Point of second coordinate
-        :param pt3: Namedtuple Point of third coordinate
+
         """
         self.pt1 = pt1  # default first
         self.pt2 = pt2  # default second / last for linear line
-        self.pt3 = pt3  # default mid point of a curved line defined using 3 points
+
         self.decimal_lim = 4
 
         # properties for curve sweep path - obtained from kwargs
-        self.curve_path_dict: dict = kwargs.get("curve_path_dict", None)
+        self.curve_path = False
+        self.mesh_radius = kwargs.get("mesh_radius", None)
+        if self.mesh_radius:
+            self.curve_path = True
+            self.curve_center_xz = [0, -self.mesh_radius]
 
+        self.d = None  # list containing [r, Center] of arch
         # instantiate variables
         self.zeta = None
         self.m = None
-        self.c = 0  # Default:0 , sweep path intersects origin
+        self.c = 0  # list of circle centre and circle radius [ c, r]
 
     def get_sweep_line_properties(self):
         """
         Parse input to get Straight sweep line properties
 
         """
-        if self.pt3 is not None:
-            try:
-                self.d = find_circle(
-                    x1=0,
-                    y1=0,
-                    x2=self.pt2.x,
-                    y2=self.pt2.z,
-                    x3=self.pt3.x,
-                    y3=self.pt3.z,
-                )  # [[h,v] , r]
-
-            except ZeroDivisionError:
-                return Exception(
-                    "Zero div error. Point 3 not valid to construct curve line"
-                )
-            # procedure
-            # get tangent at origin
-            self.zeta = 0
-            # get tangent at end of curve line (intersect with second construction line)
-
-        else:
+        # if self.pt3 is not None:
+        #     try:
+        #         self.d = find_circle(
+        #             x1=0,
+        #             y1=0,
+        #             x2=self.pt2.x,
+        #             y2=self.pt2.z,
+        #             x3=self.pt3.x,
+        #             y3=self.pt3.z,
+        #         )  # [[h,v] , r]
+        #
+        #     except ZeroDivisionError:
+        #         return Exception(
+        #             "Zero div error. Point 3 not valid to construct curve line"
+        #         )
+        #     # procedure
+        #     # get tangent at origin
+        #     self.zeta = 0
+        #     # get tangent at end of curve line (intersect with second construction line)
+        #
+        # else:
             # construct straight line sweep path instead
-            self.d = None
-            # procedure to identify straight line segment pinpointing length of grillage
-            points = [(self.pt1.x, self.pt1.z), (self.pt2.x, self.pt2.z)]
-            x_coords, y_coords = zip(*points)
-            A = np.vstack([x_coords, np.ones(len(x_coords))]).T
-            m, c = np.linalg.lstsq(A, y_coords, rcond=None)[0]
-            self.m = round(m, self.decimal_lim)
-            # self.c = 0  # default 0  to avoid arithmetic error
-            zeta = np.arctan(
-                m
-            )  # initial angle of inclination of sweep line about mesh origin
-            self.zeta = zeta / np.pi * 180  # rad to degrees
+
+        # procedure to identify straight line segment pinpointing length of grillage
+        points = [(self.pt1.x, self.pt1.z), (self.pt2.x, self.pt2.z)]
+        x_coords, y_coords = zip(*points)
+        A = np.vstack([x_coords, np.ones(len(x_coords))]).T
+        m, c = np.linalg.lstsq(A, y_coords, rcond=None)[0]
+        self.m = round(m, self.decimal_lim)
+        # self.c = 0  # default 0  to avoid arithmetic error
+        zeta = np.arctan(
+            m
+        )  # initial angle of inclination of sweep line about mesh origin
+        self.zeta = zeta / np.pi * 180  # rad to degrees
 
         return self.zeta, self.m, self.c
 
     def get_line_function(self, x):
-        if not self.curve_path_dict:
+        """
+        Returns the y position of a linear equation given x.
+        """
+        if not self.mesh_radius:
             # straight line
-            return line_func(self.m, self.c, x)
-        else:
+            return line_func(m=self.m, c=self.c, x=x)
+        elif self.mesh_radius:
             # TODO for curve line
-            r = self.curve_path_dict["radius"]  # radius of sector
-            angle = self.curve_path_dict["angle"]  # angle sector
-            cartesian_angle = 90 - angle
-            rotation = self.curve_path_dict[
-                "rotation"
-            ]  # rotating direction, num either 1 or 0 [
-            # determine end point x, z of path
-            if rotation > 0:
-                curve_center_xz = [0, -r]  # curve centre x and z are 0
-            else:
-                curve_center_xz = [0, r]  # curve centre x and z are 0
+            # r = self.curve_path_dict["radius"]  # radius of sector
+            # angle = self.curve_path_dict["angle"]  # angle sector
+            # cartesian_angle = 90 - angle
+            # rotation = self.curve_path_dict[
+            #     "rotation"
+            # ]  # rotating direction, num either 1 or 0 [
+            # # determine end point x, z of path
+            # if rotation > 0:
+            #     curve_center_xz = [0, -r]  # curve centre x and z are 0
+            # else:
+            #     curve_center_xz = [0, r]  # curve centre x and z are 0
 
-            return arc_func(
-                h=curve_center_xz[0], v=curve_center_xz[0], R=curve_center_xz[1], x=x
-            )
+            return line_func(h=self.curve_center_xz[0], v=self.curve_center_xz[1], R=self.curve_center_xz[1], x=x,)
 
-            # determine length of arc
+    def get_tangent_gradient(self, x):
+        # get the tangent gradient at point x , where point x lies on a circle described by center self.curve_center_xz
+        # and radius (self.mesh_radius).
+        if self.mesh_radius:
+            # curve point, get tangente
+            y = line_func(h=self.curve_center_xz[0], v=self.curve_center_xz[0], R=self.curve_center_xz[1], x=x)
+            m_hat = (y - self.curve_center_xz[1]) / (x - self.curve_center_xz[0])
+            m = - 1/m_hat
 
+        else:
+            # straight line
+            m = self.m
+
+        return m
+
+    def get_cartesian_angle(self, x):
+        # return the angle taking the vertical axis as the origin/zero ( left of axis is negative magnitude,
+        # right positive). equation based on alpha, where point on the circle/arc has coordinate described as [r sin
+        # alpha - circle_x_center, r cos alpha - circle_y_center] ' , note alpha angle in radians
+        alpha = 0
+        if self.mesh_radius:
+            alpha = np.arcsin((x - self.curve_center_xz[0] )/ self.mesh_radius)
+
+        return alpha
 
 # ---------------------------------------------------------------------------------------------------------------------
 # concrete classes of Mesh

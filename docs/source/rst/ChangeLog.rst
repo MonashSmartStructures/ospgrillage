@@ -1,8 +1,17 @@
 ==============
-Change Log
+Releases
 ==============
 
-*  Version Alpha (Nov 2021)
+Here are the change logs of `ospgrillage`. Full details of commit logs can be found in
+the `commit logs <https://github.com/MonashSmartStructures/ospgrillage/commits/main>`_
 
-*  Version 0.1.0 (2021)
-   First version release
+
+.. toctree::
+   :maxdepth: 1
+
+   release 0.1.1 (Feb 2022)
+   release 0.1.0 (Nov 2021)
+
+
+
+

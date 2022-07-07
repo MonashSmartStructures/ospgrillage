@@ -195,7 +195,7 @@ class OspGrillage:
         # prefix index of members after longitudinal members
         self.long_member_index = 4  # 0,1,2,3 correspond to edge, ext_a, interior_beam,
         # dict storing information
-        self.common_grillage_element = dict()  # of common grillage
+        self.common_grillage_element_z_group = dict()  # of common grillage
         self.section_dict = {}  # of section tags
         self.material_dict = {}  # of material tags
         # variables related to analysis - which can be unique to element/material/ types
@@ -266,6 +266,13 @@ class OspGrillage:
         self.model_type = kwargs.get(
             "model_type", "beam_only"
         )  # accepts int type 1 or 2
+
+        # for curve mesh
+        self.mesh_radius = kwargs.get("mesh_radius", None)
+        # check inputs
+        if self.mesh_radius:
+            if self.mesh_radius < self.long_dim:
+                raise Exception("mesh_radius must be greater than long_dim of grillage")
 
         # create mesh object of grillage
         self.Mesh_obj = self._create_mesh(
@@ -516,7 +523,6 @@ class OspGrillage:
             else:  # indices correspondence . 0 - x , 1 - y, 2 - z
                 eval(node_str)
                 self.model_command_list.append(node_str)
-                # ops.node(nested_v["tag"], coordinate[0], coordinate[1], coordinate[2])
 
     def _write_op_fix(self, mesh_obj):
         """
@@ -677,10 +683,10 @@ class OspGrillage:
             self.common_grillage_element_keys[0 : self.long_member_index],
             sort_list_into_four_groups(self.Mesh_obj.model_plane_z_groups).values(),
         ):
-            self.common_grillage_element.update({key: val})
+            self.common_grillage_element_z_group.update({key: val})
         # populate start edge and end edge entries
-        self.common_grillage_element[self.common_grillage_element_keys[4]] = [0]
-        self.common_grillage_element[self.common_grillage_element_keys[5]] = [1]
+        self.common_grillage_element_z_group[self.common_grillage_element_keys[4]] = [0]
+        self.common_grillage_element_z_group[self.common_grillage_element_keys[5]] = [1]
 
     # interface function
     def set_member(self, grillage_member_obj: GrillageMember, member=None):
@@ -782,7 +788,7 @@ class OspGrillage:
                     )
                     ele_command_list.append(ele_str)
             elif member == "start_edge" or member == "end_edge":
-                for edge_group in self.common_grillage_element[member]:
+                for edge_group in self.common_grillage_element_z_group[member]:
                     for edge_ele in self.Mesh_obj.edge_group_to_ele[edge_group]:
                         edge_ele_width = 0.5  # nominal half -m width
                         node_tag_list = [edge_ele[1], edge_ele[2]]
@@ -799,7 +805,7 @@ class OspGrillage:
         else:  # non-unit width member assignment
             # if start and end edge elements
             if member == "start_edge" or member == "end_edge":
-                for edge_group in self.common_grillage_element[member]:
+                for edge_group in self.common_grillage_element_z_group[member]:
                     ele_command_list += self._get_element_command_list(
                         grillage_member_obj=grillage_member_obj,
                         list_of_ele=self.Mesh_obj.edge_group_to_ele[edge_group],
@@ -826,7 +832,7 @@ class OspGrillage:
                 )
 
             else:  # longitudinal members
-                for z_group in self.common_grillage_element[member]:
+                for z_group in self.common_grillage_element_z_group[member]:
                     ele_command_list += self._get_element_command_list(
                         grillage_member_obj=grillage_member_obj,
                         list_of_ele=self.Mesh_obj.z_group_to_ele[z_group],
@@ -1796,6 +1802,11 @@ class OspGrillage:
         # get run options from kwargs
         all_flag = True  # Default true
         selected_load_case: list = kwargs.get("load_case", None)  #
+
+        # check if any load cases are defined
+        if self.load_case_list == [] and self.moving_load_case_dict == {}:
+            raise Exception("No load cases were defined")
+
         if selected_load_case:
             all_flag = False  # overwrite all flag to be false
         selected_moving_load_lc_list = None
@@ -2164,13 +2175,13 @@ class OspGrillage:
             extracted_ele = self.Mesh_obj.trans_ele
             # TODO
         elif namestring == "start_edge" or namestring == "end_edge":
-            for edge_group in self.common_grillage_element[namestring]:
+            for edge_group in self.common_grillage_element_z_group[namestring]:
                 extracted_ele = self.Mesh_obj.edge_group_to_ele[edge_group]
             if options == node_option:
                 sorted_return_list = [
                     key
                     for key, val in self.Mesh_obj.edge_node_recorder.items()
-                    if val == self.common_grillage_element[namestring][0]
+                    if val == self.common_grillage_element_z_group[namestring][0]
                 ]
             elif options == element_option:
 
@@ -2178,7 +2189,7 @@ class OspGrillage:
         else:  # longitudinal members
             extracted_ele = [
                 self.Mesh_obj.z_group_to_ele[num]
-                for num in self.common_grillage_element[namestring]
+                for num in self.common_grillage_element_z_group[namestring]
             ][select_z_group]
             if options == node_option:
                 first_list = [i[1] for i in extracted_ele]  # first list of nodes
@@ -2607,6 +2618,7 @@ class Results:
         ele_nodes_list = []
         base_ele_force_list_beam = []
         base_ele_force_list_shell = []
+        ele_tag = []
         # check if force option is global or local
         if local_force_option:
             basic_dict = self.basic_load_case_record
@@ -2916,9 +2928,9 @@ class OspGrillageShell(OspGrillage):
                 self.Mesh_obj.offset_z_groups, option="shell"
             ).values(),
         ):
-            self.common_grillage_element.update({key: val})
+            self.common_grillage_element_z_group.update({key: val})
         # update edge beam groups' value
-        self.common_grillage_element.update(
+        self.common_grillage_element_z_group.update(
             {
                 self.common_grillage_element_keys[0]: [
                     self.Mesh_obj.model_plane_z_groups[0],
@@ -2928,6 +2940,73 @@ class OspGrillageShell(OspGrillage):
         )
 
     # ----------------------------------------------------------------------------------------------------------------
+    # interface function
+    def set_member(self, grillage_member_obj: GrillageMember, member=None):
+        """
+        Function to set grillage member class object to elements of grillage members.
+
+        :param grillage_member_obj: `GrillageMember` class object
+        :type grillage_member_obj: GrillageMember
+        :param member: str of member category - see below table for the available name strings
+        :type member: str
+
+
+         =====================================    ======================================
+         Standard grillage elements name str      Description
+         =====================================    ======================================
+          edge_beam                               Elements along x axis at top and bottom edges of mesh (z = 0, z = width)
+          exterior_main_beam_1                    Elements along first grid line after bottom edge (z = 0)
+          interior_main_beam                      For all elements in x direction between grid lines of exterior_main_beam_1 and exterior_main_beam_2
+          exterior_main_beam_1                    Elements along first grid line after top edge (z = width)
+         =====================================    ======================================
+
+
+        :raises: ValueError If missing argument for member=
+        """
+        if self.diagnostics:
+            print("Setting member: {} of model".format(member))
+        if member is None:
+            raise ValueError(
+                "Missing target elements of grillage model to be assigned. Hint, member="
+            )
+        # check and write member's section command
+        section_tag = self._write_section(grillage_member_obj)
+        # check and write member's material command
+        material_tag = self._write_material(member=grillage_member_obj)
+        # dictionary for key = common member tag, val is list of str for ops.element()
+        ele_command_dict = dict()
+        ele_command_list = []
+        # if option for pyfile is True, write the header for element group commands
+        if self.pyfile:
+            with open(self.filename, "a") as file_handle:
+                file_handle.write(
+                    "# Element generation for member: {}\n".format(member)
+                )
+
+        # check if assign GrillageMember obj has unit width flagged True
+        if grillage_member_obj.section.unit_width:
+            raise Exception("GrillageMember obj for", grillage_member_obj, "flagged with unit_width feature = True is"
+                                                                           "not acceptable for shell model ")
+        else:  # assign to longitudinal beam members
+            for z_group in self.common_grillage_element_z_group[member]:
+                ele_command_list += self._get_element_command_list(
+                    grillage_member_obj=grillage_member_obj,
+                    list_of_ele=self.Mesh_obj.z_group_to_ele[z_group],
+                    material_tag=material_tag,
+                    section_tag=section_tag,
+                )
+        # store into dict or replace existing
+        ele_command_dict[member] = ele_command_list
+        if member in [keys_name.keys() for keys_name in self.element_command_list]:
+            # if already defined, remove the previous element commands for the common element groups
+            replace_tag = [
+                i
+                for i, keys_name in enumerate(self.element_command_list)
+                if member in keys_name.keys()
+            ][0]
+            self.element_command_list.pop(replace_tag)
+        self.element_command_list.append(ele_command_dict)
+
     # functions specific to Shell model class
     def set_shell_members(
         self, grillage_member_obj: GrillageMember, quad=True, tri=False

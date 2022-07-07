@@ -9,13 +9,14 @@ module of OpenSeesPy - this module fills in gaps to
 
 import matplotlib.pyplot as plt
 import opsvis as opsv
+import numpy as np
 
 import openseespyvis.Get_Rendering as opsplt
 
 
 def create_envelope(**kwargs):
     """
-    User interface function to create envelopes from data array
+    Interface for users to create an :class:`Envelope` object.
 
     The constructor takes an `xarray` DataSet and kwargs for enveloping options.
 
@@ -41,21 +42,24 @@ def create_envelope(**kwargs):
 
 class Envelope:
     """
-    Main class for envelope. This class takes a
-    :class:`~ospgrillage.osp_grillage.OspGrillage` result `xarray`, enveloping the
-    `xarray` based on user options, return a modified `xarray`.
+    Class for defining envelope of :class:`~ospgrillage.osp_grillage.OspGrillage`'s
+    `xarray` of result.
+
+    A :func:`Envelope.get` method is provided that returns an enveloped `xarray` based
+    on the specified input parameters of this class.
+
 
     """
 
     def __init__(self, ds, load_effect: str = None, **kwargs):
         """
-        Inits the Envelope class. The constructor takes an `xarray` DataSet and kwargs
-        for enveloping options.
 
         :param ds: Data set from
                    :func:`~ospgrillage.osp_grillage.OspGrillage.get_results` . note Combination
         :type ds: Xarray
-        :param kwargs: See below.
+        :param load_effect: Specific load effect to envelope.
+        :type load_effect: str
+        :param kwargs: See below for keyword arguments.
 
         :keyword:
 
@@ -162,8 +166,9 @@ class Envelope:
 
     def get(self):
         """
-        Function to return envelope of xarray given data set and enveloping options
-        :return:
+
+        :return: The enveloped `xarray` object.
+        :rtype: xarray
         """
 
         return eval(self.format_string)
@@ -178,8 +183,13 @@ def plot_force(
     loadcase: str = None,
 ):
     """
-    Function to plot 2D diagrams from force component of specific elements from results
-    xarray DataSet. For "shell" model, plot results of beam
+    Plots a force diagram of the provided :class:`~ospgrillage.osp_grillage.OspGrillage` and
+    :class:`xarray` (result) objects for a specified `component` and
+    :class:`~ospgrillage.load.LoadCase`'s.
+
+    .. note::
+        For "shell_beam" model type, the function only plots the force diagrams for beam elements only.
+
 
     :param ospgrillage_obj: Grillage model object
     :type ospgrillage_obj: OspGrillage
@@ -195,7 +205,7 @@ def plot_force(
                      xarray loadcase coordinate
     :type loadcase: str
     :return: Matplotlib figure
-    :rtype: (:class:`matplotlib.figure.Figure`)
+    :rtype: (:class:`~matplotlib.figure.Figure`)
     """
     # instantiate component dict
     comp_dict = {"Fx": 0, "Fy": 1, "Fz": 2, "Mx": 3, "My": 4, "Mz": 5}
@@ -258,7 +268,16 @@ def plot_force(
                 ],
             )[0].values
         # get nodes of ele
-        ele_node = result_obj.ele_nodes.sel(Element=ele)
+        if ospgrillage_obj.model_type == "shell_beam":
+            ele_node = result_obj.ele_nodes_shell.sel(Element=ele)
+            if all(np.isnan(result_obj.ele_nodes_shell.sel(Element=ele))):
+                ele_node = result_obj.ele_nodes_beam.sel(Element=ele)
+            # remove nans elements in the 4 node list (shell) for beam (2 elements)
+            ele_node = ele_node[~np.isnan(ele_node)]
+        else:
+            ele_node = result_obj.ele_nodes.sel(Element=ele)
+
+
         # create arrays for x y and z for plots
         xx = [nodes[n]["coordinate"][0] for n in ele_node.values]
         yy = [nodes[n]["coordinate"][1] for n in ele_node.values]
@@ -291,8 +310,13 @@ def plot_defo(
     loadcase: str = None,
 ):
     """
-    Function to plot 2D diagrams of displacement components of specific grillage element
-    from result xarray DataSet
+    Plots displacements of the provided :class:`~ospgrillage.osp_grillage.OspGrillage` and
+    :class:`xarray` (result) objects for a specified `component` and
+    :class:`~ospgrillage.load.LoadCase`'s.
+
+    .. note::
+        For "shell_beam" model type, the function only plots the force diagrams for beam elements only.
+
 
     :param ospgrillage_obj: Grillage model object
     :type ospgrillage_obj: OspGrillage
@@ -309,7 +333,7 @@ def plot_defo(
                  xarray loadcase coordinate
     :type loadcase: str
     :return: Matplotlib figure
-    :rtype: (:class:`matplotlib.figure.Figure`)
+    :rtype: (:class:`~matplotlib.figure.Figure`)
     """
     # init vars
     previous_def = None
