@@ -277,7 +277,6 @@ def plot_force(
         else:
             ele_node = result_obj.ele_nodes.sel(Element=ele)
 
-
         # create arrays for x y and z for plots
         xx = [nodes[n]["coordinate"][0] for n in ele_node.values]
         yy = [nodes[n]["coordinate"][1] for n in ele_node.values]

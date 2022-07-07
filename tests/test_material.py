@@ -97,7 +97,9 @@ def test_create_material():
     expect_g = 384.615
     assert og.np.isclose(concrete_custom_wo_g.shear_modulus, expect_g, rtol=0.1)
 
-    concrete_custom_wo_rho = og.create_material(E=E, rho=rho)  # with missing G and rho input
+    concrete_custom_wo_rho = og.create_material(
+        E=E, rho=rho
+    )  # with missing G and rho input
     expect_v = 0.3
     assert og.np.isclose(concrete_custom_wo_g.poisson_ratio, expect_v, rtol=0.1)
     # concrete_ops = og.create_material(fpc=fpc,epsc0=epsc0,fpcu=fpcu,epsU=epsU)

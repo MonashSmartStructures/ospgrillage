@@ -243,7 +243,6 @@ def add_analysis_to_simple_grid(create_grillage):
     GPa = kilo * MPa
     simple_grid, bridge = create_grillage
 
-
     grid_prop = bridge["grid"]
     L = grid_prop["span"] * m  # span
     w = grid_prop["width"] * m  # width

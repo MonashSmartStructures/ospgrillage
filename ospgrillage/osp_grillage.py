@@ -2985,8 +2985,12 @@ class OspGrillageShell(OspGrillage):
 
         # check if assign GrillageMember obj has unit width flagged True
         if grillage_member_obj.section.unit_width:
-            raise Exception("GrillageMember obj for", grillage_member_obj, "flagged with unit_width feature = True is"
-                                                                           "not acceptable for shell model ")
+            raise Exception(
+                "GrillageMember obj for",
+                grillage_member_obj,
+                "flagged with unit_width feature = True is"
+                "not acceptable for shell model ",
+            )
         else:  # assign to longitudinal beam members
             for z_group in self.common_grillage_element_z_group[member]:
                 ele_command_list += self._get_element_command_list(
