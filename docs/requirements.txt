@@ -20,3 +20,4 @@ sphinxcontrib-jsmath
 sphinxcontrib-qthelp
 sphinxcontrib-serializinghtml
 pandoc
+markupsafe==2.0.1
