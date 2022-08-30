@@ -92,7 +92,7 @@ Furthermore, a workshop on `ospgrillage` was held on 30 November 2021 and the re
 # Acknowledgements
 
 The authors would like to thank all contributors of `ospgrillage`.
-In particular, the authors would like to thank Dr Mayer Melhem for his contributions to testing the package and producing illustrations for the documentation, including the `ospgrillage` logo.
+In particular, the authors would like to thank Dr. Mayer Melhem for his contributions to testing the package and producing illustrations for the documentation, including the `ospgrillage` logo.
 
 # References
 
