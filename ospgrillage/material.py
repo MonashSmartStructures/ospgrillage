@@ -201,7 +201,8 @@ class Material:
                 self.a3,
                 self.a4,
             ]
-
+        elif self.ops_mat_type == "Elastic":
+            self.op_mat_arg = [self.elastic_modulus]
         # TO ADD for MORE materials
 
         # check if None in entries
@@ -304,8 +305,9 @@ class Material:
         """
         # e.g. concrete01 or steel01
         mat_str = None
-        if self.ops_mat_type == "Concrete01" or self.ops_mat_type == "Steel01":
+        if self.ops_mat_type == "Concrete01" or self.ops_mat_type == "Steel01" or self.ops_mat_type == "Elastic":
             mat_str = 'ops.uniaxialMaterial("{type}", {tag}, *{vec})\n'.format(
                 type=self.ops_mat_type, tag=material_tag, vec=self.op_mat_arg
             )
+
         return mat_str
