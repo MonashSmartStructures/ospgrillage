@@ -44,6 +44,12 @@ Refer to [installation](https://monashsmartstructures.github.io/ospgrillage/rst/
 
 Check out our [contributing guide](https://github.com/MonashSmartStructures/ospgrillage/blob/main/.github/CONTRIBUTING.md) to learn more on contributing, coding rules, community Code of Conduct and more.
 
+## Citing
+
+If you use *ospgrillage* in you work, please cite the corresponding JOSS paper:
+
+Ngan J.W. and Caprani, C.C. (2022), "ospgrillage: A bridge deck grillage analysis preprocessor for OpenSeesPy", *Journal of Open Source Software*, 7(77), 4404, [doi.org/10.21105/joss.04404](https://doi.org/10.21105/joss.04404)
+
 
 # Capabilities
 
