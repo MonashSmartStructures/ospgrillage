@@ -175,6 +175,7 @@ def create_grillage():
         Iy=trans_prop["Iy"] * m4,
         Az=trans_prop["Az"] * m2,
         Ay=trans_prop["Ay"] * m2,
+        unit_width=True,
     )
 
     end_tranverse_section = ospg.create_section(

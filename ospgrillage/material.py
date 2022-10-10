@@ -162,10 +162,6 @@ class Material:
 
         # check poison ratio
         if not self.poisson_ratio:
-            print(
-                "Poisson's ratio not defined for general or custom OpenSeesPy material - a default value of 0.3 is"
-                "set inplace"
-            )
             self.poisson_ratio = 0.3
 
         # if G not defined, calculate using formula E/(2(1+v))
