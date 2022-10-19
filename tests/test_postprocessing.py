@@ -216,8 +216,8 @@ def test_plot_force(bridge_model_42_negative):
     # test functionality of plot_force and its output
     og.ops.wipeAnalysis()
     example_bridge = bridge_model_42_negative
-    #og.opsv.plot_model()
-    #og.plt.show()
+    # og.opsv.plot_model()
+    # og.plt.show()
     # create reference line load
     p = 10000
     p2 = 20000
@@ -297,7 +297,7 @@ def test_plot_force(bridge_model_42_negative):
     f = og.plot_force(
         ospgrillage_obj=example_bridge,
         result_obj=results,
-        component="Fy",
+        component="Mz",
         member="interior_main_beam",
         loadcase='single_moving_point at global position [4.00,0.00,3.00]'
     )
