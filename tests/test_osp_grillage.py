@@ -703,12 +703,12 @@ def test_multispan_with_ortho_40deg_skew(ref_bridge_properties):
     n_t = 11  # number of transverse members
     edge_dist = 1.05 * m  # distance between edge beam and first exterior beam
     bridge_name = "multi span showcase"
-    angle = -40  # degree
+    angle = 40  # degree
     mesh_type = "Ortho"
 
     # multispan specific vars
     spans = [10.67 * m, 10.67 * m, 10.67 * m]
-    nl_multi = [3, 5, 10]
+    nl_multi = [3, 3, 3]
     stich_slab_x_spacing = 1 * m
     stitch_slab_section = og.create_section(
         A=0.504 * m2,
@@ -743,6 +743,8 @@ def test_multispan_with_ortho_40deg_skew(ref_bridge_properties):
     variant_one_model.set_member(slab, member="transverse_slab")
     variant_one_model.set_member(exterior_I_beam, member="start_edge")
     variant_one_model.set_member(exterior_I_beam, member="end_edge")
+    variant_one_model.set_member(exterior_I_beam, member="end_edge",specific_group=2)
+    variant_one_model.set_member(exterior_I_beam, member="end_edge",specific_group=3)
 
     # variant_one_model.set_member(stich_slab, member="stitch_elements")
 

@@ -727,7 +727,7 @@ class OspGrillage:
             self.common_grillage_element_z_group.update({key: val})
         # populate start edge and end edge entries
         self.common_grillage_element_z_group[self.common_grillage_element_keys[4]] = [0]
-        self.common_grillage_element_z_group[self.common_grillage_element_keys[5]] = [2]
+        self.common_grillage_element_z_group[self.common_grillage_element_keys[5]] = list(range(1,self.Mesh_obj.global_edge_count))
         self.common_grillage_element_z_group[self.common_grillage_element_keys[6]] = [
             0]  # proxy 0 for set_member() loop
 

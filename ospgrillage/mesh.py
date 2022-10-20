@@ -555,7 +555,9 @@ class Mesh:
     def _assign_node_coordinate(self, node_coordinate, z_count_int):
         # checks if the node has been assigned previously (avoid double assigning same coordinate with two different
         # node tags)
-        previously_assigned_node_tag = None
+        exist_node = None
+        self.assigned_node_tag.append(self.node_counter)
+        assigned_node = self.node_counter
         if not node_coordinate in self.assigned_node_coord_dict.values():
             self.node_spec.setdefault(
                 self.node_counter,
@@ -567,16 +569,13 @@ class Mesh:
                 },
             )
 
-            self.assigned_node_tag.append(self.node_counter)
             self.assigned_node_coord_dict[self.node_counter] = node_coordinate
             self.node_counter += 1
-
         else:
-            previously_assigned_node_tag = [i for i in self.assigned_node_coord_dict if self.assigned_node_coord_dict[i] == node_coordinate][0]
+            exist_node = \
+            [i for i in self.assigned_node_coord_dict if self.assigned_node_coord_dict[i] == node_coordinate][0]
 
-
-        return previously_assigned_node_tag
-
+        return exist_node, assigned_node
 
     def _orthogonal_meshing(self):
         """
@@ -683,12 +682,14 @@ class Mesh:
                         z_inc = ref_point_z
                         node_coordinate = [nodes[0] + x_inc, nodes[1], nodes[2] + z_inc]
 
-                        ta = self._assign_node_coordinate(node_coordinate, z_count_int=z_group_recorder[z_count_int])
+                        exist_node, assigned_node = self._assign_node_coordinate(node_coordinate,
+                                                                                 z_count_int=z_group_recorder[
+                                                                                     z_count_int])
 
-                        if ta:
-                            i = self.assigned_node_tag.index(ta)
-                            self.assigned_node_tag = self.assigned_node_tag[:i] + [
-                                ta] + self.assigned_node_tag[i + 1:]
+                        if exist_node:
+                            replace_ind = self.assigned_node_tag.index(assigned_node)
+                            self.assigned_node_tag = self.assigned_node_tag[:replace_ind] + [
+                                exist_node] + self.assigned_node_tag[replace_ind + 1:]
                         # self.node_spec.setdefault(
                         #     self.node_counter,
                         #     {
@@ -767,7 +768,8 @@ class Mesh:
                     self.assigned_node_tag = []
 
                 print("Edge mesh @ start span completed")
-            self.global_edge_count += 1
+            if i < 1:
+                self.global_edge_count += 1
             # --------------------------------------------------------------------------------------------
             # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             # second edge construction line
@@ -871,20 +873,13 @@ class Mesh:
                         z_inc = ref_point_z
                         node_coordinate = [nodes[0] + x_inc, nodes[1], nodes[2] + z_inc]
 
-                        assign_flag = self._assign_node_coordinate(node_coordinate, z_count_int=z_group_recorder[z_count_int])
+                        exist_node,assigned_node = self._assign_node_coordinate(node_coordinate,
+                                                                   z_count_int=z_group_recorder[z_count_int])
+                        # if exist_node:
+                        #     i = self.assigned_node_tag.index(assigned_node)
+                        #     self.assigned_node_tag = self.assigned_node_tag[:i] + [
+                        #         exist_node] + self.assigned_node_tag[i + 1:]
 
-                        # self.node_spec.setdefault(
-                        #     self.node_counter,
-                        #     {
-                        #         "tag": self.node_counter,
-                        #         "coordinate": node_coordinate,
-                        #         "x_group": self.global_x_grid_count,
-                        #         "z_group": z_group_recorder[z_count_int],
-                        #     },
-                        # )
-                        #
-                        # self.assigned_node_tag.append(self.node_counter)
-                        # self.node_counter += 1
                         if not self.beam_element_flag:
                             continue
                         # if loop assigned more than two nodes, link nodes as a transverse member
@@ -1049,6 +1044,8 @@ class Mesh:
                             pre_node=pre_node, cur_node=cur_node, cur_z_group=cur_z_group
                         )
                         break
+            self.assigned_node_tag = []
+            self.previous_node_tag = []
 
     # ------------------------------------------------------------------------------------------
     # ------------------------------------------------------------------------------------------
