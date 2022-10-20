@@ -358,9 +358,9 @@ def test_multispan_feature(ref_bridge_properties):
     N = 1
     m = 1
     mm = milli * m
-    m2 = m**2
-    m3 = m**3
-    m4 = m**4
+    m2 = m ** 2
+    m3 = m ** 3
+    m4 = m ** 4
     kN = kilo * N
     MPa = N / ((mm) ** 2)
     GPa = kilo * MPa
@@ -452,9 +452,9 @@ def test_multispan_feat_shell(ref_bridge_properties):
     N = 1
     m = 1
     mm = milli * m
-    m2 = m**2
-    m3 = m**3
-    m4 = m**4
+    m2 = m ** 2
+    m3 = m ** 3
+    m4 = m ** 4
     kN = kilo * N
     MPa = N / ((mm) ** 2)
     GPa = kilo * MPa
@@ -671,13 +671,14 @@ def test_spring_support(ref_bridge_properties):
 
     # spring support
     e_spring = 1e9
-    #example_bridge.set_spring_support(rotational_spring_stiffness=e_spring,edge_num=0)
-    example_bridge.set_spring_support(rotational_spring_stiffness=e_spring,edge_num=1)
+    # example_bridge.set_spring_support(rotational_spring_stiffness=e_spring,edge_num=0)
+    example_bridge.set_spring_support(rotational_spring_stiffness=e_spring, edge_num=1)
 
     example_bridge.create_osp_model(pyfile=False)
     og.opsplt.plot_model()
 
-    #print(og.ops.nodeDisp(20))
+    # print(og.ops.nodeDisp(20))
+
 
 def test_multispan_with_ortho_40deg_skew(ref_bridge_properties):
     # test multispan feature
@@ -689,9 +690,9 @@ def test_multispan_with_ortho_40deg_skew(ref_bridge_properties):
     N = 1
     m = 1
     mm = milli * m
-    m2 = m**2
-    m3 = m**3
-    m4 = m**4
+    m2 = m ** 2
+    m3 = m ** 3
+    m4 = m ** 4
     kN = kilo * N
     MPa = N / ((mm) ** 2)
     GPa = kilo * MPa
@@ -720,7 +721,7 @@ def test_multispan_with_ortho_40deg_skew(ref_bridge_properties):
     )
     stich_slab = og.create_member(section=stitch_slab_section, material=concrete)
 
-    variant_one_model = og.create_grillage(
+    skew_multi_span_ortho_model = og.create_grillage(
         bridge_name=bridge_name,
         long_dim=L,
         width=w,
@@ -736,41 +737,24 @@ def test_multispan_with_ortho_40deg_skew(ref_bridge_properties):
     )
 
     # assign grillage member to element groups of grillage model
-    variant_one_model.set_member(I_beam, member="interior_main_beam")
-    variant_one_model.set_member(I_beam, member="exterior_main_beam_1")
-    variant_one_model.set_member(I_beam, member="exterior_main_beam_2")
-    variant_one_model.set_member(exterior_I_beam, member="edge_beam")
-    variant_one_model.set_member(slab, member="transverse_slab")
-    variant_one_model.set_member(exterior_I_beam, member="start_edge")
-    variant_one_model.set_member(exterior_I_beam, member="end_edge")
-    variant_one_model.set_member(exterior_I_beam, member="end_edge",specific_group=2)
-    variant_one_model.set_member(exterior_I_beam, member="end_edge",specific_group=3)
+    skew_multi_span_ortho_model.set_member(I_beam, member="interior_main_beam")
+    skew_multi_span_ortho_model.set_member(I_beam, member="exterior_main_beam_1")
+    skew_multi_span_ortho_model.set_member(I_beam, member="exterior_main_beam_2")
+    skew_multi_span_ortho_model.set_member(exterior_I_beam, member="edge_beam")
+    skew_multi_span_ortho_model.set_member(slab, member="transverse_slab")
+    skew_multi_span_ortho_model.set_member(exterior_I_beam, member="start_edge")
+    skew_multi_span_ortho_model.set_member(exterior_I_beam, member="end_edge")
+    skew_multi_span_ortho_model.set_member(exterior_I_beam, member="end_edge", specific_group=2)
+    skew_multi_span_ortho_model.set_member(exterior_I_beam, member="end_edge", specific_group=3)
 
     # variant_one_model.set_member(stich_slab, member="stitch_elements")
 
-    variant_one_model.create_osp_model(pyfile=False)
-    og.opsv.plot_model(node_labels=1,element_labels=0, az_el=(-90, 0))  # plotting using ops_vis
+    skew_multi_span_ortho_model.create_osp_model(pyfile=False)
+    og.opsv.plot_model(node_labels=1, element_labels=0, az_el=(-90, 0))  # plotting using ops_vis
     og.plt.show()
     assert all(
         og.np.isclose(
-            variant_one_model.Mesh_obj.nox,
-            [
-                0.0,
-                4.5,
-                9.0,
-                12.0,
-                15.0,
-                18.0,
-                21.0,
-                22.0,
-                23.0,
-                24.0,
-                25.0,
-                26.0,
-                27.0,
-                28.0,
-                29.0,
-                30.0,
-            ],
+            skew_multi_span_ortho_model.Mesh_obj.nox,
+            [0., 5.335, 10.67, 16.005, 21.34, 26.675, 32.01],
         )
     )
