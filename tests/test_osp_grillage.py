@@ -358,9 +358,9 @@ def test_multispan_feature(ref_bridge_properties):
     N = 1
     m = 1
     mm = milli * m
-    m2 = m**2
-    m3 = m**3
-    m4 = m**4
+    m2 = m ** 2
+    m3 = m ** 3
+    m4 = m ** 4
     kN = kilo * N
     MPa = N / ((mm) ** 2)
     GPa = kilo * MPa
@@ -452,9 +452,9 @@ def test_multispan_feat_shell(ref_bridge_properties):
     N = 1
     m = 1
     mm = milli * m
-    m2 = m**2
-    m3 = m**3
-    m4 = m**4
+    m2 = m ** 2
+    m3 = m ** 3
+    m4 = m ** 4
     kN = kilo * N
     MPa = N / ((mm) ** 2)
     GPa = kilo * MPa
@@ -641,5 +641,120 @@ def test_basic_curve_mesh(ref_bridge_properties):
                 9.28571429,
                 10.0,
             ],
+        )
+    )
+
+
+def test_spring_support(ref_bridge_properties):
+    I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
+
+    # construct grillage model
+    example_bridge = og.create_grillage(
+        bridge_name="SuperT_10m",
+        long_dim=10,
+        width=7,
+        skew=-42,
+        num_long_grid=7,
+        num_trans_grid=5,
+        edge_beam_dist=0.5,
+        mesh_type="Ortho",
+    )
+
+    # set grillage member to element groups of grillage model
+    example_bridge.set_member(I_beam, member="interior_main_beam")
+    example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_1")
+    example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_2")
+    example_bridge.set_member(exterior_I_beam, member="edge_beam")
+    example_bridge.set_member(slab, member="transverse_slab")
+    example_bridge.set_member(exterior_I_beam, member="start_edge")
+    example_bridge.set_member(exterior_I_beam, member="end_edge")
+
+    # spring support
+    e_spring = 1e9
+    # example_bridge.set_spring_support(rotational_spring_stiffness=e_spring,edge_num=0)
+    example_bridge.set_spring_support(rotational_spring_stiffness=e_spring, edge_num=1)
+
+    example_bridge.create_osp_model(pyfile=False)
+    og.opsplt.plot_model()
+
+    # print(og.ops.nodeDisp(20))
+
+
+def test_multispan_with_ortho_40deg_skew(ref_bridge_properties):
+    # test multispan feature
+    I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
+
+    # Adopted units: N and m
+    kilo = 1e3
+    milli = 1e-3
+    N = 1
+    m = 1
+    mm = milli * m
+    m2 = m ** 2
+    m3 = m ** 3
+    m4 = m ** 4
+    kN = kilo * N
+    MPa = N / ((mm) ** 2)
+    GPa = kilo * MPa
+
+    # parameters of bridge grillage
+    L = 33.5 * m  # span
+    w = 10 * m  # width
+    n_l = 7  # number of longitudinal members
+    n_t = 11  # number of transverse members
+    edge_dist = 1.05 * m  # distance between edge beam and first exterior beam
+    bridge_name = "multi span showcase"
+    angle = 40  # degree
+    mesh_type = "Ortho"
+
+    # multispan specific vars
+    spans = [10.67 * m, 10.67 * m, 10.67 * m]
+    nl_multi = [3, 3, 3]
+    stich_slab_x_spacing = 1 * m
+    stitch_slab_section = og.create_section(
+        A=0.504 * m2,
+        J=5.22303e-3 * m3,
+        Iy=0.32928 * m4,
+        Iz=1.3608e-3 * m4,
+        Ay=0.42 * m2,
+        Az=0.42 * m2,
+    )
+    stich_slab = og.create_member(section=stitch_slab_section, material=concrete)
+
+    skew_multi_span_ortho_model = og.create_grillage(
+        bridge_name=bridge_name,
+        long_dim=L,
+        width=w,
+        skew=angle,
+        num_long_grid=n_l,
+        num_trans_grid=n_t,
+        edge_beam_dist=edge_dist,
+        mesh_type=mesh_type,
+        multi_span_dist_list=spans,
+        multi_span_num_points=nl_multi,
+        continuous=True,
+        # non_cont_spacing_x=stich_slab_x_spacing,
+    )
+
+    # assign grillage member to element groups of grillage model
+    skew_multi_span_ortho_model.set_member(I_beam, member="interior_main_beam")
+    skew_multi_span_ortho_model.set_member(I_beam, member="exterior_main_beam_1")
+    skew_multi_span_ortho_model.set_member(I_beam, member="exterior_main_beam_2")
+    skew_multi_span_ortho_model.set_member(exterior_I_beam, member="edge_beam")
+    skew_multi_span_ortho_model.set_member(slab, member="transverse_slab")
+    skew_multi_span_ortho_model.set_member(exterior_I_beam, member="start_edge")
+    skew_multi_span_ortho_model.set_member(exterior_I_beam, member="end_edge")
+    skew_multi_span_ortho_model.set_member(exterior_I_beam, member="end_edge", specific_group=2)
+    skew_multi_span_ortho_model.set_member(exterior_I_beam, member="end_edge", specific_group=3)
+
+    # variant_one_model.set_member(stich_slab, member="stitch_elements")
+
+    skew_multi_span_ortho_model.create_osp_model(pyfile=False)
+    og.opsv.plot_model(node_labels=1, element_labels=0, az_el=(-90, 0))  # plotting using ops_vis
+    og.plt.show()
+    assert all(
+        og.np.isclose(
+            skew_multi_span_ortho_model.Mesh_obj.nox,
+            [0., 5.335, 10.67, 16.005, 21.34, 26.675, 32.01],
         )
     )
