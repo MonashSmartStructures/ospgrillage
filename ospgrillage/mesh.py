@@ -690,18 +690,7 @@ class Mesh:
                             replace_ind = self.assigned_node_tag.index(assigned_node)
                             self.assigned_node_tag = self.assigned_node_tag[:replace_ind] + [
                                 exist_node] + self.assigned_node_tag[replace_ind + 1:]
-                        # self.node_spec.setdefault(
-                        #     self.node_counter,
-                        #     {
-                        #         "tag": self.node_counter,
-                        #         "coordinate": node_coordinate,
-                        #         "x_group": self.global_x_grid_count,
-                        #         "z_group": z_group_recorder[z_count_int],
-                        #     },
-                        # )
-                        #
-                        # self.assigned_node_tag.append(self.node_counter)
-                        # self.node_counter += 1
+
                         # if loop assigned more than two nodes, link nodes as a transverse member
                         if not self.beam_element_flag:
                             continue
@@ -767,7 +756,7 @@ class Mesh:
                     self.ortho_previous_node_column = self.assigned_node_tag
                     self.assigned_node_tag = []
 
-                print("Edge mesh @ start span completed")
+                # print("Edge mesh @ start span completed")
             if i < 1:
                 self.global_edge_count += 1
             # --------------------------------------------------------------------------------------------
@@ -944,7 +933,7 @@ class Mesh:
                     self.ortho_previous_node_column = self.assigned_node_tag
                     self.assigned_node_tag = []
                 self.global_edge_count += 1
-                print("Edge mesh @ end span completed")
+                # print("Edge mesh @ end span completed")
             # --------------------------------------------------------------------------------------------
             self.assigned_node_tag = []  # reset
             # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -983,18 +972,7 @@ class Mesh:
 
                     node_coordinate = [nodes[0], nodes[1], nodes[2]]
                     self._assign_node_coordinate(node_coordinate, z_count_int=z_count_int)
-                    # self.node_spec.setdefault(
-                    #     self.node_counter,
-                    #     {
-                    #         "tag": self.node_counter,
-                    #         "coordinate": node_coordinate,
-                    #         "x_group": self.global_x_grid_count,
-                    #         "z_group": z_count_int,
-                    #     },
-                    # )
-                    #
-                    # self.assigned_node_tag.append(self.node_counter)
-                    # self.node_counter += 1
+
                     if not self.beam_element_flag:
                         continue
                     # if loop assigned more than two nodes, link nodes as a transverse member
@@ -2163,7 +2141,8 @@ class ShellLinkMesh(Mesh):
         self.z_grid_to_z_dict = (
             dict()
         )  # key is z value (m), value is z grid number (for offset nodes)
-
+        # store edge supports
+        self.beam_edge_node_recorder = dict()
         # use meshing procedure of base mesh class
         super().__init__(
             long_dim,
@@ -2178,6 +2157,7 @@ class ShellLinkMesh(Mesh):
             **kwargs
         )
 
+
         # meshing procedure to create beam offset element and tie it with rigid links to master nodes of model plane y=0
         self._create_offset_beam_element()
 
@@ -2189,6 +2169,7 @@ class ShellLinkMesh(Mesh):
             for a in list(self.z_group_to_ele.keys())
             if a not in self.model_plane_z_groups
         ]
+
 
     # -----------------------------------------------------------------------------------------------------------------
     # Functions which are overwritten of that from base class to for specific shell type model
@@ -2210,6 +2191,19 @@ class ShellLinkMesh(Mesh):
             for rNode in rNode_list:
                 self._create_link_element(rNode=rNode, cNode=cNode)
 
+        # restrain support nodes
+        for edge_num in set(self.edge_node_recorder.values()):
+            # extract all keys (nodes of shell plane) corresponding to edge num
+            edge_nodes = [key for key,val in self.edge_node_recorder.items() if val == edge_num]
+            # look up self.link_dict for the corresponding beam nodes
+            edge_beam_nodes = [key for key,val in self.link_dict.items() if val[0] in edge_nodes if val[1] in edge_nodes ]
+            # add to
+            for nodes in edge_beam_nodes:
+                self.edge_support_nodes.setdefault(
+                    nodes, edge_num
+                )  #
+
+
         # loop each beam group and create beam elements from these offset nodes
         for beam_group in range(0, len(self.start_edge_line.z_group_master_pair_list)):
             offset_node_tag = [
@@ -2223,12 +2217,12 @@ class ShellLinkMesh(Mesh):
                 x for _, x in sorted(zip(x_coord_list, offset_node_tag))
             ]
             # store first and last node tag as supports
-            self.edge_support_nodes.setdefault(
-                sorted_offset_tag[0], self.pinned_node_group
-            )  #
-            self.edge_support_nodes.setdefault(
-                sorted_offset_tag[-1], self.roller_node_group
-            )
+            # self.edge_support_nodes.setdefault(
+            #     sorted_offset_tag[0], self.pinned_node_group
+            # )  #
+            # self.edge_support_nodes.setdefault(
+            #     sorted_offset_tag[-1], self.roller_node_group
+            # )
             # assign long beam element between two nodes
             for ind, node_tag in enumerate(sorted_offset_tag[:-1]):
                 n1 = node_tag
