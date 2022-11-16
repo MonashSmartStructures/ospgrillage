@@ -730,6 +730,10 @@ class OspGrillage:
         self.common_grillage_element_z_group[self.common_grillage_element_keys[5]] = list(range(1,self.Mesh_obj.global_edge_count))
         self.common_grillage_element_z_group[self.common_grillage_element_keys[6]] = [
             0]  # proxy 0 for set_member() loop
+        self.common_grillage_element_z_group[self.common_grillage_element_keys[0]+"_1"] \
+            = [self.common_grillage_element_z_group[self.common_grillage_element_keys[0]][0]]
+        self.common_grillage_element_z_group[self.common_grillage_element_keys[0]+"_2"] \
+            = [self.common_grillage_element_z_group[self.common_grillage_element_keys[0]][1]]
 
     # interface function
     def set_member(self, grillage_member_obj: GrillageMember, member=None, specific_group=None):
@@ -3197,7 +3201,6 @@ class OspGrillageShell(OspGrillage):
 
         """
         # this function creates shell elements out of the node grids of Mesh object
-        shell_counter = self.Mesh_obj.element_counter
         # if self.Mesh_obj is None:  # checks if
         #     raise ValueError("Model instance not created. Run ops.create_ops() function before setting members")
         # check and write member's section command if any
@@ -3206,6 +3209,7 @@ class OspGrillageShell(OspGrillage):
         material_tag = self._write_material(member=grillage_member_obj)
         # for each grid in Mesh, create a shell element
         for grid_nodes_list in self.Mesh_obj.grid_number_dict.values():
+            shell_counter = self.global_ele_counter
             ele_str = grillage_member_obj.get_element_command_str(
                 ele_tag=shell_counter,
                 node_tag_list=grid_nodes_list,
@@ -3213,7 +3217,7 @@ class OspGrillageShell(OspGrillage):
                 sectiontag=section_tag,
             )
             self.shell_element_command_list.append(ele_str)
-            shell_counter += 1
+            self.global_ele_counter += 1
 
     # overwrite base fix() command procedure
     def _write_op_fix(self, mesh_obj):

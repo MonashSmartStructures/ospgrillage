@@ -826,6 +826,7 @@ class Mesh:
                     if len(self.assigned_node_tag) == len(self.noz):
                         self.end_connecting_region_nodes = self.assigned_node_tag
                 self.global_x_grid_count += 1
+                self.global_edge_count += 1
             else:
                 for z_count, int_point in enumerate(end_edge_line.node_list):
                     # search point on sweep path line whose normal intersects int_point.
