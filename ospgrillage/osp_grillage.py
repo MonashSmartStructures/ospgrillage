@@ -370,7 +370,7 @@ class OspGrillage:
 
         # create the result object for the grillage model
         self.results = Results(self.Mesh_obj)
-
+        self._write_rigid_link()
     # function to run mesh generation
     def _run_mesh_generation(self):
         """
@@ -414,7 +414,7 @@ class OspGrillage:
                         self.model_command_list.append(ele_str)
 
         # write equalDOF commands
-        self._write_equal_dof()
+        self._write_equal_dof(node_tag_list= self.spring_node_pairs.items())
 
         # if created OpenSees instance, set instance flag
         if not self.pyfile:
@@ -580,7 +580,7 @@ class OspGrillage:
                     eval(fix_str)
                     self.model_command_list.append(fix_str)
 
-    def _write_equal_dof(self, dof: list = None):
+    def _write_equal_dof(self, node_tag_list, dof: list = None):
         """
         Function to write equalDOF command
         """
@@ -588,7 +588,7 @@ class OspGrillage:
             dof = [1, 2, 3, 4, 5]  # default
 
         # key is supported node , slave is non supported node
-        for master_node, slave_node in self.spring_node_pairs.items():
+        for master_node, slave_node in node_tag_list:
             equaldof_str = 'ops.equalDOF({rNodetag},{cNodetag},*{dofs})\n'.format(
                 rNodetag=master_node, cNodetag=slave_node, dofs=dof)
 
@@ -734,6 +734,20 @@ class OspGrillage:
             = [self.common_grillage_element_z_group[self.common_grillage_element_keys[0]][0]]
         self.common_grillage_element_z_group[self.common_grillage_element_keys[0]+"_2"] \
             = [self.common_grillage_element_z_group[self.common_grillage_element_keys[0]][1]]
+
+    def _write_rigid_link(self):
+        """
+        Private procedure to write or execute OpenSeesPy rigidLink() command. Reads rigid link data from link_str_list
+        variable
+
+        """
+        # loop all rigidLink command, write or eval rigid link command. note link_str is already formatted
+        for link_str in self.Mesh_obj.link_str_list:
+            if self.pyfile:
+                with open(self.filename, "a") as file_handle:
+                    file_handle.write(link_str)
+            else:
+                eval(link_str)
 
     # interface function
     def set_member(self, grillage_member_obj: GrillageMember, member=None, specific_group=None):
@@ -2831,8 +2845,9 @@ class Results:
                 base_ele_force_list_beam.append(
                     [
                         a
-                        for a in list(inc_resp_list_of_2_dict[1].values())
-                        if len(a) == len(self.force_component)
+                        for key,a in zip(list(inc_resp_list_of_2_dict[1].keys())
+                                         ,list(inc_resp_list_of_2_dict[1].values()))
+                        if len(a) == len(self.force_component) if key<main_ele_tags
                     ]
                 )
                 base_ele_force_list_shell.append(
@@ -2973,6 +2988,7 @@ class OspGrillageBeam(OspGrillage):
             model="3D",
             **kwargs
         )
+        #
 
 
 class OspGrillageShell(OspGrillage):
@@ -3261,16 +3277,3 @@ class OspGrillageShell(OspGrillage):
             #     else:  # run instance
             #         ops.fix(node_tag, *self.fixity_vector["roller"])
 
-    def _write_rigid_link(self):
-        """
-        Private procedure to write or execute OpenSeesPy rigidLink() command. Reads rigid link data from link_str_list
-        variable
-
-        """
-        # loop all rigidLink command, write or eval rigid link command. note link_str is already formatted
-        for link_str in self.Mesh_obj.link_str_list:
-            if self.pyfile:
-                with open(self.filename, "a") as file_handle:
-                    file_handle.write(link_str)
-            else:
-                eval(link_str)

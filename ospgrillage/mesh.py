@@ -114,6 +114,7 @@ class Mesh:
         self.trans_ele = []
         self.edge_span_ele = []
         self.connect_ele = []
+        self.link_str_list = []
         # dict for node and ele transform
         self.transform_dict = dict()  # key: vector xz, val: transform tag
         self.node_spec = (
@@ -140,10 +141,13 @@ class Mesh:
         self.z_group_recorder = []
         # quad elements flag
         self.quad_ele = quad_ele  # bool
-        # get custom rigid link parameters - for future feature of beam_link model
-        self.rigid_dist_y = kwargs.get("rigid_dist_y")
-        self.rigid_dist_z = kwargs.get("rigid_dist_z")
-        self.rigid_dist_x = kwargs.get("rigid_dist_x")
+        self.link_type = kwargs.get("rigid_link_type","beam")
+
+
+        # get custom rigid link parameters for suport
+        self.rigid_dist_y = kwargs.get("support_rigid_dist_y")
+        self.rigid_dist_z = kwargs.get("support_rigid_dist_z",0)
+        self.rigid_dist_x = kwargs.get("support_rigid_dist_x",0)
         # ---------------------------------------------------------------------------------------------
         # vars for multi span feature
         # list containing length (x) for each nth span, default creates a list of single element based on long_dim
@@ -573,7 +577,7 @@ class Mesh:
             self.node_counter += 1
         else:
             exist_node = \
-            [i for i in self.assigned_node_coord_dict if self.assigned_node_coord_dict[i] == node_coordinate][0]
+                [i for i in self.assigned_node_coord_dict if self.assigned_node_coord_dict[i] == node_coordinate][0]
 
         return exist_node, assigned_node
 
@@ -863,8 +867,9 @@ class Mesh:
                         z_inc = ref_point_z
                         node_coordinate = [nodes[0] + x_inc, nodes[1], nodes[2] + z_inc]
 
-                        exist_node,assigned_node = self._assign_node_coordinate(node_coordinate,
-                                                                   z_count_int=z_group_recorder[z_count_int])
+                        exist_node, assigned_node = self._assign_node_coordinate(node_coordinate,
+                                                                                 z_count_int=z_group_recorder[
+                                                                                     z_count_int])
                         # if exist_node:
                         #     i = self.assigned_node_tag.index(assigned_node)
                         #     self.assigned_node_tag = self.assigned_node_tag[:i] + [
@@ -1012,6 +1017,12 @@ class Mesh:
                     self.assigned_node_tag = self.end_connecting_region_nodes
 
             # Extra step to connect uniform region with nodes along end span edge region
+            # if number of transverse in uniform region is 2 or less, assigne the first and end connecting
+            # region nodes as long elements
+            if len(self.uniform_region_x) <= 2:
+                self.previous_node_tag = self.end_connecting_region_nodes
+                self.assigned_node_tag = self.first_connecting_region_nodes
+            # or else assign the previous node of uniform region to end connecting region node
             for pre_node in self.previous_node_tag:
                 if not self.beam_element_flag:
                     break
@@ -1056,6 +1067,41 @@ class Mesh:
             ]
         )
         self.element_counter += 1
+    def _create_offset_nodes(self):
+        # main class variant creates offset nodes for support edge nodes
+        x_count = "offset_support_node_x"  # proxy
+        z_count = "offset_support_z{}"  # proxy
+        # get groups of node master pairs
+        original_support_nodes = list(self.edge_node_recorder.keys())
+        for node_tag in original_support_nodes: # loop through all support nodes
+            # create an offset node
+            n1_coord = self.node_spec[node_tag]["coordinate"]
+            n2_coord =[n1_coord[0]+self.rigid_dist_x, n1_coord[1]+self.rigid_dist_y,n1_coord[2]+self.rigid_dist_z]
+            self.node_spec.setdefault(
+                self.node_counter,
+                {
+                    "tag": self.node_counter,
+                    "coordinate": n2_coord,
+                    "x_group": x_count,
+                    "z_group": z_count.format(self.edge_node_recorder[node_tag]),
+                },
+            )
+            # link offset node
+            self._create_link_element(rNode=self.node_counter,cNode=node_tag)
+
+            # replace key in edge node recorder to be new linked node
+            self.edge_node_recorder[self.node_counter] = self.edge_node_recorder.pop(node_tag)
+            self.node_counter += 1
+    def _create_link_element(self, rNode, cNode):
+        # sub procedure function
+        # user mp constraint object
+        # function to create ops rigid link command and store to variable
+
+        link_str = 'ops.rigidLink("{linktype}",{rNodetag},{cNodetag})\n'.format(
+            linktype=self.link_type, rNodetag=cNode, cNodetag=rNode
+        )
+
+        self.link_str_list.append(link_str)
 
     # ------------------------------------------------------------------------------------------
     def _identify_common_z_group(self):
@@ -1955,6 +2001,9 @@ class BeamMesh(Mesh):
             skew_2,
             **kwargs
         )
+        # offset support nodes with rigid distance if provided
+        if self.rigid_dist_y:
+            self._create_offset_nodes()
 
 
 class BeamLinkMesh(Mesh):
@@ -2158,7 +2207,6 @@ class ShellLinkMesh(Mesh):
             **kwargs
         )
 
-
         # meshing procedure to create beam offset element and tie it with rigid links to master nodes of model plane y=0
         self._create_offset_beam_element()
 
@@ -2170,7 +2218,6 @@ class ShellLinkMesh(Mesh):
             for a in list(self.z_group_to_ele.keys())
             if a not in self.model_plane_z_groups
         ]
-
 
     # -----------------------------------------------------------------------------------------------------------------
     # Functions which are overwritten of that from base class to for specific shell type model
@@ -2195,15 +2242,15 @@ class ShellLinkMesh(Mesh):
         # restrain support nodes
         for edge_num in set(self.edge_node_recorder.values()):
             # extract all keys (nodes of shell plane) corresponding to edge num
-            edge_nodes = [key for key,val in self.edge_node_recorder.items() if val == edge_num]
+            edge_nodes = [key for key, val in self.edge_node_recorder.items() if val == edge_num]
             # look up self.link_dict for the corresponding beam nodes
-            edge_beam_nodes = [key for key,val in self.link_dict.items() if val[0] in edge_nodes if val[1] in edge_nodes ]
+            edge_beam_nodes = [key for key, val in self.link_dict.items() if val[0] in edge_nodes if
+                               val[1] in edge_nodes]
             # add to
             for nodes in edge_beam_nodes:
                 self.edge_support_nodes.setdefault(
                     nodes, edge_num
                 )  #
-
 
         # loop each beam group and create beam elements from these offset nodes
         for beam_group in range(0, len(self.start_edge_line.z_group_master_pair_list)):
@@ -2342,17 +2389,6 @@ class ShellLinkMesh(Mesh):
                         self.node_counter, beam_group
                     )  # c node is key, group num is val
                     self.node_counter += 1
-
-    def _create_link_element(self, rNode, cNode):
-        # sub procedure function
-        # user mp constraint object
-        # function to create ops rigid link command and store to variable
-
-        link_str = 'ops.rigidLink("{linktype}",{rNodetag},{cNodetag})\n'.format(
-            linktype=self.link_type, rNodetag=cNode, cNodetag=rNode
-        )
-
-        self.link_str_list.append(link_str)
 
 
 class BeamMeshWithSpringSupports(BeamMesh):

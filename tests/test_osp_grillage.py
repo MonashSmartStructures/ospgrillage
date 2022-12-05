@@ -442,6 +442,33 @@ def test_multispan_feature(ref_bridge_properties):
         )
     )
 
+def test_create_offset_support(ref_bridge_properties):
+    I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
+
+    # construct grillage model - here without specifying edge distance
+    example_bridge = og.create_grillage(
+        bridge_name="SuperT_10m",
+        long_dim=10,
+        width=7,
+        skew=-42,
+        num_long_grid=7,
+        num_trans_grid=5,
+        mesh_type="Ortho",
+        support_rigid_dist_y=1
+    )
+
+    # set grillage member to element groups of grillage model
+    example_bridge.set_member(I_beam, member="interior_main_beam")
+    example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_1")
+    example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_2")
+    example_bridge.set_member(exterior_I_beam, member="edge_beam")
+    example_bridge.set_member(slab, member="transverse_slab")
+    example_bridge.set_member(exterior_I_beam, member="start_edge")
+    example_bridge.set_member(exterior_I_beam, member="end_edge")
+
+    example_bridge.create_osp_model(pyfile=False)
+
+    og.opsplt.plot_model("nodes")
 
 def test_multispan_feat_shell(ref_bridge_properties):
     # test multispan feature compatibility with shell model
