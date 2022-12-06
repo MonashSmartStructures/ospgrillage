@@ -141,13 +141,12 @@ class Mesh:
         self.z_group_recorder = []
         # quad elements flag
         self.quad_ele = quad_ele  # bool
-        self.link_type = kwargs.get("rigid_link_type","beam")
-
+        self.link_type = kwargs.get("rigid_link_type", "beam")
 
         # get custom rigid link parameters for suport
         self.rigid_dist_y = kwargs.get("support_rigid_dist_y")
-        self.rigid_dist_z = kwargs.get("support_rigid_dist_z",0)
-        self.rigid_dist_x = kwargs.get("support_rigid_dist_x",0)
+        self.rigid_dist_z = kwargs.get("support_rigid_dist_z", 0)
+        self.rigid_dist_x = kwargs.get("support_rigid_dist_x", 0)
         # ---------------------------------------------------------------------------------------------
         # vars for multi span feature
         # list containing length (x) for each nth span, default creates a list of single element based on long_dim
@@ -198,7 +197,9 @@ class Mesh:
         self.span_group_to_x_groups = {
             key: [] for key in range(len(self.mesh_edge_x_positions) - 1)
         }
-
+        self.span_group_to_ele_tag = {
+            key: [] for key in range(len(self.mesh_edge_x_positions) - 1)
+        } # stores all ele tag with respect to span group
         # for custom transverse member spacings
         self.transverse_mbr_x_spacing_list = kwargs.get("beam_x_spacing", None)
 
@@ -459,6 +460,7 @@ class Mesh:
                             tag,
                         ]
                     )
+                    self._store_ele_tag_respect_to_mesh_group(counter=self.element_counter, span_group=span_group_key)
                     self.element_counter += 1
 
             # create longitudinal ele by linking assigned nodes @ current step with assigned nodes from previous step
@@ -540,6 +542,10 @@ class Mesh:
                                         tag,
                                     ]
                                 )
+
+                            self._store_ele_tag_respect_to_mesh_group(counter=self.element_counter,
+                                                                      span_group=current_x_span_group)
+
                             self.element_counter += 1
                             break  # break assign long ele loop (cur node)
                 # here updates the record for previous node tag step
@@ -555,6 +561,13 @@ class Mesh:
             # reset counter and recorder for next loop x increment
             self.global_x_grid_count += 1
             assigned_node_tag = []
+
+    def _store_ele_tag_respect_to_mesh_group(self,counter,span_group):
+
+        ele_tag_list = self.span_group_to_ele_tag[span_group]
+        if counter not in ele_tag_list:
+            ele_tag_list.append(counter)
+        self.span_group_to_ele_tag[span_group] = ele_tag_list
 
     def _assign_node_coordinate(self, node_coordinate, z_count_int):
         # checks if the node has been assigned previously (avoid double assigning same coordinate with two different
@@ -951,7 +964,10 @@ class Mesh:
             cor_fir = self.node_spec[x_first]["coordinate"]
             cor_sec = self.node_spec[x_second]["coordinate"]
             # get x coordinate for uniform region
-            self.uniform_region_x = np.linspace(cor_fir[0], cor_sec[0], self.multi_span_num_points[i])
+            if self.transverse_mbr_x_spacing_list:
+                raise Exception(NameError,"OrthoMesh can not be paired wit custom spacing")
+            else:
+                self.uniform_region_x = np.linspace(cor_fir[0], cor_sec[0], self.multi_span_num_points[i])
 
             for z_count, x in enumerate(self.uniform_region_x[1:-1]):
                 # get slope, m at current point x
@@ -1067,16 +1083,18 @@ class Mesh:
             ]
         )
         self.element_counter += 1
+
     def _create_offset_nodes(self):
         # main class variant creates offset nodes for support edge nodes
         x_count = "offset_support_node_x"  # proxy
         z_count = "offset_support_z{}"  # proxy
         # get groups of node master pairs
         original_support_nodes = list(self.edge_node_recorder.keys())
-        for node_tag in original_support_nodes: # loop through all support nodes
+        for node_tag in original_support_nodes:  # loop through all support nodes
             # create an offset node
             n1_coord = self.node_spec[node_tag]["coordinate"]
-            n2_coord =[n1_coord[0]+self.rigid_dist_x, n1_coord[1]+self.rigid_dist_y,n1_coord[2]+self.rigid_dist_z]
+            n2_coord = [n1_coord[0] + self.rigid_dist_x, n1_coord[1] + self.rigid_dist_y,
+                        n1_coord[2] + self.rigid_dist_z]
             self.node_spec.setdefault(
                 self.node_counter,
                 {
@@ -1087,11 +1105,12 @@ class Mesh:
                 },
             )
             # link offset node
-            self._create_link_element(rNode=self.node_counter,cNode=node_tag)
+            self._create_link_element(rNode=self.node_counter, cNode=node_tag)
 
             # replace key in edge node recorder to be new linked node
             self.edge_node_recorder[self.node_counter] = self.edge_node_recorder.pop(node_tag)
             self.node_counter += 1
+
     def _create_link_element(self, rNode, cNode):
         # sub procedure function
         # user mp constraint object
@@ -2285,6 +2304,13 @@ class ShellLinkMesh(Mesh):
                         transf_tag,
                     ]
                 )
+
+
+                n1_span_group = [key for key,val in self.span_group_to_x_groups.items() if self.node_spec[n1]['x_group'] in val]
+                n2_span_group = [key for key,val in self.span_group_to_x_groups.items() if self.node_spec[n2]['x_group'] in val]
+                if n1_span_group == n2_span_group:
+                    span_group_key=n1_span_group[0]
+                    self._store_ele_tag_respect_to_mesh_group(counter=self.element_counter, span_group=span_group_key)
                 self.element_counter += 1
 
             # add to grouping dict data
@@ -2296,7 +2322,7 @@ class ShellLinkMesh(Mesh):
 
     def _create_offset_nodes(self):
         # sub procedure function
-        x_count = "offset_beam_x"  # proxy
+        x_count = "offset_beam_x{}"  # proxy
         z_count = "offset_beam_group_z{}"  # proxy
         # get groups of node master pairs
         z_pair = self.start_edge_line.z_group_master_pair_list
@@ -2328,7 +2354,7 @@ class ShellLinkMesh(Mesh):
                     {
                         "tag": self.node_counter,
                         "coordinate": node_coordinate,
-                        "x_group": x_count,
+                        "x_group": x_group,
                         "z_group": z_count.format(beam_group),
                     },
                 )
