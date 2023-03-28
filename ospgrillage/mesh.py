@@ -943,8 +943,8 @@ class Mesh:
                         self.end_connecting_region_nodes = self.assigned_node_tag
                     self.ortho_previous_node_column = self.assigned_node_tag
                     self.assigned_node_tag = []
-                self.global_edge_count += 1
-                print("Edge mesh @ end span completed")
+            self.global_edge_count += 1
+            print("Edge mesh @ end span completed")
             # --------------------------------------------------------------------------------------------
             self.assigned_node_tag = []  # reset
             # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
