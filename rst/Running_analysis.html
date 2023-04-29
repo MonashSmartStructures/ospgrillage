@@ -1,39 +1,41 @@
 
+
 <!DOCTYPE html>
 
-<html lang="en">
+
+<html lang="en" >
+
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
     <title>Performing analysis &#8212; ospgrillage module 0.2.1 documentation</title>
-  <script>
+  
+  
+  
+  <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=1e1de1a1873e13ef5536" rel="stylesheet">
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=1e1de1a1873e13ef5536" rel="stylesheet">
+  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
 
   
-  <link rel="stylesheet"
-    href="../_static/vendor/fontawesome/6.1.2/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2">
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1e1de1a1873e13ef5536">
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/sphinx_highlight.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -44,126 +46,153 @@
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Getting Results" href="PostProcessing.html" />
     <link rel="prev" title="Curve Mesh" href="../notebooks/curve_mesh.html" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="docsearch:language" content="en">
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
   </head>
   
   
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
   
-  <input type="checkbox" class="sidebar-toggle" name="__primary" id="__primary">
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
   <label class="overlay overlay-primary" for="__primary"></label>
-
   
-  <input type="checkbox" class="sidebar-toggle" name="__secondary" id="__secondary">
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
   <label class="overlay overlay-secondary" for="__secondary"></label>
-
   
   <div class="search-button__wrapper">
     <div class="search-button__overlay"></div>
     <div class="search-button__search-container">
-      
-<form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
   <i class="fa-solid fa-magnifying-glass"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form>
-    </div>
+</form></div>
   </div>
-
   
-  <nav class="bd-header navbar navbar-expand-lg bd-navbar" id="navbar-main"><div class="bd-header__inner bd-page-width">
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
   <label class="sidebar-toggle primary-toggle" for="__primary">
-      <span class="fa-solid fa-bars"></span>
+    <span class="fa-solid fa-bars"></span>
   </label>
-  <div id="navbar-start">
-    
-    
   
-
+  <div class="navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
 
 <a class="navbar-brand logo" href="../index.html">
-
   
   
   
   
+    
+    
+      
+    
+    
+    <img src="../_static/ospgrillage_logo.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../_static/ospgrillage_logo.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
   
   
-  
-
-  
-    <img src="../_static/ospgrillage_logo.png" class="logo__image only-light" alt="Logo image">
-    <img src="../_static/ospgrillage_logo.png" class="logo__image only-dark" alt="Logo image">
-  
-  
-</a>
+</a></div>
     
   </div>
-
+  
   
   <div class="col-lg-9 navbar-header-items">
-    <div id="navbar-center" class="mr-auto">
+    
+    <div class="me-auto navbar-header-items__center">
       
-      <div class="navbar-center-item">
-        <nav class="navbar-nav">
-    <p class="sidebar-header-items__title" role="heading" aria-level="1" aria-label="Site Navigation">
-        Site Navigation
-    </p>
-    <ul id="navbar-main-elements" class="navbar-nav">
-        
-                <li class="nav-item current active">
-                    <a class="nav-link" href="user_guide.html">
+        <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="user_guide.html">
                         User Guide
-                    </a>
-                </li>
+                      </a>
+                    </li>
                 
 
-                <li class="nav-item">
-                    <a class="nav-link" href="APIdoc.html">
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="APIdoc.html">
                         API reference
-                    </a>
-                </li>
+                      </a>
+                    </li>
                 
 
-                <li class="nav-item">
-                    <a class="nav-link" href="ModuleDoc.html">
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="ModuleDoc.html">
                         Package design
-                    </a>
-                </li>
+                      </a>
+                    </li>
                 
 
-                <li class="nav-item">
-                    <a class="nav-link" href="ChangeLog.html">
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="ChangeLog.html">
                         Releases
-                    </a>
-                </li>
+                      </a>
+                    </li>
                 
-    </ul>
-</nav>
-      </div>
+  </ul>
+</nav></div>
       
     </div>
-
-    <div id="navbar-end">
-      <div class="navbar-end-item navbar-end__search-button-container">
-        
-<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" data-toggle="tooltip">
-  <i class="fa-solid fa-magnifying-glass"></i>
-</button>
-      </div>
+    
+    
+    <div class="navbar-header-items__end">
       
-      <div class="navbar-end-item">
-        <span class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" data-toggle="tooltip">
-    <a class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></a>
-    <a class="theme-switch" data-mode="dark"><i class="fa-regular fa-moon"></i></a>
-    <a class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></a>
-</span>
-      </div>
+        <div class="navbar-item navbar-persistent--container">
+          
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+        </div>
       
-      <div class="navbar-end-item">
-        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
         <li class="nav-item">
           
           
@@ -172,7 +201,8 @@
           
           
           
-          <a href="https://github.com/MonashSmartStructures/ospgrillage" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fab fa-github-square"></i></span>
+          
+          <a href="https://github.com/MonashSmartStructures/ospgrillage" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-github-square"></i></span>
             <label class="sr-only">GitHub</label></a>
         </li>
         <li class="nav-item">
@@ -183,99 +213,107 @@
           
           
           
-          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fab fa-twitter-square"></i></span>
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-twitter-square"></i></span>
             <label class="sr-only">Twitter</label></a>
         </li>
-      </ul>
-      </div>
+</ul></div>
       
     </div>
+    
   </div>
-
+  
+  
+    <div class="navbar-persistent--mobile">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+    </div>
+  
 
   
-  <div class="search-button-container--mobile">
-<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" data-toggle="tooltip">
-  <i class="fa-solid fa-magnifying-glass"></i>
-</button>
-  </div>
-
-  
-  <label class="sidebar-toggle secondary-toggle" for="__secondary">
+    <label class="sidebar-toggle secondary-toggle" for="__secondary">
       <span class="fa-solid fa-outdent"></span>
-  </label>
+    </label>
   
-
 </div>
-  </nav>
-  
 
+    </nav>
+  
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
       
       <div class="bd-sidebar-primary bd-sidebar">
         
+
   
   <div class="sidebar-header-items sidebar-primary__section">
     
     
       <div class="sidebar-header-items__center">
-      
-      <div class="navbar-center-item">
-        <nav class="navbar-nav">
-    <p class="sidebar-header-items__title" role="heading" aria-level="1" aria-label="Site Navigation">
-        Site Navigation
-    </p>
-    <ul id="navbar-main-elements" class="navbar-nav">
         
-                <li class="nav-item current active">
-                    <a class="nav-link" href="user_guide.html">
+          <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="user_guide.html">
                         User Guide
-                    </a>
-                </li>
+                      </a>
+                    </li>
                 
 
-                <li class="nav-item">
-                    <a class="nav-link" href="APIdoc.html">
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="APIdoc.html">
                         API reference
-                    </a>
-                </li>
+                      </a>
+                    </li>
                 
 
-                <li class="nav-item">
-                    <a class="nav-link" href="ModuleDoc.html">
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="ModuleDoc.html">
                         Package design
-                    </a>
-                </li>
+                      </a>
+                    </li>
                 
 
-                <li class="nav-item">
-                    <a class="nav-link" href="ChangeLog.html">
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="ChangeLog.html">
                         Releases
-                    </a>
-                </li>
+                      </a>
+                    </li>
                 
-    </ul>
-</nav>
-      </div>
-      
+  </ul>
+</nav></div>
+        
       </div>
     
-
     
     
-    <div class="sidebar-header-items__end">
-      
-      <div class="navbar-end-item">
-        <span class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" data-toggle="tooltip">
-    <a class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></a>
-    <a class="theme-switch" data-mode="dark"><i class="fa-regular fa-moon"></i></a>
-    <a class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></a>
-</span>
-      </div>
-      
-      <div class="navbar-end-item">
-        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
         <li class="nav-item">
           
           
@@ -284,7 +322,8 @@
           
           
           
-          <a href="https://github.com/MonashSmartStructures/ospgrillage" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fab fa-github-square"></i></span>
+          
+          <a href="https://github.com/MonashSmartStructures/ospgrillage" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-github-square"></i></span>
             <label class="sr-only">GitHub</label></a>
         </li>
         <li class="nav-item">
@@ -295,24 +334,21 @@
           
           
           
-          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fab fa-twitter-square"></i></span>
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-twitter-square"></i></span>
             <label class="sr-only">Twitter</label></a>
         </li>
-      </ul>
+</ul></div>
+        
       </div>
-      
-    </div>
     
   </div>
-
   
-  <div class="sidebar-start-items sidebar-primary__section">
-    <div class="sidebar-start-items__item"><nav class="bd-links" id="bd-docs-nav" aria-label="Section navigation">
-  <p class="bd-links__title" role="heading" aria-level="1">
-    Section Navigation
-  </p>
-  <div class="bd-toc-item navbar-nav">
-    <ul class="current nav bd-sidenav">
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item"><nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Module%20description.html">Creating grillage models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ModelTemplates.html">Model types available</a></li>
@@ -329,49 +365,80 @@
 </ul>
 </li>
 </ul>
-
-  </div>
-</nav>
+</div>
+</nav></div>
     </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
   </div>
   
+  <div id="rtd-footer-container"></div>
 
-  
-  <div class="sidebar-end-items sidebar-primary__section">
-    <div class="sidebar-end-items__item">
-    </div>
-  </div>
 
       </div>
-      <main class="bd-main">
+      
+      <main id="main-content" class="bd-main">
         
         
-        <div class="bd-content">
-          <div class="bd-article-container">
-            
-            <div class="bd-header-article">
-                
-            </div>
-            
-            
-            <article class="bd-article" role="main">
+          <div class="bd-content">
+            <div class="bd-article-container">
               
-  <div class="section" id="performing-analysis">
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumbs">
+  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="user_guide.html" class="nav-link">User Guide</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Performing analysis</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="performing-analysis">
 <h1>Performing analysis<a class="headerlink" href="#performing-analysis" title="Permalink to this heading">#</a></h1>
 <p><em>ospgrillage</em> contains a load module which wraps <cite>OpenSeesPy</cite> commands to perform load analysis.</p>
 <p>For all example code in this page, <em>ospgrillage</em> is imported as <code class="docutils literal notranslate"><span class="pre">og</span></code></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ospgrillage</span> <span class="k">as</span> <span class="nn">og</span>
 </pre></div>
 </div>
-<div class="section" id="load-analysis-workflow">
+<section id="load-analysis-workflow">
 <h2>Load analysis workflow<a class="headerlink" href="#load-analysis-workflow" title="Permalink to this heading">#</a></h2>
 <p>Figure 1 shows the flowchart for the load module of <em>ospgrillage</em>.</p>
-<div class="figure align-center" id="id3">
+<figure class="align-center" id="id3">
 <a class="reference internal image-reference" href="../_images/analysis_workflow.png"><img alt="../_images/analysis_workflow.png" src="../_images/analysis_workflow.png" /></a>
-<p class="caption"><span class="caption-text">Figure 1: Load analysis utility flow chart</span><a class="headerlink" href="#id3" title="Permalink to this image">#</a></p>
-</div>
-</div>
-<div class="section" id="defining-loads">
+<figcaption>
+<p><span class="caption-text">Figure 1: Load analysis utility flow chart</span><a class="headerlink" href="#id3" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="defining-loads">
 <h2>Defining loads<a class="headerlink" href="#defining-loads" title="Permalink to this heading">#</a></h2>
 <p>Loads are created with the interface function <a class="reference internal" href="generated/ospgrillage.load.create_load.html#ospgrillage.load.create_load" title="ospgrillage.load.create_load"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_load()</span></code></a>.
 Users pass argument for <cite>type=</cite> to specify the load type.
@@ -389,7 +456,7 @@ These are set to each load type’s <cite>point#=</cite> variable for the load t
 Following sections will further elaborate the load vertices for each load type.</p>
 <p>Loads are generally defined in the global coordinate system with respect to the created grillage model.
 However, a user-defined local coordinate system is required when defining <a class="reference internal" href="#compound-load">Compound load</a> later on.</p>
-<div class="section" id="nodal-loads">
+<section id="nodal-loads">
 <h3>Nodal loads<a class="headerlink" href="#nodal-loads" title="Permalink to this heading">#</a></h3>
 <p>Nodal loads are load applied directly onto nodes of grillage model.
 Nodal loads are defined using <a class="reference internal" href="generated/ospgrillage.load.create_load.html#ospgrillage.load.create_load" title="ospgrillage.load.create_load"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_load()</span></code></a>, specifying <code class="docutils literal notranslate"><span class="pre">type=</span> <span class="pre">&quot;nodal&quot;</span></code>.
@@ -405,35 +472,39 @@ The following example creates a <cite>NodalForce</cite> <cite>namedtuple</cite> 
 <p>Users only have to specify non-zero load values for the desire DOFs for <cite>NodalForce</cite>.
 Any non-specified component are defaulted to zero.</p>
 </div>
-</div>
-<div class="section" id="point-loads">
+</section>
+<section id="point-loads">
 <span id="point"></span><h3>Point Loads<a class="headerlink" href="#point-loads" title="Permalink to this heading">#</a></h3>
 <p>Point load is a force applied on a single infinitesimal point of the grillage model.
 Point loads are used represent a large range of loads, such as truck axle, or superimposed dead load on a deck.</p>
 <p>Point loads are created using <a class="reference internal" href="generated/ospgrillage.load.create_load.html#ospgrillage.load.create_load" title="ospgrillage.load.create_load"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_load()</span></code></a>, passing <code class="docutils literal notranslate"><span class="pre">type</span> <span class="pre">=</span> <span class="pre">&quot;point&quot;</span></code>.
 Point load takes only a single <cite>LoadPoint</cite> tuple. <cite>p</cite> in the tuple should have units of force (eg. N, kN, kips, etc)
 - see Figure 2.</p>
-<div class="figure align-center" id="id4">
+<figure class="align-center" id="id4">
 <a class="reference internal image-reference" href="../_images/point.png"><img alt="../_images/point.png" src="../_images/point.png" style="width: 520.0px;" /></a>
-<p class="caption"><span class="caption-text">Figure 2: Point load</span><a class="headerlink" href="#id4" title="Permalink to this image">#</a></p>
-</div>
+<figcaption>
+<p><span class="caption-text">Figure 2: Point load</span><a class="headerlink" href="#id4" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
 <p>The following example code creates a 20 force unit point load located at (5,0,2) in the global coordinate system.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">point_load_location</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertices</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>  <span class="c1"># create load point</span>
 <span class="n">point_load</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;point&quot;</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;single point&quot;</span><span class="p">,</span> <span class="n">point1</span><span class="o">=</span><span class="n">point_load_location</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="line-loads">
+</section>
+<section id="line-loads">
 <span id="line"></span><h3>Line Loads<a class="headerlink" href="#line-loads" title="Permalink to this heading">#</a></h3>
 <p>Line loads are loads exerted along a line.
 Line loads are useful to represent loads such as self weight of longitudinal beams or distributed load along beam elements.</p>
 <p>Line loads are instantiated with <a class="reference internal" href="generated/ospgrillage.load.create_load.html#ospgrillage.load.create_load" title="ospgrillage.load.create_load"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_load()</span></code></a> passing <code class="docutils literal notranslate"><span class="pre">type</span> <span class="pre">=</span> <span class="pre">&quot;line&quot;</span></code> and required at least two <cite>LoadPoint`s (corresponds to the start and end of the line load) - see Figure 3.
 Using more than two tuples allows a curve line loading profile.
 `p</cite> in the <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadPoint</span></code> tuple should have units of force per distance (eg. kN/m, kips/ft, etc).</p>
-<div class="figure align-center" id="id5">
+<figure class="align-center" id="id5">
 <a class="reference internal image-reference" href="../_images/line.png"><img alt="../_images/line.png" src="../_images/line.png" style="width: 520.0px;" /></a>
-<p class="caption"><span class="caption-text">Figure 3: Line load</span><a class="headerlink" href="#id5" title="Permalink to this image">#</a></p>
-</div>
+<figcaption>
+<p><span class="caption-text">Figure 3: Line load</span><a class="headerlink" href="#id5" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
 <p>The following example code is a constant Two force per distance unit line load (UDL)
 in the global coordinate system from -1 to 11 distance units in the <cite>x</cite>-axis and along the position in the <cite>z</cite>-axis at 3 distance units.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">barrier_point_1</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertices</span><span class="p">(</span><span class="n">x</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
@@ -445,18 +516,20 @@ in the global coordinate system from -1 to 11 distance units in the <cite>x</cit
 <p class="admonition-title">Note</p>
 <p>As of release 0.1.0, curved line loads are not available.</p>
 </div>
-</div>
-<div class="section" id="patch-loads">
+</section>
+<section id="patch-loads">
 <span id="patch"></span><h3>Patch loads<a class="headerlink" href="#patch-loads" title="Permalink to this heading">#</a></h3>
 <p>Patch loads are useful to represent loads distributed uniformly over a certain area such as traffic lanes.</p>
 <p>Patch loads are instantiated <a class="reference internal" href="generated/ospgrillage.load.create_load.html#ospgrillage.load.create_load" title="ospgrillage.load.create_load"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_load()</span></code></a>, specifying <code class="docutils literal notranslate"><span class="pre">type</span> <span class="pre">=</span> <span class="pre">&quot;patch&quot;</span></code>.
 Patch load requires at least four <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadPoint</span></code> tuple (corresponds to the vertices of the patch load) - see Figure 4.
 Using eight tuples allows a curve surface loading profile.
 <cite>p</cite> in the <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadPoint</span></code> tuple should have units of force per area.</p>
-<div class="figure align-center" id="id6">
+<figure class="align-center" id="id6">
 <a class="reference internal image-reference" href="../_images/patch.png"><img alt="../_images/patch.png" src="../_images/patch.png" style="width: 520.0px;" /></a>
-<p class="caption"><span class="caption-text">Figure 4: Patch load</span><a class="headerlink" href="#id6" title="Permalink to this image">#</a></p>
-</div>
+<figcaption>
+<p><span class="caption-text">Figure 4: Patch load</span><a class="headerlink" href="#id6" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
 <p>The following example code creates a constant 5 force per area unit patch load
 in the global coordinate system.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lane_point_1</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertices</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
@@ -470,9 +543,9 @@ in the global coordinate system.</p>
 <p class="admonition-title">Note</p>
 <p>As of release 0.1.0, curved patch loads are not available.</p>
 </div>
-</div>
-</div>
-<div class="section" id="compound-loads">
+</section>
+</section>
+<section id="compound-loads">
 <span id="compound-load"></span><h2>Compound loads<a class="headerlink" href="#compound-loads" title="Permalink to this heading">#</a></h2>
 <p>Two or more of the basic load types can be combined to form a Compound load.
 All load types are applied in the direction of the global <span class="math notranslate nohighlight">\(y\)</span>-axis.
@@ -481,10 +554,12 @@ Loads in other directions and applied moments are currently not supported.</p>
 This function creates a <a class="reference internal" href="Loads.html#ospgrillage.load.CompoundLoad" title="ospgrillage.load.CompoundLoad"><code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundLoad</span></code></a> object.</p>
 <p>Compound load are typically defined in a <strong>local coordinate system</strong> and then set to global coordinate system of the grillage.
 Figure 5 shows the relationship and process of mapping local to global system of a compound load.</p>
-<div class="figure align-center" id="id7">
+<figure class="align-center" id="id7">
 <a class="reference internal image-reference" href="../_images/compoundload.png"><img alt="../_images/compoundload.png" src="../_images/compoundload.png" /></a>
-<p class="caption"><span class="caption-text">Figure 5: Compound load</span><a class="headerlink" href="#id7" title="Permalink to this image">#</a></p>
-</div>
+<figcaption>
+<p><span class="caption-text">Figure 5: Compound load</span><a class="headerlink" href="#id7" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
 <p>The following code creates a point and line load which is to be assigned as a Compound load.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># components in a compound load</span>
 <span class="n">wheel_1</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;point&quot;</span><span class="p">,</span> <span class="n">point1</span><span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertices</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>  <span class="c1"># point load 1</span>
@@ -515,8 +590,8 @@ The following explains the various input conditions</p>
 <p>At the current stage, the <code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundLoad</span></code> parses the load object within <strong>local coordinate system</strong>.
 When pass as input into <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadCase</span></code>, the Compound load’s vertices / load points are automatically converted to <strong>global coordinates</strong>, based on the inputs of <code class="docutils literal notranslate"><span class="pre">set_global_coord</span></code> function</p>
 </div>
-</div>
-<div class="section" id="load-cases">
+</section>
+<section id="load-cases">
 <span id="id1"></span><h2>Load cases<a class="headerlink" href="#load-cases" title="Permalink to this heading">#</a></h2>
 <p>Load cases are a set of load types (<a class="reference internal" href="#point">Point</a>, <a class="reference internal" href="#line">Line</a>, <a class="reference internal" href="#patch">Patch</a>, <a class="reference internal" href="#compound-load">Compound load</a>) used to define a particular loading condition.
 Compound loads are treated as a single load group within a load case having same reference points (e.g. tandem axle) and properties (e.g. load factor)</p>
@@ -538,17 +613,19 @@ Users repeat this step for any defined load cases.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span><span class="o">.</span><span class="n">add_load_case</span><span class="p">(</span><span class="n">DL</span><span class="p">)</span>  <span class="c1"># adding this load case to grillage model</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="moving-load">
+</section>
+<section id="moving-load">
 <span id="id2"></span><h2>Moving load<a class="headerlink" href="#moving-load" title="Permalink to this heading">#</a></h2>
 <p>For moving load analysis, users create moving load objects using <a class="reference internal" href="Loads.html#ospgrillage.load.MovingLoad" title="ospgrillage.load.MovingLoad"><code class="xref py py-class docutils literal notranslate"><span class="pre">MovingLoad</span></code></a> class.
 The moving load class takes a load type object (<a class="reference internal" href="#point">Point</a>, <a class="reference internal" href="#line">Line</a>, <a class="reference internal" href="#patch">Patch</a>, <a class="reference internal" href="#compound-load">Compound load</a>) and moves the load through a path points described by a <a class="reference internal" href="Loads.html#ospgrillage.load.Path" title="ospgrillage.load.Path"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a> object.</p>
 <p>Figure 6 summarizes the relationship between moving loads, paths and the position of the loads on the grillage model.</p>
-<div class="figure align-center" id="id8">
+<figure class="align-center" id="id8">
 <a class="reference internal image-reference" href="../_images/movingload.png"><img alt="../_images/movingload.png" src="../_images/movingload.png" /></a>
-<p class="caption"><span class="caption-text">Figure 6: Moving load</span><a class="headerlink" href="#id8" title="Permalink to this image">#</a></p>
-</div>
-<div class="section" id="moving-path">
+<figcaption>
+<p><span class="caption-text">Figure 6: Moving load</span><a class="headerlink" href="#id8" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="moving-path">
 <h3>Moving path<a class="headerlink" href="#moving-path" title="Permalink to this heading">#</a></h3>
 <p><a class="reference internal" href="Loads.html#ospgrillage.load.Path" title="ospgrillage.load.Path"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a> object is created using <a class="reference internal" href="generated/ospgrillage.load.create_moving_path.html#ospgrillage.load.create_moving_path" title="ospgrillage.load.create_moving_path"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_moving_path()</span></code></a>.</p>
 <p><a class="reference internal" href="Loads.html#ospgrillage.load.Path" title="ospgrillage.load.Path"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a> requires two <cite>namedTuple</cite> <code class="xref py py-class docutils literal notranslate"><span class="pre">Point(x,y,z)</span></code> to describe its start and end position.
@@ -556,8 +633,8 @@ The following example creates a path from 2 to 4 distance units in the global co
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">single_path</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_moving_path</span><span class="p">(</span><span class="n">start_point</span><span class="o">=</span><span class="n">og</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">end_point</span><span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="creating-moving-load">
+</section>
+<section id="creating-moving-load">
 <h3>Creating moving load<a class="headerlink" href="#creating-moving-load" title="Permalink to this heading">#</a></h3>
 <p>The following example code creates a compound load consisting of two point loads moving along the defined <strong>single_path</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># create components of compound load</span>
@@ -576,8 +653,8 @@ Here, the function automatically creates multiple incremental <a class="referenc
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span><span class="o">.</span><span class="n">add_load_case</span><span class="p">(</span><span class="n">move_point</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="advance-usage">
+</section>
+<section id="advance-usage">
 <h3>Advance usage<a class="headerlink" href="#advance-usage" title="Permalink to this heading">#</a></h3>
 <p>All basic load added to a <a class="reference internal" href="Loads.html#ospgrillage.load.MovingLoad" title="ospgrillage.load.MovingLoad"><code class="xref py py-class docutils literal notranslate"><span class="pre">MovingLoad</span></code></a> class via <code class="xref py py-func docutils literal notranslate"><span class="pre">add_loads()</span></code> function
 are assigned with a single common <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code> object.</p>
@@ -594,9 +671,9 @@ Following, each basic load added via <code class="xref py py-func docutils liter
 <span class="n">move_load_group</span><span class="o">.</span><span class="n">add_loads</span><span class="p">(</span><span class="n">load_obj</span><span class="o">=</span><span class="n">truck_b</span><span class="p">,</span><span class="n">path_obj</span><span class="o">=</span><span class="n">path_b</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-</div>
-<div class="section" id="running-analysis">
+</section>
+</section>
+<section id="running-analysis">
 <h2>Running analysis<a class="headerlink" href="#running-analysis" title="Permalink to this heading">#</a></h2>
 <p>Once all defined load cases (static and moving) have been added to the grillage object, analysis can be conducted.</p>
 <p>To analyse load case(s), users run the class function <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze.html#ospgrillage.osp_grillage.OspGrillage.analyze" title="ospgrillage.osp_grillage.OspGrillage.analyze"><code class="xref py py-func docutils literal notranslate"><span class="pre">analyze()</span></code></a>.
@@ -614,181 +691,141 @@ Following example shows the various options for <a class="reference internal" hr
 <span class="n">example_bridge</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span><span class="n">load_case</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;DL&quot;</span><span class="p">,</span><span class="s2">&quot;SDL&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
-            </article>
-            
-            
-            
-            <footer class="bd-footer-article">
-                <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="../notebooks/curve_mesh.html" title="previous page">
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../notebooks/curve_mesh.html"
+       title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
-          <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title">Curve Mesh</p>
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Curve Mesh</p>
       </div>
-  </a>
-  <a class='right-next' id="next-link" href="PostProcessing.html" title="next page">
-  <div class="prev-next-info">
-      <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">Getting Results</p>
-  </div>
-  <i class="fa-solid fa-angle-right"></i>
-  </a>
+    </a>
+    <a class="right-next"
+       href="PostProcessing.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Getting Results</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
 </div>
-            </footer>
-            
-          </div>
-          
-          
-          
-            <div class="bd-sidebar-secondary bd-toc">
+
+                </footer>
               
-<div class="toc-item">
-  
-<div class="tocsection onthispage">
-    <i class="fa-solid fa-list"></i> On this page
-</div>
-<nav id="bd-toc-nav" class="page-toc">
-    <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#load-analysis-workflow">
-   Load analysis workflow
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#defining-loads">
-   Defining loads
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#nodal-loads">
-     Nodal loads
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#point-loads">
-     Point Loads
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#line-loads">
-     Line Loads
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#patch-loads">
-     Patch loads
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#compound-loads">
-   Compound loads
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#load-cases">
-   Load cases
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#moving-load">
-   Moving load
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#moving-path">
-     Moving path
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#creating-moving-load">
-     Creating moving load
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#advance-usage">
-     Advance usage
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#running-analysis">
-   Running analysis
-  </a>
- </li>
-</ul>
-
-</nav>
-</div>
-
-<div class="toc-item">
-  
-<div id="searchbox"></div>
-</div>
-
-<div class="toc-item">
-  
-
-<div class="tocsection editthispage">
-    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/rst/Running_analysis.rst">
-        <i class="fa-solid fa-pencil"></i> Edit this page
-    </a>
-</div>
-
-</div>
-
-<div class="toc-item">
-  
-</div>
-
             </div>
-          
-          
-        </div>
-        <footer class="bd-footer-content">
-          <div class="bd-footer-content__inner">
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-analysis-workflow">Load analysis workflow</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#defining-loads">Defining loads</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nodal-loads">Nodal loads</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#point-loads">Point Loads</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#line-loads">Line Loads</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#patch-loads">Patch loads</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compound-loads">Compound loads</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-cases">Load cases</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#moving-load">Moving load</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#moving-path">Moving path</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-moving-load">Creating moving load</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#advance-usage">Advance usage</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-analysis">Running analysis</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/rst/Running_analysis.rst">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
             
           </div>
-        </footer>
+          <footer class="bd-footer-content">
+            
+          </footer>
         
       </main>
     </div>
   </div>
-
   
-    
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1e1de1a1873e13ef5536"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
 
-  <footer class="bd-footer"><div class="bd-footer__inner container">
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
   
-  <div class="footer-item">
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="copyright">
     
-<p class="copyright">
-
-    &copy; Copyright 2021, Justin Ngan, Colin Caprani.<br>
-
-</p>
-
-  </div>
+      © Copyright 2021, Justin Ngan, Colin Caprani.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    <br/>
+  </p>
+</div>
+      
+    </div>
   
-  <div class="footer-item">
-    
-<p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br>
-</p>
-
-  </div>
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.3.
+</p></div>
+      
+    </div>
   
 </div>
+
   </footer>
   </body>
 </html>
