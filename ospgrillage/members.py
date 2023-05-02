@@ -285,14 +285,6 @@ class GrillageMember:
                         self.section.op_ele_type
                     )
                 )
-            # asterisk_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(
-            #     self.material.elastic_modulus,
-            #     self.material.shear_modulus,
-            #     self.section.A * width,
-            #     self.section.J * width,
-            #     self.section.Iy * width,
-            #     self.section.Iz * width,
-            # )
 
             asterisk_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(
                 self.section.A * width,

@@ -405,7 +405,7 @@ class OspGrillage:
 
         # write /execute element commands
 
-        for ele_tag, ele_str  in self.element_command_list.items():
+        for ele_tag, ele_str in self.element_command_list.items():
 
             if self.pyfile:
                 with open(self.filename, "a") as file_handle:
@@ -413,17 +413,6 @@ class OspGrillage:
             else:
                 eval(ele_str)
                 self.model_command_list.append(ele_str)
-
-
-        # for common_ele_name, ele_dict in self.element_command_list.items():
-        #     for group_num, ele_list in ele_dict.items():
-        #         for ele_str in ele_list:
-        #             if self.pyfile:
-        #                 with open(self.filename, "a") as file_handle:
-        #                     file_handle.write(ele_str)
-        #             else:
-        #                 eval(ele_str)
-        #                 self.model_command_list.append(ele_str)
 
         # write equalDOF commands
         self._write_equal_dof(node_tag_list=self.spring_node_pairs.items())
@@ -885,7 +874,6 @@ class OspGrillage:
                         ele_command_list.append(ele_str)
                         ele_tag_to_command_dict[edge_ele[0]] = ele_str
 
-
             ele_group_to_command_dict[0] = ele_command_list
         else:  # non-unit width member assignment
 
@@ -923,7 +911,7 @@ class OspGrillage:
                     else:
                         ele_list = self.Mesh_obj.z_group_to_ele[z_group]
 
-                    if isinstance(specific_span,int):  # filter for specific span elements only
+                    if isinstance(specific_span, int):  # filter for specific span elements only
                         ele_list = [ele for ele in ele_list if
                                     ele[0] in self.Mesh_obj.span_group_to_ele_tag[specific_span]]
 
@@ -940,19 +928,6 @@ class OspGrillage:
                         ele_tag_to_command_dict[ele[0]] = ele_command_list[nth]
 
                     ele_command_list = []
-
-        # # store into dict or replace existing
-        # ele_command_dict[member] = ele_group_to_command_dict
-        #
-        # # check if member been previously assigned
-        # if member in self.element_command_list.keys():
-        #     # loop through all groups assigned
-        #     for group_num in ele_command_dict[member].keys():
-        #         if group_num in self.element_command_list[member].keys():
-        #             # replace assigned group with new command list
-        #             self.element_command_list[member][group_num] = ele_group_to_command_dict[group_num]
-        # else:
-        #     self.element_command_list[member] = ele_group_to_command_dict
 
         self.element_command_list.update(ele_tag_to_command_dict)
 
@@ -984,7 +959,7 @@ class OspGrillage:
         ele_command_dict[spring_name] = []  # init empty list
         ele_command_list = ele_command_dict[spring_name]
         edge_node_dict = {}
-        ele_tag_to_command_dict=dict()
+        ele_tag_to_command_dict = dict()
         for node_tag in node_tag_list:
             # get node coordinate
             node_coord = self.Mesh_obj.node_spec[node_tag]['coordinate']
@@ -1013,38 +988,19 @@ class OspGrillage:
                                                                           materialtag=material_tag, ))
 
             ele_tag_to_command_dict[ele_count] = spring_member.get_element_command_str(ele_tag=ele_count,
-                                                                          node_tag_list=nodes,
-                                                                          materialtag=material_tag, )
+                                                                                       node_tag_list=nodes,
+                                                                                       materialtag=material_tag, )
             self.global_ele_counter += 1
             # removes boundary condition on nodes of node_list
             del self.Mesh_obj.edge_node_recorder[node_tag]
             # create master/slave link between both node_tag (non support), to node_counter (supported)
             self.spring_node_pairs[node_counter] = node_tag
 
-        # update spring ele dict in element_command_list
-        # if spring_name in [keys_name.keys() for keys_name in self.element_command_list]:
-        #     replace_tag = [
-        #         i
-        #         for i, keys_name in enumerate(self.element_command_list)
-        #         if spring_name in keys_name.keys()
-        #     ][0]
-        #     self.element_command_list.pop(replace_tag)
-        # self.element_command_list.append(ele_command_dict)
-
         # replace constrain onto constrains of node in node_list to new node
         self.Mesh_obj.edge_node_recorder.update(edge_node_dict)
 
-        # ele_group_to_command_dict = dict()
-        # ele_group_to_command_dict[edge_num] = ele_command_list
-        # if spring_name in self.element_command_list.keys():
-        #     # loop through all groups assigned
-        #     for group_num in ele_group_to_command_dict.keys():
-        #         self.element_command_list[spring_name][group_num] = ele_group_to_command_dict[group_num]
-        #
-        # else:
-        #     self.element_command_list[spring_name] = ele_group_to_command_dict
-
         self.element_command_list.update(ele_tag_to_command_dict)
+
     # sub-functions of set_member function
     @staticmethod
     def _get_element_command_list(
@@ -3221,30 +3177,13 @@ class OspGrillageShell(OspGrillage):
                 )
                 ele_group_to_command_dict[z_group] = ele_command_list
 
-                for nth,ele in enumerate(self.Mesh_obj.z_group_to_ele[z_group]):
+                for nth, ele in enumerate(self.Mesh_obj.z_group_to_ele[z_group]):
                     ele_tag_to_command_dict[ele[0]] = ele_command_list[nth]
 
                 ele_command_list = []
         # store into dict or replace existing
-        # ele_command_dict[member] = ele_command_list
 
         ele_command_dict[member] = ele_group_to_command_dict
-
-        #         ele_group_to_command_dict[z_group] = ele_command_list
-        #         ele_command_list = []
-        # # store into dict or replace existing
-        # ele_command_dict[member] = ele_group_to_command_dict
-
-        # ele_command_dict[member] = ele_command_list
-        # check if member been previously assigned
-        # if member in self.element_command_list.keys():
-        #     # loop through all groups assigned
-        #     for group_num in ele_command_dict[member].keys():
-        #         if group_num in self.element_command_list[member].keys():
-        #             # replace assigned group with new command list
-        #             self.element_command_list[member][group_num] = ele_group_to_command_dict[group_num]
-        # else:
-        #     self.element_command_list[member] = ele_group_to_command_dict
 
         self.element_command_list.update(ele_tag_to_command_dict)
 
@@ -3307,23 +3246,4 @@ class OspGrillageShell(OspGrillage):
             else:  # run instance
                 eval(fix_str)
                 self.model_command_list.append(fix_str)
-            # if edge_group_num == 0:  # 0 is edge of start of span
-            #     if self.pyfile:  # if writing py file
-            #         with open(self.filename, "a") as file_handle:
-            #             file_handle.write(
-            #                 "ops.fix({}, *{})\n".format(
-            #                     node_tag, self.fixity_vector["pin"]
-            #                 )
-            #             )
-            #     else:  # run instance
-            #         ops.fix(node_tag, *self.fixity_vector["pin"])
-            # elif edge_group_num == 1:  # 1 is edge of end of span
-            #     if self.pyfile:  # if writing py file
-            #         with open(self.filename, "a") as file_handle:
-            #             file_handle.write(
-            #                 "ops.fix({}, *{})\n".format(
-            #                     node_tag, self.fixity_vector["roller"]
-            #                 )
-            #             )
-            #     else:  # run instance
-            #         ops.fix(node_tag, *self.fixity_vector["roller"])
+

@@ -1085,6 +1085,7 @@ class Mesh:
         self.element_counter += 1
 
     def _create_offset_nodes(self):
+        """private function to create offset nodes and tie with rigid links"""
         # main class variant creates offset nodes for support edge nodes
         x_count = "offset_support_node_x"  # proxy
         z_count = "offset_support_z{}"  # proxy
@@ -1112,6 +1113,7 @@ class Mesh:
             self.node_counter += 1
 
     def _create_link_element(self, rNode, cNode):
+        """Private function to add opensees command to create rigid link"""
         # sub procedure function
         # user mp constraint object
         # function to create ops rigid link command and store to variable
@@ -2283,13 +2285,7 @@ class ShellLinkMesh(Mesh):
             sorted_offset_tag = [
                 x for _, x in sorted(zip(x_coord_list, offset_node_tag))
             ]
-            # store first and last node tag as supports
-            # self.edge_support_nodes.setdefault(
-            #     sorted_offset_tag[0], self.pinned_node_group
-            # )  #
-            # self.edge_support_nodes.setdefault(
-            #     sorted_offset_tag[-1], self.roller_node_group
-            # )
+
             # assign long beam element between two nodes
             for ind, node_tag in enumerate(sorted_offset_tag[:-1]):
                 n1 = node_tag
