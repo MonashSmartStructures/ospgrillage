@@ -96,7 +96,7 @@ The following code line creates the *concrete* material needed in`defining Grill
 
 .. code-block:: python
 
-    concrete = og.create_material(type="concrete", code="AS5100-2017", grade="50MPa")
+    concrete = og.create_material(material="concrete", code="AS5100-2017", grade="50MPa")
 
 Users can choose between steel or concrete material - by passing
 keyword "steel" or "concrete" argument to :func:`~ospgrillage.material.create_material`. 
@@ -264,8 +264,8 @@ For the example in Figure 1, the rest of grillage elements are assigned as such:
     example_bridge.set_member(I_beam, member="exterior_main_beam_1")
     example_bridge.set_member(edge_beam, member="edge_beam")
     example_bridge.set_member(slab, member="transverse_slab")
-    example_bridge.set_member(edge_slab, member="edge_slab")
-
+    example_bridge.set_member(edge_slab, member="start_edge")
+    example_bridge.set_member(edge_slab, member="end_edge")
 
 For orthogonal meshes, nodes in the transverse direction have varied spacing based on the skew edge region.
 The properties of transverse members based on unit metre width is required for its definition section properties.
