@@ -1331,3 +1331,5 @@ def test_load_analysis_on_spring_support_single_span(ref_bridge_properties):
 
     result = variant_one_model.get_results()
     print(result)
+
+    assert og.np.isclose(result.forces.sel(Loadcase="pointload",Component="Mz_i",Element=20).to_numpy().tolist(),0.49505451544913914)

@@ -74,7 +74,7 @@ ext_to_int_dist = (
     2.2775 * m
 )  # distance between first exterior beam and first interior beam
 angle = 0  # skew angle
-mesh_type = "Oblique"
+mesh_type = "Ortho"
 # a new feature for multi span
 spans = [9.144, 12.192, 9.144]  # list of float representing distance of each span
 # spans = [L]

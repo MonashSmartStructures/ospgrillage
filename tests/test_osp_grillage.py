@@ -66,7 +66,8 @@ def bridge_model_42_negative(ref_bridge_properties):
     example_bridge.set_member(I_beam, member="interior_main_beam")
     example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_1")
     example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_2")
-    example_bridge.set_member(exterior_I_beam, member="edge_beam")
+    example_bridge.set_member(exterior_I_beam, member="edge_beam_1")
+    example_bridge.set_member(exterior_I_beam, member="edge_beam_2")
     example_bridge.set_member(slab, member="transverse_slab")
     example_bridge.set_member(exterior_I_beam, member="start_edge")
     example_bridge.set_member(exterior_I_beam, member="end_edge")
@@ -311,7 +312,7 @@ def test_inputs_custom_spacings_on_ortho_mesh(ref_bridge_properties):
     # is developed.
 
     # create a grillage with
-    with pytest.raises(NameError) as e_info:
+    with pytest.raises(Exception) as e_info:
         custom_transver_spacing = [
             1,
             2,
@@ -441,6 +442,186 @@ def test_multispan_feature(ref_bridge_properties):
         )
     )
 
+
+
+def test_member_assignment_for_specific_span_feature(ref_bridge_properties):
+    # model is based on tst_multispan_feature
+    I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
+
+    # Adopted units: N and m
+    kilo = 1e3
+    milli = 1e-3
+    N = 1
+    m = 1
+    mm = milli * m
+    m2 = m ** 2
+    m3 = m ** 3
+    m4 = m ** 4
+    kN = kilo * N
+    MPa = N / ((mm) ** 2)
+    GPa = kilo * MPa
+
+    # parameters of bridge grillage
+    L = 33.5 * m  # span
+    w = 11.565 * m  # width
+    n_l = 7  # number of longitudinal members
+    n_t = 11  # number of transverse members
+    edge_dist = 1.05 * m  # distance between edge beam and first exterior beam
+    bridge_name = "multi span showcase"
+    angle = 10  # degree
+    mesh_type = "Oblique"
+
+    # multispan specific vars
+    spans = [9 * m, 12 * m, 9 * m]
+    nl_multi = [3, 5, 10]
+    stich_slab_x_spacing = 1 * m
+    stitch_slab_section = og.create_section(
+        A=0.504 * m2,
+        J=5.22303e-3 * m3,
+        Iy=0.32928 * m4,
+        Iz=1.3608e-3 * m4,
+        Ay=0.42 * m2,
+        Az=0.42 * m2,
+    )
+    stich_slab = og.create_member(section=stitch_slab_section, material=concrete)
+
+    variant_one_model = og.create_grillage(
+        bridge_name=bridge_name,
+        long_dim=L,
+        width=w,
+        skew=angle,
+        num_long_grid=n_l,
+        num_trans_grid=n_t,
+        edge_beam_dist=edge_dist,
+        mesh_type=mesh_type,
+        multi_span_dist_list=spans,
+        multi_span_num_points=nl_multi,
+        continuous=True,
+        # non_cont_spacing_x=stich_slab_x_spacing,
+    )
+
+    # assign grillage member to element groups of grillage model
+    variant_one_model.set_member(I_beam, member="interior_main_beam")
+    # variant_one_model.set_member(I_beam, member="exterior_main_beam_1")
+    # variant_one_model.set_member(I_beam, member="exterior_main_beam_2")
+    variant_one_model.set_member(exterior_I_beam, member="edge_beam")
+    variant_one_model.set_member(slab, member="transverse_slab")
+    variant_one_model.set_member(slab, member="start_edge")
+    variant_one_model.set_member(slab, member="end_edge")
+    # variant_one_model.set_member(stich_slab, member="stitch_elements")
+
+    variant_one_model.set_member(I_beam, member="interior_main_beam",specific_span=0)
+    variant_one_model.set_member(I_beam, member="exterior_main_beam_1",specific_span=0)
+    variant_one_model.set_member(I_beam, member="exterior_main_beam_2",specific_span=0)
+
+
+
+    variant_one_model.create_osp_model(pyfile=False)
+    og.opsv.plot_model(element_labels=0, az_el=(-90, 0))  # plotting using ops_vis
+    og.plt.show()
+def test_member_reassignment_feature(ref_bridge_properties):
+    # test model is a multispan model based on test_multi_span_feature()
+    I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
+
+    # Adopted units: N and m
+    kilo = 1e3
+    milli = 1e-3
+    N = 1
+    m = 1
+    mm = milli * m
+    m2 = m ** 2
+    m3 = m ** 3
+    m4 = m ** 4
+    kN = kilo * N
+    MPa = N / ((mm) ** 2)
+    GPa = kilo * MPa
+
+    # parameters of bridge grillage
+    L = 33.5 * m  # span
+    w = 11.565 * m  # width
+    n_l = 7  # number of longitudinal members
+    n_t = 11  # number of transverse members
+    edge_dist = 1.05 * m  # distance between edge beam and first exterior beam
+    bridge_name = "multi span showcase"
+    angle = 10  # degree
+    mesh_type = "Oblique"
+
+    # multispan specific vars
+    spans = [9 * m, 12 * m, 9 * m]
+    nl_multi = [3, 5, 10]
+    stich_slab_x_spacing = 1 * m
+    stitch_slab_section = og.create_section(
+        A=0.504 * m2,
+        J=5.22303e-3 * m3,
+        Iy=0.32928 * m4,
+        Iz=1.3608e-3 * m4,
+        Ay=0.42 * m2,
+        Az=0.42 * m2,
+    )
+    stich_slab = og.create_member(section=stitch_slab_section, material=concrete)
+
+    variant_one_model = og.create_grillage(
+        bridge_name=bridge_name,
+        long_dim=L,
+        width=w,
+        skew=angle,
+        num_long_grid=n_l,
+        num_trans_grid=n_t,
+        edge_beam_dist=edge_dist,
+        mesh_type=mesh_type,
+        multi_span_dist_list=spans,
+        multi_span_num_points=nl_multi,
+        continuous=True,
+        # non_cont_spacing_x=stich_slab_x_spacing,
+    )
+
+    # assign grillage member to element groups of grillage model
+    variant_one_model.set_member(I_beam, member="interior_main_beam")
+    variant_one_model.set_member(I_beam, member="exterior_main_beam_1")
+    variant_one_model.set_member(I_beam, member="exterior_main_beam_2")
+    variant_one_model.set_member(exterior_I_beam, member="edge_beam")
+    variant_one_model.set_member(slab, member="transverse_slab")
+    variant_one_model.set_member(slab, member="start_edge")
+    variant_one_model.set_member(slab, member="end_edge")
+    # variant_one_model.set_member(stich_slab, member="stitch_elements")
+
+    # reassign
+    variant_one_model.set_member(exterior_I_beam, member="interior_main_beam")
+
+    variant_one_model.create_osp_model(pyfile=False)
+    og.opsv.plot_model(element_labels=0, az_el=(-90, 0))  # plotting using ops_vis
+    og.plt.show()
+    assert variant_one_model.element_command_list[2] ==\
+           'ops.element("elasticBeamColumn", 2, *[2, 3], *[9.963e-02, 3.480e+10, 1.450e+10, 5.850e-04, 2.475e-04, 5.445e-04], 1, 0)\n'
+
+
+def test_create_offset_support(ref_bridge_properties):
+    I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
+
+    # construct grillage model - here without specifying edge distance
+    example_bridge = og.create_grillage(
+        bridge_name="SuperT_10m",
+        long_dim=10,
+        width=7,
+        skew=-42,
+        num_long_grid=7,
+        num_trans_grid=5,
+        mesh_type="Ortho",
+        support_rigid_dist_y=1
+    )
+
+    # set grillage member to element groups of grillage model
+    example_bridge.set_member(I_beam, member="interior_main_beam")
+    example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_1")
+    example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_2")
+    example_bridge.set_member(exterior_I_beam, member="edge_beam")
+    example_bridge.set_member(slab, member="transverse_slab")
+    example_bridge.set_member(exterior_I_beam, member="start_edge")
+    example_bridge.set_member(exterior_I_beam, member="end_edge")
+
+    example_bridge.create_osp_model(pyfile=False)
+
+    og.opsplt.plot_model("nodes")
 
 def test_multispan_feat_shell(ref_bridge_properties):
     # test multispan feature compatibility with shell model

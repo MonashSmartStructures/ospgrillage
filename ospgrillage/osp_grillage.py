@@ -370,6 +370,7 @@ class OspGrillage:
 
         # create the result object for the grillage model
         self.results = Results(self.Mesh_obj)
+        self._write_rigid_link()
 
     # function to run mesh generation
     def _run_mesh_generation(self):
@@ -403,18 +404,18 @@ class OspGrillage:
                 self.model_command_list.append(sec_str)
 
         # write /execute element commands
-        for common_ele_name, ele_dict in self.element_command_list.items():
-            for group_num, ele_list in ele_dict.items():
-                for ele_str in ele_list:
-                    if self.pyfile:
-                        with open(self.filename, "a") as file_handle:
-                            file_handle.write(ele_str)
-                    else:
-                        eval(ele_str)
-                        self.model_command_list.append(ele_str)
+
+        for ele_tag, ele_str in self.element_command_list.items():
+
+            if self.pyfile:
+                with open(self.filename, "a") as file_handle:
+                    file_handle.write(ele_str)
+            else:
+                eval(ele_str)
+                self.model_command_list.append(ele_str)
 
         # write equalDOF commands
-        self._write_equal_dof()
+        self._write_equal_dof(node_tag_list=self.spring_node_pairs.items())
 
         # if created OpenSees instance, set instance flag
         if not self.pyfile:
@@ -580,7 +581,7 @@ class OspGrillage:
                     eval(fix_str)
                     self.model_command_list.append(fix_str)
 
-    def _write_equal_dof(self, dof: list = None):
+    def _write_equal_dof(self, node_tag_list, dof: list = None):
         """
         Function to write equalDOF command
         """
@@ -588,7 +589,7 @@ class OspGrillage:
             dof = [1, 2, 3, 4, 5]  # default
 
         # key is supported node , slave is non supported node
-        for master_node, slave_node in self.spring_node_pairs.items():
+        for master_node, slave_node in node_tag_list:
             equaldof_str = 'ops.equalDOF({rNodetag},{cNodetag},*{dofs})\n'.format(
                 rNodetag=master_node, cNodetag=slave_node, dofs=dof)
 
@@ -727,12 +728,31 @@ class OspGrillage:
             self.common_grillage_element_z_group.update({key: val})
         # populate start edge and end edge entries
         self.common_grillage_element_z_group[self.common_grillage_element_keys[4]] = [0]
-        self.common_grillage_element_z_group[self.common_grillage_element_keys[5]] = list(range(1,self.Mesh_obj.global_edge_count))
+        self.common_grillage_element_z_group[self.common_grillage_element_keys[5]] = list(
+            range(1, self.Mesh_obj.global_edge_count))
         self.common_grillage_element_z_group[self.common_grillage_element_keys[6]] = [
             0]  # proxy 0 for set_member() loop
+        self.common_grillage_element_z_group[self.common_grillage_element_keys[0] + "_1"] \
+            = [self.common_grillage_element_z_group[self.common_grillage_element_keys[0]][0]]
+        self.common_grillage_element_z_group[self.common_grillage_element_keys[0] + "_2"] \
+            = [self.common_grillage_element_z_group[self.common_grillage_element_keys[0]][1]]
+
+    def _write_rigid_link(self):
+        """
+        Private procedure to write or execute OpenSeesPy rigidLink() command. Reads rigid link data from link_str_list
+        variable
+
+        """
+        # loop all rigidLink command, write or eval rigid link command. note link_str is already formatted
+        for link_str in self.Mesh_obj.link_str_list:
+            if self.pyfile:
+                with open(self.filename, "a") as file_handle:
+                    file_handle.write(link_str)
+            else:
+                eval(link_str)
 
     # interface function
-    def set_member(self, grillage_member_obj: GrillageMember, member=None, specific_group=None):
+    def set_member(self, grillage_member_obj: GrillageMember, member=None, specific_group=None, specific_span=None):
         """
         Function to set grillage member class object to elements of grillage members.
 
@@ -773,6 +793,7 @@ class OspGrillage:
         # dictionary for key = common member tag, val is list of str for ops.element()
         ele_command_dict = dict()
         ele_group_to_command_dict = dict()
+        ele_tag_to_command_dict = dict()
         ele_command_list = []
         # if option for pyfile is True, write the header for element group commands
         if self.pyfile:
@@ -834,6 +855,9 @@ class OspGrillage:
                         sectiontag=section_tag,
                     )
                     ele_command_list.append(ele_str)
+                    ele_tag_to_command_dict[ele[0]] = ele_str
+
+
             elif member == "start_edge" or member == "end_edge":
                 for edge_group in self.common_grillage_element_z_group[member]:
                     for edge_ele in self.Mesh_obj.edge_group_to_ele[edge_group]:
@@ -848,11 +872,17 @@ class OspGrillage:
                             sectiontag=section_tag,
                         )
                         ele_command_list.append(ele_str)
+                        ele_tag_to_command_dict[edge_ele[0]] = ele_str
+
             ele_group_to_command_dict[0] = ele_command_list
         else:  # non-unit width member assignment
 
             if member == self.common_grillage_element_keys[-1]:
                 ele_list = self.Mesh_obj.trans_ele
+
+                if specific_span:  # filter for specific span elements only
+                    ele_list = [ele for ele in ele_list if ele[0] in self.Mesh_obj.span_group_to_ele_tag[specific_span]]
+
                 ele_command_list += self._get_element_command_list(
                     grillage_member_obj=grillage_member_obj,
                     list_of_ele=ele_list,
@@ -860,6 +890,9 @@ class OspGrillage:
                     section_tag=section_tag,
                 )
                 ele_group_to_command_dict[0] = ele_command_list
+
+                for nth, ele in enumerate(ele_list):
+                    ele_tag_to_command_dict[ele[0]] = ele_command_list[nth]
                 ele_command_list = []
             else:
 
@@ -878,26 +911,25 @@ class OspGrillage:
                     else:
                         ele_list = self.Mesh_obj.z_group_to_ele[z_group]
 
+                    if isinstance(specific_span, int):  # filter for specific span elements only
+                        ele_list = [ele for ele in ele_list if
+                                    ele[0] in self.Mesh_obj.span_group_to_ele_tag[specific_span]]
+
                     ele_command_list += self._get_element_command_list(
                         grillage_member_obj=grillage_member_obj,
                         list_of_ele=ele_list,
                         material_tag=material_tag,
                         section_tag=section_tag,
                     )
-                    ele_group_to_command_dict[z_group] = ele_command_list
-                    ele_command_list = []
-        # store into dict or replace existing
-        ele_command_dict[member] = ele_group_to_command_dict
 
-        # check if member been previously assigned
-        if member in self.element_command_list.keys():
-            # loop through all groups assigned
-            for group_num in ele_command_dict[member].keys():
-                if group_num in self.element_command_list[member].keys():
-                    # replace assigned group with new command list
-                    self.element_command_list[member][group_num] = ele_group_to_command_dict[group_num]
-        else:
-            self.element_command_list[member] = ele_group_to_command_dict
+                    ele_group_to_command_dict[z_group] = ele_command_list
+
+                    for nth, ele in enumerate(ele_list):
+                        ele_tag_to_command_dict[ele[0]] = ele_command_list[nth]
+
+                    ele_command_list = []
+
+        self.element_command_list.update(ele_tag_to_command_dict)
 
     def set_spring_support(self, rotational_spring_stiffness, edge_num=0, spring_direction=6):
         """
@@ -927,7 +959,7 @@ class OspGrillage:
         ele_command_dict[spring_name] = []  # init empty list
         ele_command_list = ele_command_dict[spring_name]
         edge_node_dict = {}
-
+        ele_tag_to_command_dict = dict()
         for node_tag in node_tag_list:
             # get node coordinate
             node_coord = self.Mesh_obj.node_spec[node_tag]['coordinate']
@@ -954,34 +986,20 @@ class OspGrillage:
             ele_command_list.append(spring_member.get_element_command_str(ele_tag=ele_count,
                                                                           node_tag_list=nodes,
                                                                           materialtag=material_tag, ))
+
+            ele_tag_to_command_dict[ele_count] = spring_member.get_element_command_str(ele_tag=ele_count,
+                                                                                       node_tag_list=nodes,
+                                                                                       materialtag=material_tag, )
             self.global_ele_counter += 1
             # removes boundary condition on nodes of node_list
             del self.Mesh_obj.edge_node_recorder[node_tag]
             # create master/slave link between both node_tag (non support), to node_counter (supported)
             self.spring_node_pairs[node_counter] = node_tag
 
-        # update spring ele dict in element_command_list
-        # if spring_name in [keys_name.keys() for keys_name in self.element_command_list]:
-        #     replace_tag = [
-        #         i
-        #         for i, keys_name in enumerate(self.element_command_list)
-        #         if spring_name in keys_name.keys()
-        #     ][0]
-        #     self.element_command_list.pop(replace_tag)
-        # self.element_command_list.append(ele_command_dict)
-
         # replace constrain onto constrains of node in node_list to new node
         self.Mesh_obj.edge_node_recorder.update(edge_node_dict)
 
-        ele_group_to_command_dict = dict()
-        ele_group_to_command_dict[edge_num] = ele_command_list
-        if spring_name in self.element_command_list.keys():
-            # loop through all groups assigned
-            for group_num in ele_group_to_command_dict.keys():
-                self.element_command_list[spring_name][group_num] = ele_group_to_command_dict[group_num]
-
-        else:
-            self.element_command_list[spring_name] = ele_group_to_command_dict
+        self.element_command_list.update(ele_tag_to_command_dict)
 
     # sub-functions of set_member function
     @staticmethod
@@ -2827,8 +2845,9 @@ class Results:
                 base_ele_force_list_beam.append(
                     [
                         a
-                        for a in list(inc_resp_list_of_2_dict[1].values())
-                        if len(a) == len(self.force_component)
+                        for key, a in zip(list(inc_resp_list_of_2_dict[1].keys())
+                                          , list(inc_resp_list_of_2_dict[1].values()))
+                        if len(a) == len(self.force_component) if key < main_ele_tags
                     ]
                 )
                 base_ele_force_list_shell.append(
@@ -2969,6 +2988,7 @@ class OspGrillageBeam(OspGrillage):
             model="3D",
             **kwargs
         )
+        #
 
 
 class OspGrillageShell(OspGrillage):
@@ -3131,6 +3151,7 @@ class OspGrillageShell(OspGrillage):
         ele_command_dict = dict()
         ele_command_list = []
         ele_group_to_command_dict = dict()
+        ele_tag_to_command_dict = dict()
         # if option for pyfile is True, write the header for element group commands
         if self.pyfile:
             with open(self.filename, "a") as file_handle:
@@ -3155,27 +3176,16 @@ class OspGrillageShell(OspGrillage):
                     section_tag=section_tag,
                 )
                 ele_group_to_command_dict[z_group] = ele_command_list
+
+                for nth, ele in enumerate(self.Mesh_obj.z_group_to_ele[z_group]):
+                    ele_tag_to_command_dict[ele[0]] = ele_command_list[nth]
+
                 ele_command_list = []
         # store into dict or replace existing
-        # ele_command_dict[member] = ele_command_list
 
         ele_command_dict[member] = ele_group_to_command_dict
 
-        #         ele_group_to_command_dict[z_group] = ele_command_list
-        #         ele_command_list = []
-        # # store into dict or replace existing
-        # ele_command_dict[member] = ele_group_to_command_dict
-
-        # ele_command_dict[member] = ele_command_list
-        # check if member been previously assigned
-        if member in self.element_command_list.keys():
-            # loop through all groups assigned
-            for group_num in ele_command_dict[member].keys():
-                if group_num in self.element_command_list[member].keys():
-                    # replace assigned group with new command list
-                    self.element_command_list[member][group_num] = ele_group_to_command_dict[group_num]
-        else:
-            self.element_command_list[member] = ele_group_to_command_dict
+        self.element_command_list.update(ele_tag_to_command_dict)
 
     # functions specific to Shell model class
     def set_shell_members(
@@ -3197,7 +3207,6 @@ class OspGrillageShell(OspGrillage):
 
         """
         # this function creates shell elements out of the node grids of Mesh object
-        shell_counter = self.Mesh_obj.element_counter
         # if self.Mesh_obj is None:  # checks if
         #     raise ValueError("Model instance not created. Run ops.create_ops() function before setting members")
         # check and write member's section command if any
@@ -3206,6 +3215,7 @@ class OspGrillageShell(OspGrillage):
         material_tag = self._write_material(member=grillage_member_obj)
         # for each grid in Mesh, create a shell element
         for grid_nodes_list in self.Mesh_obj.grid_number_dict.values():
+            shell_counter = self.global_ele_counter
             ele_str = grillage_member_obj.get_element_command_str(
                 ele_tag=shell_counter,
                 node_tag_list=grid_nodes_list,
@@ -3213,7 +3223,7 @@ class OspGrillageShell(OspGrillage):
                 sectiontag=section_tag,
             )
             self.shell_element_command_list.append(ele_str)
-            shell_counter += 1
+            self.global_ele_counter += 1
 
     # overwrite base fix() command procedure
     def _write_op_fix(self, mesh_obj):
@@ -3236,37 +3246,4 @@ class OspGrillageShell(OspGrillage):
             else:  # run instance
                 eval(fix_str)
                 self.model_command_list.append(fix_str)
-            # if edge_group_num == 0:  # 0 is edge of start of span
-            #     if self.pyfile:  # if writing py file
-            #         with open(self.filename, "a") as file_handle:
-            #             file_handle.write(
-            #                 "ops.fix({}, *{})\n".format(
-            #                     node_tag, self.fixity_vector["pin"]
-            #                 )
-            #             )
-            #     else:  # run instance
-            #         ops.fix(node_tag, *self.fixity_vector["pin"])
-            # elif edge_group_num == 1:  # 1 is edge of end of span
-            #     if self.pyfile:  # if writing py file
-            #         with open(self.filename, "a") as file_handle:
-            #             file_handle.write(
-            #                 "ops.fix({}, *{})\n".format(
-            #                     node_tag, self.fixity_vector["roller"]
-            #                 )
-            #             )
-            #     else:  # run instance
-            #         ops.fix(node_tag, *self.fixity_vector["roller"])
 
-    def _write_rigid_link(self):
-        """
-        Private procedure to write or execute OpenSeesPy rigidLink() command. Reads rigid link data from link_str_list
-        variable
-
-        """
-        # loop all rigidLink command, write or eval rigid link command. note link_str is already formatted
-        for link_str in self.Mesh_obj.link_str_list:
-            if self.pyfile:
-                with open(self.filename, "a") as file_handle:
-                    file_handle.write(link_str)
-            else:
-                eval(link_str)
