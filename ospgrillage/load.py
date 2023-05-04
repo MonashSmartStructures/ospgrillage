@@ -145,7 +145,8 @@ def create_load(**kwargs):
         return NodalLoad(name=name, node_tag=tag, node_force=force)
     else:
         raise TypeError(
-            "load type not specified. hint: specify kwarg type= for create_load()"
+            "load_type must either be \"nodal\" or number of load points is incorrect. hint:"
+            " number of load points must either be 1 (point), 2 (line) or 4 (patch)"
         )
 
 
@@ -874,10 +875,9 @@ class LoadCase:
         self.load_command_list = []
 
     def add_load(self, load_obj: Union[Loads, CompoundLoad], **kwargs):
-        """
-        Function to add load objects to LoadCase
+        """Add a Load or Compound load object to LoadCase
 
-        :param load_obj: Load or Compound load object
+        :param load_obj: :class:`~ospgrillage.load.Loads` or :class:`~ospgrillage.load.CompoundLoad`object
         :param kwargs: keyword arguments
         :keyword:
 

@@ -1,268 +1,32 @@
 """
 
 """
-import pytest
-import ospgrillage as og
-import sys, os
+
+from fixtures import *
 
 sys.path.insert(0, os.path.abspath("../"))
 
-
-@pytest.fixture
-def ref_28m_bridge():
-    pyfile = False
-    # reference super T bridge 28m for validation purpose
-    # Members
-    concrete = og.create_material(
-        material="concrete", code="AS5100-2017", grade="50MPa"
-    )
-    # concrete = og.Material(loadtype="concrete", code="AS5100-2017", grade="50MPa")
-    # define sections
-    super_t_beam_section = og.create_section(
-        A=1.0447, J=0.230698, Iy=0.231329, Iz=0.533953, Ay=0.397032, Az=0.434351
-    )
-    transverse_slab_section = og.create_section(
-        A=0.5372,
-        J=2.79e-3,
-        Iy=0.3988 / 2,
-        Iz=1.45e-3 / 2,
-        Ay=0.447 / 2,
-        Az=0.447 / 2,
-        unit_width=True,
-    )
-    end_tranverse_slab_section = og.create_section(
-        A=0.5372 / 2, J=2.68e-3, Iy=0.04985, Iz=0.725e-3, Ay=0.223, Az=0.223
-    )
-    edge_beam_section = og.create_section(
-        A=0.039375, J=0.21e-3, Iy=0.1e-3, Iz=0.166e-3, Ay=0.0328, Az=0.0328
-    )
-
-    # define grillage members
-    super_t_beam = og.create_member(
-        member_name="Intermediate I-beams",
-        section=super_t_beam_section,
-        material=concrete,
-    )
-    transverse_slab = og.create_member(
-        member_name="concrete slab", section=transverse_slab_section, material=concrete
-    )
-    edge_beam = og.create_member(
-        member_name="exterior I beams", section=edge_beam_section, material=concrete
-    )
-    end_tranverse_slab = og.create_member(
-        member_name="edge transverse",
-        section=end_tranverse_slab_section,
-        material=concrete,
-    )
-
-    bridge_28 = og.OspGrillage(
-        bridge_name="SuperT_28m",
-        long_dim=28,
-        width=7,
-        skew=0,
-        num_long_grid=7,
-        num_trans_grid=14,
-        edge_beam_dist=1.0875,
-        mesh_type="Ortho",
-    )
-
-    # set grillage member to element groups of grillage model
-    bridge_28.set_member(super_t_beam, member="interior_main_beam")
-    bridge_28.set_member(super_t_beam, member="exterior_main_beam_1")
-    bridge_28.set_member(super_t_beam, member="exterior_main_beam_2")
-    bridge_28.set_member(edge_beam, member="edge_beam")
-    bridge_28.set_member(transverse_slab, member="transverse_slab")
-    bridge_28.set_member(end_tranverse_slab, member="start_edge")
-    bridge_28.set_member(end_tranverse_slab, member="end_edge")
-
-    bridge_28.create_osp_model(pyfile=pyfile)
-
-    return bridge_28
-
-
-@pytest.fixture
-def ref_bridge_properties():
-    concrete = og.create_material(
-        material="concrete", code="AS5100-2017", grade="50MPa"
-    )
-    # define sections
-    I_beam_section = og.create_section(
-        A=0.896, J=0.133, Iy=0.213, Iz=0.259, Ay=0.233, Az=0.58
-    )
-    slab_section = og.create_section(
-        A=0.04428,
-        J=2.6e-4,
-        Iy=1.1e-4,
-        Iz=2.42e-4,
-        Ay=3.69e-1,
-        Az=3.69e-1,
-        unit_width=True,
-    )
-    exterior_I_beam_section = og.create_section(
-        A=0.044625, J=2.28e-3, Iy=2.23e-1, Iz=1.2e-3, Ay=3.72e-2, Az=3.72e-2
-    )
-
-    # define grillage members
-    I_beam = og.create_member(
-        member_name="Intermediate I-beams", section=I_beam_section, material=concrete
-    )
-    slab = og.create_member(
-        member_name="concrete slab", section=slab_section, material=concrete
-    )
-    exterior_I_beam = og.create_member(
-        member_name="exterior I beams",
-        section=exterior_I_beam_section,
-        material=concrete,
-    )
-    return I_beam, slab, exterior_I_beam, concrete
-
-
-@pytest.fixture
-def bridge_model_42_negative(ref_bridge_properties):
-    # reference bridge 10m long, 7m wide with common skew angle at both ends
-    # define material
-    I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
-
-    # construct grillage model
-    example_bridge = og.OspGrillage(
-        bridge_name="SuperT_10m",
-        long_dim=10,
-        width=7,
-        skew=-42,
-        num_long_grid=7,
-        num_trans_grid=5,
-        edge_beam_dist=1,
-        mesh_type="Ortho",
-    )
-
-    # set grillage member to element groups of grillage model
-    example_bridge.set_member(I_beam, member="interior_main_beam")
-    example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_1")
-    example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_2")
-    example_bridge.set_member(exterior_I_beam, member="edge_beam")
-    example_bridge.set_member(slab, member="transverse_slab")
-    example_bridge.set_member(exterior_I_beam, member="start_edge")
-    example_bridge.set_member(exterior_I_beam, member="end_edge")
-
-    pyfile = False
-    example_bridge.create_osp_model(pyfile=pyfile)
-    return example_bridge
-
-
-@pytest.fixture
-# A straight bridge with mesh where skew angle A is 42 and skew angle b is 0
-def bridge_42_0_angle_mesh(ref_bridge_properties):
-    # define material
-    I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
-    example_bridge = og.OspGrillage(
-        bridge_name="SuperT_10m",
-        long_dim=10,
-        width=7,
-        skew=[42, 0],
-        num_long_grid=7,
-        num_trans_grid=5,
-        edge_beam_dist=1,
-        mesh_type="Ortho",
-    )
-
-    # set grillage member to element groups of grillage model
-    example_bridge.set_member(I_beam, member="interior_main_beam")
-    example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_1")
-    example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_2")
-    example_bridge.set_member(exterior_I_beam, member="edge_beam")
-    example_bridge.set_member(slab, member="transverse_slab")
-    example_bridge.set_member(exterior_I_beam, member="start_edge")
-    example_bridge.set_member(exterior_I_beam, member="end_edge")
-
-    pyfile = False
-    example_bridge.create_osp_model(pyfile=pyfile)
-
-    return example_bridge
-
-
-@pytest.fixture
-def bridge_model_42_positive(ref_bridge_properties):
-    # reference bridge 10m long, 7m wide with common skew angle at both ends
-    # define material
-    I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
-
-    # construct grillage model
-    example_bridge = og.OspGrillage(
-        bridge_name="SuperT_10m",
-        long_dim=10,
-        width=7,
-        skew=42,
-        num_long_grid=7,
-        num_trans_grid=5,
-        edge_beam_dist=1,
-        mesh_type="Ortho",
-    )
-
-    # set grillage member to element groups of grillage model
-    example_bridge.set_member(I_beam, member="interior_main_beam")
-    example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_1")
-    example_bridge.set_member(exterior_I_beam, member="exterior_main_beam_2")
-    example_bridge.set_member(exterior_I_beam, member="edge_beam")
-    example_bridge.set_member(slab, member="transverse_slab")
-    example_bridge.set_member(exterior_I_beam, member="start_edge")
-    example_bridge.set_member(exterior_I_beam, member="end_edge")
-    pyfile = False
-    example_bridge.create_osp_model(pyfile=pyfile)
-    return example_bridge
-
-
-@pytest.fixture
-def shell_link_bridge(ref_bridge_properties):
-    # reference bridge 10m long, 7m wide with common skew angle at both ends
-    I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
-
-    # create material of slab shell
-    slab_shell_mat = og.create_material(
-        material="concrete", code="AS5100-2017", grade="50MPa", rho=2400
-    )
-
-    # create section of slab shell
-    slab_shell_section = og.create_section(h=0.2)
-    # shell elements for slab
-    slab_shell = og.create_member(section=slab_shell_section, material=slab_shell_mat)
-
-    # construct grillage model
-    example_bridge = og.create_grillage(
-        bridge_name="shelllink_10m",
-        long_dim=10,
-        width=7,
-        skew=0,
-        num_long_grid=6,
-        num_trans_grid=11,
-        edge_beam_dist=1,
-        mesh_type="Orth",
-        model_type="shell_beam",
-        max_mesh_size_z=1,
-        max_mesh_size_x=1,
-        offset_beam_y_dist=0.499,
-        beam_width=0.89,
-    )
-
-    # set beams
-    example_bridge.set_member(I_beam, member="interior_main_beam")
-    example_bridge.set_member(I_beam, member="exterior_main_beam_1")
-    example_bridge.set_member(I_beam, member="exterior_main_beam_2")
-    # set shell
-    example_bridge.set_shell_members(slab_shell)
-
-    example_bridge.create_osp_model(pyfile=False)
-    return example_bridge
+# Adopted units: N and m
+kilo = 1e3
+milli = 1e-3
+N = 1
+m = 1
+mm = milli * m
+m2 = m ** 2
+m3 = m ** 3
+m4 = m ** 4
+kN = kilo * N
+MPa = N / ((mm) ** 2)
+GPa = kilo * MPa
 
 
 # =====================================================================================================================
 # Tests
 # =====================================================================================================================
 def test_inputs():
-    # checks the functionality of interface functions, basic inputs and outputs.
-    vertex_1 = og.create_load_vertex(x=3, z=3, p=2)
-
     with pytest.raises(ValueError) as e_info:
         vertex_errors = og.create_load_vertex(x=3, y=0, z=3)
+        vertex_errors = og.create_load_vertex()
 
 
 # test to check compound load position relative to global are correct
@@ -311,7 +75,7 @@ def test_compound_load_positions():
 
 
 def test_point_load_getter(
-    bridge_model_42_negative,
+        bridge_model_42_negative,
 ):  # test get_point_load_nodes() function
     # test if setter and getter is correct              # and assign_point_to_node() function
 
@@ -353,7 +117,6 @@ def test_line_load(bridge_model_42_negative):
     barrierpoint_1 = og.create_load_vertex(x=3, y=0, z=3, p=2)
     barrierpoint_2 = og.create_load_vertex(x=10, y=0, z=3, p=2)
     Barrier = og.create_load(
-        loadtype="line",
         name="Barrier curb load",
         point1=barrierpoint_1,
         point2=barrierpoint_2,
@@ -609,10 +372,10 @@ def test_line_load_coincide_transverse_member(bridge_42_0_angle_mesh):
     for i, load_command in enumerate(example_bridge.load_case_list[0]["load_command"]):
         start = load_command.find("[")
         end = load_command.find("]")
-        pos = eval(load_command[start : (end + 1)])
+        pos = eval(load_command[start: (end + 1)])
         start_ref = ref_answer[i].find("[")
         end_ref = ref_answer[i].find("]")
-        pos_ref = eval(ref_answer[i][start_ref : (end_ref + 1)])
+        pos_ref = eval(ref_answer[i][start_ref: (end_ref + 1)])
         assert pos == pytest.approx(pos_ref)
 
 
@@ -778,10 +541,10 @@ def test_patch_load(bridge_model_42_negative):
     for i, load_command in enumerate(example_bridge.load_case_list[0]["load_command"]):
         start = load_command.find("[")
         end = load_command.find("]")
-        pos = eval(load_command[start : (end + 1)])
+        pos = eval(load_command[start: (end + 1)])
         start_ref = ref_answer[i].find("[")
         end_ref = ref_answer[i].find("]")
-        pos_ref = eval(ref_answer[i][start_ref : (end_ref + 1)])
+        pos_ref = eval(ref_answer[i][start_ref: (end_ref + 1)])
         assert pos == pytest.approx(pos_ref)  # check each pos
 
 
@@ -858,10 +621,10 @@ def test_patch_load_using_linear_shape_function(bridge_model_42_negative):
     for i, load_command in enumerate(example_bridge.load_case_list[0]["load_command"]):
         start = load_command.find("[")
         end = load_command.find("]")
-        pos = eval(load_command[start : (end + 1)])
+        pos = eval(load_command[start: (end + 1)])
         start_ref = ref_answer[i].find("[")
         end_ref = ref_answer[i].find("]")
-        pos_ref = eval(ref_answer[i][start_ref : (end_ref + 1)])
+        pos_ref = eval(ref_answer[i][start_ref: (end_ref + 1)])
         assert pos == pytest.approx(pos_ref)
 
 
@@ -887,8 +650,8 @@ def test_local_vs_global_coord_settings():
     M1600_global = og.CompoundLoad("Truck model global")
     M1600_global.add_load(load_obj=global_point_load)
     assert (
-        M1600_local.compound_load_obj_list[0].load_point_1
-        == M1600_global.compound_load_obj_list[0].load_point_1
+            M1600_local.compound_load_obj_list[0].load_point_1
+            == M1600_global.compound_load_obj_list[0].load_point_1
     )
 
 
@@ -1080,10 +843,10 @@ def test_patch_partially_outside_mesh(bridge_model_42_negative):
     for i, load_command in enumerate(example_bridge.load_case_list[0]["load_command"]):
         start = load_command.find("[")
         end = load_command.find("]")
-        pos = eval(load_command[start : (end + 1)])
+        pos = eval(load_command[start: (end + 1)])
         start_ref = ref_answer[i].find("[")
         end_ref = ref_answer[i].find("]")
-        pos_ref = eval(ref_answer[i][start_ref : (end_ref + 1)])
+        pos_ref = eval(ref_answer[i][start_ref: (end_ref + 1)])
         assert pos == pytest.approx(pos_ref)
 
 
@@ -1149,9 +912,9 @@ def test_load_analysis_shell_multi_span(ref_bridge_properties):
         kilo = 1e3
         milli = 1e-3
         m = 1
-        m2 = m**2
-        m3 = m**3
-        m4 = m**4
+        m2 = m ** 2
+        m3 = m ** 3
+        m4 = m ** 4
 
         # parameters of bridge grillage
         L = 30 * m  # span
@@ -1247,19 +1010,6 @@ def test_load_analysis_on_spring_support_single_span(ref_bridge_properties):
     # test multispan feature
     I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
 
-    # Adopted units: N and m
-    kilo = 1e3
-    milli = 1e-3
-    N = 1
-    m = 1
-    mm = milli * m
-    m2 = m ** 2
-    m3 = m ** 3
-    m4 = m ** 4
-    kN = kilo * N
-    MPa = N / ((mm) ** 2)
-    GPa = kilo * MPa
-
     # parameters of bridge grillage
     L = 33.5 * m  # span
     w = 11.565 * m  # width
@@ -1296,7 +1046,7 @@ def test_load_analysis_on_spring_support_single_span(ref_bridge_properties):
         multi_span_dist_list=spans,
         multi_span_num_points=nl_multi,
         continuous=True,
-        #non_cont_spacing_x=stich_slab_x_spacing,
+        # non_cont_spacing_x=stich_slab_x_spacing,
     )
 
     # assign grillage member to element groups of grillage model
@@ -1311,10 +1061,10 @@ def test_load_analysis_on_spring_support_single_span(ref_bridge_properties):
 
     # spring support
     e_spring = 11e13
-    variant_one_model.set_spring_support(rotational_spring_stiffness=e_spring,edge_num=1)
+    variant_one_model.set_spring_support(rotational_spring_stiffness=e_spring, edge_num=1)
 
     variant_one_model.create_osp_model(pyfile=False)
-    og.opsplt.plot_model()
+    # og.opsplt.plot_model()
 
     # create and add load case comprise of single point load
     P = 20e3
@@ -1332,4 +1082,13 @@ def test_load_analysis_on_spring_support_single_span(ref_bridge_properties):
     result = variant_one_model.get_results()
     print(result)
 
-    assert og.np.isclose(result.forces.sel(Loadcase="pointload",Component="Mz_i",Element=20).to_numpy().tolist(),0.49505451544913914)
+    assert og.np.isclose(result.forces.sel(Loadcase="pointload", Component="Mz_i", Element=20).to_numpy().tolist(),
+                         0.49505451544913914)
+
+def test_compare_shell_beam_analysis(run_beam_model_point_load):
+    # run fixture to get bridges
+    beam_bridge, result_beam, shell_bridge, result_shell = run_beam_model_point_load
+
+    # get middle interior beam results
+    og.plot_force(beam_bridge, result_beam, member="exterior_main_beam_2", component="Mz")
+    pass

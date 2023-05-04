@@ -3,7 +3,7 @@
 """
 This test contains a validation against a numerical bridge model made in LUSAS software. Note the test portion of this file are
 specific to the comparison i.e. 28m model between LUSAS model outputs and ospg outputs - hence is not advisable to copy-paste
-the tests herein to for another new pytest (say another model). However it is reasonable to replicate structure of the fixtures i.e.
+the tests herein to for another new pytest (say another model). However it is reasonable to replicate structure of the wee i.e.
 the model creation and running analysis domain of the pytest.
 """
 import pytest
@@ -224,7 +224,7 @@ def create_grillage():
     simple_grid.set_member(end_tranverse_slab, member="end_edge")
 
     simple_grid.create_osp_model(pyfile=False)
-    ospg.opsplt.plot_model("element")
+    #ospg.opsplt.plot_model("element")
 
     return simple_grid, bridge
 
