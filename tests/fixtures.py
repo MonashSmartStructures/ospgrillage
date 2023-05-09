@@ -223,7 +223,9 @@ def bridge_model_42_positive(ref_bridge_properties):
 
 
 @pytest.fixture
-def shell_link_bridge(ref_bridge_properties) -> Union[ospgrillage.OspGrillageShell, ospgrillage.OspGrillageBeam]:
+def shell_link_bridge(
+    ref_bridge_properties,
+) -> Union[ospgrillage.OspGrillageShell, ospgrillage.OspGrillageBeam]:
     # reference bridge 10m long, 7m wide with common skew angle at both ends
     I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
 
@@ -241,9 +243,9 @@ def shell_link_bridge(ref_bridge_properties) -> Union[ospgrillage.OspGrillageShe
     example_bridge = og.create_grillage(
         bridge_name="shelllink_10m",
         long_dim=10,
-        width=6,
+        width=7,
         skew=0,
-        num_long_grid=6,
+        num_long_grid=7,
         num_trans_grid=11,
         edge_beam_dist=1,
         mesh_type="Orth",
@@ -267,7 +269,9 @@ def shell_link_bridge(ref_bridge_properties) -> Union[ospgrillage.OspGrillageShe
 
 # equivalent model for shell_link_bridge but using beam element model type instead
 @pytest.fixture
-def beam_element_bridge(ref_bridge_properties) -> Union[ospgrillage.OspGrillageShell, ospgrillage.OspGrillageBeam]:
+def beam_element_bridge(
+    ref_bridge_properties,
+) -> Union[ospgrillage.OspGrillageShell, ospgrillage.OspGrillageBeam]:
     # reference bridge 10m long, 7m wide with common skew angle at both ends
     I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
 
@@ -291,14 +295,15 @@ def beam_element_bridge(ref_bridge_properties) -> Union[ospgrillage.OspGrillageS
     example_bridge.set_member(exterior_I_beam, member="start_edge")
     example_bridge.set_member(exterior_I_beam, member="end_edge")
 
-    #example_bridge.create_osp_model(pyfile=False)
-    #og.opsplt.plot_model()
+    # example_bridge.create_osp_model(pyfile=False)
+    # og.opsplt.plot_model()
     return example_bridge
 
 
 @pytest.fixture
-def bridge_model_42_negative_custom_spacing(ref_bridge_properties) \
-        -> Union[ospgrillage.OspGrillageShell, ospgrillage.OspGrillageBeam]:
+def bridge_model_42_negative_custom_spacing(
+    ref_bridge_properties,
+) -> Union[ospgrillage.OspGrillageShell, ospgrillage.OspGrillageBeam]:
     # reference bridge 10m long, 7m wide with common skew angle at both ends
     # define material
     I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
@@ -328,8 +333,9 @@ def bridge_model_42_negative_custom_spacing(ref_bridge_properties) \
 
 
 @pytest.fixture
-def beam_link_bridge(ref_bridge_properties) \
-        -> Union[ospgrillage.OspGrillageShell, ospgrillage.OspGrillageBeam]:
+def beam_link_bridge(
+    ref_bridge_properties,
+) -> Union[ospgrillage.OspGrillageShell, ospgrillage.OspGrillageBeam]:
     # reference bridge 10m long, 7m wide with common skew angle at both ends
 
     I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
@@ -377,13 +383,13 @@ def beam_link_bridge(ref_bridge_properties) \
 
 # create and run both comparable beam and shell_beam model to obtain results from a point load analysis
 @pytest.fixture
-def run_beam_model_point_load(beam_element_bridge, shell_link_bridge) \
-        -> tuple[Union[ospgrillage.OspGrillageShell, ospgrillage.OspGrillageBeam], Any, Union[
-            ospgrillage.OspGrillageShell, ospgrillage.OspGrillageBeam], Any]:
+def run_beam_model_point_load(
+    beam_element_bridge, shell_link_bridge
+):
 
     # create point load
     P = 1 * kN
-    lp1 = og.create_load_vertex(x=3.5, y=0, z=5, p=P)
+    lp1 = og.create_load_vertex(x=5, y=0, z=3.5, p=P)
     mid_point_line_load = og.create_load(
         name="unit load",
         point1=lp1,
@@ -406,6 +412,7 @@ def run_beam_model_point_load(beam_element_bridge, shell_link_bridge) \
     beam_bridge.create_osp_model()
     beam_bridge.add_load_case(mid_point_line_loadcase)
     beam_bridge.analyze()
+    og.opsv.plot_defo()
     result_beam = beam_bridge.get_results()
 
     return beam_bridge, result_beam, shell_bridge, result_shell

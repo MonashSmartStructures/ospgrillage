@@ -75,7 +75,7 @@ def test_compound_load_positions():
 
 
 def test_point_load_getter(
-        bridge_model_42_negative,
+    bridge_model_42_negative,
 ):  # test get_point_load_nodes() function
     # test if setter and getter is correct              # and assign_point_to_node() function
 
@@ -372,10 +372,10 @@ def test_line_load_coincide_transverse_member(bridge_42_0_angle_mesh):
     for i, load_command in enumerate(example_bridge.load_case_list[0]["load_command"]):
         start = load_command.find("[")
         end = load_command.find("]")
-        pos = eval(load_command[start: (end + 1)])
+        pos = eval(load_command[start : (end + 1)])
         start_ref = ref_answer[i].find("[")
         end_ref = ref_answer[i].find("]")
-        pos_ref = eval(ref_answer[i][start_ref: (end_ref + 1)])
+        pos_ref = eval(ref_answer[i][start_ref : (end_ref + 1)])
         assert pos == pytest.approx(pos_ref)
 
 
@@ -541,10 +541,10 @@ def test_patch_load(bridge_model_42_negative):
     for i, load_command in enumerate(example_bridge.load_case_list[0]["load_command"]):
         start = load_command.find("[")
         end = load_command.find("]")
-        pos = eval(load_command[start: (end + 1)])
+        pos = eval(load_command[start : (end + 1)])
         start_ref = ref_answer[i].find("[")
         end_ref = ref_answer[i].find("]")
-        pos_ref = eval(ref_answer[i][start_ref: (end_ref + 1)])
+        pos_ref = eval(ref_answer[i][start_ref : (end_ref + 1)])
         assert pos == pytest.approx(pos_ref)  # check each pos
 
 
@@ -621,10 +621,10 @@ def test_patch_load_using_linear_shape_function(bridge_model_42_negative):
     for i, load_command in enumerate(example_bridge.load_case_list[0]["load_command"]):
         start = load_command.find("[")
         end = load_command.find("]")
-        pos = eval(load_command[start: (end + 1)])
+        pos = eval(load_command[start : (end + 1)])
         start_ref = ref_answer[i].find("[")
         end_ref = ref_answer[i].find("]")
-        pos_ref = eval(ref_answer[i][start_ref: (end_ref + 1)])
+        pos_ref = eval(ref_answer[i][start_ref : (end_ref + 1)])
         assert pos == pytest.approx(pos_ref)
 
 
@@ -650,8 +650,8 @@ def test_local_vs_global_coord_settings():
     M1600_global = og.CompoundLoad("Truck model global")
     M1600_global.add_load(load_obj=global_point_load)
     assert (
-            M1600_local.compound_load_obj_list[0].load_point_1
-            == M1600_global.compound_load_obj_list[0].load_point_1
+        M1600_local.compound_load_obj_list[0].load_point_1
+        == M1600_global.compound_load_obj_list[0].load_point_1
     )
 
 
@@ -843,10 +843,10 @@ def test_patch_partially_outside_mesh(bridge_model_42_negative):
     for i, load_command in enumerate(example_bridge.load_case_list[0]["load_command"]):
         start = load_command.find("[")
         end = load_command.find("]")
-        pos = eval(load_command[start: (end + 1)])
+        pos = eval(load_command[start : (end + 1)])
         start_ref = ref_answer[i].find("[")
         end_ref = ref_answer[i].find("]")
-        pos_ref = eval(ref_answer[i][start_ref: (end_ref + 1)])
+        pos_ref = eval(ref_answer[i][start_ref : (end_ref + 1)])
         assert pos == pytest.approx(pos_ref)
 
 
@@ -1061,7 +1061,9 @@ def test_load_analysis_on_spring_support_single_span(ref_bridge_properties):
 
     # spring support
     e_spring = 11e13
-    variant_one_model.set_spring_support(rotational_spring_stiffness=e_spring, edge_num=1)
+    variant_one_model.set_spring_support(
+        rotational_spring_stiffness=e_spring, edge_num=1
+    )
 
     variant_one_model.create_osp_model(pyfile=False)
     # og.opsplt.plot_model()
@@ -1071,9 +1073,7 @@ def test_load_analysis_on_spring_support_single_span(ref_bridge_properties):
     point_load_location = og.create_load_vertex(
         x=7.5, y=0, z=3, p=P
     )  # about midspan of span 1
-    point_load = og.create_load(
-        name="single point", point1=point_load_location
-    )
+    point_load = og.create_load(name="single point", point1=point_load_location)
     point_lc = og.create_load_case(name="pointload")
     point_lc.add_load(point_load)
     variant_one_model.add_load_case(point_lc)
@@ -1082,13 +1082,33 @@ def test_load_analysis_on_spring_support_single_span(ref_bridge_properties):
     result = variant_one_model.get_results()
     print(result)
 
-    assert og.np.isclose(result.forces.sel(Loadcase="pointload", Component="Mz_i", Element=20).to_numpy().tolist(),
-                         0.49505451544913914)
+    assert og.np.isclose(
+        result.forces.sel(Loadcase="pointload", Component="Mz_i", Element=20)
+        .to_numpy()
+        .tolist(),
+        0.49505451544913914,
+    )
+
 
 def test_compare_shell_beam_analysis(run_beam_model_point_load):
     # run fixture to get bridges
     beam_bridge, result_beam, shell_bridge, result_shell = run_beam_model_point_load
-
+    beam_bridge.get_element(member="exterior_main_beam_1")
+    len(
+        result_beam.forces.sel(
+            Loadcase="line",
+            Element=beam_bridge.get_element(member="exterior_main_beam_1")[0],
+        )
+    )
     # get middle interior beam results
-    og.plot_force(beam_bridge, result_beam, member="exterior_main_beam_2", component="Mz")
+    og.plot_force(
+        beam_bridge, result_beam, member="exterior_main_beam_2", component="Mz"
+    )
+    og.plot_defo(
+        beam_bridge, result_beam, member="exterior_main_beam_1", option="nodes"
+    )
+    og.plot_defo(
+        shell_bridge, result_shell, member="interior_main_beam", option="nodes"
+    )
     pass
+    og.opsv.plot_defo()
