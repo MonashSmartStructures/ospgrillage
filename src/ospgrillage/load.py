@@ -145,7 +145,7 @@ def create_load(**kwargs):
         return NodalLoad(name=name, node_tag=tag, node_force=force)
     else:
         raise TypeError(
-            "load_type must either be \"nodal\" or number of load points is incorrect. hint:"
+            'load_type must either be "nodal" or number of load points is incorrect. hint:'
             " number of load points must either be 1 (point), 2 (line) or 4 (patch)"
         )
 
@@ -1267,10 +1267,10 @@ class ShapeFunction:
         .. note::
 
         """
-        N1 = 1 - 3 * zeta**2 + 2 * zeta**3
-        N2 = (zeta - 2 * zeta**2 + zeta**3) * a
-        N3 = 3 * zeta**2 - 2 * zeta**3
-        N4 = (-(zeta**2) + zeta**3) * a
+        N1 = 1 - 3 * zeta ** 2 + 2 * zeta ** 3
+        N2 = (zeta - 2 * zeta ** 2 + zeta ** 3) * a
+        N3 = 3 * zeta ** 2 - 2 * zeta ** 3
+        N4 = (-(zeta ** 2) + zeta ** 3) * a
         return [N1, N2, N3, N4]
 
     @staticmethod
@@ -1278,14 +1278,14 @@ class ShapeFunction:
         # nodes must be counter clockwise such that n1 = left bottom of relative grid
         # 4  3
         # 1  2
-        h1 = 0.25 * (2 - 3 * eta + eta**3)
-        h2 = 0.25 * (1 - eta - eta**2 + eta**3)
-        h3 = 0.25 * (2 + 3 * eta - eta**3)
-        h4 = 0.25 * (-1 - eta + eta**2 + eta**3)
-        z1 = 0.25 * (2 - 3 * zeta + zeta**3)
-        z2 = 0.25 * (1 - zeta - zeta**2 + zeta**3)
-        z3 = 0.25 * (2 + 3 * zeta - zeta**3)
-        z4 = 0.25 * (-1 - zeta + zeta**2 + zeta**3)
+        h1 = 0.25 * (2 - 3 * eta + eta ** 3)
+        h2 = 0.25 * (1 - eta - eta ** 2 + eta ** 3)
+        h3 = 0.25 * (2 + 3 * eta - eta ** 3)
+        h4 = 0.25 * (-1 - eta + eta ** 2 + eta ** 3)
+        z1 = 0.25 * (2 - 3 * zeta + zeta ** 3)
+        z2 = 0.25 * (1 - zeta - zeta ** 2 + zeta ** 3)
+        z3 = 0.25 * (2 + 3 * zeta - zeta ** 3)
+        z4 = 0.25 * (-1 - zeta + zeta ** 2 + zeta ** 3)
         Nv = [h1 * z1, h3 * z1, h3 * z3, h1 * z3]
         Nmz = [h2 * z1, h4 * z1, h4 * z3, h2 * z3]
         Nmx = [h1 * z2, h3 * z2, h3 * z4, h1 * z4]

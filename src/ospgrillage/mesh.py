@@ -50,27 +50,27 @@ class Mesh:
     """
 
     def __init__(
-            self,
-            long_dim,
-            width,
-            trans_dim,
-            edge_dist_a,
-            edge_dist_b,
-            num_trans_beam,
-            num_long_beam,
-            skew_1,
-            skew_2,
-            pt1=Point(0, 0, 0),
-            pt2=Point(0, 0, 0),
-            pt3=None,
-            element_counter=1,
-            node_counter=1,
-            transform_counter=0,
-            global_x_grid_count=0,
-            global_edge_count=0,
-            mesh_origin=None,
-            quad_ele=False,
-            **kwargs
+        self,
+        long_dim,
+        width,
+        trans_dim,
+        edge_dist_a,
+        edge_dist_b,
+        num_trans_beam,
+        num_long_beam,
+        skew_1,
+        skew_2,
+        pt1=Point(0, 0, 0),
+        pt2=Point(0, 0, 0),
+        pt3=None,
+        element_counter=1,
+        node_counter=1,
+        transform_counter=0,
+        global_x_grid_count=0,
+        global_edge_count=0,
+        mesh_origin=None,
+        quad_ele=False,
+        **kwargs
     ):
 
         # inputs from OspGrillage required to create mesh
@@ -199,7 +199,7 @@ class Mesh:
         }
         self.span_group_to_ele_tag = {
             key: [] for key in range(len(self.mesh_edge_x_positions) - 1)
-        } # stores all ele tag with respect to span group
+        }  # stores all ele tag with respect to span group
         # for custom transverse member spacings
         self.transverse_mbr_x_spacing_list = kwargs.get("beam_x_spacing", None)
 
@@ -257,7 +257,11 @@ class Mesh:
         # intermediate construction lines for
         if self.multi_span_dist_list and self.orthogonal:
             # create control points for orthogonal meshing about intermediate supports
-            skew_list = [self.skew_1] + [self.skew_1 for i in self.support_points[1:-1]] + [self.skew_2]
+            skew_list = (
+                [self.skew_1]
+                + [self.skew_1 for i in self.support_points[1:-1]]
+                + [self.skew_2]
+            )
             for l, x_coord in enumerate(self.support_points):
                 z_coord = self.sweep_path.get_line_function(x_coord)
                 edge_obj = self.create_control_points(
@@ -460,7 +464,9 @@ class Mesh:
                             tag,
                         ]
                     )
-                    self._store_ele_tag_respect_to_mesh_group(counter=self.element_counter, span_group=span_group_key)
+                    self._store_ele_tag_respect_to_mesh_group(
+                        counter=self.element_counter, span_group=span_group_key
+                    )
                     self.element_counter += 1
 
             # create longitudinal ele by linking assigned nodes @ current step with assigned nodes from previous step
@@ -501,8 +507,8 @@ class Mesh:
                                 # current step is in between two span groups
                                 # check to either create
                                 if (
-                                        not self.continuous
-                                        and self.stitch_element_spacing_x
+                                    not self.continuous
+                                    and self.stitch_element_spacing_x
                                 ):
                                     # create beam element between supports
                                     x_start = self.node_spec[current_node][
@@ -543,15 +549,17 @@ class Mesh:
                                     ]
                                 )
 
-                            self._store_ele_tag_respect_to_mesh_group(counter=self.element_counter,
-                                                                      span_group=current_x_span_group)
+                            self._store_ele_tag_respect_to_mesh_group(
+                                counter=self.element_counter,
+                                span_group=current_x_span_group,
+                            )
 
                             self.element_counter += 1
                             break  # break assign long ele loop (cur node)
                 # here updates the record for previous node tag step
                 previous_node_tag = assigned_node_tag
                 if (
-                        x_inc in self.support_points
+                    x_inc in self.support_points
                 ):  # if x inc is a support roll (intermediate) set all nodes as support
                     for nodes in previous_node_tag:
                         self.edge_node_recorder.setdefault(
@@ -562,7 +570,7 @@ class Mesh:
             self.global_x_grid_count += 1
             assigned_node_tag = []
 
-    def _store_ele_tag_respect_to_mesh_group(self,counter,span_group):
+    def _store_ele_tag_respect_to_mesh_group(self, counter, span_group):
 
         ele_tag_list = self.span_group_to_ele_tag[span_group]
         if counter not in ele_tag_list:
@@ -589,8 +597,11 @@ class Mesh:
             self.assigned_node_coord_dict[self.node_counter] = node_coordinate
             self.node_counter += 1
         else:
-            exist_node = \
-                [i for i in self.assigned_node_coord_dict if self.assigned_node_coord_dict[i] == node_coordinate][0]
+            exist_node = [
+                i
+                for i in self.assigned_node_coord_dict
+                if self.assigned_node_coord_dict[i] == node_coordinate
+            ][0]
 
         return exist_node, assigned_node
 
@@ -627,7 +638,9 @@ class Mesh:
                     x_inc = start_point_x
                     z_inc = start_point_z
                     node_coordinate = [nodes[0] + x_inc, nodes[1], nodes[2] + z_inc]
-                    self._assign_node_coordinate(node_coordinate, z_count_int=z_count_int)
+                    self._assign_node_coordinate(
+                        node_coordinate, z_count_int=z_count_int
+                    )
 
                     # if loop assigned more than two nodes, link nodes as a transverse member
                     if z_count_int > 0:
@@ -649,7 +662,8 @@ class Mesh:
                                 self.global_edge_count,
                             )
                             self.edge_node_recorder.setdefault(
-                                self.assigned_node_tag[z_count_int], self.global_edge_count
+                                self.assigned_node_tag[z_count_int],
+                                self.global_edge_count,
                             )
 
                     if len(self.assigned_node_tag) == len(self.noz):
@@ -686,9 +700,11 @@ class Mesh:
                     # check angle condition, if skew + zeta (offset from plane)
                     if 90 + self.skew_1 + self.zeta > 90:
                         sweep_nodes = current_sweep_nodes[z_count:]
-                        z_group_recorder = list(range(z_group, len(current_sweep_nodes)))
+                        z_group_recorder = list(
+                            range(z_group, len(current_sweep_nodes))
+                        )
                     elif 90 + self.skew_1 + self.zeta < 90:
-                        sweep_nodes = current_sweep_nodes[0: (z_count + 1)]
+                        sweep_nodes = current_sweep_nodes[0 : (z_count + 1)]
                         z_group_recorder = (
                             list(range(0, z_group + 1)) if z_group != 0 else [0]
                         )
@@ -699,14 +715,17 @@ class Mesh:
                         z_inc = ref_point_z
                         node_coordinate = [nodes[0] + x_inc, nodes[1], nodes[2] + z_inc]
 
-                        exist_node, assigned_node = self._assign_node_coordinate(node_coordinate,
-                                                                                 z_count_int=z_group_recorder[
-                                                                                     z_count_int])
+                        exist_node, assigned_node = self._assign_node_coordinate(
+                            node_coordinate, z_count_int=z_group_recorder[z_count_int]
+                        )
 
                         if exist_node:
                             replace_ind = self.assigned_node_tag.index(assigned_node)
-                            self.assigned_node_tag = self.assigned_node_tag[:replace_ind] + [
-                                exist_node] + self.assigned_node_tag[replace_ind + 1:]
+                            self.assigned_node_tag = (
+                                self.assigned_node_tag[:replace_ind]
+                                + [exist_node]
+                                + self.assigned_node_tag[replace_ind + 1 :]
+                            )
 
                         # if loop assigned more than two nodes, link nodes as a transverse member
                         if not self.beam_element_flag:
@@ -837,7 +856,8 @@ class Mesh:
                                 self.global_edge_count,
                             )
                             self.edge_node_recorder.setdefault(
-                                self.assigned_node_tag[z_count_int], self.global_edge_count
+                                self.assigned_node_tag[z_count_int],
+                                self.global_edge_count,
                             )
                     # self.end_connecting_region_nodes = self.assigned_node_tag
                     if len(self.assigned_node_tag) == len(self.noz):
@@ -860,7 +880,9 @@ class Mesh:
                     )
 
                     # rotate sweep line such that parallel to m' line
-                    current_sweep_nodes = self._rotate_sweep_nodes(np.pi / 2 - np.abs(phi))
+                    current_sweep_nodes = self._rotate_sweep_nodes(
+                        np.pi / 2 - np.abs(phi)
+                    )
                     # get z group of first node in current_sweep_nodes - for correct assignment in loop
                     z_group = end_edge_line.get_node_group_z(
                         int_point
@@ -868,21 +890,23 @@ class Mesh:
                     # check
                     # condition
                     if 90 + self.skew_2 + self.zeta > 90:
-                        sweep_nodes = current_sweep_nodes[0: (z_count + 1)]
+                        sweep_nodes = current_sweep_nodes[0 : (z_count + 1)]
                         z_group_recorder = (
                             list(range(0, z_group + 1)) if z_group != 0 else [0]
                         )
                     elif 90 + self.skew_2 + self.zeta < 90:
                         sweep_nodes = current_sweep_nodes[z_count:]
-                        z_group_recorder = list(range(z_group, len(current_sweep_nodes)))
+                        z_group_recorder = list(
+                            range(z_group, len(current_sweep_nodes))
+                        )
                     for (z_count_int, nodes) in enumerate(sweep_nodes):
                         x_inc = ref_point_x
                         z_inc = ref_point_z
                         node_coordinate = [nodes[0] + x_inc, nodes[1], nodes[2] + z_inc]
 
-                        exist_node, assigned_node = self._assign_node_coordinate(node_coordinate,
-                                                                                 z_count_int=z_group_recorder[
-                                                                                     z_count_int])
+                        exist_node, assigned_node = self._assign_node_coordinate(
+                            node_coordinate, z_count_int=z_group_recorder[z_count_int]
+                        )
                         # if exist_node:
                         #     i = self.assigned_node_tag.index(assigned_node)
                         #     self.assigned_node_tag = self.assigned_node_tag[:i] + [
@@ -952,7 +976,7 @@ class Mesh:
                     self.ortho_previous_node_column = self.assigned_node_tag
                     self.assigned_node_tag = []
             self.global_edge_count += 1
-                # print("Edge mesh @ end span completed")
+            # print("Edge mesh @ end span completed")
             # --------------------------------------------------------------------------------------------
             self.assigned_node_tag = []  # reset
             # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -965,9 +989,13 @@ class Mesh:
             cor_sec = self.node_spec[x_second]["coordinate"]
             # get x coordinate for uniform region
             if self.transverse_mbr_x_spacing_list:
-                raise Exception(NameError,"OrthoMesh can not be paired wit custom spacing")
+                raise Exception(
+                    NameError, "OrthoMesh can not be paired wit custom spacing"
+                )
             else:
-                self.uniform_region_x = np.linspace(cor_fir[0], cor_sec[0], self.multi_span_num_points[i])
+                self.uniform_region_x = np.linspace(
+                    cor_fir[0], cor_sec[0], self.multi_span_num_points[i]
+                )
 
             for z_count, x in enumerate(self.uniform_region_x[1:-1]):
                 # get slope, m at current point x
@@ -976,7 +1004,8 @@ class Mesh:
                 current_sweep_nodes = self.sweeping_nodes
                 # shift all points by +x and +z
                 shift_sweep_nodes = [
-                    [point[0] + x, point[1], point[2] + z] for point in current_sweep_nodes
+                    [point[0] + x, point[1], point[2] + z]
+                    for point in current_sweep_nodes
                 ]
                 # get angle #TODO not generalized, improve here
                 current_angle = -self.sweep_path.get_cartesian_angle(x)
@@ -993,7 +1022,9 @@ class Mesh:
                 for (z_count_int, nodes) in enumerate(current_sweep_nodes):
 
                     node_coordinate = [nodes[0], nodes[1], nodes[2]]
-                    self._assign_node_coordinate(node_coordinate, z_count_int=z_count_int)
+                    self._assign_node_coordinate(
+                        node_coordinate, z_count_int=z_count_int
+                    )
 
                     if not self.beam_element_flag:
                         continue
@@ -1047,7 +1078,9 @@ class Mesh:
                     prev_z_group = self.node_spec[pre_node]["z_group"]
                     if cur_z_group == prev_z_group:
                         self._assign_longitudinal_members(
-                            pre_node=pre_node, cur_node=cur_node, cur_z_group=cur_z_group
+                            pre_node=pre_node,
+                            cur_node=cur_node,
+                            cur_z_group=cur_z_group,
                         )
                         break
             self.assigned_node_tag = []
@@ -1070,7 +1103,7 @@ class Mesh:
         self.element_counter += 1
 
     def _assign_edge_trans_members(
-            self, previous_node_tag, assigned_node_tag, edge_counter
+        self, previous_node_tag, assigned_node_tag, edge_counter
     ):
         tag = self._get_geo_transform_tag([previous_node_tag, assigned_node_tag])
         self.edge_span_ele.append(
@@ -1094,8 +1127,11 @@ class Mesh:
         for node_tag in original_support_nodes:  # loop through all support nodes
             # create an offset node
             n1_coord = self.node_spec[node_tag]["coordinate"]
-            n2_coord = [n1_coord[0] + self.rigid_dist_x, n1_coord[1] + self.rigid_dist_y,
-                        n1_coord[2] + self.rigid_dist_z]
+            n2_coord = [
+                n1_coord[0] + self.rigid_dist_x,
+                n1_coord[1] + self.rigid_dist_y,
+                n1_coord[2] + self.rigid_dist_z,
+            ]
             self.node_spec.setdefault(
                 self.node_counter,
                 {
@@ -1109,7 +1145,9 @@ class Mesh:
             self._create_link_element(rNode=self.node_counter, cNode=node_tag)
 
             # replace key in edge node recorder to be new linked node
-            self.edge_node_recorder[self.node_counter] = self.edge_node_recorder.pop(node_tag)
+            self.edge_node_recorder[self.node_counter] = self.edge_node_recorder.pop(
+                node_tag
+            )
             self.node_counter += 1
 
     def _create_link_element(self, rNode, cNode):
@@ -1185,9 +1223,9 @@ class Mesh:
                     [
                         np.abs(a - b)
                         for (a, b) in zip(
-                        self.node_spec[item[1]]["coordinate"],
-                        self.node_spec[item[2]]["coordinate"],
-                    )
+                            self.node_spec[item[1]]["coordinate"],
+                            self.node_spec[item[2]]["coordinate"],
+                        )
                     ]
                 )
                 if item[1] != ele[1] and item[1] != ele[2]:
@@ -1200,9 +1238,9 @@ class Mesh:
                     [
                         np.abs(a - b)
                         for (a, b) in zip(
-                        self.node_spec[item[1]]["coordinate"],
-                        self.node_spec[item[2]]["coordinate"],
-                    )
+                            self.node_spec[item[1]]["coordinate"],
+                            self.node_spec[item[2]]["coordinate"],
+                        )
                     ]
                 )
                 if item[1] != ele[1] and item[1] != ele[2]:
@@ -1258,9 +1296,9 @@ class Mesh:
                     [
                         np.abs(a - b)
                         for (a, b) in zip(
-                        self.node_spec[item[1]]["coordinate"],
-                        self.node_spec[item[2]]["coordinate"],
-                    )
+                            self.node_spec[item[1]]["coordinate"],
+                            self.node_spec[item[2]]["coordinate"],
+                        )
                     ]
                 )
                 if item[1] != ele[1] and item[1] != ele[2]:
@@ -1272,9 +1310,9 @@ class Mesh:
                     [
                         np.abs(a - b)
                         for (a, b) in zip(
-                        self.node_spec[item[1]]["coordinate"],
-                        self.node_spec[item[2]]["coordinate"],
-                    )
+                            self.node_spec[item[1]]["coordinate"],
+                            self.node_spec[item[2]]["coordinate"],
+                        )
                     ]
                 )
                 if item[1] != ele[1] and item[1] != ele[2]:
@@ -1307,9 +1345,9 @@ class Mesh:
                     [
                         np.abs(a - b)
                         for (a, b) in zip(
-                        self.node_spec[item[1]]["coordinate"],
-                        self.node_spec[item[2]]["coordinate"],
-                    )
+                            self.node_spec[item[1]]["coordinate"],
+                            self.node_spec[item[2]]["coordinate"],
+                        )
                     ]
                 )
                 if item[1] != ele[1] and item[1] != ele[2]:
@@ -1321,9 +1359,9 @@ class Mesh:
                     [
                         np.abs(a - b)
                         for (a, b) in zip(
-                        self.node_spec[item[1]]["coordinate"],
-                        self.node_spec[item[2]]["coordinate"],
-                    )
+                            self.node_spec[item[1]]["coordinate"],
+                            self.node_spec[item[2]]["coordinate"],
+                        )
                     ]
                 )
                 if item[1] != ele[1] and item[1] != ele[2]:
@@ -1355,13 +1393,13 @@ class Mesh:
                     if n3:
                         n3 = n3[0]
                         if not any(
-                                [
-                                    node_tag in d
-                                    and x_node in d
-                                    and z_node in d
-                                    and n3 in d
-                                    for d in self.grid_number_dict.values()
-                                ]
+                            [
+                                node_tag in d
+                                and x_node in d
+                                and z_node in d
+                                and n3 in d
+                                for d in self.grid_number_dict.values()
+                            ]
                         ):
                             self.grid_number_dict.setdefault(
                                 counter, [node_tag, x_node, n3, z_node]
@@ -1369,10 +1407,10 @@ class Mesh:
                             counter += 1
                     else:  # list is empty
                         if not any(
-                                [
-                                    node_tag in d and x_node in d and z_node in d
-                                    for d in self.grid_number_dict.values()
-                                ]
+                            [
+                                node_tag in d and x_node in d and z_node in d
+                                for d in self.grid_number_dict.values()
+                            ]
                         ):
                             self.grid_number_dict.setdefault(
                                 counter, [node_tag, x_node, n3, z_node]
@@ -1470,8 +1508,8 @@ class Mesh:
                 )
             )
         elif (
-                np.abs(edge_skew_angle - zeta) >= self.skew_threshold[1]
-                and not self.orthogonal
+            np.abs(edge_skew_angle - zeta) >= self.skew_threshold[1]
+            and not self.orthogonal
         ):
             self.orthogonal = True
             raise Exception(
@@ -1628,16 +1666,16 @@ class EdgeControlLine:
     """
 
     def __init__(
-            self,
-            edge_ref_point,
-            width_z,
-            edge_width_a,
-            edge_width_b,
-            edge_angle,
-            num_long_beam,
-            model_plane_y,
-            feature="standard",
-            **kwargs
+        self,
+        edge_ref_point,
+        width_z,
+        edge_width_a,
+        edge_width_b,
+        edge_angle,
+        num_long_beam,
+        model_plane_y,
+        feature="standard",
+        **kwargs
     ):
 
         # set variables
@@ -1658,7 +1696,7 @@ class EdgeControlLine:
         )  # get a list of custom spacings
         # check validity of custom points
         if self.custom_beam_z_spacing and not isinstance(
-                self.custom_beam_z_spacing, list
+            self.custom_beam_z_spacing, list
         ):
             raise Exception(
                 "Invalid custom control point format: Hint - accepts list of float or int"
@@ -1669,7 +1707,7 @@ class EdgeControlLine:
             # calculations
             # array containing z coordinate of edge construction line
             last_girder = (
-                    self.width_z - self.edge_width_b
+                self.width_z - self.edge_width_b
             )  # coord of exterior main beam 2
 
             # check if edge dist is provided
@@ -1751,16 +1789,16 @@ class ShellEdgeControlLine(EdgeControlLine):
     """
 
     def __init__(
-            self,
-            edge_ref_point,
-            width_z,
-            edge_width_a,
-            edge_width_b,
-            edge_angle,
-            num_long_beam,
-            model_plane_y,
-            feature="standard",
-            **kwargs
+        self,
+        edge_ref_point,
+        width_z,
+        edge_width_a,
+        edge_width_b,
+        edge_angle,
+        num_long_beam,
+        model_plane_y,
+        feature="standard",
+        **kwargs
     ):
         # get properties specific to shell mesh
         self.beam_width = kwargs.get(
@@ -1979,17 +2017,17 @@ class BeamMesh(Mesh):
     """
 
     def __init__(
-            self,
-            long_dim,
-            width,
-            trans_dim,
-            edge_dist_a,
-            edge_dist_b,
-            num_trans_beam,
-            num_long_beam,
-            skew_1,
-            skew_2,
-            **kwargs
+        self,
+        long_dim,
+        width,
+        trans_dim,
+        edge_dist_a,
+        edge_dist_b,
+        num_trans_beam,
+        num_long_beam,
+        skew_1,
+        skew_2,
+        **kwargs
     ):
         """
         Subclass for Mesh with beam. This class creates elements where:
@@ -2033,17 +2071,17 @@ class BeamLinkMesh(Mesh):
     """
 
     def __init__(
-            self,
-            long_dim,
-            width,
-            trans_dim,
-            edge_dist_a,
-            edge_dist_b,
-            num_trans_beam,
-            num_long_beam,
-            skew_1,
-            skew_2,
-            **kwargs
+        self,
+        long_dim,
+        width,
+        trans_dim,
+        edge_dist_a,
+        edge_dist_b,
+        num_trans_beam,
+        num_long_beam,
+        skew_1,
+        skew_2,
+        **kwargs
     ):
         """
         Subclass for Mesh with beam. This class creates elements where:
@@ -2107,8 +2145,8 @@ class BeamLinkMesh(Mesh):
         # determine local offset of node based on element groups, get global offset for node i and j of geomtransf
         # if element is a longitudinal, set global y offset (for longitudinal beam)
         if (
-                self.node_spec[ele_nodes[1]]["z_group"]
-                == self.node_spec[ele_nodes[0]]["z_group"]
+            self.node_spec[ele_nodes[1]]["z_group"]
+            == self.node_spec[ele_nodes[0]]["z_group"]
         ):
             # check if not an edge beam
             if self.node_spec[ele_nodes[1]]["z_group"] != 0 or self.node_spec[
@@ -2122,21 +2160,21 @@ class BeamLinkMesh(Mesh):
 
         # if element is a transverse member, calculate local offset based on member orientation
         elif (
-                self.node_spec[ele_nodes[1]]["x_group"]
-                == self.node_spec[ele_nodes[0]]["x_group"]
+            self.node_spec[ele_nodes[1]]["x_group"]
+            == self.node_spec[ele_nodes[0]]["x_group"]
         ):
             # calculate local offset
             offset_z = self.offset_z_dist  # z == cos
             offset_x = (
-                    (node_i[0] + node_j[0]) / (node_i[2] + node_j[2]) * self.offset_z_dist
+                (node_i[0] + node_j[0]) / (node_i[2] + node_j[2]) * self.offset_z_dist
             )
             local_offset = [offset_x, self.y_elevation, offset_z]
         if local_offset:
             if (
-                    find_min_x_dist(
-                        [[a - b for a, b in zip(node_i, local_offset)]], [node_j]
-                    ).tolist()[0][0]
-                    < def_l
+                find_min_x_dist(
+                    [[a - b for a, b in zip(node_i, local_offset)]], [node_j]
+                ).tolist()[0][0]
+                < def_l
             ):
 
                 global_offset_i = [a - b for a, b in zip(node_i, local_offset)]
@@ -2161,18 +2199,18 @@ class ShellLinkMesh(Mesh):
     """
 
     def __init__(
-            self,
-            long_dim,
-            width,
-            trans_dim,
-            edge_dist_a,
-            edge_dist_b,
-            num_trans_beam,
-            num_long_beam,
-            skew_1,
-            skew_2,
-            link_type="beam",
-            **kwargs
+        self,
+        long_dim,
+        width,
+        trans_dim,
+        edge_dist_a,
+        edge_dist_b,
+        num_trans_beam,
+        num_long_beam,
+        skew_1,
+        skew_2,
+        link_type="beam",
+        **kwargs
     ):
         """
         Subclass for mesh with offset beam members linked to grillage consisting of shell elements
@@ -2263,15 +2301,19 @@ class ShellLinkMesh(Mesh):
         # restrain support nodes
         for edge_num in set(self.edge_node_recorder.values()):
             # extract all keys (nodes of shell plane) corresponding to edge num
-            edge_nodes = [key for key, val in self.edge_node_recorder.items() if val == edge_num]
+            edge_nodes = [
+                key for key, val in self.edge_node_recorder.items() if val == edge_num
+            ]
             # look up self.link_dict for the corresponding beam nodes
-            edge_beam_nodes = [key for key, val in self.link_dict.items() if val[0] in edge_nodes if
-                               val[1] in edge_nodes]
+            edge_beam_nodes = [
+                key
+                for key, val in self.link_dict.items()
+                if val[0] in edge_nodes
+                if val[1] in edge_nodes
+            ]
             # add to
             for nodes in edge_beam_nodes:
-                self.edge_support_nodes.setdefault(
-                    nodes, edge_num
-                )  #
+                self.edge_support_nodes.setdefault(nodes, edge_num)  #
 
         # loop each beam group and create beam elements from these offset nodes
         for beam_group in range(0, len(self.start_edge_line.z_group_master_pair_list)):
@@ -2301,12 +2343,21 @@ class ShellLinkMesh(Mesh):
                     ]
                 )
 
-
-                n1_span_group = [key for key,val in self.span_group_to_x_groups.items() if self.node_spec[n1]['x_group'] in val]
-                n2_span_group = [key for key,val in self.span_group_to_x_groups.items() if self.node_spec[n2]['x_group'] in val]
+                n1_span_group = [
+                    key
+                    for key, val in self.span_group_to_x_groups.items()
+                    if self.node_spec[n1]["x_group"] in val
+                ]
+                n2_span_group = [
+                    key
+                    for key, val in self.span_group_to_x_groups.items()
+                    if self.node_spec[n2]["x_group"] in val
+                ]
                 if n1_span_group == n2_span_group:
-                    span_group_key=n1_span_group[0]
-                    self._store_ele_tag_respect_to_mesh_group(counter=self.element_counter, span_group=span_group_key)
+                    span_group_key = n1_span_group[0]
+                    self._store_ele_tag_respect_to_mesh_group(
+                        counter=self.element_counter, span_group=span_group_key
+                    )
                 self.element_counter += 1
 
             # add to grouping dict data
@@ -2374,13 +2425,13 @@ class ShellLinkMesh(Mesh):
                         key
                         for key, n in self.node_spec.items()
                         if key in self.edge_node_recorder.keys()
-                           and n["z_group"] == z_pair_group[0]
+                        and n["z_group"] == z_pair_group[0]
                     ]
                     n2 = [
                         key
                         for key, n in self.node_spec.items()
                         if key in self.edge_node_recorder.keys()
-                           and n["z_group"] == z_pair_group[1]
+                        and n["z_group"] == z_pair_group[1]
                     ]
 
                     if not len(n1) == 1 or not len(n2) == 1:
@@ -2419,17 +2470,17 @@ class BeamMeshWithSpringSupports(BeamMesh):
     """
 
     def __init__(
-            self,
-            long_dim,
-            width,
-            trans_dim,
-            edge_dist_a,
-            edge_dist_b,
-            num_trans_beam,
-            num_long_beam,
-            skew_1,
-            skew_2,
-            **kwargs
+        self,
+        long_dim,
+        width,
+        trans_dim,
+        edge_dist_a,
+        edge_dist_b,
+        num_trans_beam,
+        num_long_beam,
+        skew_1,
+        skew_2,
+        **kwargs
     ):
         # constructor of parent class (BeamMesh) -> base class (Mesh)
         super().__init__(
@@ -2454,8 +2505,10 @@ class BeamMeshWithSpringSupports(BeamMesh):
         # parse inputs
         if hasattr(self.e_tangent, "__len__"):  # if input is a list or dict
             if len(self.e_tangent) > self.global_edge_count - 2:
-                raise Exception("Number of defined e value for spring is greater than number of support lines or is not"
-                                "valid - hint check rotational_spring_stiffness variable")
+                raise Exception(
+                    "Number of defined e value for spring is greater than number of support lines or is not"
+                    "valid - hint check rotational_spring_stiffness variable"
+                )
 
             # assign e_tangent to
             e_value_list = self.e_tangent
@@ -2493,8 +2546,14 @@ class BeamMeshWithSpringSupports(BeamMesh):
 
         # join new nodes with support nodes to form new element
 
-        link_str = 'ops.element("{linktype}",{rNodetag},{cNodetag},{mat_tag},{dirs})\n'.format(
-            linktype="zeroLength", rNodetag=cNode, cNodetag=rNode, dirs=6, mat_tag=mat_tag
+        link_str = (
+            'ops.element("{linktype}",{rNodetag},{cNodetag},{mat_tag},{dirs})\n'.format(
+                linktype="zeroLength",
+                rNodetag=cNode,
+                cNodetag=rNode,
+                dirs=6,
+                mat_tag=mat_tag,
+            )
         )
 
         self.spring_ele_list.append(link_str)
@@ -2503,6 +2562,7 @@ class BeamMeshWithSpringSupports(BeamMesh):
     #     return 'ops.uniaxialMaterial("{type}", {tag}, *{vec})\n'.format(
     #         type=self.ops_spring_mat_type, tag=material_tag, vec=self.e_tangent
     #     )
+
 
 # -----------------------------------------------------------------------------------------------------------------
 # concrete classes for mesh elements

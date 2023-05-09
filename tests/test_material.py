@@ -1,5 +1,7 @@
 from fixtures import *
+
 sys.path.insert(0, os.path.abspath("../"))
+
 
 def test_material_command(ref_bridge_properties):
     # test created material in creating model

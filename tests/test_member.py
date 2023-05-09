@@ -1,5 +1,7 @@
 from fixtures import *
+
 sys.path.insert(0, os.path.abspath("../"))
+
 
 def test_section_command(ref_bridge_properties):
     # reference bridge 10m long, 7m wide with common skew angle at both ends
