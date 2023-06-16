@@ -90,15 +90,15 @@ class OspGrillage:
 
     def __init__(
         self,
-        bridge_name:str,
-        long_dim:float,
-        width:float,
+        bridge_name: str,
+        long_dim: float,
+        width: float,
         skew: Union[list, float, int],
         num_long_grid: int,
         num_trans_grid: int,
         edge_beam_dist: Union[list, float, int],
-        mesh_type:str="Ortho",
-        model:str="3D",
+        mesh_type: str = "Ortho",
+        model: str = "3D",
         **kwargs
     ):
         """
@@ -341,7 +341,7 @@ class OspGrillage:
         return mesh_obj
 
     # interface function
-    def create_osp_model(self, pyfile:bool=False):
+    def create_osp_model(self, pyfile: bool = False):
         """
         Create model in OpenSees model space.
 
@@ -456,7 +456,7 @@ class OspGrillage:
             self.fix_val_fixed = [1, 1, 1, 1, 1, 1]
 
     # private functions to write ops commands to output py file.
-    def _write_geom_transf(self, mesh_obj:Mesh, transform_type:str="Linear"):
+    def _write_geom_transf(self, mesh_obj: Mesh, transform_type: str = "Linear"):
         """
         Write geometric transformation commands.
 
@@ -581,7 +581,7 @@ class OspGrillage:
                     eval(fix_str)
                     self.model_command_list.append(fix_str)
 
-    def _write_equal_dof(self, node_tag_list:list, dof: list = None):
+    def _write_equal_dof(self, node_tag_list: list, dof: list = None):
         """
         Write OpenseesPy's equalDOF command.
         """
@@ -758,9 +758,9 @@ class OspGrillage:
     def set_member(
         self,
         grillage_member_obj: GrillageMember,
-        member:str=None,
-        specific_group:int=None,
-        specific_span:int=None,
+        member: str = None,
+        specific_group: int = None,
+        specific_span: int = None,
     ):
         """
         Set `GrillageMember` instance object to elements of grillage members.
@@ -954,7 +954,7 @@ class OspGrillage:
         self.element_command_list.update(ele_tag_to_command_dict)
 
     def set_spring_support(
-        self, rotational_spring_stiffness:float, edge_num:int=0, spring_direction=6
+        self, rotational_spring_stiffness: float, edge_num: int = 0, spring_direction=6
     ):
         """
         Sets a spring support value of rotational_spring_stiffness to all nodes of edge number.
@@ -1040,7 +1040,10 @@ class OspGrillage:
     # sub-functions of set_member function
     @staticmethod
     def _get_element_command_list(
-        grillage_member_obj:GrillageMember, list_of_ele:list, material_tag:int, section_tag:int
+        grillage_member_obj: GrillageMember,
+        list_of_ele: list,
+        material_tag: int,
+        section_tag: int,
     ):
         """
         Get the element command list
@@ -1073,8 +1076,7 @@ class OspGrillage:
 
     # private procedure to find elements within a grid
     def _get_elements(self, node_tag_combo):
-        """Query the element tags for grillage members.
-        """
+        """Query the element tags for grillage members."""
         # abstracted procedure to find and return the long and trans elements within a grid of 4 or 3 nodes
         record_long = []
         record_trans = []
@@ -1117,7 +1119,7 @@ class OspGrillage:
 
     # Getter for Points Loads nodes
     def _get_point_load_nodes(self, point):
-        """Query the nodes in grid which encompass the point load """
+        """Query the nodes in grid which encompass the point load"""
         # procedure
         # 1 find the closest node 2 find the respective grid within the closest node
         # extract points

@@ -5,6 +5,10 @@ grillage members. In our terminology, we define a section as the geometrical
 properties of the structural elements, and the member as the combination of
 the section and material properties.
 """
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from material import *
 
 
 def create_section(**kwargs):
@@ -69,11 +73,11 @@ class Section:
 
     def __init__(
         self,
-        op_ele_type="elasticBeamColumn",
-        mass=0,
-        c_mass_flag=False,
-        unit_width=False,
-        op_section_type="Elastic",
+        op_ele_type: str = "elasticBeamColumn",
+        mass: float = 0,
+        c_mass_flag: bool = False,
+        unit_width: bool = False,
+        op_section_type: str = "Elastic",
         **kwargs
     ):
         """
@@ -173,7 +177,7 @@ class Section:
 
 class GrillageMember:
     """
-    Base class for defining the grillage members of the grillage model.
+    Class for grillage model members. E.g., longitudinal beam members.
 
     This class parses material and section properties of grillage members into corresponding ``OpenSeesPy`` Element()
     command.
@@ -194,10 +198,10 @@ class GrillageMember:
     def __init__(
         self,
         section: Section,
-        material,
-        member_name="Undefined",
-        quad_ele_flag=False,
-        tri_ele_flag=False,
+        material: Material,
+        member_name: str = "Undefined",
+        quad_ele_flag: bool = False,
+        tri_ele_flag: bool = False,
     ):
         """
         Constructor of GrillageMember requires two input objects i.e. A :class:`~ospgrillage.material.Material`, and
@@ -236,11 +240,11 @@ class GrillageMember:
         self.variable_string_list = []
 
     def get_member_prop_arguments(self, width=1):
-        # """
-        # Function to sort and parse the list input arguments for the prescribed op_element_type of the GrillageMember.
-        #
-        # :return: str containing member properties in accordance with convention of OpenSees element type
-        # """
+        """
+        Returns the element arguments based on the op_element_type of the GrillageMember.
+
+        :return: str containing member properties in accordance with convention of OpenSees element type
+        """
 
         asterisk_input = None
 
@@ -323,13 +327,13 @@ class GrillageMember:
         return asterisk_input
 
     # Function to return argument, handled by OspGrillage
-    def get_section_arguments(self, ele_width=1):
-        # """
-        # Function to obtain input arguments for ``OpenSeesPy`` Section command if the prescribe element type of the
-        # GrillageMember requires the defition of an ``OpenSeesPy`` Section object.
-        #
-        # :return: str containing Section command properties in accordance with convention of OpenSees element type
-        # """
+    def get_section_arguments(self, ele_width: float = 1):
+        """
+        Returns the input arguments for ``OpenSeesPy`` Section command if the prescribe element type of the
+        GrillageMember requires the definition of an ``OpenSeesPy`` Section object.
+
+        :return: str containing Section command properties in accordance with convention of OpenSees element type
+        """
         section_args = None
 
         if self.section.op_section_type == "Elastic":
@@ -346,13 +350,14 @@ class GrillageMember:
 
         return section_args
 
-    def get_ops_section_command(self, section_tag=1, material_tag=None, ele_width=1):
-        # """
-        # Function to obtain the ``OpenSeesPy`` Section command required for the prescribed element type defined for the
-        # GrillageMember object.
-        #
-        # :return: str containing the ``OpenSeesPy`` Section command
-        # """
+    def get_ops_section_command(
+        self, section_tag: int = 1, material_tag: int = None, ele_width: float = 1
+    ):
+        """
+        Returns the ``OpenSeesPy`` Section command for the Section type
+
+        :return: str containing the ``OpenSeesPy`` Section command
+        """
         sec_str = None
         section_type = self.section.op_section_type
         if section_type == "Elastic":
@@ -386,13 +391,16 @@ class GrillageMember:
 
     def get_element_command_str(
         self,
-        ele_tag,
-        node_tag_list,
-        transf_tag=None,
-        ele_width=1,
-        materialtag=None,
-        sectiontag=None,
+        ele_tag: int,
+        node_tag_list: list,
+        transf_tag: int = None,
+        ele_width: float = 1,
+        materialtag: int = None,
+        sectiontag: int = None,
     ) -> str:
+        """Return a list of OpenSeesPy element command for the member.
+        This function is handled by OspGrillage class.
+        """
         # ```
         # Function called within OpsGrillage class `set_member()` function.
         #
@@ -482,7 +490,5 @@ class GrillageMember:
                     sectag=sectiontag,
                 )
             )
-
-        # HERE TO POPULATE WITH MORE ELEMENT TYPES
 
         return ele_str
