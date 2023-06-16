@@ -7,8 +7,8 @@ the section and material properties.
 """
 from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from material import *
+# if TYPE_CHECKING:
+#     from material import Material
 
 
 def create_section(**kwargs):
@@ -198,7 +198,7 @@ class GrillageMember:
     def __init__(
         self,
         section: Section,
-        material: Material,
+        material,
         member_name: str = "Undefined",
         quad_ele_flag: bool = False,
         tri_ele_flag: bool = False,
