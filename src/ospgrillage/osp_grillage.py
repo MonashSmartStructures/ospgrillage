@@ -8,7 +8,7 @@ import dataclasses
 from dataclasses import dataclass
 from datetime import datetime
 from itertools import combinations
-from typing import List, Tuple
+from typing import List, Tuple, TYPE_CHECKING
 
 import openseespy.opensees as ops
 
