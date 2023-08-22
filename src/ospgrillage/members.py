@@ -95,6 +95,8 @@ class Section:
         :type op_ele_type: str
         :param op_section_type: OpenSees section type - default Elastic
         :type op_section_type: str
+        :param mass: Mass of member.
+        :type mass: float
         :param unit_width: Flag for if unit width properties are defined.
         :type unit_width: bool
 

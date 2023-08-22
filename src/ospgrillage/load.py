@@ -1288,9 +1288,11 @@ class ShapeFunction:
         """
         2D Hermite shape function
         """
-        # nodes must be counter clockwise such that n1 = left bottom of relative grid
-        # 4  3
-        # 1  2
+        # nodes are ordered counter clockwise such that node 1 (n1), is left bottom of relative grid
+        # 4 o - - - o 3
+        #   |       |
+        #   |       |
+        # 1 o - - - o 2
         h1 = 0.25 * (2 - 3 * eta + eta ** 3)
         h2 = 0.25 * (1 - eta - eta ** 2 + eta ** 3)
         h3 = 0.25 * (2 + 3 * eta - eta ** 3)
