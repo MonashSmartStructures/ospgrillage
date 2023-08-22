@@ -1524,8 +1524,8 @@ class Mesh:
     @staticmethod
     def _get_vector_xz(node_i: list, node_j: list):
         """
-        Encapsulated function to identify a vector parallel to the plane of local x and z axis of the element. The
-        vector is required for geomTransf() command
+        To identify a vector parallel to the plane of local x and z axis of an element. The
+        vector format follows the input required for geomTransf() command
         - see geomTransf_.
 
         .. _geomTransf: https://openseespydoc.readthedocs.io/en/latest/src/geomTransf.html
