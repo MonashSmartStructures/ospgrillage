@@ -383,9 +383,7 @@ def beam_link_bridge(
 
 # create and run both comparable beam and shell_beam model to obtain results from a point load analysis
 @pytest.fixture
-def run_beam_model_point_load(
-    beam_element_bridge, shell_link_bridge
-):
+def run_beam_model_point_load(beam_element_bridge, shell_link_bridge):
 
     # create point load
     P = 1 * kN
