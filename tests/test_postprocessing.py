@@ -217,3 +217,25 @@ def test_shell_plot_force(shell_link_bridge):
     )
 
     f.show()
+
+
+def test_displacement_getter(bridge_model_42_negative):
+    # test functionality of plot_force and its output
+    og.ops.wipeAnalysis()
+    example_bridge = bridge_model_42_negative
+    # og.opsv.plot_model()
+    # og.plt.show()
+
+    # add moving load case
+    front_wheel = og.PointLoad(name="front wheel", point1=og.LoadPoint(7.5, 0, 4.5, 50))
+
+    point_load_case = og.create_load_case(name="Point")
+    point_load_case.add_load(load_obj=front_wheel)
+    example_bridge.add_load_case(point_load_case)
+
+    example_bridge.analyze()
+    results = example_bridge.get_results(local_forces=False)
+
+    processor = og.XarrayProcessor(grillage=example_bridge, result=results)
+
+    processor.get_arbitrary_displacements(point=[5, 0, 3])

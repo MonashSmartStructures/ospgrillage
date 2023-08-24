@@ -1668,14 +1668,14 @@ class EdgeControlLine:
 
     def __init__(
         self,
-        edge_ref_point:list,
-        width_z:float,
-        edge_width_a:float,
-        edge_width_b:float,
-        edge_angle:float,
-        num_long_beam:int,
-        model_plane_y:float,
-        feature:str="standard",
+        edge_ref_point: list,
+        width_z: float,
+        edge_width_a: float,
+        edge_width_b: float,
+        edge_angle: float,
+        num_long_beam: int,
+        model_plane_y: float,
+        feature: str = "standard",
         **kwargs
     ):
 
@@ -1791,14 +1791,14 @@ class ShellEdgeControlLine(EdgeControlLine):
 
     def __init__(
         self,
-        edge_ref_point:list,
-        width_z:float,
-        edge_width_a:float,
-        edge_width_b:float,
-        edge_angle:float,
-        num_long_beam:int,
-        model_plane_y:float,
-        feature:str="standard",
+        edge_ref_point: list,
+        width_z: float,
+        edge_width_a: float,
+        edge_width_b: float,
+        edge_angle: float,
+        num_long_beam: int,
+        model_plane_y: float,
+        feature: str = "standard",
         **kwargs
     ):
         # get properties specific to shell mesh

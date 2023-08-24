@@ -10,6 +10,9 @@ module of OpenSeesPy - this module fills in gaps to
 import matplotlib.pyplot as plt
 import opsvis as opsv
 import numpy as np
+from typing import TYPE_CHECKING, Union
+from scipy.interpolate import interpn, RegularGridInterpolator
+
 
 import openseespyvis.Get_Rendering as opsplt
 
@@ -387,3 +390,76 @@ def plot_defo(
     # fig.show()
 
     return fig
+
+
+class XarrayProcessor:
+    """Class to process Xarray data format of ospgrillage results."""
+
+    def __init__(self, grillage, result):  # Union[xr.DataArray, xr.Dataset]
+        """Init the class"""
+        self.grillage = grillage
+        self.result = result
+
+    def get_arbitrary_displacements(self, point: list):
+        """Returns displacement values (translation and rotational)
+
+        param point: list of coordinate. Default three elements [x,y=0,z]
+        type point: list
+
+        """
+        node_displacements = []
+        node_coordinate = []
+
+        # get the list of four nodes where arbitrary point lies
+        nodes, grid_number = self.grillage._get_point_load_nodes(
+            point=point
+        )  # list of nodes
+
+        # get results of each node of four nodes
+        for node in nodes:
+            node_displacements.append(
+                self.result.displacements.sel(
+                    Component="dy",
+                    Node=node,
+                )
+                .to_numpy()
+                .tolist()[0]
+            )
+            node_coordinate.append(self.grillage.get_nodes(number=node))
+
+        # interpolate displacement vertical
+        x = np.array(np.unique([coord[0] for coord in node_coordinate]))
+        z = np.array(np.unique([coord[2] for coord in node_coordinate]))
+        xx, zz = np.meshgrid(node_displacements, node_displacements, indexing="ij")
+        if len(node_displacements) == 3:
+            data = self._sort_triangular_grid_data(array=node_displacements)
+        else:  # four node default
+            data = self._sort_rectangular_grid_data(array=node_displacements)
+
+        # interpn()
+        interp = RegularGridInterpolator(
+            (
+                x,
+                z,
+            ),
+            data,
+            bounds_error=False,
+            fill_value=None,
+        )
+
+        # return list, converting point argument into np.array
+        return interp(np.array([point[0], point[2]]))
+
+    @staticmethod
+    def _sort_rectangular_grid_data(array) -> np.ndarray:
+        """sort data according to grid designition (see element notation ordering ) clockwise from left bottom corner node
+        in rectangular grids"""
+        return np.array([[array[0], array[3]], [array[1], array[2]]])
+
+    @staticmethod
+    def _sort_triangular_grid_data(array) -> np.ndarray:
+        """sort data according to grid designition (see element notation ordering ) clockwise from left bottom corner node
+        in rectangular grids"""
+        return np.array([[array[0], array[3]], [array[1], array[2]]])
+
+    #TODO code the triangular grid method
