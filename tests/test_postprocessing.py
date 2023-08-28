@@ -236,6 +236,6 @@ def test_displacement_getter(bridge_model_42_negative):
     example_bridge.analyze()
     results = example_bridge.get_results(local_forces=False)
 
-    processor = og.XarrayProcessor(grillage=example_bridge, result=results)
+    processor = og.PostProcessor(grillage=example_bridge, result=results)
 
     processor.get_arbitrary_displacements(point=[5, 0, 3])

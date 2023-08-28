@@ -206,7 +206,7 @@ class GrillageMember:
         tri_ele_flag: bool = False,
     ):
         """
-        Constructor of GrillageMember requires two input objects i.e. A :class:`~ospgrillage.material.Material`, and
+        Init the GrillageMember. Requires two input objects i.e. A :class:`~ospgrillage.material.Material`, and
         :class:`Section`.
 
         :param section: Section class object
@@ -240,6 +240,9 @@ class GrillageMember:
             self.material_command_flag = False
 
         self.variable_string_list = []
+
+        # determine mass from section area and material density
+        self.mass = self.section.A * self.material.density
 
     def get_member_prop_arguments(self, width=1):
         """
@@ -426,7 +429,7 @@ class GrillageMember:
                 node_tag_list=node_tag_list,
                 memberprop=section_input,
                 transftag=transf_tag,
-                mass=self.section.mass,
+                mass=self.mass,
             )
         elif self.section.op_ele_type == "elasticBeamColumn":
             section_input = self.get_member_prop_arguments(ele_width)
@@ -436,7 +439,7 @@ class GrillageMember:
                 node_tag_list=node_tag_list,
                 memberprop=section_input,
                 transftag=transf_tag,
-                mass=self.section.mass,
+                mass=self.mass,
             )
         elif self.section.op_ele_type == "nonlinearBeamColumn":
             ele_str = 'ops.element("{type}",{tag},*{node_tag_list},{num_int_pt},{sectag},{transftag},{mass})\n'.format(
@@ -446,7 +449,7 @@ class GrillageMember:
                 num_int_pt=self.section.num_int_pt,
                 sectag=sectiontag,
                 transftag=transf_tag,
-                mass=self.section.mass,
+                mass=self.mass,
             )
         elif self.section.op_ele_type == "zeroLength":
             ele_str = "ops.element(\"{linktype}\",{ele_tag},*[{rNodetag},{cNodetag}],'-mat',{mat_tag},'-dir',{dirs})\n".format(
