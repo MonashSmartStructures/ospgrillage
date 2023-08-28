@@ -175,6 +175,7 @@ def create_grillage():
         Iy=trans_prop["Iy"] * m4,
         Az=trans_prop["Az"] * m2,
         Ay=trans_prop["Ay"] * m2,
+        unit_width=True,
     )
 
     end_tranverse_section = ospg.create_section(
@@ -242,7 +243,6 @@ def add_analysis_to_simple_grid(create_grillage):
     MPa = N / ((mm) ** 2)
     GPa = kilo * MPa
     simple_grid, bridge = create_grillage
-
 
     grid_prop = bridge["grid"]
     L = grid_prop["span"] * m  # span

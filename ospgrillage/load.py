@@ -63,7 +63,12 @@ def create_point(**kwargs):
     y = kwargs.get("y", 0)
     z = kwargs.get("z", None)
 
-    if not any([x is None, z is None,]):
+    if not any(
+        [
+            x is None,
+            z is None,
+        ]
+    ):
         return Point(x, y, z)
     else:
         raise ValueError("Missing one or more keyword arguments for x=, z=, ")

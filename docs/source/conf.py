@@ -41,12 +41,12 @@ extensions = [
     "sphinx.ext.autosummary",
     "sphinx.ext.coverage",
     "sphinx.ext.githubpages",
-    #"recommonmark",
+    # "recommonmark",
     "nbsphinx",
 ]
 
 autodoc_member_order = "bysource"
-autoclass_content = "both" # Add __init__ doc (ie. params) to class summaries
+autoclass_content = "both"  # Add __init__ doc (ie. params) to class summaries
 autosummary_generate = True
 html_show_sourcelink = (
     False  # Remove 'view source code' from top of page (for html, not python)

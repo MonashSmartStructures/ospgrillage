@@ -118,19 +118,23 @@ def test_create_section(ref_bridge_properties):
     # create member without material
     with pytest.raises(TypeError) as error_info:
         I_beam = og.create_member(
-            member_name="Intermediate I-beams", section=I_beam_section,
+            member_name="Intermediate I-beams",
+            section=I_beam_section,
         )
 
     # create member without section
     with pytest.raises(TypeError) as error_info:
         I_beam = og.create_member(
-            member_name="Intermediate I-beams", material=concrete,
+            member_name="Intermediate I-beams",
+            material=concrete,
         )
 
     # create member with inputs to wrong kwarg - here we swap section and material inputs
     with pytest.raises(AttributeError) as error_info:
         I_beam = og.create_member(
-            member_name="Intermediate I-beams", section=concrete, material=I_beam_section
+            member_name="Intermediate I-beams",
+            section=concrete,
+            material=I_beam_section,
         )
 
     # create a shell GrillageMember
@@ -142,4 +146,3 @@ def test_create_section(ref_bridge_properties):
         section=exterior_I_beam_section,
         material=concrete,
     )
-
