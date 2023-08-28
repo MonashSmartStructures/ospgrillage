@@ -299,7 +299,7 @@ def test_plot_force(bridge_model_42_negative):
         result_obj=results,
         component="Mz",
         member="interior_main_beam",
-        loadcase='single_moving_point at global position [4.00,0.00,3.00]'
+        loadcase="single_moving_point at global position [4.00,0.00,3.00]",
     )
 
     f.show()

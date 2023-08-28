@@ -68,13 +68,13 @@ class Section:
     """
 
     def __init__(
-            self,
-            op_ele_type="elasticBeamColumn",
-            mass=0,
-            c_mass_flag=False,
-            unit_width=False,
-            op_section_type="Elastic",
-            **kwargs
+        self,
+        op_ele_type="elasticBeamColumn",
+        mass=0,
+        c_mass_flag=False,
+        unit_width=False,
+        op_section_type="Elastic",
+        **kwargs,
     ):
         """
         The constructor takes in two types of keyword arguments.
@@ -192,12 +192,12 @@ class GrillageMember:
     """
 
     def __init__(
-            self,
-            section: Section,
-            material,
-            member_name="Undefined",
-            quad_ele_flag=False,
-            tri_ele_flag=False,
+        self,
+        section: Section,
+        material,
+        member_name="Undefined",
+        quad_ele_flag=False,
+        tri_ele_flag=False,
     ):
         """
         Constructor of GrillageMember requires two input objects i.e. A :class:`~ospgrillage.material.Material`, and
@@ -218,18 +218,18 @@ class GrillageMember:
         self.section_command_flag = True
         self.material_command_flag = True
         if any(
-                [
-                    self.section.op_ele_type == "ElasticTimoshenkoBeam",
-                    self.section.op_ele_type == "elasticBeamColumn",
-                ]
+            [
+                self.section.op_ele_type == "ElasticTimoshenkoBeam",
+                self.section.op_ele_type == "elasticBeamColumn",
+            ]
         ):
             self.material_command_flag = False
             self.section_command_flag = False  #
         elif any(
-                [
-                    self.section.op_ele_type == "ShellMITC4",
-                    self.section.op_ele_type == "ShellDKGQ",
-                ]
+            [
+                self.section.op_ele_type == "ShellMITC4",
+                self.section.op_ele_type == "ShellDKGQ",
+            ]
         ):
             self.material_command_flag = False
 
@@ -385,13 +385,13 @@ class GrillageMember:
         return sec_str
 
     def get_element_command_str(
-            self,
-            ele_tag,
-            node_tag_list,
-            transf_tag=None,
-            ele_width=1,
-            materialtag=None,
-            sectiontag=None,
+        self,
+        ele_tag,
+        node_tag_list,
+        transf_tag=None,
+        ele_width=1,
+        materialtag=None,
+        sectiontag=None,
     ) -> str:
         # ```
         # Function called within OpsGrillage class `set_member()` function.
@@ -439,10 +439,13 @@ class GrillageMember:
                 mass=self.section.mass,
             )
         elif self.section.op_ele_type == "zeroLength":
-            ele_str = 'ops.element("{linktype}",{ele_tag},*[{rNodetag},{cNodetag}],\'-mat\',{mat_tag},\'-dir\',{dirs})\n'.format(
-                linktype=self.section.op_ele_type, rNodetag=node_tag_list[0], cNodetag=node_tag_list[1], dirs=6,
-                mat_tag=materialtag
-                , ele_tag=ele_tag
+            ele_str = "ops.element(\"{linktype}\",{ele_tag},*[{rNodetag},{cNodetag}],'-mat',{mat_tag},'-dir',{dirs})\n".format(
+                linktype=self.section.op_ele_type,
+                rNodetag=node_tag_list[0],
+                cNodetag=node_tag_list[1],
+                dirs=6,
+                mat_tag=materialtag,
+                ele_tag=ele_tag,
             )
 
         # for shell element option
