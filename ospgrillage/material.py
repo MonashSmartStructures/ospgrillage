@@ -301,7 +301,11 @@ class Material:
         """
         # e.g. concrete01 or steel01
         mat_str = None
-        if self.ops_mat_type == "Concrete01" or self.ops_mat_type == "Steel01" or self.ops_mat_type == "Elastic":
+        if (
+            self.ops_mat_type == "Concrete01"
+            or self.ops_mat_type == "Steel01"
+            or self.ops_mat_type == "Elastic"
+        ):
             mat_str = 'ops.uniaxialMaterial("{type}", {tag}, *{vec})\n'.format(
                 type=self.ops_mat_type, tag=material_tag, vec=self.op_mat_arg
             )

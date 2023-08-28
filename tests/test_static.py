@@ -4,6 +4,7 @@ import sys, os
 
 sys.path.insert(0, os.path.abspath("../"))
 
+
 # test if sort vertice function returns a clockwise
 def test_sort_vertices():
     point_list = [
