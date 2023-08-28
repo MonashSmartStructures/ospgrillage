@@ -1253,9 +1253,9 @@ def test_load_analysis_on_spring_support_single_span(ref_bridge_properties):
     N = 1
     m = 1
     mm = milli * m
-    m2 = m ** 2
-    m3 = m ** 3
-    m4 = m ** 4
+    m2 = m**2
+    m3 = m**3
+    m4 = m**4
     kN = kilo * N
     MPa = N / ((mm) ** 2)
     GPa = kilo * MPa
@@ -1296,7 +1296,7 @@ def test_load_analysis_on_spring_support_single_span(ref_bridge_properties):
         multi_span_dist_list=spans,
         multi_span_num_points=nl_multi,
         continuous=True,
-        #non_cont_spacing_x=stich_slab_x_spacing,
+        # non_cont_spacing_x=stich_slab_x_spacing,
     )
 
     # assign grillage member to element groups of grillage model
@@ -1311,7 +1311,9 @@ def test_load_analysis_on_spring_support_single_span(ref_bridge_properties):
 
     # spring support
     e_spring = 11e13
-    variant_one_model.set_spring_support(rotational_spring_stiffness=e_spring,edge_num=1)
+    variant_one_model.set_spring_support(
+        rotational_spring_stiffness=e_spring, edge_num=1
+    )
 
     variant_one_model.create_osp_model(pyfile=False)
     og.opsplt.plot_model()
@@ -1321,9 +1323,7 @@ def test_load_analysis_on_spring_support_single_span(ref_bridge_properties):
     point_load_location = og.create_load_vertex(
         x=7.5, y=0, z=3, p=P
     )  # about midspan of span 1
-    point_load = og.create_load(
-        name="single point", point1=point_load_location
-    )
+    point_load = og.create_load(name="single point", point1=point_load_location)
     point_lc = og.create_load_case(name="pointload")
     point_lc.add_load(point_load)
     variant_one_model.add_load_case(point_lc)
@@ -1332,4 +1332,9 @@ def test_load_analysis_on_spring_support_single_span(ref_bridge_properties):
     result = variant_one_model.get_results()
     print(result)
 
-    assert og.np.isclose(result.forces.sel(Loadcase="pointload",Component="Mz_i",Element=20).to_numpy().tolist(),0.49505451544913914)
+    assert og.np.isclose(
+        result.forces.sel(Loadcase="pointload", Component="Mz_i", Element=20)
+        .to_numpy()
+        .tolist(),
+        0.49505451544913914,
+    )

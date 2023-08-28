@@ -359,9 +359,9 @@ def test_multispan_feature(ref_bridge_properties):
     N = 1
     m = 1
     mm = milli * m
-    m2 = m ** 2
-    m3 = m ** 3
-    m4 = m ** 4
+    m2 = m**2
+    m3 = m**3
+    m4 = m**4
     kN = kilo * N
     MPa = N / ((mm) ** 2)
     GPa = kilo * MPa
@@ -443,7 +443,6 @@ def test_multispan_feature(ref_bridge_properties):
     )
 
 
-
 def test_member_assignment_for_specific_span_feature(ref_bridge_properties):
     # model is based on tst_multispan_feature
     I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
@@ -454,9 +453,9 @@ def test_member_assignment_for_specific_span_feature(ref_bridge_properties):
     N = 1
     m = 1
     mm = milli * m
-    m2 = m ** 2
-    m3 = m ** 3
-    m4 = m ** 4
+    m2 = m**2
+    m3 = m**3
+    m4 = m**4
     kN = kilo * N
     MPa = N / ((mm) ** 2)
     GPa = kilo * MPa
@@ -510,15 +509,15 @@ def test_member_assignment_for_specific_span_feature(ref_bridge_properties):
     variant_one_model.set_member(slab, member="end_edge")
     # variant_one_model.set_member(stich_slab, member="stitch_elements")
 
-    variant_one_model.set_member(I_beam, member="interior_main_beam",specific_span=0)
-    variant_one_model.set_member(I_beam, member="exterior_main_beam_1",specific_span=0)
-    variant_one_model.set_member(I_beam, member="exterior_main_beam_2",specific_span=0)
-
-
+    variant_one_model.set_member(I_beam, member="interior_main_beam", specific_span=0)
+    variant_one_model.set_member(I_beam, member="exterior_main_beam_1", specific_span=0)
+    variant_one_model.set_member(I_beam, member="exterior_main_beam_2", specific_span=0)
 
     variant_one_model.create_osp_model(pyfile=False)
     og.opsv.plot_model(element_labels=0, az_el=(-90, 0))  # plotting using ops_vis
     og.plt.show()
+
+
 def test_member_reassignment_feature(ref_bridge_properties):
     # test model is a multispan model based on test_multi_span_feature()
     I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
@@ -529,9 +528,9 @@ def test_member_reassignment_feature(ref_bridge_properties):
     N = 1
     m = 1
     mm = milli * m
-    m2 = m ** 2
-    m3 = m ** 3
-    m4 = m ** 4
+    m2 = m**2
+    m3 = m**3
+    m4 = m**4
     kN = kilo * N
     MPa = N / ((mm) ** 2)
     GPa = kilo * MPa
@@ -591,8 +590,10 @@ def test_member_reassignment_feature(ref_bridge_properties):
     variant_one_model.create_osp_model(pyfile=False)
     og.opsv.plot_model(element_labels=0, az_el=(-90, 0))  # plotting using ops_vis
     og.plt.show()
-    assert variant_one_model.element_command_list[2] ==\
-           'ops.element("elasticBeamColumn", 2, *[2, 3], *[9.963e-02, 3.480e+10, 1.450e+10, 5.850e-04, 2.475e-04, 5.445e-04], 1, 0)\n'
+    assert (
+        variant_one_model.element_command_list[2]
+        == 'ops.element("elasticBeamColumn", 2, *[2, 3], *[9.963e-02, 3.480e+10, 1.450e+10, 5.850e-04, 2.475e-04, 5.445e-04], 1, 0)\n'
+    )
 
 
 def test_create_offset_support(ref_bridge_properties):
@@ -607,7 +608,7 @@ def test_create_offset_support(ref_bridge_properties):
         num_long_grid=7,
         num_trans_grid=5,
         mesh_type="Ortho",
-        support_rigid_dist_y=1
+        support_rigid_dist_y=1,
     )
 
     # set grillage member to element groups of grillage model
@@ -623,6 +624,7 @@ def test_create_offset_support(ref_bridge_properties):
 
     og.opsplt.plot_model("nodes")
 
+
 def test_multispan_feat_shell(ref_bridge_properties):
     # test multispan feature compatibility with shell model
     I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
@@ -633,9 +635,9 @@ def test_multispan_feat_shell(ref_bridge_properties):
     N = 1
     m = 1
     mm = milli * m
-    m2 = m ** 2
-    m3 = m ** 3
-    m4 = m ** 4
+    m2 = m**2
+    m3 = m**3
+    m4 = m**4
     kN = kilo * N
     MPa = N / ((mm) ** 2)
     GPa = kilo * MPa
@@ -871,9 +873,9 @@ def test_multispan_with_ortho_40deg_skew(ref_bridge_properties):
     N = 1
     m = 1
     mm = milli * m
-    m2 = m ** 2
-    m3 = m ** 3
-    m4 = m ** 4
+    m2 = m**2
+    m3 = m**3
+    m4 = m**4
     kN = kilo * N
     MPa = N / ((mm) ** 2)
     GPa = kilo * MPa
@@ -925,17 +927,23 @@ def test_multispan_with_ortho_40deg_skew(ref_bridge_properties):
     skew_multi_span_ortho_model.set_member(slab, member="transverse_slab")
     skew_multi_span_ortho_model.set_member(exterior_I_beam, member="start_edge")
     skew_multi_span_ortho_model.set_member(exterior_I_beam, member="end_edge")
-    skew_multi_span_ortho_model.set_member(exterior_I_beam, member="end_edge", specific_group=2)
-    skew_multi_span_ortho_model.set_member(exterior_I_beam, member="end_edge", specific_group=3)
+    skew_multi_span_ortho_model.set_member(
+        exterior_I_beam, member="end_edge", specific_group=2
+    )
+    skew_multi_span_ortho_model.set_member(
+        exterior_I_beam, member="end_edge", specific_group=3
+    )
 
     # variant_one_model.set_member(stich_slab, member="stitch_elements")
 
     skew_multi_span_ortho_model.create_osp_model(pyfile=False)
-    og.opsv.plot_model(node_labels=1, element_labels=0, az_el=(-90, 0))  # plotting using ops_vis
+    og.opsv.plot_model(
+        node_labels=1, element_labels=0, az_el=(-90, 0)
+    )  # plotting using ops_vis
     og.plt.show()
     assert all(
         og.np.isclose(
             skew_multi_span_ortho_model.Mesh_obj.nox,
-            [0., 5.335, 10.67, 16.005, 21.34, 26.675, 32.01],
+            [0.0, 5.335, 10.67, 16.005, 21.34, 26.675, 32.01],
         )
     )
