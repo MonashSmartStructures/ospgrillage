@@ -10,7 +10,7 @@ build-backend = "setuptools.build_meta"
 name = "ospgrillage"
 description = "Bridge deck grillage analysis using OpenSeesPy"
 license = {text = "MIT"}
-keyword = "bridge, grillage, openseespy"
+keywords = ["bridge, grillage, openseespy"]
 authors = [{name = "Monash Smart Structures", email = "colin.caprani@monash.edu"}]
 classifiers = [
     "Development Status :: 4 - Beta",
