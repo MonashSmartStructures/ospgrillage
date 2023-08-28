@@ -55,7 +55,7 @@ Tracker = "https://github.com/MonashSmartStructures/ospgrillage/issues"
 test = ["pytest >= 6.2.2"]
 
 [tool.setuptools]
-platforms = "any"
+platforms = ["any"]
 include-package-data = true
 license-files = ["LICENSE.md"]
 
