@@ -23,8 +23,8 @@ GPa = kilo * MPa
 def test_model_instance(bridge_model_42_negative):
     example_bridge = bridge_model_42_negative
     # og.opsplt.plot_model("nodes") # uncomment to use GetRendering module
-    og.opsv.plot_model(az_el=(-90, 0), element_labels=0)
-    og.plt.show()
+    #og.opsv.plot_model(az_el=(-90, 0), element_labels=0)
+    #og.plt.show()
     assert og.ops.nodeCoord(18)  # check if model node exist in OpenSees model space
     # og.ops.wipe()
     a = example_bridge.get_element(member="exterior_main_beam_2", options="nodes")

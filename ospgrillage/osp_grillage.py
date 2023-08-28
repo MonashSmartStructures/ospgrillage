@@ -1119,7 +1119,7 @@ class OspGrillage:
     # Getter for Points Loads nodes
     def _get_point_load_nodes(
         self, point: Union[Tuple, list]
-    ) -> Tuple[list[Point], int]:
+    ):
         """Query the nodes in grid which encompass the point load"""
         # procedure
         # 1 find the closest node 2 find the respective grid within the closest node
@@ -1501,7 +1501,7 @@ class OspGrillage:
         else:  # else run assignment for quadrilateral grids
 
             # extract coordinates of fourth point
-            p4 = self.Mesh_obj.node_spec[grid_nodes[3]]["coordinate"]
+            p4 = self.Mesh_obj.node_spec[grid_nodes[3]]["coordinate"] # get coordinate of fourth point
             point_list.append(Point(p4[0], p4[1], p4[2]))
             sorted_list, sorted_node_tag = sort_vertices(point_list, grid_nodes)
             # mapping coordinates to natural coordinate, then finds eta (x) and zeta (z) of the point xp,zp

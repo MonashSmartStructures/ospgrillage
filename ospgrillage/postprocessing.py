@@ -13,6 +13,9 @@ import numpy as np
 from typing import TYPE_CHECKING, Union
 from scipy.interpolate import interpn, RegularGridInterpolator
 
+# if TYPE_CHECKING:
+from ospgrillage.load import ShapeFunction
+from ospgrillage.static import solve_zeta_eta
 
 import openseespyvis.Get_Rendering as opsplt
 
@@ -178,12 +181,12 @@ class Envelope:
 
 
 def plot_force(
-    ospgrillage_obj,
-    result_obj=None,
-    component=None,
-    member: str = None,
-    option: str = "elements",
-    loadcase: str = None,
+        ospgrillage_obj,
+        result_obj=None,
+        component=None,
+        member: str = None,
+        option: str = "elements",
+        loadcase: str = None,
 ):
     """
     Plots a force diagram of the provided :class:`~ospgrillage.osp_grillage.OspGrillage` and
@@ -305,12 +308,12 @@ def plot_force(
 
 
 def plot_defo(
-    ospgrillage_obj,
-    result_obj=None,
-    member: str = None,
-    component: str = None,
-    option: str = "nodes",
-    loadcase: str = None,
+        ospgrillage_obj,
+        result_obj=None,
+        member: str = None,
+        component: str = None,
+        option: str = "nodes",
+        loadcase: str = None,
 ):
     """
     Plots displacements of the provided :class:`~ospgrillage.osp_grillage.OspGrillage` and
@@ -392,15 +395,22 @@ def plot_defo(
     return fig
 
 
-class XarrayProcessor:
-    """Class to process Xarray data format of ospgrillage results."""
+class PostProcessor:
+    """Class to post-process the results from an of ospgrillage analysis result.
+
+    As of version 0.2.0, ospgrillage compiles results using Xarray module.
+    """
 
     def __init__(self, grillage, result):  # Union[xr.DataArray, xr.Dataset]
         """Init the class"""
+        # store main vars
         self.grillage = grillage
         self.result = result
 
-    def get_arbitrary_displacements(self, point: list):
+        # init vars
+        self.shape_function_obj = ShapeFunction()
+
+    def get_arbitrary_displacements(self, point: list, shape_function_type: str = "linear"):
         """Returns displacement values (translation and rotational)
 
         param point: list of coordinate. Default three elements [x,y=0,z]
@@ -422,44 +432,24 @@ class XarrayProcessor:
                     Component="dy",
                     Node=node,
                 )
-                .to_numpy()
-                .tolist()[0]
+                    .to_numpy()
+                    .tolist()[0]
             )
             node_coordinate.append(self.grillage.get_nodes(number=node))
 
-        # interpolate displacement vertical
-        x = np.array(np.unique([coord[0] for coord in node_coordinate]))
-        z = np.array(np.unique([coord[2] for coord in node_coordinate]))
-        xx, zz = np.meshgrid(node_displacements, node_displacements, indexing="ij")
-        if len(node_displacements) == 3:
-            data = self._sort_triangular_grid_data(array=node_displacements)
-        else:  # four node default
-            data = self._sort_rectangular_grid_data(array=node_displacements)
+        # interpolate for vertical displacement
+        x = np.array([coord[0] for coord in node_coordinate])
+        z = np.array([coord[2] for coord in node_coordinate])
 
-        # interpn()
-        interp = RegularGridInterpolator(
-            (
-                x,
-                z,
-            ),
-            data,
-            bounds_error=False,
-            fill_value=None,
-        )
+        # get natural coordinate of point in grid
+        eta, zeta = solve_zeta_eta(xp=point[0], zp=point[2],
+                                   x1=x[0], z1=z[0],
+                                   x2=x[1], z2=z[1],
+                                   x3=x[2], z3=z[2],
+                                   x4=x[3], z4=z[3])
+        if shape_function_type is "linear":
+            shape_func = self.shape_function_obj.linear_shape_function(eta=eta, zeta=zeta)
+        else:
+            shape_func, _, _ = self.shape_function_obj.hermite_shape_function_2d(eta=eta, zeta=zeta)
 
-        # return list, converting point argument into np.array
-        return interp(np.array([point[0], point[2]]))
-
-    @staticmethod
-    def _sort_rectangular_grid_data(array) -> np.ndarray:
-        """sort data according to grid designition (see element notation ordering ) clockwise from left bottom corner node
-        in rectangular grids"""
-        return np.array([[array[0], array[3]], [array[1], array[2]]])
-
-    @staticmethod
-    def _sort_triangular_grid_data(array) -> np.ndarray:
-        """sort data according to grid designition (see element notation ordering ) clockwise from left bottom corner node
-        in rectangular grids"""
-        return np.array([[array[0], array[3]], [array[1], array[2]]])
-
-    #TODO code the triangular grid method
+        return sum([a * b for a, b, in zip(shape_func, node_displacements)])
