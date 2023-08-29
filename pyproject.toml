@@ -62,7 +62,7 @@ license-files = ["LICENSE.md"]
 find = {namespaces = false}
 
 [tool.setuptools.dynamic]
-version = {attr = "src.__version__"}
+version = {attr = "ospgrillage.__version__"}
 
 [tool.distutils.bdist_wheel]
 universal = 1
