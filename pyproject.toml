@@ -1,17 +1,17 @@
 [build-system]
-requires = ["wheel >= 0.31.0",
-            "setuptools",
-            "twine>= 1.11.0",
-            "oldest-supported-numpy",
-            ]
+requires = ["setuptools>=61.0",
+            "oldest-supported-numpy"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "ospgrillage"
+dynamic = ["version"]
 description = "Bridge deck grillage analysis using OpenSeesPy"
 license = {text = "MIT"}
 keywords = ["bridge, grillage, openseespy"]
-authors = [{name = "Monash Smart Structures", email = "colin.caprani@monash.edu"}]
+authors = [ {name = "Monash Smart Structures", email = "colin.caprani@monash.edu"},
+            {name = "Jun Wei Ngan", email = "jun.ngan@monash.edu"},
+            {name = "Colin", email = "colin.caprani@monash.edu"}]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Topic :: Scientific/Engineering",
@@ -39,7 +39,6 @@ dependencies = [
     "scipy",
     "xarray",
 ]
-dynamic = ["version"]
 
 [project.readme]
 file = "README.md"
@@ -63,7 +62,7 @@ license-files = ["LICENSE.md"]
 find = {namespaces = false}
 
 [tool.setuptools.dynamic]
-version = {attr = "ospgrillage.__version__"}
+version = {attr = "src.__version__"}
 
 [tool.distutils.bdist_wheel]
 universal = 1
