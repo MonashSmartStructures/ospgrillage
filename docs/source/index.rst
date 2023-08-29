@@ -23,6 +23,7 @@
 |Contributor Covenant|
 |codecov|
 |JOSS|
+|Zenodo|
 
 .. |Code style: black| image:: https://img.shields.io/badge/code%20style-black-000000.svg 
    :target: https://github.com/psf/black
@@ -57,6 +58,9 @@
 .. |JOSS| image:: https://joss.theoj.org/papers/d44339b03dc4f1add2678167c1a1b6de/status.svg
    :target: https://joss.theoj.org/papers/d44339b03dc4f1add2678167c1a1b6de
 
+.. |Zenodo| image:: https://zenodo.org/badge/365436121.svg
+   :target: https://zenodo.org/badge/latestdoi/365436121
+ 
 
 ===========================================
 OpenSeesPy Grillage wizard - *ospgrillage*

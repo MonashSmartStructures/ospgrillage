@@ -277,7 +277,6 @@ def plot_force(
         else:
             ele_node = result_obj.ele_nodes.sel(Element=ele)
 
-
         # create arrays for x y and z for plots
         xx = [nodes[n]["coordinate"][0] for n in ele_node.values]
         yy = [nodes[n]["coordinate"][1] for n in ele_node.values]
@@ -286,6 +285,7 @@ def plot_force(
         s, al = opsv.section_force_distribution_3d(
             ex=xx, ey=yy, ez=zz, pl=ele_components
         )
+
         # plot element force component
         ax.plot(xx, s[:, component_index] * factor, "-k")
         # fill area between horizontal axis and line
@@ -296,7 +296,7 @@ def plot_force(
     ax.set_xlabel("x (m) ")
     ax.set_ylabel(component)
     fig.tight_layout()
-    # fig.show()
+    fig.show()
 
     return fig
 

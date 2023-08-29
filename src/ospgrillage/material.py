@@ -88,7 +88,9 @@ class Material:
 
         """
         # Instantiate variables
-        self.ops_mat_type = kwargs.get("ops_mat_type", None)  # this is the os convention for materials e.g. Concrete01
+        self.ops_mat_type = kwargs.get(
+            "ops_mat_type", None
+        )  # this is the os convention for materials e.g. Concrete01
         self.op_mat_arg = None  # arguments according to OpenSeesPy
         self.units = kwargs.get("units", None)  # default SI units
         # assigns variables for all kwargs for codified material types
@@ -108,7 +110,6 @@ class Material:
         # material vars
 
         # properties for Standard Elastic OpenSeesPy material
-
 
         # properties for Concrete - symbols according to OpenSees uniaxialMaterial/Concrete
         self.fpc = kwargs.get("fpc", None)
@@ -161,8 +162,6 @@ class Material:
 
         # check poison ratio
         if not self.poisson_ratio:
-            print("Poisson's ratio not defined for general or custom OpenSeesPy material - a default value of 0.3 is"
-                  "set inplace")
             self.poisson_ratio = 0.3
 
         # if G not defined, calculate using formula E/(2(1+v))
@@ -198,7 +197,8 @@ class Material:
                 self.a3,
                 self.a4,
             ]
-
+        elif self.ops_mat_type == "Elastic":
+            self.op_mat_arg = [self.elastic_modulus]
         # TO ADD for MORE materials
 
         # check if None in entries
@@ -301,8 +301,13 @@ class Material:
         """
         # e.g. concrete01 or steel01
         mat_str = None
-        if self.ops_mat_type == "Concrete01" or self.ops_mat_type == "Steel01":
+        if (
+            self.ops_mat_type == "Concrete01"
+            or self.ops_mat_type == "Steel01"
+            or self.ops_mat_type == "Elastic"
+        ):
             mat_str = 'ops.uniaxialMaterial("{type}", {tag}, *{vec})\n'.format(
                 type=self.ops_mat_type, tag=material_tag, vec=self.op_mat_arg
             )
+
         return mat_str

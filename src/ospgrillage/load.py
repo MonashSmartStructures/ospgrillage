@@ -63,7 +63,12 @@ def create_point(**kwargs):
     y = kwargs.get("y", 0)
     z = kwargs.get("z", None)
 
-    if not any([x is None, z is None,]):
+    if not any(
+        [
+            x is None,
+            z is None,
+        ]
+    ):
         return Point(x, y, z)
     else:
         raise ValueError("Missing one or more keyword arguments for x=, z=, ")
@@ -524,7 +529,6 @@ class LineLoading(Loads):
         pp = None
         # check if line is straight or curve
         if self.load_point_3 is None:  # straight line
-
             # x[0],z[0] and p[0] shall be reference point for interpolate
             xp = point_coordinate[0]
             yp = point_coordinate[0]  # not used but generated here
@@ -991,7 +995,6 @@ class MovingLoad:
 
     # function to create incremental load cases for each step of the moving loads. Function handled by OspGrillage
     def parse_moving_load_cases(self):
-
         # loop through all load-path pairs and identify static loads
         for load_pair_dict in self.load_case_dict_list:
             if not load_pair_dict["path"]:  # empty path, load is static

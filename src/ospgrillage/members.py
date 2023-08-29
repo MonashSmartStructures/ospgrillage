@@ -74,7 +74,7 @@ class Section:
         c_mass_flag=False,
         unit_width=False,
         op_section_type="Elastic",
-        **kwargs
+        **kwargs,
     ):
         """
         The constructor takes in two types of keyword arguments.
@@ -233,6 +233,8 @@ class GrillageMember:
         ):
             self.material_command_flag = False
 
+        self.variable_string_list = []
+
     def get_member_prop_arguments(self, width=1):
         # """
         # Function to sort and parse the list input arguments for the prescribed op_element_type of the GrillageMember.
@@ -283,14 +285,6 @@ class GrillageMember:
                         self.section.op_ele_type
                     )
                 )
-            asterisk_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(
-                self.material.elastic_modulus,
-                self.material.shear_modulus,
-                self.section.A * width,
-                self.section.J * width,
-                self.section.Iy * width,
-                self.section.Iz * width,
-            )
 
             asterisk_input = "[{:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}, {:.3e}]".format(
                 self.section.A * width,
@@ -443,6 +437,15 @@ class GrillageMember:
                 sectag=sectiontag,
                 transftag=transf_tag,
                 mass=self.section.mass,
+            )
+        elif self.section.op_ele_type == "zeroLength":
+            ele_str = "ops.element(\"{linktype}\",{ele_tag},*[{rNodetag},{cNodetag}],'-mat',{mat_tag},'-dir',{dirs})\n".format(
+                linktype=self.section.op_ele_type,
+                rNodetag=node_tag_list[0],
+                cNodetag=node_tag_list[1],
+                dirs=6,
+                mat_tag=materialtag,
+                ele_tag=ele_tag,
             )
 
         # for shell element option
