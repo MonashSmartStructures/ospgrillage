@@ -12,7 +12,6 @@ import os
 
 
 def process_lusas(file, folder):
-
     sheet_dict = pd.read_excel(lusas_filename, sheet_name=None)
     # read lusas output
 
@@ -35,7 +34,6 @@ def process_lusas(file, folder):
 
 
 if __name__ == "__main__":
-
     lusas_filename = "Lusas_Outputs.xlsx"  # forces
     output_folder = "28m results/28m_super_t_forces/"
     process_lusas(lusas_filename, output_folder)
