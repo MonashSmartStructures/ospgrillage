@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=61.0",
+requires = ["setuptools>=64.0",
             "oldest-supported-numpy"]
 build-backend = "setuptools.build_meta"
 
@@ -58,8 +58,8 @@ platforms = ["any"]
 include-package-data = true
 license-files = ["LICENSE.md"]
 
-[tool.setuptools.packages]
-find = {namespaces = false}
+#[tool.setuptools.packages]
+#find = {namespaces = false}
 
 [tool.setuptools.dynamic]
 version = {attr = "ospgrillage.__version__"}
