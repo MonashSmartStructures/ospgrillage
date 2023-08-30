@@ -231,6 +231,9 @@ class GrillageMember:
         ):
             self.material_command_flag = False
             self.section_command_flag = False  #
+
+            # determine mass from section area and material density
+            self.mass = self.section.A * self.material.density
         elif any(
             [
                 self.section.op_ele_type == "ShellMITC4",
@@ -241,8 +244,6 @@ class GrillageMember:
 
         self.variable_string_list = []
 
-        # determine mass from section area and material density
-        self.mass = self.section.A * self.material.density
 
     def get_member_prop_arguments(self, width=1):
         """
