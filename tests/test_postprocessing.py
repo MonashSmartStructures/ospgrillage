@@ -227,7 +227,9 @@ def test_displacement_getter(bridge_model_42_negative):
     # og.plt.show()
 
     # add moving load case
-    front_wheel = og.PointLoad(name="front wheel", point1=og.LoadPoint(7.5, 0, 4.5, 160e3))
+    front_wheel = og.PointLoad(
+        name="front wheel", point1=og.LoadPoint(7.5, 0, 4.5, 160e3)
+    )
 
     point_load_case = og.create_load_case(name="Point")
     point_load_case.add_load(load_obj=front_wheel)
@@ -238,6 +240,6 @@ def test_displacement_getter(bridge_model_42_negative):
 
     processor = og.PostProcessor(grillage=example_bridge, result=results)
 
-    arbitrary_disp = processor.get_arbitrary_displacements(point=[5, 0, 3]) # bigger
+    arbitrary_disp = processor.get_arbitrary_displacements(point=[5, 0, 3])  # bigger
 
-    assert all(np.isclose(arbitrary_disp*1e6, [3.1289e-05*1e6]))
+    assert all(np.isclose(arbitrary_disp * 1e6, [3.1289e-05 * 1e6]))

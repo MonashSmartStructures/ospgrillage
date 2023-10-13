@@ -12,9 +12,9 @@ milli = 1e-3
 N = 1
 m = 1
 mm = milli * m
-m2 = m ** 2
-m3 = m ** 3
-m4 = m ** 4
+m2 = m**2
+m3 = m**3
+m4 = m**4
 kN = kilo * N
 MPa = N / ((mm) ** 2)
 GPa = kilo * MPa
@@ -385,7 +385,6 @@ def beam_link_bridge(
 # create and run both comparable beam and shell_beam model to obtain results from a point load analysis
 @pytest.fixture
 def run_beam_model_point_load(beam_element_bridge, shell_link_bridge):
-
     # create point load
     P = 1 * kN
     lp1 = og.create_load_vertex(x=5, y=0, z=3.5, p=P)
