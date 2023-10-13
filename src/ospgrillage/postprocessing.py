@@ -181,12 +181,12 @@ class Envelope:
 
 
 def plot_force(
-        ospgrillage_obj,
-        result_obj=None,
-        component=None,
-        member: str = None,
-        option: str = "elements",
-        loadcase: str = None,
+    ospgrillage_obj,
+    result_obj=None,
+    component=None,
+    member: str = None,
+    option: str = "elements",
+    loadcase: str = None,
 ):
     """
     Plots a force diagram of the provided :class:`~ospgrillage.osp_grillage.OspGrillage` and
@@ -308,12 +308,12 @@ def plot_force(
 
 
 def plot_defo(
-        ospgrillage_obj,
-        result_obj=None,
-        member: str = None,
-        component: str = None,
-        option: str = "nodes",
-        loadcase: str = None,
+    ospgrillage_obj,
+    result_obj=None,
+    member: str = None,
+    component: str = None,
+    option: str = "nodes",
+    loadcase: str = None,
 ):
     """
     Plots displacements of the provided :class:`~ospgrillage.osp_grillage.OspGrillage` and
@@ -410,7 +410,9 @@ class PostProcessor:
         # init vars
         self.shape_function_obj = ShapeFunction()
 
-    def get_arbitrary_displacements(self, point: list, shape_function_type: str = "linear"):
+    def get_arbitrary_displacements(
+        self, point: list, shape_function_type: str = "linear"
+    ):
         """Returns displacement values (translation and rotational)
 
         param point: list of coordinate. Default three elements [x,y=0,z]
@@ -432,8 +434,8 @@ class PostProcessor:
                     Component="dy",
                     Node=node,
                 )
-                    .to_numpy()
-                    .tolist()[0]
+                .to_numpy()
+                .tolist()[0]
             )
             node_coordinate.append(self.grillage.get_nodes(number=node))
 
@@ -442,14 +444,25 @@ class PostProcessor:
         z = np.array([coord[2] for coord in node_coordinate])
 
         # get natural coordinate of point in grid
-        eta, zeta = solve_zeta_eta(xp=point[0], zp=point[2],
-                                   x1=x[0], z1=z[0],
-                                   x2=x[1], z2=z[1],
-                                   x3=x[2], z3=z[2],
-                                   x4=x[3], z4=z[3])
+        eta, zeta = solve_zeta_eta(
+            xp=point[0],
+            zp=point[2],
+            x1=x[0],
+            z1=z[0],
+            x2=x[1],
+            z2=z[1],
+            x3=x[2],
+            z3=z[2],
+            x4=x[3],
+            z4=z[3],
+        )
         if shape_function_type is "linear":
-            shape_func = self.shape_function_obj.linear_shape_function(eta=eta, zeta=zeta)
+            shape_func = self.shape_function_obj.linear_shape_function(
+                eta=eta, zeta=zeta
+            )
         else:
-            shape_func, _, _ = self.shape_function_obj.hermite_shape_function_2d(eta=eta, zeta=zeta)
+            shape_func, _, _ = self.shape_function_obj.hermite_shape_function_2d(
+                eta=eta, zeta=zeta
+            )
 
         return sum([a * b for a, b, in zip(shape_func, node_displacements)])

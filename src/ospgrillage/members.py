@@ -78,7 +78,7 @@ class Section:
         c_mass_flag: bool = False,
         unit_width: bool = False,
         op_section_type: str = "Elastic",
-        **kwargs
+        **kwargs,
     ):
         """
         The constructor takes in two types of keyword arguments.
@@ -243,7 +243,6 @@ class GrillageMember:
             self.material_command_flag = False
 
         self.variable_string_list = []
-
 
     def get_member_prop_arguments(self, width=1):
         """

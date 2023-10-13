@@ -98,7 +98,7 @@ class OspGrillage:
         edge_beam_dist: Union[list, float, int],
         mesh_type: str = "Ortho",
         model: str = "3D",
-        **kwargs
+        **kwargs,
     ):
         """
         Init the OspGrillage class
@@ -292,7 +292,7 @@ class OspGrillage:
             edge_dist_b=self.edge_width_b,
             skew_2=self.skew_b,
             orthogonal=self.ortho_mesh,
-            **kwargs
+            **kwargs,
         )
 
         # create dict of standard elements from the generated Mesh obj
@@ -411,7 +411,6 @@ class OspGrillage:
         # write /execute element commands
 
         for ele_tag, ele_str in self.element_command_list.items():
-
             if self.pyfile:
                 with open(self.filename, "a") as file_handle:
                     file_handle.write(ele_str)
@@ -887,7 +886,6 @@ class OspGrillage:
 
             ele_group_to_command_dict[0] = ele_command_list
         else:  # non-unit width member assignment
-
             if member == self.common_grillage_element_keys[-1]:
                 ele_list = self.Mesh_obj.trans_ele
 
@@ -909,7 +907,6 @@ class OspGrillage:
                 for nth, ele in enumerate(ele_list):
                     ele_tag_to_command_dict[ele[0]] = ele_command_list[nth]
             else:
-
                 for z_group in self.common_grillage_element_z_group[member]:
                     # if specific group is specified, assign grillage member to specific groups only
                     if specific_group and z_group in specific_group_list:
@@ -1117,9 +1114,7 @@ class OspGrillage:
         return record_long, record_trans, record_edge
 
     # Getter for Points Loads nodes
-    def _get_point_load_nodes(
-        self, point: Union[Tuple, list]
-    ):
+    def _get_point_load_nodes(self, point: Union[Tuple, list]):
         """Query the nodes in grid which encompass the point load"""
         # procedure
         # 1 find the closest node 2 find the respective grid within the closest node
@@ -1499,9 +1494,10 @@ class OspGrillage:
             node_mx = np.zeros(len(node_load))
             node_mz = np.zeros(len(node_load))
         else:  # else run assignment for quadrilateral grids
-
             # extract coordinates of fourth point
-            p4 = self.Mesh_obj.node_spec[grid_nodes[3]]["coordinate"] # get coordinate of fourth point
+            p4 = self.Mesh_obj.node_spec[grid_nodes[3]][
+                "coordinate"
+            ]  # get coordinate of fourth point
             point_list.append(Point(p4[0], p4[1], p4[2]))
             sorted_list, sorted_node_tag = sort_vertices(point_list, grid_nodes)
             # mapping coordinates to natural coordinate, then finds eta (x) and zeta (z) of the point xp,zp
@@ -1552,7 +1548,6 @@ class OspGrillage:
     def _assign_line_to_four_node(
         self, line_load_obj, line_grid_intersect, line_ele_colinear
     ) -> list:
-
         # Function to assign line load to mesh. Procedure to assign line load is as follows:
         # . get properties of line on the grid
         # . convert line load to equivalent point load
@@ -1812,7 +1807,6 @@ class OspGrillage:
     def _distribute_load_types_to_model(
         self, load_case_obj: Union[LoadCase, CompoundLoad]
     ) -> list:
-
         global load_groups
         load_str = []
         # check the input parameter type, set load_groups parameter according to its type
@@ -2365,7 +2359,6 @@ class OspGrillage:
                     if val == self.common_grillage_element_z_group[namestring][0]
                 ]
             elif options == element_option:
-
                 sorted_return_list = [ele[0] for ele in extracted_ele]
         else:  # longitudinal members
             extracted_ele = [
@@ -2455,7 +2448,7 @@ class Analysis:
         pattern_counter=1,
         load_case: LoadCase = None,
         step: int = 1,
-        **kwargs
+        **kwargs,
     ):
         self.analysis_name = analysis_name
         self.ops_grillage_name = ops_grillage_name
@@ -2982,7 +2975,6 @@ class Results:
                     }
                 )
             else:
-
                 force_da_beam = xr.DataArray(
                     data=force_array,
                     dims=self.dim2,
@@ -3028,7 +3020,7 @@ class OspGrillageBeam(OspGrillage):
         edge_beam_dist: Union[list, float, int] = 1,
         mesh_type="Ortho",
         model="3D",
-        **kwargs
+        **kwargs,
     ):
         # create mesh and model
         super().__init__(
@@ -3041,7 +3033,7 @@ class OspGrillageBeam(OspGrillage):
             edge_beam_dist,
             mesh_type,
             model="3D",
-            **kwargs
+            **kwargs,
         )
         #
 
@@ -3062,7 +3054,7 @@ class OspGrillageShell(OspGrillage):
         edge_beam_dist: Union[list, float, int],
         mesh_type="Ortho",
         model="3D",
-        **kwargs
+        **kwargs,
     ):
         # input variables specific to shell model - see default parameters if not specified
         self.offset_beam_y_dist = kwargs.get("offset_beam_y_dist", 0)  # default 0
@@ -3085,7 +3077,7 @@ class OspGrillageShell(OspGrillage):
             edge_beam_dist,
             mesh_type,
             model="3D",
-            **kwargs
+            **kwargs,
         )
         # overwrite/ variables specific to shell mesh
         self.constraint_type = (

@@ -12,9 +12,9 @@ milli = 1e-3
 N = 1
 m = 1
 mm = milli * m
-m2 = m ** 2
-m3 = m ** 3
-m4 = m ** 4
+m2 = m**2
+m3 = m**3
+m4 = m**4
 kN = kilo * N
 MPa = N / ((mm) ** 2)
 GPa = kilo * MPa
@@ -912,9 +912,9 @@ def test_load_analysis_shell_multi_span(ref_bridge_properties):
         kilo = 1e3
         milli = 1e-3
         m = 1
-        m2 = m ** 2
-        m3 = m ** 3
-        m4 = m ** 4
+        m2 = m**2
+        m3 = m**3
+        m4 = m**4
 
         # parameters of bridge grillage
         L = 30 * m  # span
