@@ -4,6 +4,7 @@ import ospgrillage
 import ospgrillage as og
 import sys, os
 from typing import Union, Any
+import numpy as np
 
 # Adopted units: N and m
 kilo = 1e3
