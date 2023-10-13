@@ -17,12 +17,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
 
   
-  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -30,8 +30,9 @@
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
+  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=20a94820"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
@@ -50,6 +51,15 @@
   
   
   <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
   
   <input type="checkbox"
           class="sidebar-toggle"
@@ -90,7 +100,8 @@
     <span class="fa-solid fa-bars"></span>
   </label>
   
-  <div class="navbar-header-items__start">
+  
+  <div class="col-lg-3 navbar-header-items__start">
     
       <div class="navbar-item">
   
@@ -112,7 +123,6 @@
 </a></div>
     
   </div>
-  
   
   <div class="col-lg-9 navbar-header-items">
     
@@ -164,23 +174,25 @@
       
         <div class="navbar-item navbar-persistent--container">
           
-<script>
-document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass"></i>
-  </button>
-`);
-</script>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
         </div>
       
       
         <div class="navbar-item">
 <script>
 document.write(`
-  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
-    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
-    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
   </button>
 `);
 </script></div>
@@ -196,8 +208,8 @@ document.write(`
           
           
           
-          <a href="https://github.com/MonashSmartStructures/ospgrillage" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-github-square"></i></span>
-            <label class="sr-only">GitHub</label></a>
+          <a href="https://github.com/MonashSmartStructures/ospgrillage" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-github-square fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
           
@@ -208,8 +220,8 @@ document.write(`
           
           
           
-          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-twitter-square"></i></span>
-            <label class="sr-only">Twitter</label></a>
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">Twitter</span></a>
         </li>
 </ul></div>
       
@@ -219,13 +231,15 @@ document.write(`
   
   
     <div class="navbar-persistent--mobile">
-<script>
-document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass"></i>
-  </button>
-`);
-</script>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
     </div>
   
 
@@ -294,10 +308,10 @@ document.write(`
           <div class="navbar-item">
 <script>
 document.write(`
-  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
-    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
-    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
   </button>
 `);
 </script></div>
@@ -313,8 +327,8 @@ document.write(`
           
           
           
-          <a href="https://github.com/MonashSmartStructures/ospgrillage" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-github-square"></i></span>
-            <label class="sr-only">GitHub</label></a>
+          <a href="https://github.com/MonashSmartStructures/ospgrillage" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-github-square fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
           
@@ -325,8 +339,8 @@ document.write(`
           
           
           
-          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-twitter-square"></i></span>
-            <label class="sr-only">Twitter</label></a>
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">Twitter</span></a>
         </li>
 </ul></div>
         
@@ -476,6 +490,8 @@ document.write(`
 </li>
       <li><a href="rst/APIdoc.html#ospgrillage.osp_grillage.OspGrillage.get_element">get_element() (OspGrillage method)</a>, <a href="rst/OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage.get_element">[1]</a>, <a href="rst/generated/ospgrillage.osp_grillage.OspGrillage.get_element.html#ospgrillage.osp_grillage.OspGrillage.get_element">[2]</a>
 </li>
+      <li><a href="rst/APIdoc.html#ospgrillage.members.GrillageMember.get_element_command_str">get_element_command_str() (GrillageMember method)</a>
+</li>
       <li><a href="rst/Loads.html#ospgrillage.load.LineLoading.get_line_segment_given_x">get_line_segment_given_x() (LineLoading method)</a>
 </li>
       <li><a href="rst/Loads.html#ospgrillage.load.LineLoading.get_line_segment_given_z">get_line_segment_given_z() (LineLoading method)</a>
@@ -483,6 +499,8 @@ document.write(`
       <li><a href="rst/Loads.html#ospgrillage.load.Loads.get_magnitude">get_magnitude() (Loads method)</a>
 </li>
       <li><a href="rst/APIdoc.html#ospgrillage.material.Material.get_material_args">get_material_args() (Material method)</a>
+</li>
+      <li><a href="rst/APIdoc.html#ospgrillage.members.GrillageMember.get_member_prop_arguments">get_member_prop_arguments() (GrillageMember method)</a>
 </li>
       <li><a href="rst/APIdoc.html#ospgrillage.load.NodalLoad.get_nodal_load_str">get_nodal_load_str() (NodalLoad method)</a>, <a href="rst/Loads.html#ospgrillage.load.NodalLoad.get_nodal_load_str">[1]</a>
 </li>
@@ -492,13 +510,17 @@ document.write(`
 </li>
       <li><a href="rst/APIdoc.html#ospgrillage.material.Material.get_ops_material_command">get_ops_material_command() (Material method)</a>
 </li>
-      <li><a href="rst/Loads.html#ospgrillage.load.Path.get_path_points">get_path_points() (Path method)</a>
+      <li><a href="rst/APIdoc.html#ospgrillage.members.GrillageMember.get_ops_section_command">get_ops_section_command() (GrillageMember method)</a>
+</li>
+      <li><a href="rst/APIdoc.html#ospgrillage.load.Path.get_path_points">get_path_points() (Path method)</a>, <a href="rst/Loads.html#ospgrillage.load.Path.get_path_points">[1]</a>
 </li>
       <li><a href="rst/Loads.html#ospgrillage.load.LineLoading.get_point_given_distance">get_point_given_distance() (LineLoading method)</a>
 </li>
       <li><a href="rst/APIdoc.html#ospgrillage.osp_grillage.OspGrillage.get_results">get_results() (OspGrillage method)</a>, <a href="rst/OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage.get_results">[1]</a>, <a href="rst/generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results">[2]</a>
 </li>
-      <li><a href="rst/Loads.html#ospgrillage.load.ShapeFunction.get_shape_function">get_shape_function() (ShapeFunction method)</a>
+      <li><a href="rst/APIdoc.html#ospgrillage.members.GrillageMember.get_section_arguments">get_section_arguments() (GrillageMember method)</a>
+</li>
+      <li><a href="rst/APIdoc.html#ospgrillage.load.ShapeFunction.get_shape_function">get_shape_function() (ShapeFunction method)</a>, <a href="rst/Loads.html#ospgrillage.load.ShapeFunction.get_shape_function">[1]</a>
 </li>
       <li><a href="rst/OpsGrillage.html#ospgrillage.osp_grillage.GrillageElement">GrillageElement (class in ospgrillage.osp_grillage)</a>
 </li>
@@ -514,7 +536,7 @@ document.write(`
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="rst/Loads.html#ospgrillage.load.ShapeFunction.hermite_shape_function_2d">hermite_shape_function_2d() (ShapeFunction static method)</a>
+      <li><a href="rst/APIdoc.html#ospgrillage.load.ShapeFunction.hermite_shape_function_2d">hermite_shape_function_2d() (ShapeFunction static method)</a>, <a href="rst/Loads.html#ospgrillage.load.ShapeFunction.hermite_shape_function_2d">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -534,7 +556,7 @@ document.write(`
 </li>
       <li><a href="rst/APIdoc.html#ospgrillage.load.ShapeFunction.linear_shape_function">linear_shape_function() (ShapeFunction static method)</a>, <a href="rst/Loads.html#ospgrillage.load.ShapeFunction.linear_shape_function">[1]</a>
 </li>
-      <li><a href="rst/Loads.html#ospgrillage.load.ShapeFunction.linear_triangular">linear_triangular() (ShapeFunction static method)</a>
+      <li><a href="rst/APIdoc.html#ospgrillage.load.ShapeFunction.linear_triangular">linear_triangular() (ShapeFunction static method)</a>, <a href="rst/Loads.html#ospgrillage.load.ShapeFunction.linear_triangular">[1]</a>
 </li>
       <li><a href="rst/APIdoc.html#ospgrillage.load.LineLoading">LineLoading (class in ospgrillage.load)</a>, <a href="rst/Loads.html#ospgrillage.load.LineLoading">[1]</a>
 </li>
@@ -667,7 +689,7 @@ document.write(`
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="rst/Loads.html#ospgrillage.load.Loads.move_load">move_load() (Loads method)</a>
 </li>
-      <li><a href="rst/Loads.html#ospgrillage.load.LoadCase.move_load_group">move_load_group() (LoadCase method)</a>
+      <li><a href="rst/APIdoc.html#ospgrillage.load.LoadCase.move_load_group">move_load_group() (LoadCase method)</a>, <a href="rst/Loads.html#ospgrillage.load.LoadCase.move_load_group">[1]</a>
 </li>
       <li><a href="rst/APIdoc.html#ospgrillage.load.MovingLoad">MovingLoad (class in ospgrillage.load)</a>, <a href="rst/Loads.html#ospgrillage.load.MovingLoad">[1]</a>
 </li>
@@ -759,8 +781,6 @@ document.write(`
 </li>
       <li><a href="rst/APIdoc.html#ospgrillage.load.CompoundLoad.set_global_coord">set_global_coord() (CompoundLoad method)</a>, <a href="rst/Loads.html#ospgrillage.load.CompoundLoad.set_global_coord">[1]</a>, <a href="rst/generated/ospgrillage.load.CompoundLoad.set_global_coord.html#ospgrillage.load.CompoundLoad.set_global_coord">[2]</a>
 </li>
-      <li><a href="rst/APIdoc.html#ospgrillage.osp_grillage.OspGrillage.set_material">set_material() (OspGrillage method)</a>, <a href="rst/OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage.set_material">[1]</a>
-</li>
       <li><a href="rst/APIdoc.html#ospgrillage.osp_grillage.OspGrillage.set_member">set_member() (OspGrillage method)</a>, <a href="rst/OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage.set_member">[1]</a>, <a href="rst/generated/ospgrillage.osp_grillage.OspGrillage.set_member.html#ospgrillage.osp_grillage.OspGrillage.set_member">[2]</a>
 
       <ul>
@@ -786,16 +806,12 @@ document.write(`
               
               
               
-                <footer class="bd-footer-article">
-                  
-<div class="footer-article-items footer-article__inner">
-  
-    <div class="footer-article-item"><!-- Previous / next buttons -->
+              
+              
+                <footer class="prev-next-footer">
+                  <!-- Previous / next buttons -->
 <div class="prev-next-area">
-</div></div>
-  
 </div>
-
                 </footer>
               
             </div>
@@ -813,8 +829,8 @@ document.write(`
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+  <script src="_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -840,10 +856,11 @@ document.write(`
     </div>
   
   
+  
     <div class="footer-items__end">
       
         <div class="footer-item"><p class="theme-version">
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.3.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.14.1.
 </p></div>
       
     </div>
