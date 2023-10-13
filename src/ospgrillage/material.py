@@ -134,8 +134,7 @@ class Material:
 
     def _parse_material_command(self):
         """
-        Checks and parse the material properties based on the input types - either codified, general, or OpenSeesPy
-        specific material inputs.
+        Parse the material properties inputs
         """
         # check if code material is selected, if yes read from material library json
         if self.code:
@@ -152,8 +151,6 @@ class Material:
                 self.material_grade
             ]["rho"]
             self.units = self._mat_lib[self.material_type][self.code]["units"]
-        else:  # a custom material
-            pass
 
         # perform conversion for units
         if self.units == "SI":
@@ -179,7 +176,7 @@ class Material:
 
     def get_material_args(self):
         """
-        Function to get OpenSeesPy material type and arguments. This function is handled by
+        Return the arguments for OpenSeesPy material. This function is handled by
         :class:`ospgrillage.osp_grillage.OspGrillage`.
 
         :returns: Str of OpenSeesPy material type and list of material properties correspond to the inputs of
@@ -213,7 +210,7 @@ class Material:
     @staticmethod
     def _create_default_dict():
         """
-        Function to create the default mat_lib.js file. The default version is 0.0.1.
+        Create the default mat_lib.js file. The default version is 0.1.0.
         Just to make sure the JSON file is formatted correctly
         Note: 1 ksi = 6.89475728 MPa
         """

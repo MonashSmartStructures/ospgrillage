@@ -145,7 +145,8 @@ def create_load(**kwargs):
         return NodalLoad(name=name, node_tag=tag, node_force=force)
     else:
         raise TypeError(
-            "load type not specified. hint: specify kwarg type= for create_load()"
+            'load_type must either be "nodal" or number of load points is incorrect. hint:'
+            " number of load points must either be 1 (point), 2 (line) or 4 (patch)"
         )
 
 
@@ -348,7 +349,7 @@ class Loads:
 
     def apply_load_factor(self, factor=1):
         """
-        Function to apply load factor to each load point's p value (vertical P force)
+        Apply load factor to each load point's p value (vertical P force)
         """
         self.load_point_1 = (
             self.load_point_1._replace(p=factor * self.load_point_1.p)
@@ -392,7 +393,7 @@ class Loads:
         )
 
     def get_magnitude(self):
-        # TODO
+        """return the load points defined in the Load class"""
         magnitude = []
         for load_point in self.point_list:
             magnitude.append(load_point.p)
@@ -405,12 +406,12 @@ class Loads:
 
 class NodalLoad(Loads):
     """
-    Main class for nodal load. Derived from Loads base class
+    Class for Nodal loads.
     """
 
-    def __init__(self, node_tag, node_force, name=None):
+    def __init__(self, node_tag: int, node_force, name=None):
         """
-        Nodal load takes a node tag and namedtuple NodalForce(Fx,Fy,Fz,Mx,My,Mz) as input.
+        Inits the Nodal load class. NodalLoad requires a NodalForce(Fx,Fy,Fz,Mx,My,Mz) as input.
 
         :param name: Name of load
         :type name: str
@@ -443,7 +444,7 @@ class NodalLoad(Loads):
 
     def get_nodal_load_str(self):
         """
-        Function to return ops.load() command for nodal load.
+        Returns an ops.load() command for the NodalLoad.
         """
         # get str for ops.load() function.
         load_value = [self.Fx, self.Fy, self.Fz, self.Mx, self.My, self.Mz]
@@ -453,7 +454,7 @@ class NodalLoad(Loads):
 
 class PointLoad(Loads):
     """
-    Class for Point loads. Derived from based :py:class:`Loads` class
+    Class for Point loads.
     """
 
     def __init__(self, **kwargs):
@@ -467,12 +468,12 @@ class PointLoad(Loads):
 
 class LineLoading(Loads):
     """
-    Class for line loading. Derived from based Loads class
+    Class for line loading.
     """
 
     def __init__(self, **kwargs):
         """
-
+        Init the LineLoading class.
         :param name:
         :param kwargs:
         """
@@ -605,14 +606,14 @@ class LineLoading(Loads):
 
 class PatchLoading(Loads):
     """
-    Main class for Patch loads. Derived from base Loads class.
+    Class for Patch loads.
 
-    Patch load can take up to 8 load points. By default requires at least 4 load point for patch (quadrilateral)
+    By default requires at least 4 load point for patch (quadrilateral). Can take up to 8 load points.
     """
 
     def __init__(self, **kwargs):
         """
-
+        Init the PatchLoad class.
         :param name:
         :param kwargs:
         """
@@ -749,7 +750,7 @@ class PatchLoading(Loads):
 # ---------------------------------------------------------------------------------------------------------------
 class CompoundLoad:
     """
-    Main class for Compound load definition.
+    Class for Compound load. Used to group different Load objects into a Compound load group.
 
     When a Load object is pass as an input, CompoundLoad treats the initial positions (load_points) of the Load classes
     as local coordinates. Then CompoundLoad sets the loads "in-place" of the local coordinate. If class input local_coord
@@ -766,7 +767,8 @@ class CompoundLoad:
 
     """
 
-    def __init__(self, name):
+    def __init__(self, name: str):
+        """Init the CompoundLoad class"""
         self.name = name
         self.compound_load_obj_list = []
         self.local_coord_list = []
@@ -775,7 +777,8 @@ class CompoundLoad:
 
     def add_load(self, load_obj: Loads):
         """
-        Function to add load object to compound load group. If a local_coord parameter is given, this new local_coord overwrites the coordinates (either local or global) of the load object.
+        Adds a :class:`~ospgrillage.load.Load` to compound load group.
+        If a local_coord parameter is given, this new local_coord overwrites the coordinates (either local or global) of the load object.
 
         ..note:
             If load object is defined using local coordinate and local_coord is None, its default local coord precedes.
@@ -819,7 +822,7 @@ class CompoundLoad:
 
     def set_global_coord(self, global_coord: Point):
         """
-        Function to set global coordinate of the compound load with respect to global coordinate system of grillage model.
+        Set global coordinate of the compound load with respect to global coordinate system of grillage model.
         The global coordinate is set to all local load points (i.e. it adds the global coord x y z to each local coord)
 
         :param global_coord: Value of x y z (global coord) to offset the basic coordinate system
@@ -862,21 +865,21 @@ class LoadCase:
 
     """
 
-    def __init__(self, name):
+    def __init__(self, name: str):
         """
+        Init the LoadCase Class
+
         :param name: str of load case name
         """
         self.name = name
-        self.load_groups = []
-        self.position = None
-        # preset load factor for
-        self.load_command_list = []
+        self.load_groups = []  # list of loads
+        self.position = None  # init position list
+        self.load_command_list = []  # list of openseespy load commands
 
     def add_load(self, load_obj: Union[Loads, CompoundLoad], **kwargs):
-        """
-        Function to add load objects to LoadCase
+        """Add a Load or Compound load object to LoadCase
 
-        :param load_obj: Load or Compound load object
+        :param load_obj: :class:`~ospgrillage.load.Loads` or :class:`~ospgrillage.load.CompoundLoad`object
         :param kwargs: keyword arguments
         :keyword:
 
@@ -898,6 +901,7 @@ class LoadCase:
     # function for if load groups are to change its ref position due to movement / traversing loads
     # warning : this function is only to be handled by MovingLoad class
     def move_load_group(self, ref_point: Point):
+        """Set the position of the load/Compound load's local reference coordinate to the input ref_point"""
         self.position = ref_point
         for load_dict in self.load_groups:
             load_obj = load_dict.get("load")
@@ -1099,16 +1103,16 @@ class MovingLoad:
 
 class Path:
     """
-    Main class to define path of a moving load object
+    Class for moving load path for MovingLoad.
     """
 
     def __init__(
         self,
         start_point: Point,
         end_point: Point,
-        increments=50,
-        mid_point: Point = None,
+        increments: int = 50,
     ):
+        """Init the Path class"""
         self.start_point = start_point
         self.end_point = end_point
         # here create a straight path
@@ -1118,6 +1122,7 @@ class Path:
         self.path_points_list = []
 
     def get_path_points(self) -> list:
+        """Return a list of path points"""
         self.path_points_list = [
             [x, y, z]
             for (x, y, z) in zip(
@@ -1143,7 +1148,6 @@ def create_load_model(**kwargs):
     :return: `LoadModel` object
     """
     return LoadModel(**kwargs)
-    pass
 
 
 class LoadModel:
@@ -1235,19 +1239,23 @@ class LoadModel:
 # ---------------------------------------------------------------------------------------------------------------
 class ShapeFunction:
     """
-    Class for shape functions. The role of Shape functions in ospgrillage is to distribute loads to nodes.
+    Class for shape functions.
 
-    Here developers can add more shape functions to this class by:
-    * adding the option in get_shape_function()
-    * defining the shape function as a class function
+    To add more shape functions:
+    * add the string options get_shape_function()
+    * defining the shape function as a class function which takes eta and zeta as inputs
 
     """
 
-    def __init__(self, option_three_node="triangle_linear", option_four_node="hermite"):
+    def __init__(
+        self, option_three_node: str = "triangle_linear", option_four_node="hermite"
+    ):
+        """Init the ShapeFunction class. Each shape function can either be triangular or quadrilateral"""
         self.option_three_node = option_three_node
         self.option_four_node = option_four_node
 
-    def get_shape_function(self, option, eta=0, zeta=0):
+    def get_shape_function(self, option: str, eta: float = 0, zeta: float = 0):
+        """Returns the shape function calculated outputs"""
         if option == "hermite":
             return lambda: self.hermite_shape_function_2d(eta, zeta)
         elif option == "linear":
@@ -1257,35 +1265,42 @@ class ShapeFunction:
 
     @staticmethod
     def hermite_shape_function_1d(
-        zeta, a
+        zeta: float, a: float
     ):  # using zeta and a as placeholders for normal coor + length of edge element
         # hermite shape functions
         """
+        1D hermite shape function
+
         :param zeta: absolute position in x direction
         :param a: absolute position in x direction
         :return: Four terms [N1, N2, N3, N4] of hermite shape function
         .. note::
 
         """
-        N1 = 1 - 3 * zeta**2 + 2 * zeta**3
-        N2 = (zeta - 2 * zeta**2 + zeta**3) * a
-        N3 = 3 * zeta**2 - 2 * zeta**3
-        N4 = (-(zeta**2) + zeta**3) * a
+        N1 = 1 - 3 * zeta ** 2 + 2 * zeta ** 3
+        N2 = (zeta - 2 * zeta ** 2 + zeta ** 3) * a
+        N3 = 3 * zeta ** 2 - 2 * zeta ** 3
+        N4 = (-(zeta ** 2) + zeta ** 3) * a
         return [N1, N2, N3, N4]
 
     @staticmethod
-    def hermite_shape_function_2d(eta, zeta):
-        # nodes must be counter clockwise such that n1 = left bottom of relative grid
-        # 4  3
-        # 1  2
-        h1 = 0.25 * (2 - 3 * eta + eta**3)
-        h2 = 0.25 * (1 - eta - eta**2 + eta**3)
-        h3 = 0.25 * (2 + 3 * eta - eta**3)
-        h4 = 0.25 * (-1 - eta + eta**2 + eta**3)
-        z1 = 0.25 * (2 - 3 * zeta + zeta**3)
-        z2 = 0.25 * (1 - zeta - zeta**2 + zeta**3)
-        z3 = 0.25 * (2 + 3 * zeta - zeta**3)
-        z4 = 0.25 * (-1 - zeta + zeta**2 + zeta**3)
+    def hermite_shape_function_2d(eta: float, zeta: float):
+        """
+        2D Hermite shape function
+        """
+        # nodes are ordered counter clockwise such that node 1 (n1), is left bottom of relative grid
+        # 4 o - - - o 3
+        #   |       |
+        #   |       |
+        # 1 o - - - o 2
+        h1 = 0.25 * (2 - 3 * eta + eta ** 3)
+        h2 = 0.25 * (1 - eta - eta ** 2 + eta ** 3)
+        h3 = 0.25 * (2 + 3 * eta - eta ** 3)
+        h4 = 0.25 * (-1 - eta + eta ** 2 + eta ** 3)
+        z1 = 0.25 * (2 - 3 * zeta + zeta ** 3)
+        z2 = 0.25 * (1 - zeta - zeta ** 2 + zeta ** 3)
+        z3 = 0.25 * (2 + 3 * zeta - zeta ** 3)
+        z4 = 0.25 * (-1 - zeta + zeta ** 2 + zeta ** 3)
         Nv = [h1 * z1, h3 * z1, h3 * z3, h1 * z3]
         Nmz = [h2 * z1, h4 * z1, h4 * z3, h2 * z3]
         Nmx = [h1 * z2, h3 * z2, h3 * z4, h1 * z4]
@@ -1294,6 +1309,8 @@ class ShapeFunction:
     @staticmethod
     def linear_shape_function(eta, zeta):
         """
+        2D linear beam shape function
+
         :param zeta: absolute position in x direction
         :param eta: absolute position in z direction
         :return: Four terms [N1, N2, N3, N4] of Linear shape function
@@ -1308,6 +1325,9 @@ class ShapeFunction:
 
     @staticmethod
     def linear_triangular(x, z, x1, z1, x2, z2, x3, z3):
+        """
+        2D linear triangular shape function
+        """
         # modelling plane = y plane
         ae = 0.5 * ((x2 * z3 - x3 * z2) + (z2 - z3) * x1 + (x3 - x2) * z1)
         a1 = (x2 * z3 - x3 * z2) / (2 * ae)

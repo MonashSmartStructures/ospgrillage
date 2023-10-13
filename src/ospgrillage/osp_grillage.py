@@ -4,9 +4,11 @@ This module contain the parent class OspGrillage which handles input information
 or executable py file. This is done by wrapping `OpenSeesPy` commands for creating models (nodes/elements).
 This module also handles all load case assignment, analysis, and results by wrapping `OpenSeesPy` command for analysis
 """
-
+import dataclasses
+from dataclasses import dataclass
 from datetime import datetime
 from itertools import combinations
+from typing import List, Tuple, TYPE_CHECKING
 
 import openseespy.opensees as ops
 
@@ -16,6 +18,9 @@ from ospgrillage.material import *
 from ospgrillage.members import *
 from ospgrillage.postprocessing import *
 import xarray as xr
+
+if TYPE_CHECKING:
+    ...
 
 
 def create_grillage(**kwargs):
@@ -63,40 +68,37 @@ def create_grillage(**kwargs):
         return OspGrillageBeam(**kwargs)
 
 
+@dataclass
 class GrillageElement:
     """
     Class to store grillage element data pertaining to generating ops.element() command. This class is handled by
     OspGrillage class to transfer information between GrillageMember, Mesh, and OspGrillage classes.
     """
 
-    def __init__(self):
-        # instantiate variables of elements
-        self.ele_node_list = []
-        # TODO trial with set_member() function
+    member: str
+    nodes: List
+    tag: int
+    a: list
 
 
 class OspGrillage:
     """
-    Base class of grillage model. Stores information about mesh and grillage elements. Also provides methods to
-    add load cases to grillage model for analysis.
-
-    The class constructor provides an interface for the user to specify the geometric properties of the grillage model
-    and its mesh.
+    Base class of grillage model.
 
     """
 
     def __init__(
         self,
-        bridge_name,
-        long_dim,
-        width,
+        bridge_name: str,
+        long_dim: float,
+        width: float,
         skew: Union[list, float, int],
         num_long_grid: int,
         num_trans_grid: int,
         edge_beam_dist: Union[list, float, int],
-        mesh_type="Ortho",
-        model="3D",
-        **kwargs,
+        mesh_type: str = "Ortho",
+        model: str = "3D",
+        **kwargs
     ):
         """
         Init the OspGrillage class
@@ -290,7 +292,7 @@ class OspGrillage:
             edge_dist_b=self.edge_width_b,
             skew_2=self.skew_b,
             orthogonal=self.ortho_mesh,
-            **kwargs,
+            **kwargs
         )
 
         # create dict of standard elements from the generated Mesh obj
@@ -323,7 +325,7 @@ class OspGrillage:
 
     def _create_mesh(self, **kwargs):
         """
-        Private function to create mesh. Creates the concrete Mesh class based on mesh type specified
+        Create the :class:~ospgrillage.mesh.Mesh class.
         """
         if self.model_type == "beam_link":
             mesh_obj = BeamLinkMesh(**kwargs)
@@ -338,10 +340,9 @@ class OspGrillage:
         return mesh_obj
 
     # interface function
-    def create_osp_model(self, pyfile=False):
+    def create_osp_model(self, pyfile: bool = False):
         """
-        Function to create model instance in OpenSees model space. If pyfile input is True, function creates an
-        executable pyfile for generating the grillage model in OpenSees model space.
+        Create model in OpenSees model space.
 
         :param pyfile: if True returns an executable py file instead of creating OpenSees instance of model.
         :type pyfile: bool
@@ -379,7 +380,7 @@ class OspGrillage:
     # function to run mesh generation
     def _run_mesh_generation(self):
         """
-        Private function to write / execute commands. This function handles relevant OpenSeesPy commands
+        Write / execute all model commands.
         """
         # write / execute model commands
         self._write_op_node(self.Mesh_obj)  # write node() commands
@@ -410,6 +411,7 @@ class OspGrillage:
         # write /execute element commands
 
         for ele_tag, ele_str in self.element_command_list.items():
+
             if self.pyfile:
                 with open(self.filename, "a") as file_handle:
                     file_handle.write(ele_str)
@@ -431,10 +433,10 @@ class OspGrillage:
         new_restraint_vector: list = None,
     ):
         """
-        Function to set or modify customized support conditions.
+        Set or modify customized support conditions of the Mesh
 
         .. note::
-            This feature to be available for future release.
+            Advanced version to set multispan feature to be available for future release.
         """
         if not isinstance(edge_group_counter, int):
             raise Exception("Int required for edge_group_counter= argument")
@@ -453,9 +455,10 @@ class OspGrillage:
             self.fix_val_fixed = [1, 1, 1, 1, 1, 1]
 
     # private functions to write ops commands to output py file.
-    def _write_geom_transf(self, mesh_obj, transform_type="Linear"):
+    def _write_geom_transf(self, mesh_obj: Mesh, transform_type: str = "Linear"):
         """
-        Private function to write ops.geomTransf() to output py file.
+        Write geometric transformation commands.
+
         :param transform_type: transformation type
         :type transform_type: str
 
@@ -501,9 +504,8 @@ class OspGrillage:
 
     def _write_op_model(self):
         """
-        Private function to instantiate the OpenSees model
-        space. If pyfile flagged as True, this function writes the instantiating commands e.g. ops.model() to the
-        output py file.
+        Instantiate the OpenSees model space.
+        If model is in output mode, writes the instantiating commands to pyfile instead.
 
         .. note:
             For 3-D model, the default model dimension and node degree-of-freedoms are 3 and 6 respectively.
@@ -523,15 +525,10 @@ class OspGrillage:
             eval(model_str)
             self.model_command_list.append(wipe_str)
             self.model_command_list.append(model_str)
-            # ops.wipe()
-            # ops.model("basic", "-ndm", self.__ndm, "-ndf", self.__ndf)
 
-    def _write_op_node(self, mesh_obj):
+    def _write_op_node(self, mesh_obj: Mesh):
         """
-        Private function to write or execute the ops.node command to
-        create nodes in OpenSees model space. If pyfile is flagged true, writes the ops.nodes() command to py file
-        instead.
-
+        Write/create node commands.
         """
         # check if write mode, write header for node commands
         if self.pyfile:
@@ -559,10 +556,7 @@ class OspGrillage:
 
     def _write_op_fix(self, mesh_obj):
         """
-        Private function to write the ops.fix() command for
-        boundary condition definition in the grillage model. If pyfile is flagged true, writes
-        the ops.fix() command to py file instead.
-
+        Write/create fix commands
         """
         if self.pyfile:
             with open(self.filename, "a") as file_handle:
@@ -586,9 +580,9 @@ class OspGrillage:
                     eval(fix_str)
                     self.model_command_list.append(fix_str)
 
-    def _write_equal_dof(self, node_tag_list, dof: list = None):
+    def _write_equal_dof(self, node_tag_list: list, dof: list = None):
         """
-        Function to write equalDOF command
+        Write OpenseesPy's equalDOF command.
         """
         if dof is None:
             dof = [1, 2, 3, 4, 5]  # default
@@ -610,11 +604,9 @@ class OspGrillage:
         self, member: GrillageMember = None, material: Material = None
     ) -> int:
         """
-        Private function to write Material command of the model class.
+        Write OpenseesPy Material command
         """
 
-        material_obj = None
-        # check if material input is valid,
         if member is None and material is None:
             raise Exception(
                 "Uniaxial material has no input GrillageMember or Material Object"
@@ -637,17 +629,12 @@ class OspGrillage:
             material_type,
             op_mat_arg,
         ]  # repr both variables as a list for keyword definition
-        # if section is specified, get the materialtagcounter for material() assignment
-        # if not bool(self.material_dict):
-        #     lastmaterialtag = 0  # if dict empty, start counter at 1
-        # else:  # set materialtagcounter as the latest defined element - i.e. max of section_dict
-        #     lastmaterialtag = self.material_dict[list(self.material_dict)[-1]]
         lastmaterialtag = self._get_material_tag()
 
         material_tag = self.material_dict.setdefault(
             repr(material_str), lastmaterialtag + 1
         )  # set key for material
-        # check if the material_tag is a previously assigned key, if not, append to materal_command_list variable
+        # check if the material_tag is a previously assigned key, if not, append to material_command_list variable
         if material_tag != lastmaterialtag:
             mat_str = member.material.get_ops_material_command(
                 material_tag=material_tag
@@ -671,7 +658,7 @@ class OspGrillage:
 
     def _write_section(self, grillage_member_obj: GrillageMember) -> int:
         """
-        Private function to write section() command for the elements.
+        Write OpenseesPy section() commands
 
         """
         # checks if grillage member's element type requires the generation of ops.section()
@@ -719,10 +706,9 @@ class OspGrillage:
 
     def _create_standard_element_list(self):
         """
-        Private method to populate common_grillage_element dict. This is the base class variant -concrete classes of
-        grillage may have different elements
+        Populate the default common_grillage_element dict.
 
-        Base class variant is beam grillage model.
+        Default grillage elements are based on the beam grillage model type.
 
         """
 
@@ -757,9 +743,7 @@ class OspGrillage:
 
     def _write_rigid_link(self):
         """
-        Private procedure to write or execute OpenSeesPy rigidLink() command. Reads rigid link data from link_str_list
-        variable
-
+        Write/execute OpenSeesPy rigidLink() command.
         """
         # loop all rigidLink command, write or eval rigid link command. note link_str is already formatted
         for link_str in self.Mesh_obj.link_str_list:
@@ -773,17 +757,21 @@ class OspGrillage:
     def set_member(
         self,
         grillage_member_obj: GrillageMember,
-        member=None,
-        specific_group=None,
-        specific_span=None,
+        member: str = None,
+        specific_group: int = None,
+        specific_span: int = None,
     ):
         """
-        Function to set grillage member class object to elements of grillage members.
+        Set `GrillageMember` instance object to elements of grillage members.
 
         :param grillage_member_obj: `GrillageMember` class object
         :type grillage_member_obj: GrillageMember
         :param member: str of member category - see below table for the available name strings
         :type member: str
+        :param specific_group: Specific member group particularly for interior main beams.
+        :type specific_group: int
+        :param specific_span: Specific span number to assign member
+        :type specific_span: int
 
 
          =====================================    ======================================
@@ -799,7 +787,7 @@ class OspGrillage:
          =====================================    ======================================
 
 
-        :raises: ValueError If missing argument for member=
+        :raises: ValueError If missing member
         """
         if self.diagnostics:
             print("Setting member: {} of model".format(member))
@@ -899,6 +887,7 @@ class OspGrillage:
 
             ele_group_to_command_dict[0] = ele_command_list
         else:  # non-unit width member assignment
+
             if member == self.common_grillage_element_keys[-1]:
                 ele_list = self.Mesh_obj.trans_ele
 
@@ -919,8 +908,8 @@ class OspGrillage:
 
                 for nth, ele in enumerate(ele_list):
                     ele_tag_to_command_dict[ele[0]] = ele_command_list[nth]
-                ele_command_list = []
             else:
+
                 for z_group in self.common_grillage_element_z_group[member]:
                     # if specific group is specified, assign grillage member to specific groups only
                     if specific_group and z_group in specific_group_list:
@@ -964,7 +953,7 @@ class OspGrillage:
         self.element_command_list.update(ele_tag_to_command_dict)
 
     def set_spring_support(
-        self, rotational_spring_stiffness, edge_num=0, spring_direction=6
+        self, rotational_spring_stiffness: float, edge_num: int = 0, spring_direction=6
     ):
         """
         Sets a spring support value of rotational_spring_stiffness to all nodes of edge number.
@@ -1050,15 +1039,18 @@ class OspGrillage:
     # sub-functions of set_member function
     @staticmethod
     def _get_element_command_list(
-        grillage_member_obj, list_of_ele, material_tag, section_tag
+        grillage_member_obj: GrillageMember,
+        list_of_ele: list,
+        material_tag: int,
+        section_tag: int,
     ):
         """
-        Private unction to get list of element command string
-        :param grillage_member_obj:
-        :param list_of_ele:
-        :param material_tag:
-        :param section_tag:
-        :return: list of string consisting element() commands for creating elements
+        Get the element command list
+        :param grillage_member_obj: `GrillageMember` object
+        :param list_of_ele: List of element tags
+        :param material_tag: tag of material object command
+        :param section_tag: tag of section object command
+        :return: list of string containing OpenSeesPy element() commands for creating the element in model space
         """
         ele_command_list = []
         for ele in list_of_ele:
@@ -1077,28 +1069,13 @@ class OspGrillage:
             ele_command_list.append(ele_str)
         return ele_command_list
 
-    # interface function
-    def set_material(self, material_obj):
-        """
-        Function to define a global material model. This function proceeds to write write the material() command to
-        output file. By default, function is only called and handled within set_member function. When called by user,
-        function creates a material object instance to be set for the OpenSees instance.
-
-        .. note::
-            Currently, function does not have overwriting feature yet.
-        """
-        # set material to global material object
-        self.global_mat_object = material_obj  # material matrix for
-
-        # write uniaxialMaterial() command to output file
-        self._write_material(material=material_obj)
-
     # ---------------------------------------------------------------
     # Functions to query nodes or grids correspond to a point or line + distributing
     # loads to grillage nodes. These are not accessible part of API
 
     # private procedure to find elements within a grid
     def _get_elements(self, node_tag_combo):
+        """Query the element tags for grillage members."""
         # abstracted procedure to find and return the long and trans elements within a grid of 4 or 3 nodes
         record_long = []
         record_trans = []
@@ -1140,7 +1117,10 @@ class OspGrillage:
         return record_long, record_trans, record_edge
 
     # Getter for Points Loads nodes
-    def _get_point_load_nodes(self, point):
+    def _get_point_load_nodes(
+        self, point: Union[Tuple, list]
+    ):
+        """Query the nodes in grid which encompass the point load"""
         # procedure
         # 1 find the closest node 2 find the respective grid within the closest node
         # extract points
@@ -1170,6 +1150,7 @@ class OspGrillage:
 
     # Getter for Line loads nodes
     def _get_line_load_nodes(self, line_load_obj=None, list_of_load_vertices=None):
+        """Get nodes that encompass the line load"""
         # from starting point of line load
         # initiate variables
         next_grid = []
@@ -1482,7 +1463,8 @@ class OspGrillage:
         return bounded_node, bounded_grids
 
     # Setter for Point loads
-    def _assign_point_to_four_node(self, point, mag, shape_func="linear"):
+    def _assign_load_to_four_node(self, point, mag, shape_func="linear"):
+        """Assign point load to four nodes in quadrilateral element or grid"""
         node_mx = []
         node_mz = []
         # search grid where the point lies in
@@ -1517,8 +1499,9 @@ class OspGrillage:
             node_mx = np.zeros(len(node_load))
             node_mz = np.zeros(len(node_load))
         else:  # else run assignment for quadrilateral grids
+
             # extract coordinates of fourth point
-            p4 = self.Mesh_obj.node_spec[grid_nodes[3]]["coordinate"]
+            p4 = self.Mesh_obj.node_spec[grid_nodes[3]]["coordinate"] # get coordinate of fourth point
             point_list.append(Point(p4[0], p4[1], p4[2]))
             sorted_list, sorted_node_tag = sort_vertices(point_list, grid_nodes)
             # mapping coordinates to natural coordinate, then finds eta (x) and zeta (z) of the point xp,zp
@@ -1569,6 +1552,7 @@ class OspGrillage:
     def _assign_line_to_four_node(
         self, line_load_obj, line_grid_intersect, line_ele_colinear
     ) -> list:
+
         # Function to assign line load to mesh. Procedure to assign line load is as follows:
         # . get properties of line on the grid
         # . convert line load to equivalent point load
@@ -1628,7 +1612,7 @@ class OspGrillage:
             )
 
             # uses point load assignment function to assign load point and mag to four nodes in grid
-            load_str = self._assign_point_to_four_node(
+            load_str = self._assign_load_to_four_node(
                 point=load_point, mag=W, shape_func=line_load_obj.shape_function
             )
             load_str_line += load_str  # append to major list for line load
@@ -1653,12 +1637,12 @@ class OspGrillage:
                 load_point = line_load_obj.get_point_given_distance(
                     xbar=x_bar, point_coordinate=[p2.x, p2.y, p2.z]
                 )
-                load_str = self._assign_point_to_four_node(point=load_point, mag=mag)
+                load_str = self._assign_load_to_four_node(point=load_point, mag=mag)
                 load_str_line += load_str  # append to major list for line load
                 assigned_ele.append(ele[0])
         return load_str_line
 
-    def _assign_beam_ele_line_load(self, line_load_obj: LineLoading):
+    def _assign_beam_ele_line_load(self, line_load_obj: LineLoading) -> list:
         load_str_line = []
         ele_group = []
         width_dict = None
@@ -1692,7 +1676,7 @@ class OspGrillage:
                 load_point = line_load_obj.get_point_given_distance(
                     xbar=x_bar, point_coordinate=[p2_point.x, p2_point.y, p2_point.z]
                 )
-                load_str = self._assign_point_to_four_node(point=load_point, mag=mag)
+                load_str = self._assign_load_to_four_node(point=load_point, mag=mag)
                 load_str_line += load_str  # append to major list for line load
 
         return load_str_line
@@ -1723,7 +1707,7 @@ class OspGrillage:
             # _, A = calculate_area_given_four_points(inside_point, p_list[0], p_list[1], p_list[2], p_list[3])
             mag = A * sum([point.p for point in p_list]) / len(p_list)
             # assign point and mag to 4 nodes of grid
-            load_str = self._assign_point_to_four_node(
+            load_str = self._assign_load_to_four_node(
                 point=[xc, yc, zc], mag=mag, shape_func=patch_load_obj.shape_function
             )
             patch_load_str += load_str
@@ -1812,7 +1796,7 @@ class OspGrillage:
             A = self._get_node_area(inside_point=inside_point, p_list=p_list)
             mag = A * sum([point.p for point in p_list]) / len(p_list)
             # assign point and mag to 4 nodes of grid
-            load_str = self._assign_point_to_four_node(
+            load_str = self._assign_load_to_four_node(
                 point=[xc, yc, zc], mag=mag, shape_func=patch_load_obj.shape_function
             )
             patch_load_str += load_str
@@ -1828,6 +1812,7 @@ class OspGrillage:
     def _distribute_load_types_to_model(
         self, load_case_obj: Union[LoadCase, CompoundLoad]
     ) -> list:
+
         global load_groups
         load_str = []
         # check the input parameter type, set load_groups parameter according to its type
@@ -1847,7 +1832,7 @@ class OspGrillage:
                     if isinstance(nested_list_of_load, NodalLoad):
                         load_str += nested_list_of_load.get_nodal_load_str()
                     elif isinstance(nested_list_of_load, PointLoad):
-                        load_str += self._assign_point_to_four_node(
+                        load_str += self._assign_load_to_four_node(
                             point=list(nested_list_of_load.load_point_1)[:-1],
                             mag=nested_list_of_load.load_point_1.p,
                             shape_func=nested_list_of_load.shape_function,
@@ -1885,7 +1870,7 @@ class OspGrillage:
                         load_obj.get_nodal_load_str()
                     ]  # here return load_str as list with single element
                 elif isinstance(load_obj, PointLoad):
-                    load_str += self._assign_point_to_four_node(
+                    load_str += self._assign_load_to_four_node(
                         point=list(load_obj.load_point_1)[:-1],
                         mag=load_obj.load_point_1.p,
                         shape_func=load_obj.shape_function,
@@ -1920,7 +1905,9 @@ class OspGrillage:
 
     # ---------------------------------------------------------------
     # interface functions for load analysis utilities
-    def add_load_case(self, load_case_obj: Union[LoadCase, MovingLoad], load_factor=1):
+    def add_load_case(
+        self, load_case_obj: Union[LoadCase, MovingLoad], load_factor=1
+    ) -> None:
         """
         Function to add load cases to Ospllage grillage model. Function also adds moving load cases
 
@@ -1976,7 +1963,7 @@ class OspGrillage:
                 "objects"
             )
 
-    def analyze(self, **kwargs):
+    def analyze(self, **kwargs) -> None:
         """
         Function to analyze defined load
 
@@ -2076,7 +2063,7 @@ class OspGrillage:
             if self.diagnostics:
                 print("Analysis: {} completed".format(load_case_obj.name))
             # store result in Recorder object
-            self.results.insert_analysis_results(analysis_obj=load_case_analysis)
+            self.results.extract_analysis(analysis_obj=load_case_analysis)
 
         # run moving load case
         # for moving_load_obj, load_case_dict_list in self.moving_load_case_dict.items():
@@ -2112,9 +2099,7 @@ class OspGrillage:
                     if self.diagnostics:
                         print("Analysis: {} completed".format(load_case_obj.name))
                     # store result in Recorder object
-                self.results.insert_analysis_results(
-                    list_of_inc_analysis=list_of_inc_analysis
-                )
+                self.results.extract_analysis(list_of_inc_analysis=list_of_inc_analysis)
                 if self.diagnostics:
                     print("Analysis: {} completed".format(ml_name))
 
@@ -2330,7 +2315,7 @@ class OspGrillage:
                 basic_da.to_netcdf(save_filename)
             return basic_da
 
-    def get_element(self, **kwargs):
+    def get_element(self, **kwargs) -> Union[List[float]]:
         """
         Function to query properties of elements in grillage model.
 
@@ -2380,6 +2365,7 @@ class OspGrillage:
                     if val == self.common_grillage_element_z_group[namestring][0]
                 ]
             elif options == element_option:
+
                 sorted_return_list = [ele[0] for ele in extracted_ele]
         else:  # longitudinal members
             extracted_ele = [
@@ -2403,13 +2389,17 @@ class OspGrillage:
                 sorted_return_list = [i[0] for i in extracted_ele]
         return sorted_return_list
 
-    def get_nodes(self):
+    def get_nodes(self, number: int = None) -> list:
         """
         Function to return all information for nodes in grillage model
 
         :return: dict contain node information
         """
-        return self.Mesh_obj.node_spec
+        if not number:
+            node_spec = self.Mesh_obj.node_spec
+        else:
+            node_spec = self.Mesh_obj.node_spec[number]["coordinate"]
+        return node_spec
 
     def clear_load_cases(self, **kwargs):
         """
@@ -2464,13 +2454,15 @@ class Analysis:
         time_series_counter=1,
         pattern_counter=1,
         load_case: LoadCase = None,
-        **kwargs,
+        step: int = 1,
+        **kwargs
     ):
         self.analysis_name = analysis_name
         self.ops_grillage_name = ops_grillage_name
         self.time_series_tag = None
         self.pattern_tag = None
         self.analysis_type = analysis_type
+        self.step = str(step)
         self.pyfile = pyfile
         self.analysis_file_name = (
             self.analysis_name + "of" + self.ops_grillage_name + ".py"
@@ -2504,7 +2496,7 @@ class Analysis:
             type=self.constraint_type
         )  # default plain
         self.algorithm_command = "ops.algorithm('Linear')\n"  # default linear
-        self.analyze_command = "ops.analyze(1)\n"  # default 1 step
+        self.analyze_command = "ops.analyze({})\n".format(self.step)  # default 1 step
         self.analysis_command = 'ops.analysis("{}")\n'.format(analysis_type)
         self.intergrator_command = "ops.integrator('LoadControl', 1)\n"
         self.sensitivity_integrator_command = "ops."
@@ -2669,6 +2661,7 @@ class Results:
         self.moving_load_case_record = []
         self.moving_load_case_record_global_forces = []
         self.moving_load_counter = 0
+        self.result = None
         # store mesh data of holding model
         self.mesh_obj = mesh_obj
         # coordinates for dimensions
@@ -2727,7 +2720,7 @@ class Results:
         self.dim_ele_beam = ["i", "j"]
         self.dim_ele_shell = ["i", "j", "k", "l"]
 
-    def insert_analysis_results(
+    def extract_analysis(
         self, analysis_obj: Analysis = None, list_of_inc_analysis: list = None
     ):
         # Create/parse data based on incoming analysis object or list of analysis obj (moving load)
@@ -2989,6 +2982,7 @@ class Results:
                     }
                 )
             else:
+
                 force_da_beam = xr.DataArray(
                     data=force_array,
                     dims=self.dim2,
@@ -3010,6 +3004,7 @@ class Results:
 
         else:  # no result return None
             result = None
+        self.result = result  # store to Result class
         return result
 
 
@@ -3033,7 +3028,7 @@ class OspGrillageBeam(OspGrillage):
         edge_beam_dist: Union[list, float, int] = 1,
         mesh_type="Ortho",
         model="3D",
-        **kwargs,
+        **kwargs
     ):
         # create mesh and model
         super().__init__(
@@ -3046,7 +3041,7 @@ class OspGrillageBeam(OspGrillage):
             edge_beam_dist,
             mesh_type,
             model="3D",
-            **kwargs,
+            **kwargs
         )
         #
 
@@ -3067,7 +3062,7 @@ class OspGrillageShell(OspGrillage):
         edge_beam_dist: Union[list, float, int],
         mesh_type="Ortho",
         model="3D",
-        **kwargs,
+        **kwargs
     ):
         # input variables specific to shell model - see default parameters if not specified
         self.offset_beam_y_dist = kwargs.get("offset_beam_y_dist", 0)  # default 0
@@ -3090,7 +3085,7 @@ class OspGrillageShell(OspGrillage):
             edge_beam_dist,
             mesh_type,
             model="3D",
-            **kwargs,
+            **kwargs
         )
         # overwrite/ variables specific to shell mesh
         self.constraint_type = (
@@ -3176,7 +3171,11 @@ class OspGrillageShell(OspGrillage):
     # ----------------------------------------------------------------------------------------------------------------
     # interface function
     def set_member(
-        self, grillage_member_obj: GrillageMember, member=None, specific_group=None
+        self,
+        grillage_member_obj: GrillageMember,
+        member: str = None,
+        specific_group: int = None,
+        specific_span: int = None,
     ):
         """
         Function to set grillage member class object to elements of grillage members.
@@ -3221,7 +3220,7 @@ class OspGrillageShell(OspGrillage):
                     "# Element generation for member: {}\n".format(member)
                 )
 
-        # check if assign GrillageMember obj has unit width flagged True
+        # check if GrillageMember defined a unit width,
         if grillage_member_obj.section.unit_width:
             raise Exception(
                 "GrillageMember obj for",
@@ -3229,7 +3228,7 @@ class OspGrillageShell(OspGrillage):
                 "flagged with unit_width feature = True is"
                 "not acceptable for shell model ",
             )
-        else:  # assign to longitudinal beam members
+        else:  # direct assign to longitudinal beam members
             for z_group in self.common_grillage_element_z_group[member]:
                 ele_command_list += self._get_element_command_list(
                     grillage_member_obj=grillage_member_obj,

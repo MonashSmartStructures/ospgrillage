@@ -3,7 +3,7 @@
 """
 This test contains a validation against a numerical bridge model made in LUSAS software. Note the test portion of this file are
 specific to the comparison i.e. 28m model between LUSAS model outputs and ospg outputs - hence is not advisable to copy-paste
-the tests herein to for another new pytest (say another model). However it is reasonable to replicate structure of the fixtures i.e.
+the tests herein to for another new pytest (say another model). However it is reasonable to replicate structure of the wee i.e.
 the model creation and running analysis domain of the pytest.
 """
 import pytest
@@ -82,11 +82,11 @@ def create_grillage():
     N = 1
     m = 1
     mm = milli * m
-    m2 = m**2
-    m3 = m**3
-    m4 = m**4
+    m2 = m ** 2
+    m3 = m ** 3
+    m4 = m ** 4
     kN = kilo * N
-    MPa = N / (mm**2)
+    MPa = N / (mm ** 2)
     GPa = kilo * MPa
 
     # read json file for model inputs
@@ -224,7 +224,7 @@ def create_grillage():
     simple_grid.set_member(end_tranverse_slab, member="end_edge")
 
     simple_grid.create_osp_model(pyfile=False)
-    ospg.opsplt.plot_model("element")
+    # ospg.opsplt.plot_model("element")
 
     return simple_grid, bridge
 
@@ -236,9 +236,9 @@ def add_analysis_to_simple_grid(create_grillage):
     N = 1
     m = 1
     mm = milli * m
-    m2 = m**2
-    m3 = m**3
-    m4 = m**4
+    m2 = m ** 2
+    m3 = m ** 3
+    m4 = m ** 4
     kN = kilo * N
     MPa = N / ((mm) ** 2)
     GPa = kilo * MPa
@@ -425,9 +425,9 @@ def test_line_load_results(add_analysis_to_simple_grid):
     N = 1
     m = 1
     mm = milli * m
-    m2 = m**2
-    m3 = m**3
-    m4 = m**4
+    m2 = m ** 2
+    m3 = m ** 3
+    m4 = m ** 4
     kN = kilo * N
     MPa = N / ((mm) ** 2)
     GPa = kilo * MPa
@@ -474,10 +474,10 @@ def test_line_load_results(add_analysis_to_simple_grid):
         [w * P * L / 4]
         + [n_l * P * L / 4] * 2
         + [
-            w * P * L**2 / 8,
+            w * P * L ** 2 / 8,
             2 * P * (L / 2 - axl_s / 2),
             load_combo["factor_1"] * w * P * L / 4
-            + load_combo["factor_2"] * w * P * L**2 / 8,
+            + load_combo["factor_2"] * w * P * L ** 2 / 8,
         ]
     )
     # line, point, patch x 3, moving load, combination

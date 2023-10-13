@@ -7,8 +7,6 @@ by OspGrillage class.
 """
 import math
 
-import numpy as np
-
 from ospgrillage.static import *
 from collections import namedtuple
 
@@ -38,12 +36,13 @@ Point = namedtuple("Point", ["x", "y", "z"])
 
 class Mesh:
     """
-    Base class for mesh class. The class holds information pertaining the mesh group such as element connectivity and nodes
-    of the mesh object. Positional arguments are handled by :class:`~ospgrillage.osp_grillage.OspGrillage` class.
+    Class for Mesh.
+
+    Positional arguments are handled by :class:`~ospgrillage.osp_grillage.OspGrillage` class.
 
     .. note::
 
-        As of version 0.1.0, the default mesh is a straight mesh with either Orthogonal and Oblique grids. For developers
+        As of version 0.1.0, the default mesh is a straight mesh with either Orthogonal and Oblique grids.
         mesh module needs a new structure where the mesh class will have mesh types segregated into a base Mesh class
         and child class e.g. OrthogonalMesh(Mesh) class.
 
@@ -51,27 +50,28 @@ class Mesh:
 
     def __init__(
         self,
-        long_dim,
-        width,
-        trans_dim,
-        edge_dist_a,
-        edge_dist_b,
-        num_trans_beam,
-        num_long_beam,
-        skew_1,
-        skew_2,
-        pt1=Point(0, 0, 0),
-        pt2=Point(0, 0, 0),
-        pt3=None,
-        element_counter=1,
-        node_counter=1,
-        transform_counter=0,
-        global_x_grid_count=0,
-        global_edge_count=0,
-        mesh_origin=None,
-        quad_ele=False,
-        **kwargs,
+        long_dim: float,
+        width: float,
+        trans_dim: float,
+        edge_dist_a: float,
+        edge_dist_b: float,
+        num_trans_beam: int,
+        num_long_beam: int,
+        skew_1: float,
+        skew_2: float,
+        pt1: Point = Point(0, 0, 0),
+        pt2: Point = Point(0, 0, 0),
+        pt3: Point = None,
+        element_counter: int = 1,
+        node_counter: int = 1,
+        transform_counter: int = 0,
+        global_x_grid_count: int = 0,
+        global_edge_count: int = 0,
+        mesh_origin: list = None,
+        quad_ele: bool = False,
+        **kwargs
     ):
+
         # inputs from OspGrillage required to create mesh
         self.long_dim = long_dim
         self.trans_dim = trans_dim
@@ -251,7 +251,7 @@ class Mesh:
             num_long_beam=self.num_long_beam,
             model_plane_y=self.y_elevation,
             sweep_path=self.sweep_path,
-            **kwargs,
+            **kwargs
         )
         # intermediate construction lines for
         if self.multi_span_dist_list and self.orthogonal:
@@ -272,7 +272,7 @@ class Mesh:
                     num_long_beam=self.num_long_beam,
                     model_plane_y=self.y_elevation,
                     sweep_path=self.sweep_path,
-                    **kwargs,
+                    **kwargs
                 )
 
                 self.multi_span_control_point_list.append(edge_obj)
@@ -289,7 +289,7 @@ class Mesh:
             num_long_beam=self.num_long_beam,
             model_plane_y=self.y_elevation,
             sweep_path=self.sweep_path,
-            **kwargs,
+            **kwargs
         )
         # ------------------------------------------------------------------------------------------
         # Sweep nodes
@@ -569,13 +569,14 @@ class Mesh:
             self.global_x_grid_count += 1
             assigned_node_tag = []
 
-    def _store_ele_tag_respect_to_mesh_group(self, counter, span_group):
+    def _store_ele_tag_respect_to_mesh_group(self, counter: int, span_group: int):
+
         ele_tag_list = self.span_group_to_ele_tag[span_group]
         if counter not in ele_tag_list:
             ele_tag_list.append(counter)
         self.span_group_to_ele_tag[span_group] = ele_tag_list
 
-    def _assign_node_coordinate(self, node_coordinate, z_count_int):
+    def _assign_node_coordinate(self, node_coordinate: list, z_count_int: int):
         # checks if the node has been assigned previously (avoid double assigning same coordinate with two different
         # node tags)
         exist_node = None
@@ -613,6 +614,7 @@ class Mesh:
         self.sweep_path_points = []
 
         for i, edge_obj in enumerate(self.multi_span_control_point_list[:-1]):
+
             start_point_x = edge_obj.node_list[0][0]
             start_point_z = edge_obj.node_list[0][2]
 
@@ -631,7 +633,7 @@ class Mesh:
                 # if curve mesh, rotate the edge sweep nodes
                 current_sweep_nodes = self._rotate_edge_sweep_nodes(current_sweep_nodes)
 
-                for z_count_int, nodes in enumerate(current_sweep_nodes):
+                for (z_count_int, nodes) in enumerate(current_sweep_nodes):
                     x_inc = start_point_x
                     z_inc = start_point_z
                     node_coordinate = [nodes[0] + x_inc, nodes[1], nodes[2] + z_inc]
@@ -707,7 +709,7 @@ class Mesh:
                         )
 
                     # on each control point, loop through sweeping nodes to create nodes
-                    for z_count_int, nodes in enumerate(sweep_nodes):
+                    for (z_count_int, nodes) in enumerate(sweep_nodes):
                         x_inc = ref_point_x
                         z_inc = ref_point_z
                         node_coordinate = [nodes[0] + x_inc, nodes[1], nodes[2] + z_inc]
@@ -818,7 +820,7 @@ class Mesh:
                 # #current_sweep_nodes = self._rotate_sweep_nodes(-edge_angle)
                 # current_sweep_nodes = self._rotate_edge_sweep_nodes(current_sweep_nodes,angle=-edge_angle)
 
-                for z_count_int, nodes in enumerate(current_sweep_nodes):
+                for (z_count_int, nodes) in enumerate(current_sweep_nodes):
                     x_inc = 0  # end_point_x
                     z_inc = 0  # end_point_z
                     node_coordinate = [nodes[0] + x_inc, nodes[1], nodes[2] + z_inc]
@@ -896,7 +898,7 @@ class Mesh:
                         z_group_recorder = list(
                             range(z_group, len(current_sweep_nodes))
                         )
-                    for z_count_int, nodes in enumerate(sweep_nodes):
+                    for (z_count_int, nodes) in enumerate(sweep_nodes):
                         x_inc = ref_point_x
                         z_inc = ref_point_z
                         node_coordinate = [nodes[0] + x_inc, nodes[1], nodes[2] + z_inc]
@@ -1016,7 +1018,8 @@ class Mesh:
                 # current_sweep_nodes = self._rotate_edge_sweep_nodes(current_sweep_nodes, angle=-current_angle)
                 # rotating sweep nodes about current nox increment point of uniform region
                 # if angle less than threshold, assign nodes of edge member as it is
-                for z_count_int, nodes in enumerate(current_sweep_nodes):
+                for (z_count_int, nodes) in enumerate(current_sweep_nodes):
+
                     node_coordinate = [nodes[0], nodes[1], nodes[2]]
                     self._assign_node_coordinate(
                         node_coordinate, z_count_int=z_count_int
@@ -1084,14 +1087,16 @@ class Mesh:
 
     # ------------------------------------------------------------------------------------------
     # ------------------------------------------------------------------------------------------
-    def _assign_transverse_members(self, pre_node, cur_node):
+    def _assign_transverse_members(self, pre_node: list, cur_node: list):
         tag = self._get_geo_transform_tag([pre_node, cur_node])
         self.trans_ele.append(
             [self.element_counter, pre_node, cur_node, self.global_x_grid_count, tag]
         )
         self.element_counter += 1
 
-    def _assign_longitudinal_members(self, pre_node, cur_node, cur_z_group):
+    def _assign_longitudinal_members(
+        self, pre_node: list, cur_node: list, cur_z_group: int
+    ):
         tag = self._get_geo_transform_tag([pre_node, cur_node])
         self.long_ele.append(
             [self.element_counter, pre_node, cur_node, cur_z_group, tag]
@@ -1099,7 +1104,7 @@ class Mesh:
         self.element_counter += 1
 
     def _assign_edge_trans_members(
-        self, previous_node_tag, assigned_node_tag, edge_counter
+        self, previous_node_tag: int, assigned_node_tag: int, edge_counter: int
     ):
         tag = self._get_geo_transform_tag([previous_node_tag, assigned_node_tag])
         self.edge_span_ele.append(
@@ -1146,7 +1151,7 @@ class Mesh:
             )
             self.node_counter += 1
 
-    def _create_link_element(self, rNode, cNode):
+    def _create_link_element(self, rNode: int, cNode: int):
         """Private function to add opensees command to create rigid link"""
         # sub procedure function
         # user mp constraint object
@@ -1477,7 +1482,7 @@ class Mesh:
                         subdict["left"] = neighbour
             self.grid_vicinity_dict.setdefault(k, subdict)
 
-    def _get_geo_transform_tag(self, ele_nodes, offset=None):
+    def _get_geo_transform_tag(self, ele_nodes: list, offset=None):
         # offset is not used in version 0.1.0
         if offset is None:
             offset = []  #
@@ -1493,7 +1498,7 @@ class Mesh:
             self.transform_counter = tag_value
         return tag_value
 
-    def _check_skew(self, edge_skew_angle, zeta):
+    def _check_skew(self, edge_skew_angle: float, zeta: float):
         # zeta in DEGREES
         # if mesh type is beyond default allowance threshold of 11 degree and 30 degree, return exception
         if np.abs(edge_skew_angle - zeta) <= self.skew_threshold[0] and self.orthogonal:
@@ -1517,10 +1522,10 @@ class Mesh:
 
     # ------------------------------------------------------------------------------------------
     @staticmethod
-    def _get_vector_xz(node_i, node_j):
+    def _get_vector_xz(node_i: list, node_j: list):
         """
-        Encapsulated function to identify a vector parallel to the plane of local x and z axis of the element. The
-        vector is required for geomTransf() command
+        To identify a vector parallel to the plane of local x and z axis of an element. The
+        vector format follows the input required for geomTransf() command
         - see geomTransf_.
 
         .. _geomTransf: https://openseespydoc.readthedocs.io/en/latest/src/geomTransf.html
@@ -1536,13 +1541,13 @@ class Mesh:
         x = zi
         z = -xi
         # normalize vector
-        length = np.sqrt(x**2 + z**2)
+        length = np.sqrt(x ** 2 + z ** 2)
         x1 = x / length
 
         z1 = z / length
         return [x1, 0, z1]  # here y axis is normal to model plane
 
-    def _rotate_sweep_nodes(self, zeta):
+    def _rotate_sweep_nodes(self, zeta: float):
         sweep_nodes_x = [0] * len(
             self.noz
         )  # line is orthogonal at the start of sweeping path
@@ -1575,7 +1580,7 @@ class Mesh:
 
         return sweeping_nodes
 
-    def _rotate_edge_sweep_nodes(self, current_sweep_nodes, angle=0):
+    def _rotate_edge_sweep_nodes(self, current_sweep_nodes: list, angle: float = 0):
         # checks if sweep path is a curve path. If yes, rotate all points of the current sweep nodes by the angle
         # of the ref point on the circle arc.
         # note this is a 2D rotation involving axis x and z.
@@ -1663,16 +1668,17 @@ class EdgeControlLine:
 
     def __init__(
         self,
-        edge_ref_point,
-        width_z,
-        edge_width_a,
-        edge_width_b,
-        edge_angle,
-        num_long_beam,
-        model_plane_y,
-        feature="standard",
-        **kwargs,
+        edge_ref_point: list,
+        width_z: float,
+        edge_width_a: float,
+        edge_width_b: float,
+        edge_angle: float,
+        num_long_beam: int,
+        model_plane_y: float,
+        feature: str = "standard",
+        **kwargs
     ):
+
         # set variables
         self.edge_ref_point = edge_ref_point
         self.width_z = width_z
@@ -1785,15 +1791,15 @@ class ShellEdgeControlLine(EdgeControlLine):
 
     def __init__(
         self,
-        edge_ref_point,
-        width_z,
-        edge_width_a,
-        edge_width_b,
-        edge_angle,
-        num_long_beam,
-        model_plane_y,
-        feature="standard",
-        **kwargs,
+        edge_ref_point: list,
+        width_z: float,
+        edge_width_a: float,
+        edge_width_b: float,
+        edge_angle: float,
+        num_long_beam: int,
+        model_plane_y: float,
+        feature: str = "standard",
+        **kwargs
     ):
         # get properties specific to shell mesh
         self.beam_width = kwargs.get(
@@ -1819,7 +1825,7 @@ class ShellEdgeControlLine(EdgeControlLine):
             num_long_beam,
             model_plane_y,
             feature,
-            **kwargs,
+            **kwargs
         )
 
     # function specific to shell edge line
@@ -1945,7 +1951,7 @@ class SweepPath:
 
         return self.zeta, self.m, self.c
 
-    def get_line_function(self, x):
+    def get_line_function(self, x: float):
         """
         Returns the y position of a linear equation given x.
         """
@@ -1973,7 +1979,7 @@ class SweepPath:
                 x=x,
             )
 
-    def get_tangent_gradient(self, x):
+    def get_tangent_gradient(self, x: float):
         # get the tangent gradient at point x , where point x lies on a circle described by center self.curve_center_xz
         # and radius (self.mesh_radius).
         if self.mesh_radius:
@@ -1993,7 +1999,7 @@ class SweepPath:
 
         return m
 
-    def get_cartesian_angle(self, x):
+    def get_cartesian_angle(self, x: float):
         # return the angle taking the vertical axis as the origin/zero ( left of axis is negative magnitude,
         # right positive). equation based on alpha, where point on the circle/arc has coordinate described as [r sin
         # alpha - circle_x_center, r cos alpha - circle_y_center] ' , note alpha angle in radians
@@ -2022,7 +2028,7 @@ class BeamMesh(Mesh):
         num_long_beam,
         skew_1,
         skew_2,
-        **kwargs,
+        **kwargs
     ):
         """
         Subclass for Mesh with beam. This class creates elements where:
@@ -2053,7 +2059,7 @@ class BeamMesh(Mesh):
             num_long_beam,
             skew_1,
             skew_2,
-            **kwargs,
+            **kwargs
         )
         # offset support nodes with rigid distance if provided
         if self.rigid_dist_y:
@@ -2076,7 +2082,7 @@ class BeamLinkMesh(Mesh):
         num_long_beam,
         skew_1,
         skew_2,
-        **kwargs,
+        **kwargs
     ):
         """
         Subclass for Mesh with beam. This class creates elements where:
@@ -2115,7 +2121,7 @@ class BeamLinkMesh(Mesh):
             num_long_beam,
             skew_1,
             skew_2,
-            **kwargs,
+            **kwargs
         )
 
     def _get_geo_transform_tag(self, ele_nodes, offset=None):
@@ -2171,9 +2177,11 @@ class BeamLinkMesh(Mesh):
                 ).tolist()[0][0]
                 < def_l
             ):
+
                 global_offset_i = [a - b for a, b in zip(node_i, local_offset)]
                 global_offset_j = [a + b for a, b in zip(node_j, local_offset)]
             else:  # reciprocal , node i has to minus local offset
+
                 global_offset_i = [a + b for a, b in zip(node_i, local_offset)]
                 global_offset_j = [a - b for a, b in zip(node_j, local_offset)]
             global_offset = [global_offset_i, global_offset_j]
@@ -2203,7 +2211,7 @@ class ShellLinkMesh(Mesh):
         skew_1,
         skew_2,
         link_type="beam",
-        **kwargs,
+        **kwargs
     ):
         """
         Subclass for mesh with offset beam members linked to grillage consisting of shell elements
@@ -2256,7 +2264,7 @@ class ShellLinkMesh(Mesh):
             num_long_beam,
             skew_1,
             skew_2,
-            **kwargs,
+            **kwargs
         )
 
         # meshing procedure to create beam offset element and tie it with rigid links to master nodes of model plane y=0
@@ -2274,6 +2282,7 @@ class ShellLinkMesh(Mesh):
     # -----------------------------------------------------------------------------------------------------------------
     # Functions which are overwritten of that from base class to for specific shell type model
     def create_control_points(self, **kwargs):
+
         return ShellEdgeControlLine(**kwargs)
 
     # add groupings of offset beam elements
@@ -2281,6 +2290,7 @@ class ShellLinkMesh(Mesh):
     # ----------------------------------------------------------------------------------------------------------------
     # sub procedures specific to shell meshes
     def _create_offset_beam_element(self):
+
         # sub procedure function to create beam elements based on offset nodes
         self._create_offset_nodes()
 
@@ -2471,7 +2481,7 @@ class BeamMeshWithSpringSupports(BeamMesh):
         num_long_beam,
         skew_1,
         skew_2,
-        **kwargs,
+        **kwargs
     ):
         # constructor of parent class (BeamMesh) -> base class (Mesh)
         super().__init__(
@@ -2484,7 +2494,7 @@ class BeamMeshWithSpringSupports(BeamMesh):
             num_long_beam,
             skew_1,
             skew_2,
-            **kwargs,
+            **kwargs
         )
         # procedure for creating and assigning spring supports
 

@@ -10,6 +10,12 @@ module of OpenSeesPy - this module fills in gaps to
 import matplotlib.pyplot as plt
 import opsvis as opsv
 import numpy as np
+from typing import TYPE_CHECKING, Union
+from scipy.interpolate import interpn, RegularGridInterpolator
+
+# if TYPE_CHECKING:
+from ospgrillage.load import ShapeFunction
+from ospgrillage.static import solve_zeta_eta
 
 import openseespyvis.Get_Rendering as opsplt
 
@@ -175,12 +181,12 @@ class Envelope:
 
 
 def plot_force(
-    ospgrillage_obj,
-    result_obj=None,
-    component=None,
-    member: str = None,
-    option: str = "elements",
-    loadcase: str = None,
+        ospgrillage_obj,
+        result_obj=None,
+        component=None,
+        member: str = None,
+        option: str = "elements",
+        loadcase: str = None,
 ):
     """
     Plots a force diagram of the provided :class:`~ospgrillage.osp_grillage.OspGrillage` and
@@ -302,12 +308,12 @@ def plot_force(
 
 
 def plot_defo(
-    ospgrillage_obj,
-    result_obj=None,
-    member: str = None,
-    component: str = None,
-    option: str = "nodes",
-    loadcase: str = None,
+        ospgrillage_obj,
+        result_obj=None,
+        member: str = None,
+        component: str = None,
+        option: str = "nodes",
+        loadcase: str = None,
 ):
     """
     Plots displacements of the provided :class:`~ospgrillage.osp_grillage.OspGrillage` and
@@ -387,3 +393,63 @@ def plot_defo(
     # fig.show()
 
     return fig
+
+
+class PostProcessor:
+    """Class to post-process the results from an of ospgrillage analysis result.
+
+    As of version 0.2.0, ospgrillage compiles results using Xarray module.
+    """
+
+    def __init__(self, grillage, result):  # Union[xr.DataArray, xr.Dataset]
+        """Init the class"""
+        # store main vars
+        self.grillage = grillage
+        self.result = result
+
+        # init vars
+        self.shape_function_obj = ShapeFunction()
+
+    def get_arbitrary_displacements(self, point: list, shape_function_type: str = "linear"):
+        """Returns displacement values (translation and rotational)
+
+        param point: list of coordinate. Default three elements [x,y=0,z]
+        type point: list
+
+        """
+        node_displacements = []
+        node_coordinate = []
+
+        # get the list of four nodes where arbitrary point lies
+        nodes, grid_number = self.grillage._get_point_load_nodes(
+            point=point
+        )  # list of nodes
+
+        # get results of each node of four nodes
+        for node in nodes:
+            node_displacements.append(
+                self.result.displacements.sel(
+                    Component="dy",
+                    Node=node,
+                )
+                    .to_numpy()
+                    .tolist()[0]
+            )
+            node_coordinate.append(self.grillage.get_nodes(number=node))
+
+        # interpolate for vertical displacement
+        x = np.array([coord[0] for coord in node_coordinate])
+        z = np.array([coord[2] for coord in node_coordinate])
+
+        # get natural coordinate of point in grid
+        eta, zeta = solve_zeta_eta(xp=point[0], zp=point[2],
+                                   x1=x[0], z1=z[0],
+                                   x2=x[1], z2=z[1],
+                                   x3=x[2], z3=z[2],
+                                   x4=x[3], z4=z[3])
+        if shape_function_type is "linear":
+            shape_func = self.shape_function_obj.linear_shape_function(eta=eta, zeta=zeta)
+        else:
+            shape_func, _, _ = self.shape_function_obj.hermite_shape_function_2d(eta=eta, zeta=zeta)
+
+        return sum([a * b for a, b, in zip(shape_func, node_displacements)])

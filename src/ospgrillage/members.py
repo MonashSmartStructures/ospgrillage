@@ -5,6 +5,10 @@ grillage members. In our terminology, we define a section as the geometrical
 properties of the structural elements, and the member as the combination of
 the section and material properties.
 """
+from typing import TYPE_CHECKING
+
+# if TYPE_CHECKING:
+#     from material import Material
 
 
 def create_section(**kwargs):
@@ -69,12 +73,12 @@ class Section:
 
     def __init__(
         self,
-        op_ele_type="elasticBeamColumn",
-        mass=0,
-        c_mass_flag=False,
-        unit_width=False,
-        op_section_type="Elastic",
-        **kwargs,
+        op_ele_type: str = "elasticBeamColumn",
+        mass: float = 0,
+        c_mass_flag: bool = False,
+        unit_width: bool = False,
+        op_section_type: str = "Elastic",
+        **kwargs
     ):
         """
         The constructor takes in two types of keyword arguments.
@@ -91,6 +95,8 @@ class Section:
         :type op_ele_type: str
         :param op_section_type: OpenSees section type - default Elastic
         :type op_section_type: str
+        :param mass: Mass of member.
+        :type mass: float
         :param unit_width: Flag for if unit width properties are defined.
         :type unit_width: bool
 
@@ -173,7 +179,7 @@ class Section:
 
 class GrillageMember:
     """
-    Base class for defining the grillage members of the grillage model.
+    Class for grillage model members. E.g., longitudinal beam members.
 
     This class parses material and section properties of grillage members into corresponding ``OpenSeesPy`` Element()
     command.
@@ -195,12 +201,12 @@ class GrillageMember:
         self,
         section: Section,
         material,
-        member_name="Undefined",
-        quad_ele_flag=False,
-        tri_ele_flag=False,
+        member_name: str = "Undefined",
+        quad_ele_flag: bool = False,
+        tri_ele_flag: bool = False,
     ):
         """
-        Constructor of GrillageMember requires two input objects i.e. A :class:`~ospgrillage.material.Material`, and
+        Init the GrillageMember. Requires two input objects i.e. A :class:`~ospgrillage.material.Material`, and
         :class:`Section`.
 
         :param section: Section class object
@@ -225,6 +231,9 @@ class GrillageMember:
         ):
             self.material_command_flag = False
             self.section_command_flag = False  #
+
+            # determine mass from section area and material density
+            self.mass = self.section.A * self.material.density
         elif any(
             [
                 self.section.op_ele_type == "ShellMITC4",
@@ -235,12 +244,13 @@ class GrillageMember:
 
         self.variable_string_list = []
 
+
     def get_member_prop_arguments(self, width=1):
-        # """
-        # Function to sort and parse the list input arguments for the prescribed op_element_type of the GrillageMember.
-        #
-        # :return: str containing member properties in accordance with convention of OpenSees element type
-        # """
+        """
+        Returns the element arguments based on the op_element_type of the GrillageMember.
+
+        :return: str containing member properties in accordance with convention of OpenSees element type
+        """
 
         asterisk_input = None
 
@@ -323,13 +333,13 @@ class GrillageMember:
         return asterisk_input
 
     # Function to return argument, handled by OspGrillage
-    def get_section_arguments(self, ele_width=1):
-        # """
-        # Function to obtain input arguments for ``OpenSeesPy`` Section command if the prescribe element type of the
-        # GrillageMember requires the defition of an ``OpenSeesPy`` Section object.
-        #
-        # :return: str containing Section command properties in accordance with convention of OpenSees element type
-        # """
+    def get_section_arguments(self, ele_width: float = 1):
+        """
+        Returns the input arguments for ``OpenSeesPy`` Section command if the prescribe element type of the
+        GrillageMember requires the definition of an ``OpenSeesPy`` Section object.
+
+        :return: str containing Section command properties in accordance with convention of OpenSees element type
+        """
         section_args = None
 
         if self.section.op_section_type == "Elastic":
@@ -346,13 +356,14 @@ class GrillageMember:
 
         return section_args
 
-    def get_ops_section_command(self, section_tag=1, material_tag=None, ele_width=1):
-        # """
-        # Function to obtain the ``OpenSeesPy`` Section command required for the prescribed element type defined for the
-        # GrillageMember object.
-        #
-        # :return: str containing the ``OpenSeesPy`` Section command
-        # """
+    def get_ops_section_command(
+        self, section_tag: int = 1, material_tag: int = None, ele_width: float = 1
+    ):
+        """
+        Returns the ``OpenSeesPy`` Section command for the Section type
+
+        :return: str containing the ``OpenSeesPy`` Section command
+        """
         sec_str = None
         section_type = self.section.op_section_type
         if section_type == "Elastic":
@@ -386,13 +397,16 @@ class GrillageMember:
 
     def get_element_command_str(
         self,
-        ele_tag,
-        node_tag_list,
-        transf_tag=None,
-        ele_width=1,
-        materialtag=None,
-        sectiontag=None,
+        ele_tag: int,
+        node_tag_list: list,
+        transf_tag: int = None,
+        ele_width: float = 1,
+        materialtag: int = None,
+        sectiontag: int = None,
     ) -> str:
+        """Return a list of OpenSeesPy element command for the member.
+        This function is handled by OspGrillage class.
+        """
         # ```
         # Function called within OpsGrillage class `set_member()` function.
         #
@@ -416,7 +430,7 @@ class GrillageMember:
                 node_tag_list=node_tag_list,
                 memberprop=section_input,
                 transftag=transf_tag,
-                mass=self.section.mass,
+                mass=self.mass,
             )
         elif self.section.op_ele_type == "elasticBeamColumn":
             section_input = self.get_member_prop_arguments(ele_width)
@@ -426,7 +440,7 @@ class GrillageMember:
                 node_tag_list=node_tag_list,
                 memberprop=section_input,
                 transftag=transf_tag,
-                mass=self.section.mass,
+                mass=self.mass,
             )
         elif self.section.op_ele_type == "nonlinearBeamColumn":
             ele_str = 'ops.element("{type}",{tag},*{node_tag_list},{num_int_pt},{sectag},{transftag},{mass})\n'.format(
@@ -436,7 +450,7 @@ class GrillageMember:
                 num_int_pt=self.section.num_int_pt,
                 sectag=sectiontag,
                 transftag=transf_tag,
-                mass=self.section.mass,
+                mass=self.mass,
             )
         elif self.section.op_ele_type == "zeroLength":
             ele_str = "ops.element(\"{linktype}\",{ele_tag},*[{rNodetag},{cNodetag}],'-mat',{mat_tag},'-dir',{dirs})\n".format(
@@ -482,7 +496,5 @@ class GrillageMember:
                     sectag=sectiontag,
                 )
             )
-
-        # HERE TO POPULATE WITH MORE ELEMENT TYPES
 
         return ele_str
