@@ -7,7 +7,7 @@ setuptools
 scipy
 xarray
 opsvis
-openseespyvis
+vfo
 pydata-sphinx-theme
 recommonmark
 Sphinx

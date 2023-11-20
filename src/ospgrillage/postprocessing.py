@@ -17,7 +17,7 @@ from scipy.interpolate import interpn, RegularGridInterpolator
 from ospgrillage.load import ShapeFunction
 from ospgrillage.static import solve_zeta_eta
 
-import openseespyvis.Get_Rendering as opsplt
+import vfo.vfo as opsplt
 
 
 def create_envelope(**kwargs):
