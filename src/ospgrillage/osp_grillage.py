@@ -366,7 +366,7 @@ class OspGrillage:
                 # necessary imports
                 file_handle.write(
                     "import numpy as np\nimport math\nimport openseespy.opensees as ops"
-                    "\nimport openseespy.postprocessing.Get_Rendering as opsplt\n"
+                    "\nimport vfo.vfo as opsplt\n"
                 )
 
         self._write_op_model()
@@ -2520,7 +2520,7 @@ class Analysis:
                 # write imports
                 file_handle.write(
                     "import numpy as np\nimport math\nimport openseespy.opensees as ops"
-                    "\nimport openseespy.postprocessing.Get_Rendering as opsplt\n"
+                    "\nimport vfo.vfo as opsplt\n"
                 )
 
     def _time_series_command(self, load_factor):
@@ -3115,7 +3115,7 @@ class OspGrillageShell(OspGrillage):
                 # write imports
                 file_handle.write(
                     "import numpy as np\nimport math\nimport openseespy.opensees as ops"
-                    "\nimport openseespy.postprocessing.Get_Rendering as opsplt\n"
+                    "\nimport vfo.vfo as opsplt\n"
                 )
         # model() command
         self._write_op_model()
