@@ -1111,5 +1111,29 @@ def test_compare_shell_beam_analysis(run_beam_model_point_load):
     og.plot_defo(
         shell_bridge, result_shell, member="interior_main_beam", option="nodes"
     )
-    pass
     og.opsv.plot_defo()
+
+
+def test_transient(
+    beam_element_bridge,
+):
+    P = 1 * kN
+    lp1 = og.create_load_vertex(x=5, y=0, z=3.5, p=P)
+    mid_point_line_load = og.create_load(
+        name="unit load",
+        point1=lp1,
+    )
+    mid_point_line_loadcase = og.create_load_case(name="line")
+    mid_point_line_loadcase.add_load(mid_point_line_load)
+    beam_bridge = beam_element_bridge
+    beam_bridge.create_osp_model()
+    beam_bridge.add_load_case(mid_point_line_loadcase)
+    # beam_bridge.analyze()
+    beam_bridge.analyze(analysis_type="Transient", step=10)
+    # for each step,
+    # get Fb , use d,v,a
+    # assign d v a to all nodes
+    # analyse()
+    # get d,v,a
+
+    # use d,v,a result for next step i + 1

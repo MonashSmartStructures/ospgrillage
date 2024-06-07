@@ -719,9 +719,9 @@ class OspGrillage:
             self.common_grillage_element_z_group.update({key: val})
         # populate start edge and end edge entries
         self.common_grillage_element_z_group[self.common_grillage_element_keys[4]] = [0]
-        self.common_grillage_element_z_group[
-            self.common_grillage_element_keys[5]
-        ] = list(range(1, self.Mesh_obj.global_edge_count))
+        self.common_grillage_element_z_group[self.common_grillage_element_keys[5]] = (
+            list(range(1, self.Mesh_obj.global_edge_count))
+        )
         self.common_grillage_element_z_group[self.common_grillage_element_keys[6]] = [
             0
         ]  # proxy 0 for set_member() loop
@@ -1945,9 +1945,9 @@ class OspGrillage:
                         "load_factor": load_factor,
                     }
                     list_of_incr_load_case_dict.append(increment_load_case_dict)
-                self.moving_load_case_dict[
-                    moving_load_obj.name
-                ] = list_of_incr_load_case_dict
+                self.moving_load_case_dict[moving_load_obj.name] = (
+                    list_of_incr_load_case_dict
+                )
 
             if self.diagnostics:
                 print("Moving load case: {} created".format(moving_load_obj.name))
@@ -1966,7 +1966,7 @@ class OspGrillage:
         * all (`bool`): If True, runs all load cases. If not provided, default to True.
         * load_case ('list' or 'str'): String or list of name strings for selected load case to be analyzed.
         * set_verbose(`bool`): If True, incremental load case report is not printed to terminal (default True)
-
+        * analysis_type ('str'): The type of analysis. Default is "Static".
         :except: raise ValueError if missing arguments for either load_case=, or all=
 
         """
@@ -1975,7 +1975,8 @@ class OspGrillage:
         # get run options from kwargs
         all_flag = True  # Default true
         selected_load_case: list = kwargs.get("load_case", None)  #
-
+        analysis_type = kwargs.get("analysis_type", "Static")
+        step = kwargs.get("step", 1)  # default 1
         # check if any load cases are defined
         if self.load_case_list == [] and self.moving_load_case_dict == {}:
             raise Exception("No load cases were defined")
@@ -2034,6 +2035,8 @@ class OspGrillage:
             load_factor = load_case_dict["load_factor"]
             load_case_analysis = Analysis(
                 analysis_name=load_case_obj.name,
+                analysis_type=analysis_type,
+                step=step,
                 ops_grillage_name=self.model_name,
                 pyfile=self.pyfile,
                 time_series_counter=self.global_time_series_counter,
@@ -2070,6 +2073,8 @@ class OspGrillage:
                     load_factor = load_case_dict["load_factor"]
                     incremental_analysis = Analysis(
                         analysis_name=load_case_obj.name,
+                        analysis_type=analysis_type,
+                        step=step,
                         ops_grillage_name=self.model_name,
                         pyfile=self.pyfile,
                         time_series_counter=self.global_time_series_counter,
@@ -2450,6 +2455,7 @@ class Analysis:
         step: int = 1,
         **kwargs,
     ):
+
         self.analysis_name = analysis_name
         self.ops_grillage_name = ops_grillage_name
         self.time_series_tag = None
@@ -2459,7 +2465,28 @@ class Analysis:
         self.pyfile = pyfile
         self.analysis_file_name = (
             self.analysis_name + "of" + self.ops_grillage_name + ".py"
-        )  # py file name
+        )
+
+        # default newmark parameters for Average Accelerations
+        gamma = 0.5
+        beta = 0.25
+        time_increment = kwargs.get("time_increment", 0.01)
+        if analysis_type == "Transient":
+            if kwargs.get("linear_acceleration"):
+                beta = 1 / 6
+
+        # Preset dict for different analysis
+        analysis_arguments = {
+            "Static": {
+                "analyse": "ops.analyze({})\n".format(self.step),
+                "integrator": "ops.integrator('LoadControl', 1)\n",
+            },
+            "Transient": {
+                "analyse": "ops.analyze({},{})\n".format(self.step, time_increment),
+                "integrator": "ops.integrator('Newmark', {},{})\n".format(gamma, beta),
+            },
+        }
+
         # list recording load commands, time series and pattern for the input load case
         self.load_cases_dict_list = (
             []
@@ -2489,9 +2516,11 @@ class Analysis:
             type=self.constraint_type
         )  # default plain
         self.algorithm_command = "ops.algorithm('Linear')\n"  # default linear
-        self.analyze_command = "ops.analyze({})\n".format(self.step)  # default 1 step
+        self.analyze_command = analysis_arguments[analysis_type][
+            "analyse"
+        ]  # default 1 step
         self.analysis_command = 'ops.analysis("{}")\n'.format(analysis_type)
-        self.intergrator_command = "ops.integrator('LoadControl', 1)\n"
+        self.intergrator_command = analysis_arguments[analysis_type]["integrator"]
         self.sensitivity_integrator_command = "ops."
         self.mesh_node_counter = node_counter  # set node counter based on current Mesh
         self.mesh_ele_counter = ele_counter  # set ele counter based on current Mesh
@@ -2980,9 +3009,9 @@ class Results:
                     dims=self.dim2,
                     coords={
                         self.dim2[0]: basic_load_case_coord,
-                        self.dim2[1]: ele_tag
-                        if not local_force_option
-                        else ele_tag_beam,
+                        self.dim2[1]: (
+                            ele_tag if not local_force_option else ele_tag_beam
+                        ),
                         self.dim2[2]: self.force_component,
                     },
                 )
