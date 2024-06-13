@@ -7,7 +7,7 @@ by OspGrillage class.
 """
 import math
 
-from ospgrillage.static import *
+from ospgrillage.utils import *
 from collections import namedtuple
 
 
