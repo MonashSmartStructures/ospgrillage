@@ -339,6 +339,26 @@ class OspGrillage:
             print("Meshing complete")
         return mesh_obj
 
+    def _write_imports(self):
+        """write the import functions"""
+        with open(self.filename, "w") as file_handle:
+            # create py file or overwrite existing
+            # writing headers and description at top of file
+            file_handle.write(
+                "# Grillage generator wizard\n# Model name: {}\n".format(
+                    self.model_name
+                )
+            )
+            # time
+            now = datetime.now()
+            dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+            file_handle.write("# Constructed on:{}\n".format(dt_string))
+            # necessary imports
+            file_handle.write(
+                "import numpy as np\nimport math\nimport openseespy.opensees as ops"
+                "\nimport vfo.vfo as opsplt\n"
+            )
+
     # interface function
     def create_osp_model(self, pyfile: bool = False):
         """
@@ -351,23 +371,7 @@ class OspGrillage:
         self.pyfile = pyfile
         # if output mode, create the py file
         if self.pyfile:
-            with open(self.filename, "w") as file_handle:
-                # create py file or overwrite existing
-                # writing headers and description at top of file
-                file_handle.write(
-                    "# Grillage generator wizard\n# Model name: {}\n".format(
-                        self.model_name
-                    )
-                )
-                # time
-                now = datetime.now()
-                dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-                file_handle.write("# Constructed on:{}\n".format(dt_string))
-                # necessary imports
-                file_handle.write(
-                    "import numpy as np\nimport math\nimport openseespy.opensees as ops"
-                    "\nimport vfo.vfo as opsplt\n"
-                )
+            self._write_imports()
 
         self._write_op_model()
         # run model generation in OpenSees or write generation command to py file
@@ -385,9 +389,8 @@ class OspGrillage:
         # write / execute model commands
         self._write_op_node(self.Mesh_obj)  # write node() commands
         self._write_op_fix(self.Mesh_obj)  # write fix() command for support nodes
+        self._write_mass()
         self._write_geom_transf(self.Mesh_obj)  # x dir members
-
-        # write / execute variable definition command
 
         # write / execute material and sections
         for mat_str in self.material_command_list:
@@ -409,7 +412,6 @@ class OspGrillage:
                 self.model_command_list.append(sec_str)
 
         # write /execute element commands
-
         for ele_tag, ele_str in self.element_command_list.items():
             if self.pyfile:
                 with open(self.filename, "a") as file_handle:
@@ -578,6 +580,24 @@ class OspGrillage:
                 else:  # run instance
                     eval(fix_str)
                     self.model_command_list.append(fix_str)
+
+    # TODO
+    def _write_mass(self):
+        """write or evaluates the mass commands"""
+
+        # d = {node number: [1,2,3,0,0,0] } # dx dy dz, rx, ry, rz
+        #
+        mass_dict = {}
+        for node, mass_list in mass_dict.items():
+            mass_str = "ops.mass({nodetag},*{mass_list})".format(
+                nodetag=node, mass_list=mass_list
+            )
+            if self.pyfile:
+                with open(self.filename, "a") as file_handle:
+                    file_handle.write(mass_str)
+            else:
+                eval(mass_str)
+                self.model_command_list.append(mass_str)
 
     def _write_equal_dof(self, node_tag_list: list, dof: list = None):
         """
@@ -2423,6 +2443,50 @@ class OspGrillage:
         # remove all results
         self.results = Results(self.Mesh_obj)  # reset results
 
+    def get_MCK(self):
+        """Returns the mass stiffness and damping matrices.
+        Note model needs to be pyfile=False mode
+
+        ref:https://portwooddigital.com/2020/05/17/gimme-all-your-damping-all-your-mass-and-stiffness-too/
+        """
+        ops.wipeAnalysis()
+        ops.system("FullGeneral")
+        ops.analysis("Transient")
+
+        # Mass
+        ops.integrator("GimmeMCK", 1.0, 0.0, 0.0)
+        ops.analyze(1, 0.0)
+
+        # Number of equations in the model
+        N = ops.systemSize()  # Has to be done after analyze
+
+        M = ops.printA("-ret")  # Or use ops.printA('-file','M.out')
+        M = np.array(M)  # Convert the list to an array
+        M.shape = (N, N)  # Make the array an NxN matrix
+
+        # Stiffness
+        ops.integrator("GimmeMCK", 0.0, 0.0, 1.0)
+        ops.analyze(1, 0.0)
+        K = ops.printA("-ret")
+        K = np.array(K)
+        K.shape = (N, N)
+
+        # Damping
+        ops.integrator("GimmeMCK", 0.0, 1.0, 0.0)
+        ops.analyze(1, 0.0)
+        C = ops.printA("-ret")
+        C = np.array(C)
+        C.shape = (N, N)
+
+        massDOFs = []
+        for nd in ops.getNodeTags():
+
+            for j in range(6):  # NDF is number of DOFs/node
+                if ops.nodeMass(nd, j + 1) > 0.0:
+                    massDOFs.append(ops.nodeDOFs(nd)[j])
+
+        return M, C, K
+
 
 # ---------------------------------------------------------------------------------------------------------------------
 class Analysis:
@@ -3129,23 +3193,7 @@ class OspGrillageShell(OspGrillage):
         self.pyfile = pyfile
 
         if self.pyfile:
-            with open(self.filename, "w") as file_handle:
-                # create py file or overwrite existing
-                # writing headers and description at top of file
-                file_handle.write(
-                    "# Grillage generator wizard\n# Model name: {}\n".format(
-                        self.model_name
-                    )
-                )
-                # time
-                now = datetime.now()
-                dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-                file_handle.write("# Constructed on:{}\n".format(dt_string))
-                # write imports
-                file_handle.write(
-                    "import numpy as np\nimport math\nimport openseespy.opensees as ops"
-                    "\nimport vfo.vfo as opsplt\n"
-                )
+            self._write_imports()
         # model() command
         self._write_op_model()
         # create grillage mesh object + beam element groups

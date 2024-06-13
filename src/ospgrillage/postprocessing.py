@@ -15,7 +15,7 @@ from scipy.interpolate import interpn, RegularGridInterpolator
 
 # if TYPE_CHECKING:
 from ospgrillage.load import ShapeFunction
-from ospgrillage.static import solve_zeta_eta
+from ospgrillage.utils import solve_zeta_eta
 
 import vfo.vfo as opsplt
 

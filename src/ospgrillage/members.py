@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING
 
 # if TYPE_CHECKING:
 #     from material import Material
+g = 9.81
 
 
 def create_section(**kwargs):
@@ -393,6 +394,12 @@ class GrillageMember:
             )
 
         return sec_str
+
+    def get_mass_command_str(
+        self,
+        node_tag_list: list,
+    ):
+        self.material
 
     def get_element_command_str(
         self,

@@ -1,4 +1,4 @@
-from ospgrillage.static import *
+from ospgrillage.utils import *
 from ospgrillage.mesh import *
 from ospgrillage.load import *
 from ospgrillage.material import *
