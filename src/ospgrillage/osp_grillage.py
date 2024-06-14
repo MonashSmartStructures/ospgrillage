@@ -3206,11 +3206,11 @@ class OspGrillageShell(OspGrillage):
                     file_handle.write(ele_str)
             else:
                 eval(ele_str)
+                self.model_command_list.append(ele_str)
         # create rigid link command
         self._write_rigid_link()
         # create the result file for the Mesh object
         self.results = Results(self.Mesh_obj)
-        # flag
 
     # overwrites base class for beam element grillage - specific for Shell model
     def _create_standard_element_list(self):

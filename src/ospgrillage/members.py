@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING
 # if TYPE_CHECKING:
 #     from material import Material
 g = 9.81
+mm = 1e3
 
 
 def create_section(**kwargs):
@@ -234,7 +235,7 @@ class GrillageMember:
             self.section_command_flag = False  #
 
             # determine mass from section area and material density
-            self.mass = self.section.A * self.material.density
+            self.mass = self.section.A * self.material.density * mm  # kg/mm
         elif any(
             [
                 self.section.op_ele_type == "ShellMITC4",
@@ -395,12 +396,6 @@ class GrillageMember:
 
         return sec_str
 
-    def get_mass_command_str(
-        self,
-        node_tag_list: list,
-    ):
-        self.material
-
     def get_element_command_str(
         self,
         ele_tag: int,
@@ -430,7 +425,7 @@ class GrillageMember:
         ele_str = None
         if self.section.op_ele_type == "ElasticTimoshenkoBeam":
             section_input = self.get_member_prop_arguments(ele_width)
-            ele_str = 'ops.element("{type}", {tag}, *{node_tag_list}, *{memberprop}, {transftag}, {mass})\n'.format(
+            ele_str = 'ops.element("{type}", {tag}, *{node_tag_list}, *{memberprop}, {transftag},"-mass", {mass})\n'.format(
                 type=self.section.op_ele_type,
                 tag=ele_tag,
                 node_tag_list=node_tag_list,
@@ -440,7 +435,7 @@ class GrillageMember:
             )
         elif self.section.op_ele_type == "elasticBeamColumn":
             section_input = self.get_member_prop_arguments(ele_width)
-            ele_str = 'ops.element("{type}", {tag}, *{node_tag_list}, *{memberprop}, {transftag}, {mass})\n'.format(
+            ele_str = 'ops.element("{type}", {tag}, *{node_tag_list}, *{memberprop}, {transftag}, "-mass", {mass})\n'.format(
                 type=self.section.op_ele_type,
                 tag=ele_tag,
                 node_tag_list=node_tag_list,
@@ -449,7 +444,7 @@ class GrillageMember:
                 mass=self.mass,
             )
         elif self.section.op_ele_type == "nonlinearBeamColumn":
-            ele_str = 'ops.element("{type}",{tag},*{node_tag_list},{num_int_pt},{sectag},{transftag},{mass})\n'.format(
+            ele_str = 'ops.element("{type}",{tag},*{node_tag_list},{num_int_pt},{sectag},{transftag},"-mass", {mass})\n'.format(
                 type=self.section.op_ele_type,
                 tag=ele_tag,
                 node_tag_list=node_tag_list,
