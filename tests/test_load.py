@@ -1128,13 +1128,13 @@ def test_transient(
     beam_bridge = beam_element_bridge
     beam_bridge.create_osp_model()
     og.ops.rayleigh(0.0, 0.0, 0.0, 2 * 0.02 / 4)
-
     # M, C, K = beam_bridge.get_MCK()
 
     # og.opsplt.plot_model(show_nodes="yes", show_nodetags="yes")
 
     beam_bridge.add_load_case(mid_point_line_loadcase)
     beam_bridge.analyze(analysis_type="Transient", step=100)
+    # beam_bridge.analyze()
     results = beam_bridge.get_results()  # the results of ith step
     print(results)
     # VBI steps
