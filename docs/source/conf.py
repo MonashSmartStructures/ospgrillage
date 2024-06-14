@@ -43,6 +43,7 @@ extensions = [
     "sphinx.ext.githubpages",
     # "recommonmark",
     "nbsphinx",
+    "sphinx.ext.napoleon",
 ]
 
 autodoc_member_order = "bysource"

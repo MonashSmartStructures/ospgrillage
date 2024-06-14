@@ -339,6 +339,26 @@ class OspGrillage:
             print("Meshing complete")
         return mesh_obj
 
+    def _write_imports(self):
+        """write the import functions"""
+        with open(self.filename, "w") as file_handle:
+            # create py file or overwrite existing
+            # writing headers and description at top of file
+            file_handle.write(
+                "# Grillage generator wizard\n# Model name: {}\n".format(
+                    self.model_name
+                )
+            )
+            # time
+            now = datetime.now()
+            dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+            file_handle.write("# Constructed on:{}\n".format(dt_string))
+            # necessary imports
+            file_handle.write(
+                "import numpy as np\nimport math\nimport openseespy.opensees as ops"
+                "\nimport vfo.vfo as opsplt\n"
+            )
+
     # interface function
     def create_osp_model(self, pyfile: bool = False):
         """
@@ -351,23 +371,7 @@ class OspGrillage:
         self.pyfile = pyfile
         # if output mode, create the py file
         if self.pyfile:
-            with open(self.filename, "w") as file_handle:
-                # create py file or overwrite existing
-                # writing headers and description at top of file
-                file_handle.write(
-                    "# Grillage generator wizard\n# Model name: {}\n".format(
-                        self.model_name
-                    )
-                )
-                # time
-                now = datetime.now()
-                dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-                file_handle.write("# Constructed on:{}\n".format(dt_string))
-                # necessary imports
-                file_handle.write(
-                    "import numpy as np\nimport math\nimport openseespy.opensees as ops"
-                    "\nimport openseespy.postprocessing.Get_Rendering as opsplt\n"
-                )
+            self._write_imports()
 
         self._write_op_model()
         # run model generation in OpenSees or write generation command to py file
@@ -385,9 +389,8 @@ class OspGrillage:
         # write / execute model commands
         self._write_op_node(self.Mesh_obj)  # write node() commands
         self._write_op_fix(self.Mesh_obj)  # write fix() command for support nodes
+        self._write_mass()
         self._write_geom_transf(self.Mesh_obj)  # x dir members
-
-        # write / execute variable definition command
 
         # write / execute material and sections
         for mat_str in self.material_command_list:
@@ -409,7 +412,6 @@ class OspGrillage:
                 self.model_command_list.append(sec_str)
 
         # write /execute element commands
-
         for ele_tag, ele_str in self.element_command_list.items():
             if self.pyfile:
                 with open(self.filename, "a") as file_handle:
@@ -579,6 +581,24 @@ class OspGrillage:
                     eval(fix_str)
                     self.model_command_list.append(fix_str)
 
+    # TODO
+    def _write_mass(self):
+        """write or evaluates the mass commands"""
+
+        # d = {node number: [1,2,3,0,0,0] } # dx dy dz, rx, ry, rz
+        #
+        mass_dict = {}
+        for node, mass_list in mass_dict.items():
+            mass_str = "ops.mass({nodetag},*{mass_list})".format(
+                nodetag=node, mass_list=mass_list
+            )
+            if self.pyfile:
+                with open(self.filename, "a") as file_handle:
+                    file_handle.write(mass_str)
+            else:
+                eval(mass_str)
+                self.model_command_list.append(mass_str)
+
     def _write_equal_dof(self, node_tag_list: list, dof: list = None):
         """
         Write OpenseesPy's equalDOF command.
@@ -719,9 +739,9 @@ class OspGrillage:
             self.common_grillage_element_z_group.update({key: val})
         # populate start edge and end edge entries
         self.common_grillage_element_z_group[self.common_grillage_element_keys[4]] = [0]
-        self.common_grillage_element_z_group[
-            self.common_grillage_element_keys[5]
-        ] = list(range(1, self.Mesh_obj.global_edge_count))
+        self.common_grillage_element_z_group[self.common_grillage_element_keys[5]] = (
+            list(range(1, self.Mesh_obj.global_edge_count))
+        )
         self.common_grillage_element_z_group[self.common_grillage_element_keys[6]] = [
             0
         ]  # proxy 0 for set_member() loop
@@ -1945,9 +1965,9 @@ class OspGrillage:
                         "load_factor": load_factor,
                     }
                     list_of_incr_load_case_dict.append(increment_load_case_dict)
-                self.moving_load_case_dict[
-                    moving_load_obj.name
-                ] = list_of_incr_load_case_dict
+                self.moving_load_case_dict[moving_load_obj.name] = (
+                    list_of_incr_load_case_dict
+                )
 
             if self.diagnostics:
                 print("Moving load case: {} created".format(moving_load_obj.name))
@@ -1966,7 +1986,7 @@ class OspGrillage:
         * all (`bool`): If True, runs all load cases. If not provided, default to True.
         * load_case ('list' or 'str'): String or list of name strings for selected load case to be analyzed.
         * set_verbose(`bool`): If True, incremental load case report is not printed to terminal (default True)
-
+        * analysis_type ('str'): The type of analysis. Default is "Static".
         :except: raise ValueError if missing arguments for either load_case=, or all=
 
         """
@@ -1975,7 +1995,8 @@ class OspGrillage:
         # get run options from kwargs
         all_flag = True  # Default true
         selected_load_case: list = kwargs.get("load_case", None)  #
-
+        analysis_type = kwargs.get("analysis_type", "Static")
+        step = kwargs.get("step", 1)  # default 1
         # check if any load cases are defined
         if self.load_case_list == [] and self.moving_load_case_dict == {}:
             raise Exception("No load cases were defined")
@@ -2034,6 +2055,8 @@ class OspGrillage:
             load_factor = load_case_dict["load_factor"]
             load_case_analysis = Analysis(
                 analysis_name=load_case_obj.name,
+                analysis_type=analysis_type,
+                step=step,
                 ops_grillage_name=self.model_name,
                 pyfile=self.pyfile,
                 time_series_counter=self.global_time_series_counter,
@@ -2070,6 +2093,8 @@ class OspGrillage:
                     load_factor = load_case_dict["load_factor"]
                     incremental_analysis = Analysis(
                         analysis_name=load_case_obj.name,
+                        analysis_type=analysis_type,
+                        step=step,
                         ops_grillage_name=self.model_name,
                         pyfile=self.pyfile,
                         time_series_counter=self.global_time_series_counter,
@@ -2418,6 +2443,50 @@ class OspGrillage:
         # remove all results
         self.results = Results(self.Mesh_obj)  # reset results
 
+    def get_MCK(self):
+        """Returns the mass stiffness and damping matrices.
+        Note model needs to be pyfile=False mode
+
+        ref:https://portwooddigital.com/2020/05/17/gimme-all-your-damping-all-your-mass-and-stiffness-too/
+        """
+        ops.wipeAnalysis()
+        ops.system("FullGeneral")
+        ops.analysis("Transient")
+
+        # Mass
+        ops.integrator("GimmeMCK", 1.0, 0.0, 0.0)
+        ops.analyze(1, 0.0)
+
+        # Number of equations in the model
+        N = ops.systemSize()  # Has to be done after analyze
+
+        M = ops.printA("-ret")  # Or use ops.printA('-file','M.out')
+        M = np.array(M)  # Convert the list to an array
+        M.shape = (N, N)  # Make the array an NxN matrix
+
+        # Stiffness
+        ops.integrator("GimmeMCK", 0.0, 0.0, 1.0)
+        ops.analyze(1, 0.0)
+        K = ops.printA("-ret")
+        K = np.array(K)
+        K.shape = (N, N)
+
+        # Damping
+        ops.integrator("GimmeMCK", 0.0, 1.0, 0.0)
+        ops.analyze(1, 0.0)
+        C = ops.printA("-ret")
+        C = np.array(C)
+        C.shape = (N, N)
+
+        massDOFs = []
+        for nd in ops.getNodeTags():
+
+            for j in range(6):  # NDF is number of DOFs/node
+                if ops.nodeMass(nd, j + 1) > 0.0:
+                    massDOFs.append(ops.nodeDOFs(nd)[j])
+
+        return M, C, K
+
 
 # ---------------------------------------------------------------------------------------------------------------------
 class Analysis:
@@ -2450,6 +2519,7 @@ class Analysis:
         step: int = 1,
         **kwargs,
     ):
+
         self.analysis_name = analysis_name
         self.ops_grillage_name = ops_grillage_name
         self.time_series_tag = None
@@ -2459,7 +2529,28 @@ class Analysis:
         self.pyfile = pyfile
         self.analysis_file_name = (
             self.analysis_name + "of" + self.ops_grillage_name + ".py"
-        )  # py file name
+        )
+
+        # default newmark parameters for Average Accelerations
+        gamma = 0.5
+        beta = 0.25
+        time_increment = kwargs.get("time_increment", 0.01)
+        if analysis_type == "Transient":
+            if kwargs.get("linear_acceleration"):
+                beta = 1 / 6
+
+        # Preset dict for different analysis
+        analysis_arguments = {
+            "Static": {
+                "analyse": "ops.analyze({})\n".format(self.step),
+                "integrator": "ops.integrator('LoadControl', 1)\n",
+            },
+            "Transient": {
+                "analyse": "ops.analyze({},{})\n".format(self.step, time_increment),
+                "integrator": "ops.integrator('Newmark', {},{})\n".format(gamma, beta),
+            },
+        }
+
         # list recording load commands, time series and pattern for the input load case
         self.load_cases_dict_list = (
             []
@@ -2489,9 +2580,11 @@ class Analysis:
             type=self.constraint_type
         )  # default plain
         self.algorithm_command = "ops.algorithm('Linear')\n"  # default linear
-        self.analyze_command = "ops.analyze({})\n".format(self.step)  # default 1 step
+        self.analyze_command = analysis_arguments[analysis_type][
+            "analyse"
+        ]  # default 1 step
         self.analysis_command = 'ops.analysis("{}")\n'.format(analysis_type)
-        self.intergrator_command = "ops.integrator('LoadControl', 1)\n"
+        self.intergrator_command = analysis_arguments[analysis_type]["integrator"]
         self.sensitivity_integrator_command = "ops."
         self.mesh_node_counter = node_counter  # set node counter based on current Mesh
         self.mesh_ele_counter = ele_counter  # set ele counter based on current Mesh
@@ -2520,7 +2613,7 @@ class Analysis:
                 # write imports
                 file_handle.write(
                     "import numpy as np\nimport math\nimport openseespy.opensees as ops"
-                    "\nimport openseespy.postprocessing.Get_Rendering as opsplt\n"
+                    "\nimport vfo.vfo as opsplt\n"
                 )
 
     def _time_series_command(self, load_factor):
@@ -2980,9 +3073,9 @@ class Results:
                     dims=self.dim2,
                     coords={
                         self.dim2[0]: basic_load_case_coord,
-                        self.dim2[1]: ele_tag
-                        if not local_force_option
-                        else ele_tag_beam,
+                        self.dim2[1]: (
+                            ele_tag if not local_force_option else ele_tag_beam
+                        ),
                         self.dim2[2]: self.force_component,
                     },
                 )
@@ -3100,23 +3193,7 @@ class OspGrillageShell(OspGrillage):
         self.pyfile = pyfile
 
         if self.pyfile:
-            with open(self.filename, "w") as file_handle:
-                # create py file or overwrite existing
-                # writing headers and description at top of file
-                file_handle.write(
-                    "# Grillage generator wizard\n# Model name: {}\n".format(
-                        self.model_name
-                    )
-                )
-                # time
-                now = datetime.now()
-                dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-                file_handle.write("# Constructed on:{}\n".format(dt_string))
-                # write imports
-                file_handle.write(
-                    "import numpy as np\nimport math\nimport openseespy.opensees as ops"
-                    "\nimport openseespy.postprocessing.Get_Rendering as opsplt\n"
-                )
+            self._write_imports()
         # model() command
         self._write_op_model()
         # create grillage mesh object + beam element groups
@@ -3129,11 +3206,11 @@ class OspGrillageShell(OspGrillage):
                     file_handle.write(ele_str)
             else:
                 eval(ele_str)
+                self.model_command_list.append(ele_str)
         # create rigid link command
         self._write_rigid_link()
         # create the result file for the Mesh object
         self.results = Results(self.Mesh_obj)
-        # flag
 
     # overwrites base class for beam element grillage - specific for Shell model
     def _create_standard_element_list(self):

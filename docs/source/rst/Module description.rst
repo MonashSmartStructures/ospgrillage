@@ -317,7 +317,7 @@ Therefore, one can run access `ops_vis` by running the following code line and a
 
 .. code-block:: python
 
-    og.opsplt.plot_model("nodes") # using Get Rendering module
+    og.opsplt.plot_model(show_nodes="yes",show_nodetags="yes") # using Vfo module
     og.opsv.plot_model(az_el=(-90, 0)) # using osp_vis
 
 Whilst all nodes will be visualized, only the assigned members are visualized.
