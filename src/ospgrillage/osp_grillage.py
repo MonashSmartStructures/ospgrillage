@@ -498,6 +498,7 @@ class OspGrillage:
                         file_handle.write(geom_tranfs_str)
 
                 else:
+                    print(geom_tranfs_str)
                     eval(geom_tranfs_str)
 
             # store to global list
@@ -2443,7 +2444,8 @@ class OspGrillage:
         # remove all results
         self.results = Results(self.Mesh_obj)  # reset results
 
-    def get_MCK(self):
+    @staticmethod
+    def get_MCK():
         """Returns the mass stiffness and damping matrices.
         Note model needs to be pyfile=False mode
 
@@ -2486,6 +2488,34 @@ class OspGrillage:
                     massDOFs.append(ops.nodeDOFs(nd)[j])
 
         return M, C, K
+
+    @staticmethod
+    def store_state():
+        """Use for transient analysis to store previous state"""
+        save = {}
+        for tag in ops.getNodeTags():
+            d = ops.nodeDisp(tag)
+            v = ops.nodeVel(tag)
+            a = ops.nodeAccel(tag)
+            save[tag] = {"d": d, "v": v, "a": a}
+        return save
+
+    @staticmethod
+    def set_previous_state(save):
+        """Set the disp, vel, and acc of all nodes in the last analysis state to the current analysis"""
+        for node, val in save.items():
+            d = val["d"]
+            v = val["v"]
+            a = val["a"]
+
+            for i, magnitude in enumerate(d):
+                ops.setNodeDisp(node, i + 1, magnitude, "-commit")
+            for i, magnitude in enumerate(v):
+                ops.setNodeVel(node, i + 1, magnitude, "-commit")
+            for i, magnitude in enumerate(a):
+                ops.setNodeAccel(node, i + 1, magnitude, "-commit")
+
+        ...
 
 
 # ---------------------------------------------------------------------------------------------------------------------
