@@ -225,7 +225,7 @@ def create_grillage():
 
     simple_grid.create_osp_model(pyfile=False)
     # ospg.opsplt.plot_model("element")
-
+    ospg.opsplt.plot_model(show_nodes="yes", show_nodetags="yes", show_eletags="yes")
     return simple_grid, bridge
 
 

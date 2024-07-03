@@ -1114,34 +1114,39 @@ def test_compare_shell_beam_analysis(run_beam_model_point_load):
     og.opsv.plot_defo()
 
 
-def test_transient(
-    beam_element_bridge,
-):
-    P = 1 * kN
-    lp1 = og.create_load_vertex(x=5, y=0, z=3.5, p=P)
-    mid_point_line_load = og.create_load(
-        name="unit load",
-        point1=lp1,
-    )
-    mid_point_line_loadcase = og.create_load_case(name="line")
-    mid_point_line_loadcase.add_load(mid_point_line_load)
-    beam_bridge = beam_element_bridge
-    beam_bridge.create_osp_model()
-    og.ops.rayleigh(0.0, 0.0, 0.0, 2 * 0.02 / 4)
-    # M, C, K = beam_bridge.get_MCK()
+def test_transient(beam_element_bridge):
+    """A test for the uncoupled transient analysis portion of VBI basic framework"""
+    positions = [5, 5, 10, 15]
+    P = 100 * kN
+    first_step = True
+    previous_state = None
 
-    # og.opsplt.plot_model(show_nodes="yes", show_nodetags="yes")
+    # start moving vehicle through all positions
+    for x in positions:
+        # create load case
+        lp1 = og.create_load_vertex(x=x, y=0, z=3.5, p=P)
+        mid_point_line_load = og.create_load(
+            name="unit load",
+            point1=lp1,
+        )
+        mid_point_line_loadcase = og.create_load_case(name="VBI")
+        mid_point_line_loadcase.add_load(mid_point_line_load)
 
-    beam_bridge.add_load_case(mid_point_line_loadcase)
-    beam_bridge.analyze(analysis_type="Transient", step=100)
-    # beam_bridge.analyze()
-    results = beam_bridge.get_results()  # the results of ith step
-    print(results)
-    # VBI steps
-    # for each step,
-    # get Fb , use d,v,a
-    # assign d v a to all nodes
-    # analyse()
-    # get d,v,a
+        # create bridge instance
+        beam_bridge = beam_element_bridge
+        beam_bridge.create_osp_model()
+        og.ops.rayleigh(0.0, 0.0, 0.0, 2 * 0.02 / 4)
 
-    # use d,v,a result for next step i + 1
+        # set previous state
+        if not first_step:
+            beam_bridge.set_previous_state(previous_state)
+        first_step = False
+
+        # add load case, run and store
+        beam_bridge.add_load_case(mid_point_line_loadcase)
+        beam_bridge.analyze(analysis_type="Transient", step=100)
+        previous_state = beam_bridge.store_state()
+        result = beam_bridge.get_results()
+        # do something with results
+        print(result)
+        print("Next step")
