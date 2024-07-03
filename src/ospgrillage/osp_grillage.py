@@ -498,7 +498,6 @@ class OspGrillage:
                         file_handle.write(geom_tranfs_str)
 
                 else:
-                    print(geom_tranfs_str)
                     eval(geom_tranfs_str)
 
             # store to global list
