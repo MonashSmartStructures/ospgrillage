@@ -2065,6 +2065,7 @@ class OspGrillage:
                 ele_counter=self.Mesh_obj.element_counter,
                 constraint_type=self.constraint_type,
                 load_case=load_case_obj,
+                time_increment=kwargs.get("time_increment", 0.01),
             )
             load_case_analysis.add_load_command(load_command, load_factor=load_factor)
             # run the Analysis object, collect results, and store Analysis object in the list for Analysis load case
@@ -2103,6 +2104,7 @@ class OspGrillage:
                         ele_counter=self.Mesh_obj.element_counter,
                         constraint_type=self.constraint_type,
                         load_case=load_case_obj,
+                        time_increment=kwargs.get("time_increment", 0.01),
                     )
                     incremental_analysis.add_load_command(
                         load_command, load_factor=load_factor

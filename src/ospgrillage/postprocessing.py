@@ -426,6 +426,8 @@ class PostProcessor:
         nodes, grid_number = self.grillage._get_point_load_nodes(
             point=point
         )  # list of nodes
+        if nodes is None:
+            raise ValueError("Point is outside bridge mesh")
 
         # get results of each node of four nodes
         for node in nodes:
