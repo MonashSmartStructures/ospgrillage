@@ -1124,17 +1124,19 @@ def test_transient(beam_element_bridge):
     # start moving vehicle through all positions
     for x in positions:
         # create load case
+        mid_point_line_loadcase = og.create_load_case(name="VBI")
         lp1 = og.create_load_vertex(x=x, y=0, z=3.5, p=P)
         mid_point_line_load = og.create_load(
             name="unit load",
             point1=lp1,
         )
-        mid_point_line_loadcase = og.create_load_case(name="VBI")
         mid_point_line_loadcase.add_load(mid_point_line_load)
 
         # create bridge instance
         beam_bridge = beam_element_bridge
         beam_bridge.create_osp_model()
+
+        print(og.ops.eigen(2))
         og.ops.rayleigh(0.0, 0.0, 0.0, 2 * 0.02 / 4)
 
         # set previous state
@@ -1144,9 +1146,13 @@ def test_transient(beam_element_bridge):
 
         # add load case, run and store
         beam_bridge.add_load_case(mid_point_line_loadcase)
-        beam_bridge.analyze(analysis_type="Transient", step=100)
+        beam_bridge.analyze(analysis_type="Transient", step=100, time_increment=0.1)
         previous_state = beam_bridge.store_state()
         result = beam_bridge.get_results()
+
+        postprocessor = og.PostProcessor(beam_bridge, result)
+
+        contactpoints = postprocessor.get_arbitrary_displacements(point=[5, 0, 3.5])
         # do something with results
         print(result)
         print("Next step")
