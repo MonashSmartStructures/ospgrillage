@@ -411,13 +411,16 @@ class PostProcessor:
         self.shape_function_obj = ShapeFunction()
 
     def get_arbitrary_displacements(
-        self, point: list, shape_function_type: str = "linear"
+        self, point: list, shape_function_type: str = "linear", component: str = "y"
     ):
-        """Returns displacement values (translation and rotational)
+        """Returns displacement (translation and rotational) from an arbitrary point by interpolation
 
         param point: list of coordinate. Default three elements [x,y=0,z]
         type point: list
-
+        param component: Displacement component. Default "y"
+        type component: str
+        param shape_function_type: The shape function for interpolation. Default "linear"
+        type shape_function_type: str
         """
         node_displacements = []
         node_coordinate = []
@@ -432,8 +435,8 @@ class PostProcessor:
         # get results of each node of four nodes
         for node in nodes:
             node_displacements.append(
-                self.result.displacements.sel(
-                    Component="y",
+                self.result.sel(
+                    Component=component,
                     Node=node,
                 )
                 .to_numpy()
