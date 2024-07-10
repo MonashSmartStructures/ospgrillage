@@ -1149,7 +1149,7 @@ def test_transient(beam_element_bridge):
         beam_bridge.analyze(analysis_type="Transient", step=100, time_increment=0.1)
         previous_state = beam_bridge.store_state()
         result = beam_bridge.get_results()
-
+        print(result)
         postprocessor = og.PostProcessor(beam_bridge, result)
 
         contactpoints = postprocessor.get_arbitrary_displacements(point=[5, 0, 3.5])

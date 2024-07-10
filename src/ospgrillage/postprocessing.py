@@ -358,7 +358,7 @@ def plot_defo(
     # check if component is provided, else default to
     dis_comp = component
     if component is None:
-        dis_comp = "dy"  # default to dy
+        dis_comp = "y"  # default to dy
 
     fig, ax = plt.subplots()
     # get all node information
@@ -433,7 +433,7 @@ class PostProcessor:
         for node in nodes:
             node_displacements.append(
                 self.result.displacements.sel(
-                    Component="dy",
+                    Component="y",
                     Node=node,
                 )
                 .to_numpy()
