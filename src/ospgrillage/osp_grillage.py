@@ -2593,6 +2593,8 @@ class Analysis:
         self.constraint_type = kwargs.get("constraint_type", "Plain")  # Default plain
         # Variables recording results of analysis
         self.node_disp = dict()  # key node tag, val list of dof
+        self.node_vel = dict()  # key node tag, val list of dof
+        self.node_accel = dict()  # key node tag, val list of dof
         self.ele_force = (
             dict()
         )  # key ele tag, val list of forces on nodes of ele[ order according to ele tag]
@@ -2749,7 +2751,11 @@ class Analysis:
             # first loop extract node displacements
             for node_tag in ops.getNodeTags():
                 disp_list = ops.nodeDisp(node_tag)
+                vel_list = ops.nodeVel(node_tag)
+                accel_list = ops.nodeAccel(node_tag)
                 self.node_disp.setdefault(node_tag, disp_list)
+                self.node_vel.setdefault(node_tag, vel_list)
+                self.node_accel.setdefault(node_tag, accel_list)
 
             # loop through all elements in Mesh, extract local forces
             for ele_tag in ops.getEleTags():
@@ -2783,12 +2789,28 @@ class Results:
         self.mesh_obj = mesh_obj
         # coordinates for dimensions
         self.displacement_component = [
-            "dx",
-            "dy",
-            "dz",
+            "x",
+            "y",
+            "z",
             "theta_x",
             "theta_y",
             "theta_z",
+        ]
+        self.vel_component = [
+            "dx",
+            "dy",
+            "dz",
+            "dtheta_x",
+            "dtheta_y",
+            "dtheta_z",
+        ]
+        self.acc_component = [
+            "ddx",
+            "ddy",
+            "ddz",
+            "ddtheta_x",
+            "ddtheta_y",
+            "ddtheta_z",
         ]
         self.force_component = [
             "Vx_i",
@@ -2844,6 +2866,8 @@ class Results:
         if analysis_obj:
             # compile ele forces for each node
             node_disp = analysis_obj.node_disp
+            node_vel = analysis_obj.node_vel
+            node_accel = analysis_obj.node_accel
             ele_force_dict = dict.fromkeys(
                 list(ops.getEleTags())
             )  # dict key is element tag, value is ele force from
@@ -2870,7 +2894,13 @@ class Results:
                 ele_nodes_dict.update({ele_num: ele_nodes})
             self.basic_load_case_record_global_forces.setdefault(
                 analysis_obj.analysis_name,
-                [node_disp, global_ele_force_dict, ele_nodes_dict],
+                [
+                    node_disp,
+                    node_vel,
+                    node_accel,
+                    global_ele_force_dict,
+                    ele_nodes_dict,
+                ],
             )
         # if moving load, input is a list of analysis obj
         elif list_of_inc_analysis:
@@ -2882,6 +2912,8 @@ class Results:
             for inc_analysis_obj in list_of_inc_analysis:
                 # compile ele forces for each node
                 node_disp = inc_analysis_obj.node_disp
+                node_vel = inc_analysis_obj.node_vel
+                node_accel = inc_analysis_obj.node_accel
                 ele_force_dict = dict.fromkeys(list(ops.getEleTags()))
                 ele_force_global_dict = dict.fromkeys(list(ops.getEleTags()))
                 ele_nodes_dict = dict.fromkeys(list(ops.getEleTags()))
@@ -2900,7 +2932,13 @@ class Results:
                     ele_force_global_dict.update({ele_num: ele_forces})
                 inc_load_case_global_force_record.setdefault(
                     inc_analysis_obj.analysis_name,
-                    [node_disp, ele_force_global_dict, ele_nodes_dict],
+                    [
+                        node_disp,
+                        node_vel,
+                        node_accel,
+                        ele_force_global_dict,
+                        ele_nodes_dict,
+                    ],
                 )
 
             self.moving_load_case_record.append(inc_load_case_record)
@@ -2917,6 +2955,8 @@ class Results:
         # Sort data for dataArrays
         # for basic load case  {loadcasename:[{1:,2:...},{1:,2:...}], ... , loadcasename:[{1:,2:...},{1:,2:...} }
         basic_node_disp_list = []
+        basic_node_vel_list = []
+        basic_node_accel_list = []
         basic_load_case_coord = []
         basic_ele_force_list = []
         extracted_ele_nodes_list = False  # a 2D array of ele node i and ele node j
@@ -2938,33 +2978,39 @@ class Results:
             basic_node_disp_list.append(
                 [a for a in list(resp_list_of_2_dict[0].values())]
             )  # list index 0 is disp
+            basic_node_vel_list.append(
+                [a for a in list(resp_list_of_2_dict[1].values())]
+            )
+            basic_node_accel_list.append(
+                [a for a in list(resp_list_of_2_dict[2].values())]
+            )
             # extract force
             basic_ele_force_list.append(
-                [a for a in list(resp_list_of_2_dict[1].values())]
+                [a for a in list(resp_list_of_2_dict[3].values())]
             )  # list index 1 is force
             # extract based on element type
             base_ele_force_list_beam.append(
                 [
                     a
-                    for a in list(resp_list_of_2_dict[1].values())
+                    for a in list(resp_list_of_2_dict[3].values())
                     if len(a) == len(self.force_component)
                 ]
             )
             base_ele_force_list_shell.append(
                 [
                     a
-                    for a in list(resp_list_of_2_dict[1].values())
+                    for a in list(resp_list_of_2_dict[3].values())
                     if len(a) == len(self.force_component_shell)
                 ]
             )
             if not extracted_ele_nodes_list:
                 ele_nodes_list = list(
-                    resp_list_of_2_dict[2].values()
+                    resp_list_of_2_dict[4].values()
                 )  # list index 2 is ele nodes variable
                 extracted_ele_nodes_list = (
                     True  # set to true, only extract if its the first time extracting
                 )
-                ele_tag = list(resp_list_of_2_dict[2].keys())
+                ele_tag = list(resp_list_of_2_dict[4].keys())
             # for section forces of each element
             # Coordinate of Load Case dimension
             basic_load_case_coord.append(load_case_name)
@@ -2982,19 +3028,24 @@ class Results:
                 basic_node_disp_list.append(
                     [a for a in list(inc_resp_list_of_2_dict[0].values())]
                 )
-
+                basic_node_vel_list.append(
+                    [a for a in list(inc_resp_list_of_2_dict[1].values())]
+                )
+                basic_node_accel_list.append(
+                    [a for a in list(inc_resp_list_of_2_dict[2].values())]
+                )
                 if local_force_option:
                     basic_ele_force_list.append(
                         [
                             a
-                            for a in list(inc_resp_list_of_2_dict[1].values())
+                            for a in list(inc_resp_list_of_2_dict[3].values())
                             if len(a) == len(self.force_component)
                         ]
                     )
                 else:
                     # global force
                     basic_ele_force_list.append(
-                        [a for a in list(inc_resp_list_of_2_dict[1].values())]
+                        [a for a in list(inc_resp_list_of_2_dict[3].values())]
                     )
 
                 # lists for shell model output
@@ -3002,8 +3053,8 @@ class Results:
                     [
                         a
                         for key, a in zip(
-                            list(inc_resp_list_of_2_dict[1].keys()),
-                            list(inc_resp_list_of_2_dict[1].values()),
+                            list(inc_resp_list_of_2_dict[3].keys()),
+                            list(inc_resp_list_of_2_dict[3].values()),
                         )
                         if len(a) == len(self.force_component)
                         if key < main_ele_tags
@@ -3012,7 +3063,7 @@ class Results:
                 base_ele_force_list_shell.append(
                     [
                         a
-                        for a in list(inc_resp_list_of_2_dict[1].values())
+                        for a in list(inc_resp_list_of_2_dict[3].values())
                         if len(a) == len(self.force_component_shell)
                     ]
                 )
@@ -3020,11 +3071,13 @@ class Results:
                 # inc_moving_load_case_coord.append(increment_load_case_name)
                 basic_load_case_coord.append(increment_load_case_name)
                 if not extracted_ele_nodes_list:
-                    ele_nodes_list = list(inc_resp_list_of_2_dict[2].values())
-                    ele_tag = list(inc_resp_list_of_2_dict[2].keys())
+                    ele_nodes_list = list(inc_resp_list_of_2_dict[4].values())
+                    ele_tag = list(inc_resp_list_of_2_dict[4].keys())
                     extracted_ele_nodes_list = True
         # convert to np array format
-        basic_array = np.array(basic_node_disp_list, dtype=object)
+        basic_array_disp = np.array(basic_node_disp_list, dtype=object)
+        basic_array_vel = np.array(basic_node_vel_list, dtype=object)
+        basic_array_accel = np.array(basic_node_accel_list, dtype=object)
         force_array = np.array(basic_ele_force_list, dtype=object)
         ele_array = np.array(ele_nodes_list, dtype=object)
 
@@ -3047,15 +3100,34 @@ class Results:
         force_array_beam = np.array(base_ele_force_list_beam)
 
         # create data array for each basic load case if any, else return
-        if basic_array.size:
+        if basic_array_disp.size:
             # displacement data array
-            basic_da = xr.DataArray(
-                data=basic_array,
+            basic_da_d = xr.DataArray(
+                data=basic_array_disp,
                 dims=self.dim,
                 coords={
                     self.dim[0]: basic_load_case_coord,
                     self.dim[1]: node,
                     self.dim[2]: self.displacement_component,
+                },
+            )
+            basic_da_v = xr.DataArray(
+                data=basic_array_vel,
+                dims=self.dim,
+                coords={
+                    self.dim[0]: basic_load_case_coord,
+                    self.dim[1]: node,
+                    self.dim[2]: self.vel_component,
+                },
+            )
+
+            basic_da_a = xr.DataArray(
+                data=basic_array_accel,
+                dims=self.dim,
+                coords={
+                    self.dim[0]: basic_load_case_coord,
+                    self.dim[1]: node,
+                    self.dim[2]: self.acc_component,
                 },
             )
 
@@ -3091,7 +3163,9 @@ class Results:
                 )
                 result = xr.Dataset(
                     {
-                        "displacements": basic_da,
+                        "displacements": basic_da_d,
+                        "velocity": basic_da_v,
+                        "acceleration": basic_da_a,
                         "forces_beam": force_da_beam,
                         "forces_shell": force_da_shell,
                         "ele_nodes_beam": ele_nodes_beam,
@@ -3112,7 +3186,9 @@ class Results:
                 )
                 result = xr.Dataset(
                     {
-                        "displacements": basic_da,
+                        "displacements": basic_da_d,
+                        "velocity": basic_da_v,
+                        "acceleration": basic_da_a,
                         "forces": force_da_beam,
                         "ele_nodes": ele_nodes_beam,
                     }

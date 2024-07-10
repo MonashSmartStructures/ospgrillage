@@ -853,7 +853,7 @@ def test_line_load_results(add_analysis_to_simple_grid):
     # get ospg point load case
     point_load_disp_ospg = all_results["displacements"].sel(
         Loadcase="Points Test (Global)",
-        Component=["dx", "dy", "dz", "theta_x", "theta_y", "theta_z"],
+        Component=["x", "y", "z", "theta_x", "theta_y", "theta_z"],
     )
 
     # lusas elements are 3 noded beam elemnt, this function extracts only the end nodes (first and third) of the model.
@@ -863,7 +863,7 @@ def test_line_load_results(add_analysis_to_simple_grid):
     )
     sorted_zip_ospg_node = sort_array_by_node_mapping(
         list_of_node=node_ospg,
-        data_of_node=point_load_disp_ospg.sel(Component="dy").values,
+        data_of_node=point_load_disp_ospg.sel(Component="y").values,
     )
 
     line_load_disp_lusas = pandas.read_csv(Path.cwd().joinpath(*line_lusas_disp_path))
@@ -872,11 +872,11 @@ def test_line_load_results(add_analysis_to_simple_grid):
     )
     line_load_disp_ospg = all_results["displacements"].sel(
         Loadcase="Line Test",
-        Component=["dx", "dy", "dz", "theta_x", "theta_y", "theta_z"],
+        Component=["x", "y", "z", "theta_x", "theta_y", "theta_z"],
     )
     sorted_zip_ospg_node = sort_array_by_node_mapping(
         list_of_node=node_ospg,
-        data_of_node=line_load_disp_ospg.sel(Component="dy").values,
+        data_of_node=line_load_disp_ospg.sel(Component="y").values,
     )
     # lusas bending z
     line_load_force_lusas = pandas.read_csv(Path.cwd().joinpath(*line_lusas_force_path))
