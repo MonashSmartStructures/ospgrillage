@@ -1150,7 +1150,7 @@ def test_transient(beam_element_bridge):
         previous_state = beam_bridge.store_state()
         result = beam_bridge.get_results()
         print(result)
-        postprocessor = og.PostProcessor(beam_bridge, result)
+        postprocessor = og.PostProcessor(beam_bridge, result.displacements)
 
         contactpoints = postprocessor.get_arbitrary_displacements(point=[5, 0, 3.5])
         # do something with results
