@@ -1710,9 +1710,9 @@ class OspGrillage:
             p_list = []
             for tag in nodes:
                 coord = self.Mesh_obj.node_spec[tag]["coordinate"]
-                p = patch_load_obj.patch_mag_interpolate(coord[0], coord[2])[
-                    0
-                ]  # object function returns array like
+                p = patch_load_obj.patch_mag_interpolate(
+                    coord[0], coord[2]
+                )  # object function returns array like
                 p_list.append(LoadPoint(coord[0], coord[1], coord[2], p))
             # get centroid of patch on grid
             xc, yc, zc = get_patch_centroid(p_list)
@@ -1784,16 +1784,16 @@ class OspGrillage:
                     )  # object function returns array like
                     # p is array object, extract
                     p_list.append(
-                        LoadPoint(int_point[0], int_point[1], int_point[2], p[0])
+                        LoadPoint(int_point[0], int_point[1], int_point[2], p)
                         if int_point != []
                         else []
                     )
             # loop each node in grid points
             for items in node_in_grid:
                 coord = self.Mesh_obj.node_spec[items]["coordinate"]
-                p = patch_load_obj.patch_mag_interpolate(coord[0], coord[2])[
-                    0
-                ]  # object function returns array like
+                p = patch_load_obj.patch_mag_interpolate(
+                    coord[0], coord[2]
+                )  # object function returns array like
                 p_list.append(LoadPoint(coord[0], coord[1], coord[2], p))
             # Loop each p_list object to find duplicates if any, remove duplicate
             for count, point in enumerate(p_list):

@@ -34,9 +34,9 @@ dependencies = [
     "opsvis~=0.95.5",
     "vfo>=0.0.6",
     "matplotlib",
-    "numpy~=1.23.5",
+    "numpy",
     "pandas",
-    "scipy~=1.11.0",
+    "scipy",
     "xarray",
 ]
 
