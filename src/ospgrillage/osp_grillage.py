@@ -339,6 +339,26 @@ class OspGrillage:
             print("Meshing complete")
         return mesh_obj
 
+    def _write_imports(self):
+        """write the import functions"""
+        with open(self.filename, "w") as file_handle:
+            # create py file or overwrite existing
+            # writing headers and description at top of file
+            file_handle.write(
+                "# Grillage generator wizard\n# Model name: {}\n".format(
+                    self.model_name
+                )
+            )
+            # time
+            now = datetime.now()
+            dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+            file_handle.write("# Constructed on:{}\n".format(dt_string))
+            # necessary imports
+            file_handle.write(
+                "import numpy as np\nimport math\nimport openseespy.opensees as ops"
+                "\nimport vfo.vfo as opsplt\n"
+            )
+
     # interface function
     def create_osp_model(self, pyfile: bool = False):
         """
@@ -351,23 +371,7 @@ class OspGrillage:
         self.pyfile = pyfile
         # if output mode, create the py file
         if self.pyfile:
-            with open(self.filename, "w") as file_handle:
-                # create py file or overwrite existing
-                # writing headers and description at top of file
-                file_handle.write(
-                    "# Grillage generator wizard\n# Model name: {}\n".format(
-                        self.model_name
-                    )
-                )
-                # time
-                now = datetime.now()
-                dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-                file_handle.write("# Constructed on:{}\n".format(dt_string))
-                # necessary imports
-                file_handle.write(
-                    "import numpy as np\nimport math\nimport openseespy.opensees as ops"
-                    "\nimport openseespy.postprocessing.Get_Rendering as opsplt\n"
-                )
+            self._write_imports()
 
         self._write_op_model()
         # run model generation in OpenSees or write generation command to py file
@@ -385,9 +389,8 @@ class OspGrillage:
         # write / execute model commands
         self._write_op_node(self.Mesh_obj)  # write node() commands
         self._write_op_fix(self.Mesh_obj)  # write fix() command for support nodes
+        self._write_mass()
         self._write_geom_transf(self.Mesh_obj)  # x dir members
-
-        # write / execute variable definition command
 
         # write / execute material and sections
         for mat_str in self.material_command_list:
@@ -409,7 +412,6 @@ class OspGrillage:
                 self.model_command_list.append(sec_str)
 
         # write /execute element commands
-
         for ele_tag, ele_str in self.element_command_list.items():
             if self.pyfile:
                 with open(self.filename, "a") as file_handle:
@@ -579,6 +581,24 @@ class OspGrillage:
                     eval(fix_str)
                     self.model_command_list.append(fix_str)
 
+    # TODO
+    def _write_mass(self):
+        """write or evaluates the mass commands"""
+
+        # d = {node number: [1,2,3,0,0,0] } # dx dy dz, rx, ry, rz
+        #
+        mass_dict = {}
+        for node, mass_list in mass_dict.items():
+            mass_str = "ops.mass({nodetag},*{mass_list})".format(
+                nodetag=node, mass_list=mass_list
+            )
+            if self.pyfile:
+                with open(self.filename, "a") as file_handle:
+                    file_handle.write(mass_str)
+            else:
+                eval(mass_str)
+                self.model_command_list.append(mass_str)
+
     def _write_equal_dof(self, node_tag_list: list, dof: list = None):
         """
         Write OpenseesPy's equalDOF command.
@@ -719,9 +739,9 @@ class OspGrillage:
             self.common_grillage_element_z_group.update({key: val})
         # populate start edge and end edge entries
         self.common_grillage_element_z_group[self.common_grillage_element_keys[4]] = [0]
-        self.common_grillage_element_z_group[
-            self.common_grillage_element_keys[5]
-        ] = list(range(1, self.Mesh_obj.global_edge_count))
+        self.common_grillage_element_z_group[self.common_grillage_element_keys[5]] = (
+            list(range(1, self.Mesh_obj.global_edge_count))
+        )
         self.common_grillage_element_z_group[self.common_grillage_element_keys[6]] = [
             0
         ]  # proxy 0 for set_member() loop
@@ -1690,9 +1710,9 @@ class OspGrillage:
             p_list = []
             for tag in nodes:
                 coord = self.Mesh_obj.node_spec[tag]["coordinate"]
-                p = patch_load_obj.patch_mag_interpolate(coord[0], coord[2])[
-                    0
-                ]  # object function returns array like
+                p = patch_load_obj.patch_mag_interpolate(
+                    coord[0], coord[2]
+                )  # object function returns array like
                 p_list.append(LoadPoint(coord[0], coord[1], coord[2], p))
             # get centroid of patch on grid
             xc, yc, zc = get_patch_centroid(p_list)
@@ -1764,16 +1784,16 @@ class OspGrillage:
                     )  # object function returns array like
                     # p is array object, extract
                     p_list.append(
-                        LoadPoint(int_point[0], int_point[1], int_point[2], p[0])
+                        LoadPoint(int_point[0], int_point[1], int_point[2], p)
                         if int_point != []
                         else []
                     )
             # loop each node in grid points
             for items in node_in_grid:
                 coord = self.Mesh_obj.node_spec[items]["coordinate"]
-                p = patch_load_obj.patch_mag_interpolate(coord[0], coord[2])[
-                    0
-                ]  # object function returns array like
+                p = patch_load_obj.patch_mag_interpolate(
+                    coord[0], coord[2]
+                )  # object function returns array like
                 p_list.append(LoadPoint(coord[0], coord[1], coord[2], p))
             # Loop each p_list object to find duplicates if any, remove duplicate
             for count, point in enumerate(p_list):
@@ -1945,9 +1965,9 @@ class OspGrillage:
                         "load_factor": load_factor,
                     }
                     list_of_incr_load_case_dict.append(increment_load_case_dict)
-                self.moving_load_case_dict[
-                    moving_load_obj.name
-                ] = list_of_incr_load_case_dict
+                self.moving_load_case_dict[moving_load_obj.name] = (
+                    list_of_incr_load_case_dict
+                )
 
             if self.diagnostics:
                 print("Moving load case: {} created".format(moving_load_obj.name))
@@ -1966,7 +1986,7 @@ class OspGrillage:
         * all (`bool`): If True, runs all load cases. If not provided, default to True.
         * load_case ('list' or 'str'): String or list of name strings for selected load case to be analyzed.
         * set_verbose(`bool`): If True, incremental load case report is not printed to terminal (default True)
-
+        * analysis_type ('str'): The type of analysis. Default is "Static".
         :except: raise ValueError if missing arguments for either load_case=, or all=
 
         """
@@ -1975,7 +1995,8 @@ class OspGrillage:
         # get run options from kwargs
         all_flag = True  # Default true
         selected_load_case: list = kwargs.get("load_case", None)  #
-
+        analysis_type = kwargs.get("analysis_type", "Static")
+        step = kwargs.get("step", 1)  # default 1
         # check if any load cases are defined
         if self.load_case_list == [] and self.moving_load_case_dict == {}:
             raise Exception("No load cases were defined")
@@ -2034,6 +2055,8 @@ class OspGrillage:
             load_factor = load_case_dict["load_factor"]
             load_case_analysis = Analysis(
                 analysis_name=load_case_obj.name,
+                analysis_type=analysis_type,
+                step=step,
                 ops_grillage_name=self.model_name,
                 pyfile=self.pyfile,
                 time_series_counter=self.global_time_series_counter,
@@ -2042,6 +2065,7 @@ class OspGrillage:
                 ele_counter=self.Mesh_obj.element_counter,
                 constraint_type=self.constraint_type,
                 load_case=load_case_obj,
+                time_increment=kwargs.get("time_increment", 0.01),
             )
             load_case_analysis.add_load_command(load_command, load_factor=load_factor)
             # run the Analysis object, collect results, and store Analysis object in the list for Analysis load case
@@ -2070,6 +2094,8 @@ class OspGrillage:
                     load_factor = load_case_dict["load_factor"]
                     incremental_analysis = Analysis(
                         analysis_name=load_case_obj.name,
+                        analysis_type=analysis_type,
+                        step=step,
                         ops_grillage_name=self.model_name,
                         pyfile=self.pyfile,
                         time_series_counter=self.global_time_series_counter,
@@ -2078,6 +2104,7 @@ class OspGrillage:
                         ele_counter=self.Mesh_obj.element_counter,
                         constraint_type=self.constraint_type,
                         load_case=load_case_obj,
+                        time_increment=kwargs.get("time_increment", 0.01),
                     )
                     incremental_analysis.add_load_command(
                         load_command, load_factor=load_factor
@@ -2418,6 +2445,79 @@ class OspGrillage:
         # remove all results
         self.results = Results(self.Mesh_obj)  # reset results
 
+    @staticmethod
+    def get_MCK():
+        """Returns the mass stiffness and damping matrices.
+        Note model needs to be pyfile=False mode
+
+        ref:https://portwooddigital.com/2020/05/17/gimme-all-your-damping-all-your-mass-and-stiffness-too/
+        """
+        ops.wipeAnalysis()
+        ops.system("FullGeneral")
+        ops.analysis("Transient")
+
+        # Mass
+        ops.integrator("GimmeMCK", 1.0, 0.0, 0.0)
+        ops.analyze(1, 0.0)
+
+        # Number of equations in the model
+        N = ops.systemSize()  # Has to be done after analyze
+
+        M = ops.printA("-ret")  # Or use ops.printA('-file','M.out')
+        M = np.array(M)  # Convert the list to an array
+        M.shape = (N, N)  # Make the array an NxN matrix
+
+        # Stiffness
+        ops.integrator("GimmeMCK", 0.0, 0.0, 1.0)
+        ops.analyze(1, 0.0)
+        K = ops.printA("-ret")
+        K = np.array(K)
+        K.shape = (N, N)
+
+        # Damping
+        ops.integrator("GimmeMCK", 0.0, 1.0, 0.0)
+        ops.analyze(1, 0.0)
+        C = ops.printA("-ret")
+        C = np.array(C)
+        C.shape = (N, N)
+
+        massDOFs = []
+        for nd in ops.getNodeTags():
+
+            for j in range(6):  # NDF is number of DOFs/node
+                if ops.nodeMass(nd, j + 1) > 0.0:
+                    massDOFs.append(ops.nodeDOFs(nd)[j])
+
+        return M, C, K
+
+    @staticmethod
+    def store_state():
+        """Use for transient analysis to store previous state"""
+        save = {}
+        for tag in ops.getNodeTags():
+            d = ops.nodeDisp(tag)
+            v = ops.nodeVel(tag)
+            a = ops.nodeAccel(tag)
+            save[tag] = {"d": d, "v": v, "a": a}
+        return save
+
+    @staticmethod
+    def set_previous_state(save):
+        """Set the disp, vel, and acc of all nodes in the last analysis state to the current analysis"""
+        for node, val in save.items():
+            d = val["d"]
+            v = val["v"]
+            a = val["a"]
+
+            for i, magnitude in enumerate(d):
+                ops.setNodeDisp(node, i + 1, magnitude, "-commit")
+            for i, magnitude in enumerate(v):
+                ops.setNodeVel(node, i + 1, magnitude, "-commit")
+            for i, magnitude in enumerate(a):
+                ops.setNodeAccel(node, i + 1, magnitude, "-commit")
+
+        ...
+
 
 # ---------------------------------------------------------------------------------------------------------------------
 class Analysis:
@@ -2450,6 +2550,7 @@ class Analysis:
         step: int = 1,
         **kwargs,
     ):
+
         self.analysis_name = analysis_name
         self.ops_grillage_name = ops_grillage_name
         self.time_series_tag = None
@@ -2459,7 +2560,28 @@ class Analysis:
         self.pyfile = pyfile
         self.analysis_file_name = (
             self.analysis_name + "of" + self.ops_grillage_name + ".py"
-        )  # py file name
+        )
+
+        # default newmark parameters for Average Accelerations
+        gamma = 0.5
+        beta = 0.25
+        time_increment = kwargs.get("time_increment", 0.01)
+        if analysis_type == "Transient":
+            if kwargs.get("linear_acceleration"):
+                beta = 1 / 6
+
+        # Preset dict for different analysis
+        analysis_arguments = {
+            "Static": {
+                "analyse": "ops.analyze({})\n".format(self.step),
+                "integrator": "ops.integrator('LoadControl', 1)\n",
+            },
+            "Transient": {
+                "analyse": "ops.analyze({},{})\n".format(self.step, time_increment),
+                "integrator": "ops.integrator('Newmark', {},{})\n".format(gamma, beta),
+            },
+        }
+
         # list recording load commands, time series and pattern for the input load case
         self.load_cases_dict_list = (
             []
@@ -2471,6 +2593,8 @@ class Analysis:
         self.constraint_type = kwargs.get("constraint_type", "Plain")  # Default plain
         # Variables recording results of analysis
         self.node_disp = dict()  # key node tag, val list of dof
+        self.node_vel = dict()  # key node tag, val list of dof
+        self.node_accel = dict()  # key node tag, val list of dof
         self.ele_force = (
             dict()
         )  # key ele tag, val list of forces on nodes of ele[ order according to ele tag]
@@ -2489,9 +2613,11 @@ class Analysis:
             type=self.constraint_type
         )  # default plain
         self.algorithm_command = "ops.algorithm('Linear')\n"  # default linear
-        self.analyze_command = "ops.analyze({})\n".format(self.step)  # default 1 step
+        self.analyze_command = analysis_arguments[analysis_type][
+            "analyse"
+        ]  # default 1 step
         self.analysis_command = 'ops.analysis("{}")\n'.format(analysis_type)
-        self.intergrator_command = "ops.integrator('LoadControl', 1)\n"
+        self.intergrator_command = analysis_arguments[analysis_type]["integrator"]
         self.sensitivity_integrator_command = "ops."
         self.mesh_node_counter = node_counter  # set node counter based on current Mesh
         self.mesh_ele_counter = ele_counter  # set ele counter based on current Mesh
@@ -2520,7 +2646,7 @@ class Analysis:
                 # write imports
                 file_handle.write(
                     "import numpy as np\nimport math\nimport openseespy.opensees as ops"
-                    "\nimport openseespy.postprocessing.Get_Rendering as opsplt\n"
+                    "\nimport vfo.vfo as opsplt\n"
                 )
 
     def _time_series_command(self, load_factor):
@@ -2625,7 +2751,11 @@ class Analysis:
             # first loop extract node displacements
             for node_tag in ops.getNodeTags():
                 disp_list = ops.nodeDisp(node_tag)
+                vel_list = ops.nodeVel(node_tag)
+                accel_list = ops.nodeAccel(node_tag)
                 self.node_disp.setdefault(node_tag, disp_list)
+                self.node_vel.setdefault(node_tag, vel_list)
+                self.node_accel.setdefault(node_tag, accel_list)
 
             # loop through all elements in Mesh, extract local forces
             for ele_tag in ops.getEleTags():
@@ -2659,12 +2789,28 @@ class Results:
         self.mesh_obj = mesh_obj
         # coordinates for dimensions
         self.displacement_component = [
-            "dx",
-            "dy",
-            "dz",
+            "x",
+            "y",
+            "z",
             "theta_x",
             "theta_y",
             "theta_z",
+        ]
+        self.vel_component = [
+            "dx",
+            "dy",
+            "dz",
+            "dtheta_x",
+            "dtheta_y",
+            "dtheta_z",
+        ]
+        self.acc_component = [
+            "ddx",
+            "ddy",
+            "ddz",
+            "ddtheta_x",
+            "ddtheta_y",
+            "ddtheta_z",
         ]
         self.force_component = [
             "Vx_i",
@@ -2720,6 +2866,8 @@ class Results:
         if analysis_obj:
             # compile ele forces for each node
             node_disp = analysis_obj.node_disp
+            node_vel = analysis_obj.node_vel
+            node_accel = analysis_obj.node_accel
             ele_force_dict = dict.fromkeys(
                 list(ops.getEleTags())
             )  # dict key is element tag, value is ele force from
@@ -2746,7 +2894,13 @@ class Results:
                 ele_nodes_dict.update({ele_num: ele_nodes})
             self.basic_load_case_record_global_forces.setdefault(
                 analysis_obj.analysis_name,
-                [node_disp, global_ele_force_dict, ele_nodes_dict],
+                [
+                    node_disp,
+                    node_vel,
+                    node_accel,
+                    global_ele_force_dict,
+                    ele_nodes_dict,
+                ],
             )
         # if moving load, input is a list of analysis obj
         elif list_of_inc_analysis:
@@ -2758,6 +2912,8 @@ class Results:
             for inc_analysis_obj in list_of_inc_analysis:
                 # compile ele forces for each node
                 node_disp = inc_analysis_obj.node_disp
+                node_vel = inc_analysis_obj.node_vel
+                node_accel = inc_analysis_obj.node_accel
                 ele_force_dict = dict.fromkeys(list(ops.getEleTags()))
                 ele_force_global_dict = dict.fromkeys(list(ops.getEleTags()))
                 ele_nodes_dict = dict.fromkeys(list(ops.getEleTags()))
@@ -2776,7 +2932,13 @@ class Results:
                     ele_force_global_dict.update({ele_num: ele_forces})
                 inc_load_case_global_force_record.setdefault(
                     inc_analysis_obj.analysis_name,
-                    [node_disp, ele_force_global_dict, ele_nodes_dict],
+                    [
+                        node_disp,
+                        node_vel,
+                        node_accel,
+                        ele_force_global_dict,
+                        ele_nodes_dict,
+                    ],
                 )
 
             self.moving_load_case_record.append(inc_load_case_record)
@@ -2793,6 +2955,8 @@ class Results:
         # Sort data for dataArrays
         # for basic load case  {loadcasename:[{1:,2:...},{1:,2:...}], ... , loadcasename:[{1:,2:...},{1:,2:...} }
         basic_node_disp_list = []
+        basic_node_vel_list = []
+        basic_node_accel_list = []
         basic_load_case_coord = []
         basic_ele_force_list = []
         extracted_ele_nodes_list = False  # a 2D array of ele node i and ele node j
@@ -2814,33 +2978,39 @@ class Results:
             basic_node_disp_list.append(
                 [a for a in list(resp_list_of_2_dict[0].values())]
             )  # list index 0 is disp
+            basic_node_vel_list.append(
+                [a for a in list(resp_list_of_2_dict[1].values())]
+            )
+            basic_node_accel_list.append(
+                [a for a in list(resp_list_of_2_dict[2].values())]
+            )
             # extract force
             basic_ele_force_list.append(
-                [a for a in list(resp_list_of_2_dict[1].values())]
+                [a for a in list(resp_list_of_2_dict[3].values())]
             )  # list index 1 is force
             # extract based on element type
             base_ele_force_list_beam.append(
                 [
                     a
-                    for a in list(resp_list_of_2_dict[1].values())
+                    for a in list(resp_list_of_2_dict[3].values())
                     if len(a) == len(self.force_component)
                 ]
             )
             base_ele_force_list_shell.append(
                 [
                     a
-                    for a in list(resp_list_of_2_dict[1].values())
+                    for a in list(resp_list_of_2_dict[3].values())
                     if len(a) == len(self.force_component_shell)
                 ]
             )
             if not extracted_ele_nodes_list:
                 ele_nodes_list = list(
-                    resp_list_of_2_dict[2].values()
+                    resp_list_of_2_dict[4].values()
                 )  # list index 2 is ele nodes variable
                 extracted_ele_nodes_list = (
                     True  # set to true, only extract if its the first time extracting
                 )
-                ele_tag = list(resp_list_of_2_dict[2].keys())
+                ele_tag = list(resp_list_of_2_dict[4].keys())
             # for section forces of each element
             # Coordinate of Load Case dimension
             basic_load_case_coord.append(load_case_name)
@@ -2858,19 +3028,24 @@ class Results:
                 basic_node_disp_list.append(
                     [a for a in list(inc_resp_list_of_2_dict[0].values())]
                 )
-
+                basic_node_vel_list.append(
+                    [a for a in list(inc_resp_list_of_2_dict[1].values())]
+                )
+                basic_node_accel_list.append(
+                    [a for a in list(inc_resp_list_of_2_dict[2].values())]
+                )
                 if local_force_option:
                     basic_ele_force_list.append(
                         [
                             a
-                            for a in list(inc_resp_list_of_2_dict[1].values())
+                            for a in list(inc_resp_list_of_2_dict[3].values())
                             if len(a) == len(self.force_component)
                         ]
                     )
                 else:
                     # global force
                     basic_ele_force_list.append(
-                        [a for a in list(inc_resp_list_of_2_dict[1].values())]
+                        [a for a in list(inc_resp_list_of_2_dict[3].values())]
                     )
 
                 # lists for shell model output
@@ -2878,8 +3053,8 @@ class Results:
                     [
                         a
                         for key, a in zip(
-                            list(inc_resp_list_of_2_dict[1].keys()),
-                            list(inc_resp_list_of_2_dict[1].values()),
+                            list(inc_resp_list_of_2_dict[3].keys()),
+                            list(inc_resp_list_of_2_dict[3].values()),
                         )
                         if len(a) == len(self.force_component)
                         if key < main_ele_tags
@@ -2888,7 +3063,7 @@ class Results:
                 base_ele_force_list_shell.append(
                     [
                         a
-                        for a in list(inc_resp_list_of_2_dict[1].values())
+                        for a in list(inc_resp_list_of_2_dict[3].values())
                         if len(a) == len(self.force_component_shell)
                     ]
                 )
@@ -2896,11 +3071,13 @@ class Results:
                 # inc_moving_load_case_coord.append(increment_load_case_name)
                 basic_load_case_coord.append(increment_load_case_name)
                 if not extracted_ele_nodes_list:
-                    ele_nodes_list = list(inc_resp_list_of_2_dict[2].values())
-                    ele_tag = list(inc_resp_list_of_2_dict[2].keys())
+                    ele_nodes_list = list(inc_resp_list_of_2_dict[4].values())
+                    ele_tag = list(inc_resp_list_of_2_dict[4].keys())
                     extracted_ele_nodes_list = True
         # convert to np array format
-        basic_array = np.array(basic_node_disp_list, dtype=object)
+        basic_array_disp = np.array(basic_node_disp_list, dtype=object)
+        basic_array_vel = np.array(basic_node_vel_list, dtype=object)
+        basic_array_accel = np.array(basic_node_accel_list, dtype=object)
         force_array = np.array(basic_ele_force_list, dtype=object)
         ele_array = np.array(ele_nodes_list, dtype=object)
 
@@ -2923,15 +3100,34 @@ class Results:
         force_array_beam = np.array(base_ele_force_list_beam)
 
         # create data array for each basic load case if any, else return
-        if basic_array.size:
+        if basic_array_disp.size:
             # displacement data array
-            basic_da = xr.DataArray(
-                data=basic_array,
+            basic_da_d = xr.DataArray(
+                data=basic_array_disp,
                 dims=self.dim,
                 coords={
                     self.dim[0]: basic_load_case_coord,
                     self.dim[1]: node,
                     self.dim[2]: self.displacement_component,
+                },
+            )
+            basic_da_v = xr.DataArray(
+                data=basic_array_vel,
+                dims=self.dim,
+                coords={
+                    self.dim[0]: basic_load_case_coord,
+                    self.dim[1]: node,
+                    self.dim[2]: self.vel_component,
+                },
+            )
+
+            basic_da_a = xr.DataArray(
+                data=basic_array_accel,
+                dims=self.dim,
+                coords={
+                    self.dim[0]: basic_load_case_coord,
+                    self.dim[1]: node,
+                    self.dim[2]: self.acc_component,
                 },
             )
 
@@ -2967,7 +3163,9 @@ class Results:
                 )
                 result = xr.Dataset(
                     {
-                        "displacements": basic_da,
+                        "displacements": basic_da_d,
+                        "velocity": basic_da_v,
+                        "acceleration": basic_da_a,
                         "forces_beam": force_da_beam,
                         "forces_shell": force_da_shell,
                         "ele_nodes_beam": ele_nodes_beam,
@@ -2980,15 +3178,17 @@ class Results:
                     dims=self.dim2,
                     coords={
                         self.dim2[0]: basic_load_case_coord,
-                        self.dim2[1]: ele_tag
-                        if not local_force_option
-                        else ele_tag_beam,
+                        self.dim2[1]: (
+                            ele_tag if not local_force_option else ele_tag_beam
+                        ),
                         self.dim2[2]: self.force_component,
                     },
                 )
                 result = xr.Dataset(
                     {
-                        "displacements": basic_da,
+                        "displacements": basic_da_d,
+                        "velocity": basic_da_v,
+                        "acceleration": basic_da_a,
                         "forces": force_da_beam,
                         "ele_nodes": ele_nodes_beam,
                     }
@@ -3100,23 +3300,7 @@ class OspGrillageShell(OspGrillage):
         self.pyfile = pyfile
 
         if self.pyfile:
-            with open(self.filename, "w") as file_handle:
-                # create py file or overwrite existing
-                # writing headers and description at top of file
-                file_handle.write(
-                    "# Grillage generator wizard\n# Model name: {}\n".format(
-                        self.model_name
-                    )
-                )
-                # time
-                now = datetime.now()
-                dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-                file_handle.write("# Constructed on:{}\n".format(dt_string))
-                # write imports
-                file_handle.write(
-                    "import numpy as np\nimport math\nimport openseespy.opensees as ops"
-                    "\nimport openseespy.postprocessing.Get_Rendering as opsplt\n"
-                )
+            self._write_imports()
         # model() command
         self._write_op_model()
         # create grillage mesh object + beam element groups
@@ -3129,11 +3313,11 @@ class OspGrillageShell(OspGrillage):
                     file_handle.write(ele_str)
             else:
                 eval(ele_str)
+                self.model_command_list.append(ele_str)
         # create rigid link command
         self._write_rigid_link()
         # create the result file for the Mesh object
         self.results = Results(self.Mesh_obj)
-        # flag
 
     # overwrites base class for beam element grillage - specific for Shell model
     def _create_standard_element_list(self):

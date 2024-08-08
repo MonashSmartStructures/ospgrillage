@@ -15,7 +15,7 @@ from scipy.interpolate import interpn, RegularGridInterpolator
 
 # if TYPE_CHECKING:
 from ospgrillage.load import ShapeFunction
-from ospgrillage.static import solve_zeta_eta
+from ospgrillage.utils import solve_zeta_eta
 
 import vfo.vfo as opsplt
 
@@ -358,7 +358,7 @@ def plot_defo(
     # check if component is provided, else default to
     dis_comp = component
     if component is None:
-        dis_comp = "dy"  # default to dy
+        dis_comp = "y"  # default to dy
 
     fig, ax = plt.subplots()
     # get all node information
@@ -411,13 +411,16 @@ class PostProcessor:
         self.shape_function_obj = ShapeFunction()
 
     def get_arbitrary_displacements(
-        self, point: list, shape_function_type: str = "linear"
+        self, point: list, shape_function_type: str = "linear", component: str = "y"
     ):
-        """Returns displacement values (translation and rotational)
+        """Returns displacement (translation and rotational) from an arbitrary point by interpolation
 
         param point: list of coordinate. Default three elements [x,y=0,z]
         type point: list
-
+        param component: Displacement component. Default "y"
+        type component: str
+        param shape_function_type: The shape function for interpolation. Default "linear"
+        type shape_function_type: str
         """
         node_displacements = []
         node_coordinate = []
@@ -426,12 +429,14 @@ class PostProcessor:
         nodes, grid_number = self.grillage._get_point_load_nodes(
             point=point
         )  # list of nodes
+        if nodes is None:
+            raise ValueError("Point is outside bridge mesh")
 
         # get results of each node of four nodes
         for node in nodes:
             node_displacements.append(
-                self.result.displacements.sel(
-                    Component="dy",
+                self.result.sel(
+                    Component=component,
                     Node=node,
                 )
                 .to_numpy()

@@ -89,12 +89,18 @@ def test_point_load_getter(
     ULS_DL.add_load(Single)  # ch
     example_bridge.add_load_case(ULS_DL)
     og.ops.wipe()
-
+    #
+    # assert example_bridge.load_case_list[0]["load_command"] == [
+    #     "ops.load(12, *[0, 0.6075807082987842, 0, 0.37389582049155967, 0, 0.34166943132701877])\n",
+    #     "ops.load(17, *[0, 1.4724192917012129, 0, 0.9061041795084391, 0, -0.613915767971676])\n",
+    #     "ops.load(18, *[0, 12.685458513118162, 0, -3.6244167180337583, 0, -5.289120462525217])\n",
+    #     "ops.load(13, *[0, 5.234541486881841, 0, -1.4955832819662394, 0, 2.943613562202012])\n",
+    # ]
     assert example_bridge.load_case_list[0]["load_command"] == [
-        "ops.load(12, *[0, 0.6075807082987842, 0, 0.37389582049155967, 0, 0.34166943132701877])\n",
-        "ops.load(17, *[0, 1.4724192917012129, 0, 0.9061041795084391, 0, -0.613915767971676])\n",
-        "ops.load(18, *[0, 12.685458513118162, 0, -3.6244167180337583, 0, -5.289120462525217])\n",
-        "ops.load(13, *[0, 5.234541486881841, 0, -1.4955832819662394, 0, 2.943613562202012])\n",
+        "ops.load(12, *[0, np.float64(0.6075807082987842), 0, np.float64(0.37389582049155967), 0, np.float64(0.34166943132701877)])\n",
+        "ops.load(17, *[0, np.float64(1.4724192917012129), 0, np.float64(0.9061041795084391), 0, np.float64(-0.613915767971676)])\n",
+        "ops.load(18, *[0, np.float64(12.685458513118162), 0, np.float64(-3.6244167180337583), 0, np.float64(-5.289120462525217)])\n",
+        "ops.load(13, *[0, np.float64(5.234541486881841), 0, np.float64(-1.4955832819662394), 0, np.float64(2.943613562202012)])\n",
     ]
 
 
@@ -1111,5 +1117,48 @@ def test_compare_shell_beam_analysis(run_beam_model_point_load):
     og.plot_defo(
         shell_bridge, result_shell, member="interior_main_beam", option="nodes"
     )
-    pass
     og.opsv.plot_defo()
+
+
+def test_transient(beam_element_bridge):
+    """A test for the uncoupled transient analysis portion of VBI basic framework"""
+    positions = [5, 5, 10, 15]
+    P = 100 * kN
+    first_step = True
+    previous_state = None
+
+    # start moving vehicle through all positions
+    for x in positions:
+        # create load case
+        mid_point_line_loadcase = og.create_load_case(name="VBI")
+        lp1 = og.create_load_vertex(x=x, y=0, z=3.5, p=P)
+        mid_point_line_load = og.create_load(
+            name="unit load",
+            point1=lp1,
+        )
+        mid_point_line_loadcase.add_load(mid_point_line_load)
+
+        # create bridge instance
+        beam_bridge = beam_element_bridge
+        beam_bridge.create_osp_model()
+
+        print(og.ops.eigen(2))
+        og.ops.rayleigh(0.0, 0.0, 0.0, 2 * 0.02 / 4)
+
+        # set previous state
+        if not first_step:
+            beam_bridge.set_previous_state(previous_state)
+        first_step = False
+
+        # add load case, run and store
+        beam_bridge.add_load_case(mid_point_line_loadcase)
+        beam_bridge.analyze(analysis_type="Transient", step=100, time_increment=0.1)
+        previous_state = beam_bridge.store_state()
+        result = beam_bridge.get_results()
+        print(result)
+        postprocessor = og.PostProcessor(beam_bridge, result.displacements)
+
+        contactpoints = postprocessor.get_arbitrary_displacements(point=[5, 0, 3.5])
+        # do something with results
+        print(result)
+        print("Next step")

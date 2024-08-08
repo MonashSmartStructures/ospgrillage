@@ -7,7 +7,7 @@ by OspGrillage class.
 """
 import math
 
-from ospgrillage.static import *
+from ospgrillage.utils import *
 from collections import namedtuple
 
 
@@ -1486,7 +1486,7 @@ class Mesh:
         node_i = self.node_spec[ele_nodes[0]]["coordinate"]
         node_j = self.node_spec[ele_nodes[1]]["coordinate"]
         vxz = self._get_vector_xz(node_i, node_j)
-        vxz = [np.round(num, decimals=self.decimal_lim) for num in vxz]
+        vxz = [np.round(num, decimals=self.decimal_lim).tolist() for num in vxz]
         tag_value = self.transform_dict.setdefault(
             repr(vxz) + "|" + repr(offset), self.transform_counter + 1
         )
@@ -2178,7 +2178,7 @@ class BeamLinkMesh(Mesh):
                 global_offset_i = [a + b for a, b in zip(node_i, local_offset)]
                 global_offset_j = [a - b for a, b in zip(node_j, local_offset)]
             global_offset = [global_offset_i, global_offset_j]
-        vxz = [np.round(num, decimals=self.decimal_lim) for num in vxz]
+        vxz = [np.round(num, decimals=self.decimal_lim).tolist() for num in vxz]
         tag_value = self.transform_dict.setdefault(
             repr(vxz) + "|" + repr(global_offset), self.transform_counter + 1
         )

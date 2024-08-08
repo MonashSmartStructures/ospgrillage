@@ -22,7 +22,7 @@ GPa = kilo * MPa
 # test creating a basic beam grillage model
 def test_model_instance(bridge_model_42_negative):
     example_bridge = bridge_model_42_negative
-    # og.opsplt.plot_model("nodes") # uncomment to use GetRendering module
+    # og.opsplt.plot_model(show_nodes="yes")  # uncomment to use vfo module
     # og.opsv.plot_model(az_el=(-90, 0), element_labels=0)
     # og.plt.show()
     assert og.ops.nodeCoord(18)  # check if model node exist in OpenSees model space
@@ -42,6 +42,8 @@ def test_create_beam_link_model(beam_link_bridge):
 # test creating model using shell link
 def test_create_shell_link_model(shell_link_bridge):
     shell_link_model = shell_link_bridge
+    # og.opsplt.plot_model(show_nodes="yes", show_nodetags="yes")
+    # shell_link_model.get_MCK()
     # og.opsplt.plot_model("nodes")
     assert og.ops.getNodeTags()
 
@@ -372,7 +374,7 @@ def test_member_reassignment_feature(ref_bridge_properties):
     # og.plt.show()
     assert (
         variant_one_model.element_command_list[2]
-        == 'ops.element("elasticBeamColumn", 2, *[2, 3], *[9.963e-02, 3.480e+10, 1.450e+10, 5.850e-04, 2.475e-04, 5.445e-04], 1, 106.272)\n'
+        == 'ops.element("elasticBeamColumn", 2, *[2, 3], *[9.963e-02, 3.480e+10, 1.450e+10, 5.850e-04, 2.475e-04, 5.445e-04], 1, "-mass", 106272.0)\n'
     )
 
 
