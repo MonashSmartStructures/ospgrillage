@@ -631,7 +631,7 @@ class BridgeAnalysisGUI(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Bridge Geometry Studio")  # Updated name
-        self.setWindowIcon(QIcon("ospgrillage_logo.png"))  # Add your icon file
+        #self.setWindowIcon(QIcon("ospgrillage_logo.png"))  # Add your icon file
         # Add this stylesheet
         self.setStyleSheet("""
             QMainWindow {
