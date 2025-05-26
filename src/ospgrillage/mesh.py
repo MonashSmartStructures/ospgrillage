@@ -631,8 +631,8 @@ class Mesh:
                 current_sweep_nodes = self._rotate_edge_sweep_nodes(current_sweep_nodes)
 
                 for z_count_int, nodes in enumerate(current_sweep_nodes):
-                    x_inc = start_point_x
-                    z_inc = start_point_z
+                    x_inc = 0  # start_point_x
+                    z_inc = 0  # start_point_z
                     node_coordinate = [nodes[0] + x_inc, nodes[1], nodes[2] + z_inc]
                     self._assign_node_coordinate(
                         node_coordinate, z_count_int=z_count_int
