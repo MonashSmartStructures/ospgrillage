@@ -2338,18 +2338,18 @@ class OspGrillage:
 
     def get_element(self, **kwargs) -> Union[List[float]]:
         """
-        Function to query properties of elements in grillage model.
+                Function to query properties of elements in grillage model.
 
-        :keyword:
-        * options (`str): string for element data option. Either "elements" or "nodes" (default)
-        * z_group_num (`int`): group number [0 to N] for N is the number of groups within a specific grillage element group.
-                               this is needed for interior beams, where users which to query specific group (e.g. 2nd group)
-                               within this "interior_main_beam" element group.
-        * x_group_num (`int`): ditto for z_group_num but for x_group
-        * edge_group_num(`int`): ditto for z_group_num but for edge groups
+                :keyword:
+                * options (`str): string for element data option. Either "elements" or "nodes" (default)
+                * z_group_num (`int`): group number [0 to N] for N is the number of groups within a specific grillage element group.
+                                       this is needed for interior beams, where users which to query specific group (e.g. 2nd group)
+                                       within this "interior_main_beam" element group.
+                * x_group_num (`int`): ditto for z_group_num but for x_group
+                * edge_group_num(`int`): ditto for z_group_num but for edge groups
 
-        :return: List of element data (tag)
-        """
+                :return: List of element data (tag)
+                """
         # get query member details
         namestring = kwargs.get("member", None)
         select_z_group = kwargs.get(
@@ -2377,14 +2377,21 @@ class OspGrillage:
             extracted_ele = self.Mesh_obj.trans_ele
             # TODO
         elif namestring == "start_edge" or namestring == "end_edge":
-            for edge_group in self.common_grillage_element_z_group[namestring]:
-                extracted_ele = self.Mesh_obj.edge_group_to_ele[edge_group]
+            extracted_ele = []
+            valid_groups = self.common_grillage_element_z_group[namestring]
+
+            # collect elements from ALL edge groups
+            for edge_group in valid_groups:
+                extracted_ele.extend(self.Mesh_obj.edge_group_to_ele[edge_group])
+
             if options == node_option:
-                sorted_return_list = [
-                    key
-                    for key, val in self.Mesh_obj.edge_node_recorder.items()
-                    if val == self.common_grillage_element_z_group[namestring][0]
-                ]
+                node_set = set()
+
+                for ele in extracted_ele:
+                    node_set.add(ele[1])  # node i
+                    node_set.add(ele[2])  # node j
+
+                sorted_return_list = sorted(list(node_set))
             elif options == element_option:
                 sorted_return_list = [ele[0] for ele in extracted_ele]
         else:  # longitudinal members
@@ -2399,7 +2406,7 @@ class OspGrillage:
                     set(second_list) - set(first_list)
                 )  # get only unique nodes
                 # sort nodes based on x coordinate
-                node_x = [
+                node_x = [  # x coordinate of each group
                     self.Mesh_obj.node_spec[tag]["coordinate"][0] for tag in return_list
                 ]
                 sorted_return_list.append(
