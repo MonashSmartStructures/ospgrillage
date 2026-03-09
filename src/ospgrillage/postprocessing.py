@@ -23,7 +23,7 @@ __all__ = ["Envelope", "PostProcessor", "create_envelope", "plot_force", "plot_d
 
 def create_envelope(**kwargs):
     """
-    Interface for users to create an :class:`Envelope` object.
+    Create an ``Envelope`` object for post-processing result envelopes.
 
     The constructor takes an `xarray` DataSet and kwargs for enveloping options.
 
@@ -158,9 +158,7 @@ def plot_force(
     loadcase: str = None,
 ):
     """
-    Plots a force diagram of the provided :class:`~ospgrillage.osp_grillage.OspGrillage` and
-    :class:`xarray` (result) objects for a specified `component` and
-    :class:`~ospgrillage.load.LoadCase`'s.
+    Plot a force diagram for a grillage model result for a specified component and load case.
 
     .. note::
         For "shell_beam" model type, the function only plots the force diagrams for beam elements only.
@@ -287,9 +285,7 @@ def plot_defo(
     loadcase: str = None,
 ):
     """
-    Plots displacements of the provided :class:`~ospgrillage.osp_grillage.OspGrillage` and
-    :class:`xarray` (result) objects for a specified `component` and
-    :class:`~ospgrillage.load.LoadCase`'s.
+    Plot a displacement diagram for a grillage model result for a specified component and load case.
 
     .. note::
         For "shell_beam" model type, the function only plots the force diagrams for beam elements only.

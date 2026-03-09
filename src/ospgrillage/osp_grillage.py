@@ -146,7 +146,7 @@ class _OpsProxy:
 
 def create_grillage(**kwargs):
     """
-    User interface to create :class:`~ospgrillage.osp_grillage.OspGrillage` object.
+    Create an ``OspGrillage`` bridge deck model object.
 
     The constructor takes the following arguments:
 
