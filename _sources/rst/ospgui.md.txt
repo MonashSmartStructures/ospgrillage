@@ -26,18 +26,17 @@ from ospgrillage.ospgui import main
 main()
 ```
 
+## Interface overview
+
+The window is divided into three panels:
+
+- **Left** — tabbed input forms for geometry, materials, sections, and members
+  (provided by `BridgeInputWidget`).
+- **Centre** — a live code view showing the generated *ospgrillage* Python source,
+  updated as parameters change.
+- **Right** — a 3-D mesh preview rendered via *vfo*.
+
 ## API reference
 
-### Main window
-
-```{autoclass} ospgrillage.ospgui.BridgeAnalysisGUI
-:members:
-:show-inheritance:
-```
-
-### Input widget
-
-```{autoclass} ospgrillage.ospgui.BridgeInputWidget
-:members:
-:show-inheritance:
+```{autofunction} ospgrillage.ospgui.main
 ```

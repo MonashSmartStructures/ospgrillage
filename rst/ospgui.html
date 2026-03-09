@@ -440,169 +440,33 @@ bridge deck models interactively, without writing Python code.</p>
 </pre></div>
 </div>
 </section>
-<section id="api-reference">
-<h2>API reference<a class="headerlink" href="#api-reference" title="Link to this heading">#</a></h2>
-<section id="main-window">
-<h3>Main window<a class="headerlink" href="#main-window" title="Link to this heading">#</a></h3>
-<p>.. py:class:: BridgeAnalysisGUI(*args: Any, **kwargs: Any)</p>
-<dl class="myst field-list">
-<dt class="field-odd">module<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ospgrillage.ospgui</p>
-<p>Bases: :py:class:<code class="docutils literal notranslate"><span class="pre">~PyQt5.QtWidgets.QMainWindow</span></code></p>
-<p>Main window for the <em>ospgui</em> bridge geometry generator.</p>
-<p>Provides an interactive graphical interface for defining a bridge deck
-grillage model, previewing the generated <em>ospgrillage</em> Python code, and
-running the model directly within the same session.</p>
+<section id="interface-overview">
+<h2>Interface overview<a class="headerlink" href="#interface-overview" title="Link to this heading">#</a></h2>
 <p>The window is divided into three panels:</p>
 <ul class="simple">
-<li><p><strong>Left</strong> — :class:<code class="docutils literal notranslate"><span class="pre">ospgrillage.ospgui.BridgeInputWidget</span></code> with tabbed input forms.</p></li>
-<li><p><strong>Centre</strong> — live code view showing the generated Python source.</p></li>
-<li><p><strong>Right</strong> — 3-D mesh preview rendered via <em>vfo</em>.</p></li>
+<li><p><strong>Left</strong> — tabbed input forms for geometry, materials, sections, and members
+(provided by <code class="docutils literal notranslate"><span class="pre">BridgeInputWidget</span></code>).</p></li>
+<li><p><strong>Centre</strong> — a live code view showing the generated <em>ospgrillage</em> Python source,
+updated as parameters change.</p></li>
+<li><p><strong>Right</strong> — a 3-D mesh preview rendered via <em>vfo</em>.</p></li>
 </ul>
-<p>Typical usage is through the <code class="docutils literal notranslate"><span class="pre">ospgui</span></code> console entry-point or
-programmatically::</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>from ospgrillage.ospgui import main
-main()
-</pre></div>
-</div>
-<p>.. note::
-Requires PyQt5.  Install with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;ospgrillage[gui]&quot;</span></code>.</p>
-<p>.. py:method:: BridgeAnalysisGUI.create_menu_bar()</p>
-<dl class="myst field-list">
-<dt class="field-odd">module<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ospgrillage.ospgui</p>
-<p>Create the main menu bar</p>
-<p>.. py:method:: BridgeAnalysisGUI.create_tool_bar()</p>
-<dl class="myst field-list">
-<dt class="field-odd">module<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ospgrillage.ospgui</p>
-<p>Create the main toolbar</p>
-<p>.. py:method:: BridgeAnalysisGUI.create_status_bar()</p>
-<dl class="myst field-list">
-<dt class="field-odd">module<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ospgrillage.ospgui</p>
-<p>Create the status bar</p>
-<p>.. py:method:: BridgeAnalysisGUI.create_main_content()</p>
-<dl class="myst field-list">
-<dt class="field-odd">module<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ospgrillage.ospgui</p>
-<p>Create the main content area with tabs</p>
-<p>.. py:method:: BridgeAnalysisGUI.apply_changes()</p>
-<dl class="myst field-list">
-<dt class="field-odd">module<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ospgrillage.ospgui</p>
-<p>Handle Apply Changes button click</p>
-<p>.. py:method:: BridgeAnalysisGUI.collect_parameters()</p>
-<dl class="myst field-list">
-<dt class="field-odd">module<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ospgrillage.ospgui</p>
-<p>Collect all parameters from input fields</p>
-<p>.. py:method:: BridgeAnalysisGUI.save_code()</p>
-<dl class="myst field-list">
-<dt class="field-odd">module<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ospgrillage.ospgui</p>
-<p>Save the generated code to a file with proper error handling</p>
-<p>.. py:method:: BridgeAnalysisGUI.run_analysis()</p>
-<dl class="myst field-list">
-<dt class="field-odd">module<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ospgrillage.ospgui</p>
-<p>Handle Run Analysis button click</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd>
-</dl>
 </section>
-<section id="input-widget">
-<h3>Input widget<a class="headerlink" href="#input-widget" title="Link to this heading">#</a></h3>
-<p>.. py:class:: BridgeInputWidget(*args: Any, **kwargs: Any)</p>
+<section id="api-reference">
+<h2>API reference<a class="headerlink" href="#api-reference" title="Link to this heading">#</a></h2>
+<p>.. py:function:: main()</p>
 <dl class="myst field-list">
 <dt class="field-odd">module<span class="colon">:</span></dt>
 <dd class="field-odd"><p>ospgrillage.ospgui</p>
-<p>Bases: :py:class:<code class="docutils literal notranslate"><span class="pre">~PyQt5.QtWidgets.QWidget</span></code></p>
-<p>Tabbed input form for bridge geometry, materials, sections, and members.</p>
-<p>Provides a structured form with separate tabs for each category of bridge
-model inputs.  This widget is embedded inside :class:<code class="docutils literal notranslate"><span class="pre">BridgeAnalysisGUI</span></code>
-and is not intended to be instantiated directly by users.</p>
-<p>.. note::
-Requires PyQt5.  Install with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;ospgrillage[gui]&quot;</span></code>.</p>
-<p>.. py:method:: BridgeInputWidget.create_geometry_tab()</p>
-<dl class="myst field-list">
-<dt class="field-odd">module<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ospgrillage.ospgui</p>
-<p>Geometry input tab</p>
-<p>.. py:method:: BridgeInputWidget.toggle_radius_visibility(bridge_type)</p>
-<dl class="myst field-list">
-<dt class="field-odd">module<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ospgrillage.ospgui</p>
-<p>Show radius input only for curved bridges</p>
-<p>.. py:method:: BridgeInputWidget.create_materials_tab()</p>
-<dl class="myst field-list">
-<dt class="field-odd">module<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ospgrillage.ospgui</p>
-<p>Material properties tab with nested group boxes</p>
-<p>.. py:method:: BridgeInputWidget.update_material_fields(material)</p>
-<dl class="myst field-list">
-<dt class="field-odd">module<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ospgrillage.ospgui</p>
-<p>Update the compressive strength options based on material type</p>
-<p>.. py:method:: BridgeInputWidget.update_grade_fields(code, material)</p>
-<dl class="myst field-list">
-<dt class="field-odd">module<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ospgrillage.ospgui</p>
-<p>Update the grade options based on code selected</p>
-<p>.. py:method:: BridgeInputWidget.create_sections_tab()</p>
-<dl class="myst field-list">
-<dt class="field-odd">module<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ospgrillage.ospgui</p>
-<p>Cross-section input tab with specific properties</p>
-<p>.. py:method:: BridgeInputWidget.create_members_tab()</p>
-<dl class="myst field-list">
-<dt class="field-odd">module<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ospgrillage.ospgui</p>
-<p>Member assignment tab</p>
-<p>.. py:method:: BridgeInputWidget.create_loads_tab()</p>
-<dl class="myst field-list">
-<dt class="field-odd">module<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ospgrillage.ospgui</p>
-<p>Load cases tab</p>
-<p>.. py:method:: BridgeInputWidget.create_analysis_tab()</p>
-<dl class="myst field-list simple">
-<dt class="field-odd">module<span class="colon">:</span></dt>
-<dd class="field-odd"><p></p></dd>
-</dl>
+<p>Launch the <em>ospgui</em> graphical interface.</p>
+<p>Entry point for the <code class="docutils literal notranslate"><span class="pre">ospgui</span></code> console script.  Checks that PyQt5 is
+available and exits with a helpful message if not, otherwise starts the
+Qt application and opens :class:<code class="docutils literal notranslate"><span class="pre">BridgeAnalysisGUI</span></code>.</p>
+<p class="rubric" id="raises">Raises</p>
+<p>SystemExit
+With code 1 if PyQt5 is not installed; with the Qt application’s
+return code on normal exit.</p>
 </dd>
 </dl>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd>
-</dl>
-</section>
 </section>
 </section>
 
@@ -655,11 +519,8 @@ Requires PyQt5.  Install with <code class="docutils literal notranslate"><span c
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#launching">Launching</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#api-reference">API reference</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#main-window">Main window</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#input-widget">Input widget</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interface-overview">Interface overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#api-reference">API reference</a></li>
 </ul>
   </nav></div>
 
