@@ -12,9 +12,21 @@
 #
 import os
 import sys
+from importlib.metadata import version, PackageNotFoundError
 
 sys.path.insert(0, os.path.abspath("../../src/"))
-from ospgrillage import __version__ as ver
+
+# Read version from package metadata rather than importing ospgrillage
+# directly, which would trigger the openseespy binary import and fail in
+# a docs-only build environment.
+try:
+    ver = version("ospgrillage")
+except PackageNotFoundError:
+    ver = "0.0.0"
+
+# Mock heavy native dependencies so autodoc can introspect the source
+# without needing the openseespy Linux/Windows/Mac binaries installed.
+autodoc_mock_imports = ["openseespy", "openseespy.opensees", "openseespylinux"]
 
 # -- Project information -----------------------------------------------------
 
