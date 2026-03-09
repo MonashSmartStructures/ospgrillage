@@ -12,6 +12,8 @@ Factory function
 Class reference
 ---------------
 
-.. autoclass:: ospgrillage.mesh.Mesh
+Mesh
+~~~~
 
+.. autoclass:: ospgrillage.mesh.Mesh
    :show-inheritance:

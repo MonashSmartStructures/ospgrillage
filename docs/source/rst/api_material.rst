@@ -12,6 +12,8 @@ Factory function
 Class reference
 ---------------
 
-.. autoclass:: ospgrillage.material.Material
+Material
+~~~~~~~~
 
+.. autoclass:: ospgrillage.material.Material
    :show-inheritance:

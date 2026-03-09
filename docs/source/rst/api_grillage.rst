@@ -29,22 +29,32 @@ OspGrillage methods
 Class reference
 ---------------
 
-.. autoclass:: ospgrillage.osp_grillage.OspGrillage
+OspGrillage
+~~~~~~~~~~~
 
+.. autoclass:: ospgrillage.osp_grillage.OspGrillage
    :show-inheritance:
+
+OspGrillageBeam
+~~~~~~~~~~~~~~~
 
 .. autoclass:: ospgrillage.osp_grillage.OspGrillageBeam
-
    :show-inheritance:
+
+OspGrillageShell
+~~~~~~~~~~~~~~~~
 
 .. autoclass:: ospgrillage.osp_grillage.OspGrillageShell
-
    :show-inheritance:
+
+Analysis
+~~~~~~~~
 
 .. autoclass:: ospgrillage.osp_grillage.Analysis
-
    :show-inheritance:
 
-.. autoclass:: ospgrillage.osp_grillage.Results
+Results
+~~~~~~~
 
+.. autoclass:: ospgrillage.osp_grillage.Results
    :show-inheritance:

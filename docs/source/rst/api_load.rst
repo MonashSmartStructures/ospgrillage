@@ -31,42 +31,62 @@ Class methods
 Class reference
 ---------------
 
-.. autoclass:: ospgrillage.load.NodalLoad
+NodalLoad
+~~~~~~~~~
 
+.. autoclass:: ospgrillage.load.NodalLoad
    :show-inheritance:
+
+PointLoad
+~~~~~~~~~
 
 .. autoclass:: ospgrillage.load.PointLoad
-
    :show-inheritance:
+
+LineLoading
+~~~~~~~~~~~
 
 .. autoclass:: ospgrillage.load.LineLoading
-
    :show-inheritance:
+
+PatchLoading
+~~~~~~~~~~~~
 
 .. autoclass:: ospgrillage.load.PatchLoading
-
    :show-inheritance:
+
+CompoundLoad
+~~~~~~~~~~~~
 
 .. autoclass:: ospgrillage.load.CompoundLoad
-
    :show-inheritance:
+
+MovingLoad
+~~~~~~~~~~
 
 .. autoclass:: ospgrillage.load.MovingLoad
-
    :show-inheritance:
+
+LoadCase
+~~~~~~~~
 
 .. autoclass:: ospgrillage.load.LoadCase
-
    :show-inheritance:
+
+LoadModel
+~~~~~~~~~
 
 .. autoclass:: ospgrillage.load.LoadModel
-
    :show-inheritance:
+
+Path
+~~~~
 
 .. autoclass:: ospgrillage.load.Path
-
    :show-inheritance:
 
-.. autoclass:: ospgrillage.load.ShapeFunction
+ShapeFunction
+~~~~~~~~~~~~~
 
+.. autoclass:: ospgrillage.load.ShapeFunction
    :show-inheritance:
