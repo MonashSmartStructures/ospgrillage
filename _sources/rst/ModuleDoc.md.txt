@@ -124,8 +124,6 @@ For {class}`~ospgrillage.load.LoadCase`, all load object inputs can be either lo
 3.  {doc}`Running_analysis`
 4.  {doc}`APIdoc`
 
-::: {.toctree maxdepth="2" hidden=""}
-```
 ## Links to useful resources
 
 Use the following links for more on:
