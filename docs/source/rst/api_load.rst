@@ -15,8 +15,8 @@ Factory functions
    ~ospgrillage.load.create_moving_load
    ~ospgrillage.load.create_load_model
 
-CompoundLoad and LoadCase methods
-----------------------------------
+Class methods
+-------------
 
 .. autosummary::
    :toctree: generated/
@@ -26,6 +26,7 @@ CompoundLoad and LoadCase methods
    ~ospgrillage.load.LoadCase.add_load
    ~ospgrillage.load.MovingLoad.set_path
    ~ospgrillage.load.MovingLoad.add_load
+   ~ospgrillage.load.MovingLoad.query
 
 Class reference
 ---------------
