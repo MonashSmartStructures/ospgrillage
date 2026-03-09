@@ -739,9 +739,9 @@ class OspGrillage:
             self.common_grillage_element_z_group.update({key: val})
         # populate start edge and end edge entries
         self.common_grillage_element_z_group[self.common_grillage_element_keys[4]] = [0]
-        self.common_grillage_element_z_group[self.common_grillage_element_keys[5]] = (
-            list(range(1, self.Mesh_obj.global_edge_count))
-        )
+        self.common_grillage_element_z_group[
+            self.common_grillage_element_keys[5]
+        ] = list(range(1, self.Mesh_obj.global_edge_count))
         self.common_grillage_element_z_group[self.common_grillage_element_keys[6]] = [
             0
         ]  # proxy 0 for set_member() loop
@@ -1965,9 +1965,9 @@ class OspGrillage:
                         "load_factor": load_factor,
                     }
                     list_of_incr_load_case_dict.append(increment_load_case_dict)
-                self.moving_load_case_dict[moving_load_obj.name] = (
-                    list_of_incr_load_case_dict
-                )
+                self.moving_load_case_dict[
+                    moving_load_obj.name
+                ] = list_of_incr_load_case_dict
 
             if self.diagnostics:
                 print("Moving load case: {} created".format(moving_load_obj.name))
@@ -2338,18 +2338,18 @@ class OspGrillage:
 
     def get_element(self, **kwargs) -> Union[List[float]]:
         """
-                Function to query properties of elements in grillage model.
+        Function to query properties of elements in grillage model.
 
-                :keyword:
-                * options (`str): string for element data option. Either "elements" or "nodes" (default)
-                * z_group_num (`int`): group number [0 to N] for N is the number of groups within a specific grillage element group.
-                                       this is needed for interior beams, where users which to query specific group (e.g. 2nd group)
-                                       within this "interior_main_beam" element group.
-                * x_group_num (`int`): ditto for z_group_num but for x_group
-                * edge_group_num(`int`): ditto for z_group_num but for edge groups
+        :keyword:
+        * options (`str): string for element data option. Either "elements" or "nodes" (default)
+        * z_group_num (`int`): group number [0 to N] for N is the number of groups within a specific grillage element group.
+                               this is needed for interior beams, where users which to query specific group (e.g. 2nd group)
+                               within this "interior_main_beam" element group.
+        * x_group_num (`int`): ditto for z_group_num but for x_group
+        * edge_group_num(`int`): ditto for z_group_num but for edge groups
 
-                :return: List of element data (tag)
-                """
+        :return: List of element data (tag)
+        """
         # get query member details
         namestring = kwargs.get("member", None)
         select_z_group = kwargs.get(
@@ -2490,7 +2490,6 @@ class OspGrillage:
 
         massDOFs = []
         for nd in ops.getNodeTags():
-
             for j in range(6):  # NDF is number of DOFs/node
                 if ops.nodeMass(nd, j + 1) > 0.0:
                     massDOFs.append(ops.nodeDOFs(nd)[j])
@@ -2557,7 +2556,6 @@ class Analysis:
         step: int = 1,
         **kwargs,
     ):
-
         self.analysis_name = analysis_name
         self.ops_grillage_name = ops_grillage_name
         self.time_series_tag = None
