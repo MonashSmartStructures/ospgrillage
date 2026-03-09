@@ -1,6 +1,5 @@
 [build-system]
-requires = ["setuptools>=64.0",
-            "oldest-supported-numpy"]
+requires = ["setuptools>=64.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -23,13 +22,12 @@ classifiers = [
     "Operating System :: POSIX :: Linux",
     "Operating System :: MacOS :: MacOS X",
     "Operating System :: Microsoft :: Windows",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
 "Programming Language :: Python :: 3.12",
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 dependencies = [
     "openseespy>=3.2.2.6",
     "opsvis>=0.95.5",
