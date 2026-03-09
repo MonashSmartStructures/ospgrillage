@@ -18,7 +18,7 @@ In general, there are three steps to create a grillage model with *ospgrillage*:
 
 We will detail these steps by creating a grillage model of a bridge deck as shown in Figure 2.
 
-![Figure 2: Grillage model created using OpenSeesPy](../images/42degnegative10m.png)
+![Figure 2: Grillage model created using OpenSeesPy](../images/42degnegative10m.PNG)
 
 To begin, import `ospgrillage` as either `ospg` or `og` as shown in the following code block. As will be needed later, we also prepared the unit convention of variables for this example as shown in the same code block.
 
@@ -38,7 +38,7 @@ MPa = N / ((mm) ** 2)
 GPa = kilo * MPa
 ```
 
-## Defining elements of grillage model {#defining Grillage member}
+## Defining elements of grillage model
 
 A grillage element is created using the {func}`~ospgrillage.members.create_member` interface function. This function returns a {class}`~ospgrillage.members.GrillageMember` object, which requires two other objects as inputs, namely:
 
@@ -228,7 +228,7 @@ When `pyfile=` parameter is set to `True`, an executable py file will be generat
 
 ### Visualize grillage model
 
-To check that we created the model in `OpenSees` space, we can plot the model using `OpenSeesPy`\'s visualization module `ops\_vis`. The *ospgrillage* module already imports the `ops\_vis` module. Therefore, one can run access `ops\_vis` by running the following code line and a plot like in [Figure 2](#Figure 2) will be returned:
+To check that we created the model in `OpenSees` space, we can plot the model using `OpenSeesPy`\'s visualization module `ops\_vis`. The *ospgrillage* module already imports the `ops\_vis` module. Therefore, one can run access `ops\_vis` by running the following code line and a plot like Figure 2 will be returned:
 
 ```python
 og.opsplt.plot_model(show_nodes="yes",show_nodetags="yes") # using Vfo module

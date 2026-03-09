@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>create_load_model &#8212; ospgrillage 0.4.1 documentation</title>
+    <title>MovingLoad.query &#8212; ospgrillage 0.4.1 documentation</title>
   
   
   
@@ -42,11 +42,11 @@
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'rst/generated/ospgrillage.load.create_load_model';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'rst/generated/ospgrillage.load.MovingLoad.query';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="CompoundLoad.set_global_coord" href="ospgrillage.load.CompoundLoad.set_global_coord.html" />
-    <link rel="prev" title="create_moving_load" href="ospgrillage.load.create_moving_load.html" />
+    <link rel="next" title="Mesh" href="../api_mesh.html" />
+    <link rel="prev" title="MovingLoad.add_load" href="ospgrillage.load.MovingLoad.add_load.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.4.1" />
@@ -372,13 +372,13 @@
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.create_compound_load.html">create_compound_load</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.create_moving_path.html">create_moving_path</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.create_moving_load.html">create_moving_load</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">create_load_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.create_load_model.html">create_load_model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.CompoundLoad.set_global_coord.html">CompoundLoad.set_global_coord</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.CompoundLoad.add_load.html">CompoundLoad.add_load</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.LoadCase.add_load.html">LoadCase.add_load</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.MovingLoad.set_path.html">MovingLoad.set_path</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.MovingLoad.add_load.html">MovingLoad.add_load</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.MovingLoad.query.html">MovingLoad.query</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">MovingLoad.query</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../api_mesh.html">Mesh</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -437,7 +437,7 @@
     
     <li class="breadcrumb-item"><a href="../api_load.html" class="nav-link">Load module</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">create_load_model</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">MovingLoad.query</span></li>
   </ul>
 </nav>
 </div>
@@ -454,15 +454,20 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="create-load-model">
-<h1>create_load_model<a class="headerlink" href="#create-load-model" title="Link to this heading">#</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="ospgrillage.load.create_load_model">
-<span class="sig-name descname"><span class="pre">create_load_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.create_load_model" title="Link to this definition">#</a></dt>
-<dd><p>Create a load model object representing a vehicle load model.</p>
+  <section id="movingload-query">
+<h1>MovingLoad.query<a class="headerlink" href="#movingload-query" title="Link to this heading">#</a></h1>
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.load.MovingLoad.query">
+<span class="sig-prename descclassname"><span class="pre">MovingLoad.</span></span><span class="sig-name descname"><span class="pre">query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incremental_lc_name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.MovingLoad.query" title="Link to this definition">#</a></dt>
+<dd><p>Function to query properties of moving load</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>LoadModel object</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>incremental_lc_name</strong> (<em>str</em>) – Name string of the incremental load case to query.</p></li>
+<li><p><strong>load_group_name</strong> (<em>list</em><em>, </em><em>optional</em>) – Name of the load group to query. Defaults to all groups.</p></li>
+<li><p><strong>index</strong> (<em>int</em><em>, </em><em>optional</em>) – Index of the result entry to return. Defaults to <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p></li>
+<li><p><strong>option</strong> (<em>str</em><em>, </em><em>optional</em>) – Query option — e.g. <code class="docutils literal notranslate"><span class="pre">&quot;position&quot;</span></code>. Defaults to <code class="docutils literal notranslate"><span class="pre">&quot;position&quot;</span></code>.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -480,20 +485,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="ospgrillage.load.create_moving_load.html"
+       href="ospgrillage.load.MovingLoad.add_load.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">create_moving_load</p>
+        <p class="prev-next-title">MovingLoad.add_load</p>
       </div>
     </a>
     <a class="right-next"
-       href="ospgrillage.load.CompoundLoad.set_global_coord.html"
+       href="../api_mesh.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">CompoundLoad.set_global_coord</p>
+        <p class="prev-next-title">Mesh</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -516,7 +521,7 @@
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.create_load_model"><code class="docutils literal notranslate"><span class="pre">create_load_model()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.MovingLoad.query"><code class="docutils literal notranslate"><span class="pre">MovingLoad.query()</span></code></a></li>
 </ul>
   </nav></div>
 
@@ -524,7 +529,7 @@
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/rst/generated/ospgrillage.load.create_load_model.rst">
+    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/rst/generated/ospgrillage.load.MovingLoad.query.rst">
       <i class="fa-solid fa-pencil"></i>
       
       

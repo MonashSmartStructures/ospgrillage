@@ -378,6 +378,7 @@
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.load.LoadCase.add_load.html">LoadCase.add_load</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.set_path.html">MovingLoad.set_path</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.add_load.html">MovingLoad.add_load</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.query.html">MovingLoad.query</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="api_mesh.html">Mesh</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -481,8 +482,8 @@
 </table>
 </div>
 </section>
-<section id="compoundload-and-loadcase-methods">
-<h2>CompoundLoad and LoadCase methods<a class="headerlink" href="#compoundload-and-loadcase-methods" title="Link to this heading">#</a></h2>
+<section id="class-methods">
+<h2>Class methods<a class="headerlink" href="#class-methods" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.set_global_coord.html#ospgrillage.load.CompoundLoad.set_global_coord" title="ospgrillage.load.CompoundLoad.set_global_coord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_global_coord</span></code></a>(global_coord)</p></td>
@@ -499,6 +500,9 @@
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.add_load.html#ospgrillage.load.MovingLoad.add_load" title="ospgrillage.load.MovingLoad.add_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_load</span></code></a>(load_obj[, path_obj])</p></td>
 <td><p>Function to set a load type (Loads class object) with its path (Path class object).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.query.html#ospgrillage.load.MovingLoad.query" title="ospgrillage.load.MovingLoad.query"><code class="xref py py-obj docutils literal notranslate"><span class="pre">query</span></code></a>(incremental_lc_name, **kwargs)</p></td>
+<td><p>Function to query properties of moving load</p></td>
 </tr>
 </tbody>
 </table>
@@ -1324,7 +1328,7 @@ The modeling plane is y = constant (XZ plane).</p>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#factory-functions">Factory functions</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compoundload-and-loadcase-methods">CompoundLoad and LoadCase methods</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-methods">Class methods</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-reference">Class reference</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.NodalLoad"><code class="docutils literal notranslate"><span class="pre">NodalLoad</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.NodalLoad.get_nodal_load_call"><code class="docutils literal notranslate"><span class="pre">NodalLoad.get_nodal_load_call()</span></code></a></li>

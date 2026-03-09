@@ -419,7 +419,7 @@
 <li><p>Assigning the defined grillage members to the elements of grillage model object.</p></li>
 </ol>
 <p>We will detail these steps by creating a grillage model of a bridge deck as shown in Figure 2.</p>
-<p><img alt="Figure 2: Grillage model created using OpenSeesPy" src="images/42degnegative10m.png" /></p>
+<p><img alt="Figure 2: Grillage model created using OpenSeesPy" src="../_images/42degnegative10m.PNG" /></p>
 <p>To begin, import <code class="docutils literal notranslate"><span class="pre">ospgrillage</span></code> as either <code class="docutils literal notranslate"><span class="pre">ospg</span></code> or <code class="docutils literal notranslate"><span class="pre">og</span></code> as shown in the following code block. As will be needed later, we also prepared the unit convention of variables for this example as shown in the same code block.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">ospgrillage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">og</span>
 <span class="c1"># create unit signs for variables of example</span>
@@ -437,8 +437,8 @@
 </pre></div>
 </div>
 </section>
-<section id="defining-elements-of-grillage-model-defining-grillage-member">
-<h2>Defining elements of grillage model {#defining Grillage member}<a class="headerlink" href="#defining-elements-of-grillage-model-defining-grillage-member" title="Link to this heading">#</a></h2>
+<section id="defining-elements-of-grillage-model">
+<h2>Defining elements of grillage model<a class="headerlink" href="#defining-elements-of-grillage-model" title="Link to this heading">#</a></h2>
 <p>A grillage element is created using the <a class="reference internal" href="generated/ospgrillage.members.create_member.html#ospgrillage.members.create_member" title="ospgrillage.members.create_member"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_member()</span></code></a> interface function. This function returns a <a class="reference internal" href="api_members.html#ospgrillage.members.GrillageMember" title="ospgrillage.members.GrillageMember"><code class="xref py py-class docutils literal notranslate"><span class="pre">GrillageMember</span></code></a> object, which requires two other objects as inputs, namely:</p>
 <ol class="arabic simple">
 <li><p><em>material</em> = A <a class="reference internal" href="api_material.html#ospgrillage.material.Material" title="ospgrillage.material.Material"><code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code></a> class object, and</p></li>
@@ -606,7 +606,7 @@ Orthogonal mesh is not accepted for skew angles less than 11°; the mesh falls b
 <p>When <code class="docutils literal notranslate"><span class="pre">pyfile=</span></code> parameter is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, an executable py file will be generated instead. The executable py file contains all relevant <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code> command from which when executed, creates the model instance in OpenSees which can edited and later used to perform more complex analysis. Note that in doing so, the model instance in <code class="docutils literal notranslate"><span class="pre">OpenSees</span></code> space is not created.</p>
 <section id="visualize-grillage-model">
 <h3>Visualize grillage model<a class="headerlink" href="#visualize-grillage-model" title="Link to this heading">#</a></h3>
-<p>To check that we created the model in <code class="docutils literal notranslate"><span class="pre">OpenSees</span></code> space, we can plot the model using <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code>’s visualization module <code class="docutils literal notranslate"><span class="pre">ops\_vis</span></code>. The <em>ospgrillage</em> module already imports the <code class="docutils literal notranslate"><span class="pre">ops\_vis</span></code> module. Therefore, one can run access <code class="docutils literal notranslate"><span class="pre">ops\_vis</span></code> by running the following code line and a plot like in [Figure 2](#Figure 2) will be returned:</p>
+<p>To check that we created the model in <code class="docutils literal notranslate"><span class="pre">OpenSees</span></code> space, we can plot the model using <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code>’s visualization module <code class="docutils literal notranslate"><span class="pre">ops\_vis</span></code>. The <em>ospgrillage</em> module already imports the <code class="docutils literal notranslate"><span class="pre">ops\_vis</span></code> module. Therefore, one can run access <code class="docutils literal notranslate"><span class="pre">ops\_vis</span></code> by running the following code line and a plot like Figure 2 will be returned:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">og</span><span class="o">.</span><span class="n">opsplt</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">show_nodes</span><span class="o">=</span><span class="s2">&quot;yes&quot;</span><span class="p">,</span><span class="n">show_nodetags</span><span class="o">=</span><span class="s2">&quot;yes&quot;</span><span class="p">)</span> <span class="c1"># using Vfo module</span>
 <span class="n">og</span><span class="o">.</span><span class="n">opsv</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">az_el</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="c1"># using osp_vis</span>
 </pre></div>
@@ -665,7 +665,7 @@ Orthogonal mesh is not accepted for skew angles less than 11°; the mesh falls b
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#workflow-overview">Workflow overview</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#defining-elements-of-grillage-model-defining-grillage-member">Defining elements of grillage model {#defining Grillage member}</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#defining-elements-of-grillage-model">Defining elements of grillage model</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-material-objects">Creating material objects</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-section-objects">Creating section objects</a></li>
 </ul>
