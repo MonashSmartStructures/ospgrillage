@@ -26,7 +26,17 @@ except PackageNotFoundError:
 
 # Mock heavy native dependencies so autodoc can introspect the source
 # without needing the openseespy Linux/Windows/Mac binaries installed.
-autodoc_mock_imports = ["openseespy", "openseespy.opensees", "openseespylinux"]
+# PyQt5 is also mocked so ospgui.py can be imported for API documentation
+# without requiring the optional GUI dependency in the docs build environment.
+autodoc_mock_imports = [
+    "openseespy",
+    "openseespy.opensees",
+    "openseespylinux",
+    "PyQt5",
+    "PyQt5.QtWidgets",
+    "PyQt5.QtCore",
+    "PyQt5.QtGui",
+]
 
 # -- Project information -----------------------------------------------------
 

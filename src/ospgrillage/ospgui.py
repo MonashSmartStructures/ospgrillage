@@ -23,6 +23,16 @@ except ModuleNotFoundError:
     class QApplication:   pass  # type: ignore[assignment]
 
 class BridgeInputWidget(QWidget):
+    """Tabbed input form for bridge geometry, materials, sections, and members.
+
+    Provides a structured form with separate tabs for each category of bridge
+    model inputs.  This widget is embedded inside :class:`BridgeAnalysisGUI`
+    and is not intended to be instantiated directly by users.
+
+    .. note::
+        Requires PyQt5.  Install with ``pip install "ospgrillage[gui]"``.
+    """
+
     def __init__(self):
         super().__init__()
         self.setup_ui()
@@ -641,6 +651,28 @@ class BridgeInputWidget(QWidget):
         self.tabs.addTab(tab, "Analysis")
 
 class BridgeAnalysisGUI(QMainWindow):
+    """Main window for the *ospgui* bridge geometry generator.
+
+    Provides an interactive graphical interface for defining a bridge deck
+    grillage model, previewing the generated *ospgrillage* Python code, and
+    running the model directly within the same session.
+
+    The window is divided into three panels:
+
+    * **Left** — :class:`ospgrillage.ospgui.BridgeInputWidget` with tabbed input forms.
+    * **Centre** — live code view showing the generated Python source.
+    * **Right** — 3-D mesh preview rendered via *vfo*.
+
+    Typical usage is through the ``ospgui`` console entry-point or
+    programmatically::
+
+        from ospgrillage.ospgui import main
+        main()
+
+    .. note::
+        Requires PyQt5.  Install with ``pip install "ospgrillage[gui]"``.
+    """
+
     def __init__(self):
         super().__init__()
         #self.setWindowIcon(QIcon("ospgrillage_logo.png"))  # Add your icon file

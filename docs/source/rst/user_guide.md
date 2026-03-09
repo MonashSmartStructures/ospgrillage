@@ -10,5 +10,6 @@ mesh_feature
 Running_analysis
 PostProcessing
 Examples
+ospgui
 Troubleshooting
 ```
