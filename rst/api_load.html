@@ -735,9 +735,7 @@ Returns None if z is outside the line segment bounds.</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Loads</span></code></p>
 <p>Class for Patch loads.</p>
 <p>By default requires at least 4 load point for patch (quadrilateral). Can take up to 8 load points.</p>
-<p>Init the PatchLoad class.
-:param name:
-:param kwargs:</p>
+<p>Init the PatchLoad class. Accepts the same parameters as <code class="xref py py-class docutils literal notranslate"><span class="pre">Loads</span></code>.</p>
 </dd></dl>
 
 <dl class="py class">
@@ -872,12 +870,11 @@ Static loads (loads without a path) are included in every incremental load case.
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>incremental_lc_name</strong> (<em>str</em>) – Name string of load case to query properties</p></li>
-<li><p><strong>kwargs</strong></p></li>
+<li><p><strong>incremental_lc_name</strong> (<em>str</em>) – Name string of the incremental load case to query.</p></li>
+<li><p><strong>load_group_name</strong> (<em>list</em><em>, </em><em>optional</em>) – Name of the load group to query. Defaults to all groups.</p></li>
+<li><p><strong>index</strong> (<em>int</em><em>, </em><em>optional</em>) – Index of the result entry to return. Defaults to <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p></li>
+<li><p><strong>option</strong> (<em>str</em><em>, </em><em>optional</em>) – Query option — e.g. <code class="docutils literal notranslate"><span class="pre">&quot;position&quot;</span></code>. Defaults to <code class="docutils literal notranslate"><span class="pre">&quot;position&quot;</span></code>.</p></li>
 </ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p></p>
 </dd>
 </dl>
 </dd></dl>
@@ -966,8 +963,10 @@ this class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>gap</strong> – Gap between axle (specific to M1600)</p></li>
-<li><p><strong>kwargs</strong> – See below</p></li>
+<li><p><strong>gap</strong> (<em>float</em><em> or </em><em>int</em>) – Gap between axles (specific to M1600 load model). Defaults to <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p></li>
+<li><p><strong>model_type</strong> (<em>str</em><em>, </em><em>optional</em>) – Load model type identifier.</p></li>
+<li><p><strong>units</strong> (<em>str</em><em>, </em><em>optional</em>) – Unit system to use. Defaults to <code class="docutils literal notranslate"><span class="pre">&quot;SI&quot;</span></code>.</p></li>
+<li><p><strong>origin</strong> (<em>Point namedTuple</em><em>, </em><em>optional</em>) – Origin point for the load model in global coordinates. Defaults to <code class="docutils literal notranslate"><span class="pre">Point(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></code>.</p></li>
 </ul>
 </dd>
 </dl>
