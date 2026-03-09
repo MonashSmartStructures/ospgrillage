@@ -111,8 +111,9 @@ def create_point(**kwargs):
 
 def create_load_case(**kwargs):
     """
-    User interface function to create LoadCase objects. Following this function, users
-    are required add loads to LoadCase object via :func:`~ospgrillage.load.LoadCase.add_load`.
+    Create a ``LoadCase`` container for loads to apply in a grillage analysis.
+
+    Use :func:`~ospgrillage.load.LoadCase.add_load` to populate the load case.
 
     :keyword:
     * name(`str`): Name string of Load case object
@@ -124,8 +125,9 @@ def create_load_case(**kwargs):
 
 def create_compound_load(**kwargs):
     """
-    User interface function to create CompoundLoad object. Following this function users are required to
-    add loads to object via :func:`~ospgrillage.load.CompoundLoad.add_load`.
+    Create a ``CompoundLoad`` group that combines multiple individual loads.
+
+    Use :func:`~ospgrillage.load.CompoundLoad.add_load` to add loads to the group.
 
     :returns: :class:`~ospgrillage.load.CompoundLoad`
     """
@@ -1468,8 +1470,9 @@ class Path:
 # ---------------------------------------------------------------------------------------------------------------
 def create_load_model(**kwargs):
     """
-    Function to create a CompoundLoad object of a vehicle load model model
-    :return: `LoadModel` object
+    Create a ``LoadModel`` object representing a vehicle load model.
+
+    :return: ``LoadModel`` object
     """
     return LoadModel(**kwargs)
 
