@@ -32,41 +32,41 @@ Class reference
 ---------------
 
 .. autoclass:: ospgrillage.load.NodalLoad
-   :members:
+
    :show-inheritance:
 
 .. autoclass:: ospgrillage.load.PointLoad
-   :members:
+
    :show-inheritance:
 
 .. autoclass:: ospgrillage.load.LineLoading
-   :members:
+
    :show-inheritance:
 
 .. autoclass:: ospgrillage.load.PatchLoading
-   :members:
+
    :show-inheritance:
 
 .. autoclass:: ospgrillage.load.CompoundLoad
-   :members:
+
    :show-inheritance:
 
 .. autoclass:: ospgrillage.load.MovingLoad
-   :members:
+
    :show-inheritance:
 
 .. autoclass:: ospgrillage.load.LoadCase
-   :members:
+
    :show-inheritance:
 
 .. autoclass:: ospgrillage.load.LoadModel
-   :members:
+
    :show-inheritance:
 
 .. autoclass:: ospgrillage.load.Path
-   :members:
+
    :show-inheritance:
 
 .. autoclass:: ospgrillage.load.ShapeFunction
-   :members:
+
    :show-inheritance:

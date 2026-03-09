@@ -13,5 +13,5 @@ Class reference
 ---------------
 
 .. autoclass:: ospgrillage.mesh.Mesh
-   :members:
+
    :show-inheritance:

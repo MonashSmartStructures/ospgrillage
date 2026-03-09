@@ -14,9 +14,9 @@ Class reference
 ---------------
 
 .. autoclass:: ospgrillage.members.Section
-   :members:
+
    :show-inheritance:
 
 .. autoclass:: ospgrillage.members.GrillageMember
-   :members:
+
    :show-inheritance:

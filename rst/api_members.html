@@ -472,8 +472,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.members.Section">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">op_ele_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'elasticBeamColumn'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_mass_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_section_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Elastic'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.members.Section" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Class for structural sections of grillage model. Stores geometric properties of cross sections. This class also
+<dd><p>Class for structural sections of grillage model. Stores geometric properties of cross sections. This class also
 parses section inputs into relevant
 <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code> command for creating sections in OpenSees framework.</p>
 <p>This class wraps <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> Section() commands - methods for generating commands are handled by the
@@ -514,22 +513,16 @@ OpenSees section arguments.</p></li>
 <p>Section properties are defined in local coordinates (x, y, z) and are later
 transformed according to the orientation of the <a class="reference internal" href="#ospgrillage.members.GrillageMember" title="ospgrillage.members.GrillageMember"><code class="xref py py-class docutils literal notranslate"><span class="pre">GrillageMember</span></code></a> in the grillage model.</p>
 </div>
-<dl class="py method">
-<dt class="sig sig-object py" id="ospgrillage.members.Section.parse_section_properties">
-<span class="sig-name descname"><span class="pre">parse_section_properties</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.members.Section.parse_section_properties" title="Link to this definition">#</a></dt>
-<dd><p>Parse and populate missing section properties with computed defaults.</p>
-<p>This method computes secondary properties (Ay, Az, Iy) based on primary
-section properties (A, Iz) if not explicitly provided. These computed
-values are required for OpenSees model commands.</p>
-</dd></dl>
-
+<dl class="field-list simple">
+<dt class="field-odd">Show-inheritance<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.members.GrillageMember">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">GrillageMember</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">section</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">material</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">member_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Undefined'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quad_ele_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tri_ele_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.members.GrillageMember" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Class for grillage model members. E.g., longitudinal beam members.</p>
+<dd><p>Class for grillage model members. E.g., longitudinal beam members.</p>
 <p>This class parses material and section properties of grillage members into corresponding <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code> Element()
 command.</p>
 <dl class="simple">
@@ -538,18 +531,12 @@ command.</p>
 </dl>
 <p>For developers wishing to expand the library of elements wrapped by GrillageMember, introduce in this class:</p>
 <ol class="arabic simple">
-<li><p>The argument input orders of new element in <code class="xref py py-func docutils literal notranslate"><span class="pre">get_member_prop_arguments()</span></code></p></li>
+<li><p>The argument input orders of the new element in
+<code class="xref py py-func docutils literal notranslate"><span class="pre">get_member_prop_arguments()</span></code>.</p></li>
+<li><p>If the element requires an <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code> Section definition, add its input arguments to
+<code class="xref py py-func docutils literal notranslate"><span class="pre">get_section_arguments()</span></code> and
+<code class="xref py py-func docutils literal notranslate"><span class="pre">get_ops_section_command()</span></code>.</p></li>
 </ol>
-<blockquote>
-<div><p>method.</p>
-</div></blockquote>
-<ol class="arabic simple">
-<li><p>If the element requires the definition of Section in <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code>, add its Section’s list of input arguments</p></li>
-</ol>
-<blockquote>
-<div><p>command generation to <code class="xref py py-func docutils literal notranslate"><span class="pre">get_section_arguments()</span></code> and
-<code class="xref py py-func docutils literal notranslate"><span class="pre">get_ops_section_command()</span></code>.</p>
-</div></blockquote>
 <p>Init the GrillageMember. Requires two input objects i.e. A <a class="reference internal" href="api_material.html#ospgrillage.material.Material" title="ospgrillage.material.Material"><code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code></a>, and
 <a class="reference internal" href="#ospgrillage.members.Section" title="ospgrillage.members.Section"><code class="xref py py-class docutils literal notranslate"><span class="pre">Section</span></code></a>.</p>
 <dl class="field-list simple">
@@ -560,50 +547,9 @@ command.</p>
 <li><p><strong>member_name</strong> (<em>str</em>) – Name of the grillage member (Optional)</p></li>
 </ul>
 </dd>
+<dt class="field-even">Show-inheritance<span class="colon">:</span></dt>
+<dd class="field-even"><p></p></dd>
 </dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="ospgrillage.members.GrillageMember.get_member_prop_arguments">
-<span class="sig-name descname"><span class="pre">get_member_prop_arguments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.members.GrillageMember.get_member_prop_arguments" title="Link to this definition">#</a></dt>
-<dd><p>Returns the element arguments based on the op_element_type of the GrillageMember.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str containing member properties in accordance with convention of OpenSees element type</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ospgrillage.members.GrillageMember.get_section_arguments">
-<span class="sig-name descname"><span class="pre">get_section_arguments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ele_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.members.GrillageMember.get_section_arguments" title="Link to this definition">#</a></dt>
-<dd><p>Returns the input arguments for <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code> Section command if the prescribe element type of the
-GrillageMember requires the definition of an <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code> Section object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str containing Section command properties in accordance with convention of OpenSees element type</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ospgrillage.members.GrillageMember.get_ops_section_command">
-<span class="sig-name descname"><span class="pre">get_ops_section_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">section_tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">material_tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ele_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.members.GrillageMember.get_ops_section_command" title="Link to this definition">#</a></dt>
-<dd><p>Returns the <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code> Section command for the Section type</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str containing the <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code> Section command</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ospgrillage.members.GrillageMember.get_element_command_str">
-<span class="sig-name descname"><span class="pre">get_element_command_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ele_tag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_tag_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transf_tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ele_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">materialtag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sectiontag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.members.GrillageMember.get_element_command_str" title="Link to this definition">#</a></dt>
-<dd><p>Return a list of OpenSeesPy element command for the member.
-This function is handled by OspGrillage class.</p>
-<dl class="field-list simple">
-</dl>
-</dd></dl>
-
 </dd></dl>
 
 </section>
@@ -658,17 +604,8 @@ This function is handled by OspGrillage class.</p>
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#factory-functions">Factory functions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-reference">Class reference</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.members.Section"><code class="docutils literal notranslate"><span class="pre">Section</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.members.Section.parse_section_properties"><code class="docutils literal notranslate"><span class="pre">Section.parse_section_properties()</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.members.GrillageMember"><code class="docutils literal notranslate"><span class="pre">GrillageMember</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.members.GrillageMember.get_member_prop_arguments"><code class="docutils literal notranslate"><span class="pre">GrillageMember.get_member_prop_arguments()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.members.GrillageMember.get_section_arguments"><code class="docutils literal notranslate"><span class="pre">GrillageMember.get_section_arguments()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.members.GrillageMember.get_ops_section_command"><code class="docutils literal notranslate"><span class="pre">GrillageMember.get_ops_section_command()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.members.GrillageMember.get_element_command_str"><code class="docutils literal notranslate"><span class="pre">GrillageMember.get_element_command_str()</span></code></a></li>
-</ul>
-</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.members.Section"><code class="docutils literal notranslate"><span class="pre">Section</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.members.GrillageMember"><code class="docutils literal notranslate"><span class="pre">GrillageMember</span></code></a></li>
 </ul>
 </li>
 </ul>

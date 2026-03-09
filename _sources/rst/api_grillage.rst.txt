@@ -30,21 +30,21 @@ Class reference
 ---------------
 
 .. autoclass:: ospgrillage.osp_grillage.OspGrillage
-   :members:
+
    :show-inheritance:
 
 .. autoclass:: ospgrillage.osp_grillage.OspGrillageBeam
-   :members:
+
    :show-inheritance:
 
 .. autoclass:: ospgrillage.osp_grillage.OspGrillageShell
-   :members:
+
    :show-inheritance:
 
 .. autoclass:: ospgrillage.osp_grillage.Analysis
-   :members:
+
    :show-inheritance:
 
 .. autoclass:: ospgrillage.osp_grillage.Results
-   :members:
+
    :show-inheritance:

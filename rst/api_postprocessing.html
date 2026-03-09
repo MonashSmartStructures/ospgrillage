@@ -475,10 +475,9 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.postprocessing.Envelope">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Envelope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_effect</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.postprocessing.Envelope" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Class for defining envelope of <a class="reference internal" href="api_grillage.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a>’s
+<dd><p>Class for defining envelope of <a class="reference internal" href="api_grillage.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a>’s
 <cite>xarray</cite> of result.</p>
-<p>A <a class="reference internal" href="#ospgrillage.postprocessing.Envelope.get" title="ospgrillage.postprocessing.Envelope.get"><code class="xref py py-func docutils literal notranslate"><span class="pre">Envelope.get()</span></code></a> method is provided that returns an enveloped <cite>xarray</cite> based
+<p>A <code class="xref py py-func docutils literal notranslate"><span class="pre">Envelope.get()</span></code> method is provided that returns an enveloped <cite>xarray</cite> based
 on the specified input parameters of this class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -494,43 +493,21 @@ on the specified input parameters of this class.</p>
 <li><p><strong>nodes</strong> (<em>list</em><em>, </em><em>optional</em>) – Specific node tags to include in the envelope.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Show-inheritance<span class="colon">:</span></dt>
+<dd class="field-even"><p></p></dd>
 </dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="ospgrillage.postprocessing.Envelope.get">
-<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.postprocessing.Envelope.get" title="Link to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The enveloped xarray DataArray with envelope values applied.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>xarray.DataArray</p>
-</dd>
-</dl>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.postprocessing.PostProcessor">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">PostProcessor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grillage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.postprocessing.PostProcessor" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Class to post-process the results from an of ospgrillage analysis result.</p>
+<dd><p>Class to post-process the results from an of ospgrillage analysis result.</p>
 <p>As of version 0.2.0, ospgrillage compiles results using Xarray module.</p>
 <p>Init the class</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="ospgrillage.postprocessing.PostProcessor.get_arbitrary_displacements">
-<span class="sig-name descname"><span class="pre">get_arbitrary_displacements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape_function_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'y'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.postprocessing.PostProcessor.get_arbitrary_displacements" title="Link to this definition">#</a></dt>
-<dd><p>Returns displacement (translation and rotational) from an arbitrary point by interpolation</p>
-<p>param point: list of coordinate. Default three elements [x,y=0,z]
-type point: list
-param component: Displacement component. Default “y”
-type component: str
-param shape_function_type: The shape function for interpolation. Default “linear”
-type shape_function_type: str</p>
 <dl class="field-list simple">
+<dt class="field-odd">Show-inheritance<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
 </dl>
-</dd></dl>
-
 </dd></dl>
 
 </section>
@@ -585,14 +562,8 @@ type shape_function_type: str</p>
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#factory-functions">Factory functions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-reference">Class reference</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.postprocessing.Envelope"><code class="docutils literal notranslate"><span class="pre">Envelope</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.postprocessing.Envelope.get"><code class="docutils literal notranslate"><span class="pre">Envelope.get()</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.postprocessing.PostProcessor"><code class="docutils literal notranslate"><span class="pre">PostProcessor</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.postprocessing.PostProcessor.get_arbitrary_displacements"><code class="docutils literal notranslate"><span class="pre">PostProcessor.get_arbitrary_displacements()</span></code></a></li>
-</ul>
-</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.postprocessing.Envelope"><code class="docutils literal notranslate"><span class="pre">Envelope</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.postprocessing.PostProcessor"><code class="docutils literal notranslate"><span class="pre">PostProcessor</span></code></a></li>
 </ul>
 </li>
 </ul>
