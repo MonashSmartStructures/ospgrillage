@@ -453,20 +453,15 @@ updated as parameters change.</p></li>
 </section>
 <section id="api-reference">
 <h2>API reference<a class="headerlink" href="#api-reference" title="Link to this heading">#</a></h2>
-<p>.. py:function:: main()</p>
-<dl class="myst field-list">
-<dt class="field-odd">module<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ospgrillage.ospgui</p>
+<section id="main">
+<h3><code class="docutils literal notranslate"><span class="pre">main()</span></code><a class="headerlink" href="#main" title="Link to this heading">#</a></h3>
 <p>Launch the <em>ospgui</em> graphical interface.</p>
-<p>Entry point for the <code class="docutils literal notranslate"><span class="pre">ospgui</span></code> console script.  Checks that PyQt5 is
-available and exits with a helpful message if not, otherwise starts the
-Qt application and opens :class:<code class="docutils literal notranslate"><span class="pre">BridgeAnalysisGUI</span></code>.</p>
-<p class="rubric" id="raises">Raises</p>
-<p>SystemExit
-With code 1 if PyQt5 is not installed; with the Qt application’s
-return code on normal exit.</p>
-</dd>
-</dl>
+<p>Entry point for the <code class="docutils literal notranslate"><span class="pre">ospgui</span></code> console script. Checks that PyQt5 is available
+and exits with a helpful message if not, otherwise starts the Qt application
+and opens <code class="docutils literal notranslate"><span class="pre">BridgeAnalysisGUI</span></code>.</p>
+<p><strong>Raises:</strong> <code class="docutils literal notranslate"><span class="pre">SystemExit</span></code> — with code 1 if PyQt5 is not installed; with the Qt
+application’s return code on normal exit.</p>
+</section>
 </section>
 </section>
 
@@ -520,7 +515,10 @@ return code on normal exit.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#launching">Launching</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interface-overview">Interface overview</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#api-reference">API reference</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#api-reference">API reference</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 

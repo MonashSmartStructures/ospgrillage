@@ -38,5 +38,13 @@ The window is divided into three panels:
 
 ## API reference
 
-```{autofunction} ospgrillage.ospgui.main
-```
+### `main()`
+
+Launch the *ospgui* graphical interface.
+
+Entry point for the `ospgui` console script. Checks that PyQt5 is available
+and exits with a helpful message if not, otherwise starts the Qt application
+and opens `BridgeAnalysisGUI`.
+
+**Raises:** `SystemExit` — with code 1 if PyQt5 is not installed; with the Qt
+application's return code on normal exit.
