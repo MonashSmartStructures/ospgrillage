@@ -5,6 +5,7 @@ comprise the user interface functions. Following are the classes of various load
 moving load and moving load path.
 """
 
+import numpy as np
 import pprint
 from collections import namedtuple
 from collections.abc import Iterable
@@ -13,7 +14,41 @@ from typing import Union
 
 from scipy import interpolate
 
-from ospgrillage.mesh import *
+from ospgrillage.mesh import Point, Mesh, create_point
+from ospgrillage.utils import (
+    find_circle,
+    get_distance,
+    get_slope,
+    get_y_intcp,
+    inv_line_func,
+    line_func,
+    sort_vertices,
+)
+
+__all__ = [
+    "LoadCase",
+    "LoadModel",
+    "Loads",
+    "MovingLoad",
+    "NodalLoad",
+    "NodeForces",
+    "PatchLoading",
+    "Path",
+    "PointLoad",
+    "LineLoading",
+    "LoadPoint",
+    "CompoundLoad",
+    "Line",
+    "ShapeFunction",
+    "create_load_vertex",
+    "create_load",
+    "create_load_case",
+    "create_load_model",
+    "create_moving_load",
+    "create_moving_path",
+    "create_compound_load",
+    "create_point",  # re-exported for convenience
+]
 
 
 def create_load_vertex(**kwargs):
@@ -246,7 +281,7 @@ class Loads:
         self.shape_function = kwargs.get("shape_function", "linear")
         # check if user skipped point 1 and defined point1 as point 2 instead
         if all([self.load_point_1 is None, self.load_point_2 is not None]):
-            raise Exception("Load point 1 is not defined")
+            raise ValueError("Load point 1 is not defined")
 
         # list of load points tuple
         self.point_list = [
@@ -442,11 +477,24 @@ class NodalLoad(Loads):
                 "Mz": self.Mz,
             }
 
+    def get_nodal_load_call(self):
+        """
+        Returns a ``(func_name, args, kwargs)`` tuple for ``ops.load()``.
+
+        This is the preferred form; it lets the caller dispatch via
+        ``_OpsProxy._dispatch()`` without any string building or ``eval``.
+        """
+        load_value = [self.Fx, self.Fy, self.Fz, self.Mx, self.My, self.Mz]
+        return ("load", (self.node_tag, *load_value), {})
+
     def get_nodal_load_str(self):
         """
-        Returns an ops.load() command for the NodalLoad.
+        Returns an ops.load() command string for the NodalLoad.
+
+        .. deprecated::
+            Use :meth:`get_nodal_load_call` instead.  This method is retained
+            for backward compatibility only.
         """
-        # get str for ops.load() function.
         load_value = [self.Fx, self.Fy, self.Fz, self.Mx, self.My, self.Mz]
         load_str = "ops.load({pt}, *{val})\n".format(pt=self.node_tag, val=load_value)
         return load_str
@@ -633,18 +681,27 @@ class PatchLoading(Loads):
                 self.load_point_3,
                 self.load_point_4,
             ]
-            # if len(self.point_list) < 4:
-            #     raise ValueError("invalid number of vertices. Hint:  either 4 or 8 is accepted for patch")
-
         else:
             raise ValueError(
-                "vertices missing.hint: patch load must have either 4  or 8 vertices  "
+                "vertices missing. hint: patch load must have either 4 or 8 vertices"
             )
-        if a != match:
-            raise Exception(
-                "vertices of patch load gives invalid patch layout: hint: make sure vertices are in counter"
-                "clockwise order with first point (load_point_1) being the bottom left vertice of the "
-                "patch load"
+
+        # The CCW sort in sort_vertices() starts from the vertex with the
+        # smallest positive angle from the centroid, which is not necessarily
+        # load_point_1.  We therefore accept any cyclic rotation of the sorted
+        # sequence — the points are valid as long as they form a CCW polygon.
+        def _is_cyclic_rotation(seq, candidate):
+            """Return True if *candidate* is a cyclic rotation of *seq*."""
+            n = len(seq)
+            if len(candidate) != n:
+                return False
+            doubled = seq + seq
+            return any(doubled[i : i + n] == candidate for i in range(n))
+
+        if not _is_cyclic_rotation(a, match):
+            raise ValueError(
+                "vertices of patch load give an invalid patch layout: "
+                "make sure the four vertices are supplied in counter-clockwise order"
             )
         # get patch min dimension
         self.patch_min_dim = None  # instantiate
@@ -1055,7 +1112,7 @@ class MovingLoad:
         """
         # get query options
         if not self.parse:
-            raise Exception(
+            raise ValueError(
                 "Moving load is not yet set to a grillage model - no information ready for query. hint"
                 "add moving load to a grillage model via add_load_case()"
             )

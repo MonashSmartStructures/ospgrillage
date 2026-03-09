@@ -4,23 +4,144 @@ This module contain the parent class OspGrillage which handles input information
 or executable py file. This is done by wrapping `OpenSeesPy` commands for creating models (nodes/elements).
 This module also handles all load case assignment, analysis, and results by wrapping `OpenSeesPy` command for analysis
 """
+import ast
 import dataclasses
 from dataclasses import dataclass
+from copy import deepcopy
 from datetime import datetime
 from itertools import combinations
-from typing import List, Tuple, TYPE_CHECKING
+import logging
+import math
+from typing import List, Tuple, Union, TYPE_CHECKING
 
+import numpy as np
 import openseespy.opensees as ops
 
-from ospgrillage.load import *
-from ospgrillage.mesh import *
-from ospgrillage.material import *
-from ospgrillage.members import *
-from ospgrillage.postprocessing import *
+from ospgrillage.load import (
+    CompoundLoad,
+    LineLoading,
+    LoadCase,
+    LoadPoint,
+    MovingLoad,
+    NodalLoad,
+    PatchLoading,
+    PointLoad,
+    ShapeFunction,
+)
+from ospgrillage.mesh import (
+    BeamLinkMesh,
+    BeamMesh,
+    Mesh,
+    Point,
+    ShellLinkMesh,
+    create_point,
+)
+from ospgrillage.material import Material, create_material
+from ospgrillage.members import GrillageMember, Section, create_member, create_section
+from ospgrillage.postprocessing import (
+    Envelope,
+    PostProcessor,
+    create_envelope,
+    plot_defo,
+    plot_force,
+)
+from ospgrillage.utils import (
+    calculate_area_given_vertices,
+    check_dict_same_keys,
+    check_intersect,
+    check_point_in_grid,
+    get_distance,
+    get_patch_centroid,
+    intersection,
+    is_between,
+    line,
+    solve_zeta_eta,
+    sort_list_into_four_groups,
+    sort_vertices,
+)
 import xarray as xr
 
 if TYPE_CHECKING:
     ...
+
+logger = logging.getLogger(__name__)
+
+__all__ = [
+    "OspGrillage",
+    "OspGrillageBeam",
+    "OspGrillageShell",
+    "create_grillage",
+    "Analysis",
+    "GrillageElement",
+    "Results",
+]
+
+
+def _format_ops_cmd(name: str, args: tuple, kwargs: dict) -> str:
+    """Serialise an ops.name(*args, **kwargs) call to Python source code."""
+    parts = [repr(a) for a in args]
+    parts += [f"{k}={repr(v)}" for k, v in kwargs.items()]
+    return f"ops.{name}({', '.join(parts)})\n"
+
+
+class _OpsProxy:
+    """
+    Proxy for openseespy.opensees that handles dual-mode dispatch transparently.
+
+    - In live mode (filename=None): executes OpenSeesPy commands directly.
+    - In pyfile mode (filename set): serialises each call to Python source and
+      appends it to the named file.
+
+    Both modes record every call in ``command_log`` (list of source strings).
+    This eliminates all ``if self.pyfile:`` / ``eval()`` branching from the
+    model-building and analysis methods.
+    """
+
+    def __init__(self, ops_module, filename: str | None = None):
+        # Use object.__setattr__ to avoid our own __getattr__
+        object.__setattr__(self, "_module", ops_module)
+        object.__setattr__(self, "_filename", filename)
+        object.__setattr__(self, "command_log", [])
+
+    def _set_filename(self, filename: str | None) -> None:
+        """Switch the proxy to a different target file (or back to live mode)."""
+        object.__setattr__(self, "_filename", filename)
+
+    def _write_raw(self, line: str) -> None:
+        """Write a pre-formatted ops command string (already valid Python source)."""
+        log = object.__getattribute__(self, "command_log")
+        filename = object.__getattribute__(self, "_filename")
+        log.append(line)
+        if filename is not None:
+            with open(filename, "a") as fh:
+                fh.write(line)
+        else:
+            # In live mode, eval the pre-formatted string with restricted namespace
+            eval(line, {"ops": object.__getattribute__(self, "_module"), "np": np})
+
+    def _dispatch(self, call: tuple) -> None:
+        """Dispatch a ``(func_name, args, kwargs)`` tuple through the proxy.
+
+        This is the preferred entry-point when the caller has already resolved
+        the function name and arguments (e.g. from ``LoadCase`` data).  It
+        avoids any string building or ``eval`` at the call site.
+        """
+        name, args, kwargs = call
+        getattr(self, name)(*args, **kwargs)
+
+    def __getattr__(self, name: str):
+        def dispatch(*args, **kwargs):
+            log = object.__getattribute__(self, "command_log")
+            filename = object.__getattribute__(self, "_filename")
+            line = _format_ops_cmd(name, args, kwargs)
+            log.append(line)
+            if filename is not None:
+                with open(filename, "a") as fh:
+                    fh.write(line)
+            else:
+                module = object.__getattribute__(self, "_module")
+                return getattr(module, name)(*args, **kwargs)
+        return dispatch
 
 
 def create_grillage(**kwargs):
@@ -146,7 +267,7 @@ class OspGrillage:
         self.model_name = bridge_name  # name string
         self.long_dim = long_dim  # span , defined c/c between support bearings
         self.width = width  # length of the bearing support - if skew  = 0 , this corresponds to width of bridge
-        self.num_long_gird = num_long_grid  # number of longitudinal beams
+        self.num_long_grid = num_long_grid  # number of longitudinal beams
         self.num_trans_grid = num_trans_grid  # number of grids for transverse members
         self.edge_width = edge_beam_dist  # width of cantilever edge beam
 
@@ -274,7 +395,7 @@ class OspGrillage:
         # check inputs
         if self.mesh_radius:
             if self.mesh_radius < self.long_dim:
-                raise Exception("mesh_radius must be greater than long_dim of grillage")
+                raise ValueError("mesh_radius must be greater than long_dim of grillage")
 
         # ===========================================================================================================
         # Begin parsing mesh inputs and mesh procedures
@@ -286,7 +407,7 @@ class OspGrillage:
             width=self.width,
             trans_dim=self.trans_dim,
             num_trans_beam=self.num_trans_grid,
-            num_long_beam=self.num_long_gird,
+            num_long_beam=self.num_long_grid,
             skew_1=self.skew_a,
             edge_dist_a=self.edge_width_a,
             edge_dist_b=self.edge_width_b,
@@ -336,7 +457,7 @@ class OspGrillage:
         else:
             mesh_obj = None
         if self.diagnostics:
-            print("Meshing complete")
+            logger.info("Meshing complete")
         return mesh_obj
 
     def _write_imports(self):
@@ -373,6 +494,11 @@ class OspGrillage:
         if self.pyfile:
             self._write_imports()
 
+        # Proxy handles dual-mode dispatch (live execution vs pyfile writing)
+        self._ops = _OpsProxy(ops, self.filename if pyfile else None)
+        # Alias: model_command_list now points to the proxy's command log
+        self.model_command_list = self._ops.command_log
+
         self._write_op_model()
         # run model generation in OpenSees or write generation command to py file
         self._run_mesh_generation()
@@ -393,32 +519,23 @@ class OspGrillage:
         self._write_geom_transf(self.Mesh_obj)  # x dir members
 
         # write / execute material and sections
+        # Route all pre-formatted command strings through the proxy.
+        # The proxy handles both live execution and pyfile writing transparently.
+        _proxy_ns = {"ops": self._ops}
         for mat_str in self.material_command_list:
             if self.pyfile:
-                with open(self.filename, "a") as file_handle:
-                    file_handle.write("# Material definition \n")
-                    file_handle.write(mat_str)
-            else:
-                eval(mat_str)
-                self.model_command_list.append(mat_str)
+                with open(self.filename, "a") as fh:
+                    fh.write("# Material definition\n")
+            self._ops._write_raw(mat_str)
 
         for sec_str in self.section_command_list:
             if self.pyfile:
-                with open(self.filename, "a") as file_handle:
-                    file_handle.write("# Create section: \n")
-                    file_handle.write(sec_str)
-            else:
-                eval(sec_str)
-                self.model_command_list.append(sec_str)
+                with open(self.filename, "a") as fh:
+                    fh.write("# Create section:\n")
+            self._ops._write_raw(sec_str)
 
-        # write /execute element commands
         for ele_tag, ele_str in self.element_command_list.items():
-            if self.pyfile:
-                with open(self.filename, "a") as file_handle:
-                    file_handle.write(ele_str)
-            else:
-                eval(ele_str)
-                self.model_command_list.append(ele_str)
+            self._ops._write_raw(ele_str)
 
         # write equalDOF commands
         self._write_equal_dof(node_tag_list=self.spring_node_pairs.items())
@@ -440,13 +557,13 @@ class OspGrillage:
             Advanced version to set multispan feature to be available for future release.
         """
         if not isinstance(edge_group_counter, int):
-            raise Exception("Int required for edge_group_counter= argument")
+            raise ValueError("Int required for edge_group_counter= argument")
 
         if not self.model_instance:
             # reset the var
             self.edge_support_type_dict[edge_group_counter] = new_restraint_vector
         else:
-            raise Exception(
+            raise ValueError(
                 "Model instance have been created - append boundary conditions won't be applied: Hint - "
                 "first set_boundary_condition() before create_osp_model()"
             )
@@ -457,51 +574,18 @@ class OspGrillage:
 
     # private functions to write ops commands to output py file.
     def _write_geom_transf(self, mesh_obj: Mesh, transform_type: str = "Linear"):
-        """
-        Write geometric transformation commands.
-
-        :param transform_type: transformation type
-        :type transform_type: str
-
-        """
-        # loop all transform dict items,
+        """Write geometric transformation commands."""
+        _data_ns = {"np": np}
         for k, v in mesh_obj.transform_dict.items():
-            vxz = k.split("|")[0]  # first substring is vector xz
-            offset = k.split("|")[
-                1
-            ]  # second substring is global offset of node i and j of element
-            if eval(offset):
-                offset_list = eval(
-                    offset
-                )  # list of global offset of node i entry 0 and node j entry 1
-                geom_tranfs_str = 'ops.geomTransf("{type}", {tag}, *{vxz}, {offset_i}, {offset_j})\n'.format(
-                    type=transform_type,
-                    tag=v,
-                    vxz=eval(vxz),
-                    offset_i=offset_list[0],
-                    offset_j=offset_list[1],
-                )
-
-                if self.pyfile:
-                    with open(self.filename, "a") as file_handle:
-                        file_handle.write(geom_tranfs_str)
-                else:
-                    eval(geom_tranfs_str)
-
+            vxz = k.split("|")[0]
+            offset = k.split("|")[1]
+            vxz_list = eval(vxz, _data_ns)   # stored as repr(); may contain np.float64(...)
+            offset_data = eval(offset, _data_ns)
+            if offset_data:
+                self._ops.geomTransf(transform_type, v, *vxz_list,
+                                     offset_data[0], offset_data[1])
             else:
-                geom_tranfs_str = 'ops.geomTransf("{type}", {tag}, *{vxz})\n'.format(
-                    type=transform_type, tag=v, vxz=eval(vxz)
-                )
-                if self.pyfile:
-                    with open(self.filename, "a") as file_handle:
-                        file_handle.write("# create transformation {}\n".format(v))
-                        file_handle.write(geom_tranfs_str)
-
-                else:
-                    eval(geom_tranfs_str)
-
-            # store to global list
-            self.model_command_list.append(geom_tranfs_str)
+                self._ops.geomTransf(transform_type, v, *vxz_list)
 
     def _write_op_model(self):
         """
@@ -512,112 +596,51 @@ class OspGrillage:
             For 3-D model, the default model dimension and node degree-of-freedoms are 3 and 6 respectively.
             This method automatically sets the aforementioned parameters to 2 and 4 respectively, for a 2-D problem.
         """
-        wipe_str = "ops.wipe()\n"
-        model_str = "ops.model('basic', '-ndm', {ndm}, '-ndf', {ndf})\n".format(
-            ndm=self.__ndm, ndf=self.__ndf
-        )
-        # check if write or eval command
-        if self.pyfile:
-            with open(self.filename, "a") as file_handle:
-                file_handle.write(wipe_str)
-                file_handle.write(model_str)
-        else:
-            eval(wipe_str)
-            eval(model_str)
-            self.model_command_list.append(wipe_str)
-            self.model_command_list.append(model_str)
+        self._ops.wipe()
+        self._ops.model("basic", "-ndm", self.__ndm, "-ndf", self.__ndf)
 
     def _write_op_node(self, mesh_obj: Mesh):
-        """
-        Write/create node commands.
-        """
-        # check if write mode, write header for node commands
+        """Write/create node commands."""
         if self.pyfile:
-            with open(self.filename, "a") as file_handle:
-                file_handle.write("# Model nodes\n")
-
-        # loop all node in dict, write or eval node command
-        for (
-            k,
-            nested_v,
-        ) in mesh_obj.node_spec.items():
+            with open(self.filename, "a") as fh:
+                fh.write("# Model nodes\n")
+        for k, nested_v in mesh_obj.node_spec.items():
             coordinate = nested_v["coordinate"]
-            node_str = "ops.node({tag}, {x:.4f}, {y:.4f}, {z:.4f})\n".format(
-                tag=nested_v["tag"],
-                x=coordinate[0],
-                y=coordinate[1],
-                z=coordinate[2],
+            # Round to 4 d.p. to match original precision (preserves numerical test results)
+            self._ops.node(
+                nested_v["tag"],
+                round(float(coordinate[0]), 4),
+                round(float(coordinate[1]), 4),
+                round(float(coordinate[2]), 4),
             )
-            if self.pyfile:
-                with open(self.filename, "a") as file_handle:
-                    file_handle.write(node_str)
-            else:  # indices correspondence . 0 - x , 1 - y, 2 - z
-                eval(node_str)
-                self.model_command_list.append(node_str)
 
     def _write_op_fix(self, mesh_obj):
-        """
-        Write/create fix commands
-        """
+        """Write/create fix commands."""
         if self.pyfile:
-            with open(self.filename, "a") as file_handle:
-                file_handle.write("# Boundary condition implementation\n")
-            # TODO generalize for user input of boundary condition
+            with open(self.filename, "a") as fh:
+                fh.write("# Boundary condition implementation\n")
         for node_tag, edge_group_num in mesh_obj.edge_node_recorder.items():
-            # if node is an edge beam - is part of common group z ==0 ,do not assign any fixity
             if (
                 mesh_obj.node_spec[node_tag]["z_group"]
                 in mesh_obj.common_z_group_element[0]
-            ):  # here [0] is first group
-                pass  # move to next node in edge recorder
+            ):
+                pass
             else:
-                fix_str = "ops.fix({}, *{})\n".format(
-                    node_tag, self.edge_support_type_dict[edge_group_num]
-                )
-                if self.pyfile:  # if writing py file
-                    with open(self.filename, "a") as file_handle:
-                        file_handle.write(fix_str)
-                else:  # run instance
-                    eval(fix_str)
-                    self.model_command_list.append(fix_str)
+                self._ops.fix(node_tag, *self.edge_support_type_dict[edge_group_num])
 
     # TODO
     def _write_mass(self):
-        """write or evaluates the mass commands"""
-
-        # d = {node number: [1,2,3,0,0,0] } # dx dy dz, rx, ry, rz
-        #
+        """Write or evaluate the mass commands."""
         mass_dict = {}
         for node, mass_list in mass_dict.items():
-            mass_str = "ops.mass({nodetag},*{mass_list})".format(
-                nodetag=node, mass_list=mass_list
-            )
-            if self.pyfile:
-                with open(self.filename, "a") as file_handle:
-                    file_handle.write(mass_str)
-            else:
-                eval(mass_str)
-                self.model_command_list.append(mass_str)
+            self._ops.mass(node, *mass_list)
 
     def _write_equal_dof(self, node_tag_list: list, dof: list = None):
-        """
-        Write OpenseesPy's equalDOF command.
-        """
+        """Write OpenseesPy's equalDOF command."""
         if dof is None:
-            dof = [1, 2, 3, 4, 5]  # default
-
-        # key is supported node , slave is non supported node
+            dof = [1, 2, 3, 4, 5]
         for master_node, slave_node in node_tag_list:
-            equaldof_str = "ops.equalDOF({rNodetag},{cNodetag},*{dofs})\n".format(
-                rNodetag=master_node, cNodetag=slave_node, dofs=dof
-            )
-
-            if self.pyfile:
-                with open(self.filename, "a") as file_handle:
-                    file_handle.write(equaldof_str)
-            else:
-                eval(equaldof_str)
-                self.model_command_list.append(equaldof_str)
+            self._ops.equalDOF(master_node, slave_node, *dof)
 
     def _write_material(
         self, member: GrillageMember = None, material: Material = None
@@ -627,7 +650,7 @@ class OspGrillage:
         """
 
         if member is None and material is None:
-            raise Exception(
+            raise ValueError(
                 "Uniaxial material has no input GrillageMember or Material Object"
             )
         elif member is None:
@@ -661,11 +684,7 @@ class OspGrillage:
             self.material_command_list.append(mat_str)
         else:  # material tag defined, skip, print to terminal
             if self.diagnostics:
-                print(
-                    "Material {} with tag {} has been previously defined".format(
-                        material_type, material_tag
-                    )
-                )
+                logger.debug("Material %s with tag %s has been previously defined", material_type, material_tag)
         return material_tag
 
     def _get_material_tag(self):
@@ -709,18 +728,10 @@ class OspGrillage:
 
             # print to terminal
             if self.diagnostics:
-                print(
-                    "Section {}, of tag {} created".format(
-                        section_type, sectiontagcounter
-                    )
-                )
+                logger.debug("Section %s of tag %s created", section_type, sectiontagcounter)
         else:
             if self.diagnostics:
-                print(
-                    "Section {} with tag {} has been previously defined".format(
-                        section_type, sectiontagcounter
-                    )
-                )
+                logger.debug("Section %s with tag %s has been previously defined", section_type, sectiontagcounter)
         return sectiontagcounter
 
     def _create_standard_element_list(self):
@@ -761,16 +772,9 @@ class OspGrillage:
         ]
 
     def _write_rigid_link(self):
-        """
-        Write/execute OpenSeesPy rigidLink() command.
-        """
-        # loop all rigidLink command, write or eval rigid link command. note link_str is already formatted
+        """Write/execute OpenSeesPy rigidLink() command."""
         for link_str in self.Mesh_obj.link_str_list:
-            if self.pyfile:
-                with open(self.filename, "a") as file_handle:
-                    file_handle.write(link_str)
-            else:
-                eval(link_str)
+            self._ops._write_raw(link_str)
 
     # interface function
     def set_member(
@@ -809,7 +813,7 @@ class OspGrillage:
         :raises: ValueError If missing member
         """
         if self.diagnostics:
-            print("Setting member: {} of model".format(member))
+            logger.info("Setting member: %s of model", member)
         if member is None:
             raise ValueError(
                 "Missing target elements of grillage model to be assigned. Hint, member="
@@ -976,7 +980,7 @@ class OspGrillage:
         Sets a spring support value of rotational_spring_stiffness to all nodes of edge number.
         """
         if edge_num in self.spring_edges:
-            raise Exception(
+            raise ValueError(
                 "Spring support already defined for edge number {}".format(edge_num)
             )
         else:
@@ -1189,7 +1193,7 @@ class OspGrillage:
             start_load_vertex = line_load_obj.load_point_1
             end_load_vertex = line_load_obj.line_end_point
         else:
-            raise Exception(
+            raise ValueError(
                 "Error is defining points of line/patch on grillage: hint check load points vertices of "
                 "load obj"
             )
@@ -1550,17 +1554,16 @@ class OspGrillage:
         if shape_func == "hermite":
             for count, node in enumerate(sorted_node_tag):
                 load_str.append(
-                    "ops.load({pt}, *{val})\n".format(
-                        pt=node,
-                        val=[0, node_load[count], 0, node_mx[count], 0, node_mz[count]],
+                    (
+                        "load",
+                        (node, 0, node_load[count], 0, node_mx[count], 0, node_mz[count]),
+                        {},
                     )
                 )
         else:
             for count, node in enumerate(sorted_node_tag):
                 load_str.append(
-                    "ops.load({pt}, *{val})\n".format(
-                        pt=node, val=[0, node_load[count], 0, 0, 0, 0]
-                    )
+                    ("load", (node, 0, node_load[count], 0, 0, 0, 0), {})
                 )
         return load_str
 
@@ -1844,7 +1847,7 @@ class OspGrillage:
                 # nested loop through each load in compound load, assign and get
                 for nested_list_of_load in load_obj.compound_load_obj_list:
                     if isinstance(nested_list_of_load, NodalLoad):
-                        load_str += nested_list_of_load.get_nodal_load_str()
+                        load_str += [nested_list_of_load.get_nodal_load_call()]
                     elif isinstance(nested_list_of_load, PointLoad):
                         load_str += self._assign_load_to_four_node(
                             point=list(nested_list_of_load.load_point_1)[:-1],
@@ -1880,9 +1883,7 @@ class OspGrillage:
             else:
                 # run single assignment of load type (load_obj is a load class)
                 if isinstance(load_obj, NodalLoad):
-                    load_str += [
-                        load_obj.get_nodal_load_str()
-                    ]  # here return load_str as list with single element
+                    load_str += [load_obj.get_nodal_load_call()]
                 elif isinstance(load_obj, PointLoad):
                     load_str += self._assign_load_to_four_node(
                         point=list(load_obj.load_point_1)[:-1],
@@ -1944,7 +1945,7 @@ class OspGrillage:
 
             self.load_case_list.append(load_case_dict)
             if self.diagnostics:
-                print("Load Case: {} added".format(load_case_obj.name))
+                logger.info("Load Case: %s added", load_case_obj.name)
         elif isinstance(load_case_obj, MovingLoad):
             # get the list of individual load cases
             list_of_incr_load_case_dict = []
@@ -1970,7 +1971,7 @@ class OspGrillage:
                 )
 
             if self.diagnostics:
-                print("Moving load case: {} created".format(moving_load_obj.name))
+                logger.info("Moving load case: %s created", moving_load_obj.name)
         else:
             raise ValueError(
                 "Input of add_load_case not a valid object. Hint:accepts only LoadCase or MovingLoad "
@@ -1999,14 +2000,14 @@ class OspGrillage:
         step = kwargs.get("step", 1)  # default 1
         # check if any load cases are defined
         if self.load_case_list == [] and self.moving_load_case_dict == {}:
-            raise Exception("No load cases were defined")
+            raise ValueError("No load cases were defined")
 
         if selected_load_case:
             all_flag = False  # overwrite all flag to be false
         selected_moving_load_lc_list = None
         # check if kwargs other than load_case are specified
         # if all([kwargs, selected_load_case is None]):
-        #     raise Exception("Error in analyze(options): only accepts load_case= ")
+        #     raise ValueError("Error in analyze(options): only accepts load_case= ")
 
         # if selected_load_case kwargs given, filter and select load case from load case list to run
         # if given selected load case as a list, select load cases matching names in list
@@ -2043,7 +2044,7 @@ class OspGrillage:
             selected_basic_lc = self.load_case_list
             selected_moving_load_lc_list = self.moving_load_case_dict
         else:
-            raise Exception(
+            raise ValueError(
                 "missing kwargs for run options: hint: requires input for `load_case=`"
             )
 
@@ -2079,7 +2080,7 @@ class OspGrillage:
 
             # print to terminal
             if self.diagnostics:
-                print("Analysis: {} completed".format(load_case_obj.name))
+                logger.info("Analysis: %s completed", load_case_obj.name)
             # store result in Recorder object
             self.results.extract_analysis(analysis_obj=load_case_analysis)
 
@@ -2118,11 +2119,11 @@ class OspGrillage:
                     ) = incremental_analysis.evaluate_analysis()
                     list_of_inc_analysis.append(incremental_analysis)
                     if self.diagnostics:
-                        print("Analysis: {} completed".format(load_case_obj.name))
+                        logger.info("Analysis: %s completed", load_case_obj.name)
                     # store result in Recorder object
                 self.results.extract_analysis(list_of_inc_analysis=list_of_inc_analysis)
                 if self.diagnostics:
-                    print("Analysis: {} completed".format(ml_name))
+                    logger.info("Analysis: %s completed", ml_name)
 
     def add_load_combination(
         self, load_combination_name: str, load_case_and_factor_dict: dict
@@ -2180,7 +2181,7 @@ class OspGrillage:
             load_combination_name, load_case_dict_list
         )
         if self.diagnostics:
-            print("Load Combination: {} created".format(load_combination_name))
+            logger.info("Load Combination: %s created", load_combination_name)
 
     def get_results(self, **kwargs):
         """
@@ -2231,7 +2232,7 @@ class OspGrillage:
                                 [storing_da, extract_da], dim="Loadcase"
                             )
                         if self.diagnostics:
-                            print("Extracted load case data for : {}".format(name))
+                            logger.debug("Extracted load case data for: %s", name)
                 # lookup in moving load cases
                 for moving_name in self.moving_load_case_dict.keys():
                     if load_case_name == moving_name:
@@ -2259,13 +2260,13 @@ class OspGrillage:
             # this format: self.load_combination_dict.setdefault(load_combination_name, load_case_dict_list)
             # comb = [{road:1.2, DL: 1.5},{} , {} ]
             if not isinstance(comb, dict):
-                raise Exception(
+                raise ValueError(
                     "Combination argument requires a dict or a list of dict: e.g. {'DL':1.2,'SIDL':1.5}"
                 )
 
             # for load_case_dict_list in comb:  # {0:[{'loadcase':LoadCase object, 'load_command': list of str}
             if self.diagnostics:
-                print("Obtaining load combinations ....")
+                logger.info("Obtaining load combinations")
 
             summation_array = None  # instantiate
             factored_array = None  # instantiate
@@ -2368,7 +2369,7 @@ class OspGrillage:
             "options", node_option
         )  # similar to ops_vis, "nodes","element","node_i","node_j"
         if not options:
-            raise Exception(
+            raise ValueError(
                 'Options not defined: Hint arg option=  "nodes","element","node_i","node_j"'
             )
 
@@ -2576,6 +2577,10 @@ class Analysis:
         if analysis_type == "Transient":
             if kwargs.get("linear_acceleration"):
                 beta = 1 / 6
+        # Store for later use in evaluate_analysis
+        self.gamma = gamma
+        self.beta = beta
+        self.time_increment = time_increment
 
         # Preset dict for different analysis
         analysis_arguments = {
@@ -2637,40 +2642,49 @@ class Analysis:
         self.all_command = []
         # if true for pyfile, create pyfile for analysis command
         if self.pyfile:
-            with open(self.analysis_file_name, "w") as file_handle:
+            with open(self.analysis_file_name, "w") as fh:
                 # create py file or overwrite existing
                 # writing headers and description at top of file
-                file_handle.write(
+                fh.write(
                     "# Executable py file for Analysis of \n# Model name: {}\n".format(
                         self.ops_grillage_name
                     )
                 )
-                file_handle.write("# Load case: {}\n".format(self.analysis_name))
+                fh.write("# Load case: {}\n".format(self.analysis_name))
                 # time
                 now = datetime.now()
                 dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-                file_handle.write("# Constructed on:{}\n".format(dt_string))
+                fh.write("# Constructed on:{}\n".format(dt_string))
                 # write imports
-                file_handle.write(
+                fh.write(
                     "import numpy as np\nimport math\nimport openseespy.opensees as ops"
                     "\nimport vfo.vfo as opsplt\n"
                 )
 
+        # Proxy handles dual-mode dispatch for analysis commands
+        self._ops = _OpsProxy(ops, self.analysis_file_name if pyfile else None)
+        # all_command is now the proxy's command log
+        self.all_command = self._ops.command_log
+
     def _time_series_command(self, load_factor):
-        time_series = "ops.timeSeries('Constant', {}, '-factor',{})\n".format(
-            self.time_series_counter, load_factor
+        call = (
+            "timeSeries",
+            ("Constant", self.time_series_counter, "-factor", load_factor),
+            {},
         )
         self.time_series_counter += 1  # update counter by 1
-        return time_series
+        return call
 
     def _pattern_command(self):
-        pattern_command = "ops.pattern('Plain', {}, {})\n".format(
-            self.plain_counter, self.time_series_counter - 1
+        # time_series_counter was already incremented by _time_series_command(),
+        # so subtract 1 to reference the tag just created.
+        call = (
+            "pattern",
+            ("Plain", self.plain_counter, self.time_series_counter - 1),
+            {},
         )
-        # minus 1 to time series counter for time_series_command() precedes pattern_command() and incremented the time
-        # series counter
         self.plain_counter += 1
-        return pattern_command
+        return call
 
     def add_load_command(self, load_str: list, load_factor):
         # create time series for added load case
@@ -2686,64 +2700,42 @@ class Analysis:
         self.load_cases_dict_list.append(time_series_dict)  # add dict to list
 
     def evaluate_analysis(self):
-        # write/execute ops.load commands for load groups
-        if self.pyfile:
-            with open(self.analysis_file_name, "a") as file_handle:
-                file_handle.write(self.wipe_command)
-                for load_dict in self.load_cases_dict_list:
-                    file_handle.write(load_dict["time_series"])
-                    file_handle.write(load_dict["pattern"])
-                    for load_command in load_dict["load_command"]:
-                        file_handle.write(load_command)
-                file_handle.write(self.intergrator_command)
-                file_handle.write(self.numberer_command)
-                file_handle.write(self.system_command)
-                file_handle.write(self.constraint_command)
-                file_handle.write(self.algorithm_command)
-                file_handle.write(self.analysis_command)
-                file_handle.write(self.analyze_command)
-        else:
-            eval(self.wipe_command)
-            self.all_command.append(self.wipe_command)
-            if (
-                self.plain_counter - 1 != 1
-            ):  # plain counter increments by 1 upon self.pattern_command function, so -1 here
-                for count in range(1, self.plain_counter - 1):
-                    remove_command = self.remove_pattern_command.format(count)
-                    eval(remove_command)  # remove previous load pattern if any
-                    self.all_command.append(remove_command)
-            for load_dict in self.load_cases_dict_list:
-                eval(load_dict["time_series"])
-                self.all_command.append(load_dict["time_series"])
-                eval(load_dict["pattern"])
-                self.all_command.append(load_dict["pattern"])
-                for load_command in load_dict["load_command"]:
-                    eval(load_command)
-                    self.all_command.append(load_command)
-            eval(self.intergrator_command)
-            eval(self.numberer_command)
-            eval(self.system_command)
-            eval(self.constraint_command)
-            eval(self.algorithm_command)
-            eval(self.analysis_command)
-            eval(self.analyze_command)
-            self.all_command.append(self.intergrator_command)
-            self.all_command.append(self.numberer_command)
-            self.all_command.append(self.system_command)
-            self.all_command.append(self.constraint_command)
-            self.all_command.append(self.algorithm_command)
-            self.all_command.append(self.analysis_command)
-            self.all_command.append(self.analyze_command)
+        """Execute or write all analysis commands for this load case."""
+        self._ops.wipeAnalysis()
+
+        if self.plain_counter - 1 != 1:
+            for count in range(1, self.plain_counter - 1):
+                self._ops.remove("loadPattern", count)
+
+        for load_dict in self.load_cases_dict_list:
+            self._ops._dispatch(load_dict["time_series"])
+            self._ops._dispatch(load_dict["pattern"])
+            for call in load_dict["load_command"]:
+                self._ops._dispatch(call)
+
+        # Analysis settings - call proxy directly
+        if self.analysis_type == "Static":
+            self._ops.integrator("LoadControl", 1)
+        else:  # Transient
+            self._ops.integrator("Newmark", self.gamma, self.beta)
+        self._ops.numberer("Plain")
+        self._ops.system("BandGeneral")
+        self._ops.constraints(self.constraint_type)
+        self._ops.algorithm("Linear")
+        self._ops.analysis(self.analysis_type)
+        if self.analysis_type == "Static":
+            self._ops.analyze(int(self.step))
+        else:  # Transient
+            self._ops.analyze(int(self.step), self.time_increment)
 
         # extract results
         self.extract_grillage_responses()
-        # return time series and plain counter to update global time series and plain counter by by OspGrillage
         return (
             self.time_series_counter,
             self.plain_counter,
             self.node_disp,
             self.ele_force,
-            self.all_command,
+            self._ops.command_log,
         )
 
     # function to extract grillage model responses (dx,dy,dz,rotx,roty,rotz,N,Vy,Vz,Mx,My,Mz) and store to Result class
@@ -2771,10 +2763,9 @@ class Analysis:
                 global_ele_force = ops.eleResponse(ele_tag, "forces")
                 self.global_ele_force.setdefault(ele_tag, global_ele_force)
         else:
-            print(
-                "OspGrillage is at output mode, pyfile = True. Procedure for {} are generated.".format(
-                    self.analysis_name
-                )
+            logger.info(
+                "OspGrillage is at output mode (pyfile=True). Procedure for %s generated.",
+                self.analysis_name,
             )
 
 
@@ -3308,6 +3299,12 @@ class OspGrillageShell(OspGrillage):
 
         if self.pyfile:
             self._write_imports()
+
+        # Proxy handles dual-mode dispatch (live execution vs pyfile writing)
+        self._ops = _OpsProxy(ops, self.filename if pyfile else None)
+        # Alias: model_command_list now points to the proxy's command log
+        self.model_command_list = self._ops.command_log
+
         # model() command
         self._write_op_model()
         # create grillage mesh object + beam element groups
@@ -3315,12 +3312,7 @@ class OspGrillageShell(OspGrillage):
 
         # create shell element commands
         for ele_str in self.shell_element_command_list:
-            if self.pyfile:
-                with open(self.filename, "a") as file_handle:
-                    file_handle.write(ele_str)
-            else:
-                eval(ele_str)
-                self.model_command_list.append(ele_str)
+            self._ops._write_raw(ele_str)
         # create rigid link command
         self._write_rigid_link()
         # create the result file for the Mesh object
@@ -3382,7 +3374,7 @@ class OspGrillageShell(OspGrillage):
         :raises: ValueError If missing argument for member=
         """
         if self.diagnostics:
-            print("Setting member: {} of model".format(member))
+            logger.info("Setting member: %s of model", member)
         if member is None:
             raise ValueError(
                 "Missing target elements of grillage model to be assigned. Hint, member="
@@ -3405,7 +3397,7 @@ class OspGrillageShell(OspGrillage):
 
         # check if GrillageMember defined a unit width,
         if grillage_member_obj.section.unit_width:
-            raise Exception(
+            raise ValueError(
                 "GrillageMember obj for",
                 grillage_member_obj,
                 "flagged with unit_width feature = True is"
@@ -3478,15 +3470,7 @@ class OspGrillageShell(OspGrillage):
 
         """
         if self.pyfile:
-            with open(self.filename, "a") as file_handle:
-                file_handle.write("# Boundary condition implementation\n")
+            with open(self.filename, "a") as fh:
+                fh.write("# Boundary condition implementation\n")
         for node_tag, edge_group_num in mesh_obj.edge_support_nodes.items():
-            fix_str = "ops.fix({}, *{})\n".format(
-                node_tag, self.edge_support_type_dict[edge_group_num]
-            )
-            if self.pyfile:  # if writing py file
-                with open(self.filename, "a") as file_handle:
-                    file_handle.write(fix_str)
-            else:  # run instance
-                eval(fix_str)
-                self.model_command_list.append(fix_str)
+            self._ops.fix(node_tag, *self.edge_support_type_dict[edge_group_num])

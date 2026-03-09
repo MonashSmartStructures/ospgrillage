@@ -99,18 +99,14 @@ def test_point_load_getter(
     # reference_command = example_bridge.load_case_list[0]["load_command"]
     #
     # assert reference_command
-    import re
-
-    def parse_load_cmd(cmd):
-        # Extract node ID and list of floats from string like: ops.load(12, *[0, np.float64(x), 0, ...])
-        match = re.match(r"ops\.load\((\d+), \*\[([^\]]+)\]\)", cmd.strip())
-        assert match, f"Failed to parse: {cmd}"
-        node = int(match.group(1))
-        values = [
-            float(x.split("(")[-1].rstrip(")"))
-            for x in match.group(2).split(",")
-            if "np.float64" in x
-        ]
+    def parse_load_call(call):
+        # load_command entries are now (func_name, args, kwargs) tuples.
+        # args = (node_tag, Fx, Fy, Fz, Mx, My, Mz)
+        _name, args, _kwargs = call
+        assert _name == "load", f"Unexpected func name: {_name}"
+        node = args[0]
+        # non-zero components are Fy, Mx, Mz (indices 2, 4, 6 in args)
+        values = [float(args[i]) for i in (2, 4, 6) if args[i] != 0]
         return node, values
 
     expected_cmds = [
@@ -120,10 +116,10 @@ def test_point_load_getter(
         (13, [5.234541486881858, -1.4955832819662453, 2.94361356220202]),
     ]
 
-    for cmd_str, (exp_node, exp_vals) in zip(
+    for call, (exp_node, exp_vals) in zip(
         example_bridge.load_case_list[0]["load_command"], expected_cmds
     ):
-        node, values = parse_load_cmd(cmd_str)
+        node, values = parse_load_call(call)
         assert node == exp_node
         for a, b in zip(values, exp_vals):
             assert abs(a - b) < 1e-9  # tolerance for float comparison
@@ -407,13 +403,14 @@ def test_line_load_coincide_transverse_member(bridge_42_0_angle_mesh):
         "ops.load(56, *[0, 0.0, 0, 0, 0, 0])\n",
     ]
 
+    def _ref_vals(s):
+        start = s.find("[")
+        return eval(s[start : s.find("]") + 1])
+
     for i, load_command in enumerate(example_bridge.load_case_list[0]["load_command"]):
-        start = load_command.find("[")
-        end = load_command.find("]")
-        pos = eval(load_command[start : (end + 1)])
-        start_ref = ref_answer[i].find("[")
-        end_ref = ref_answer[i].find("]")
-        pos_ref = eval(ref_answer[i][start_ref : (end_ref + 1)])
+        _name, args, _kw = load_command
+        pos = list(args[1:])  # drop node_tag; rest are the 6 load components
+        pos_ref = _ref_vals(ref_answer[i])
         assert pos == pytest.approx(pos_ref)
 
 
@@ -576,13 +573,14 @@ def test_patch_load(bridge_model_42_negative):
         "ops.load(15, *[0, 0.10620730762527884, 0, -0.05310365381263942, 0, 0.06601456784167829])\n",
     ]
 
+    def _ref_vals(s):
+        start = s.find("[")
+        return eval(s[start : s.find("]") + 1])
+
     for i, load_command in enumerate(example_bridge.load_case_list[0]["load_command"]):
-        start = load_command.find("[")
-        end = load_command.find("]")
-        pos = eval(load_command[start : (end + 1)])
-        start_ref = ref_answer[i].find("[")
-        end_ref = ref_answer[i].find("]")
-        pos_ref = eval(ref_answer[i][start_ref : (end_ref + 1)])
+        _name, args, _kw = load_command
+        pos = list(args[1:])  # drop node_tag; rest are the 6 load components
+        pos_ref = _ref_vals(ref_answer[i])
         assert pos == pytest.approx(pos_ref)  # check each pos
 
 
@@ -656,13 +654,14 @@ def test_patch_load_using_linear_shape_function(bridge_model_42_negative):
         "ops.load(15, *[0, 0.22482308181507565, 0, 0, 0, 0])\n",
     ]
 
+    def _ref_vals(s):
+        start = s.find("[")
+        return eval(s[start : s.find("]") + 1])
+
     for i, load_command in enumerate(example_bridge.load_case_list[0]["load_command"]):
-        start = load_command.find("[")
-        end = load_command.find("]")
-        pos = eval(load_command[start : (end + 1)])
-        start_ref = ref_answer[i].find("[")
-        end_ref = ref_answer[i].find("]")
-        pos_ref = eval(ref_answer[i][start_ref : (end_ref + 1)])
+        _name, args, _kw = load_command
+        pos = list(args[1:])  # drop node_tag; rest are the 6 load components
+        pos_ref = _ref_vals(ref_answer[i])
         assert pos == pytest.approx(pos_ref)
 
 
@@ -878,13 +877,14 @@ def test_patch_partially_outside_mesh(bridge_model_42_negative):
         "ops.load(27, *[0, 0.016175126143379157, 0, -0.0103982953778866, 0, 0.008087563071689568])\n",
     ]
 
+    def _ref_vals(s):
+        start = s.find("[")
+        return eval(s[start : s.find("]") + 1])
+
     for i, load_command in enumerate(example_bridge.load_case_list[0]["load_command"]):
-        start = load_command.find("[")
-        end = load_command.find("]")
-        pos = eval(load_command[start : (end + 1)])
-        start_ref = ref_answer[i].find("[")
-        end_ref = ref_answer[i].find("]")
-        pos_ref = eval(ref_answer[i][start_ref : (end_ref + 1)])
+        _name, args, _kw = load_command
+        pos = list(args[1:])  # drop node_tag; rest are the 6 load components
+        pos_ref = _ref_vals(ref_answer[i])
         assert pos == pytest.approx(pos_ref)
 
 

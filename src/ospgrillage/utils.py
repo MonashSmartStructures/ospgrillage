@@ -6,10 +6,46 @@ ospgrillage for the purpose of its meshing and calculations. However, users may 
 for their workflow.
 """
 
+import logging
 import numpy as np
 from scipy.spatial import distance
 from scipy.optimize import fsolve, root
 import warnings
+
+logger = logging.getLogger(__name__)
+
+__all__ = [
+    "diff",
+    "find_circle",
+    "find_dict_key",
+    "find_min_x_dist",
+    "get_distance",
+    "get_line_func",
+    "get_slope",
+    "get_y_intcp",
+    "intersection",
+    "inv_line_func",
+    "is_between",
+    "line_func",
+    "arc_func",
+    "onSegment",
+    "orientation",
+    "check_intersect",
+    "check_dict_same_keys",
+    "check_point_in_grid",
+    "check_points_direction",
+    "calculate_area_given_vertices",
+    "create_arc_points",
+    "find_plane_centroid",
+    "get_patch_centroid",
+    "rotate_point_about_point",
+    "select_segment_function",
+    "solve_zeta_eta",
+    "sort_list_into_four_groups",
+    "sort_vertices",
+    "x_intcp_two_lines",
+    "line",
+]
 
 
 def diff(li1, li2):
@@ -62,8 +98,8 @@ def find_circle(x1, y1, x2, y2, x3, y3):
     # r is the radius
     r = round(np.sqrt(sqr_of_r), 5)
 
-    print("Centre = (", h, ", ", k, ")")
-    print("Radius = ", r)
+    logger.debug("Centre = (%s, %s)", h, k)
+    logger.debug("Radius = %s", r)
 
     return [[h, k], r]
 
@@ -83,14 +119,14 @@ def line_func(m=None, c=None, x=None, h=None, v=None, R=None):
 
     if not curve:
         # straight line
-        if type(x) is list:
+        if isinstance(x, list):
             y = m * x[0] + c
         else:
             y = m * x + c
     elif curve:
         y = np.sqrt((R) ** 2 - (x - h) ** 2) + v
     else:
-        raise Exception(
+        raise ValueError(
             "line function missing arguments for valid function selection: check arguments"
         )
 
@@ -138,7 +174,14 @@ def select_segment_function(curve_flag, d, x, r=0, m=0, c=0):
 
 
 def find_dict_key(my_dict, key):
-    return eval(list(my_dict.keys())[list(my_dict.values()).index(key)])
+    import ast
+    import numpy as _np
+    raw = list(my_dict.keys())[list(my_dict.values()).index(key)]
+    try:
+        return ast.literal_eval(raw)
+    except ValueError:
+        # Keys may contain numpy repr like np.float64(...) in newer numpy versions
+        return eval(raw, {"np": _np})
 
 
 def x_intcp_two_lines(m1, m2, c1, c2):
@@ -442,8 +485,18 @@ def sort_vertices(point_list, node_tag_list=None):
         z = np.array(point.z - center_x_z[1])
         angle_list.append(np.arctan2(z, x))
         # angle_list.append(np.arctan((point.z - center_x_z[1]) / (point.x - center_x_z[0])))
-    # angle_list[angle_list<0] = angle_list[angle_list<0] + 2*np.pi
-    [i + 2 * np.pi for i in angle_list if i < 0]
+    # Angles are intentionally left in the [-π, π] range from arctan2.
+    #
+    # For typical rectangular grids, a bottom-left vertex sits in the 3rd
+    # quadrant relative to the centroid, giving the most-negative angle and
+    # therefore sorting first.  solve_zeta_eta() (and hermite_shape_function_2d)
+    # expect node 1 to be at the bottom-left corner of the element, so this
+    # implicit convention must be preserved.
+    #
+    # Normalising to [0, 2π] would instead start at the top-right vertex
+    # (smallest positive angle), which rotates the isoparametric mapping and
+    # corrupts the load distribution.  Any future normalisation refactor must
+    # also make solve_zeta_eta rotation-invariant.
     # sort for counter clockwise
     sorted_points = [x for _, x in sorted(zip(angle_list, point_list))]
 
@@ -559,6 +612,6 @@ def rotate_point_about_point(center_x, center_y, angle, point: list):
         # translate back to origin and store to var
         rotated_point = [x_rot + center_x, y_rot + center_y]
     else:
-        raise Exception("point= requires a valid list or tuple")
+        raise ValueError("point= requires a valid list or tuple")
 
     return rotated_point

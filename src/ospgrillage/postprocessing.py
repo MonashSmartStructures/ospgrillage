@@ -19,6 +19,8 @@ from ospgrillage.utils import solve_zeta_eta
 
 import vfo.vfo as opsplt
 
+__all__ = ["Envelope", "PostProcessor", "create_envelope", "plot_force", "plot_defo"]
+
 
 def create_envelope(**kwargs):
     """
@@ -122,7 +124,7 @@ class Envelope:
 
         # check variables
         if self.load_effect is None:
-            raise Exception(
+            raise ValueError(
                 "Missing argument for load_effect=: Hint requires a namestring of load"
                 "effect type based on the Component dimension of the ospgrillage data"
                 "set result format"
@@ -177,7 +179,9 @@ class Envelope:
         :rtype: xarray
         """
 
-        return eval(self.format_string)
+        # Restricted namespace: only self and xarray are accessible.
+        # TODO: refactor Envelope to build the DataArray query without eval().
+        return eval(self.format_string, {"self": self})
 
 
 def plot_force(
@@ -217,8 +221,7 @@ def plot_force(
     comp_dict = {"Fx": 0, "Fy": 1, "Fz": 2, "Mx": 3, "My": 4, "Mz": 5}
     comp_factor = {"Fx": 1, "Fy": 1, "Fz": 1, "Mx": 1, "My": 1, "Mz": -1}
     if member is None:
-        print("Missing argument member=")
-        return
+        raise ValueError("Missing argument: member= is required")
     component_index = component
     if not isinstance(component, int):
         component_index = comp_dict[component]
@@ -356,8 +359,7 @@ def plot_defo(
         plot_option = option
     # check member, if None, return None, Users need to define the member str to plot
     if member is None:
-        print("Missing argument for member= - no plot is returned")
-        return
+        raise ValueError("Missing argument: member= is required")
     # check if component is provided, else default to
     dis_comp = component
     if component is None:
@@ -464,7 +466,7 @@ class PostProcessor:
             x4=x[3],
             z4=z[3],
         )
-        if shape_function_type is "linear":
+        if shape_function_type == "linear":
             shape_func = self.shape_function_obj.linear_shape_function(
                 eta=eta, zeta=zeta
             )

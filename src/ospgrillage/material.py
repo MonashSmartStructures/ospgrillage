@@ -6,6 +6,11 @@ This module contains the user interface function and class to manage
 """
 
 import json
+import logging
+
+logger = logging.getLogger(__name__)
+
+__all__ = ["Material", "create_material"]
 
 
 def create_material(**kwargs):
@@ -200,7 +205,7 @@ class Material:
 
         # check if None in entries
         if None in self.op_mat_arg:
-            raise Exception(
+            raise ValueError(
                 "One or more missing/non-numeric parameters for Material: {} ".format(
                     self.ops_mat_type
                 )
@@ -281,7 +286,7 @@ class Material:
             with open("mat_lib.json", "r") as f:
                 mat_lib = json.load(f)
         except (FileNotFoundError, IOError):
-            print("Material library unable to be read\nUsing default library")
+            logger.warning("Material library unable to be read; using default library")
             mat_lib = self._create_default_dict()
             self._write_mat_lib(mat_lib)
         return mat_lib

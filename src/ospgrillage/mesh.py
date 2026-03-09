@@ -7,8 +7,29 @@ by OspGrillage class.
 """
 import math
 
-from ospgrillage.utils import *
+import numpy as np
 from collections import namedtuple
+from ospgrillage.utils import (
+    find_min_x_dist,
+    get_slope,
+    get_y_intcp,
+    line_func,
+    rotate_point_about_point,
+    select_segment_function,
+)
+
+__all__ = [
+    "Point",
+    "Mesh",
+    "BeamMesh",
+    "BeamLinkMesh",
+    "BeamMeshWithSpringSupports",
+    "ShellLinkMesh",
+    "EdgeControlLine",
+    "ShellEdgeControlLine",
+    "SweepPath",
+    "create_point",
+]
 
 
 def create_point(**kwargs):
@@ -171,7 +192,7 @@ class Mesh:
         self.mesh_edge_x_positions_non_cont = [self.mesh_edge_x_positions[0]]
         # check inputs for multi span feature
         if len(self.multi_span_dist_list) == 1 and not self.continuous:
-            raise Exception(
+            raise ValueError(
                 "Combination of multi_span_dist_list and non continuous option not valid:"
                 "Hint - use only either (1) Continuous for multi span or (2) have more than"
                 "one multi_span_dist in list and non continuous option"
@@ -985,7 +1006,7 @@ class Mesh:
             cor_sec = self.node_spec[x_second]["coordinate"]
             # get x coordinate for uniform region
             if self.transverse_mbr_x_spacing_list:
-                raise Exception(
+                raise ValueError(
                     NameError, "OrthoMesh can not be paired wit custom spacing"
                 )
             else:
@@ -1499,7 +1520,7 @@ class Mesh:
         # if mesh type is beyond default allowance threshold of 11 degree and 30 degree, return exception
         if np.abs(edge_skew_angle - zeta) <= self.skew_threshold[0] and self.orthogonal:
             # return error
-            raise Exception(
+            raise ValueError(
                 "Skew angle too small for orthogonal, minimum edge skew angle for an orthogonal mesh is {}".format(
                     self.skew_threshold[0]
                 )
@@ -1509,12 +1530,12 @@ class Mesh:
             and not self.orthogonal
         ):
             self.orthogonal = True
-            raise Exception(
+            raise ValueError(
                 "Skew angle too large for Oblique mesh, maximum edge skew angle for Oblique mesh is {}".format(
                     (self.skew_threshold[1])
                 )
             )
-            # raise Exception('Oblique mesh not allowed for angle greater than {}'.format(self.skew_threshold[1]))
+            # raise ValueError('Oblique mesh not allowed for angle greater than {}'.format(self.skew_threshold[1]))
 
     # ------------------------------------------------------------------------------------------
     @staticmethod
@@ -1694,7 +1715,7 @@ class EdgeControlLine:
         if self.custom_beam_z_spacing and not isinstance(
             self.custom_beam_z_spacing, list
         ):
-            raise Exception(
+            raise ValueError(
                 "Invalid custom control point format: Hint - accepts list of float or int"
             )
 
@@ -1809,7 +1830,7 @@ class ShellEdgeControlLine(EdgeControlLine):
 
         # check inputs
         if not self.beam_width:
-            raise Exception("beam_width kwarg required")
+            raise ValueError("beam_width kwarg required")
 
         super().__init__(
             edge_ref_point,
@@ -2497,7 +2518,7 @@ class BeamMeshWithSpringSupports(BeamMesh):
         # parse inputs
         if hasattr(self.e_tangent, "__len__"):  # if input is a list or dict
             if len(self.e_tangent) > self.global_edge_count - 2:
-                raise Exception(
+                raise ValueError(
                     "Number of defined e value for spring is greater than number of support lines or is not"
                     "valid - hint check rotational_spring_stiffness variable"
                 )
