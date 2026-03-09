@@ -343,7 +343,12 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="ModelTemplates.html">Model types available</a></li>
-<li class="toctree-l1"><a class="reference internal" href="mesh_feature.html">Mesh features</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="mesh_feature.html">Mesh features</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/mesh_showcase.html">Mesh features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/multi_span.html">Multi - span feature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/curve_mesh.html">Curve Mesh</a></li>
+</ul>
+</details></li>
 <li class="toctree-l1"><a class="reference internal" href="Running_analysis.html">Performing analysis</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Getting Results</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="Examples.html">Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -554,16 +559,17 @@
 <h2>Getting specific properties of model<a class="headerlink" href="#getting-specific-properties-of-model" title="Link to this heading">#</a></h2>
 <section id="node">
 <h3>Node<a class="headerlink" href="#node" title="Link to this heading">#</a></h3>
-<div class="{.automethod docutils">
-<p>ospgrillage.OspGrillage.get_nodes()</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### Element</span>
-
-<span class="p">:::</span> <span class="p">{</span><span class="o">.</span><span class="n">automethod</span> <span class="n">noindex</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">}</span>
-<span class="n">ospgrillage</span><span class="o">.</span><span class="n">OspGrillage</span><span class="o">.</span><span class="n">get</span>\<span class="n">_element</span><span class="p">()</span>
-</pre></div>
-</div>
-<p class="rubric" id="plotting-results-of-dataarrays">Plotting results of DataArrays</p>
-<p class="rubric" id="current-limitation-of-opensees-visualization-module">Current limitation of <code class="docutils literal notranslate"><span class="pre">OpenSees</span></code> visualization module</p>
+<p>Use <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_nodes.html#ospgrillage.osp_grillage.OspGrillage.get_nodes" title="ospgrillage.osp_grillage.OspGrillage.get_nodes"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_nodes()</span></code></a> to retrieve node information from the model.</p>
+</section>
+<section id="element">
+<h3>Element<a class="headerlink" href="#element" title="Link to this heading">#</a></h3>
+<p>Use <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_element.html#ospgrillage.osp_grillage.OspGrillage.get_element" title="ospgrillage.osp_grillage.OspGrillage.get_element"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_element()</span></code></a> to query element properties and tags from the model.</p>
+</section>
+</section>
+<section id="plotting-results-of-dataarrays">
+<h2>Plotting results of DataArrays<a class="headerlink" href="#plotting-results-of-dataarrays" title="Link to this heading">#</a></h2>
+<section id="current-limitation-of-opensees-visualization-module">
+<h3>Current limitation of <code class="docutils literal notranslate"><span class="pre">OpenSees</span></code> visualization module<a class="headerlink" href="#current-limitation-of-opensees-visualization-module" title="Link to this heading">#</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code>’s visualization module uses either <code class="docutils literal notranslate"><span class="pre">vfo</span></code> or <code class="docutils literal notranslate"><span class="pre">opsvis</span></code>. However both modules requires the model instance been created in <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code> model space.</p>
 <p>In other words, results from <code class="docutils literal notranslate"><span class="pre">xarray</span></code> DataSet (of <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_results()</span></code></a>) cannot be plotted using the current visualization modules. Additionally, <code class="docutils literal notranslate"><span class="pre">opsvis</span></code> and <code class="docutils literal notranslate"><span class="pre">vfo</span></code> does not contain enveloping feature across multiple analysis - especially for moving load analysis comprise of multiple incremental load case for each moving load position.</p>
 <p>If needed, users can still utilize <code class="docutils literal notranslate"><span class="pre">opsvis</span></code> however only in a specific condition i.e. only a single load case is defined and <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze.html#ospgrillage.osp_grillage.OspGrillage.analyze" title="ospgrillage.osp_grillage.OspGrillage.analyze"><code class="xref py py-func docutils literal notranslate"><span class="pre">analyze()</span></code></a> in the <code class="docutils literal notranslate"><span class="pre">OpenSees</span></code> framework. With only a single load case and analysis, users can directly access the model results and plot using <code class="docutils literal notranslate"><span class="pre">opsvis</span></code>. The following code example plots the results of the <strong>current analysis instance</strong> using `opsvis`:</p>
@@ -574,13 +580,17 @@
 <p class="admonition-title">Note</p>
 <p><code class="docutils literal notranslate"><span class="pre">opsv</span></code> only works for model template 1 (beam grillage) and 2 (beam grillage with rigid links). Plotting of shell model type is not supported as of <em>ospgrillage</em> version 0.1.0</p>
 </div>
-<p class="rubric" id="ospgrillage-post-processing-module"><em>ospgrillage</em> post-processing module</p>
+</section>
+<section id="ospgrillage-post-processing-module">
+<h3><em>ospgrillage</em> post-processing module<a class="headerlink" href="#ospgrillage-post-processing-module" title="Link to this heading">#</a></h3>
 <p>For users wishing to plot results from <code class="docutils literal notranslate"><span class="pre">xarray</span></code> DataSet (multiple analysis), <em>ospgrillage</em> contains a dedicated post-processing module as of version 0.1.0 to visualize these results.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The plotting functions of post-processing module is at alpha development stage as compared to other modules. As of version 0.1.0, it is sufficient to plot components from the xarray DataSets.</p>
 </div>
-<p class="rubric" id="plotting-functions">Plotting functions</p>
+</section>
+<section id="plotting-functions">
+<h3>Plotting functions<a class="headerlink" href="#plotting-functions" title="Link to this heading">#</a></h3>
 <p>For this section, we will refer to an exemplar 28 m super-T bridge (Figure 1). The bridge grillage has been created and its <a class="reference internal" href="api_grillage.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a> object is defined as <code class="docutils literal notranslate"><span class="pre">bridge_28</span></code>.</p>
 <p><img alt="Figure 1: 28 m super-T bridge model." src="../_images/28m_bridge.PNG" /></p>
 <p>To plot deflection components from <strong>displacement</strong> DataArray, use <a class="reference internal" href="generated/ospgrillage.postprocessing.plot_defo.html#ospgrillage.postprocessing.plot_defo" title="ospgrillage.postprocessing.plot_defo"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_defo()</span></code></a>. To use this function users need to specify the specific grillage member - this function returns a 2-D plot of displacement diagram. Following example plots the vertical deflection of <code class="docutils literal notranslate"><span class="pre">bridge_28</span></code>, for “exterior_main_beam_2” member - plot shown in Figure 2:</p>
@@ -593,7 +603,6 @@
 </pre></div>
 </div>
 <p><img alt="Figure 3: Bending moment about z axis of exterior main beam 2 ." src="../_images/example_bmd.PNG" /></p>
-</div>
 </section>
 </section>
 </section>
@@ -654,6 +663,13 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-load-envelope">Getting load envelope</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-specific-properties-of-model">Getting specific properties of model</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#node">Node</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#element">Element</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#plotting-results-of-dataarrays">Plotting results of DataArrays</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#current-limitation-of-opensees-visualization-module">Current limitation of <code class="docutils literal notranslate"><span class="pre">OpenSees</span></code> visualization module</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage-post-processing-module"><em>ospgrillage</em> post-processing module</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plotting-functions">Plotting functions</a></li>
 </ul>
 </li>
 </ul>
