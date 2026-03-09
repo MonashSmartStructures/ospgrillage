@@ -27,16 +27,17 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+"Programming Language :: Python :: 3.12",
 ]
 requires-python = ">=3.8"
 dependencies = [
     "openseespy>=3.2.2.6",
-    "opsvis~=0.95.5",
+    "opsvis>=0.95.5",
     "vfo>=0.0.6",
     "matplotlib",
-    "numpy~=1.24.4",
+    "numpy>=1.26",
     "pandas",
-    "scipy~=1.10.1",
+    "scipy>=1.10.1",
     "xarray",
 ]
 
