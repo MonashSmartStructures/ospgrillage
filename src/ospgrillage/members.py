@@ -17,7 +17,7 @@ __all__ = ["Section", "GrillageMember", "create_section", "create_member"]
 
 def create_section(**kwargs):
     """
-    Create a ``Section`` object defining cross-section geometric properties.
+    Create a section object defining cross-section geometric properties.
 
     The constructor :class:`Section` takes the following arguments.
 
@@ -47,7 +47,7 @@ def create_section(**kwargs):
 
 def create_member(**kwargs):
     """
-    Create a ``GrillageMember`` combining a section and a material.
+    Create a grillage member combining a section and a material.
 
     A grillage member requires a :class:`~ospgrillage.material.Material` and a
     :class:`~ospgrillage.members.Section`.

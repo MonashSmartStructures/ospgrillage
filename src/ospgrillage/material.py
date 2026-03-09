@@ -15,7 +15,7 @@ __all__ = ["Material", "create_material"]
 
 def create_material(**kwargs):
     """
-    Create a ``Material`` object for use in a grillage model.
+    Create a material object for use in a grillage model.
 
     The constructor of :class:`Material` object takes in three types of keyword arguments:
 

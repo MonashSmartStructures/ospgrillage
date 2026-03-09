@@ -146,7 +146,7 @@ class _OpsProxy:
 
 def create_grillage(**kwargs):
     """
-    Create an ``OspGrillage`` bridge deck model object.
+    Create a bridge deck grillage model.
 
     The constructor takes the following arguments:
 

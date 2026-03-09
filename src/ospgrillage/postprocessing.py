@@ -23,7 +23,7 @@ __all__ = ["Envelope", "PostProcessor", "create_envelope", "plot_force", "plot_d
 
 def create_envelope(**kwargs):
     """
-    Create an ``Envelope`` object for post-processing result envelopes.
+    Create an envelope object for post-processing result envelopes.
 
     The constructor takes an `xarray` DataSet and kwargs for enveloping options.
 

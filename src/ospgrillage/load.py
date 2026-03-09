@@ -111,7 +111,7 @@ def create_point(**kwargs):
 
 def create_load_case(**kwargs):
     """
-    Create a ``LoadCase`` container for loads to apply in a grillage analysis.
+    Create a load case container for loads to apply in a grillage analysis.
 
     Use :func:`~ospgrillage.load.LoadCase.add_load` to populate the load case.
 
@@ -125,7 +125,7 @@ def create_load_case(**kwargs):
 
 def create_compound_load(**kwargs):
     """
-    Create a ``CompoundLoad`` group that combines multiple individual loads.
+    Create a compound load group that combines multiple individual loads.
 
     Use :func:`~ospgrillage.load.CompoundLoad.add_load` to add loads to the group.
 
@@ -1470,9 +1470,9 @@ class Path:
 # ---------------------------------------------------------------------------------------------------------------
 def create_load_model(**kwargs):
     """
-    Create a ``LoadModel`` object representing a vehicle load model.
+    Create a load model object representing a vehicle load model.
 
-    :return: ``LoadModel`` object
+    :return: LoadModel object
     """
     return LoadModel(**kwargs)
 
