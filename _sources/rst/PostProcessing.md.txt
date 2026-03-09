@@ -26,8 +26,8 @@ The Dataset contains three named **data variables**:
 
 | Variable | Axes (dimensions) | Contents |
 |---|---|---|
-| `displacements` | Loadcase × Node × Component | Translations (dx, dy, dz) and rotations (theta\_x/y/z) at each node |
-| `forces` | Loadcase × Element × Component | Internal forces (Mx, My, Mz, Vx, Vy, Vz) at each element end (\_i, \_j) |
+| `displacements` | Loadcase × Node × Component | Translations (dx, dy, dz) and rotations (theta_x/y/z) at each node |
+| `forces` | Loadcase × Element × Component | Internal forces (Mx, My, Mz, Vx, Vy, Vz) at each element end (_i, _j) |
 | `ele_nodes` | Element × Nodes | Which node tags (i, j) belong to each element |
 
 For a {ref}`shell-hybrid-model`, forces are split into `forces_beam` / `forces_shell`
