@@ -2,10 +2,10 @@
 :hidden:
 :maxdepth: 1
 
+rst/getting_started
 rst/user_guide
 rst/APIdoc
-rst/ModuleDoc
-rst/ChangeLog
+rst/additional_resources
 ```
 
 ```{image} http://raw.githubusercontent.com/MonashSmartStructures/ospgrillage/main/docs/source/images/ospgrillage_logo.png
