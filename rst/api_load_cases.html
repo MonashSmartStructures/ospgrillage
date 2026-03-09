@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Load cases &#8212; ospgrillage 0.4.1 documentation</title>
+    <title>Load cases and models &#8212; ospgrillage 0.4.1 documentation</title>
   
   
   
@@ -366,23 +366,23 @@
 </ul>
 </details></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="api_load.html">Load module</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2 has-children"><a class="reference internal" href="api_load_static.html">Static loads</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="api_load_types.html">Load types</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_load_vertex.html">create_load_vertex</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_load.html">create_load</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">Load cases</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">Load cases and models</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_load_case.html">create_load_case</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_compound_load.html">create_compound_load</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.set_global_coord.html">CompoundLoad.set_global_coord</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.add_load.html">CompoundLoad.add_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_load_model.html">create_load_model</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.LoadCase.add_load.html">LoadCase.add_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.add_load.html">CompoundLoad.add_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.set_global_coord.html">CompoundLoad.set_global_coord</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="api_load_moving.html">Moving loads</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_moving_path.html">create_moving_path</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_moving_load.html">create_moving_load</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_load_model.html">create_load_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_moving_path.html">create_moving_path</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.set_path.html">MovingLoad.set_path</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.add_load.html">MovingLoad.add_load</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.query.html">MovingLoad.query</a></li>
@@ -446,7 +446,7 @@
     
     <li class="breadcrumb-item"><a href="api_load.html" class="nav-link">Load module</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Load cases</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Load cases and models</span></li>
   </ul>
 </nav>
 </div>
@@ -463,10 +463,19 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="load-cases">
-<h1>Load cases<a class="headerlink" href="#load-cases" title="Link to this heading">#</a></h1>
-<p>These classes are used to assemble individual loads into named load cases
-and compound (grouped) loads that can be applied to the model together.</p>
+  <section id="load-cases-and-models">
+<h1>Load cases and models<a class="headerlink" href="#load-cases-and-models" title="Link to this heading">#</a></h1>
+<p>These classes organise and combine individual <a class="reference internal" href="api_load_types.html"><span class="doc">load types</span></a>
+into named analysis scenarios and reusable vehicle or load-pattern models.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#ospgrillage.load.LoadCase" title="ospgrillage.load.LoadCase"><code class="xref py py-class docutils literal notranslate"><span class="pre">LoadCase</span></code></a> — a named scenario (e.g. “Dead Load”,
+“Live Load”) that collects loads for a single analysis run.</p></li>
+<li><p><a class="reference internal" href="#ospgrillage.load.CompoundLoad" title="ospgrillage.load.CompoundLoad"><code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundLoad</span></code></a> — a spatial grouping of loads that
+move together as a unit (e.g. an axle arrangement).</p></li>
+<li><p><a class="reference internal" href="#ospgrillage.load.LoadModel" title="ospgrillage.load.LoadModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">LoadModel</span></code></a> — a complete vehicle or load-pattern
+model composed of one or more compound loads, used as the payload for a
+<a class="reference internal" href="api_load_moving.html"><span class="doc">moving load</span></a>.</p></li>
+</ul>
 <section id="factory-functions">
 <h2>Factory functions<a class="headerlink" href="#factory-functions" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
@@ -477,6 +486,9 @@ and compound (grouped) loads that can be applied to the model together.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_compound_load.html#ospgrillage.load.create_compound_load" title="ospgrillage.load.create_compound_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_compound_load</span></code></a>(**kwargs)</p></td>
 <td><p>Create a compound load group that combines multiple individual loads.</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_load_model.html#ospgrillage.load.create_load_model" title="ospgrillage.load.create_load_model"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_load_model</span></code></a>(**kwargs)</p></td>
+<td><p>Create a load model object representing a vehicle load model.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -485,14 +497,14 @@ and compound (grouped) loads that can be applied to the model together.</p>
 <h2>Class methods<a class="headerlink" href="#class-methods" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.set_global_coord.html#ospgrillage.load.CompoundLoad.set_global_coord" title="ospgrillage.load.CompoundLoad.set_global_coord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_global_coord</span></code></a>(global_coord)</p></td>
-<td><p>Set global coordinate of the compound load with respect to global coordinate system of grillage model.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.LoadCase.add_load.html#ospgrillage.load.LoadCase.add_load" title="ospgrillage.load.LoadCase.add_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_load</span></code></a>(load_obj, **kwargs)</p></td>
+<td><p>Add a Load or Compound load object to LoadCase</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.add_load.html#ospgrillage.load.CompoundLoad.add_load" title="ospgrillage.load.CompoundLoad.add_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_load</span></code></a>(load_obj)</p></td>
 <td><p>Adds a <code class="xref py py-class docutils literal notranslate"><span class="pre">Load</span></code> to compound load group.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.LoadCase.add_load.html#ospgrillage.load.LoadCase.add_load" title="ospgrillage.load.LoadCase.add_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_load</span></code></a>(load_obj, **kwargs)</p></td>
-<td><p>Add a Load or Compound load object to LoadCase</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.set_global_coord.html#ospgrillage.load.CompoundLoad.set_global_coord" title="ospgrillage.load.CompoundLoad.set_global_coord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_global_coord</span></code></a>(global_coord)</p></td>
+<td><p>Set global coordinate of the compound load with respect to global coordinate system of grillage model.</p></td>
 </tr>
 </tbody>
 </table>
@@ -547,6 +559,30 @@ CompoundLoad by x (global) and z (global).</p>
 </ul>
 <p>Init the CompoundLoad class</p>
 <dl class="field-list simple">
+</dl>
+</dd></dl>
+
+</section>
+<section id="loadmodel">
+<h3>LoadModel<a class="headerlink" href="#loadmodel" title="Link to this heading">#</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="ospgrillage.load.LoadModel">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">LoadModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LoadModel" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class to handle load model generator. This contains library of load models and creates load model using
+<cite>CompoundLoad</cite> class.</p>
+<p>For users wishing to contribute/add load models, do so herein by adding the load model as a function to
+this class.</p>
+<p>Init the class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gap</strong> (<em>float</em><em> or </em><em>int</em>) – Gap between axles (specific to M1600 load model). Defaults to <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p></li>
+<li><p><strong>model_type</strong> (<em>str</em><em>, </em><em>optional</em>) – Load model type identifier.</p></li>
+<li><p><strong>units</strong> (<em>str</em><em>, </em><em>optional</em>) – Unit system to use. Defaults to <code class="docutils literal notranslate"><span class="pre">&quot;SI&quot;</span></code>.</p></li>
+<li><p><strong>origin</strong> (<em>Point namedTuple</em><em>, </em><em>optional</em>) – Origin point for the load model in global coordinates. Defaults to <code class="docutils literal notranslate"><span class="pre">Point(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></code>.</p></li>
+</ul>
+</dd>
 </dl>
 </dd></dl>
 
@@ -610,6 +646,10 @@ CompoundLoad by x (global) and z (global).</p>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#compoundload">CompoundLoad</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.CompoundLoad"><code class="docutils literal notranslate"><span class="pre">CompoundLoad</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#loadmodel">LoadModel</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.LoadModel"><code class="docutils literal notranslate"><span class="pre">LoadModel</span></code></a></li>
 </ul>
 </li>
 </ul>

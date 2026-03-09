@@ -1,8 +1,16 @@
-Load cases
-==========
+Load cases and models
+=====================
 
-These classes are used to assemble individual loads into named load cases
-and compound (grouped) loads that can be applied to the model together.
+These classes organise and combine individual :doc:`load types <api_load_types>`
+into named analysis scenarios and reusable vehicle or load-pattern models.
+
+- :class:`~ospgrillage.load.LoadCase` — a named scenario (e.g. "Dead Load",
+  "Live Load") that collects loads for a single analysis run.
+- :class:`~ospgrillage.load.CompoundLoad` — a spatial grouping of loads that
+  move together as a unit (e.g. an axle arrangement).
+- :class:`~ospgrillage.load.LoadModel` — a complete vehicle or load-pattern
+  model composed of one or more compound loads, used as the payload for a
+  :doc:`moving load <api_load_moving>`.
 
 Factory functions
 -----------------
@@ -12,6 +20,7 @@ Factory functions
 
    ~ospgrillage.load.create_load_case
    ~ospgrillage.load.create_compound_load
+   ~ospgrillage.load.create_load_model
 
 Class methods
 -------------
@@ -19,9 +28,9 @@ Class methods
 .. autosummary::
    :toctree: generated/
 
-   ~ospgrillage.load.CompoundLoad.set_global_coord
-   ~ospgrillage.load.CompoundLoad.add_load
    ~ospgrillage.load.LoadCase.add_load
+   ~ospgrillage.load.CompoundLoad.add_load
+   ~ospgrillage.load.CompoundLoad.set_global_coord
 
 Class reference
 ---------------
@@ -36,4 +45,10 @@ CompoundLoad
 ~~~~~~~~~~~~
 
 .. autoclass:: ospgrillage.load.CompoundLoad
+   :show-inheritance:
+
+LoadModel
+~~~~~~~~~
+
+.. autoclass:: ospgrillage.load.LoadModel
    :show-inheritance:

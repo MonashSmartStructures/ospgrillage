@@ -45,8 +45,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'rst/generated/ospgrillage.load.CompoundLoad.add_load';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="LoadCase.add_load" href="ospgrillage.load.LoadCase.add_load.html" />
-    <link rel="prev" title="CompoundLoad.set_global_coord" href="ospgrillage.load.CompoundLoad.set_global_coord.html" />
+    <link rel="next" title="CompoundLoad.set_global_coord" href="ospgrillage.load.CompoundLoad.set_global_coord.html" />
+    <link rel="prev" title="LoadCase.add_load" href="ospgrillage.load.LoadCase.add_load.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.4.1" />
@@ -366,23 +366,23 @@
 </ul>
 </details></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../api_load.html">Load module</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2 has-children"><a class="reference internal" href="../api_load_static.html">Static loads</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api_load_types.html">Load types</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_load_vertex.html">create_load_vertex</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_load.html">create_load</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 current active has-children"><a class="reference internal" href="../api_load_cases.html">Load cases</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../api_load_cases.html">Load cases and models</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_load_case.html">create_load_case</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_compound_load.html">create_compound_load</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.CompoundLoad.set_global_coord.html">CompoundLoad.set_global_coord</a></li>
-<li class="toctree-l3 current active"><a class="current reference internal" href="#">CompoundLoad.add_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_load_model.html">create_load_model</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.LoadCase.add_load.html">LoadCase.add_load</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">CompoundLoad.add_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.CompoundLoad.set_global_coord.html">CompoundLoad.set_global_coord</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../api_load_moving.html">Moving loads</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_moving_path.html">create_moving_path</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_moving_load.html">create_moving_load</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_load_model.html">create_load_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_moving_path.html">create_moving_path</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.MovingLoad.set_path.html">MovingLoad.set_path</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.MovingLoad.add_load.html">MovingLoad.add_load</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.MovingLoad.query.html">MovingLoad.query</a></li>
@@ -447,7 +447,7 @@
     <li class="breadcrumb-item"><a href="../api_load.html" class="nav-link">Load module</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../api_load_cases.html" class="nav-link">Load cases</a></li>
+    <li class="breadcrumb-item"><a href="../api_load_cases.html" class="nav-link">Load cases and models</a></li>
     
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">CompoundLoad.add_load</span></li>
   </ul>
@@ -480,7 +480,7 @@ If a local_coord parameter is given, this new local_coord overwrites the coordin
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>load_obj</strong> (<a class="reference internal" href="../api_load_static.html#ospgrillage.load.PointLoad" title="ospgrillage.load.PointLoad"><em>PointLoad</em></a><em>,</em><a class="reference internal" href="../api_load_static.html#ospgrillage.load.LineLoading" title="ospgrillage.load.LineLoading"><em>LineLoading</em></a><em>,</em><a class="reference internal" href="../api_load_static.html#ospgrillage.load.PatchLoading" title="ospgrillage.load.PatchLoading"><em>PatchLoading</em></a>) – Load object</p></li>
+<li><p><strong>load_obj</strong> (<a class="reference internal" href="../api_load_types.html#ospgrillage.load.PointLoad" title="ospgrillage.load.PointLoad"><em>PointLoad</em></a><em>,</em><a class="reference internal" href="../api_load_types.html#ospgrillage.load.LineLoading" title="ospgrillage.load.LineLoading"><em>LineLoading</em></a><em>,</em><a class="reference internal" href="../api_load_types.html#ospgrillage.load.PatchLoading" title="ospgrillage.load.PatchLoading"><em>PatchLoading</em></a>) – Load object</p></li>
 <li><p><strong>local_coord</strong> (<em>Point namedTuple</em>) – Local coordinate of load object</p></li>
 </ul>
 </dd>
@@ -500,20 +500,20 @@ If a local_coord parameter is given, this new local_coord overwrites the coordin
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="ospgrillage.load.CompoundLoad.set_global_coord.html"
+       href="ospgrillage.load.LoadCase.add_load.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">CompoundLoad.set_global_coord</p>
+        <p class="prev-next-title">LoadCase.add_load</p>
       </div>
     </a>
     <a class="right-next"
-       href="ospgrillage.load.LoadCase.add_load.html"
+       href="ospgrillage.load.CompoundLoad.set_global_coord.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">LoadCase.add_load</p>
+        <p class="prev-next-title">CompoundLoad.set_global_coord</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

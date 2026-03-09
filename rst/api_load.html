@@ -45,7 +45,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'rst/api_load';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Static loads" href="api_load_static.html" />
+    <link rel="next" title="Load types" href="api_load_types.html" />
     <link rel="prev" title="create_member" href="generated/ospgrillage.members.create_member.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -366,23 +366,23 @@
 </ul>
 </details></li>
 <li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Load module</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="api_load_static.html">Static loads</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="api_load_types.html">Load types</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_load_vertex.html">create_load_vertex</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_load.html">create_load</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="api_load_cases.html">Load cases</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="api_load_cases.html">Load cases and models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_load_case.html">create_load_case</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_compound_load.html">create_compound_load</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.set_global_coord.html">CompoundLoad.set_global_coord</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.add_load.html">CompoundLoad.add_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_load_model.html">create_load_model</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.LoadCase.add_load.html">LoadCase.add_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.add_load.html">CompoundLoad.add_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.set_global_coord.html">CompoundLoad.set_global_coord</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="api_load_moving.html">Moving loads</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_moving_path.html">create_moving_path</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_moving_load.html">create_moving_load</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_load_model.html">create_load_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_moving_path.html">create_moving_path</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.set_path.html">MovingLoad.set_path</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.add_load.html">MovingLoad.add_load</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.query.html">MovingLoad.query</a></li>
@@ -462,11 +462,13 @@
                   
   <section id="load-module">
 <h1>Load module<a class="headerlink" href="#load-module" title="Link to this heading">#</a></h1>
-<p>The load module is split into three focused pages:</p>
+<p>The load module is organised into three pages following the natural
+workflow: define load types, assemble them into cases and models, then
+apply them as moving loads.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="api_load_static.html">Static loads</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api_load_cases.html">Load cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_load_types.html">Load types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_load_cases.html">Load cases and models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_load_moving.html">Moving loads</a></li>
 </ul>
 </div>
@@ -492,11 +494,11 @@
       </div>
     </a>
     <a class="right-next"
-       href="api_load_static.html"
+       href="api_load_types.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Static loads</p>
+        <p class="prev-next-title">Load types</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

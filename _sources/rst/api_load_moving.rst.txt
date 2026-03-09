@@ -1,8 +1,12 @@
 Moving loads
 ============
 
-These classes define moving load models, the paths they travel along, and
-the interpolation machinery used to distribute load to grillage nodes.
+These classes define the machinery for moving-load analysis: the load travels
+along a :class:`~ospgrillage.load.Path` and the
+:class:`~ospgrillage.load.MovingLoad` engine distributes the payload
+(a :class:`~ospgrillage.load.LoadModel` from
+:doc:`load cases and models <api_load_cases>`) to grillage nodes at each
+position increment.
 
 Factory functions
 -----------------
@@ -10,9 +14,8 @@ Factory functions
 .. autosummary::
    :toctree: generated/
 
-   ~ospgrillage.load.create_moving_path
    ~ospgrillage.load.create_moving_load
-   ~ospgrillage.load.create_load_model
+   ~ospgrillage.load.create_moving_path
 
 Class methods
 -------------
@@ -37,16 +40,4 @@ Path
 ~~~~
 
 .. autoclass:: ospgrillage.load.Path
-   :show-inheritance:
-
-LoadModel
-~~~~~~~~~
-
-.. autoclass:: ospgrillage.load.LoadModel
-   :show-inheritance:
-
-ShapeFunction
-~~~~~~~~~~~~~
-
-.. autoclass:: ospgrillage.load.ShapeFunction
    :show-inheritance:
