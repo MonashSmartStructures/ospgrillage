@@ -432,27 +432,26 @@
 <li><p>Assigning the defined grillage members to the elements of grillage model object.</p></li>
 </ol>
 <p>We will detail these steps by creating a grillage model of a bridge deck as shown in Figure 2.</p>
-<div class="{#Figure docutils">
-<p>!<code class="docutils literal notranslate"><span class="pre">Figure</span> <span class="pre">2:</span> <span class="pre">Grillage</span> <span class="pre">model</span> <span class="pre">created</span> <span class="pre">using</span> <span class="pre">[OpenSeesPy</span></code>](../images/42degnegative10m.png){.align-center}</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>To begin, import `ospgrillage` as either `ospg` or `og` as shown in the following code block. As will be needed later, we also prepared the unit convention of variables for this example as shown in the same code block.
-
-```python
-import ospgrillage as og
-# create unit signs for variables of example
-kilo = 1e3
-milli = 1e-3
-N = 1
-m = 1
-mm = milli * m
-m2 = m ** 2
-m3 = m ** 3
-m4 = m ** 4
-kN = kilo * N
-MPa = N / ((mm) ** 2)
-GPa = kilo * MPa
+<p><img alt="Figure 2: Grillage model created using OpenSeesPy" src="images/42degnegative10m.png" /></p>
+<p>To begin, import <code class="docutils literal notranslate"><span class="pre">ospgrillage</span></code> as either <code class="docutils literal notranslate"><span class="pre">ospg</span></code> or <code class="docutils literal notranslate"><span class="pre">og</span></code> as shown in the following code block. As will be needed later, we also prepared the unit convention of variables for this example as shown in the same code block.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">ospgrillage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">og</span>
+<span class="c1"># create unit signs for variables of example</span>
+<span class="n">kilo</span> <span class="o">=</span> <span class="mf">1e3</span>
+<span class="n">milli</span> <span class="o">=</span> <span class="mf">1e-3</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">m</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">mm</span> <span class="o">=</span> <span class="n">milli</span> <span class="o">*</span> <span class="n">m</span>
+<span class="n">m2</span> <span class="o">=</span> <span class="n">m</span> <span class="o">**</span> <span class="mi">2</span>
+<span class="n">m3</span> <span class="o">=</span> <span class="n">m</span> <span class="o">**</span> <span class="mi">3</span>
+<span class="n">m4</span> <span class="o">=</span> <span class="n">m</span> <span class="o">**</span> <span class="mi">4</span>
+<span class="n">kN</span> <span class="o">=</span> <span class="n">kilo</span> <span class="o">*</span> <span class="n">N</span>
+<span class="n">MPa</span> <span class="o">=</span> <span class="n">N</span> <span class="o">/</span> <span class="p">((</span><span class="n">mm</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">GPa</span> <span class="o">=</span> <span class="n">kilo</span> <span class="o">*</span> <span class="n">MPa</span>
 </pre></div>
 </div>
-<p class="rubric" id="defining-elements-of-grillage-model-defining-grillage-member">Defining elements of grillage model {#defining Grillage member}</p>
+</section>
+<section id="defining-elements-of-grillage-model-defining-grillage-member">
+<h2>Defining elements of grillage model {#defining Grillage member}<a class="headerlink" href="#defining-elements-of-grillage-model-defining-grillage-member" title="Link to this heading">#</a></h2>
 <p>A grillage element is created using the <a class="reference internal" href="generated/ospgrillage.members.create_member.html#ospgrillage.members.create_member" title="ospgrillage.members.create_member"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_member()</span></code></a> interface function. This function returns a <a class="reference internal" href="APIdoc.html#ospgrillage.members.GrillageMember" title="ospgrillage.members.GrillageMember"><code class="xref py py-class docutils literal notranslate"><span class="pre">GrillageMember</span></code></a> object, which requires two other objects as inputs, namely:</p>
 <ol class="arabic simple">
 <li><p><em>material</em> = A <a class="reference internal" href="APIdoc.html#ospgrillage.material.Material" title="ospgrillage.material.Material"><code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code></a> class object, and</p></li>
@@ -470,7 +469,8 @@ GPa = kilo * MPa
 <span class="n">edge_slab</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_member</span><span class="p">(</span><span class="n">member_name</span><span class="o">=</span><span class="s2">&quot;edge slab&quot;</span><span class="p">,</span> <span class="n">section</span><span class="o">=</span><span class="n">edge_slab_section</span><span class="p">,</span><span class="n">material</span><span class="o">=</span><span class="n">concrete</span><span class="p">)</span>
 </pre></div>
 </div>
-<p class="rubric" id="creating-material-objects">Creating material objects</p>
+<section id="creating-material-objects">
+<h3>Creating material objects<a class="headerlink" href="#creating-material-objects" title="Link to this heading">#</a></h3>
 <p>The <a class="reference internal" href="APIdoc.html#ospgrillage.material.Material" title="ospgrillage.material.Material"><code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code></a> object is created using <a class="reference internal" href="generated/ospgrillage.material.create_material.html#ospgrillage.material.create_material" title="ospgrillage.material.create_material"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_material()</span></code></a>. The following code line creates the <em>concrete</em> material needed in[defining Grillage member](#defining Grillage member) previously.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">concrete</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_material</span><span class="p">(</span><span class="n">material</span><span class="o">=</span><span class="s2">&quot;concrete&quot;</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="s2">&quot;AS5100-2017&quot;</span><span class="p">,</span> <span class="n">grade</span><span class="o">=</span><span class="s2">&quot;50MPa&quot;</span><span class="p">)</span>
 </pre></div>
@@ -481,7 +481,9 @@ GPa = kilo * MPa
 </pre></div>
 </div>
 <p>The <a class="reference internal" href="APIdoc.html#ospgrillage.material.Material" title="ospgrillage.material.Material"><code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code></a> object wraps <code class="docutils literal notranslate"><span class="pre">OpenSees</span></code> material commands, and selects appropriate <code class="docutils literal notranslate"><span class="pre">OpenSees</span></code> material model to represent the material. Presently, <em>Concrete01</em> and <em>Steel01</em> of OpenSees library are used to represent most concrete and steel material respectively. Other material model can be found in <a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html#steel-reinforcing-steel-materials">OpenSees database for concrete and steel</a>.</p>
-<p class="rubric" id="creating-section-objects">Creating section objects</p>
+</section>
+<section id="creating-section-objects">
+<h3>Creating section objects<a class="headerlink" href="#creating-section-objects" title="Link to this heading">#</a></h3>
 <p>The <a class="reference internal" href="APIdoc.html#ospgrillage.members.Section" title="ospgrillage.members.Section"><code class="xref py py-class docutils literal notranslate"><span class="pre">Section</span></code></a> object for [defining Grillage member](#defining Grillage member) is created using <a class="reference internal" href="generated/ospgrillage.members.create_section.html#ospgrillage.members.create_section" title="ospgrillage.members.create_section"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_section()</span></code></a> function.</p>
 <p>The following code line creates the <a class="reference internal" href="APIdoc.html#ospgrillage.members.Section" title="ospgrillage.members.Section"><code class="xref py py-class docutils literal notranslate"><span class="pre">Section</span></code></a> object called <em>I_beam_section</em>, which is earlier passed as input for its corresponding <em>I_beam</em> <a class="reference internal" href="APIdoc.html#ospgrillage.members.GrillageMember" title="ospgrillage.members.GrillageMember"><code class="xref py py-class docutils literal notranslate"><span class="pre">GrillageMember</span></code></a> object:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">I_beam_section</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_section</span><span class="p">(</span><span class="n">A</span><span class="o">=</span><span class="mf">0.896</span><span class="o">*</span><span class="n">m2</span><span class="p">,</span> <span class="n">J</span><span class="o">=</span><span class="mf">0.133</span><span class="o">*</span><span class="n">m4</span><span class="p">,</span> <span class="n">Iy</span><span class="o">=</span><span class="mf">0.213</span><span class="o">*</span><span class="n">m4</span><span class="p">,</span> <span class="n">Iz</span><span class="o">=</span><span class="mf">0.259</span><span class="o">*</span><span class="n">m4</span><span class="p">,</span> <span class="n">Ay</span><span class="o">=</span><span class="mf">0.233</span><span class="o">*</span><span class="n">m2</span><span class="p">,</span> <span class="n">Az</span><span class="o">=</span><span class="mf">0.58</span><span class="o">*</span><span class="n">m2</span><span class="p">)</span>
@@ -502,7 +504,10 @@ GPa = kilo * MPa
 <p><strong>unit width</strong> is required when creating grillages with skewed angle edges.</p>
 <p>For release 0.1.0, Non-prismatic members are currently not supported.</p>
 </div>
-<p class="rubric" id="creating-the-grillage-model">Creating the grillage model</p>
+</section>
+</section>
+<section id="creating-the-grillage-model">
+<h2>Creating the grillage model<a class="headerlink" href="#creating-the-grillage-model" title="Link to this heading">#</a></h2>
 <p>After creating the grillage elements, users create the grillage model using <a class="reference internal" href="generated/ospgrillage.osp_grillage.create_grillage.html#ospgrillage.osp_grillage.create_grillage" title="ospgrillage.osp_grillage.create_grillage"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_grillage()</span></code></a> interface function.</p>
 <p>Presently, grillage models typically represent a simply-supported beam-and-slab bridge deck. The model comprises of standard grillage members which includes:</p>
 <ul class="simple">
@@ -517,12 +522,19 @@ GPa = kilo * MPa
 <p><strong>Supports are automatically set at nodes along grid A (2 to 6) and grid E (9 to 13) as pinned and roller respectively.</strong></p>
 <p>The <a class="reference internal" href="APIdoc.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a> class takes the following keyword arguments:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">bridge_name</span></code>: A :py<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> of the grillage model name.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">long_dim</span></code>: A :py<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code> of the longitudinal length of the grillage model.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">width</span></code>: A :py<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code> of the transverse width of the grillage model.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bridge_name</span></code>: A <code class="docutils literal notranslate"><span class="pre">str</span></code> name for the grillage model and its output file.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">long_dim</span></code>: A <code class="docutils literal notranslate"><span class="pre">float</span></code> longitudinal length of the grillage model.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">width</span></code>: A <code class="docutils literal notranslate"><span class="pre">float</span></code> transverse width of the grillage model.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">skew</span></code>: A <code class="docutils literal notranslate"><span class="pre">float</span></code> skew angle at the ends of the grillage model. Can also be a <code class="docutils literal notranslate"><span class="pre">list</span></code> of
+two angles to create different skew angles at each end. Limited to $\arctan$(<code class="docutils literal notranslate"><span class="pre">long_dim</span></code>/<code class="docutils literal notranslate"><span class="pre">width</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">num_long_grid</span></code>: An <code class="docutils literal notranslate"><span class="pre">int</span></code> number of grid lines in the longitudinal direction. Lines are evenly
+spaced, except for the gap between the edge beam and exterior beam.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">num_trans_grid</span></code>: An <code class="docutils literal notranslate"><span class="pre">int</span></code> number of grid lines uniformly spaced in the transverse direction.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">edge_beam_dist</span></code>: A <code class="docutils literal notranslate"><span class="pre">float</span></code> distance between exterior longitudinal beams and the edge beam.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mesh_type</span></code>: A <code class="docutils literal notranslate"><span class="pre">str</span></code> mesh type — either <code class="docutils literal notranslate"><span class="pre">&quot;Ortho&quot;</span></code> (orthogonal, default) or <code class="docutils literal notranslate"><span class="pre">&quot;Oblique&quot;</span></code>.
+Orthogonal mesh is not accepted for skew angles less than 11°; the mesh falls back to Oblique.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ext_to_int_dist</span></code>: A <code class="docutils literal notranslate"><span class="pre">float</span></code> distance between exterior longitudinal beams and adjacent interior beams.</p></li>
 </ul>
-<p>- <code class="docutils literal notranslate"><span class="pre">skew</span></code>: A :py<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code> of the skew angle at the ends of grillage model. This variable can take in a :py<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> of of 2 skew angles - this in turn creates the grillage model having edges with different skew angles. Moreover, it is limited to $\arctan$(<code class="docutils literal notranslate"><span class="pre">long_dim</span></code>/<code class="docutils literal notranslate"><span class="pre">width</span></code>) - <code class="docutils literal notranslate"><span class="pre">num_long_grid</span></code>: An :py<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code> of the number of grid lines along the longitudinal direction - each grid line represents the total number of longitduinal members. Lines are evenly spaced, except for the spacing between the edge beam and exterior beam - <code class="docutils literal notranslate"><span class="pre">num_trans_grid</span></code>: An :py<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code> of the number of grid lines to be uniformly spaced along the transverse direction - each grid line represents the total number of transverse members. - <code class="docutils literal notranslate"><span class="pre">edge_beam_dist</span></code>: A :py<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code> of the distance between exterior longitudinal beams to edge beam. - <code class="docutils literal notranslate"><span class="pre">mesh_type</span></code>: Mesh type of grillage model. - <code class="docutils literal notranslate"><span class="pre">ext_to_int_dist</span></code>: A :py<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code> of the distance between exterior longitudinal beams to adjacent interior beams.</p>
-<p>Must take a :py<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> input of either “Ortho” or “Oblique”. The default is “Ortho” (an orthogonal mesh). However, “Ortho” is not accepted for certain skew angles. The threshold for orthogonal mesh is greater than 11 degree- less than 11 degree the mesh will change to Oblique</p>
 <p>Figure 4 shows how the grid numbers and skew angles affects the output mesh of grillage model.</p>
 <p><img alt="Figure 4: Example grid numbers and edge angles" src="../_images/grillage_dimensions.png" /></p>
 <p>For the example bridge in Figure 2, the following code line creates its <a class="reference internal" href="APIdoc.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a> object i.e. <em>example_bridge</em>:</p>
@@ -530,9 +542,13 @@ GPa = kilo * MPa
                      <span class="n">num_long_grid</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">edge_beam_dist</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mesh_type</span><span class="o">=</span><span class="s2">&quot;Ortho&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p class="rubric" id="coordinate-system">Coordinate System</p>
+<section id="coordinate-system">
+<h3>Coordinate System<a class="headerlink" href="#coordinate-system" title="Link to this heading">#</a></h3>
 <p>In an orthogonal mesh, longitudinal members run along the $x$-axis direction and transverse members are in the $z$-axis direction. Vertical (normal to grid) loads are applied in the $y$-axis.</p>
-<p class="rubric" id="assigning-grillage-members">Assigning grillage members</p>
+</section>
+</section>
+<section id="assigning-grillage-members">
+<h2>Assigning grillage members<a class="headerlink" href="#assigning-grillage-members" title="Link to this heading">#</a></h2>
 <p>The <a class="reference internal" href="APIdoc.html#ospgrillage.members.GrillageMember" title="ospgrillage.members.GrillageMember"><code class="xref py py-class docutils literal notranslate"><span class="pre">GrillageMember</span></code></a> objects are assigned to the grillage model using <a class="reference internal" href="APIdoc.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a> object’s <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.set_member.html#ospgrillage.osp_grillage.OspGrillage.set_member" title="ospgrillage.osp_grillage.OspGrillage.set_member"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_member()</span></code></a> function. In addition to a <a class="reference internal" href="APIdoc.html#ospgrillage.members.GrillageMember" title="ospgrillage.members.GrillageMember"><code class="xref py py-class docutils literal notranslate"><span class="pre">GrillageMember</span></code></a> argument, the function requires a member name string argument.</p>
 <p>The member string specifies the standard grillage element for which the <a class="reference internal" href="APIdoc.html#ospgrillage.members.GrillageMember" title="ospgrillage.members.GrillageMember"><code class="xref py py-class docutils literal notranslate"><span class="pre">GrillageMember</span></code></a> is assigned. Table 1 summarizes the name strings available for <em>ospgrillage</em>.</p>
 <div class="pst-scrollable-table-container"><table class="table">
@@ -588,7 +604,9 @@ GPa = kilo * MPa
 </pre></div>
 </div>
 <p>This is a useful tool for switching all grillage members to the same material after previously defining with perhaps a different material.</p>
-<p class="rubric" id="creating-exporting-opensees-model">Creating/exporting OpenSees Model</p>
+</section>
+<section id="creating-exporting-opensees-model">
+<h2>Creating/exporting OpenSees Model<a class="headerlink" href="#creating-exporting-opensees-model" title="Link to this heading">#</a></h2>
 <p>Only once the <a class="reference internal" href="APIdoc.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a> is created and members are assigned, we can either:</p>
 <p>(i) create the model in <code class="docutils literal notranslate"><span class="pre">OpenSees</span></code> software space for further grillage analysis, or;
 (ii) export an executable python file that can be edited and used for a more complex analysis.</p>
@@ -599,7 +617,8 @@ GPa = kilo * MPa
 </div>
 <p>After model is instantiated in <code class="docutils literal notranslate"><span class="pre">OpenSees</span></code>, users can run any <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code> command (e.g. <code class="docutils literal notranslate"><span class="pre">ops\_vis</span></code> commands) within the current workflow to interact with the <code class="docutils literal notranslate"><span class="pre">OpenSees</span></code> grillage model.</p>
 <p>When <code class="docutils literal notranslate"><span class="pre">pyfile=</span></code> parameter is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, an executable py file will be generated instead. The executable py file contains all relevant <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code> command from which when executed, creates the model instance in OpenSees which can edited and later used to perform more complex analysis. Note that in doing so, the model instance in <code class="docutils literal notranslate"><span class="pre">OpenSees</span></code> space is not created.</p>
-<p class="rubric" id="visualize-grillage-model">Visualize grillage model</p>
+<section id="visualize-grillage-model">
+<h3>Visualize grillage model<a class="headerlink" href="#visualize-grillage-model" title="Link to this heading">#</a></h3>
 <p>To check that we created the model in <code class="docutils literal notranslate"><span class="pre">OpenSees</span></code> space, we can plot the model using <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code>’s visualization module <code class="docutils literal notranslate"><span class="pre">ops\_vis</span></code>. The <em>ospgrillage</em> module already imports the <code class="docutils literal notranslate"><span class="pre">ops\_vis</span></code> module. Therefore, one can run access <code class="docutils literal notranslate"><span class="pre">ops\_vis</span></code> by running the following code line and a plot like in [Figure 2](#Figure 2) will be returned:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">og</span><span class="o">.</span><span class="n">opsplt</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">show_nodes</span><span class="o">=</span><span class="s2">&quot;yes&quot;</span><span class="p">,</span><span class="n">show_nodetags</span><span class="o">=</span><span class="s2">&quot;yes&quot;</span><span class="p">)</span> <span class="c1"># using Vfo module</span>
 <span class="n">og</span><span class="o">.</span><span class="n">opsv</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">az_el</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="c1"># using osp_vis</span>
@@ -607,7 +626,7 @@ GPa = kilo * MPa
 </div>
 <p>Whilst all nodes will be visualized, only the assigned members are visualized. This is a good way to check if desired members are assigned and hence, shown on the plot. Failure to not have all members assigned will affect subsequent analysis.</p>
 <p>Here are more details of <a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/ops_vis.html">ops_vis module</a></p>
-</div>
+</section>
 </section>
 </section>
 
@@ -659,6 +678,20 @@ GPa = kilo * MPa
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#workflow-overview">Workflow overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#defining-elements-of-grillage-model-defining-grillage-member">Defining elements of grillage model {#defining Grillage member}</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-material-objects">Creating material objects</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-section-objects">Creating section objects</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-the-grillage-model">Creating the grillage model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coordinate-system">Coordinate System</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#assigning-grillage-members">Assigning grillage members</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-exporting-opensees-model">Creating/exporting OpenSees Model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#visualize-grillage-model">Visualize grillage model</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
