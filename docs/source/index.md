@@ -52,8 +52,7 @@ For technical support please raise an issue at the
 ## Contributing
 
 We welcome contributions to *ospgrillage*.
-Please read the
-[contributing guidelines](https://github.com/MonashSmartStructures/ospgrillage/blob/main/CONTRIBUTING.md)
+Please read the {doc}`contributing guidelines <rst/contributing>`
 before submitting a pull request.
 
 ## Credits
