@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Additional Resources &#8212; ospgrillage 0.4.1 documentation</title>
+    <title>Contributing &#8212; ospgrillage 0.4.1 documentation</title>
   
   
   
@@ -42,11 +42,11 @@
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'rst/additional_resources';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'rst/contributing';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Package design" href="ModuleDoc.html" />
-    <link rel="prev" title="plot_defo" href="generated/ospgrillage.postprocessing.plot_defo.html" />
+    <link rel="next" title="Troubleshooting" href="Troubleshooting.html" />
+    <link rel="prev" title="Package design" href="ModuleDoc.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.4.1" />
@@ -153,7 +153,7 @@
 
 
 <li class="nav-item current active">
-  <a class="nav-link nav-internal" href="#">
+  <a class="nav-link nav-internal" href="additional_resources.html">
     Additional Resources
   </a>
 </li>
@@ -281,7 +281,7 @@
 
 
 <li class="nav-item current active">
-  <a class="nav-link nav-internal" href="#">
+  <a class="nav-link nav-internal" href="additional_resources.html">
     Additional Resources
   </a>
 </li>
@@ -341,9 +341,9 @@
 <nav class="bd-docs-nav bd-links"
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
-  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="ModuleDoc.html">Package design</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Contributing</a></li>
 
 <li class="toctree-l1"><a class="reference internal" href="Troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ChangeLog.html">Releases</a></li>
@@ -388,7 +388,10 @@
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Additional Resources</span></li>
+    
+    <li class="breadcrumb-item"><a href="additional_resources.html" class="nav-link">Additional Resources</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Contributing</span></li>
   </ul>
 </nav>
 </div>
@@ -405,18 +408,153 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="additional-resources">
-<h1>Additional Resources<a class="headerlink" href="#additional-resources" title="Link to this heading">#</a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="ModuleDoc.html">Package design</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contributing.html#contributing-to-ospgrillage">Contributing to ospgrillage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Troubleshooting.html">Troubleshooting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ChangeLog.html">Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="links_and_references.html">Links and references</a></li>
-</ul>
+  <section id="contributing">
+<h1>Contributing<a class="headerlink" href="#contributing" title="Link to this heading">#</a></h1>
+</section>
+<section id="contributing-to-ospgrillage">
+<h1>Contributing to ospgrillage<a class="headerlink" href="#contributing-to-ospgrillage" title="Link to this heading">#</a></h1>
+<p>Thank you for considering a contribution to <em>ospgrillage</em>!
+This document explains how to set up a development environment, run the test suite,
+build the documentation locally, and submit a pull request.</p>
+<hr class="docutils" />
+<section id="table-of-contents">
+<h2>Table of contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#development-setup"><span class="std std-ref">Development setup</span></a></p></li>
+<li><p><a class="reference internal" href="#running-the-tests"><span class="std std-ref">Running the tests</span></a></p></li>
+<li><p><a class="reference internal" href="#code-style"><span class="std std-ref">Code style</span></a></p></li>
+<li><p><a class="reference internal" href="#docstrings"><span class="std std-ref">Docstrings</span></a></p></li>
+<li><p><a class="reference internal" href="#building-the-documentation"><span class="std std-ref">Building the documentation</span></a></p></li>
+<li><p><a class="reference internal" href="#submitting-a-pull-request"><span class="std std-ref">Submitting a pull request</span></a></p></li>
+<li><p><a class="reference internal" href="#reporting-bugs-and-requesting-features"><span class="std std-ref">Reporting bugs and requesting features</span></a></p></li>
+</ol>
+</section>
+<hr class="docutils" />
+<section id="development-setup">
+<h2>Development setup<a class="headerlink" href="#development-setup" title="Link to this heading">#</a></h2>
+<p><em>ospgrillage</em> uses a <code class="docutils literal notranslate"><span class="pre">src</span></code> layout and declares all metadata in <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Fork the repository on GitHub, then clone your fork:</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/&lt;your-username&gt;/ospgrillage.git
+<span class="nb">cd</span><span class="w"> </span>ospgrillage
+
+<span class="c1"># 2. Create and activate a virtual environment (Python 3.9 or later):</span>
+python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
+<span class="nb">source</span><span class="w"> </span>.venv/bin/activate<span class="w">        </span><span class="c1"># Windows: .venv\Scripts\activate</span>
+
+<span class="c1"># 3. Install the package in editable mode together with all optional extras:</span>
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev,docs]&quot;</span>
+</pre></div>
 </div>
+<p>If <code class="docutils literal notranslate"><span class="pre">[dev]</span></code> or <code class="docutils literal notranslate"><span class="pre">[docs]</span></code> extras are not yet declared in <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>, install the
+dependencies manually:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>pytest<span class="w"> </span>pytest-cov<span class="w"> </span>sphinx<span class="w"> </span>pydata-sphinx-theme<span class="w"> </span>nbsphinx<span class="w"> </span>sphinx-autodoc-typehints
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="running-the-tests">
+<h2>Running the tests<a class="headerlink" href="#running-the-tests" title="Link to this heading">#</a></h2>
+<p>The test suite uses <a class="reference external" href="https://pytest.org/">pytest</a>.  Run it from the repository root:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>tests/
+</pre></div>
+</div>
+<p>To see a coverage report:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>tests/<span class="w"> </span>--cov<span class="o">=</span>ospgrillage<span class="w"> </span>--cov-report<span class="o">=</span>term-missing
+</pre></div>
+</div>
+<p>All tests must pass before a pull request will be merged.</p>
+</section>
+<hr class="docutils" />
+<section id="code-style">
+<h2>Code style<a class="headerlink" href="#code-style" title="Link to this heading">#</a></h2>
+<p><em>ospgrillage</em> uses <a class="reference external" href="https://black.readthedocs.io/">black</a> for formatting.
+Before committing, format changed files with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>black<span class="w"> </span>src/<span class="w"> </span>tests/
+</pre></div>
+</div>
+<p>A CI check will fail if the formatting does not match <code class="docutils literal notranslate"><span class="pre">black</span></code>’s output.</p>
+</section>
+<hr class="docutils" />
+<section id="docstrings">
+<h2>Docstrings<a class="headerlink" href="#docstrings" title="Link to this heading">#</a></h2>
+<p>All public functions and classes must have docstrings in
+<a class="reference external" href="https://numpydoc.readthedocs.io/en/latest/format.html">NumPy style</a>.
+A minimal example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">create_grillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="p">,</span> <span class="n">long_dim</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create and return an OspGrillage model object.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    bridge_name : str</span>
+<span class="sd">        Name label for the grillage model.</span>
+<span class="sd">    long_dim : float</span>
+<span class="sd">        Longitudinal span length in metres.</span>
+<span class="sd">    width : float</span>
+<span class="sd">        Transverse width in metres.</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Additional keyword arguments forwarded to :class:`OspGrillage`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    OspGrillage</span>
+<span class="sd">        Configured grillage model ready for meshing.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import ospgrillage as og</span>
+<span class="sd">    &gt;&gt;&gt; bridge = og.create_grillage(&quot;My bridge&quot;, long_dim=20, width=8,</span>
+<span class="sd">    ...                             num_long_grid=7, num_trans_grid=5,</span>
+<span class="sd">    ...                             edge_beam_dist=1, mesh_type=&quot;Ortho&quot;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="building-the-documentation">
+<h2>Building the documentation<a class="headerlink" href="#building-the-documentation" title="Link to this heading">#</a></h2>
+<p>The documentation is built with <a class="reference external" href="https://www.sphinx-doc.org/">Sphinx</a> and requires
+<a class="reference external" href="https://pandoc.org/">pandoc</a> to convert the Jupyter notebook examples.</p>
+<p>Install pandoc via your OS package manager or from https://pandoc.org/installing.html,
+then:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>docs
+pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt<span class="w">   </span><span class="c1"># installs Sphinx extensions</span>
+make<span class="w"> </span>html<span class="w">                          </span><span class="c1"># output appears in docs/build/html/</span>
+</pre></div>
+</div>
+<p>Open <code class="docutils literal notranslate"><span class="pre">docs/build/html/index.html</span></code> in a browser to preview.</p>
+<p>If you see nbconvert/pandoc errors, ensure <code class="docutils literal notranslate"><span class="pre">pandoc</span></code> is on your <code class="docutils literal notranslate"><span class="pre">PATH</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pandoc<span class="w"> </span>--version
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="submitting-a-pull-request">
+<h2>Submitting a pull request<a class="headerlink" href="#submitting-a-pull-request" title="Link to this heading">#</a></h2>
+<ol class="arabic">
+<li><p>Create a feature branch from <code class="docutils literal notranslate"><span class="pre">main</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feature/my-improvement
+</pre></div>
+</div>
+</li>
+<li><p>Make your changes, add tests for any new behaviour, and ensure <code class="docutils literal notranslate"><span class="pre">pytest</span></code> passes.</p></li>
+<li><p>Update <code class="docutils literal notranslate"><span class="pre">CHANGELOG.md</span></code> under the <code class="docutils literal notranslate"><span class="pre">[Unreleased]</span></code> section.</p></li>
+<li><p>Push your branch and open a pull request against <code class="docutils literal notranslate"><span class="pre">MonashSmartStructures/ospgrillage</span></code>
+on GitHub.</p></li>
+<li><p>A maintainer will review the PR.  Please be patient — this is a volunteer project.</p></li>
+</ol>
+</section>
+<hr class="docutils" />
+<section id="reporting-bugs-and-requesting-features">
+<h2>Reporting bugs and requesting features<a class="headerlink" href="#reporting-bugs-and-requesting-features" title="Link to this heading">#</a></h2>
+<p>Please open an
+<a class="reference external" href="https://github.com/MonashSmartStructures/ospgrillage/issues">issue on GitHub</a>.
+When reporting a bug, include:</p>
+<ul class="simple">
+<li><p>The <em>ospgrillage</em> version (<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-c</span> <span class="pre">&quot;import</span> <span class="pre">ospgrillage;</span> <span class="pre">print(ospgrillage.__version__)&quot;</span></code>).</p></li>
+<li><p>A minimal reproducible example.</p></li>
+<li><p>The full traceback.</p></li>
+</ul>
+</section>
 </section>
 
 
@@ -430,20 +568,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="generated/ospgrillage.postprocessing.plot_defo.html"
+       href="ModuleDoc.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">plot_defo</p>
+        <p class="prev-next-title">Package design</p>
       </div>
     </a>
     <a class="right-next"
-       href="ModuleDoc.html"
+       href="Troubleshooting.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Package design</p>
+        <p class="prev-next-title">Troubleshooting</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -459,10 +597,34 @@
 
 
   <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Contributing</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#contributing-to-ospgrillage">Contributing to ospgrillage</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#table-of-contents">Table of contents</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#development-setup">Development setup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-the-tests">Running the tests</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#code-style">Code style</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#docstrings">Docstrings</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-the-documentation">Building the documentation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submitting-a-pull-request">Submitting a pull request</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reporting-bugs-and-requesting-features">Reporting bugs and requesting features</a></li>
+</ul>
+</li>
+</ul>
+
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/rst/additional_resources.md">
+    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/rst/contributing.md">
       <i class="fa-solid fa-pencil"></i>
       
       

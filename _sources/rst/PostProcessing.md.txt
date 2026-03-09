@@ -8,23 +8,39 @@ import ospgrillage as og
 
 ## Extracting results
 
-After analysis, results are obtained using {func}`~ospgrillage.osp_grillage.OspGrillage.get_results` function. The following example extracts results for all defined analysis of `example_bridge` - all results and one of a specific load case only.
+After analysis, results are obtained using
+{func}`~ospgrillage.osp_grillage.OspGrillage.get_results`.
 
 ```python
-all_result = example_bridge.get_results() # this extracts all results
-patch_result = example_bridge.get_results(load_case = "patch load case") # this extracts only the patch load case results
+all_result   = example_bridge.get_results()
+patch_result = example_bridge.get_results(load_case="patch load case")
 ```
 
-The returned **result** variable is an [xarray DataSet](http://xarray.pydata.org/en/stable/generated/xarray.Dataset.html).
+The first call returns results for every load case; the second filters to one.
 
-The following is printed to terminal after printing `all_result`:
+### What is an xarray Dataset?
 
-```python
+The returned object is an [xarray Dataset](http://xarray.pydata.org/en/stable/generated/xarray.Dataset.html) — think of it as a multi-dimensional, labelled table. Rather than accessing data by integer index (row 3, column 7), you access it by *name* (`Loadcase="Barrier"`, `Component="Mz_i"`). This makes result queries self-describing and much less error-prone.
+
+The Dataset contains three named **data variables**:
+
+| Variable | Axes (dimensions) | Contents |
+|---|---|---|
+| `displacements` | Loadcase × Node × Component | Translations (dx, dy, dz) and rotations (theta\_x/y/z) at each node |
+| `forces` | Loadcase × Element × Component | Internal forces (Mx, My, Mz, Vx, Vy, Vz) at each element end (\_i, \_j) |
+| `ele_nodes` | Element × Nodes | Which node tags (i, j) belong to each element |
+
+For a {ref}`shell-hybrid-model`, forces are split into `forces_beam` / `forces_shell`
+and element connectivity into `ele_nodes_beam` / `ele_nodes_shell`.
+
+Printing `all_result` shows the structure:
+
+```
 <xarray.Dataset>
 Dimensions:        (Component: 18, Element: 142, Loadcase: 5, Node: 77, Nodes: 2)
 Coordinates:
   * Component      (Component) <U7 'Mx_i' 'Mx_j' 'My_i' ... 'theta_y' 'theta_z'
-  * Loadcase       (Loadcase) <U55 'Barrier' ... 'single_moving_point at glob...
+  * Loadcase       (Loadcase) <U55 'Barrier' ... 'single_moving_point at glob...'
   * Node           (Node) int32 1 2 3 4 5 6 7 8 9 ... 69 70 71 72 73 74 75 76 77
   * Element        (Element) int32 1 2 3 4 5 6 7 ... 136 137 138 139 140 141 142
   * Nodes          (Nodes) <U1 'i' 'j'
@@ -34,75 +50,88 @@ Data variables:
     ele_nodes      (Element, Nodes) int32 2 3 1 2 1 3 4 ... 32 75 33 76 34 77 35
 ```
 
-### Structure of xarray DataSet
+Each line of `Coordinates` lists the labels along one dimension. `Loadcase` lists
+every load case name; `Component` lists every result quantity; `Node` and `Element`
+list the integer tags from the OpenSees model.
 
-Figure 1 shows the structure of the `xarray` DataSet for results. The dataset contains two [xarray DataArray](http://xarray.pydata.org/en/stable/generated/xarray.DataArray.html#xarray.DataArray). that represent two groups of load effects:
-
-1.  **displacements** i.e. rotation and translations
-2.  **forces** e.g. bending about z axis, Shear forces etc.
-
-Following example extracts the **displacements** and **forces** DataArray from DataSet:
-
-```python
-disp_array = all_result.displacements # displacement components
-force_array = all_result.forces # force components
-```
-
-The third variable **ele\_nodes** of the DataSet (Figure 1) contains information for element and its respective nodes.
-
-```python
-ele_array = all_result.ele_nodes # store variable array as ele_array
-```
-
-The **forces** DataArray is grouped according to element types. Depending on {doc}`ModelTemplates`, there can be one or more types of elements in the grillage model. For example, **force** of a {ref}`shell-hybrid-model` are recorded in two separate DataArrays, namely **forces\_beam** and **forces\_shell** respectively (Figure 1). Similarly, **ele\_nodes** will be split into **ele\_nodes\_beam** and **ele\_nodes\_shell**.
+Figure 1 illustrates the overall dataset structure.
 
 ![Figure 1: Structure of DataSet.](../images/dataset_structure.png)
 
-### Accessing and querying data {#access results}
-
-From the data arrays, users can access various component in each load effect using `xarray`\'s data array commands. Information on indexing and selecting DataArray data can be found [here](http://xarray.pydata.org/en/stable/user-guide/indexing.html)
-
-Following example extracts the displacement \'dy\' component using `xarray`\'s function.
+### Extracting the data variables
 
 ```python
-disp_array.sel(Component='dy') # selecting "dy" component
-force_array.sel(Component='Mz_i') # selecting "Mz_i" component
+disp_array = all_result.displacements  # nodal displacements & rotations
+force_array = all_result.forces        # element end forces
+ele_array   = all_result.ele_nodes     # element→node connectivity
 ```
 
-Following example shows how to extract results for specific load cases of specific element/node:
+### Available force and displacement components
+
+To see the full list of component labels:
 
 ```python
-disp_array.sel(Loadcase="patch load case",Node=20)
-force_array.sel(Loadcase="Barrier", Element=[2,3,4])
+force_array.coords['Component'].values
 ```
 
-If the load case is part of a {ref}`moving-load` i.e. an incremental load cases, there are several ways to lookup the respective incremental load case. Following example shows the various method of `xarray` to extract and select **force** data:
+```
+array(['Mx_i', 'Mx_j', 'My_i', 'My_j', 'Mz_i', 'Mz_j', 'Vx_i', 'Vx_j',
+       'Vy_i', 'Vy_j', 'Vz_i', 'Vz_j', 'dx', 'dy', 'dz', 'theta_x',
+       'theta_y', 'theta_z'], dtype='<U7')
+```
+
+Suffix `_i` / `_j` denotes the start / end node of the element respectively.
+
+(access-results)=
+### Selecting results by label
+
+Use xarray's `.sel()` to pick results by *name*, and `.isel()` to pick by *integer position*:
 
 ```python
-by_name = force_array.sel(Loadcase="patch load case at global position [0,0,0]") # by load case name
-by_index = force_array.isel(Loadcase = 0)  # by indexing
+# All nodes, one component
+disp_array.sel(Component='dy')
+
+# One load case, one node
+disp_array.sel(Loadcase="patch load case", Node=20)
+
+# One load case, several elements
+force_array.sel(Loadcase="Barrier", Element=[2, 3, 4])
+
+# One component across all load cases
+force_array.sel(Component='Mz_i')
+```
+
+For results from a {ref}`moving-load`, each increment is stored as a separate load case
+named automatically as `"<load name> at global position [x,y,z]"`. You can select
+these by full name or by position:
+
+```python
+# Select by the auto-generated name
+by_name  = force_array.sel(Loadcase="patch load case at global position [0,0,0]")
+# Select by integer index (0 = first increment)
+by_index = force_array.isel(Loadcase=0)
 ```
 
 ```{note}
-For moving load, the nomenclature of incremental load cases are generated automatically by *ospgrillage*, with load case name followed by \"at global position \[x,y,z\]\" where `x`, `y` , `z` are the positions of the moving load/ compound load with respect to the global grillage coordinate.
+For information on the full range of indexing and selection operations available on
+DataArrays, see the
+[xarray indexing documentation](http://xarray.pydata.org/en/stable/user-guide/indexing.html).
 ```
-## Getting combinations {#load combinations}
 
-Load combinations are computed on the fly in {func}`~ospgrillage.osp_grillage.OspGrillage.get_results` by specifying a keyword argument for `combinations`. The keyword argument accepts a `dict` with load case name strings as key, and corresponding load factor as value. The returned *DataArray* will have load case multiplied by prescribed load factors and summed along the load case dimension (for each load case in load combination).
+## Getting combinations
 
-The following example code defines a load combinations which comprise of two load cases.
+Load combinations are computed on the fly in
+{func}`~ospgrillage.osp_grillage.OspGrillage.get_results` by passing a `combinations`
+dictionary: keys are load case name strings and values are load factors.
+*ospgrillage* multiplies each load case by its factor and sums the results.
 
 ```python
-# create dict with load case name string as key, and load factor as value
-comb_dict = {"patch_load_case":2,"moving_truck":1.6}
+comb_dict   = {"patch_load_case": 2, "moving_truck": 1.6}
 comb_result = example_bridge.get_results(combinations=comb_dict)
-# print combination
-print(comb_results)
+print(comb_result)
 ```
 
-The following is printed to the terminal.
-
-```python
+```
 <xarray.Dataset>
 Dimensions:        (Component: 18, Element: 142, Loadcase: 3, Node: 77, Nodes: 2)
 Coordinates:
@@ -117,103 +146,99 @@ Data variables:
     ele_nodes      (Loadcase, Element, Nodes) int32 6 9 3 6 ... 228 102 231 105
 ```
 
-For combinations pertaining static and moving load cases, the factored static load cases are added to each incremental load case of the moving load.
+When a combination mixes static and moving load cases, the factored static load case
+is added to *each* increment of the moving load.
 
 ## Getting load envelope
 
-Load envelope is generated from load combination results for extrema of load effect using {func}`~ospgrillage.postprocessing.create_envelope` function. Envelope are chosen based on user selected component (*array* keyword) as either \"displacements\" or \"forces\", extrema as either maximum or minimum, and load effect component (e.g. \"dy\" for displacements). The following example uses creates a {class}`~ospgrillage.postprocessing.Envelope` object and uses its class function to {func}`~ospgrillage.postprocessing.Envelope.get` the enveloped DataArray:
+A load envelope finds the maximum (or minimum) of a chosen result component across
+all load cases. Use {func}`~ospgrillage.postprocessing.create_envelope` to build an
+{class}`~ospgrillage.postprocessing.Envelope` object, then call `.get()`:
 
 ```python
-envelope = og.create_envelope(ds=comb_results,load_effect="dy",array="displacements") # creates the envelope obj
-disp_env = envelope.get() # output the created envelope of xarray
+envelope = og.create_envelope(ds=comb_result, load_effect="dy", array="displacements")
+disp_env = envelope.get()
+print(disp_env)
 ```
 
-By default, {class}`~ospgrillage.postprocessing.Envelope` is in query mode whereby the load case corresponding to the maxima are returned. The following is printed to the terminal when `disp_env` is printed:
+By default `get()` returns, for each node, the *name of the load case* that produced
+the maximum value of `dy`:
 
-```python
+```
 <xarray.DataArray 'Loadcase' (Node: 77, Component: 18)>
 array([[nan, nan, nan, ...,
-        'single_moving_point at global position [2.00,0.00,2.00]',
-        'single_moving_point at global position [2.00,0.00,2.00]',
-        'single_moving_point at global position [4.00,0.00,3.00]'],
-       ...,
-       [nan, nan, nan, ...,
-        'single_moving_point at global position [3.00,0.00,2.50]',
-        'single_moving_point at global position [2.00,0.00,2.00]',
-        'single_moving_point at global position [3.00,0.00,2.50]']],
+        'single_moving_point at global position [2.00,0.00,2.00]', ...],
+       ...],
       dtype=object)
 Coordinates:
   * Component  (Component) <U7 'Mx_i' 'Mx_j' 'My_i' ... 'theta_y' 'theta_z'
   * Node       (Node) int32 1 2 3 4 5 6 7 8 9 10 ... 69 70 71 72 73 74 75 76 77
 ```
 
-One can read the coordinates to understand the valid `load_effect` kwargs. The following example prints the array of coordinates:
-
-```python
-max_disp.coords['Components'].values
-```
-
-The following is returned and printed to terminal.
-
-```python
-array(['Mx_i', 'Mx_j', 'My_i', 'My_j', 'Mz_i', 'Mz_j', 'Vx_i', 'Vx_j',
-   'Vy_i', 'Vy_j', 'Vz_i', 'Vz_j', 'dx', 'dy', 'dz', 'theta_x',
-   'theta_y', 'theta_z'], dtype='<U7')
-```
-
-For more information on the inputs and options, see {func}`~ospgrillage.postprocessing.create_envelope`.
+For more options see {func}`~ospgrillage.postprocessing.create_envelope`.
 
 ## Getting specific properties of model
 
 ### Node
 
-Use {func}`~ospgrillage.osp_grillage.OspGrillage.get_nodes` to retrieve node information from the model.
+Use {func}`~ospgrillage.osp_grillage.OspGrillage.get_nodes` to retrieve node
+information from the model.
 
 ### Element
 
-Use {func}`~ospgrillage.osp_grillage.OspGrillage.get_element` to query element properties and tags from the model.
-## Plotting results of DataArrays
+Use {func}`~ospgrillage.osp_grillage.OspGrillage.get_element` to query element
+properties and tags from the model.
 
-### Current limitation of `OpenSees` visualization module
+## Plotting results
 
-`OpenSeesPy`\'s visualization module uses either `vfo` or `opsvis`. However both modules requires the model instance been created in `OpenSeesPy` model space.
+### Current limitation of OpenSees visualization modules
 
-In other words, results from `xarray` DataSet (of {func}`~ospgrillage.osp_grillage.OspGrillage.get_results`) cannot be plotted using the current visualization modules. Additionally, `opsvis` and `vfo` does not contain enveloping feature across multiple analysis - especially for moving load analysis comprise of multiple incremental load case for each moving load position.
+`OpenSeesPy`'s visualization modules (`vfo` and `opsvis`) require the model to be
+active in the OpenSees model space. Results retrieved via `get_results()` are stored
+in an xarray Dataset and cannot be fed back to these modules for multi-load-case
+plotting. Additionally, neither module supports enveloping across multiple incremental
+load cases.
 
-If needed, users can still utilize `opsvis` however only in a specific condition i.e. only a single load case is defined and {func}`~ospgrillage.osp_grillage.OspGrillage.analyze` in the `OpenSees` framework. With only a single load case and analysis, users can directly access the model results and plot using `opsvis`. The following code example plots the results of the **current analysis instance** using \`opsvis\`:
+For single-load-case inspection only, `opsvis` can be used directly after analysis:
 
 ```python
-og.opsv.section_force_diagram_3d('Mz', {}, 1) # here change name string argument to force component of interest
+og.opsv.section_force_diagram_3d('Mz', {}, 1)
 ```
 
 ```{note}
-`opsv` only works for model template 1 (beam grillage) and 2 (beam grillage with rigid links). Plotting of shell model type is not supported as of *ospgrillage* version 0.1.0
+`opsv` only works for model templates `beam_only` and `beam_link`. Shell model
+plotting is not supported as of *ospgrillage* version 0.1.0.
 ```
-### *ospgrillage* post-processing module
 
-For users wishing to plot results from `xarray` DataSet (multiple analysis), *ospgrillage* contains a dedicated post-processing module as of version 0.1.0 to visualize these results.
+### ospgrillage post-processing module
+
+For multi-load-case or moving load results, *ospgrillage* includes a dedicated
+post-processing module.
 
 ```{note}
-The plotting functions of post-processing module is at alpha development stage as compared to other modules. As of version 0.1.0, it is sufficient to plot components from the xarray DataSets.
+The plotting functions of the post-processing module are at alpha development stage.
+As of version 0.1.0 they are sufficient for plotting components from xarray DataSets.
 ```
-### Plotting functions
 
-For this section, we will refer to an exemplar 28 m super-T bridge (Figure 1). The bridge grillage has been created and its {class}`~ospgrillage.osp_grillage.OspGrillage` object is defined as `bridge_28`.
+For this section, we refer to an exemplar 28 m super-T bridge (Figure 2). The
+grillage object is named `bridge_28`.
 
-![Figure 1: 28 m super-T bridge model.](../images/28m_bridge.PNG)
+![Figure 2: 28 m super-T bridge model.](../images/28m_bridge.PNG)
 
-To plot deflection components from **displacement** DataArray, use {func}`~ospgrillage.postprocessing.plot_defo`. To use this function users need to specify the specific grillage member - this function returns a 2-D plot of displacement diagram. Following example plots the vertical deflection of `bridge_28`, for \"exterior\_main\_beam\_2\" member - plot shown in Figure 2:
+To plot deflection from the `displacements` DataArray use
+{func}`~ospgrillage.postprocessing.plot_defo`, specifying a grillage member name:
 
 ```python
-og.plot_defo(bridge_28, results, member="exterior_main_beam_2", option= "nodes")
+og.plot_defo(bridge_28, results, member="exterior_main_beam_2", option="nodes")
 ```
 
-![Figure 2: Deflected shape of of exterior main beam 2.](../images/example_deflected.PNG)
+![Figure 3: Deflected shape of exterior main beam 2.](../images/example_deflected.PNG)
 
-To plot force components from **forces** DataArray, use {func}`~ospgrillage.postprocessing.plot_force`. Similar to {func}`~ospgrillage.postprocessing.plot_defo`, users need to specify name string of specific grillage member. Following example plots the bending moment \"Mz\" of \"exterior\_main\_beam\_2\" in `bridge_28` - plot shown in Figure 3:
+To plot internal forces from the `forces` DataArray use
+{func}`~ospgrillage.postprocessing.plot_force`:
 
 ```python
 og.plot_force(bridge_28, results, member="exterior_main_beam_2", component="Mz")
 ```
 
-![Figure 3: Bending moment about z axis of exterior main beam 2 .](../images/example_bmd.PNG)
+![Figure 4: Bending moment about z axis of exterior main beam 2.](../images/example_bmd.PNG)
