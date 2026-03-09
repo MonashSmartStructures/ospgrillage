@@ -18,9 +18,8 @@ In general, there are three steps to create a grillage model with *ospgrillage*:
 
 We will detail these steps by creating a grillage model of a bridge deck as shown in Figure 2.
 
-::: {#Figure 2}
-!`Figure 2: Grillage model created using [OpenSeesPy`](../images/42degnegative10m.png){.align-center}
-```
+![Figure 2: Grillage model created using OpenSeesPy](../images/42degnegative10m.png)
+
 To begin, import `ospgrillage` as either `ospg` or `og` as shown in the following code block. As will be needed later, we also prepared the unit convention of variables for this example as shown in the same code block.
 
 ```python
@@ -132,13 +131,18 @@ Figure 3 illustrates these standard grillage members and their position on an ex
 
 The {class}`~ospgrillage.osp_grillage.OspGrillage` class takes the following keyword arguments:
 
--   `bridge_name`: A :py{class}`str` of the grillage model name.
--   `long_dim`: A :py{class}`float` of the longitudinal length of the grillage model.
--   `width`: A :py{class}`float` of the transverse width of the grillage model.
-
-\- `skew`: A :py{class}`float` of the skew angle at the ends of grillage model. This variable can take in a :py{class}`list` of of 2 skew angles - this in turn creates the grillage model having edges with different skew angles. Moreover, it is limited to $\arctan$(`long_dim`/`width`) - `num_long_grid`: An :py{class}`int` of the number of grid lines along the longitudinal direction - each grid line represents the total number of longitduinal members. Lines are evenly spaced, except for the spacing between the edge beam and exterior beam - `num_trans_grid`: An :py{class}`int` of the number of grid lines to be uniformly spaced along the transverse direction - each grid line represents the total number of transverse members. - `edge_beam_dist`: A :py{class}`float` of the distance between exterior longitudinal beams to edge beam. - `mesh_type`: Mesh type of grillage model. - `ext_to_int_dist`: A :py{class}`float` of the distance between exterior longitudinal beams to adjacent interior beams.
-
-Must take a :py{class}`str` input of either \"Ortho\" or \"Oblique\". The default is \"Ortho\" (an orthogonal mesh). However, \"Ortho\" is not accepted for certain skew angles. The threshold for orthogonal mesh is greater than 11 degree- less than 11 degree the mesh will change to Oblique
+-   `bridge_name`: A `str` name for the grillage model and its output file.
+-   `long_dim`: A `float` longitudinal length of the grillage model.
+-   `width`: A `float` transverse width of the grillage model.
+-   `skew`: A `float` skew angle at the ends of the grillage model. Can also be a `list` of
+    two angles to create different skew angles at each end. Limited to $\arctan$(`long_dim`/`width`).
+-   `num_long_grid`: An `int` number of grid lines in the longitudinal direction. Lines are evenly
+    spaced, except for the gap between the edge beam and exterior beam.
+-   `num_trans_grid`: An `int` number of grid lines uniformly spaced in the transverse direction.
+-   `edge_beam_dist`: A `float` distance between exterior longitudinal beams and the edge beam.
+-   `mesh_type`: A `str` mesh type — either `"Ortho"` (orthogonal, default) or `"Oblique"`.
+    Orthogonal mesh is not accepted for skew angles less than 11°; the mesh falls back to Oblique.
+-   `ext_to_int_dist`: A `float` distance between exterior longitudinal beams and adjacent interior beams.
 
 Figure 4 shows how the grid numbers and skew angles affects the output mesh of grillage model.
 
