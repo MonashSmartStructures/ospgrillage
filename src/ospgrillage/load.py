@@ -351,7 +351,7 @@ class Loads:
         Function to move each load point of load type by a reference coordinate. This function is handled by OpsGrillage
         :param ref_point: coordinate to be moved
         :type ref_point: namedTuple Point(x,y,z)
-        :return: increment each load point by +x, +y, +z where (x,y,z) is the coordinate prescribed by ref_point
+        :returns: None. Modifies load points in-place by translating each by ``(+x, +y, +z)`` from ``ref_point``.
         """
         if any(self.point_list):
             self.load_point_1 = (
@@ -835,9 +835,7 @@ class PatchLoading(Loads):
 
     def __init__(self, **kwargs):
         """
-        Init the PatchLoad class.
-        :param name:
-        :param kwargs:
+        Init the PatchLoad class. Accepts the same parameters as :class:`Loads`.
         """
         super().__init__(**kwargs)
         if not all(v is None for v in self.point_list):
@@ -1322,10 +1320,14 @@ class MovingLoad:
         """
         Function to query properties of moving load
 
-        :param incremental_lc_name: Name string of load case to query properties
+        :param incremental_lc_name: Name string of the incremental load case to query.
         :type incremental_lc_name: str
-        :param kwargs:
-        :return:
+        :param load_group_name: Name of the load group to query. Defaults to all groups.
+        :type load_group_name: list, optional
+        :param index: Index of the result entry to return. Defaults to ``0``.
+        :type index: int, optional
+        :param option: Query option — e.g. ``"position"``. Defaults to ``"position"``.
+        :type option: str, optional
         """
         # get query options
         if not self.parse:
@@ -1479,7 +1481,7 @@ def create_load_model(**kwargs):
     """
     Create a load model object representing a vehicle load model.
 
-    :return: LoadModel object
+    :returns: LoadModel object
     """
     return LoadModel(**kwargs)
 
@@ -1498,8 +1500,14 @@ class LoadModel:
         """
         Init the class.
 
-        :param gap: Gap between axle (specific to M1600)
-        :param kwargs: See below
+        :param gap: Gap between axles (specific to M1600 load model). Defaults to ``0``.
+        :type gap: float or int
+        :param model_type: Load model type identifier.
+        :type model_type: str, optional
+        :param units: Unit system to use. Defaults to ``"SI"``.
+        :type units: str, optional
+        :param origin: Origin point for the load model in global coordinates. Defaults to ``Point(0, 0, 0)``.
+        :type origin: Point namedTuple, optional
         """
         self.gap = gap
         self.model_type = kwargs.get("model_type", None)
@@ -1549,7 +1557,7 @@ class LoadModel:
         AS5100 Australian load model.
 
         :param gap: Gap between axle group
-        :return: :class:`~ospgrillage.load.CompoundLoad` object of a M1600 vehicle in local coordinate.
+        :returns: :class:`~ospgrillage.load.CompoundLoad` object of a M1600 vehicle in local coordinate.
         """
         # default SI units
         m = 1
@@ -1660,7 +1668,7 @@ class ShapeFunction:
 
         :param zeta: absolute position in x direction
         :param a: absolute position in x direction
-        :return: Four terms [N1, N2, N3, N4] of hermite shape function
+        :returns: Four terms [N1, N2, N3, N4] of hermite shape function
         .. note::
 
         """
@@ -1732,7 +1740,7 @@ class ShapeFunction:
 
         :param zeta: absolute position in x direction
         :param eta: absolute position in z direction
-        :return: Four terms [N1, N2, N3, N4] of Linear shape function
+        :returns: Four terms [N1, N2, N3, N4] of Linear shape function
         .. note::
             Further validation needed - trial on different bridge models
         """

@@ -142,8 +142,8 @@ class Envelope:
     def get(self):
         """
 
-        :return: The enveloped `xarray` object.
-        :rtype: xarray
+        :returns: The enveloped xarray DataArray with envelope values applied.
+        :rtype: xarray.DataArray
         """
         da = getattr(self.ds, self.array)
         return getattr(da, self.selected_xarray_command)(dim="Loadcase")
@@ -177,8 +177,8 @@ def plot_force(
     :param loadcase: name string of load case to plot. If not provided, plots from first load case in the order of
                      xarray loadcase coordinate
     :type loadcase: str
-    :return: Matplotlib figure
-    :rtype: (:class:`~matplotlib.figure.Figure`)
+    :returns: Matplotlib figure
+    :rtype: :class:`~matplotlib.figure.Figure`
     """
     # instantiate component dict
     comp_dict = {"Fx": 0, "Fy": 1, "Fz": 2, "Mx": 3, "My": 4, "Mz": 5}
@@ -305,8 +305,8 @@ def plot_defo(
     :param loadcase: name string of load case to plot. If not provided, plots from first load case in the order of
                  xarray loadcase coordinate
     :type loadcase: str
-    :return: Matplotlib figure
-    :rtype: (:class:`~matplotlib.figure.Figure`)
+    :returns: Matplotlib figure
+    :rtype: :class:`~matplotlib.figure.Figure`
     """
     # init vars
     previous_def = None

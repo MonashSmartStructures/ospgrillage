@@ -267,7 +267,7 @@ class GrillageMember:
         """
         Returns the element arguments based on the op_element_type of the GrillageMember.
 
-        :return: str containing member properties in accordance with convention of OpenSees element type
+        :returns: str containing member properties in accordance with convention of OpenSees element type
         """
 
         asterisk_input = None
@@ -356,7 +356,7 @@ class GrillageMember:
         Returns the input arguments for ``OpenSeesPy`` Section command if the prescribe element type of the
         GrillageMember requires the definition of an ``OpenSeesPy`` Section object.
 
-        :return: str containing Section command properties in accordance with convention of OpenSees element type
+        :returns: str containing Section command properties in accordance with convention of OpenSees element type
         """
         section_args = None
 
@@ -380,7 +380,7 @@ class GrillageMember:
         """
         Returns the ``OpenSeesPy`` Section command for the Section type
 
-        :return: str containing the ``OpenSeesPy`` Section command
+        :returns: str containing the ``OpenSeesPy`` Section command
         """
         sec_str = None
         section_type = self.section.op_section_type

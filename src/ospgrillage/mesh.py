@@ -1238,7 +1238,7 @@ class Mesh:
         Abstracted method handled by either orthogonal_mesh() or skew_mesh() function
         to identify member groups based on node spacings in orthogonal directions.
 
-        :return: Set variable `group_ele_dict` according to
+        :returns: Set variable `group_ele_dict` according to
         """
 
         # dict node tag to width in z direction , and neighbouring node

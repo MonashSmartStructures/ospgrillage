@@ -305,7 +305,7 @@ class Material:
         :param material_tag: tag of material defined in in OpenSeesPy space
         :type material_tag: int
 
-        :return: Str of OpenSees command to create material in OpenSeesPy
+        :returns: Str of OpenSees command to create material in OpenSeesPy
 
         """
         # e.g. concrete01 or steel01

@@ -1011,7 +1011,7 @@ def sort_list_into_four_groups(group_list: list, option: str = None):
     :param option: type of group sorting - default None for beam, "shell" for shell model
     :type option: str
     :param group_list:
-    :return: dict with keys [0,1,2,3] and values be the sorted group list as shown in description
+    :returns: dict with keys [0,1,2,3] and values be the sorted group list as shown in description
     """
     # sort asccending
     output_dict = dict()

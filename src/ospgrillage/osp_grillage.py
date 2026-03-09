@@ -1105,7 +1105,7 @@ class OspGrillage:
         :param list_of_ele: List of element tags
         :param material_tag: tag of material object command
         :param section_tag: tag of section object command
-        :return: list of string containing OpenSeesPy element() commands for creating the element in model space
+        :returns: list of string containing OpenSeesPy element() commands for creating the element in model space
         """
         ele_command_list = []
         for ele in list_of_ele:
@@ -2460,7 +2460,7 @@ class OspGrillage:
         """
         Function to return all information for nodes in grillage model
 
-        :return: dict contain node information
+        :returns: Dictionary of node information keyed by node tag.
         """
         if not number:
             node_spec = self.Mesh_obj.node_spec
@@ -2798,7 +2798,7 @@ class Analysis:
         Function that wraps OpenSeesPy nodeDisp() and eleResponse(), gets results of current analysis - model instance
         in OpenSees.
 
-        :return: Stores results in global_ele_force and node_disp class variable
+        :returns: None. Results are stored in the ``global_ele_force`` and ``node_disp`` instance variables.
         """
         if not self.pyfile:
             # first loop extract node displacements
@@ -3433,7 +3433,6 @@ class OspGrillageShell(OspGrillage):
         """
         Function to create standard element list for grillage model type.
         This child class overwrite parent class's function for beam grillage model type.
-        :return:
         """
         # standard element for beam class
         for key, val in zip(
