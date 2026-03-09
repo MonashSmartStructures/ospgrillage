@@ -47,9 +47,9 @@ This is a modified version of the traditional beam element model with the follow
 
 Figure 2 shows the details of the aforementioned model type. Figure 3 shows the model type created in a similar commercial software SPACEGASS.
 
-![Figure 2: Beam grillage with rigid links - idealization.](../../_images/beam_link_idealization.PNG)
+![Figure 2: Beam grillage with rigid links - idealization.](../images/beam_link_idealization.PNG)
 
-![Figure 3: Beam grillage with rigid links model from SPACEGASS software.](../../_images/spacegass.PNG)
+![Figure 3: Beam grillage with rigid links model from SPACEGASS software.](../images/spacegass.PNG)
 
 To create this model, have {func}`~ospgrillage.osp_grillage.create_grillage` keyword for `model_type` set to **beam\_link**.
 
@@ -91,7 +91,7 @@ This is a more refined model using two element types - shell and beam elements -
 
 This model has advantageous in modelling slabs using shell elements which are well-suited to represent two-dimensional slab behaviour. Figure 4 shows the details and variables of the shell beam hybrid model.
 
-![Figure 4: Shell beam hybrid model idealization](../../_images/shell_beam_idealization.PNG)
+![Figure 4: Shell beam hybrid model idealization](../images/shell_beam_idealization.PNG)
 
 When {func}`shell_beam` model type is selected, *ospgrillage* automatically determines the position of shell elements within the grillage plane. Users only have to define and assign the section of the shell element via {func}`~ospgrillage.member.create_section` and {func}`~ospgrillage.osp_grillage.OspGrillageShell.set_shell_member` respectively. Finally, to create this model, have {func}`~ospgrillage.osp_grillage.create_grillage` keyword for `model_type` set to **shell**. In addition, users are required to define and assign shell elements. The following example code shows the steps to create the shell model type:
 
