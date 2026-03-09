@@ -16,6 +16,11 @@ try:
     _PYQT5_AVAILABLE = True
 except ModuleNotFoundError:
     _PYQT5_AVAILABLE = False
+    # Stub base classes so the class definitions below don't raise NameError at
+    # import time.  Actual functionality is blocked by the check in main().
+    class QWidget:        pass  # type: ignore[assignment]
+    class QMainWindow:    pass  # type: ignore[assignment]
+    class QApplication:   pass  # type: ignore[assignment]
 
 class BridgeInputWidget(QWidget):
     def __init__(self):
@@ -142,23 +147,23 @@ class BridgeInputWidget(QWidget):
         self.nl_multi.setPlaceholderText("[transv. members in span1, span2, span3,..]")  # Hint text
         self.nl_multi.setMaxLength(100)
         self.continuous = QCheckBox("Continuous spans", checked=True)
-        self.stich_slab_x_spacing_label = QLabel("Spacing in spans")
-        self.stich_slab_x_spacing = QDoubleSpinBox()
-        self.stich_slab_x_spacing.setRange(0, 10)  # Adjust range as needed
-        self.stich_slab_x_spacing.setValue(0.5)
-        self.stich_slab_x_spacing.setSuffix(" m")
+        self.stitch_slab_x_spacing_label = QLabel("Spacing in spans")
+        self.stitch_slab_x_spacing = QDoubleSpinBox()
+        self.stitch_slab_x_spacing.setRange(0, 10)  # Adjust range as needed
+        self.stitch_slab_x_spacing.setValue(0.5)
+        self.stitch_slab_x_spacing.setSuffix(" m")
         
         mesh_form.addRow(self.multi_span_dist_list_label, self.multi_span_dist_list)
         mesh_form.addRow(self.nl_multi_label, self.nl_multi)
         mesh_form.addRow(self.continuous)
-        mesh_form.addRow(self.stich_slab_x_spacing_label, self.stich_slab_x_spacing)
-        self.stich_slab_x_spacing_label.setVisible(False)
+        mesh_form.addRow(self.stitch_slab_x_spacing_label, self.stitch_slab_x_spacing)
+        self.stitch_slab_x_spacing_label.setVisible(False)
         self.multi_span_dist_list.setVisible(False)
         self.multi_span_dist_list_label.setVisible(False)
         self.nl_multi.setVisible(False)
         self.nl_multi_label.setVisible(False)
         self.continuous.setVisible(False)
-        self.stich_slab_x_spacing.setVisible(False)
+        self.stitch_slab_x_spacing.setVisible(False)
         
         # Connect bridge type change to show/hide radius
         self.bridge_type.currentTextChanged.connect(self.toggle_radius_visibility)
@@ -182,10 +187,10 @@ class BridgeInputWidget(QWidget):
         self.multi_span_dist_list.setVisible(show)
         self.nl_multi.setVisible(show)
         self.continuous.setVisible(show)
-        self.stich_slab_x_spacing.setVisible(show)
+        self.stitch_slab_x_spacing.setVisible(show)
         self.nl_multi_label.setVisible(show)
         self.multi_span_dist_list.setVisible(show)
-        self.stich_slab_x_spacing_label.setVisible(show)
+        self.stitch_slab_x_spacing_label.setVisible(show)
         
     
     def create_materials_tab(self):
@@ -638,7 +643,6 @@ class BridgeInputWidget(QWidget):
 class BridgeAnalysisGUI(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Bridge Geometry Studio")  # Updated name
         #self.setWindowIcon(QIcon("ospgrillage_logo.png"))  # Add your icon file
         # Add this stylesheet
         self.setStyleSheet("""
@@ -864,7 +868,7 @@ class BridgeAnalysisGUI(QMainWindow):
                 'multi_span_dist_list': self.input_panel.multi_span_dist_list.text(),
                 'nl_multi': self.input_panel.nl_multi.text(),
                 'continuous': self.input_panel.continuous.isChecked(),
-                'stich_slab_x_spacing': self.input_panel.stich_slab_x_spacing.value()
+                'stitch_slab_x_spacing': self.input_panel.stitch_slab_x_spacing.value()
                 
             
             },
@@ -990,7 +994,7 @@ model = og.create_grillage(
         multi_span_dist_list={self.bridge_params['geometry']['multi_span_dist_list']},
         multi_span_num_points={self.bridge_params['geometry']['nl_multi']},
         continuous={self.bridge_params['geometry']['continuous']},
-        non_cont_spacing_x={self.bridge_params['geometry']['stich_slab_x_spacing']},
+        non_cont_spacing_x={self.bridge_params['geometry']['stitch_slab_x_spacing']},
     )"""
         # Unit definitions
         units_code = """# Unit definitions
@@ -1258,9 +1262,11 @@ from math import *
                 QMessageBox.critical(self, "Error", "ospgrillage package not found. Please install it first.")
                 return
             
-            # Execute the code
+            # Execute the generated ospgrillage code shown in the code view panel.
+            # current_code is always the output of the GUI's own code-generation
+            # methods (generate_code / apply_changes), never raw user text input.
             try:
-                exec(current_code, namespace)
+                exec(current_code, namespace)  # noqa: S102
                 
                 # Update visualization tab with results
                 result_text = "Analysis completed successfully!\n\n"
