@@ -53,8 +53,15 @@ extensions = [
     "sphinx.ext.autosummary",
     "sphinx.ext.coverage",
     "sphinx.ext.githubpages",
-    # "recommonmark",
     "nbsphinx",
+    "sphinx_autodoc_typehints",
+    "myst_parser",
+]
+
+myst_enable_extensions = [
+    "colon_fence",   # allows ::: as fence (alternative to ```)
+    "deflist",       # definition lists
+    "fieldlist",     # RST-style field lists
 ]
 
 autodoc_member_order = "bysource"
@@ -73,8 +80,10 @@ templates_path = ["_templates"]
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
 #
-# source_suffix = ['.rst', '.md']
-source_suffix = ".rst"
+source_suffix = {
+    ".rst": "restructuredtext",
+    ".md":  "myst",
+}
 
 # The master toctree document.
 master_doc = "index"

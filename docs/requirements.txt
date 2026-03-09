@@ -19,7 +19,13 @@ sphinxcontrib-htmlhelp
 sphinxcontrib-jsmath
 sphinxcontrib-qthelp
 sphinxcontrib-serializinghtml
-pandoc
+# pandoc must be installed as a system binary (not via pip).
+# Download from https://pandoc.org/installing.html or via your OS package manager
+# (e.g. `brew install pandoc` / `sudo apt-get install pandoc`).
+# It is required by nbsphinx to convert Jupyter notebooks during the docs build.
+# pandoc  <-- not a pip package; listed here for documentation purposes only
+sphinx-autodoc-typehints
+myst-parser
 markupsafe==2.0.1
 pygments >= 2.7
 -e .

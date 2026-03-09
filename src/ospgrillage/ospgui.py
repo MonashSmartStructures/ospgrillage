@@ -3,14 +3,19 @@ import os
 import logging
 
 logger = logging.getLogger(__name__)
-from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QTabWidget, 
-                            QVBoxLayout, QHBoxLayout, QFormLayout, QGroupBox,
-                            QLineEdit, QDoubleSpinBox, QSpinBox, QComboBox,
-                            QPushButton, QLabel, QScrollArea, QMenuBar, 
-                            QToolBar, QAction, QStatusBar, QTextEdit, QCheckBox,
-                            QMessageBox, QRadioButton, QFileDialog)
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon
+
+try:
+    from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QTabWidget,
+                                 QVBoxLayout, QHBoxLayout, QFormLayout, QGroupBox,
+                                 QLineEdit, QDoubleSpinBox, QSpinBox, QComboBox,
+                                 QPushButton, QLabel, QScrollArea, QMenuBar,
+                                 QToolBar, QAction, QStatusBar, QTextEdit, QCheckBox,
+                                 QMessageBox, QRadioButton, QFileDialog)
+    from PyQt5.QtCore import Qt
+    from PyQt5.QtGui import QIcon
+    _PYQT5_AVAILABLE = True
+except ModuleNotFoundError:
+    _PYQT5_AVAILABLE = False
 
 class BridgeInputWidget(QWidget):
     def __init__(self):
@@ -1293,6 +1298,16 @@ from math import *
             QMessageBox.critical(self, "Error", f"Failed to create geometry: {str(e)}")
 
 def main():
+    if not _PYQT5_AVAILABLE:
+        print(
+            "ospgui requires PyQt5, which is not installed in this environment.\n"
+            "Install it with:\n\n"
+            "    pip install ospgrillage[gui]\n\n"
+            "or:\n\n"
+            "    pip install PyQt5",
+            file=sys.stderr,
+        )
+        sys.exit(1)
     app = QApplication(sys.argv)
     window = BridgeAnalysisGUI()
     window.show()
