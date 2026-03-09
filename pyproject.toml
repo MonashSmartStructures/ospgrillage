@@ -52,6 +52,8 @@ Tracker = "https://github.com/MonashSmartStructures/ospgrillage/issues"
 
 [project.optional-dependencies]
 test = ["pytest >= 6.2.2"]
+gui = ["PyQt5"]
+
 
 [tool.setuptools]
 platforms = ["any"]
@@ -78,3 +80,5 @@ testpaths = [
 pythonpath = [
   ".", "src",
 ]
+[project.scripts]
+ospgui = "ospgrillage.ospgui:main"
