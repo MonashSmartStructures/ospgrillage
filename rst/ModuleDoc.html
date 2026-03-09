@@ -46,7 +46,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Releases" href="ChangeLog.html" />
-    <link rel="prev" title="ospgrillage.load.MovingLoad.add_load" href="generated/ospgrillage.load.MovingLoad.add_load.html" />
+    <link rel="prev" title="ospgrillage.postprocessing.plot_defo" href="generated/ospgrillage.postprocessing.plot_defo.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.4.1" />
@@ -425,7 +425,7 @@
 </section>
 <section id="meshing">
 <h2>Meshing<a class="headerlink" href="#meshing" title="Link to this heading">#</a></h2>
-<p>A <a class="reference internal" href="APIdoc.html#ospgrillage.mesh.Mesh" title="ospgrillage.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a> class object handles and stores information of the grillage mesh, such as:</p>
+<p>A <a class="reference internal" href="api_mesh.html#ospgrillage.mesh.Mesh" title="ospgrillage.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a> class object handles and stores information of the grillage mesh, such as:</p>
 <ul class="simple">
 <li><p>Mesh dimension</p></li>
 <li><p>Nodes</p></li>
@@ -438,7 +438,7 @@
 <h3>Meshing algorithm<a class="headerlink" href="#meshing-algorithm" title="Link to this heading">#</a></h3>
 <p>Figure 2 shows an annotated diagram of the bridge mesh nodes in Figure 1 which we will use as an explanatory example.</p>
 <p><img alt="Figure 2: Meshing construction lines, showing start control line (Blue), end end control line (Green), sweep path (Black) and sweeping nodes (Red)." src="../_images/Moduledoc_1.PNG" /></p>
-<p>Meshing algorithm is controlled by the <a class="reference internal" href="APIdoc.html#ospgrillage.mesh.Mesh" title="ospgrillage.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a> class object. The following components are generated at pre-meshing stage:</p>
+<p>Meshing algorithm is controlled by the <a class="reference internal" href="api_mesh.html#ospgrillage.mesh.Mesh" title="ospgrillage.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a> class object. The following components are generated at pre-meshing stage:</p>
 <ol class="arabic simple">
 <li><p><strong>Control points at start of the span (start_span_edge)</strong>. A line of nodes/points located at the starting edge of the model. The positions of points are determined based on the number of longitudinal members, width of mesh, and skew angle of starting edge. By default, this line of nodes have a reference point coinciding the origin of global coordinate system i.e. [0,0,0].</p></li>
 <li><p><strong>Control points at the end of the span (end_span_edge)</strong>. A line of nodes located at the end edge of the model. The positions of points are determined similar to <em>start_span_edge</em>. By default, skew angle is set to equal that of <em>start_span_edge</em> - unless specified otherwise by users. In contrast to <em>start_span_edge</em>, the reference point of second construction line is [L, 0 ,f(L)] where <code class="docutils literal notranslate"><span class="pre">L</span></code> is the length of the model, and <code class="docutils literal notranslate"><span class="pre">f(L)</span></code> is the z coordinate of the reference node based on the defined sweep path of the model - this is next explained.</p></li>
@@ -511,7 +511,7 @@
 <li><p>Path objects (Path for moving load)</p></li>
 <li><p>Compound load object - defined in local and set to global via <a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.set_global_coord.html#ospgrillage.load.CompoundLoad.set_global_coord" title="ospgrillage.load.CompoundLoad.set_global_coord"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_global_coord()</span></code></a></p></li>
 </ul>
-<p>For <a class="reference internal" href="APIdoc.html#ospgrillage.load.LoadCase" title="ospgrillage.load.LoadCase"><code class="xref py py-class docutils literal notranslate"><span class="pre">LoadCase</span></code></a>, all load object inputs can be either local or global. Note when local coordinate is defined for a load object, a global reference coordinate needs to be defined or else the module raises an Error regarding its point/vertices values.</p>
+<p>For <a class="reference internal" href="api_load.html#ospgrillage.load.LoadCase" title="ospgrillage.load.LoadCase"><code class="xref py py-class docutils literal notranslate"><span class="pre">LoadCase</span></code></a>, all load object inputs can be either local or global. Note when local coordinate is defined for a load object, a global reference coordinate needs to be defined or else the module raises an Error regarding its point/vertices values.</p>
 <p><img alt="Figure 3: Mapping of local coordinate of Load/Path objects to global coordinate." src="../_images/coordinate_system_mapping.PNG" /></p>
 </section>
 <section id="links-to-module-components">
@@ -592,7 +592,7 @@ class _OpsProxy:
 <p><strong>Update Sept 2021</strong></p>
 <p>The initial release of <em>ospgrillage</em> contains core algorithms to generate meshes of grillage models. However the release comes with limitations and further development are required to extend beyond these limitations.</p>
 <p>The current version of <em>ospgrillage</em> is limited to straight meshes. However, the developers have coded the module in a way where adding in curve meshing in future developments is just a matter of adding <strong>curve line</strong> functionality to the <code class="xref py py-class docutils literal notranslate"><span class="pre">SweepPath</span></code> class. Notably, the curve mesh is also possible with the current meshing rules - i.e. the sweep nodes have been coded to be always orthogonal to the gradient of the sweep path (straight or curve).</p>
-<p>Current version of <em>ospgrillage</em> is limited to a single span mesh, where the support edges lies on the start and end edge of the mesh. Multi-span mesh is possible with a few more developments. This can be done by introducing intermediate edge construction lines, a feature to be introduced to <a class="reference internal" href="APIdoc.html#ospgrillage.mesh.Mesh" title="ospgrillage.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">ospgrillage.mesh.Mesh</span></code></a>. In tandem with this, the <code class="xref py py-class docutils literal notranslate"><span class="pre">EdgeControlPoints</span></code> class will need to be reviewed as current edge control points are only recognized as end supports - catering to current meshing procedures for single span configuration.</p>
+<p>Current version of <em>ospgrillage</em> is limited to a single span mesh, where the support edges lies on the start and end edge of the mesh. Multi-span mesh is possible with a few more developments. This can be done by introducing intermediate edge construction lines, a feature to be introduced to <a class="reference internal" href="api_mesh.html#ospgrillage.mesh.Mesh" title="ospgrillage.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">ospgrillage.mesh.Mesh</span></code></a>. In tandem with this, the <code class="xref py py-class docutils literal notranslate"><span class="pre">EdgeControlPoints</span></code> class will need to be reviewed as current edge control points are only recognized as end supports - catering to current meshing procedures for single span configuration.</p>
 <p>The developers also acknowledges that there are conflicts between the adopted coordinate system of <em>ospgrillage</em> and the default coordinate system for the OpenSees’s <code class="docutils literal notranslate"><span class="pre">opsvis</span></code> module. The <code class="docutils literal notranslate"><span class="pre">opsvis</span></code> module default isotropic angle is x - y with z axis plane being the model plane of a 2-D model in 3-D space. Currently it is not easy to alter the coordinate system of <em>ospgrillage</em>. However, the developers are hoping that <code class="docutils literal notranslate"><span class="pre">opsvis</span></code> can cater to multi isotropic views of the model space as oppose to the current fixed coordinate system. It would require substantial rework of the entire <em>ospgrillage</em> module if one decides to “fit” <em>ospgrillage</em> ‘s coordinate system to <code class="docutils literal notranslate"><span class="pre">opsvis</span></code> - since the module assume the model plane of the 2D grillage is the y axis.</p>
 </div>
 </section>
@@ -609,12 +609,12 @@ class _OpsProxy:
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="generated/ospgrillage.load.MovingLoad.add_load.html"
+       href="generated/ospgrillage.postprocessing.plot_defo.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">ospgrillage.load.MovingLoad.add_load</p>
+        <p class="prev-next-title">ospgrillage.postprocessing.plot_defo</p>
       </div>
     </a>
     <a class="right-next"

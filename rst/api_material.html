@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>API reference &#8212; ospgrillage 0.4.1 documentation</title>
+    <title>Material &#8212; ospgrillage 0.4.1 documentation</title>
   
   
   
@@ -42,11 +42,11 @@
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'rst/APIdoc';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'rst/api_material';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Grillage model" href="api_grillage.html" />
-    <link rel="prev" title="Troubleshooting" href="Troubleshooting.html" />
+    <link rel="next" title="ospgrillage.material.create_material" href="generated/ospgrillage.material.create_material.html" />
+    <link rel="prev" title="ospgrillage.osp_grillage.OspGrillage.clear_load_cases" href="generated/ospgrillage.osp_grillage.OspGrillage.clear_load_cases.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.4.1" />
@@ -139,7 +139,7 @@
 
 
 <li class="nav-item current active">
-  <a class="nav-link nav-internal" href="#">
+  <a class="nav-link nav-internal" href="APIdoc.html">
     API reference
   </a>
 </li>
@@ -267,7 +267,7 @@
 
 
 <li class="nav-item current active">
-  <a class="nav-link nav-internal" href="#">
+  <a class="nav-link nav-internal" href="APIdoc.html">
     API reference
   </a>
 </li>
@@ -341,7 +341,7 @@
 <nav class="bd-docs-nav bd-links"
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
-  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="api_grillage.html">Grillage model</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.create_grillage.html">ospgrillage.osp_grillage.create_grillage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.create_osp_model.html">ospgrillage.osp_grillage.OspGrillage.create_osp_model</a></li>
@@ -356,7 +356,7 @@
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.clear_load_cases.html">ospgrillage.osp_grillage.OspGrillage.clear_load_cases</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="api_material.html">Material</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Material</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.material.create_material.html">ospgrillage.material.create_material</a></li>
 </ul>
 </details></li>
@@ -430,7 +430,10 @@
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">API reference</span></li>
+    
+    <li class="breadcrumb-item"><a href="APIdoc.html" class="nav-link">API reference</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Material</span></li>
   </ul>
 </nav>
 </div>
@@ -447,20 +450,98 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="api-reference">
-<h1>API reference<a class="headerlink" href="#api-reference" title="Link to this heading">#</a></h1>
-<p>The <em>ospgrillage</em> API is organised by module. Each page documents the
-factory functions (<code class="docutils literal notranslate"><span class="pre">create_*</span></code>) and the underlying classes.</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="api_grillage.html">Grillage model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api_material.html">Material</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api_members.html">Members and sections</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api_load.html">Load module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api_mesh.html">Mesh</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api_postprocessing.html">Post-processing</a></li>
-</ul>
+  <section id="material">
+<h1>Material<a class="headerlink" href="#material" title="Link to this heading">#</a></h1>
+<section id="factory-function">
+<h2>Factory function<a class="headerlink" href="#factory-function" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.material.create_material.html#ospgrillage.material.create_material" title="ospgrillage.material.create_material"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_material</span></code></a>(**kwargs)</p></td>
+<td><p>Create a material object for use in a grillage model.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
+</section>
+<section id="class-reference">
+<h2>Class reference<a class="headerlink" href="#class-reference" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="ospgrillage.material.Material">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Material</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.material.Material" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class stores information and provides methods to parse input material properties into <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code> Material
+objects.</p>
+<p><a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html">Here</a> are the information about OpenSees
+Material objects.</p>
+<p>As <em>ospgrillage</em> is mainly intended for bridge decks , concrete and steel makes up the primary
+materials. In turn, <em>ospgrillage</em> wraps the UniAxialMaterial object of <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code> since it contains the primary
+options for Concrete and Steel.</p>
+<p>The Material class also allow users to utilize codified material properties (e.g. AS5100, ASHTOO).
+These material properties are stored in a material library file (mat_lib.json). Users are required to pass in
+the appropriate keyword arguments (dict keys) to select the desirable codified materials. Users may access
+mat_lib.json. Additionally, this class is able create the mat_lib.json file and pass it through</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Current version of mat_lib.json is 0.1.0</p>
+</div>
+<p>The constructor of Material takes in three types of inputs:</p>
+<ol class="arabic simple">
+<li><p>Keywords for looking up the <em>ospgrillage</em> material library i.e. mat_lib.json.</p></li>
+<li><p>General material properties - such as E, and G</p></li>
+<li><p>Specific material arguments of <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code>.</p></li>
+</ol>
+<p>For (1), the following keywords are <strong>required</strong>:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+<ul class="simple">
+<li><p>code (<cite>str</cite>): name string of code according to mat_lib.json</p></li>
+<li><p>type (<cite>str</cite>): Either “concrete” or “steel”</p></li>
+<li><p>grade(<cite>str</cite>): Grade of material according to code</p></li>
+</ul>
+<p>For (2), the minimum required material properties are:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+<ul class="simple">
+<li><p>E (<cite>float</cite>): Elastic modulus</p></li>
+<li><p>G (<cite>float</cite>): Shear modulus</p></li>
+<li><p>v (<cite>float</cite>): Poisson’s ratio</p></li>
+<li><p>rho (<cite>float</cite>): Density</p></li>
+</ul>
+<p>For (3), refer to <a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html">OpenSeesPy</a>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.material.Material.get_material_args">
+<span class="sig-name descname"><span class="pre">get_material_args</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.material.Material.get_material_args" title="Link to this definition">#</a></dt>
+<dd><p>Return the arguments for OpenSeesPy material. This function is handled by
+<a class="reference internal" href="api_grillage.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">ospgrillage.osp_grillage.OspGrillage</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Str of OpenSeesPy material type and list of material properties correspond to the inputs of
+OpenSeesPy commands</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.material.Material.get_ops_material_command">
+<span class="sig-name descname"><span class="pre">get_ops_material_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">material_tag</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.material.Material.get_ops_material_command" title="Link to this definition">#</a></dt>
+<dd><p>Parse material properties into OpenSeesPy Material commands.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>material_tag</strong> (<em>int</em>) – tag of material defined in in OpenSeesPy space</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Str of OpenSees command to create material in OpenSeesPy</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 </section>
 
 
@@ -474,20 +555,20 @@ factory functions (<code class="docutils literal notranslate"><span class="pre">
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="Troubleshooting.html"
+       href="generated/ospgrillage.osp_grillage.OspGrillage.clear_load_cases.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Troubleshooting</p>
+        <p class="prev-next-title">ospgrillage.osp_grillage.OspGrillage.clear_load_cases</p>
       </div>
     </a>
     <a class="right-next"
-       href="api_grillage.html"
+       href="generated/ospgrillage.material.create_material.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Grillage model</p>
+        <p class="prev-next-title">ospgrillage.material.create_material</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -503,10 +584,30 @@ factory functions (<code class="docutils literal notranslate"><span class="pre">
 
 
   <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#factory-function">Factory function</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-reference">Class reference</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.material.Material"><code class="docutils literal notranslate"><span class="pre">Material</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.material.Material.get_material_args"><code class="docutils literal notranslate"><span class="pre">Material.get_material_args()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.material.Material.get_ops_material_command"><code class="docutils literal notranslate"><span class="pre">Material.get_ops_material_command()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/rst/APIdoc.rst">
+    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/rst/api_material.rst">
       <i class="fa-solid fa-pencil"></i>
       
       

@@ -1,0 +1,1464 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Load module &#8212; ospgrillage 0.4.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=c87aa342"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'rst/api_load';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ospgrillage.load.create_load_vertex" href="generated/ospgrillage.load.create_load_vertex.html" />
+    <link rel="prev" title="ospgrillage.members.create_member" href="generated/ospgrillage.members.create_member.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.4.1" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/ospgrillage_logo.png" class="logo__image only-light" alt="ospgrillage 0.4.1 documentation - Home"/>
+    <img src="../_static/ospgrillage_logo.png" class="logo__image only-dark pst-js-only" alt="ospgrillage 0.4.1 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="APIdoc.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="ModuleDoc.html">
+    Package design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="ChangeLog.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MonashSmartStructures/ospgrillage" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="APIdoc.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="ModuleDoc.html">
+    Package design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="ChangeLog.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MonashSmartStructures/ospgrillage" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="api_grillage.html">Grillage model</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.create_grillage.html">ospgrillage.osp_grillage.create_grillage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.create_osp_model.html">ospgrillage.osp_grillage.OspGrillage.create_osp_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.set_member.html">ospgrillage.osp_grillage.OspGrillage.set_member</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.set_boundary_condition.html">ospgrillage.osp_grillage.OspGrillage.set_boundary_condition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.add_load_case.html">ospgrillage.osp_grillage.OspGrillage.add_load_case</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.add_load_combination.html">ospgrillage.osp_grillage.OspGrillage.add_load_combination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze.html">ospgrillage.osp_grillage.OspGrillage.analyze</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html">ospgrillage.osp_grillage.OspGrillage.get_results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_nodes.html">ospgrillage.osp_grillage.OspGrillage.get_nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_element.html">ospgrillage.osp_grillage.OspGrillage.get_element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.clear_load_cases.html">ospgrillage.osp_grillage.OspGrillage.clear_load_cases</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api_material.html">Material</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.material.create_material.html">ospgrillage.material.create_material</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api_members.html">Members and sections</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.members.create_section.html">ospgrillage.members.create_section</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.members.create_member.html">ospgrillage.members.create_member</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Load module</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.load.create_load_vertex.html">ospgrillage.load.create_load_vertex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.load.create_load.html">ospgrillage.load.create_load</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.load.create_load_case.html">ospgrillage.load.create_load_case</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.load.create_compound_load.html">ospgrillage.load.create_compound_load</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.load.create_moving_path.html">ospgrillage.load.create_moving_path</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.load.create_moving_load.html">ospgrillage.load.create_moving_load</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.load.create_load_model.html">ospgrillage.load.create_load_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.set_global_coord.html">ospgrillage.load.CompoundLoad.set_global_coord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.add_load.html">ospgrillage.load.CompoundLoad.add_load</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.load.LoadCase.add_load.html">ospgrillage.load.LoadCase.add_load</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.set_path.html">ospgrillage.load.MovingLoad.set_path</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.add_load.html">ospgrillage.load.MovingLoad.add_load</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api_mesh.html">Mesh</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.mesh.create_point.html">ospgrillage.mesh.create_point</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api_postprocessing.html">Post-processing</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.postprocessing.create_envelope.html">ospgrillage.postprocessing.create_envelope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.postprocessing.plot_force.html">ospgrillage.postprocessing.plot_force</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.postprocessing.plot_defo.html">ospgrillage.postprocessing.plot_defo</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="APIdoc.html" class="nav-link">API reference</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Load module</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="load-module">
+<h1>Load module<a class="headerlink" href="#load-module" title="Link to this heading">#</a></h1>
+<section id="factory-functions">
+<h2>Factory functions<a class="headerlink" href="#factory-functions" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_load_vertex.html#ospgrillage.load.create_load_vertex" title="ospgrillage.load.create_load_vertex"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_load_vertex</span></code></a>(**kwargs)</p></td>
+<td><p>User interface function to create a load vertex.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_load.html#ospgrillage.load.create_load" title="ospgrillage.load.create_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_load</span></code></a>(**kwargs)</p></td>
+<td><p>User interface function to create load types.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_load_case.html#ospgrillage.load.create_load_case" title="ospgrillage.load.create_load_case"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_load_case</span></code></a>(**kwargs)</p></td>
+<td><p>Create a load case container for loads to apply in a grillage analysis.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_compound_load.html#ospgrillage.load.create_compound_load" title="ospgrillage.load.create_compound_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_compound_load</span></code></a>(**kwargs)</p></td>
+<td><p>Create a compound load group that combines multiple individual loads.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_moving_path.html#ospgrillage.load.create_moving_path" title="ospgrillage.load.create_moving_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_moving_path</span></code></a>(**kwargs)</p></td>
+<td><p>User interface function to create Path object for moving load.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_moving_load.html#ospgrillage.load.create_moving_load" title="ospgrillage.load.create_moving_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_moving_load</span></code></a>(**kwargs)</p></td>
+<td><p>User interface function to create Moving Load object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_load_model.html#ospgrillage.load.create_load_model" title="ospgrillage.load.create_load_model"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_load_model</span></code></a>(**kwargs)</p></td>
+<td><p>Create a load model object representing a vehicle load model.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="compoundload-and-loadcase-methods">
+<h2>CompoundLoad and LoadCase methods<a class="headerlink" href="#compoundload-and-loadcase-methods" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.set_global_coord.html#ospgrillage.load.CompoundLoad.set_global_coord" title="ospgrillage.load.CompoundLoad.set_global_coord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_global_coord</span></code></a>(global_coord)</p></td>
+<td><p>Set global coordinate of the compound load with respect to global coordinate system of grillage model.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.add_load.html#ospgrillage.load.CompoundLoad.add_load" title="ospgrillage.load.CompoundLoad.add_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_load</span></code></a>(load_obj)</p></td>
+<td><p>Adds a <code class="xref py py-class docutils literal notranslate"><span class="pre">Load</span></code> to compound load group.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.LoadCase.add_load.html#ospgrillage.load.LoadCase.add_load" title="ospgrillage.load.LoadCase.add_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_load</span></code></a>(load_obj, **kwargs)</p></td>
+<td><p>Add a Load or Compound load object to LoadCase</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.set_path.html#ospgrillage.load.MovingLoad.set_path" title="ospgrillage.load.MovingLoad.set_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_path</span></code></a>(path_obj)</p></td>
+<td><p>Function to assign/modify the common path variable with a new Path object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.add_load.html#ospgrillage.load.MovingLoad.add_load" title="ospgrillage.load.MovingLoad.add_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_load</span></code></a>(load_obj[, path_obj])</p></td>
+<td><p>Function to set a load type (Loads class object) with its path (Path class object).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="class-reference">
+<h2>Class reference<a class="headerlink" href="#class-reference" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="ospgrillage.load.NodalLoad">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">NodalLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_tag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.NodalLoad" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Loads</span></code></p>
+<p>Class for Nodal loads.</p>
+<p>Inits the Nodal load class. NodalLoad requires a NodalForce(Fx,Fy,Fz,Mx,My,Mz) as input.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Name of load</p></li>
+<li><p><strong>node_tag</strong> (<em>int</em>) – Node tag of grillage model for nodal load to be applied</p></li>
+<li><p><strong>node_force</strong> (<em>NodalForces</em><em>(</em><em>Fx</em><em>,</em><em>Fy</em><em>,</em><em>Fz</em><em>,</em><em>Mx</em><em>,</em><em>My</em><em>,</em><em>Mz</em><em>)</em>) – Named tuple of node forces</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.load.NodalLoad.get_nodal_load_call">
+<span class="sig-name descname"><span class="pre">get_nodal_load_call</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.NodalLoad.get_nodal_load_call" title="Link to this definition">#</a></dt>
+<dd><p>Returns a <code class="docutils literal notranslate"><span class="pre">(func_name,</span> <span class="pre">args,</span> <span class="pre">kwargs)</span></code> tuple for <code class="docutils literal notranslate"><span class="pre">ops.load()</span></code>.</p>
+<p>This is the preferred form; it lets the caller dispatch via
+<code class="docutils literal notranslate"><span class="pre">_OpsProxy._dispatch()</span></code> without any string building or <code class="docutils literal notranslate"><span class="pre">eval</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.load.NodalLoad.get_nodal_load_str">
+<span class="sig-name descname"><span class="pre">get_nodal_load_str</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.NodalLoad.get_nodal_load_str" title="Link to this definition">#</a></dt>
+<dd><p>Returns an ops.load() command string for the NodalLoad.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version Use: </span><a class="reference internal" href="#ospgrillage.load.NodalLoad.get_nodal_load_call" title="ospgrillage.load.NodalLoad.get_nodal_load_call"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_nodal_load_call()</span></code></a> instead.  This method is retained
+for backward compatibility only.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ospgrillage.load.PointLoad">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">PointLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.PointLoad" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Loads</span></code></p>
+<p>Class for concentrated point loads.</p>
+<p>Represents a single concentrated force applied at a point on the grillage
+structure. Inherits all attributes and methods from the Loads base class.</p>
+<p>Initialize a PointLoad instance.</p>
+<section id="parameters">
+<h3>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>name<span class="classifier">str, optional</span></dt><dd><p>Name identifier for the point load</p>
+</dd>
+<dt><a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs</dt><dd><p>Arbitrary keyword arguments passed to parent Loads class,
+including point1 and load magnitude</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ospgrillage.load.LineLoading">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">LineLoading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LineLoading" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Loads</span></code></p>
+<p>Class for distributed line loads (UDL and non-uniform).</p>
+<p>Represents a load distributed along a line on the grillage. Supports both
+straight lines (defined by two endpoints) and curved lines (defined by three
+points forming a circular arc). Provides interpolation methods for computing
+load magnitudes at arbitrary points along the line.</p>
+<p>Initialize a LineLoading instance.</p>
+<section id="id3">
+<h3>Parameters<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>name<span class="classifier">str, optional</span></dt><dd><p>Name identifier for the line load</p>
+</dd>
+<dt>point1<span class="classifier">LoadPoint</span></dt><dd><p>Start point of the line load (endpoint convention)</p>
+</dd>
+<dt>point2<span class="classifier">LoadPoint</span></dt><dd><p>End point of the line load (endpoint convention)</p>
+</dd>
+<dt>point3<span class="classifier">LoadPoint, optional</span></dt><dd><p>If provided, defines a curved (circular arc) line load using point1, point2,
+and point3 as three points on the arc. If None, load is a straight line.</p>
+</dd>
+<dt>long_beam_element_load<span class="classifier">bool, default False</span></dt><dd><p>Flag to apply load to longitudinal beam elements</p>
+</dd>
+<dt>trans_beam_element_load<span class="classifier">bool, default False</span></dt><dd><p>Flag to apply load to transverse beam elements</p>
+</dd>
+<dt><a href="#id4"><span class="problematic" id="id5">**</span></a>kwargs</dt><dd><p>Additional keyword arguments passed to parent Loads class</p>
+</dd>
+</dl>
+</section>
+<section id="notes">
+<h3>Notes<a class="headerlink" href="#notes" title="Link to this heading">#</a></h3>
+<p>The two-endpoint convention means that for straight lines, load magnitude
+is interpolated between point1 (start) and point2 (end) coordinates.
+For curved lines with three points, the curve is fitted as a circular arc.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.load.LineLoading.interpolate_udl_magnitude">
+<span class="sig-name descname"><span class="pre">interpolate_udl_magnitude</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point_coordinate</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LineLoading.interpolate_udl_magnitude" title="Link to this definition">#</a></dt>
+<dd><p>Interpolate load magnitude at a point along the line load.</p>
+<p>Computes the force magnitude at a specified coordinate by linearly
+interpolating between load_point_1 and load_point_2. Uses parametric
+equations for both straight and curved line segments.</p>
+<section id="id6">
+<h4>Parameters<a class="headerlink" href="#id6" title="Link to this heading">#</a></h4>
+<dl class="simple">
+<dt>point_coordinate<span class="classifier">list</span></dt><dd><p>Coordinate [x, y, z] at which to compute the load magnitude</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h4>Returns<a class="headerlink" href="#returns" title="Link to this heading">#</a></h4>
+<dl class="simple">
+<dt>float</dt><dd><p>Interpolated force magnitude (p value) at the given point coordinate</p>
+</dd>
+</dl>
+</section>
+<section id="id7">
+<h4>Notes<a class="headerlink" href="#id7" title="Link to this heading">#</a></h4>
+<p>For straight lines, interpolation uses the parametric equation:
+p(x) = p1 + (x - x1) / (x2 - x1) * (p2 - p1)
+If the line is vertical (x1 == x2), z-coordinate is used instead.
+For curved lines (point3 defined), interpolation logic is not yet implemented.</p>
+</section>
+<section id="example">
+<h4>Example<a class="headerlink" href="#example" title="Link to this heading">#</a></h4>
+<p>Line load from point1 (0, 0, 0, p=100) to point2 (10, 0, 0, p=200).
+Magnitude at x=5 would return 150.</p>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.load.LineLoading.get_point_given_distance">
+<span class="sig-name descname"><span class="pre">get_point_given_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xbar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_coordinate</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LineLoading.get_point_given_distance" title="Link to this definition">#</a></dt>
+<dd><p>Compute a shifted point coordinate given a distance offset perpendicular to the line.</p>
+<p>Translates a reference point along the perpendicular direction to the line load
+by a specified distance. Useful for computing load distribution centroids and
+moment calculations.</p>
+<section id="id8">
+<h4>Parameters<a class="headerlink" href="#id8" title="Link to this heading">#</a></h4>
+<dl class="simple">
+<dt>xbar<span class="classifier">float</span></dt><dd><p>Perpendicular distance offset from the line</p>
+</dd>
+<dt>point_coordinate<span class="classifier">list</span></dt><dd><p>Reference coordinate [x, y, z] on or near the line load</p>
+</dd>
+</dl>
+</section>
+<section id="id9">
+<h4>Returns<a class="headerlink" href="#id9" title="Link to this heading">#</a></h4>
+<dl class="simple">
+<dt>list</dt><dd><p>Shifted coordinate [x’, y’, z’] after applying the perpendicular offset.
+The y-component is unchanged (model plane assumption).</p>
+</dd>
+</dl>
+</section>
+<section id="id10">
+<h4>Notes<a class="headerlink" href="#id10" title="Link to this heading">#</a></h4>
+<p>Computation uses the line angle (self.angle) to decompose the offset into
+x and z components:</p>
+<blockquote>
+<div><p>x’ = x - xbar * cos(angle)
+z’ = z - xbar * sin(angle)</p>
+</div></blockquote>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.load.LineLoading.get_line_segment_given_x">
+<span class="sig-name descname"><span class="pre">get_line_segment_given_x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LineLoading.get_line_segment_given_x" title="Link to this definition">#</a></dt>
+<dd><p>Compute the z-coordinate on the line for a given x-coordinate.</p>
+<p>Evaluates the line equation z = mx + c at a specified x-value,
+provided x falls within the bounds of the line segment endpoints.</p>
+<section id="id11">
+<h4>Parameters<a class="headerlink" href="#id11" title="Link to this heading">#</a></h4>
+<dl class="simple">
+<dt>x<span class="classifier">float</span></dt><dd><p>X-coordinate at which to compute the corresponding z-coordinate</p>
+</dd>
+</dl>
+</section>
+<section id="id12">
+<h4>Returns<a class="headerlink" href="#id12" title="Link to this heading">#</a></h4>
+<dl class="simple">
+<dt>float or None</dt><dd><p>The z-coordinate (z = mx + c) on the line at the given x-value.
+Returns None if x is outside the line segment bounds or if the
+line is vertical (m is None).</p>
+</dd>
+</dl>
+</section>
+<section id="id13">
+<h4>Notes<a class="headerlink" href="#id13" title="Link to this heading">#</a></h4>
+<p>Valid only for x values between load_point_1.x and line_end_point.x
+(in either direction).
+For vertical lines (infinite slope), this method returns None.</p>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.load.LineLoading.get_line_segment_given_z">
+<span class="sig-name descname"><span class="pre">get_line_segment_given_z</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LineLoading.get_line_segment_given_z" title="Link to this definition">#</a></dt>
+<dd><p>Compute the x-coordinate on the line for a given z-coordinate.</p>
+<p>Evaluates the inverse line equation x = (z - c) / m at a specified z-value,
+provided z falls within the bounds of the line segment endpoints.
+Handles vertical lines (infinite slope) as a special case.</p>
+<section id="id14">
+<h4>Parameters<a class="headerlink" href="#id14" title="Link to this heading">#</a></h4>
+<dl class="simple">
+<dt>z<span class="classifier">float</span></dt><dd><p>Z-coordinate at which to compute the corresponding x-coordinate</p>
+</dd>
+</dl>
+</section>
+<section id="id15">
+<h4>Returns<a class="headerlink" href="#id15" title="Link to this heading">#</a></h4>
+<dl class="simple">
+<dt>float or None</dt><dd><p>The x-coordinate on the line at the given z-value.
+For vertical lines, returns the constant x-value (load_point_1.x).
+Returns None if z is outside the line segment bounds.</p>
+</dd>
+</dl>
+</section>
+<section id="id16">
+<h4>Notes<a class="headerlink" href="#id16" title="Link to this heading">#</a></h4>
+<p>Valid only for z values between load_point_1.z and line_end_point.z
+(in either direction).</p>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ospgrillage.load.PatchLoading">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">PatchLoading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.PatchLoading" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Loads</span></code></p>
+<p>Class for Patch loads.</p>
+<p>By default requires at least 4 load point for patch (quadrilateral). Can take up to 8 load points.</p>
+<p>Init the PatchLoad class.
+:param name:
+:param kwargs:</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ospgrillage.load.CompoundLoad">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">CompoundLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.CompoundLoad" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class for Compound load. Used to group different Load objects into a Compound load group.</p>
+<p>When a Load object is pass as an input, CompoundLoad treats the initial positions (load_points) of the Load classes
+as local coordinates. Then CompoundLoad sets the loads “in-place” of the local coordinate. If class input local_coord
+is given, CompoundLoad replaces the coordinates of the initial load points (retaining the magnitude of load points)</p>
+<p>When set_global_coord() function is called, CompoundLoad sets the input global coordinate as the new centroid of the
+compounded load groups. This is done by shifting each local coordinate load point in all load groups under
+CompoundLoad by x (global) and z (global).</p>
+<p>Here are a few relationships between CompoundLoad and other classes</p>
+<ul class="simple">
+<li><p>CompoundLoad object can have Loads class and its inheritances (Line, Point, Patch)</p></li>
+<li><p>CompoundLoad handles functions of Load classes (e.g. move_load)</p></li>
+</ul>
+<p>Init the CompoundLoad class</p>
+<dl class="field-list simple">
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.load.CompoundLoad.add_load">
+<span class="sig-name descname"><span class="pre">add_load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">load_obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.CompoundLoad.add_load" title="Link to this definition">#</a></dt>
+<dd><p>Adds a <code class="xref py py-class docutils literal notranslate"><span class="pre">Load</span></code> to compound load group.
+If a local_coord parameter is given, this new local_coord overwrites the coordinates (either local or global) of the load object.</p>
+<dl class="simple">
+<dt>..note:</dt><dd><p>If load object is defined using local coordinate and local_coord is None, its default local coord precedes.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>load_obj</strong> (<a class="reference internal" href="#ospgrillage.load.PointLoad" title="ospgrillage.load.PointLoad"><em>PointLoad</em></a><em>,</em><a class="reference internal" href="#ospgrillage.load.LineLoading" title="ospgrillage.load.LineLoading"><em>LineLoading</em></a><em>,</em><a class="reference internal" href="#ospgrillage.load.PatchLoading" title="ospgrillage.load.PatchLoading"><em>PatchLoading</em></a>) – Load object</p></li>
+<li><p><strong>local_coord</strong> (<em>Point namedTuple</em>) – Local coordinate of load object</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.load.CompoundLoad.set_global_coord">
+<span class="sig-name descname"><span class="pre">set_global_coord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_coord</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.CompoundLoad.set_global_coord" title="Link to this definition">#</a></dt>
+<dd><p>Set global coordinate of the compound load with respect to global coordinate system of grillage model.
+The global coordinate is set to all local load points (i.e. it adds the global coord x y z to each local coord)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>global_coord</strong> (<em>Point namedTuple</em>) – Value of x y z (global coord) to offset the basic coordinate system</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ospgrillage.load.MovingLoad">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">MovingLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.MovingLoad" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Main class of moving load case. MovingLoad class parses and creates multiple loadcase object corresponding to
+traversing the input load groups - be it compound or single. Moving load is able to set various path (defined by
+Path class object) to individual load groups.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – Name string of moving load</p>
+</dd>
+<dt class="field-even">Keyword<span class="colon">:</span></dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+<ul class="simple">
+<li><p>common_path (<cite>Path</cite>): Path object specifying the common path for all loads defined in moving load to traverse</p></li>
+<li><p>global_increment(<cite>int</cite>): Number of increments to discretize Path object.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>global_increment argument is used in advance moving load analysis, where a moving load object attributes
+each assigned load type with a corresponding unique Path object (which can differ between different paths).</p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.load.MovingLoad.set_path">
+<span class="sig-name descname"><span class="pre">set_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.MovingLoad.set_path" title="Link to this definition">#</a></dt>
+<dd><p>Function to assign/modify the common path variable with a new Path object.
+All loads added later to Moving load object will traverse the same common path object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path_obj</strong> (<a class="reference internal" href="#ospgrillage.load.Path" title="ospgrillage.load.Path"><em>Path</em></a>) – Path object to specify common path variable.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.load.MovingLoad.add_load">
+<span class="sig-name descname"><span class="pre">add_load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">load_obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_obj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.MovingLoad.add_load" title="Link to this definition">#</a></dt>
+<dd><p>Function to set a load type (Loads class object) with its path (Path class object). Function accepts compound load (Compound load class) as a load input, which in turn sets the path object to all loads within the compound
+load group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>load_obj</strong> (<em>Loads</em><em> | </em><a class="reference internal" href="#ospgrillage.load.CompoundLoad" title="ospgrillage.load.CompoundLoad"><em>CompoundLoad</em></a>) – Loads class object , or Compound load object</p></li>
+<li><p><strong>path_obj</strong> – Path class object - this is for advance use, where users specify unique path object for each load within the moving load object.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.load.MovingLoad.parse_moving_load_cases">
+<span class="sig-name descname"><span class="pre">parse_moving_load_cases</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.MovingLoad.parse_moving_load_cases" title="Link to this definition">#</a></dt>
+<dd><p>Generate individual LoadCase objects for each position along the moving load path.</p>
+<p>Processes all load-path pairs added to this MovingLoad object and creates
+a series of LoadCase instances, one for each increment in the path(s).
+Static loads (with empty paths) are identified and added to all incremental
+load cases. Moving loads are repositioned at each path increment.</p>
+<section id="id17">
+<h3>Returns<a class="headerlink" href="#id17" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>None</dt><dd><p>Populates self.moving_load_case list with LoadCase objects corresponding
+to each path increment.</p>
+</dd>
+</dl>
+</section>
+<section id="id18">
+<h3>Notes<a class="headerlink" href="#id18" title="Link to this heading">#</a></h3>
+<p>This method is called internally during the analysis setup and creates all
+the incremental load cases necessary for a moving load analysis. The load cases
+are accessible via self.moving_load_case attribute.
+Static loads (loads without a path) are included in every incremental load case.</p>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.load.MovingLoad.query">
+<span class="sig-name descname"><span class="pre">query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incremental_lc_name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.MovingLoad.query" title="Link to this definition">#</a></dt>
+<dd><p>Function to query properties of moving load</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>incremental_lc_name</strong> (<em>str</em>) – Name string of load case to query properties</p></li>
+<li><p><strong>kwargs</strong></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ospgrillage.load.LoadCase">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">LoadCase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LoadCase" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Main class for load cases. Each load case holds information about:
+#. Load object types (point line patch or combination i.e. compound load)
+#. load case ops load command line - this is generated by ops-grillage class method (add_load_case()) and updated to LoadCase class object.
+#. Load factor - all load objects within a Load case are link to one same load factor</p>
+<p>Here are a few relationships between LoadCase and other classes</p>
+<ul class="simple">
+<li><p>MovingLoad class creates a series of load case representing the movement of load objects in each load case.</p></li>
+<li><p>Load combination takes in several LoadCase class instance with varied load factors into a single analysis</p></li>
+<li><p>Analysis class handles the ops. commands required for</p></li>
+<li><p>OpsGrillage class takes in load case and updates the variable ‘load_command_list’ after distributing loads within the LoadCase class to nodes/elements of the Mesh in OpsGrillage.</p></li>
+<li><p>LoadCase class can have Load objects or CompoundLoad class object</p></li>
+</ul>
+<p>Init the LoadCase Class</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – str of load case name</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.load.LoadCase.add_load">
+<span class="sig-name descname"><span class="pre">add_load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">load_obj</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LoadCase.add_load" title="Link to this definition">#</a></dt>
+<dd><p>Add a Load or Compound load object to LoadCase</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>load_obj</strong> (<em>Loads</em><em> | </em><a class="reference internal" href="#ospgrillage.load.CompoundLoad" title="ospgrillage.load.CompoundLoad"><em>CompoundLoad</em></a>) – <code class="xref py py-class docutils literal notranslate"><span class="pre">Loads</span></code> or :class:<a href="#id19"><span class="problematic" id="id20">`</span></a>~ospgrillage.load.CompoundLoad`object</p></li>
+<li><p><strong>kwargs</strong> – keyword arguments</p></li>
+</ul>
+</dd>
+<dt class="field-even">Keyword<span class="colon">:</span></dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+<ul class="simple">
+<li><p>global_coord_of_load_obj (<cite>Point</cite> namedTuple): if load objects are defined in local coordinate, this parameter
+is required to set the origin of local coordinate of load groups onto the global coordinate of the grillage</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.load.LoadCase.move_load_group">
+<span class="sig-name descname"><span class="pre">move_load_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref_point</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LoadCase.move_load_group" title="Link to this definition">#</a></dt>
+<dd><p>Translate all load objects in this load case to a new position.</p>
+<p>Repositions all individual and compound loads by moving them to the specified
+reference point. Used by the MovingLoad class to incrementally move load groups
+along a defined path.</p>
+<section id="id21">
+<h3>Parameters<a class="headerlink" href="#id21" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>ref_point<span class="classifier">Point</span></dt><dd><p>Target position (x, y, z) to move the load group’s local reference coordinate.
+Loads are translated to this position.</p>
+</dd>
+</dl>
+</section>
+<section id="id22">
+<h3>Returns<a class="headerlink" href="#id22" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>None</dt><dd><p>Modifies load positions in-place for all load_groups in this LoadCase.</p>
+</dd>
+</dl>
+</section>
+<section id="id23">
+<h3>Notes<a class="headerlink" href="#id23" title="Link to this heading">#</a></h3>
+<p>This method is internal to the MovingLoad analysis workflow and should not
+be called directly by users.</p>
+</section>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ospgrillage.load.LoadModel">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">LoadModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LoadModel" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class to handle load model generator. This contains library of load models and creates load model using
+<cite>CompoundLoad</cite> class.</p>
+<p>For users wishing to contribute/add load models, do so herein by adding the load model as a function to
+this class.</p>
+<p>Init the class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gap</strong> – Gap between axle (specific to M1600)</p></li>
+<li><p><strong>kwargs</strong> – See below</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.load.LoadModel.create">
+<span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LoadModel.create" title="Link to this definition">#</a></dt>
+<dd><p>Generate a CompoundLoad object for the specified load model type.</p>
+<p>Creates a ready-to-use compound load representing a standard vehicle load model
+with proper axle spacing and weight distribution according to the specified
+standard (e.g., AS5100 M1600).</p>
+<section id="id24">
+<h3>Returns<a class="headerlink" href="#id24" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>CompoundLoad</dt><dd><p>A CompoundLoad object representing the vehicle load model with all axles,
+spacing, and load magnitudes configured according to the model_type and
+parameters set during initialization.</p>
+</dd>
+</dl>
+</section>
+<section id="raises">
+<h3>Raises<a class="headerlink" href="#raises" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>ValueError</dt><dd><p>If model_type is not recognized or not implemented.</p>
+</dd>
+</dl>
+</section>
+<section id="id25">
+<h3>Notes<a class="headerlink" href="#id25" title="Link to this heading">#</a></h3>
+<p>Currently supports “M1600” (Australian Standard AS5100).
+Additional load models can be added by implementing new create_* methods.</p>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.load.LoadModel.create_m1600_vehicle">
+<span class="sig-name descname"><span class="pre">create_m1600_vehicle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gap</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LoadModel.create_m1600_vehicle" title="Link to this definition">#</a></dt>
+<dd><p>AS5100 Australian load model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>gap</strong> – Gap between axle group</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#ospgrillage.load.CompoundLoad" title="ospgrillage.load.CompoundLoad"><code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundLoad</span></code></a> object of a M1600 vehicle in local coordinate.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ospgrillage.load.Path">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">increments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.Path" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class for defining and managing moving load paths.</p>
+<p>Represents a trajectory along which loads traverse during a moving load analysis.
+Supports linear paths between start and end points with configurable discretization.
+Provides methods to generate path points with different levels of refinement.</p>
+<p>Initialize a Path instance.</p>
+<section id="id26">
+<h3>Parameters<a class="headerlink" href="#id26" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>start_point<span class="classifier">Point</span></dt><dd><p>Starting position (x, y, z) of the path</p>
+</dd>
+<dt>end_point<span class="classifier">Point</span></dt><dd><p>Ending position (x, y, z) of the path</p>
+</dd>
+<dt>increments<span class="classifier">int, default 50</span></dt><dd><p>Number of discrete steps to divide the path into.
+Higher values give finer resolution for load positioning.</p>
+</dd>
+</dl>
+</section>
+<section id="id27">
+<h3>Notes<a class="headerlink" href="#id27" title="Link to this heading">#</a></h3>
+<p>The path is created as a straight line in 3D space from start_point to end_point.
+Each coordinate is linearly interpolated using numpy.linspace.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.load.Path.get_path_points">
+<span class="sig-name descname"><span class="pre">get_path_points</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.Path.get_path_points" title="Link to this definition">#</a></dt>
+<dd><p>Get the discretized path points for the defined path.</p>
+<p>Generates a list of [x, y, z] coordinates along the straight line path
+from start_point to end_point, using the number of increments specified
+during initialization.</p>
+<section id="id28">
+<h4>Returns<a class="headerlink" href="#id28" title="Link to this heading">#</a></h4>
+<dl class="simple">
+<dt>list of list</dt><dd><p>List of path position coordinates [[x0, y0, z0], [x1, y1, z1], …].
+Length equals the number of increments specified at initialization.</p>
+</dd>
+</dl>
+</section>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.load.Path.get_custom_path_points">
+<span class="sig-name descname"><span class="pre">get_custom_path_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_increment</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.Path.get_custom_path_points" title="Link to this definition">#</a></dt>
+<dd><p>Get path points with a custom number of increments.</p>
+<p>Generates a new set of discretized path points using a different number of
+increments than specified during Path initialization. Useful for refinement
+or coarsening of the path discretization for advanced moving load analyses.</p>
+<section id="id29">
+<h4>Parameters<a class="headerlink" href="#id29" title="Link to this heading">#</a></h4>
+<dl class="simple">
+<dt>new_increment<span class="classifier">int</span></dt><dd><p>New number of increments to discretize the path with.
+Overrides the increments value from initialization.</p>
+</dd>
+</dl>
+</section>
+<section id="id30">
+<h4>Returns<a class="headerlink" href="#id30" title="Link to this heading">#</a></h4>
+<dl class="simple">
+<dt>list of list</dt><dd><p>List of path position coordinates [[x0, y0, z0], [x1, y1, z1], …].
+Length equals new_increment.</p>
+</dd>
+</dl>
+</section>
+<section id="id31">
+<h4>Notes<a class="headerlink" href="#id31" title="Link to this heading">#</a></h4>
+<p>This method recalculates path points without modifying the Path object’s
+internal state. The original increments value remains unchanged.</p>
+</section>
+</dd></dl>
+
+</section>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ospgrillage.load.ShapeFunction">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ShapeFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_three_node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'triangle_linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">option_four_node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hermite'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.ShapeFunction" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class for shape functions.</p>
+<p>To add more shape functions:
+* add the string options get_shape_function()
+* defining the shape function as a class function which takes eta and zeta as inputs</p>
+<p>Init the ShapeFunction class. Each shape function can either be triangular or quadrilateral</p>
+<dl class="field-list simple">
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.load.ShapeFunction.get_shape_function">
+<span class="sig-name descname"><span class="pre">get_shape_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zeta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.ShapeFunction.get_shape_function" title="Link to this definition">#</a></dt>
+<dd><p>Get a shape function evaluator for the specified interpolation type.</p>
+<p>Returns a callable that computes shape function values at a given parametric
+location (eta, zeta) within an element. Supports hermite (cubic), linear, and
+triangular linear shape functions.</p>
+<section id="id32">
+<h3>Parameters<a class="headerlink" href="#id32" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>option<span class="classifier">str</span></dt><dd><p>Type of shape function. Options are:
+- ‘hermite’: 2D cubic Hermite shape functions (4-node quad)
+- ‘linear’: 2D bilinear shape functions (4-node quad)
+- ‘triangle_linear’: Linear triangular shape functions (3-node triangle)</p>
+</dd>
+<dt>eta<span class="classifier">float, default 0</span></dt><dd><p>Parametric coordinate in the first direction (range typically [-1, 1])</p>
+</dd>
+<dt>zeta<span class="classifier">float, default 0</span></dt><dd><p>Parametric coordinate in the second direction (range typically [-1, 1])</p>
+</dd>
+</dl>
+</section>
+<section id="id33">
+<h3>Returns<a class="headerlink" href="#id33" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>callable</dt><dd><p>Lambda function that evaluates the selected shape function at (eta, zeta).
+Call the returned function with no arguments to get shape function values.</p>
+</dd>
+</dl>
+</section>
+<section id="id34">
+<h3>Notes<a class="headerlink" href="#id34" title="Link to this heading">#</a></h3>
+<p>For hermite and linear options, eta and zeta range from -1 to 1 and represent
+normalized coordinates within the element.</p>
+</section>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.load.ShapeFunction.hermite_shape_function_1d">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">hermite_shape_function_1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zeta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.ShapeFunction.hermite_shape_function_1d" title="Link to this definition">#</a></dt>
+<dd><p>1D hermite shape function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>zeta</strong> (<em>float</em>) – absolute position in x direction</p></li>
+<li><p><strong>a</strong> (<em>float</em>) – absolute position in x direction</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Four terms [N1, N2, N3, N4] of hermite shape function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.load.ShapeFunction.hermite_shape_function_2d">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">hermite_shape_function_2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zeta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.ShapeFunction.hermite_shape_function_2d" title="Link to this definition">#</a></dt>
+<dd><p>Compute 2D Hermite cubic shape functions and their derivatives.</p>
+<p>Calculates Hermite shape functions for a 4-node quadrilateral element.
+Returns shape function values and derivatives needed for element-level
+load distribution in finite element analysis.</p>
+<section id="id35">
+<h3>Parameters<a class="headerlink" href="#id35" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>eta<span class="classifier">float</span></dt><dd><p>Parametric coordinate in the x-direction (range [-1, 1]).
+eta = -1 at left edge, eta = 1 at right edge.</p>
+</dd>
+<dt>zeta<span class="classifier">float</span></dt><dd><p>Parametric coordinate in the z-direction (range [-1, 1]).
+zeta = -1 at bottom edge, zeta = 1 at top edge.</p>
+</dd>
+</dl>
+</section>
+<section id="id36">
+<h3>Returns<a class="headerlink" href="#id36" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>tuple of list</dt><dd><p>Three lists:
+- Nv : Vertical shape functions [N1, N2, N3, N4] for displacement/force
+- Nmx : Shape functions [N1, N2, N3, N4] for moment about x-axis (derivative w.r.t. zeta)
+- Nmz : Shape functions [N1, N2, N3, N4] for moment about z-axis (derivative w.r.t. eta)</p>
+</dd>
+</dl>
+</section>
+<section id="id37">
+<h3>Notes<a class="headerlink" href="#id37" title="Link to this heading">#</a></h3>
+<dl>
+<dt>Node ordering (counter-clockwise from bottom-left):</dt><dd><dl>
+<dt>4 o—–o 3</dt><dd><div class="line-block">
+<div class="line"><a href="#id38"><span class="problematic" id="id39">|</span></a></div>
+<div class="line"><a href="#id40"><span class="problematic" id="id41">|</span></a></div>
+</div>
+</dd>
+</dl>
+<p>1 o—–o 2</p>
+</dd>
+</dl>
+<p>Each shape function Ni equals 1 at node i and 0 at other nodes.
+Hermite functions are cubic polynomials providing C1 continuity across elements.</p>
+</section>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.load.ShapeFunction.linear_shape_function">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">linear_shape_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zeta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.ShapeFunction.linear_shape_function" title="Link to this definition">#</a></dt>
+<dd><p>2D linear beam shape function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>zeta</strong> – absolute position in x direction</p></li>
+<li><p><strong>eta</strong> – absolute position in z direction</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Four terms [N1, N2, N3, N4] of Linear shape function</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Further validation needed - trial on different bridge models</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.load.ShapeFunction.linear_triangular">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">linear_triangular</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.ShapeFunction.linear_triangular" title="Link to this definition">#</a></dt>
+<dd><p>Compute 2D linear triangular shape functions.</p>
+<p>Calculates linear (first-order) shape functions for a 3-node triangular element.
+Uses barycentric coordinate formulation to interpolate values within the triangle.</p>
+<section id="id42">
+<h3>Parameters<a class="headerlink" href="#id42" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>x<span class="classifier">float</span></dt><dd><p>X-coordinate of the evaluation point</p>
+</dd>
+<dt>z<span class="classifier">float</span></dt><dd><p>Z-coordinate of the evaluation point</p>
+</dd>
+<dt>x1, z1<span class="classifier">float</span></dt><dd><p>X, Z coordinates of node 1</p>
+</dd>
+<dt>x2, z2<span class="classifier">float</span></dt><dd><p>X, Z coordinates of node 2</p>
+</dd>
+<dt>x3, z3<span class="classifier">float</span></dt><dd><p>X, Z coordinates of node 3</p>
+</dd>
+</dl>
+</section>
+<section id="id43">
+<h3>Returns<a class="headerlink" href="#id43" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>list</dt><dd><p>Three shape function values [N1, N2, N3] representing the interpolated
+contribution of each node. Sum(N_i) = 1.0 for points inside the triangle.</p>
+</dd>
+</dl>
+</section>
+<section id="id44">
+<h3>Notes<a class="headerlink" href="#id44" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>The linear triangular element uses the formulation:</dt><dd><p>N_i = (a_i + b_i*x + c_i*z) / (2*A)</p>
+</dd>
+</dl>
+<p>where A is the triangle area and (a_i, b_i, c_i) are computed from node coordinates.</p>
+<p>Points outside the triangle will have negative shape function values.
+The modeling plane is y = constant (XZ plane).</p>
+</section>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="generated/ospgrillage.members.create_member.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">ospgrillage.members.create_member</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="generated/ospgrillage.load.create_load_vertex.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">ospgrillage.load.create_load_vertex</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#factory-functions">Factory functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compoundload-and-loadcase-methods">CompoundLoad and LoadCase methods</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-reference">Class reference</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.NodalLoad"><code class="docutils literal notranslate"><span class="pre">NodalLoad</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.NodalLoad.get_nodal_load_call"><code class="docutils literal notranslate"><span class="pre">NodalLoad.get_nodal_load_call()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.NodalLoad.get_nodal_load_str"><code class="docutils literal notranslate"><span class="pre">NodalLoad.get_nodal_load_str()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.PointLoad"><code class="docutils literal notranslate"><span class="pre">PointLoad</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.LineLoading"><code class="docutils literal notranslate"><span class="pre">LineLoading</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.LineLoading.interpolate_udl_magnitude"><code class="docutils literal notranslate"><span class="pre">LineLoading.interpolate_udl_magnitude()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.LineLoading.get_point_given_distance"><code class="docutils literal notranslate"><span class="pre">LineLoading.get_point_given_distance()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.LineLoading.get_line_segment_given_x"><code class="docutils literal notranslate"><span class="pre">LineLoading.get_line_segment_given_x()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.LineLoading.get_line_segment_given_z"><code class="docutils literal notranslate"><span class="pre">LineLoading.get_line_segment_given_z()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.PatchLoading"><code class="docutils literal notranslate"><span class="pre">PatchLoading</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.CompoundLoad"><code class="docutils literal notranslate"><span class="pre">CompoundLoad</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.CompoundLoad.add_load"><code class="docutils literal notranslate"><span class="pre">CompoundLoad.add_load()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.CompoundLoad.set_global_coord"><code class="docutils literal notranslate"><span class="pre">CompoundLoad.set_global_coord()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.MovingLoad"><code class="docutils literal notranslate"><span class="pre">MovingLoad</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.MovingLoad.set_path"><code class="docutils literal notranslate"><span class="pre">MovingLoad.set_path()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.MovingLoad.add_load"><code class="docutils literal notranslate"><span class="pre">MovingLoad.add_load()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.MovingLoad.parse_moving_load_cases"><code class="docutils literal notranslate"><span class="pre">MovingLoad.parse_moving_load_cases()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.MovingLoad.query"><code class="docutils literal notranslate"><span class="pre">MovingLoad.query()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.LoadCase"><code class="docutils literal notranslate"><span class="pre">LoadCase</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.LoadCase.add_load"><code class="docutils literal notranslate"><span class="pre">LoadCase.add_load()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.LoadCase.move_load_group"><code class="docutils literal notranslate"><span class="pre">LoadCase.move_load_group()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.LoadModel"><code class="docutils literal notranslate"><span class="pre">LoadModel</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.LoadModel.create"><code class="docutils literal notranslate"><span class="pre">LoadModel.create()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.LoadModel.create_m1600_vehicle"><code class="docutils literal notranslate"><span class="pre">LoadModel.create_m1600_vehicle()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.Path"><code class="docutils literal notranslate"><span class="pre">Path</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.Path.get_path_points"><code class="docutils literal notranslate"><span class="pre">Path.get_path_points()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.Path.get_custom_path_points"><code class="docutils literal notranslate"><span class="pre">Path.get_custom_path_points()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.ShapeFunction"><code class="docutils literal notranslate"><span class="pre">ShapeFunction</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.ShapeFunction.get_shape_function"><code class="docutils literal notranslate"><span class="pre">ShapeFunction.get_shape_function()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.ShapeFunction.hermite_shape_function_1d"><code class="docutils literal notranslate"><span class="pre">ShapeFunction.hermite_shape_function_1d()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.ShapeFunction.hermite_shape_function_2d"><code class="docutils literal notranslate"><span class="pre">ShapeFunction.hermite_shape_function_2d()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.ShapeFunction.linear_shape_function"><code class="docutils literal notranslate"><span class="pre">ShapeFunction.linear_shape_function()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.ShapeFunction.linear_triangular"><code class="docutils literal notranslate"><span class="pre">ShapeFunction.linear_triangular()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/rst/api_load.rst">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2023, Justin Ngan, Colin Caprani.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

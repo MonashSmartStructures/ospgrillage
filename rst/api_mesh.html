@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>API reference &#8212; ospgrillage 0.4.1 documentation</title>
+    <title>Mesh &#8212; ospgrillage 0.4.1 documentation</title>
   
   
   
@@ -42,11 +42,11 @@
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'rst/APIdoc';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'rst/api_mesh';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Grillage model" href="api_grillage.html" />
-    <link rel="prev" title="Troubleshooting" href="Troubleshooting.html" />
+    <link rel="next" title="ospgrillage.mesh.create_point" href="generated/ospgrillage.mesh.create_point.html" />
+    <link rel="prev" title="ospgrillage.load.MovingLoad.add_load" href="generated/ospgrillage.load.MovingLoad.add_load.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.4.1" />
@@ -139,7 +139,7 @@
 
 
 <li class="nav-item current active">
-  <a class="nav-link nav-internal" href="#">
+  <a class="nav-link nav-internal" href="APIdoc.html">
     API reference
   </a>
 </li>
@@ -267,7 +267,7 @@
 
 
 <li class="nav-item current active">
-  <a class="nav-link nav-internal" href="#">
+  <a class="nav-link nav-internal" href="APIdoc.html">
     API reference
   </a>
 </li>
@@ -341,7 +341,7 @@
 <nav class="bd-docs-nav bd-links"
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
-  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="api_grillage.html">Grillage model</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.create_grillage.html">ospgrillage.osp_grillage.create_grillage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.create_osp_model.html">ospgrillage.osp_grillage.OspGrillage.create_osp_model</a></li>
@@ -380,7 +380,7 @@
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.add_load.html">ospgrillage.load.MovingLoad.add_load</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="api_mesh.html">Mesh</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Mesh</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.mesh.create_point.html">ospgrillage.mesh.create_point</a></li>
 </ul>
 </details></li>
@@ -430,7 +430,10 @@
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">API reference</span></li>
+    
+    <li class="breadcrumb-item"><a href="APIdoc.html" class="nav-link">API reference</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Mesh</span></li>
   </ul>
 </nav>
 </div>
@@ -447,20 +450,67 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="api-reference">
-<h1>API reference<a class="headerlink" href="#api-reference" title="Link to this heading">#</a></h1>
-<p>The <em>ospgrillage</em> API is organised by module. Each page documents the
-factory functions (<code class="docutils literal notranslate"><span class="pre">create_*</span></code>) and the underlying classes.</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="api_grillage.html">Grillage model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api_material.html">Material</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api_members.html">Members and sections</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api_load.html">Load module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api_mesh.html">Mesh</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api_postprocessing.html">Post-processing</a></li>
-</ul>
+  <section id="mesh">
+<h1>Mesh<a class="headerlink" href="#mesh" title="Link to this heading">#</a></h1>
+<section id="factory-function">
+<h2>Factory function<a class="headerlink" href="#factory-function" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.mesh.create_point.html#ospgrillage.mesh.create_point" title="ospgrillage.mesh.create_point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_point</span></code></a>(**kwargs)</p></td>
+<td><p>User interface function to create a point named tuple - this is used in defining positions such as loads for example.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
+</section>
+<section id="class-reference">
+<h2>Class reference<a class="headerlink" href="#class-reference" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="ospgrillage.mesh.Mesh">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Mesh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">long_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trans_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_dist_a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_dist_b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_trans_beam</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_long_beam</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skew_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skew_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pt1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pt2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pt3</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">element_counter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_counter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform_counter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_x_grid_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_edge_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quad_ele</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.mesh.Mesh" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class for Mesh.</p>
+<p>Positional arguments are handled by <a class="reference internal" href="api_grillage.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a> class.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>As of version 0.1.0, the default mesh is a straight mesh with either Orthogonal and Oblique grids.
+mesh module needs a new structure where the mesh class will have mesh types segregated into a base Mesh class
+and child class e.g. OrthogonalMesh(Mesh) class.</p>
+</div>
+<dl class="field-list simple">
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.mesh.Mesh.create_control_points">
+<span class="sig-name descname"><span class="pre">create_control_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.mesh.Mesh.create_control_points" title="Link to this definition">#</a></dt>
+<dd><p>Create control points object for mesh edge.</p>
+<p>Creates an EdgeControlLine object representing the control points at a mesh
+edge (start or end). This base implementation uses the standard beam-based
+grillage model technique.</p>
+<section id="parameters">
+<h3>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt><a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs<span class="classifier">dict</span></dt><dd><p>Keyword arguments passed to EdgeControlLine constructor. Typically includes
+edge_ref_point, width_z, edge_width_a, edge_width_b, edge_angle,
+num_long_beam, and model_plane_y.</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h3>Returns<a class="headerlink" href="#returns" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>EdgeControlLine</dt><dd><p>Control points object for the mesh edge.</p>
+</dd>
+</dl>
+</section>
+<section id="see-also">
+<h3>See Also<a class="headerlink" href="#see-also" title="Link to this heading">#</a></h3>
+<p>EdgeControlLine : Edge control line class.</p>
+</section>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 </section>
 
 
@@ -474,20 +524,20 @@ factory functions (<code class="docutils literal notranslate"><span class="pre">
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="Troubleshooting.html"
+       href="generated/ospgrillage.load.MovingLoad.add_load.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Troubleshooting</p>
+        <p class="prev-next-title">ospgrillage.load.MovingLoad.add_load</p>
       </div>
     </a>
     <a class="right-next"
-       href="api_grillage.html"
+       href="generated/ospgrillage.mesh.create_point.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Grillage model</p>
+        <p class="prev-next-title">ospgrillage.mesh.create_point</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -503,10 +553,29 @@ factory functions (<code class="docutils literal notranslate"><span class="pre">
 
 
   <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#factory-function">Factory function</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-reference">Class reference</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.mesh.Mesh"><code class="docutils literal notranslate"><span class="pre">Mesh</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.mesh.Mesh.create_control_points"><code class="docutils literal notranslate"><span class="pre">Mesh.create_control_points()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/rst/APIdoc.rst">
+    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/rst/api_mesh.rst">
       <i class="fa-solid fa-pencil"></i>
       
       

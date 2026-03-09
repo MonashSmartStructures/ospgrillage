@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>API reference &#8212; ospgrillage 0.4.1 documentation</title>
+    <title>Post-processing &#8212; ospgrillage 0.4.1 documentation</title>
   
   
   
@@ -42,11 +42,11 @@
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'rst/APIdoc';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'rst/api_postprocessing';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Grillage model" href="api_grillage.html" />
-    <link rel="prev" title="Troubleshooting" href="Troubleshooting.html" />
+    <link rel="next" title="ospgrillage.postprocessing.create_envelope" href="generated/ospgrillage.postprocessing.create_envelope.html" />
+    <link rel="prev" title="ospgrillage.mesh.create_point" href="generated/ospgrillage.mesh.create_point.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.4.1" />
@@ -139,7 +139,7 @@
 
 
 <li class="nav-item current active">
-  <a class="nav-link nav-internal" href="#">
+  <a class="nav-link nav-internal" href="APIdoc.html">
     API reference
   </a>
 </li>
@@ -267,7 +267,7 @@
 
 
 <li class="nav-item current active">
-  <a class="nav-link nav-internal" href="#">
+  <a class="nav-link nav-internal" href="APIdoc.html">
     API reference
   </a>
 </li>
@@ -341,7 +341,7 @@
 <nav class="bd-docs-nav bd-links"
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
-  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="api_grillage.html">Grillage model</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.create_grillage.html">ospgrillage.osp_grillage.create_grillage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.create_osp_model.html">ospgrillage.osp_grillage.OspGrillage.create_osp_model</a></li>
@@ -384,7 +384,7 @@
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.mesh.create_point.html">ospgrillage.mesh.create_point</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="api_postprocessing.html">Post-processing</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Post-processing</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.postprocessing.create_envelope.html">ospgrillage.postprocessing.create_envelope</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.postprocessing.plot_force.html">ospgrillage.postprocessing.plot_force</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.postprocessing.plot_defo.html">ospgrillage.postprocessing.plot_defo</a></li>
@@ -430,7 +430,10 @@
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">API reference</span></li>
+    
+    <li class="breadcrumb-item"><a href="APIdoc.html" class="nav-link">API reference</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Post-processing</span></li>
   </ul>
 </nav>
 </div>
@@ -447,20 +450,100 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="api-reference">
-<h1>API reference<a class="headerlink" href="#api-reference" title="Link to this heading">#</a></h1>
-<p>The <em>ospgrillage</em> API is organised by module. Each page documents the
-factory functions (<code class="docutils literal notranslate"><span class="pre">create_*</span></code>) and the underlying classes.</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="api_grillage.html">Grillage model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api_material.html">Material</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api_members.html">Members and sections</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api_load.html">Load module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api_mesh.html">Mesh</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api_postprocessing.html">Post-processing</a></li>
-</ul>
+  <section id="post-processing">
+<h1>Post-processing<a class="headerlink" href="#post-processing" title="Link to this heading">#</a></h1>
+<section id="factory-functions">
+<h2>Factory functions<a class="headerlink" href="#factory-functions" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.postprocessing.create_envelope.html#ospgrillage.postprocessing.create_envelope" title="ospgrillage.postprocessing.create_envelope"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_envelope</span></code></a>(**kwargs)</p></td>
+<td><p>Create an envelope object for post-processing result envelopes.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.postprocessing.plot_force.html#ospgrillage.postprocessing.plot_force" title="ospgrillage.postprocessing.plot_force"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_force</span></code></a>(ospgrillage_obj[, result_obj, ...])</p></td>
+<td><p>Plot a force diagram for a grillage model result for a specified component and load case.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.postprocessing.plot_defo.html#ospgrillage.postprocessing.plot_defo" title="ospgrillage.postprocessing.plot_defo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_defo</span></code></a>(ospgrillage_obj[, result_obj, ...])</p></td>
+<td><p>Plot a displacement diagram for a grillage model result for a specified component and load case.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
+</section>
+<section id="class-reference">
+<h2>Class reference<a class="headerlink" href="#class-reference" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="ospgrillage.postprocessing.Envelope">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Envelope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_effect</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.postprocessing.Envelope" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class for defining envelope of <a class="reference internal" href="api_grillage.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a>’s
+<cite>xarray</cite> of result.</p>
+<p>A <a class="reference internal" href="#ospgrillage.postprocessing.Envelope.get" title="ospgrillage.postprocessing.Envelope.get"><code class="xref py py-func docutils literal notranslate"><span class="pre">Envelope.get()</span></code></a> method is provided that returns an enveloped <cite>xarray</cite> based
+on the specified input parameters of this class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ds</strong> (<em>Xarray</em>) – Data set from
+<a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_results()</span></code></a> . note Combination</p></li>
+<li><p><strong>load_effect</strong> (<em>str</em>) – Specific load effect to envelope.</p></li>
+<li><p><strong>kwargs</strong> – See below for keyword arguments.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Keyword<span class="colon">:</span></dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+<ul class="simple">
+<li><p>array: either ‘displacement’ or ‘forces’</p></li>
+<li><p>value_mode (<cite>Bool</cite>): Flag for envelope to return raw values - default True</p></li>
+<li><dl class="simple">
+<dt>query_mode (<cite>Bool</cite>): Flag for envelope to return loadcase coordinate for</dt><dd><p>maxima - default False</p>
+</dd>
+</dl>
+</li>
+<li><p>extrema (<cite>str</cite>): either “min” or “max”</p></li>
+<li><p>elements:</p></li>
+<li><p>nodes</p></li>
+<li><p>array</p></li>
+<li><p>load_effect</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.postprocessing.Envelope.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.postprocessing.Envelope.get" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The enveloped <cite>xarray</cite> object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>xarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ospgrillage.postprocessing.PostProcessor">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">PostProcessor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grillage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.postprocessing.PostProcessor" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class to post-process the results from an of ospgrillage analysis result.</p>
+<p>As of version 0.2.0, ospgrillage compiles results using Xarray module.</p>
+<p>Init the class</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ospgrillage.postprocessing.PostProcessor.get_arbitrary_displacements">
+<span class="sig-name descname"><span class="pre">get_arbitrary_displacements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape_function_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'y'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.postprocessing.PostProcessor.get_arbitrary_displacements" title="Link to this definition">#</a></dt>
+<dd><p>Returns displacement (translation and rotational) from an arbitrary point by interpolation</p>
+<p>param point: list of coordinate. Default three elements [x,y=0,z]
+type point: list
+param component: Displacement component. Default “y”
+type component: str
+param shape_function_type: The shape function for interpolation. Default “linear”
+type shape_function_type: str</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 </section>
 
 
@@ -474,20 +557,20 @@ factory functions (<code class="docutils literal notranslate"><span class="pre">
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="Troubleshooting.html"
+       href="generated/ospgrillage.mesh.create_point.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Troubleshooting</p>
+        <p class="prev-next-title">ospgrillage.mesh.create_point</p>
       </div>
     </a>
     <a class="right-next"
-       href="api_grillage.html"
+       href="generated/ospgrillage.postprocessing.create_envelope.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Grillage model</p>
+        <p class="prev-next-title">ospgrillage.postprocessing.create_envelope</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -503,10 +586,33 @@ factory functions (<code class="docutils literal notranslate"><span class="pre">
 
 
   <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#factory-functions">Factory functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-reference">Class reference</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.postprocessing.Envelope"><code class="docutils literal notranslate"><span class="pre">Envelope</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.postprocessing.Envelope.get"><code class="docutils literal notranslate"><span class="pre">Envelope.get()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.postprocessing.PostProcessor"><code class="docutils literal notranslate"><span class="pre">PostProcessor</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.postprocessing.PostProcessor.get_arbitrary_displacements"><code class="docutils literal notranslate"><span class="pre">PostProcessor.get_arbitrary_displacements()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/rst/APIdoc.rst">
+    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/rst/api_postprocessing.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
