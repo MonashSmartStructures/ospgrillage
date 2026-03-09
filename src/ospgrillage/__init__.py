@@ -9,7 +9,7 @@ from ospgrillage.members import *
 from ospgrillage.osp_grillage import *
 from ospgrillage.postprocessing import *
 
-__version__ = "0.4.0"
+__version__ = "0.4.1"
 
 # Explicit public API — everything a user should access from `import ospgrillage`
 __all__ = [

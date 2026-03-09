@@ -8,23 +8,27 @@ the project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+---
+
+## [0.4.1] — 2026-03-09
+
 ### Added
+- 30 new tests across `test_load.py`, `test_material.py`, `test_member.py`, and the
+  new `test_ospgui.py`; overall coverage rises from 71 % to 75 %.
+- `test_ospgui.py`: new test module verifying the PyQt5-absent import guard and
+  graceful `main()` exit.
+
+### Changed
+- Minimum supported Python version raised from 3.9 to 3.10, allowing use of
+  PEP 604 `X | Y` union-type syntax throughout the codebase.
+  **Note:** Python 3.9 reached end-of-life in October 2025.
+- Sphinx documentation source converted from reStructuredText to Markdown using
+  MyST-Parser; `myst-parser` added to the docs-build dependency list.
 - `_OpsProxy` dual-mode dispatch pattern: a thin proxy around OpenSeesPy that either
   executes commands live or serialises them to a `.tcl`/`.py` script file, controlled
   by a single `py_file` flag on `create_grillage`.
 - `_OpsProxy._dispatch(call)` helper that routes pre-built `(name, args, kwargs)`
   tuples through the proxy, eliminating all `eval()` in the analysis path.
-- `NodalLoad.get_nodal_load_call()` returning a structured tuple instead of a raw
-  command string.
-- `PatchLoading` cyclic-rotation-aware vertex validation via `_is_cyclic_rotation()`
-  helper: any valid starting point of the CCW polygon is now accepted.
-- NumPy-style docstrings added to all public functions and classes across every
-  source module (`osp_grillage.py`, `load.py`, `mesh.py`, `members.py`, `utils.py`,
-  `postprocessing.py`).
-- `sphinx_autodoc_typehints` added to Sphinx extension list so type annotations are
-  rendered automatically in the HTML docs.
-
-### Changed
 - Load assignment pipeline refactored from format-string building to
   `(func_name, args, kwargs)` tuples throughout `_assign_load_to_four_node()`,
   `_distribute_load_types_to_model()`, `Analysis._time_series_command()`, and
@@ -33,8 +37,11 @@ the project adheres to [Semantic Versioning](https://semver.org/).
   instead of `eval()`; the dead format-string infrastructure in `Envelope.__init__`
   has been removed.
 - `ospgui.py` log output converted from `print()` to `logging.getLogger(__name__)`.
-- `sort_vertices` coupling with `solve_zeta_eta` is now explicitly documented in
-  a comment explaining why the `[-π, π]` arctan2 convention must be preserved.
+- NumPy-style docstrings added to all public functions and classes across every
+  source module (`osp_grillage.py`, `load.py`, `mesh.py`, `members.py`, `utils.py`,
+  `postprocessing.py`).
+- `sphinx_autodoc_typehints` added to Sphinx extension list so type annotations are
+  rendered automatically in the HTML docs.
 
 ### Removed
 - Nine dead command-string attributes from `Analysis.__init__` that became obsolete
@@ -47,9 +54,23 @@ the project adheres to [Semantic Versioning](https://semver.org/).
   (`Analysis.rst`, `Material.rst`, `Loads.rst`, `GrillageMember.rst`, `OpsGrillage.rst`).
 
 ### Fixed
+- `Loads.get_magnitude()` crashed with `AttributeError` on `None` items in
+  `point_list`; now skips undefined load points.
+- `ospgui` crashed on import with `ModuleNotFoundError: No module named 'PyQt5'`
+  in environments without the optional GUI dependency; now exits gracefully with
+  an actionable error message.
+- `_OpsProxy` `str | None` annotation caused `TypeError` on Python ≤ 3.9 at import
+  time (resolved by the Python 3.10 minimum bump).
 - Compound `NodalLoad` bug in `_distribute_load_types_to_model()` where
   `load_str += string` was spreading individual characters into the list; now
   correctly appends a single tuple.
+- `PatchLoading` cyclic-rotation-aware vertex validation via `_is_cyclic_rotation()`
+  helper: any valid starting point of the CCW polygon is now accepted.
+- `NodalLoad.get_nodal_load_call()` returning a structured tuple instead of a raw
+  command string.
+- `stitch_slab_x_spacing` typo corrected throughout `ospgui.py` (was `stich`).
+- Docs build workflow now installs `myst-parser`; `sphinx_docs_to_gh_pages.yml`
+  modernised to use `peaceiris/actions-gh-pages@v4`.
 
 ---
 
