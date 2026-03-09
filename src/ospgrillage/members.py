@@ -166,6 +166,13 @@ class Section:
         self.parse_section_properties()
 
     def parse_section_properties(self):
+        """
+        Parse and populate missing section properties with computed defaults.
+
+        This method computes secondary properties (Ay, Az, Iy) based on primary
+        section properties (A, Iz) if not explicitly provided. These computed
+        values are required for OpenSees model commands.
+        """
         # function to parse input properties
         # mainly, this is used to define less essential properties (e.g. Ay, Az) which user may not specify
         # but is required for the model commands

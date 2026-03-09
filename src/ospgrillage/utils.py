@@ -57,6 +57,24 @@ def diff(li1, li2):
 
 
 def find_circle(x1, y1, x2, y2, x3, y3):
+    """
+    Find the center and radius of a circle passing through three points.
+
+    Parameters
+    ----------
+    x1, y1 : float
+        Coordinates of the first point.
+    x2, y2 : float
+        Coordinates of the second point.
+    x3, y3 : float
+        Coordinates of the third point.
+
+    Returns
+    -------
+    list
+        A list containing [center, radius] where center is [h, k] coordinates
+        of the circle center and radius is the circle radius.
+    """
     x12 = x1 - x2
     x13 = x1 - x3
 
@@ -111,7 +129,35 @@ def find_circle(x1, y1, x2, y2, x3, y3):
 
 def line_func(m=None, c=None, x=None, h=None, v=None, R=None):
     """
-    Line function. Returns y position given x.
+    Compute y coordinate for a line or circular arc.
+
+    For a straight line: y = m*x + c. For a circular arc (upper half):
+    y = sqrt(R^2 - (x - h)^2) + v.
+
+    Parameters
+    ----------
+    m : float, optional
+        Slope of the line (used for straight line only).
+    c : float, optional
+        Y-intercept of the line (used for straight line only).
+    x : float or list, optional
+        X coordinate(s) at which to evaluate the function.
+    h : float, optional
+        X coordinate of arc center (used for arc only).
+    v : float, optional
+        Y coordinate of arc center (used for arc only).
+    R : float, optional
+        Radius of the arc (used for arc only).
+
+    Returns
+    -------
+    float or ndarray
+        Y coordinate(s) corresponding to the input x value(s).
+
+    Raises
+    ------
+    ValueError
+        If arguments are insufficient to determine line or arc function.
     """
     curve = False
     if not all([h is None, v is None, R is None]):
@@ -134,18 +180,80 @@ def line_func(m=None, c=None, x=None, h=None, v=None, R=None):
 
 
 def inv_line_func(m, c, y):
+    """
+    Compute x coordinate on a line given y, slope, and y-intercept.
+
+    Solves x = (y - c) / m for a line y = m*x + c.
+
+    Parameters
+    ----------
+    m : float or None
+        Slope of the line.
+    c : float or None
+        Y-intercept of the line.
+    y : float
+        Y coordinate.
+
+    Returns
+    -------
+    float
+        X coordinate. Returns 0 if slope is zero, None, or intercept is None.
+    """
     x = (y - c) / m if all([m != 0, m is not None, c is not None]) else 0
     return x
 
 
 def arc_func(h, v, R, x, r=0):
-    # function to get y coordinate on an arc given the variables of the circle equation
-    # option to add radius to circle , lowercase r
+    """
+    Compute y coordinate on a circular arc (upper half).
+
+    Parameters
+    ----------
+    h : float
+        X coordinate of the arc center.
+    v : float
+        Y coordinate of the arc center.
+    R : float
+        Radius of the arc.
+    x : float or ndarray
+        X coordinate(s) at which to evaluate the arc.
+    r : float, optional
+        Additional radius offset added to R (default 0).
+
+    Returns
+    -------
+    float or ndarray
+        Y coordinate(s) on the circular arc.
+    """
     y = np.sqrt((R + r) ** 2 - (x - h) ** 2) + v
     return y
 
 
 def create_arc_points(point1, radius, length, num_inc):
+    """
+    Create points along a circular arc.
+
+    Generates evenly spaced points along an arc of given arc length and radius.
+    The arc is centered at [point1.x, -radius] with center point in the xz-plane
+    (y = 0).
+
+    Parameters
+    ----------
+    point1 : object
+        Object with .x attribute specifying the x coordinate of the arc start.
+    radius : float
+        Radius of the circular arc.
+    length : float
+        Arc length along the radius.
+    num_inc : int
+        Number of points to generate along the arc.
+
+    Returns
+    -------
+    tuple
+        Two lists: (x_curve, z_curve) containing the x and z coordinates of
+        points along the arc.
+    """
     # function to create points along arc `length` of a sector with `angle`
     start_angle = np.pi / 2  # 90 degrees
     angle = length / radius  # calculate angle of sector
@@ -166,6 +274,30 @@ def create_arc_points(point1, radius, length, num_inc):
 # -----------------------------------------------------------------------------------------------------------------------
 # -----------------------------------------------------------------------------------------------------------------------
 def select_segment_function(curve_flag, d, x, r=0, m=0, c=0):
+    """
+    Evaluate a line or arc function based on a flag.
+
+    Parameters
+    ----------
+    curve_flag : bool
+        If True, evaluate as circular arc. If False, evaluate as straight line.
+    d : list or tuple
+        For curve_flag=True: [center, radius] where center is [h, k].
+        Unused for curve_flag=False.
+    x : float or ndarray
+        X coordinate(s) at which to evaluate the function.
+    r : float, optional
+        Additional radius offset for arc (default 0).
+    m : float, optional
+        Slope for line (default 0).
+    c : float, optional
+        Y-intercept for line (default 0).
+
+    Returns
+    -------
+    float or ndarray
+        Y coordinate(s) evaluated at x.
+    """
     if curve_flag:
         y = arc_func(h=d[0][0], v=d[0][1], R=d[1], x=x, r=r)
     else:
@@ -174,6 +306,27 @@ def select_segment_function(curve_flag, d, x, r=0, m=0, c=0):
 
 
 def find_dict_key(my_dict, key):
+    """
+    Find and parse the dictionary key corresponding to a given value.
+
+    Parameters
+    ----------
+    my_dict : dict
+        Dictionary to search.
+    key : object
+        Value to search for in the dictionary.
+
+    Returns
+    -------
+    object
+        The parsed key corresponding to the given value, evaluated from its
+        string representation.
+
+    Raises
+    ------
+    ValueError
+        If the key value is not found in the dictionary.
+    """
     import ast
     import numpy as _np
     raw = list(my_dict.keys())[list(my_dict.values()).index(key)]
@@ -185,11 +338,45 @@ def find_dict_key(my_dict, key):
 
 
 def x_intcp_two_lines(m1, m2, c1, c2):
+    """
+    Find the x coordinate of intersection of two lines.
+
+    Computes the x coordinate where two lines y = m1*x + c1 and y = m2*x + c2
+    intersect.
+
+    Parameters
+    ----------
+    m1, m2 : float
+        Slopes of the first and second lines.
+    c1, c2 : float
+        Y-intercepts of the first and second lines.
+
+    Returns
+    -------
+    float
+        X coordinate of intersection.
+    """
     x = (c2 - c1) / (m1 - m2)
     return x
 
 
 def line(p1, p2):
+    """
+    Convert two points to line equation coefficients.
+
+    Computes coefficients A, B, C of the line equation Ax + By + C = 0 passing
+    through two points.
+
+    Parameters
+    ----------
+    p1, p2 : tuple or list
+        Points with coordinates (x, y).
+
+    Returns
+    -------
+    tuple
+        Coefficients (A, B, C) of the line equation Ax + By + C = 0.
+    """
     A = p1[1] - p2[1]
     B = p2[0] - p1[0]
     C = p1[0] * p2[1] - p2[0] * p1[1]
@@ -197,6 +384,19 @@ def line(p1, p2):
 
 
 def intersection(L1, L2):
+    """
+    Find the intersection point of two lines.
+
+    Parameters
+    ----------
+    L1, L2 : tuple
+        Line coefficients (A, B, C) for equations Ax + By + C = 0.
+
+    Returns
+    -------
+    tuple or False
+        (x, y) coordinates of intersection if lines are not parallel, else False.
+    """
     D = L1[0] * L2[1] - L1[1] * L2[0]
     Dx = L1[2] * L2[1] - L1[1] * L2[2]
     Dy = L1[0] * L2[2] - L1[2] * L2[0]
@@ -209,11 +409,42 @@ def intersection(L1, L2):
 
 
 def get_y_intcp(m, x, y):
+    """
+    Calculate y-intercept of a line given slope and a point.
+
+    Parameters
+    ----------
+    m : float or None
+        Slope of the line.
+    x, y : float
+        Coordinates of a point on the line.
+
+    Returns
+    -------
+    float or None
+        Y-intercept c (from y = m*x + c), or None if slope is None.
+    """
     c = y - x * m if m is not None else None
     return c
 
 
 def get_line_func(skew_angle, node_point):
+    """
+    Compute line function (slope and intercept) from skew angle and a point.
+
+    Parameters
+    ----------
+    skew_angle : float
+        Angle in degrees.
+    node_point : list or tuple
+        Coordinates of a point on the line. If length < 3, uses indices [0, 1];
+        otherwise uses [0, 2].
+
+    Returns
+    -------
+    tuple
+        (m, c) slope and y-intercept of the line y = m*x + c.
+    """
     m = 1 / np.tan(-skew_angle / 180 * np.pi)
     if len(node_point) < 3:
         c = get_y_intcp(m=m, x=node_point[0], y=node_point[1])
@@ -223,6 +454,21 @@ def get_line_func(skew_angle, node_point):
 
 
 def find_min_x_dist(const_point, ref_point):
+    """
+    Compute pairwise distances between two sets of points.
+
+    Parameters
+    ----------
+    const_point : ndarray
+        Points on a construction line.
+    ref_point : ndarray
+        Points on an arbitrary line.
+
+    Returns
+    -------
+    ndarray
+        Pairwise distance matrix between const_point and ref_point.
+    """
     # constant point is node point on construction line
     # ref_point is roving point on the arbitrary line
     d = distance.cdist(const_point, ref_point)
@@ -230,6 +476,22 @@ def find_min_x_dist(const_point, ref_point):
 
 
 def get_slope(pt1, pt2):
+    """
+    Calculate slope and angle of line between two points.
+
+    Computes slope in the xz-plane (y = 0) and the angle (phi) from horizontal.
+
+    Parameters
+    ----------
+    pt1, pt2 : array-like
+        Points in 3D with coordinates [x, y, z]. Only x and z are used.
+
+    Returns
+    -------
+    tuple
+        (m, phi) where m is slope (dz/dx) or None if vertical line, and phi is
+        the angle in radians from horizontal.
+    """
     # pt must be [x y z]
     # function claculates the slope for two points inthe 2-D plane, y= 0
     if (pt1[0] - pt2[0]) == 0:
@@ -246,6 +508,25 @@ def get_slope(pt1, pt2):
 
 
 def solve_zeta_eta(xp, zp, x1, z1, x2, z2, x3, z3, x4, z4):
+    """
+    Solve for natural coordinates (eta, zeta) from global coordinates.
+
+    Maps a global point (xp, zp) to isoparametric coordinates (eta, zeta) on a
+    quadrilateral element with corners at (x1, z1), (x2, z2), (x3, z3), (x4, z4).
+    Uses bilinear mapping and numerical root finding.
+
+    Parameters
+    ----------
+    xp, zp : float
+        Global coordinates of the point to map.
+    x1, z1, x2, z2, x3, z3, x4, z4 : float
+        Global coordinates of element corners.
+
+    Returns
+    -------
+    tuple
+        (eta, zeta) natural coordinates in range [-1, 1] for bilinear elements.
+    """
     # create function to solve for eta and zeta - dynamically for varying parameters x1-x4, z1-z4, zp,xp
 
     # mapping of natural coordinate eta{-1:1}, zeta{-1:1} to global coordinate (x,z)
@@ -283,14 +564,57 @@ def solve_zeta_eta(xp, zp, x1, z1, x2, z2, x3, z3, x4, z4):
 
 
 def get_distance(a, b):
+    """
+    Calculate Euclidean distance between two points in the xz-plane.
+
+    Parameters
+    ----------
+    a, b : object
+        Points with .x and .z attributes.
+
+    Returns
+    -------
+    float
+        Euclidean distance between the two points.
+    """
     return np.sqrt((a.x - b.x) ** 2 + (a.z - b.z) ** 2)
 
 
 def is_between(a, c, b):
+    """
+    Check if point c lies on the line segment between points a and b.
+
+    Parameters
+    ----------
+    a, b, c : object
+        Points with .x and .z attributes.
+
+    Returns
+    -------
+    bool
+        True if c is on the line segment from a to b, False otherwise.
+    """
     return get_distance(a, c) + get_distance(c, b) == get_distance(a, b)
 
 
 def calculate_area_given_vertices(p_list):
+    """
+    Calculate area of a polygon given sorted vertices.
+
+    Uses the Shoelace formula to compute the area. Vertices must be sorted
+    counter-clockwise (typically via sort_vertices function).
+
+    Parameters
+    ----------
+    p_list : list
+        List of point namedtuples (LoadPoint or Point) with .x, .z attributes,
+        sorted counter-clockwise.
+
+    Returns
+    -------
+    float
+        Area of the polygon in the xz-plane.
+    """
     # input list of namedtuple LoadPoint or Point
     # note: p_list must have been sorted in counter clockwise via sort_vertices function
     # (this is called prior to this function)
@@ -313,6 +637,24 @@ def calculate_area_given_vertices(p_list):
 
 
 def check_point_in_grid(inside_point, point_list):
+    """
+    Check if a point is inside a polygon.
+
+    Uses the sign of cross products to determine if a point is inside a polygon
+    defined by the given vertices.
+
+    Parameters
+    ----------
+    inside_point : object
+        Point with .x, .z attributes to test.
+    point_list : list
+        List of point namedtuples defining polygon vertices.
+
+    Returns
+    -------
+    bool
+        True if inside_point is inside the polygon, False otherwise.
+    """
     # ref: solution 3 https://www.eecs.umich.edu/courses/eecs380/HANDOUTS/PROJ2/InsidePoly.html
     # check counter clockwise and to the left (greater than 0)
     # put points in list
@@ -345,6 +687,23 @@ def check_point_in_grid(inside_point, point_list):
 
 
 def check_points_direction(point_list):
+    """
+    Calculate signed area to determine polygon winding order.
+
+    Computes the signed area of a polygon. Positive indicates counter-clockwise
+    ordering, negative indicates clockwise.
+
+    Parameters
+    ----------
+    point_list : list
+        List of point namedtuples with .x and .z attributes.
+
+    Returns
+    -------
+    float
+        Signed area of the polygon. Positive for counter-clockwise, negative
+        for clockwise ordering.
+    """
     # list of point tuples
     # ref http://mathworld.wolfram.com/PolygonArea.html
     signed_area = 0
@@ -374,6 +733,20 @@ def check_points_direction(point_list):
 # ----------------------------------------------------------------------------------------------------------
 # function to check intersection of line segments
 def onSegment(p, q, r):
+    """
+    Check if point q lies on segment pr (given collinear points).
+
+    Parameters
+    ----------
+    p, q, r : object
+        Points with .x and .z attributes (note: .y is mistakenly used for .z
+        in this implementation).
+
+    Returns
+    -------
+    bool
+        True if q is within the bounding box of segment pr, False otherwise.
+    """
     # point nameTuple p, q and r
     if (
         (q.x <= max(p.x, r.x))
@@ -386,6 +759,19 @@ def onSegment(p, q, r):
 
 
 def orientation(p, q, r):
+    """
+    Find the orientation of an ordered triplet of points.
+
+    Parameters
+    ----------
+    p, q, r : object
+        Points with .x and .z attributes.
+
+    Returns
+    -------
+    int
+        0 if collinear, 1 if clockwise, 2 if counter-clockwise.
+    """
     # to find the orientation of an ordered triplet (p,q,r)
     # function returns the following values:
     # 0 : Colinear points
@@ -407,8 +793,24 @@ def orientation(p, q, r):
         return 0
 
 
-# Function returns true if the line segment 'p1q1' and 'p2q2' intersect.
 def check_intersect(p1, q1, p2, q2):
+    """
+    Check if two line segments intersect.
+
+    Determines if line segments p1-q1 and p2-q2 intersect, including special
+    cases where segments are collinear.
+
+    Parameters
+    ----------
+    p1, q1, p2, q2 : object
+        Points defining two line segments, with .x and .z attributes.
+
+    Returns
+    -------
+    tuple
+        (general_intersect, colinear) where general_intersect is True if
+        segments intersect, and colinear is True if intersection is collinear.
+    """
     # ref https://www.geeksforgeeks.org/check-if-two-given-line-segments-intersect/
     general_intersect = False
     colinear = False
@@ -473,6 +875,25 @@ def find_plane_centroid(point_list):
 
 
 def sort_vertices(point_list, node_tag_list=None):
+    """
+    Sort polygon vertices counter-clockwise by angle from centroid.
+
+    Arranges points in counter-clockwise order suitable for isoparametric
+    element mapping and area calculations.
+
+    Parameters
+    ----------
+    point_list : list
+        List of point namedtuples with .x and .z attributes.
+    node_tag_list : list, optional
+        List of node tags corresponding to points (default None).
+
+    Returns
+    -------
+    tuple
+        (sorted_points, sorted_node_tag) where sorted_points are the vertices
+        in counter-clockwise order and sorted_node_tag are the corresponding tags.
+    """
     # note the node_tag_list must correspond to that of point_list, this is ensure in the higher level
     # functions which calls sort_vertices
     if node_tag_list is None:
@@ -505,6 +926,22 @@ def sort_vertices(point_list, node_tag_list=None):
 
 
 def get_patch_centroid(point_list):
+    """
+    Calculate weighted centroid of points with per-node load values.
+
+    Finds the centroid of a polygon accounting for distributed area loads at
+    each vertex (weighted centroid).
+
+    Parameters
+    ----------
+    point_list : list
+        List of point namedtuples with .x, .y, .z, and .p (load) attributes.
+
+    Returns
+    -------
+    tuple
+        (xc, yc, zc) coordinates of the weighted centroid.
+    """
     # function to find centroid on a plane (x-z) accounting for separate value of area load on each node point
     m_total = []
     mx = 0
@@ -522,8 +959,23 @@ def get_patch_centroid(point_list):
     return xc, yc, zc
 
 
-# abstracted function for assigning patch loading
 def check_dict_same_keys(d_1, d_2):
+    """
+    Merge two nested dictionaries, combining values for common keys.
+
+    For grids present in both dictionaries, combines the value lists while
+    removing duplicates.
+
+    Parameters
+    ----------
+    d_1, d_2 : dict
+        Dictionaries with grid numbers as keys and nested dicts as values.
+
+    Returns
+    -------
+    dict
+        Merged dictionary with combined values for common keys.
+    """
     merged = {**d_1, **d_2}
     # function to check if two dicts have same key
     same_key = [k in d_2 for k in d_1.keys()]

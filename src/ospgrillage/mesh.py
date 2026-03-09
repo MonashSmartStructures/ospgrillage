@@ -414,6 +414,29 @@ class Mesh:
         self.model_plane_z_groups = list(self.z_group_to_ele.keys())
 
     def create_control_points(self, **kwargs):
+        """
+        Create control points object for mesh edge.
+
+        Creates an EdgeControlLine object representing the control points at a mesh
+        edge (start or end). This base implementation uses the standard beam-based
+        grillage model technique.
+
+        Parameters
+        ----------
+        **kwargs : dict
+            Keyword arguments passed to EdgeControlLine constructor. Typically includes
+            edge_ref_point, width_z, edge_width_a, edge_width_b, edge_angle,
+            num_long_beam, and model_plane_y.
+
+        Returns
+        -------
+        EdgeControlLine
+            Control points object for the mesh edge.
+
+        See Also
+        --------
+        EdgeControlLine : Edge control line class.
+        """
         # base version creating standard node points of control points - either start or end edge -
         # standard correspond to base model technique - grillage with beam element
         return EdgeControlLine(**kwargs)
@@ -1792,6 +1815,22 @@ class EdgeControlLine:
         )
 
     def get_node_group_z(self, coordinate):
+        """
+        Get z-group index for a given coordinate.
+
+        Returns the index of the specified coordinate in the node list, representing
+        its z-group assignment.
+
+        Parameters
+        ----------
+        coordinate : float
+            The coordinate value to look up in the node list.
+
+        Returns
+        -------
+        int
+            The z-group index of the coordinate.
+        """
         # return list of zgroup
         group = self.node_list.index(coordinate)
         return group
@@ -1802,7 +1841,43 @@ class EdgeControlLine:
 
 class ShellEdgeControlLine(EdgeControlLine):
     """
-    Child class of EdgeControlLine. This class is used by ShellMesh class
+    Control points for shell mesh edges with refined mesh sizing.
+
+    Child class of EdgeControlLine that defines control points specifically for
+    shell mesh models. Includes additional mesh sizing parameters for both
+    longitudinal and transverse elements, and creates refined z-coordinate grids
+    accounting for beam widths.
+
+    Parameters
+    ----------
+    edge_ref_point : list
+        Reference point coordinates [x, y, z] for the edge.
+    width_z : float
+        Width in z-direction spanning the mesh edge.
+    edge_width_a : float
+        Width at edge point a.
+    edge_width_b : float
+        Width at edge point b.
+    edge_angle : float
+        Edge angle in degrees.
+    num_long_beam : int
+        Number of longitudinal beams.
+    model_plane_y : float
+        Y-coordinate of model plane.
+    feature : str, optional
+        Feature designation. Default is "standard".
+    **kwargs : dict
+        Additional arguments including beam_width, max_mesh_size_z,
+        and max_mesh_size_x (required).
+
+    Raises
+    ------
+    ValueError
+        If beam_width kwarg is not provided.
+
+    See Also
+    --------
+    EdgeControlLine : Parent control line class.
     """
 
     def __init__(
@@ -1927,8 +2002,27 @@ class SweepPath:
 
     def get_sweep_line_properties(self):
         """
-        Parse input to get Straight sweep line properties
+        Extract properties of the straight sweep line.
 
+        Computes the slope (m), y-intercept (c), and inclination angle (zeta) of the
+        sweep line connecting the two path points (pt1 and pt2). Uses least-squares
+        fitting on the (x, z) coordinates.
+
+        Returns
+        -------
+        tuple
+            (zeta, m, c) where:
+            - zeta : float
+                Inclination angle of the sweep line in degrees.
+            - m : float
+                Slope of the linear sweep line.
+            - c : float
+                Y-intercept of the linear sweep line.
+
+        Notes
+        -----
+        The sweep line is assumed to be straight. The x-coordinates are taken from
+        points (pt1.x, pt2.x) and z-coordinates from (pt1.z, pt2.z).
         """
         # if self.pt3 is not None:
         #     try:
@@ -1969,7 +2063,25 @@ class SweepPath:
 
     def get_line_function(self, x: float):
         """
-        Returns the y position of a linear equation given x.
+        Evaluate the sweep line function at a given x-coordinate.
+
+        Returns the z-coordinate of the sweep line (straight or curved) at the
+        specified x-coordinate.
+
+        Parameters
+        ----------
+        x : float
+            X-coordinate where the line function is evaluated.
+
+        Returns
+        -------
+        float
+            Z-coordinate of the sweep line at the given x-coordinate.
+
+        Notes
+        -----
+        For straight lines (mesh_radius is None), uses the linear equation.
+        For curved lines (mesh_radius is defined), uses circular arc geometry.
         """
         if not self.mesh_radius:
             # straight line
@@ -1996,6 +2108,27 @@ class SweepPath:
             )
 
     def get_tangent_gradient(self, x: float):
+        """
+        Compute the tangent gradient (slope) at a point on the sweep line.
+
+        For curved sweep lines, returns the slope of the tangent line at the specified
+        x-coordinate on the circular arc. For straight lines, returns the constant slope.
+
+        Parameters
+        ----------
+        x : float
+            X-coordinate where the tangent gradient is computed.
+
+        Returns
+        -------
+        float
+            Slope of the tangent line (dy/dx) at the given x-coordinate.
+
+        Notes
+        -----
+        For curved lines, the center and radius are defined by curve_center_xz
+        and mesh_radius, and the tangent is perpendicular to the radial line.
+        """
         # get the tangent gradient at point x , where point x lies on a circle described by center self.curve_center_xz
         # and radius (self.mesh_radius).
         if self.mesh_radius:
@@ -2016,6 +2149,29 @@ class SweepPath:
         return m
 
     def get_cartesian_angle(self, x: float):
+        """
+        Compute the Cartesian angle at a point on the sweep line.
+
+        Returns the angle (in radians) of the point relative to the center of the
+        sweep line using the vertical axis as the reference (zero). For straight
+        lines, returns zero.
+
+        Parameters
+        ----------
+        x : float
+            X-coordinate where the angle is computed.
+
+        Returns
+        -------
+        float
+            Angle in radians, computed as arcsin((x - center_x) / radius).
+            Zero for straight lines.
+
+        Notes
+        -----
+        For circular arcs, the angle is measured from the vertical axis with
+        negative values to the left and positive to the right.
+        """
         # return the angle taking the vertical axis as the origin/zero ( left of axis is negative magnitude,
         # right positive). equation based on alpha, where point on the circle/arc has coordinate described as [r sin
         # alpha - circle_x_center, r cos alpha - circle_y_center] ' , note alpha angle in radians
@@ -2030,7 +2186,44 @@ class SweepPath:
 # concrete classes of Mesh
 class BeamMesh(Mesh):
     """
-    Concrete class for Mesh class. This is the default Mesh class for Beam grillage
+    Default mesh class for beam grillage models.
+
+    Concrete implementation of the Mesh class that creates a grillage mesh with
+    beam elements. Nodes of longitudinal beams are offset in the global y-direction,
+    and nodes of transverse elements are offset along their axial directions.
+
+    Parameters
+    ----------
+    long_dim : float
+        Longitudinal dimension of the grillage.
+    width : float
+        Transverse width of the grillage.
+    trans_dim : float
+        Transverse dimension.
+    edge_dist_a : float
+        Distance from edge at start point a.
+    edge_dist_b : float
+        Distance from edge at end point b.
+    num_trans_beam : int
+        Number of transverse beams.
+    num_long_beam : int
+        Number of longitudinal beams.
+    skew_1 : float
+        Skew angle at start edge (degrees).
+    skew_2 : float
+        Skew angle at end edge (degrees).
+    **kwargs : dict
+        Additional keyword arguments passed to parent Mesh class.
+
+    Notes
+    -----
+    This is the default mesh type for beam grillages. If rigid_dist_y is defined,
+    offset support nodes are created automatically.
+
+    See Also
+    --------
+    Mesh : Base mesh class.
+    BeamLinkMesh : Beam grillage with rigid links.
     """
 
     def __init__(
@@ -2046,22 +2239,6 @@ class BeamMesh(Mesh):
         skew_2,
         **kwargs,
     ):
-        """
-        Subclass for Mesh with beam. This class creates elements where:
-        - nodes of longitudinal beams are offset in global y direction
-        - nodes of transverse slab are offset in direction of element axial direction
-
-        :param long_dim:
-        :param width:
-        :param trans_dim:
-        :param edge_dist_a:
-        :param edge_dist_b:
-        :param num_trans_beam:
-        :param num_long_beam:
-        :param skew_1:
-        :param skew_2:
-
-        """
         # instantiate variables specific for current mesh subclass
 
         # super init to create mesh of grillage @ model plane = 0 using base class init
@@ -2296,6 +2473,29 @@ class ShellLinkMesh(Mesh):
     # -----------------------------------------------------------------------------------------------------------------
     # Functions which are overwritten of that from base class to for specific shell type model
     def create_control_points(self, **kwargs):
+        """
+        Create shell edge control points.
+
+        Creates a ShellEdgeControlLine object for shell mesh edges, which includes
+        refined z-coordinate grid spacing based on beam widths and maximum mesh sizes.
+
+        Parameters
+        ----------
+        **kwargs : dict
+            Keyword arguments passed to ShellEdgeControlLine constructor. Typically
+            includes edge_ref_point, width_z, edge_width_a, edge_width_b, edge_angle,
+            num_long_beam, model_plane_y, beam_width, max_mesh_size_z, and
+            max_mesh_size_x.
+
+        Returns
+        -------
+        ShellEdgeControlLine
+            Shell edge control points object with refined mesh sizing.
+
+        See Also
+        --------
+        ShellEdgeControlLine : Shell edge control line class.
+        """
         return ShellEdgeControlLine(**kwargs)
 
     # add groupings of offset beam elements
@@ -2479,7 +2679,42 @@ class ShellLinkMesh(Mesh):
 
 class BeamMeshWithSpringSupports(BeamMesh):
     """
-    Child class of BeamMesh with spring support definition
+    Beam grillage mesh with rotational spring supports.
+
+    Extends BeamMesh to include rotational spring elements at support locations.
+    Allows definition of torsional spring stiffness for individual or all
+    intermediate supports.
+
+    Parameters
+    ----------
+    long_dim : float
+        Longitudinal dimension of the grillage.
+    width : float
+        Transverse width of the grillage.
+    trans_dim : float
+        Transverse dimension.
+    edge_dist_a : float
+        Distance from edge at start point a.
+    edge_dist_b : float
+        Distance from edge at end point b.
+    num_trans_beam : int
+        Number of transverse beams.
+    num_long_beam : int
+        Number of longitudinal beams.
+    skew_1 : float
+        Skew angle at start edge (degrees).
+    skew_2 : float
+        Skew angle at end edge (degrees).
+    **kwargs : dict
+        Additional arguments including:
+        - rotational_spring_stiffness : float or list or dict
+            Spring stiffness value(s) for supports.
+        - set_spring_to_all : bool
+            If True, apply spring to all intermediate supports.
+
+    See Also
+    --------
+    BeamMesh : Parent beam mesh class.
     """
 
     def __init__(

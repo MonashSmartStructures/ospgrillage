@@ -231,7 +231,35 @@ Line = namedtuple("line", ["m", "c", "phi"])
 # ---------------------------------------------------------------------------------------------------------------
 class Loads:
     """
-    Base class for Point, Line , and Patch loads
+    Base class for Point, Line, and Patch loads.
+
+    This class provides the common interface and functionality for all load types
+    applied to grillage structures. It manages load point definitions (up to 8 points),
+    shape function options, and provides methods for load transformations such as
+    movement and factor application.
+
+    Attributes
+    ----------
+    name : str
+        Name identifier for the load
+    load_point_1 to load_point_8 : LoadPoint
+        LoadPoint namedtuples defining spatial coordinates and force magnitudes
+    shape_function : str, default 'linear'
+        Shape function type used for load interpolation
+    point_list : list
+        List of all defined load points in order
+    compound_dist_x : float
+        X-distance offset for compound load grouping (local coordinates)
+    compound_dist_z : float
+        Z-distance offset for compound load grouping (local coordinates)
+    ref_point : Point or None
+        Reference point for compound load positioning (local coordinates)
+    compound_group : int or None
+        Group number for accessing compound load groups in LoadCase
+    spec : dict
+        Load specification dictionary containing points and metadata
+    load_counter : int
+        Counter for tracking compound load instances
     """
 
     load_point_1: LoadPoint
@@ -384,7 +412,21 @@ class Loads:
 
     def apply_load_factor(self, factor=1):
         """
-        Apply load factor to each load point's p value (vertical P force)
+        Apply a load factor to all load point magnitudes.
+
+        Multiplies the vertical force component (p value) of each defined load point
+        by the given factor. Commonly used for load combination analyses and sensitivity
+        studies.
+
+        Parameters
+        ----------
+        factor : float, default 1
+            Multiplicative factor to apply to all load point magnitudes
+
+        Returns
+        -------
+        None
+            Modifies load points in-place
         """
         self.load_point_1 = (
             self.load_point_1._replace(p=factor * self.load_point_1.p)
@@ -428,7 +470,18 @@ class Loads:
         )
 
     def get_magnitude(self):
-        """return the load points defined in the Load class"""
+        """
+        Return the force magnitudes of all defined load points.
+
+        Extracts the vertical force component (p value) from each load point
+        defined in the load object.
+
+        Returns
+        -------
+        list
+            List of force magnitudes in order of load_point_1 through load_point_8,
+            with None values where load points are undefined
+        """
         magnitude = []
         for load_point in self.point_list:
             magnitude.append(load_point.p)
@@ -502,28 +555,64 @@ class NodalLoad(Loads):
 
 class PointLoad(Loads):
     """
-    Class for Point loads.
+    Class for concentrated point loads.
+
+    Represents a single concentrated force applied at a point on the grillage
+    structure. Inherits all attributes and methods from the Loads base class.
     """
 
     def __init__(self, **kwargs):
         """
+        Initialize a PointLoad instance.
 
-        :param name:
-        :param kwargs:
+        Parameters
+        ----------
+        name : str, optional
+            Name identifier for the point load
+        **kwargs
+            Arbitrary keyword arguments passed to parent Loads class,
+            including point1 and load magnitude
         """
         super().__init__(**kwargs)
 
 
 class LineLoading(Loads):
     """
-    Class for line loading.
+    Class for distributed line loads (UDL and non-uniform).
+
+    Represents a load distributed along a line on the grillage. Supports both
+    straight lines (defined by two endpoints) and curved lines (defined by three
+    points forming a circular arc). Provides interpolation methods for computing
+    load magnitudes at arbitrary points along the line.
     """
 
     def __init__(self, **kwargs):
         """
-        Init the LineLoading class.
-        :param name:
-        :param kwargs:
+        Initialize a LineLoading instance.
+
+        Parameters
+        ----------
+        name : str, optional
+            Name identifier for the line load
+        point1 : LoadPoint
+            Start point of the line load (endpoint convention)
+        point2 : LoadPoint
+            End point of the line load (endpoint convention)
+        point3 : LoadPoint, optional
+            If provided, defines a curved (circular arc) line load using point1, point2,
+            and point3 as three points on the arc. If None, load is a straight line.
+        long_beam_element_load : bool, default False
+            Flag to apply load to longitudinal beam elements
+        trans_beam_element_load : bool, default False
+            Flag to apply load to transverse beam elements
+        **kwargs
+            Additional keyword arguments passed to parent Loads class
+
+        Notes
+        -----
+        The two-endpoint convention means that for straight lines, load magnitude
+        is interpolated between point1 (start) and point2 (end) coordinates.
+        For curved lines with three points, the curve is fitted as a circular arc.
         """
         super().__init__(**kwargs)
 
@@ -560,20 +649,35 @@ class LineLoading(Loads):
         #     raise ValueError("Invalid load points for line load {}".format(self.name))
 
     def interpolate_udl_magnitude(self, point_coordinate):
-        #   """
-        #   Function to interpolate magnitude of load point between two load points in a line segment.
-        #
-        #   Example illustration: Function returns p @ [x y z]
-        #
-        #   p(loadpoint1)_____p(x=,y,z)_______ p(loadpoint2)
-        #   ||||||||||||||||||||||||||||||||||||||||||||||      Line loading
-        #   ||||||||||||||||||||||||||||||||||||||||||||||
-        # __________________________________________________________
-        #
-        #   :param point_coordinate: coordinate list [x,y,z]
-        #   :type point_coordinate: list
-        #   :return: point force (udl) magnitude at coordinate
-        #   """
+        """
+        Interpolate load magnitude at a point along the line load.
+
+        Computes the force magnitude at a specified coordinate by linearly
+        interpolating between load_point_1 and load_point_2. Uses parametric
+        equations for both straight and curved line segments.
+
+        Parameters
+        ----------
+        point_coordinate : list
+            Coordinate [x, y, z] at which to compute the load magnitude
+
+        Returns
+        -------
+        float
+            Interpolated force magnitude (p value) at the given point coordinate
+
+        Notes
+        -----
+        For straight lines, interpolation uses the parametric equation:
+        p(x) = p1 + (x - x1) / (x2 - x1) * (p2 - p1)
+        If the line is vertical (x1 == x2), z-coordinate is used instead.
+        For curved lines (point3 defined), interpolation logic is not yet implemented.
+
+        Example
+        -------
+        Line load from point1 (0, 0, 0, p=100) to point2 (10, 0, 0, p=200).
+        Magnitude at x=5 would return 150.
+        """
         # input: point_coordinate list of [x,y,z]
         pp = None
         # check if line is straight or curve
@@ -600,15 +704,33 @@ class LineLoading(Loads):
         return pp
 
     def get_point_given_distance(self, xbar, point_coordinate):
-        # """
-        # Function to return
-        # :param xbar: distance
-        # :type xbar: float
-        # :param point_coordinate: coordinates list [x,y,z]
-        # :type point_coordinate: list
-        # :return new_point: coordinate list [x,y,z] shifted by distance
-        # :type new_point: list
-        # """
+        """
+        Compute a shifted point coordinate given a distance offset perpendicular to the line.
+
+        Translates a reference point along the perpendicular direction to the line load
+        by a specified distance. Useful for computing load distribution centroids and
+        moment calculations.
+
+        Parameters
+        ----------
+        xbar : float
+            Perpendicular distance offset from the line
+        point_coordinate : list
+            Reference coordinate [x, y, z] on or near the line load
+
+        Returns
+        -------
+        list
+            Shifted coordinate [x', y', z'] after applying the perpendicular offset.
+            The y-component is unchanged (model plane assumption).
+
+        Notes
+        -----
+        Computation uses the line angle (self.angle) to decompose the offset into
+        x and z components:
+            x' = x - xbar * cos(angle)
+            z' = z - xbar * sin(angle)
+        """
         # function to return centroid of line load given reference point coordinate (point2) and xbar calculated based
         # on
         z_dis = xbar * np.sin(self.angle)
@@ -622,12 +744,30 @@ class LineLoading(Loads):
         return new_point
 
     def get_line_segment_given_x(self, x):
-        # """
-        # Function to return straight line equation for line segment (in OpsGrillage case, segment bounded by grid) given x point
-        # :param x: value of x input for line equation
-        # :type x: float
-        # :return: solution of line equation (i.e. y = mx + c)
-        # """
+        """
+        Compute the z-coordinate on the line for a given x-coordinate.
+
+        Evaluates the line equation z = mx + c at a specified x-value,
+        provided x falls within the bounds of the line segment endpoints.
+
+        Parameters
+        ----------
+        x : float
+            X-coordinate at which to compute the corresponding z-coordinate
+
+        Returns
+        -------
+        float or None
+            The z-coordinate (z = mx + c) on the line at the given x-value.
+            Returns None if x is outside the line segment bounds or if the
+            line is vertical (m is None).
+
+        Notes
+        -----
+        Valid only for x values between load_point_1.x and line_end_point.x
+        (in either direction).
+        For vertical lines (infinite slope), this method returns None.
+        """
         if self.line_equation.m is None:  # if vertical line
             pass
         else:
@@ -638,6 +778,30 @@ class LineLoading(Loads):
                 return line_func(self.line_equation.m, self.line_equation.c, x)
 
     def get_line_segment_given_z(self, z):
+        """
+        Compute the x-coordinate on the line for a given z-coordinate.
+
+        Evaluates the inverse line equation x = (z - c) / m at a specified z-value,
+        provided z falls within the bounds of the line segment endpoints.
+        Handles vertical lines (infinite slope) as a special case.
+
+        Parameters
+        ----------
+        z : float
+            Z-coordinate at which to compute the corresponding x-coordinate
+
+        Returns
+        -------
+        float or None
+            The x-coordinate on the line at the given z-value.
+            For vertical lines, returns the constant x-value (load_point_1.x).
+            Returns None if z is outside the line segment bounds.
+
+        Notes
+        -----
+        Valid only for z values between load_point_1.z and line_end_point.z
+        (in either direction).
+        """
         if self.line_equation.m is None:  # if vertical line
             if (
                 self.load_point_1.z <= z <= self.line_end_point.z
@@ -960,7 +1124,29 @@ class LoadCase:
     # function for if load groups are to change its ref position due to movement / traversing loads
     # warning : this function is only to be handled by MovingLoad class
     def move_load_group(self, ref_point: Point):
-        """Set the position of the load/Compound load's local reference coordinate to the input ref_point"""
+        """
+        Translate all load objects in this load case to a new position.
+
+        Repositions all individual and compound loads by moving them to the specified
+        reference point. Used by the MovingLoad class to incrementally move load groups
+        along a defined path.
+
+        Parameters
+        ----------
+        ref_point : Point
+            Target position (x, y, z) to move the load group's local reference coordinate.
+            Loads are translated to this position.
+
+        Returns
+        -------
+        None
+            Modifies load positions in-place for all load_groups in this LoadCase.
+
+        Notes
+        -----
+        This method is internal to the MovingLoad analysis workflow and should not
+        be called directly by users.
+        """
         self.position = ref_point
         for load_dict in self.load_groups:
             load_obj = load_dict.get("load")
@@ -1058,6 +1244,27 @@ class MovingLoad:
 
     # function to create incremental load cases for each step of the moving loads. Function handled by OspGrillage
     def parse_moving_load_cases(self):
+        """
+        Generate individual LoadCase objects for each position along the moving load path.
+
+        Processes all load-path pairs added to this MovingLoad object and creates
+        a series of LoadCase instances, one for each increment in the path(s).
+        Static loads (with empty paths) are identified and added to all incremental
+        load cases. Moving loads are repositioned at each path increment.
+
+        Returns
+        -------
+        None
+            Populates self.moving_load_case list with LoadCase objects corresponding
+            to each path increment.
+
+        Notes
+        -----
+        This method is called internally during the analysis setup and creates all
+        the incremental load cases necessary for a moving load analysis. The load cases
+        are accessible via self.moving_load_case attribute.
+        Static loads (loads without a path) are included in every incremental load case.
+        """
         # loop through all load-path pairs and identify static loads
         for load_pair_dict in self.load_case_dict_list:
             if not load_pair_dict["path"]:  # empty path, load is static
@@ -1162,7 +1369,11 @@ class MovingLoad:
 
 class Path:
     """
-    Class for moving load path for MovingLoad.
+    Class for defining and managing moving load paths.
+
+    Represents a trajectory along which loads traverse during a moving load analysis.
+    Supports linear paths between start and end points with configurable discretization.
+    Provides methods to generate path points with different levels of refinement.
     """
 
     def __init__(
@@ -1171,7 +1382,24 @@ class Path:
         end_point: Point,
         increments: int = 50,
     ):
-        """Init the Path class"""
+        """
+        Initialize a Path instance.
+
+        Parameters
+        ----------
+        start_point : Point
+            Starting position (x, y, z) of the path
+        end_point : Point
+            Ending position (x, y, z) of the path
+        increments : int, default 50
+            Number of discrete steps to divide the path into.
+            Higher values give finer resolution for load positioning.
+
+        Notes
+        -----
+        The path is created as a straight line in 3D space from start_point to end_point.
+        Each coordinate is linearly interpolated using numpy.linspace.
+        """
         self.start_point = start_point
         self.end_point = end_point
         # here create a straight path
@@ -1181,7 +1409,19 @@ class Path:
         self.path_points_list = []
 
     def get_path_points(self) -> list:
-        """Return a list of path points"""
+        """
+        Get the discretized path points for the defined path.
+
+        Generates a list of [x, y, z] coordinates along the straight line path
+        from start_point to end_point, using the number of increments specified
+        during initialization.
+
+        Returns
+        -------
+        list of list
+            List of path position coordinates [[x0, y0, z0], [x1, y1, z1], ...].
+            Length equals the number of increments specified at initialization.
+        """
         self.path_points_list = [
             [x, y, z]
             for (x, y, z) in zip(
@@ -1191,6 +1431,30 @@ class Path:
         return self.path_points_list
 
     def get_custom_path_points(self, new_increment):
+        """
+        Get path points with a custom number of increments.
+
+        Generates a new set of discretized path points using a different number of
+        increments than specified during Path initialization. Useful for refinement
+        or coarsening of the path discretization for advanced moving load analyses.
+
+        Parameters
+        ----------
+        new_increment : int
+            New number of increments to discretize the path with.
+            Overrides the increments value from initialization.
+
+        Returns
+        -------
+        list of list
+            List of path position coordinates [[x0, y0, z0], [x1, y1, z1], ...].
+            Length equals new_increment.
+
+        Notes
+        -----
+        This method recalculates path points without modifying the Path object's
+        internal state. The original increments value remains unchanged.
+        """
         path_points_x = np.linspace(self.start_point.x, self.end_point.x, new_increment)
         path_points_y = np.linspace(self.start_point.x, self.end_point.x, new_increment)
         path_points_z = np.linspace(self.start_point.x, self.end_point.x, new_increment)
@@ -1242,6 +1506,30 @@ class LoadModel:
             self.x_offset = 0
 
     def create(self):
+        """
+        Generate a CompoundLoad object for the specified load model type.
+
+        Creates a ready-to-use compound load representing a standard vehicle load model
+        with proper axle spacing and weight distribution according to the specified
+        standard (e.g., AS5100 M1600).
+
+        Returns
+        -------
+        CompoundLoad
+            A CompoundLoad object representing the vehicle load model with all axles,
+            spacing, and load magnitudes configured according to the model_type and
+            parameters set during initialization.
+
+        Raises
+        ------
+        ValueError
+            If model_type is not recognized or not implemented.
+
+        Notes
+        -----
+        Currently supports "M1600" (Australian Standard AS5100).
+        Additional load models can be added by implementing new create_* methods.
+        """
         if self.model_type == "M1600":
             return self.create_m1600_vehicle(self.gap)
 
@@ -1314,7 +1602,36 @@ class ShapeFunction:
         self.option_four_node = option_four_node
 
     def get_shape_function(self, option: str, eta: float = 0, zeta: float = 0):
-        """Returns the shape function calculated outputs"""
+        """
+        Get a shape function evaluator for the specified interpolation type.
+
+        Returns a callable that computes shape function values at a given parametric
+        location (eta, zeta) within an element. Supports hermite (cubic), linear, and
+        triangular linear shape functions.
+
+        Parameters
+        ----------
+        option : str
+            Type of shape function. Options are:
+            - 'hermite': 2D cubic Hermite shape functions (4-node quad)
+            - 'linear': 2D bilinear shape functions (4-node quad)
+            - 'triangle_linear': Linear triangular shape functions (3-node triangle)
+        eta : float, default 0
+            Parametric coordinate in the first direction (range typically [-1, 1])
+        zeta : float, default 0
+            Parametric coordinate in the second direction (range typically [-1, 1])
+
+        Returns
+        -------
+        callable
+            Lambda function that evaluates the selected shape function at (eta, zeta).
+            Call the returned function with no arguments to get shape function values.
+
+        Notes
+        -----
+        For hermite and linear options, eta and zeta range from -1 to 1 and represent
+        normalized coordinates within the element.
+        """
         if option == "hermite":
             return lambda: self.hermite_shape_function_2d(eta, zeta)
         elif option == "linear":
@@ -1345,7 +1662,39 @@ class ShapeFunction:
     @staticmethod
     def hermite_shape_function_2d(eta: float, zeta: float):
         """
-        2D Hermite shape function
+        Compute 2D Hermite cubic shape functions and their derivatives.
+
+        Calculates Hermite shape functions for a 4-node quadrilateral element.
+        Returns shape function values and derivatives needed for element-level
+        load distribution in finite element analysis.
+
+        Parameters
+        ----------
+        eta : float
+            Parametric coordinate in the x-direction (range [-1, 1]).
+            eta = -1 at left edge, eta = 1 at right edge.
+        zeta : float
+            Parametric coordinate in the z-direction (range [-1, 1]).
+            zeta = -1 at bottom edge, zeta = 1 at top edge.
+
+        Returns
+        -------
+        tuple of list
+            Three lists:
+            - Nv : Vertical shape functions [N1, N2, N3, N4] for displacement/force
+            - Nmx : Shape functions [N1, N2, N3, N4] for moment about x-axis (derivative w.r.t. zeta)
+            - Nmz : Shape functions [N1, N2, N3, N4] for moment about z-axis (derivative w.r.t. eta)
+
+        Notes
+        -----
+        Node ordering (counter-clockwise from bottom-left):
+            4 o-----o 3
+              |     |
+              |     |
+            1 o-----o 2
+
+        Each shape function Ni equals 1 at node i and 0 at other nodes.
+        Hermite functions are cubic polynomials providing C1 continuity across elements.
         """
         # nodes are ordered counter clockwise such that node 1 (n1), is left bottom of relative grid
         # 4 o - - - o 3
@@ -1385,7 +1734,38 @@ class ShapeFunction:
     @staticmethod
     def linear_triangular(x, z, x1, z1, x2, z2, x3, z3):
         """
-        2D linear triangular shape function
+        Compute 2D linear triangular shape functions.
+
+        Calculates linear (first-order) shape functions for a 3-node triangular element.
+        Uses barycentric coordinate formulation to interpolate values within the triangle.
+
+        Parameters
+        ----------
+        x : float
+            X-coordinate of the evaluation point
+        z : float
+            Z-coordinate of the evaluation point
+        x1, z1 : float
+            X, Z coordinates of node 1
+        x2, z2 : float
+            X, Z coordinates of node 2
+        x3, z3 : float
+            X, Z coordinates of node 3
+
+        Returns
+        -------
+        list
+            Three shape function values [N1, N2, N3] representing the interpolated
+            contribution of each node. Sum(N_i) = 1.0 for points inside the triangle.
+
+        Notes
+        -----
+        The linear triangular element uses the formulation:
+            N_i = (a_i + b_i*x + c_i*z) / (2*A)
+        where A is the triangle area and (a_i, b_i, c_i) are computed from node coordinates.
+
+        Points outside the triangle will have negative shape function values.
+        The modeling plane is y = constant (XZ plane).
         """
         # modelling plane = y plane
         ae = 0.5 * ((x2 * z3 - x3 * z2) + (z2 - z3) * x1 + (x3 - x2) * z1)

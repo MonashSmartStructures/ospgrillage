@@ -204,8 +204,26 @@ class GrillageElement:
 
 class OspGrillage:
     """
-    Base class of grillage model.
+    Base class representing an OpenSees grillage structural model.
 
+    Manages the creation, configuration, and analysis of a grillage model
+    including mesh generation, member assignment, load cases, and result
+    extraction. Provides interface to OpenSees for static and transient analysis.
+
+    Attributes
+    ----------
+    mesh_type : str
+        Type of mesh - "Ortho" for orthogonal or "Oblique" for oblique mesh.
+    model_name : str
+        Name identifier for the grillage model.
+    long_dim : float
+        Longitudinal span length (x-axis direction).
+    width : float
+        Transverse width of the grillage (z-axis direction).
+    num_long_grid : int
+        Number of longitudinal member grid lines.
+    num_trans_grid : int
+        Number of transverse member grid lines.
     """
 
     def __init__(
@@ -977,7 +995,24 @@ class OspGrillage:
         self, rotational_spring_stiffness: float, edge_num: int = 0, spring_direction=6
     ):
         """
-        Sets a spring support value of rotational_spring_stiffness to all nodes of edge number.
+        Apply a rotational spring support to all nodes on a specified mesh edge.
+
+        Creates zeroLength spring elements connecting each node on the specified
+        edge to a fixed support with the given rotational stiffness.
+
+        Parameters
+        ----------
+        rotational_spring_stiffness : float
+            Rotational spring stiffness value (moment per radian).
+        edge_num : int, optional
+            Edge identifier number (default is 0).
+        spring_direction : int, optional
+            Spring direction code (default is 6 for rotational about z-axis).
+
+        Raises
+        ------
+        ValueError
+            If spring support already defined for the specified edge.
         """
         if edge_num in self.spring_edges:
             raise ValueError(
@@ -2500,7 +2535,18 @@ class OspGrillage:
 
     @staticmethod
     def store_state():
-        """Use for transient analysis to store previous state"""
+        """
+        Capture current displacements, velocities, and accelerations of all nodes.
+
+        Records the state of all nodes in the OpenSees model for later restoration.
+        Typically used in transient analysis to preserve state between analysis steps.
+
+        Returns
+        -------
+        dict
+            Dictionary with node tags as keys and dictionaries containing
+            'disp', 'vel', 'accel' entries as values.
+        """
         save = {}
         for tag in ops.getNodeTags():
             d = ops.nodeDisp(tag)
@@ -2511,7 +2557,18 @@ class OspGrillage:
 
     @staticmethod
     def set_previous_state(save):
-        """Set the disp, vel, and acc of all nodes in the last analysis state to the current analysis"""
+        """
+        Restore node displacements, velocities, and accelerations from saved state.
+
+        Applies previously saved node states (displacements, velocities, accelerations)
+        to the current OpenSees model. Used to continue analysis from a previous state.
+
+        Parameters
+        ----------
+        save : dict
+            Dictionary with node tags as keys and state dictionaries containing
+            'disp', 'vel', 'accel' entries, as returned by store_state().
+        """
         for node, val in save.items():
             d = val["d"]
             v = val["v"]
@@ -2656,6 +2713,19 @@ class Analysis:
         return call
 
     def add_load_command(self, load_str: list, load_factor):
+        """
+        Add a load case with specified load commands and scaling factor.
+
+        Creates and registers a new load case by generating time series and
+        load pattern commands with the given load factor applied.
+
+        Parameters
+        ----------
+        load_str : list
+            List of load command strings to apply.
+        load_factor : float
+            Scaling factor to apply to all loads in this case.
+        """
         # create time series for added load case
         time_series = self._time_series_command(
             load_factor
@@ -2669,7 +2739,18 @@ class Analysis:
         self.load_cases_dict_list.append(time_series_dict)  # add dict to list
 
     def evaluate_analysis(self):
-        """Execute or write all analysis commands for this load case."""
+        """
+        Execute analysis or generate commands for the configured load cases.
+
+        Applies all registered load patterns and performs static or transient
+        analysis. Extracts and stores node displacements and element forces.
+
+        Returns
+        -------
+        tuple
+            (time_series_counter, plain_counter, node_disp, ele_force, command_log)
+            containing analysis counters, displacement/force results, and command history.
+        """
         self._ops.wipeAnalysis()
 
         if self.plain_counter - 1 != 1:
@@ -2829,6 +2910,25 @@ class Results:
     def extract_analysis(
         self, analysis_obj: Analysis = None, list_of_inc_analysis: list = None
     ):
+        """
+        Parse and store analysis results from single or incremental load analyses.
+
+        Extracts node displacements, element forces, and node connectivity from
+        analysis results. Handles both single load case and moving load analysis
+        (multiple incremental load cases).
+
+        Parameters
+        ----------
+        analysis_obj : Analysis, optional
+            Single Analysis object with results to extract.
+        list_of_inc_analysis : list, optional
+            List of Analysis objects for incremental/moving load analysis.
+
+        Notes
+        -----
+        Stores results internally in basic_load_case_record, basic_load_case_record_global_forces,
+        moving_load_case_record, and moving_load_case_record_global_forces dictionaries.
+        """
         # Create/parse data based on incoming analysis object or list of analysis obj (moving load)
         if analysis_obj:
             # compile ele forces for each node
@@ -2914,6 +3014,26 @@ class Results:
             )
 
     def compile_data_array(self, local_force_option=True, main_ele_tags=None):
+        """
+        Compile analysis results into xarray DataArrays for convenient access.
+
+        Organizes node displacements, element forces, and other response quantities
+        into multidimensional xarray structures indexed by load case, node/element,
+        and response component.
+
+        Parameters
+        ----------
+        local_force_option : bool, optional
+            If True, use local element forces; if False, use global forces (default True).
+        main_ele_tags : list, optional
+            Specific element tags to include in compilation. If None, includes all elements.
+
+        Returns
+        -------
+        dict
+            Dictionary containing xarray DataArrays for node displacements, velocities,
+            accelerations, and element forces organized by load case.
+        """
         # Function called to compile analysis results into xarray
         # Coordinates of dimension
         node = list(self.mesh_obj.node_spec.keys())  # for Node
@@ -3173,7 +3293,11 @@ class Results:
 
 class OspGrillageBeam(OspGrillage):
     """
-    Concrete class for beam grillage model type.
+    Grillage model composed of beam elements.
+
+    Concrete implementation of OspGrillage using elasticBeamColumn or
+    nonlinearBeamColumn elements to represent longitudinal and transverse members.
+    Suitable for skeletal bridge models with distinct beam members.
     """
 
     def __init__(
@@ -3207,7 +3331,20 @@ class OspGrillageBeam(OspGrillage):
 
 class OspGrillageShell(OspGrillage):
     """
-    Concrete class for shell model type
+    Grillage model composed of shell elements.
+
+    Concrete implementation of OspGrillage using ShellMITC4 or ShellDKGQ elements
+    to represent the bridge deck as a continuous surface. Suitable for detailed
+    analysis of slab and composite deck systems.
+
+    Attributes
+    ----------
+    offset_beam_y_dist : float
+        Vertical offset of beam members from shell surface.
+    mesh_size_x : float
+        Maximum shell mesh element size in longitudinal direction.
+    mesh_size_z : float
+        Maximum shell mesh element size in transverse direction.
     """
 
     def __init__(
