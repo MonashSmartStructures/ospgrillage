@@ -18,7 +18,7 @@ For the example code on this page, *ospgrillage* is imported as `og`
 import ospgrillage as og
 ```
 
-## Beam Elements Only - {class}`beam_only`
+## Beam Elements Only — `beam_only`
 
 This is the traditional modelling approach that is comprised of beam elements lay out in a grid pattern, with:
 
@@ -34,7 +34,7 @@ example_bridge = og.create_grillage(bridge_name="Super T grillage", long_dim=10,
 
 More information of this model type can be found [here](https://www.steelconstruction.info/Modelling_and_analysis_of_beam_bridges).
 
-## Beam with Rigid Links - {class}`beam_link`
+## Beam with Rigid Links — `beam_link`
 
 This is a modified version of the traditional beam element model with the following features:
 
@@ -47,7 +47,7 @@ Figure 2 shows the details of the aforementioned model type. Figure 3 shows the 
 
 ![Figure 3: Beam grillage with rigid links model from SPACEGASS software.](../images/spacegass.PNG)
 
-To create this model, have {func}`~ospgrillage.osp_grillage.create_grillage` keyword for `model_type` set to **beam\_link**.
+To create this model, set `model_type="beam_link"` in {func}`~ospgrillage.osp_grillage.create_grillage`.
 
 ```python
 example_bridge = og.create_grillage(bridge_name="Modified bridge grillage", long_dim=10, width=7, skew=-12,
@@ -56,40 +56,36 @@ example_bridge = og.create_grillage(bridge_name="Modified bridge grillage", long
                                     beam_width=1, web_thick=0.02, centroid_dist_y=0.499)
 ```
 
-The joint offsets are rigid links. Information can be found in `OpenSeesPy`\'s [geomtransf](https://openseespydoc.readthedocs.io/en/latest/src/LinearTransf.html)
+The joint offsets are rigid links. Information can be found in `OpenSeesPy`'s [geomtransf](https://openseespydoc.readthedocs.io/en/latest/src/LinearTransf.html)
 
-Table 1 outlines the specific variables for beam link model.
+Table 1 outlines the specific variables for the beam link model.
 
-  ------------------------------------------------------------------------------------------------------------------------------------------------------------
-  Keyword argument                    Description
-  ----------------------------------- ------------------------------------------------------------------------------------------------------------------------
-  `beam\_width`           width of the beam/longitudinal members - this is needed for *ospgrillage* to define the offset distance in z direction
+| Keyword argument | Description |
+|---|---|
+| `beam_width` | Width of the beam/longitudinal members — used to define the offset distance in the z direction. |
+| `web_thick` | Thickness of web — used to define the offset distance in the z direction. |
+| `centroid_dist_y` | Distance in the y direction to offset longitudinal members (exterior and interior main beams). |
 
-  `web\_thick`            thickness of web - this is needed for *ospgrillage* to define the offset distance in z direction
-
-  `centroid\_dist\_y`     distance in y direction to offset longitudinal members (exterior,interior main beams)
-  ------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-  : Table: 1 Input arguments for shell hybrid model
+*Table 1: Input arguments for the beam link model.*
 
 ```{note}
 As of release 0.1.0, `OpenSeesPy` visualization module `vfo` and `opsvis` is unable to visualize the joint offsets.
 ```
 
 (shell-hybrid-model)=
-## Shell & Beam Elements - `shell_beam`
+## Shell & Beam Elements — `shell_beam`
 
-This is a more refined model using two element types - shell and beam elements - with the following features:
+This is a more refined model using two element types — shell and beam elements — with the following features:
 
 -   Shell elements lay in grids to represent bridge decks.
 -   Beam elements modelled with an offset to the plane of shell elements to represent longitudinal beam sections.
--   Beam elements linked to shell elements at two corresponding locations using constraint equations - `OpenSeesPy`\'s **rigidLink** command
+-   Beam elements linked to shell elements at two corresponding locations using constraint equations — `OpenSeesPy`'s **rigidLink** command.
 
-This model has advantageous in modelling slabs using shell elements which are well-suited to represent two-dimensional slab behaviour. Figure 4 shows the details and variables of the shell beam hybrid model.
+This model has advantages in modelling slabs using shell elements which are well-suited to represent two-dimensional slab behaviour. Figure 4 shows the details and variables of the shell beam hybrid model.
 
 ![Figure 4: Shell beam hybrid model idealization](../images/shell_beam_idealization.PNG)
 
-When {func}`shell_beam` model type is selected, *ospgrillage* automatically determines the position of shell elements within the grillage plane. Users only have to define and assign the section of the shell element via {func}`~ospgrillage.member.create_section` and {func}`~ospgrillage.osp_grillage.OspGrillageShell.set_shell_member` respectively. Finally, to create this model, have {func}`~ospgrillage.osp_grillage.create_grillage` keyword for `model_type` set to **shell**. In addition, users are required to define and assign shell elements. The following example code shows the steps to create the shell model type:
+When `model_type="shell_beam"` is selected, *ospgrillage* automatically determines the position of shell elements within the grillage plane. Users only have to define and assign the section of the shell element via {func}`~ospgrillage.members.create_section` and {func}`~ospgrillage.osp_grillage.OspGrillageShell.set_shell_member` respectively. The following example code shows the steps to create the shell model type:
 
 ```python
 # create section of shell element
@@ -105,16 +101,12 @@ example_bridge = og.create_grillage(bridge_name="Shell grillage", long_dim=10, w
 example_bridge.set_shell_members(slab_shell)
 ```
 
-Table 2 outlines the specific variable for shell hybrid model.
+Table 2 outlines the specific variables for the shell hybrid model.
 
-  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  Keyword argument                      Description
-  ------------------------------------- ----------------------------------------------------------------------------------------------------------------------------------------------------
-  `max\_mesh\_size\_z`      max mesh size in z direction. *ospgrillage* automatically determines the mesh size in z direction based on this variable and spacing of link nodes
+| Keyword argument | Description |
+|---|---|
+| `max_mesh_size_z` | Max mesh size in the z direction. *ospgrillage* automatically determines the mesh size based on this value and the spacing of link nodes. |
+| `offset_beam_y_dist` | Distance between offset beams and the grillage shell plane. |
+| `beam_width` | Width between link nodes (left and right links to offset beam elements) in the global z direction. |
 
-  `offset\_beam\_y\_dist`   distance between offset beams and grillage shell plane.
-
-  `beam\_width`             this determines the width between link nodes - left and right links to offset beam elements - in global z direction
-  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-  : Table: 2 Input arguments for shell hybrid model
+*Table 2: Input arguments for the shell hybrid model.*

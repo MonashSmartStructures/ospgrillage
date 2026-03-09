@@ -162,7 +162,7 @@ def create_grillage(**kwargs):
     :type skew: int or float
     :param num_long_grid: Number of grid lines in longitudinal direction
     :type num_long_grid: int
-    :param num_trans_grid: Number of  grid lines in the transverse direction
+    :param num_trans_grid: Number of grid lines in the transverse direction.
     :type num_trans_grid: int
     :param edge_beam_dist: Distance of edge beam node lines to exterior main beam node lines
     :type edge_beam_dist: int or float
@@ -201,24 +201,17 @@ class OspGrillage:
     """
     Base class representing an OpenSees grillage structural model.
 
-    Manages the creation, configuration, and analysis of a grillage model
+    Manages the creation, configuration, and analysis of a grillage model,
     including mesh generation, member assignment, load cases, and result
-    extraction. Provides interface to OpenSees for static and transient analysis.
+    extraction. Provides an interface to OpenSees for static and transient
+    analysis.
 
-    Attributes
-    ----------
-    mesh_type : str
-        Type of mesh - "Ortho" for orthogonal or "Oblique" for oblique mesh.
-    model_name : str
-        Name identifier for the grillage model.
-    long_dim : float
-        Longitudinal span length (x-axis direction).
-    width : float
-        Transverse width of the grillage (z-axis direction).
-    num_long_grid : int
-        Number of longitudinal member grid lines.
-    num_trans_grid : int
-        Number of transverse member grid lines.
+    Users should not instantiate this class directly; use
+    :func:`~ospgrillage.osp_grillage.create_grillage` instead, which returns
+    the appropriate concrete subclass
+    (:class:`~ospgrillage.osp_grillage.OspGrillageBeam` or
+    :class:`~ospgrillage.osp_grillage.OspGrillageShell`) based on
+    ``model_type``.
     """
 
     def __init__(
@@ -247,7 +240,7 @@ class OspGrillage:
         :type skew: int or float
         :param num_long_grid: Number of grid lines in longitudinal direction
         :type num_long_grid: int
-        :param num_trans_grid: Number of  grid lines in the transverse direction -
+        :param num_trans_grid: Number of grid lines in the transverse direction.
         :type num_trans_grid: int
         :param edge_beam_dist: Distance of edge beam node lines to exterior main beam node lines
         :type edge_beam_dist: int or float

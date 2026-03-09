@@ -36,6 +36,14 @@ well-known Open System for Earthquake Engineering Simulation
 2. Export a `.py` file containing the *OpenSeesPy* commands which, on execution,
    recreates the prescribed grillage model.
 
+## Citing ospgrillage
+
+If you use *ospgrillage* in your work, please cite:
+
+> Ngan, J.W. and Caprani, C.C. (2022), "*ospgrillage*: A bridge deck grillage analysis
+> preprocessor for OpenSeesPy", *Journal of Open Source Software*, 7(77), 4404.
+> [doi.org/10.21105/joss.04404](https://doi.org/10.21105/joss.04404)
+
 ## Support
 
 For technical support please raise an issue at the
