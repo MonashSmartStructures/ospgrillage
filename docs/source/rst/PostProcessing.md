@@ -167,14 +167,11 @@ For more information on the inputs and options, see {func}`~ospgrillage.postproc
 
 ### Node
 
-::: {.automethod noindex=""}
-ospgrillage.OspGrillage.get\_nodes()
-```
+Use {func}`~ospgrillage.osp_grillage.OspGrillage.get_nodes` to retrieve node information from the model.
+
 ### Element
 
-::: {.automethod noindex=""}
-ospgrillage.OspGrillage.get\_element()
-```
+Use {func}`~ospgrillage.osp_grillage.OspGrillage.get_element` to query element properties and tags from the model.
 ## Plotting results of DataArrays
 
 ### Current limitation of `OpenSees` visualization module
