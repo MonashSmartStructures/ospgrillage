@@ -2542,8 +2542,6 @@ class Analysis:
 
     """
 
-    remove_pattern_command: str
-
     def __init__(
         self,
         analysis_name: str,
@@ -2582,18 +2580,6 @@ class Analysis:
         self.beta = beta
         self.time_increment = time_increment
 
-        # Preset dict for different analysis
-        analysis_arguments = {
-            "Static": {
-                "analyse": "ops.analyze({})\n".format(self.step),
-                "integrator": "ops.integrator('LoadControl', 1)\n",
-            },
-            "Transient": {
-                "analyse": "ops.analyze({},{})\n".format(self.step, time_increment),
-                "integrator": "ops.integrator('Newmark', {},{})\n".format(gamma, beta),
-            },
-        }
-
         # list recording load commands, time series and pattern for the input load case
         self.load_cases_dict_list = (
             []
@@ -2617,25 +2603,8 @@ class Analysis:
         self.global_ele_force_shell = (
             dict()
         )  # ditto for global ele force except only for shells
-        # preset ops analysis commands
-        self.wipe_command = "ops.wipeAnalysis()\n"  # default wipe command
-        self.numberer_command = "ops.numberer('Plain')\n"  # default numberer is Plain
-        self.system_command = "ops.system('BandGeneral')\n"  # default band general
-        self.constraint_command = 'ops.constraints("{type}")\n'.format(
-            type=self.constraint_type
-        )  # default plain
-        self.algorithm_command = "ops.algorithm('Linear')\n"  # default linear
-        self.analyze_command = analysis_arguments[analysis_type][
-            "analyse"
-        ]  # default 1 step
-        self.analysis_command = 'ops.analysis("{}")\n'.format(analysis_type)
-        self.intergrator_command = analysis_arguments[analysis_type]["integrator"]
-        self.sensitivity_integrator_command = "ops."
         self.mesh_node_counter = node_counter  # set node counter based on current Mesh
         self.mesh_ele_counter = ele_counter  # set ele counter based on current Mesh
-        self.remove_pattern_command = (
-            "ops.remove('loadPattern',{})\n"  # default remove load command
-        )
         # save deepcopy of load case object
         self.load_cases_obj = deepcopy(load_case)
         # var to store all eval command

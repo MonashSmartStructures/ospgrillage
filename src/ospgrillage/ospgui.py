@@ -1,5 +1,8 @@
 import sys
 import os
+import logging
+
+logger = logging.getLogger(__name__)
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QTabWidget, 
                             QVBoxLayout, QHBoxLayout, QFormLayout, QGroupBox,
                             QLineEdit, QDoubleSpinBox, QSpinBox, QComboBox,
@@ -835,7 +838,7 @@ class BridgeAnalysisGUI(QMainWindow):
             
         except Exception as e:
             self.statusbar.showMessage(f"Error applying changes: {(e)}", 5000)
-            print(f"Error in apply_changes: {str(e)}")
+            logger.exception("Error in apply_changes: %s", e)
             
     def collect_parameters(self):
         """Collect all parameters from input fields"""

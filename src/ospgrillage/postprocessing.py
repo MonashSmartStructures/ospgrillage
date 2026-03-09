@@ -11,7 +11,6 @@ import matplotlib.pyplot as plt
 import opsvis as opsv
 import numpy as np
 from typing import TYPE_CHECKING, Union
-from scipy.interpolate import interpn, RegularGridInterpolator
 
 # if TYPE_CHECKING:
 from ospgrillage.load import ShapeFunction
@@ -92,16 +91,6 @@ class Envelope:
             load_effect  # array load effect either displacements or forces
         )
         self.envelope_ds = None
-        self.format_string = None
-        # main command strings
-
-        self.eval_string = (
-            'self.ds.{array}.{xarray_command}(dim="Loadcase").sel({component_command})'
-        )
-        self.component_string = "Component={},"
-        self.element_string = "Element={},"
-        self.load_case_string = ""
-        self.component_command = ""  # instantiate command string
         # default xarray function name
         self.xarray_command = {
             "query": ["idxmax", "idxmin"],
@@ -145,32 +134,10 @@ class Envelope:
                 self.extrema_index
             ]
 
-        # convert to lists
-        if not isinstance(self.elements, list):
-            self.elements = [self.elements]
-        if not isinstance(self.component, list):
-            self.component = [self.component]
-
-        # check if empty
-        if None not in self.elements:
-            self.element_string.format(self.elements)
-        if None not in self.component:
-            self.component_string.format(self.component)
-
-        # check the combinations of inputs for query
-        if not ("{" in self.element_string and "{" in self.component_string):
-            self.component_command = self.component_string + self.element_string
-        elif "{" in self.element_string and "{" not in self.component_string:
-            self.component_command = self.component_string
-        elif not ("{" in self.element_string and "{" in self.component_string):
-            self.component_command = self.element_string
-
-        # format xarray command to be eval()
-        self.format_string = self.eval_string.format(
-            array=self.array,
-            xarray_command=self.selected_xarray_command,
-            component_command=self.component_command,
-        )
+        # NOTE: element/component filtering via self.elements and self.component
+        # is not yet implemented — get() currently returns the full reduced array.
+        # A future enhancement should build a sel() dict from these kwargs and
+        # call .sel(**sel_kwargs) in get().
 
     def get(self):
         """
@@ -178,10 +145,8 @@ class Envelope:
         :return: The enveloped `xarray` object.
         :rtype: xarray
         """
-
-        # Restricted namespace: only self and xarray are accessible.
-        # TODO: refactor Envelope to build the DataArray query without eval().
-        return eval(self.format_string, {"self": self})
+        da = getattr(self.ds, self.array)
+        return getattr(da, self.selected_xarray_command)(dim="Loadcase")
 
 
 def plot_force(
