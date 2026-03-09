@@ -208,11 +208,11 @@ class GrillageMember:
 
     For developers wishing to expand the library of elements wrapped by GrillageMember, introduce in this class:
 
-    #. The argument input orders of new element in :func:`~ospgrillage.member.GrillageMember.get_member_prop_arguments`
-     method.
-    #. If the element requires the definition of Section in ``OpenSeesPy``, add its Section's list of input arguments
-     command generation to :func:`~ospgrillage.member.GrillageMember.get_section_arguments` and
-     :func:`~ospgrillage.member.GrillageMember.get_ops_section_command`.
+    #. The argument input orders of the new element in
+       :func:`~ospgrillage.member.GrillageMember.get_member_prop_arguments`.
+    #. If the element requires an ``OpenSeesPy`` Section definition, add its input arguments to
+       :func:`~ospgrillage.member.GrillageMember.get_section_arguments` and
+       :func:`~ospgrillage.member.GrillageMember.get_ops_section_command`.
 
     """
 

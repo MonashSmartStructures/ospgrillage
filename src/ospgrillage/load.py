@@ -192,8 +192,8 @@ def create_moving_load(**kwargs):
     """
     User interface function to create Moving Load object. Following this function, users are required to:
 
-    *. Set a common path to object via :func:`~ospgrillage.load.MovingLoad.set_path`
-    *. Add loads to object via :func:`~ospgrillage.load.MovingLoad.add_load`
+    #. Set a common path via :func:`~ospgrillage.load.MovingLoad.set_path`.
+    #. Add loads via :func:`~ospgrillage.load.MovingLoad.add_load`.
 
     :param common_path: Path object that all load groups will traverse.
     :type common_path: Path
@@ -575,13 +575,8 @@ class PointLoad(Loads):
         """
         Initialize a PointLoad instance.
 
-        Parameters
-        ----------
-        name : str, optional
-            Name identifier for the point load
-        **kwargs
-            Arbitrary keyword arguments passed to parent Loads class,
-            including point1 and load magnitude
+        :param name: Name identifier for the point load.
+        :type name: str, optional
         """
         super().__init__(**kwargs)
 
@@ -600,29 +595,19 @@ class LineLoading(Loads):
         """
         Initialize a LineLoading instance.
 
-        Parameters
-        ----------
-        name : str, optional
-            Name identifier for the line load
-        point1 : LoadPoint
-            Start point of the line load (endpoint convention)
-        point2 : LoadPoint
-            End point of the line load (endpoint convention)
-        point3 : LoadPoint, optional
-            If provided, defines a curved (circular arc) line load using point1, point2,
-            and point3 as three points on the arc. If None, load is a straight line.
-        long_beam_element_load : bool, default False
-            Flag to apply load to longitudinal beam elements
-        trans_beam_element_load : bool, default False
-            Flag to apply load to transverse beam elements
-        **kwargs
-            Additional keyword arguments passed to parent Loads class
-
-        Notes
-        -----
-        The two-endpoint convention means that for straight lines, load magnitude
-        is interpolated between point1 (start) and point2 (end) coordinates.
-        For curved lines with three points, the curve is fitted as a circular arc.
+        :param name: Name identifier for the line load.
+        :type name: str, optional
+        :param point1: Start point of the line load.
+        :type point1: LoadPoint
+        :param point2: End point of the line load.
+        :type point2: LoadPoint
+        :param point3: If provided, defines a curved (circular arc) line load through
+            point1, point2, and point3. If ``None``, the load follows a straight line.
+        :type point3: LoadPoint, optional
+        :param long_beam_element_load: Apply load to longitudinal beam elements. Defaults to ``False``.
+        :type long_beam_element_load: bool
+        :param trans_beam_element_load: Apply load to transverse beam elements. Defaults to ``False``.
+        :type trans_beam_element_load: bool
         """
         super().__init__(**kwargs)
 
@@ -734,12 +719,10 @@ class LineLoading(Loads):
             Shifted coordinate [x', y', z'] after applying the perpendicular offset.
             The y-component is unchanged (model plane assumption).
 
-        Notes
-        -----
-        Computation uses the line angle (self.angle) to decompose the offset into
-        x and z components:
-            x' = x - xbar * cos(angle)
-            z' = z - xbar * sin(angle)
+        .. note::
+
+            Computation uses the line angle ``self.angle`` to decompose the offset into
+            x and z components: ``x' = x - xbar*cos(angle)``, ``z' = z - xbar*sin(angle)``.
         """
         # function to return centroid of line load given reference point coordinate (point2) and xbar calculated based
         # on
@@ -1666,11 +1649,11 @@ class ShapeFunction:
         """
         1D hermite shape function
 
-        :param zeta: absolute position in x direction
-        :param a: absolute position in x direction
-        :returns: Four terms [N1, N2, N3, N4] of hermite shape function
-        .. note::
-
+        :param zeta: Normalised position along the element (0 to 1).
+        :type zeta: float
+        :param a: Element length.
+        :type a: float
+        :returns: Four Hermite shape function values ``[N1, N2, N3, N4]``.
         """
         N1 = 1 - 3 * zeta**2 + 2 * zeta**3
         N2 = (zeta - 2 * zeta**2 + zeta**3) * a
@@ -1704,16 +1687,17 @@ class ShapeFunction:
             - Nmx : Shape functions [N1, N2, N3, N4] for moment about x-axis (derivative w.r.t. zeta)
             - Nmz : Shape functions [N1, N2, N3, N4] for moment about z-axis (derivative w.r.t. eta)
 
-        Notes
-        -----
-        Node ordering (counter-clockwise from bottom-left):
-            4 o-----o 3
-              |     |
-              |     |
-            1 o-----o 2
+        .. note::
 
-        Each shape function Ni equals 1 at node i and 0 at other nodes.
-        Hermite functions are cubic polynomials providing C1 continuity across elements.
+            Node ordering (counter-clockwise from bottom-left)::
+
+                4 o-----o 3
+                  |     |
+                  |     |
+                1 o-----o 2
+
+            Each shape function Ni equals 1 at node i and 0 at other nodes.
+            Hermite functions are cubic polynomials providing C1 continuity across elements.
         """
         # nodes are ordered counter clockwise such that node 1 (n1), is left bottom of relative grid
         # 4 o - - - o 3
@@ -1738,11 +1722,15 @@ class ShapeFunction:
         """
         2D linear beam shape function
 
-        :param zeta: absolute position in x direction
-        :param eta: absolute position in z direction
-        :returns: Four terms [N1, N2, N3, N4] of Linear shape function
+        :param zeta: Normalised position in the x-direction.
+        :type zeta: float
+        :param eta: Normalised position in the z-direction.
+        :type eta: float
+        :returns: Four linear shape function values ``[N1, N2, N3, N4]``.
+
         .. note::
-            Further validation needed - trial on different bridge models
+
+            Further validation needed — trial on different bridge models.
         """
         N1 = 0.25 * (1 - eta) * (1 - zeta)
         N2 = 0.25 * (1 + eta) * (1 - zeta)
@@ -1777,14 +1765,13 @@ class ShapeFunction:
             Three shape function values [N1, N2, N3] representing the interpolated
             contribution of each node. Sum(N_i) = 1.0 for points inside the triangle.
 
-        Notes
-        -----
-        The linear triangular element uses the formulation:
-            N_i = (a_i + b_i*x + c_i*z) / (2*A)
-        where A is the triangle area and (a_i, b_i, c_i) are computed from node coordinates.
+        .. note::
 
-        Points outside the triangle will have negative shape function values.
-        The modeling plane is y = constant (XZ plane).
+            The linear triangular element uses the formulation
+            ``N_i = (a_i + b_i*x + c_i*z) / (2*A)``
+            where ``A`` is the triangle area and ``(a_i, b_i, c_i)`` are computed from node coordinates.
+            Points outside the triangle will have negative shape function values.
+            The modelling plane is y = constant (XZ plane).
         """
         # modelling plane = y plane
         ae = 0.5 * ((x2 * z3 - x3 * z2) + (z2 - z3) * x1 + (x3 - x2) * z1)

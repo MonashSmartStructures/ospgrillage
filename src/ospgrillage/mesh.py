@@ -421,21 +421,10 @@ class Mesh:
         edge (start or end). This base implementation uses the standard beam-based
         grillage model technique.
 
-        Parameters
-        ----------
-        **kwargs : dict
-            Keyword arguments passed to EdgeControlLine constructor. Typically includes
-            edge_ref_point, width_z, edge_width_a, edge_width_b, edge_angle,
-            num_long_beam, and model_plane_y.
-
-        Returns
-        -------
-        EdgeControlLine
-            Control points object for the mesh edge.
-
-        See Also
-        --------
-        EdgeControlLine : Edge control line class.
+        :param kwargs: Keyword arguments passed to the ``EdgeControlLine`` constructor.
+            Typically includes ``edge_ref_point``, ``width_z``, ``edge_width_a``,
+            ``edge_width_b``, ``edge_angle``, ``num_long_beam``, and ``model_plane_y``.
+        :returns: ``EdgeControlLine`` control points object for the mesh edge.
         """
         # base version creating standard node points of control points - either start or end edge -
         # standard correspond to base model technique - grillage with beam element
@@ -2479,22 +2468,11 @@ class ShellLinkMesh(Mesh):
         Creates a ShellEdgeControlLine object for shell mesh edges, which includes
         refined z-coordinate grid spacing based on beam widths and maximum mesh sizes.
 
-        Parameters
-        ----------
-        **kwargs : dict
-            Keyword arguments passed to ShellEdgeControlLine constructor. Typically
-            includes edge_ref_point, width_z, edge_width_a, edge_width_b, edge_angle,
-            num_long_beam, model_plane_y, beam_width, max_mesh_size_z, and
-            max_mesh_size_x.
-
-        Returns
-        -------
-        ShellEdgeControlLine
-            Shell edge control points object with refined mesh sizing.
-
-        See Also
-        --------
-        ShellEdgeControlLine : Shell edge control line class.
+        :param kwargs: Keyword arguments passed to the ``ShellEdgeControlLine`` constructor.
+            Typically includes ``edge_ref_point``, ``width_z``, ``edge_width_a``,
+            ``edge_width_b``, ``edge_angle``, ``num_long_beam``, ``model_plane_y``,
+            ``beam_width``, ``max_mesh_size_z``, and ``max_mesh_size_x``.
+        :returns: ``ShellEdgeControlLine`` control points object with refined mesh sizing.
         """
         return ShellEdgeControlLine(**kwargs)
 

@@ -13,5 +13,5 @@ Class reference
 ---------------
 
 .. autoclass:: ospgrillage.material.Material
-   :members:
+
    :show-inheritance:

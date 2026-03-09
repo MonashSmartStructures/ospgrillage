@@ -1,18 +1,14 @@
 # Model types available
 
-## Which model type should I use? {#decision-guide}
+## Which model type should I use?
 
 The table below summarises the three available model types and the situations each is best suited to. All three are created through {func}`~ospgrillage.osp_grillage.create_grillage`; only the `model_type` keyword (and a few type-specific keyword arguments) differ.
 
-  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  Model type                  `model_type` kwarg          Best suited for                                                                                                                               Additional inputs required
-  --------------------------- --------------------------- --------------------------------------------------------------------------------------------------------------------------------------------- -----------------------------------------------------------------------------------------------------------------------
-  **Beam only**               *(default)* `"beam_only"`   Routine bridge deck grillage analysis; fastest to set up and run; well understood by practitioners.                                           None beyond the standard arguments.
-
-  **Beam with rigid links**   `"beam_link"`               Composite sections where the neutral axes of longitudinal and transverse members are offset from the grillage plane (e.g. Super-T girders).   `beam_width`, `web_thick`, `centroid_dist_y`
-
-  **Shell & Beam**            `"shell_beam"`              Studies where two-dimensional slab behaviour is important (punching, local bending); highest fidelity but most computationally expensive.     `max_mesh_size_z`, `offset_beam_y_dist`, `link_nodes_width`; shell member must be assigned via `set_shell_members()`.
-  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Model type | `model_type` kwarg | Best suited for | Additional inputs required |
+|---|---|---|---|
+| **Beam only** | *(default)* `"beam_only"` | Routine bridge deck grillage analysis; fastest to set up and run; well understood by practitioners. | None beyond the standard arguments. |
+| **Beam with rigid links** | `"beam_link"` | Composite sections where the neutral axes of longitudinal and transverse members are offset from the grillage plane (e.g. Super-T girders). | `beam_width`, `web_thick`, `centroid_dist_y` |
+| **Shell & Beam** | `"shell_beam"` | Studies where two-dimensional slab behaviour is important (punching, local bending); highest fidelity but most computationally expensive. | `max_mesh_size_z`, `offset_beam_y_dist`, `link_nodes_width`; shell member must be assigned via `set_shell_members()`. |
 
 **Rule of thumb:** start with *Beam only* to verify boundary conditions and loading, then switch to *Beam with rigid links* or *Shell & Beam* once the global model is validated.
 
@@ -81,7 +77,7 @@ As of release 0.1.0, `OpenSeesPy` visualization module `vfo` and `opsvis` is una
 ```
 
 (shell-hybrid-model)=
-## Shell & Beam Elements - {class}`shell_beam` {#shell hybrid model}
+## Shell & Beam Elements - `shell_beam`
 
 This is a more refined model using two element types - shell and beam elements - with the following features:
 
