@@ -57,18 +57,16 @@ def create_load_vertex(**kwargs):
     a point load consist of a single load vertex while a patch load is defined using four load vertices for each of
     its corner.
 
-    :param kwargs: Keyword arg, see below.
-
-    :keyword:
-
-    * x (`float` or `int`): Value of x coordinate
-    * y (`float` or `int`): Value of y coordinate. Default is model plane y = 0
-    * z (`float` or `int`): Value of z coordinate
-    * p (`float` or `int`): Magnitude of vertical load in y direction.
-
-    :returns: namedTuple LoadPoint(x,y,z,p)
-
-    :except: ValueError if missing one or more keyword arguments.
+    :param x: x coordinate of the load vertex.
+    :type x: float or int
+    :param y: y coordinate. Defaults to model plane ``y = 0``.
+    :type y: float or int
+    :param z: z coordinate of the load vertex.
+    :type z: float or int
+    :param p: Magnitude of vertical load in the y direction.
+    :type p: float or int
+    :returns: ``LoadPoint(x, y, z, p)`` namedTuple.
+    :raises ValueError: If one or more of ``x``, ``z``, or ``p`` are missing.
 
     """
     x = kwargs.get("x", None)
@@ -85,14 +83,14 @@ def create_load_vertex(**kwargs):
 def create_point(**kwargs):
     """
     User interface function to create a Point namedTuple.
-    :param kwargs: See below
-    :keyword:
 
-    * x (`float` or `int`): Value of x coordinate
-    * y (`float` or `int`): Value of y coordinate. Default is y = 0
-    * z (`float` or `int`): Value of z coordinate
-
-    :return: Point(x,y,z) namedTuple
+    :param x: x coordinate.
+    :type x: float or int
+    :param y: y coordinate. Defaults to ``0``.
+    :type y: float or int
+    :param z: z coordinate.
+    :type z: float or int
+    :returns: ``Point(x, y, z)`` namedTuple.
     """
     x = kwargs.get("x", None)
     y = kwargs.get("y", 0)
@@ -115,10 +113,9 @@ def create_load_case(**kwargs):
 
     Use :func:`~ospgrillage.load.LoadCase.add_load` to populate the load case.
 
-    :keyword:
-    * name(`str`): Name string of Load case object
-
-    :returns: :class:`~ospgrillage.load.LoadCase` object
+    :param name: Name string for the load case.
+    :type name: str
+    :returns: :class:`~ospgrillage.load.LoadCase` object.
     """
     return LoadCase(**kwargs)
 
@@ -138,15 +135,19 @@ def create_load(**kwargs):
     """
     User interface function to create load types.
 
-    :keyword:
-
-    * type(`str`): type of load. Choose either ["point","line","patch","nodal"]
-    * point# (`LoadPoint` namedTuple): LoadPoint for load type in global coordinate. Note different load type requires a
-    different minimum LoadPoint.
-    * local_load_point_# (`LoadPoint` namedTuple): LoadPoint for load type in local coordinate. Note different load type
-    requires a different minimum LoadPoint.
-
-    :return: PointLoad, LineLoading, PatchLoading, or NodalForces
+    :param loadtype: Type of load to create. One of ``"point"``, ``"line"``, ``"patch"``, or ``"nodal"``.
+    :type loadtype: str
+    :param point1: First load point in global coordinates (required for all load types).
+    :type point1: LoadPoint namedTuple
+    :param point2: Second load point in global coordinates (required for line and patch loads).
+    :type point2: LoadPoint namedTuple, optional
+    :param point3: Third load point (patch loads only).
+    :type point3: LoadPoint namedTuple, optional
+    :param point4: Fourth load point (patch loads only).
+    :type point4: LoadPoint namedTuple, optional
+    :returns: :class:`~ospgrillage.load.PointLoad`, :class:`~ospgrillage.load.LineLoading`,
+        :class:`~ospgrillage.load.PatchLoading`, or :class:`~ospgrillage.load.NodalForces`
+        depending on ``loadtype``.
     """
     type = kwargs.get("loadtype", None)
 
@@ -194,13 +195,12 @@ def create_moving_load(**kwargs):
     *. Set a common path to object via :func:`~ospgrillage.load.MovingLoad.set_path`
     *. Add loads to object via :func:`~ospgrillage.load.MovingLoad.add_load`
 
-    :return: :class:`~ospgrillage.load.MovingLoad` object
-
-    :keyword:
-
-    * **common_path**(`Path`): Path object for all load groups added to the Moving load object to traverse
-    * **global_increment**(`float` or `int`): Number of increments to discretize Path object. This keyword is only used in
-      advance usage where Moving Load contains multiple load groups each with unique path objects.
+    :param common_path: Path object that all load groups will traverse.
+    :type common_path: Path
+    :param global_increment: Number of increments for discretizing the Path object.
+        Used in advanced cases where a MovingLoad has multiple load groups each with a unique path.
+    :type global_increment: float or int, optional
+    :returns: :class:`~ospgrillage.load.MovingLoad` object.
 
     """
     return MovingLoad(**kwargs)
@@ -210,14 +210,15 @@ def create_moving_path(**kwargs):
     """
     User interface function to create Path object for moving load.
 
-    :keyword:
-
-    * start_point (`Point`): Start point of path
-    * end_point (`Point`): End point of path
-    * increments (`int`): Increment of path steps. Default is 50
-    * mid_point (`Point`): Default = None
-
-    :returns: :class:`~ospgrillage.load.Path` object
+    :param start_point: Starting point of the path.
+    :type start_point: Point
+    :param end_point: End point of the path.
+    :type end_point: Point
+    :param increments: Number of incremental steps along the path. Defaults to ``50``.
+    :type increments: int
+    :param mid_point: Optional intermediate point to define a curved path. Defaults to ``None``.
+    :type mid_point: Point, optional
+    :returns: :class:`~ospgrillage.load.Path` object.
     """
     return Path(**kwargs)
 
@@ -283,12 +284,18 @@ class Loads:
         :param Mx: Moment about x axis
         :param My: Moment about y axis
         :param Mz: Moment about z axis
-        :param kwargs: see below
-
-        :keyword:
-
-        * **point1**, **point2**, ..., **point8** : (LoadPoint namedTuple) coordinate points with force magnitude describing the load type
-        * **localpoint1**, **localpoint2**, ..., **localpoint8**: (LoadPoint namedTuple) local coordinate points with force magnitude describing the load type
+        :param point1: First load point in global coordinates.
+        :type point1: LoadPoint namedTuple, optional
+        :param point2: Second load point in global coordinates.
+        :type point2: LoadPoint namedTuple, optional
+        :param point3: Third load point in global coordinates.
+        :type point3: LoadPoint namedTuple, optional
+        :param point4: Fourth load point in global coordinates (required for patch loads).
+        :type point4: LoadPoint namedTuple, optional
+        :param localpoint1: First load point in local coordinates.
+        :type localpoint1: LoadPoint namedTuple, optional
+        :param localpoint2: Second load point in local coordinates.
+        :type localpoint2: LoadPoint namedTuple, optional
 
 
         """
@@ -1105,12 +1112,10 @@ class LoadCase:
     def add_load(self, load_obj: Union[Loads, CompoundLoad], **kwargs):
         """Add a Load or Compound load object to LoadCase
 
-        :param load_obj: :class:`~ospgrillage.load.Loads` or :class:`~ospgrillage.load.CompoundLoad`object
-        :param kwargs: keyword arguments
-        :keyword:
-
-        * global_coord_of_load_obj (`Point` namedTuple): if load objects are defined in local coordinate, this parameter
-          is required to set the origin of local coordinate of load groups onto the global coordinate of the grillage
+        :param load_obj: :class:`~ospgrillage.load.Loads` or :class:`~ospgrillage.load.CompoundLoad` object.
+        :param global_coord_of_load_obj: Required when load objects are defined in local coordinates.
+            Sets the origin of the local coordinate system onto the global coordinate of the grillage.
+        :type global_coord_of_load_obj: Point namedTuple, optional
 
         """
         load_dict = dict()
@@ -1172,14 +1177,16 @@ class MovingLoad:
     def __init__(self, name, **kwargs):
         """
 
-        :param name: Name string of moving load
-        :keyword:
-        * common_path (`Path`): Path object specifying the common path for all loads defined in moving load to traverse
-        * global_increment(`int`): Number of increments to discretize Path object.
+        :param name: Name string of moving load.
+        :type name: str
+        :param common_path: Path object specifying the common path for all loads to traverse.
+        :type common_path: Path, optional
+        :param global_increment: Number of increments for discretizing the Path object.
+        :type global_increment: int, optional
 
         .. note::
-            global_increment argument is used in advance moving load analysis, where a moving load object attributes
-            each assigned load type with a corresponding unique Path object (which can differ between different paths).
+            ``global_increment`` is used in advanced moving load analysis where a moving load object
+            assigns each load type a corresponding unique Path object (which may differ between load groups).
         """
         self.name = name
         self.load_list = []

@@ -24,18 +24,21 @@ def create_material(**kwargs):
     #. Specific arguments of ``OpenSeesPy`` material library.
 
 
-    :parameter:
+    For material library lookup, provide:
 
-    * code (`str`): name string of code according to mat_lib.json
-    * type (`str`): Either "concrete" or "steel"
-    * grade(`str`): Grade of material according to code
+    :param code: Code name string as defined in ``mat_lib.json`` (e.g. ``"AS5100"``).
+    :type code: str, optional
+    :param type: Material type — either ``"concrete"`` or ``"steel"``.
+    :type type: str, optional
+    :param grade: Material grade according to the selected code.
+    :type grade: str, optional
 
-    The following keywords are examples of general material properties:
+    For general material properties, provide:
 
-    :keyword:
-
-    * E (`float`): Elastic modulus
-    * G (`float`): Shear modulus
+    :param E: Elastic modulus.
+    :type E: float, optional
+    :param G: Shear modulus.
+    :type G: float, optional
 
     """
     return Material(**kwargs)
@@ -71,24 +74,28 @@ class Material:
         #. General material properties - such as E, and G
         #. Specific material arguments of ``OpenSeesPy``.
 
-        For (1), the following keywords are **required**:
+        For material library lookup (option 1), provide:
 
-        :keyword:
+        :param code: Code name string as defined in ``mat_lib.json``.
+        :type code: str, optional
+        :param type: Material type — either ``"concrete"`` or ``"steel"``.
+        :type type: str, optional
+        :param grade: Material grade according to the selected code.
+        :type grade: str, optional
 
-        * code (`str`): name string of code according to mat_lib.json
-        * type (`str`): Either "concrete" or "steel"
-        * grade(`str`): Grade of material according to code
+        For general material properties (option 2), provide:
 
-        For (2), the minimum required material properties are:
+        :param E: Elastic modulus.
+        :type E: float, optional
+        :param G: Shear modulus.
+        :type G: float, optional
+        :param v: Poisson's ratio.
+        :type v: float, optional
+        :param rho: Density.
+        :type rho: float, optional
 
-        :keyword:
-
-        * E (`float`): Elastic modulus
-        * G (`float`): Shear modulus
-        * v (`float`): Poisson's ratio
-        * rho (`float`): Density
-
-        For (3), refer to `OpenSeesPy <https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html>`_.
+        For OpenSeesPy-specific arguments (option 3), refer to
+        `OpenSeesPy <https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html>`_.
 
 
         """

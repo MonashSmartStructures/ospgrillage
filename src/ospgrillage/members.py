@@ -30,17 +30,19 @@ def create_section(**kwargs):
 
     The constructor of :class:`Section` takes the following ``kwargs``:
 
-    :keyword:
-
-    * A (`float`): Cross sectional area
-    * Iz (`float`): Moment of inertia about local z axis
-    * Iy (`float`): Moment of inertia about local y axis
-    * J (`float`): Torsional inertia - about local x axis
-    * Az (`float`): Cross sectional area in the local z direction
-    * Ay (`float`): Cross sectional area in the local y direction
-
-
-    :return: :class:`Section` object
+    :param A: Cross-sectional area.
+    :type A: float, optional
+    :param Iz: Second moment of area about the local z axis.
+    :type Iz: float, optional
+    :param Iy: Second moment of area about the local y axis.
+    :type Iy: float, optional
+    :param J: Torsional inertia about the local x axis.
+    :type J: float, optional
+    :param Az: Shear area in the local z direction.
+    :type Az: float, optional
+    :param Ay: Shear area in the local y direction.
+    :type Ay: float, optional
+    :returns: :class:`Section` object.
     """
     return Section(**kwargs)
 
@@ -106,17 +108,23 @@ class Section:
 
         Constructor also takes the following keyword arguments for a section.
 
-        :keyword:
-        * A (``float``): Cross sectional area
-        * Iz (``float``): Moment of inertia about local z axis
-        * Iy (``float``): Moment of inertia about local y axis
-        * J (``float``): Torsional inertia - about local x axis
-        * Az (``float``): Cross sectional area in the local z direction
-        * Ay (``float``): Cross sectional area in the local y direction
+        :param A: Cross-sectional area.
+        :type A: float, optional
+        :param Iz: Second moment of area about the local z axis.
+        :type Iz: float, optional
+        :param Iy: Second moment of area about the local y axis.
+        :type Iy: float, optional
+        :param J: Torsional inertia about the local x axis.
+        :type J: float, optional
+        :param Az: Shear area in the local z direction.
+        :type Az: float, optional
+        :param Ay: Shear area in the local y direction.
+        :type Ay: float, optional
 
         .. note::
-        Section properties are defined in local coordinate x y and z which are later transformed according to orientation
-        of the defined GrillageMember object in the grillage model.
+
+            Section properties are defined in local coordinates (x, y, z) and are later
+            transformed according to the orientation of the :class:`GrillageMember` in the grillage model.
         """
         # OpenSees py section type
         self.op_section_type = (

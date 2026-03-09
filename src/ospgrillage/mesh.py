@@ -37,13 +37,13 @@ def create_point(**kwargs):
     User interface function to create a point named tuple - this is used in defining positions such as loads for
     example.
 
-    :keyword:
-
-    * x (`float` or `int`): x coordinate
-    * y (`float` or `int`): y coordinate. Default = 0 for model plane of grillage
-    * z (`float` or `int`): z coordinate
-
-    :return: Point namedTuple
+    :param x: x coordinate.
+    :type x: float or int
+    :param y: y coordinate. Defaults to ``0`` for the model plane of the grillage.
+    :type y: float or int
+    :param z: z coordinate.
+    :type z: float or int
+    :returns: ``Point(x, y, z)`` namedTuple.
     """
     x = kwargs.get("x", None)
     y = kwargs.get("y", 0)

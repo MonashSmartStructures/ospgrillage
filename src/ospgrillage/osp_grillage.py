@@ -168,14 +168,9 @@ def create_grillage(**kwargs):
     :type edge_beam_dist: int or float
     :param mesh_type: Type of mesh either "Ortho" or "Oblique" - default "Ortho"
     :type mesh_type: string
-    :param kwargs: See below
-
-    :keyword:
-
-    * ext_to_int_dist: (Int or Float, or a List of Int or Float) distance between internal beams and
-    exterior main beams. If list is provided (usually size 2), apply each distinct distance to left and right
-         side respectively.
-
+    :param ext_to_int_dist: Distance between internal beams and exterior main beams.
+        If a list of size 2 is provided, the two values are applied to the left and right side respectively.
+    :type ext_to_int_dist: int, float, or list of int/float
 
     Depending on the ``model_type`` argument, this function returns the relevant concrete class of
     :class:`~ospgrillage.osp_grillage.OspGrillage`.
@@ -258,25 +253,29 @@ class OspGrillage:
         :type edge_beam_dist: int or float
         :param mesh_type: Type of mesh either "Ortho" for orthogonal mesh or "Oblique" for oblique mesh
         :type mesh_type: string
-        :param kwargs: See below
-
-        :keyword:
-        * beam_z_spacing: (list of int or float) Custom distance of longitudinal members (global z - direction). Note
-          this parameter supercedes num_long_grid.
-        * beam_x_spacing: (list of int or float) Custom distance of transverse members (global x - direction). Note
-          this parameter supercedes num_trans_grid.
-        * ext_to_int_dist: (Int or Float, or a List of Int or Float) distance between internal beams
-          and exterior main beams. If list is provided (usually size 2), apply each distinct distance to left and right
-          side respectively.
-        * multi_span_dist_list: (List of Int/Float) List of distance (x dir) correspond to span length of each multi span
-        * multi_span_num_points: (List of Int) Num of transverse member correspond to spans of each element in multi_span_dist_list
-          If not specified, takes int var for num_trans_beam and assigns to all spans of multi_span_dist_list
-        * continuous: (Bool) To set continuity of spans. Default True. If False, separate spans by non_cont_spacing_x
-        * stitch_slab_elements: (Bool) To set stictch elements between spans. Elements are set using `set_member()` with
-          member= "stich_elements"
-        * non_cont_spacing_x: (float) sets spacing or length of stitch elements.
-
-        :raises ValueError: If skew angle is greater than 90. If number of transverse grid line is less than 2.
+        :param beam_z_spacing: Custom spacing of longitudinal members (global z-direction).
+            Supersedes ``num_long_grid`` when provided.
+        :type beam_z_spacing: list of int or float
+        :param beam_x_spacing: Custom spacing of transverse members (global x-direction).
+            Supersedes ``num_trans_grid`` when provided.
+        :type beam_x_spacing: list of int or float
+        :param ext_to_int_dist: Distance between internal beams and exterior main beams.
+            If a list of size 2 is provided, the two values are applied to the left and right side respectively.
+        :type ext_to_int_dist: int, float, or list of int/float
+        :param multi_span_dist_list: List of span lengths (x-direction) for each span in a multi-span model.
+        :type multi_span_dist_list: list of int or float
+        :param multi_span_num_points: Number of transverse members per span. If not specified, ``num_trans_grid``
+            is applied uniformly to all spans in ``multi_span_dist_list``.
+        :type multi_span_num_points: list of int
+        :param continuous: Set continuity of spans. Default ``True``.
+            If ``False``, spans are separated by ``non_cont_spacing_x``.
+        :type continuous: bool
+        :param stitch_slab_elements: Set stitch elements between spans. Elements are assigned via
+            ``set_member()`` with ``member="stitch_elements"``.
+        :type stitch_slab_elements: bool
+        :param non_cont_spacing_x: Spacing or length of stitch elements for non-continuous spans.
+        :type non_cont_spacing_x: float
+        :raises ValueError: If skew angle is greater than 90. If number of transverse grid lines is less than 2.
 
 
         """
@@ -2017,13 +2016,15 @@ class OspGrillage:
         """
         Function to analyze defined load
 
-        :keyword:
-
-        * all (`bool`): If True, runs all load cases. If not provided, default to True.
-        * load_case ('list' or 'str'): String or list of name strings for selected load case to be analyzed.
-        * set_verbose(`bool`): If True, incremental load case report is not printed to terminal (default True)
-        * analysis_type ('str'): The type of analysis. Default is "Static".
-        :except: raise ValueError if missing arguments for either load_case=, or all=
+        :param all: If ``True``, runs all load cases. Defaults to ``True``.
+        :type all: bool
+        :param load_case: Name string or list of name strings for the load cases to analyze.
+        :type load_case: str or list of str
+        :param set_verbose: If ``True``, suppresses incremental load case progress output to terminal. Defaults to ``True``.
+        :type set_verbose: bool
+        :param analysis_type: Type of OpenSees analysis to run. Defaults to ``"Static"``.
+        :type analysis_type: str
+        :raises ValueError: If neither ``load_case`` nor ``all`` arguments are correctly provided.
 
         """
         # analyze all load case defined in self.load_case_dict for OspGrillage instance
@@ -2224,15 +2225,17 @@ class OspGrillage:
         "combina+tions" argument is provided. Result format is xarray DataSet. If a "save_file_name" is provided, saves
         xarray DataSet to NetCDF format to current working directory.
 
-        :keyword:
-        * combinations (`bool`): If provided, returns a modified DataSet according to combinations defined. Format of argument is dict()
-                                 with keys of load case name string and values of load factors (`int` of `float`)
-        * save_file_name (`str`): Name string of file name. Saves to NetCDF.
-        * load_case (`str`): str or list of name string of specific load case to extract. Returned DataSet with the specified Load cases only
-
-        :return: Xarray DataSet of analysis results - extracted based on keyword option specified.
-                            If combination is True, returns a list of DataSet, with each element correspond to
-                            a load combination.
+        :param combinations: Load combination definition. When provided, returns a modified DataSet
+            computed from the specified combinations. Pass as a ``dict`` with load case name strings
+            as keys and load factors (``int`` or ``float``) as values.
+        :type combinations: dict, optional
+        :param save_file_name: File name for saving results to NetCDF format in the current working directory.
+        :type save_file_name: str, optional
+        :param load_case: Name string or list of name strings of specific load cases to extract.
+            The returned DataSet contains only the specified load cases.
+        :type load_case: str or list of str, optional
+        :returns: Xarray DataSet of analysis results. If ``combinations`` is provided, returns a list
+            of DataSets, one per load combination.
 
         """
         # instantiate variables
@@ -2376,15 +2379,16 @@ class OspGrillage:
         """
                 Function to query properties of elements in grillage model.
 
-                :keyword:
-                * options (`str): string for element data option. Either "elements" or "nodes" (default)
-                * z_group_num (`int`): group number [0 to N] for N is the number of groups within a specific grillage element group.
-                                       this is needed for interior beams, where users which to query specific group (e.g. 2nd group)
-                                       within this "interior_main_beam" element group.
-                * x_group_num (`int`): ditto for z_group_num but for x_group
-                * edge_group_num(`int`): ditto for z_group_num but for edge groups
-
-                :return: List of element data (tag)
+                :param options: Query type — either ``"elements"`` or ``"nodes"`` (default).
+                :type options: str
+                :param z_group_num: Group index ``[0, N]`` for longitudinal (z-direction) element groups.
+                    Needed for interior beams when querying a specific sub-group within e.g. ``"interior_main_beam"``.
+                :type z_group_num: int
+                :param x_group_num: Group index for transverse (x-direction) element groups. Analogous to ``z_group_num``.
+                :type x_group_num: int
+                :param edge_group_num: Group index for edge element groups. Analogous to ``z_group_num``.
+                :type edge_group_num: int
+                :returns: List of element tags or node data matching the query.
                 """
         # get query member details
         namestring = kwargs.get("member", None)

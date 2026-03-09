@@ -27,22 +27,23 @@ def create_envelope(**kwargs):
 
     The constructor takes an `xarray` DataSet and kwargs for enveloping options.
 
-    :param ds: Data set from `get_results()`
-    :type ds: Xarray
-    :param kwargs: Keyword arguments see below.
-
-    :keyword:
-
-    * array: either 'displacement' or 'forces'
-    * value_mode: - True or False
-    * query_mode: - True or False
-    * extrema: either "min" or "max"
-    * elements:
-    * nodes
-    * array
-    * load_effect
-
-    :return: :class:`Envelope` Object
+    :param ds: Result DataSet from :func:`~ospgrillage.osp_grillage.OspGrillage.get_results`.
+    :type ds: xarray.Dataset
+    :param load_effect: Specific load effect component to envelope.
+    :type load_effect: str, optional
+    :param array: Data array to envelope — either ``"displacements"`` or ``"forces"``.
+    :type array: str, optional
+    :param value_mode: If ``True``, return raw envelope values. Defaults to ``True``.
+    :type value_mode: bool, optional
+    :param query_mode: If ``True``, return the load case coordinates at the envelope extrema. Defaults to ``False``.
+    :type query_mode: bool, optional
+    :param extrema: Envelope direction — either ``"min"`` or ``"max"``.
+    :type extrema: str, optional
+    :param elements: Specific element tags to include in the envelope.
+    :type elements: list, optional
+    :param nodes: Specific node tags to include in the envelope.
+    :type nodes: list, optional
+    :returns: :class:`Envelope` object.
     """
     return Envelope(**kwargs)
 
@@ -66,19 +67,18 @@ class Envelope:
         :type ds: Xarray
         :param load_effect: Specific load effect to envelope.
         :type load_effect: str
-        :param kwargs: See below for keyword arguments.
-
-        :keyword:
-
-        * array: either 'displacement' or 'forces'
-        * value_mode (`Bool`): Flag for envelope to return raw values - default True
-        * query_mode (`Bool`): Flag for envelope to return loadcase coordinate for
-                               maxima - default False
-        * extrema (`str`): either "min" or "max"
-        * elements:
-        * nodes
-        * array
-        * load_effect
+        :param array: Data array to envelope — either ``"displacements"`` or ``"forces"``.
+        :type array: str, optional
+        :param value_mode: If ``True``, return raw envelope values. Defaults to ``True``.
+        :type value_mode: bool, optional
+        :param query_mode: If ``True``, return the load case coordinate at the envelope extrema. Defaults to ``False``.
+        :type query_mode: bool, optional
+        :param extrema: Envelope direction — either ``"min"`` or ``"max"``.
+        :type extrema: str, optional
+        :param elements: Specific element tags to include in the envelope.
+        :type elements: list, optional
+        :param nodes: Specific node tags to include in the envelope.
+        :type nodes: list, optional
 
         """
         self.value = True

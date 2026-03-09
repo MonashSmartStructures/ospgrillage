@@ -34,7 +34,6 @@ tags
 # Sphinx documentation
 docs/build/
 docs/source/_static/
-docs/source/_templates/
 
 # Spyder project settings
 .spyderproject
