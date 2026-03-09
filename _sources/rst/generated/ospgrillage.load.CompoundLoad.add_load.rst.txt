@@ -1,6 +1,0 @@
-﻿CompoundLoad.add\_load
-======================
-
-.. currentmodule:: ospgrillage.load
-
-.. automethod:: CompoundLoad.add_load

@@ -375,9 +375,6 @@
 <li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_load_case.html">create_load_case</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_compound_load.html">create_compound_load</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_load_model.html">create_load_model</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.LoadCase.add_load.html">LoadCase.add_load</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.add_load.html">CompoundLoad.add_load</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.set_global_coord.html">CompoundLoad.set_global_coord</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="api_load_moving.html">Moving loads</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -516,7 +513,16 @@ structure. Inherits all attributes and methods from the Loads base class.</p>
 <p>Initialize a PointLoad instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name identifier for the point load.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name identifier for the point load.</p></li>
+<li><p><strong>point1</strong> (<em>LoadPoint</em>) – Location and magnitude of the concentrated load.</p></li>
+<li><p><strong>Fx</strong> (<em>float</em><em>, </em><em>optional</em>) – Force in the global x direction.</p></li>
+<li><p><strong>Fy</strong> (<em>float</em><em>, </em><em>optional</em>) – Force in the global y direction.</p></li>
+<li><p><strong>Fz</strong> (<em>float</em><em>, </em><em>optional</em>) – Force in the global z direction.</p></li>
+<li><p><strong>Mx</strong> (<em>float</em><em>, </em><em>optional</em>) – Moment about the global x axis.</p></li>
+<li><p><strong>My</strong> (<em>float</em><em>, </em><em>optional</em>) – Moment about the global y axis.</p></li>
+<li><p><strong>Mz</strong> (<em>float</em><em>, </em><em>optional</em>) – Moment about the global z axis.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -558,7 +564,29 @@ point1, point2, and point3. If <code class="docutils literal notranslate"><span 
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Loads</span></code></p>
 <p>Class for Patch loads.</p>
 <p>By default requires at least 4 load point for patch (quadrilateral). Can take up to 8 load points.</p>
-<p>Init the PatchLoad class. Accepts the same parameters as <code class="xref py py-class docutils literal notranslate"><span class="pre">Loads</span></code>.</p>
+<p>Initialize a PatchLoading instance.</p>
+<p>Requires exactly 4 load points (<code class="docutils literal notranslate"><span class="pre">point1</span></code>–<code class="docutils literal notranslate"><span class="pre">point4</span></code>) supplied in
+counter-clockwise order to define the patch boundary. Up to 8 points
+may be provided for higher-order patches.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>point1</strong> (<em>LoadPoint</em>) – First vertex of the patch boundary (CCW order). Required.</p></li>
+<li><p><strong>point2</strong> (<em>LoadPoint</em>) – Second vertex of the patch boundary (CCW order). Required.</p></li>
+<li><p><strong>point3</strong> (<em>LoadPoint</em>) – Third vertex of the patch boundary (CCW order). Required.</p></li>
+<li><p><strong>point4</strong> (<em>LoadPoint</em>) – Fourth vertex of the patch boundary (CCW order). Required.</p></li>
+<li><p><strong>point5</strong> (<em>LoadPoint</em><em>, </em><em>optional</em>) – Fifth vertex for 8-point (higher-order) patches.</p></li>
+<li><p><strong>point6</strong> (<em>LoadPoint</em><em>, </em><em>optional</em>) – Sixth vertex for 8-point patches.</p></li>
+<li><p><strong>point7</strong> (<em>LoadPoint</em><em>, </em><em>optional</em>) – Seventh vertex for 8-point patches.</p></li>
+<li><p><strong>point8</strong> (<em>LoadPoint</em><em>, </em><em>optional</em>) – Eighth vertex for 8-point patches.</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name identifier for this load.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If fewer than 4 vertices are supplied, or if the
+vertices do not form a valid counter-clockwise polygon.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
