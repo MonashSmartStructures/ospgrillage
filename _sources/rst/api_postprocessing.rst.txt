@@ -14,10 +14,14 @@ Factory functions
 Class reference
 ---------------
 
-.. autoclass:: ospgrillage.postprocessing.Envelope
+Envelope
+~~~~~~~~
 
+.. autoclass:: ospgrillage.postprocessing.Envelope
    :show-inheritance:
 
-.. autoclass:: ospgrillage.postprocessing.PostProcessor
+PostProcessor
+~~~~~~~~~~~~~
 
+.. autoclass:: ospgrillage.postprocessing.PostProcessor
    :show-inheritance:

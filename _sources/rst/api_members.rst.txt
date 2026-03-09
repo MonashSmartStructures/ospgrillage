@@ -13,10 +13,14 @@ Factory functions
 Class reference
 ---------------
 
-.. autoclass:: ospgrillage.members.Section
+Section
+~~~~~~~
 
+.. autoclass:: ospgrillage.members.Section
    :show-inheritance:
 
-.. autoclass:: ospgrillage.members.GrillageMember
+GrillageMember
+~~~~~~~~~~~~~~
 
+.. autoclass:: ospgrillage.members.GrillageMember
    :show-inheritance:

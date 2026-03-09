@@ -469,10 +469,13 @@
 </section>
 <section id="class-reference">
 <h2>Class reference<a class="headerlink" href="#class-reference" title="Link to this heading">#</a></h2>
+<section id="section">
+<h3>Section<a class="headerlink" href="#section" title="Link to this heading">#</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.members.Section">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">op_ele_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'elasticBeamColumn'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_mass_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_section_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Elastic'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.members.Section" title="Link to this definition">#</a></dt>
-<dd><p>Class for structural sections of grillage model. Stores geometric properties of cross sections. This class also
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class for structural sections of grillage model. Stores geometric properties of cross sections. This class also
 parses section inputs into relevant
 <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code> command for creating sections in OpenSees framework.</p>
 <p>This class wraps <code class="docutils literal notranslate"><span class="pre">`OpenSeesPy`</span></code> Section() commands - methods for generating commands are handled by the
@@ -513,16 +516,16 @@ OpenSees section arguments.</p></li>
 <p>Section properties are defined in local coordinates (x, y, z) and are later
 transformed according to the orientation of the <a class="reference internal" href="#ospgrillage.members.GrillageMember" title="ospgrillage.members.GrillageMember"><code class="xref py py-class docutils literal notranslate"><span class="pre">GrillageMember</span></code></a> in the grillage model.</p>
 </div>
-<dl class="field-list simple">
-<dt class="field-odd">Show-inheritance<span class="colon">:</span></dt>
-<dd class="field-odd"><p></p></dd>
-</dl>
 </dd></dl>
 
+</section>
+<section id="grillagemember">
+<h3>GrillageMember<a class="headerlink" href="#grillagemember" title="Link to this heading">#</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.members.GrillageMember">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">GrillageMember</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">section</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">material</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">member_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Undefined'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quad_ele_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tri_ele_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.members.GrillageMember" title="Link to this definition">#</a></dt>
-<dd><p>Class for grillage model members. E.g., longitudinal beam members.</p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class for grillage model members. E.g., longitudinal beam members.</p>
 <p>This class parses material and section properties of grillage members into corresponding <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code> Element()
 command.</p>
 <dl class="simple">
@@ -547,11 +550,10 @@ command.</p>
 <li><p><strong>member_name</strong> (<em>str</em>) – Name of the grillage member (Optional)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Show-inheritance<span class="colon">:</span></dt>
-<dd class="field-even"><p></p></dd>
 </dl>
 </dd></dl>
 
+</section>
 </section>
 </section>
 
@@ -604,8 +606,14 @@ command.</p>
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#factory-functions">Factory functions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-reference">Class reference</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.members.Section"><code class="docutils literal notranslate"><span class="pre">Section</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.members.GrillageMember"><code class="docutils literal notranslate"><span class="pre">GrillageMember</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#section">Section</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.members.Section"><code class="docutils literal notranslate"><span class="pre">Section</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grillagemember">GrillageMember</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.members.GrillageMember"><code class="docutils literal notranslate"><span class="pre">GrillageMember</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

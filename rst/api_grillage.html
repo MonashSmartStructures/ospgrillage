@@ -504,15 +504,18 @@
 </section>
 <section id="class-reference">
 <h2>Class reference<a class="headerlink" href="#class-reference" title="Link to this heading">#</a></h2>
+<section id="ospgrillage">
+<h3>OspGrillage<a class="headerlink" href="#ospgrillage" title="Link to this heading">#</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.osp_grillage.OspGrillage">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">OspGrillage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bridge_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">long_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skew</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_long_grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_trans_grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_beam_dist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Ortho'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'3D'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OspGrillage" title="Link to this definition">#</a></dt>
-<dd><p>Base class representing an OpenSees grillage structural model.</p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class representing an OpenSees grillage structural model.</p>
 <p>Manages the creation, configuration, and analysis of a grillage model
 including mesh generation, member assignment, load cases, and result
 extraction. Provides interface to OpenSees for static and transient analysis.</p>
 <section id="attributes">
-<h3>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">#</a></h3>
+<h4>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">#</a></h4>
 <dl class="simple">
 <dt>mesh_type<span class="classifier">str</span></dt><dd><p>Type of mesh - “Ortho” for orthogonal or “Oblique” for oblique mesh.</p>
 </dd>
@@ -634,18 +637,20 @@ If <code class="docutils literal notranslate"><span class="pre">False</span></co
 <dt class="field-odd">raises ValueError<span class="colon">:</span></dt>
 <dd class="field-odd"><p>If skew angle is greater than 90. If number of transverse grid lines is less than 2.</p>
 </dd>
-<dt class="field-even">show-inheritance<span class="colon">:</span></dt>
-<dd class="field-even"><p></p></dd>
 </dl>
 </section>
 <dl class="field-list simple">
 </dl>
 </dd></dl>
 
+</section>
+<section id="ospgrillagebeam">
+<h3>OspGrillageBeam<a class="headerlink" href="#ospgrillagebeam" title="Link to this heading">#</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.osp_grillage.OspGrillageBeam">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">OspGrillageBeam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bridge_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">long_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skew</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_long_grid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_trans_grid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_beam_dist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Ortho'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'3D'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OspGrillageBeam" title="Link to this definition">#</a></dt>
-<dd><p>Grillage model composed of beam elements.</p>
+<dd><p>Bases: <a class="reference internal" href="#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a></p>
+<p>Grillage model composed of beam elements.</p>
 <p>Concrete implementation of OspGrillage using elasticBeamColumn or
 nonlinearBeamColumn elements to represent longitudinal and transverse members.
 Suitable for skeletal bridge models with distinct beam members.</p>
@@ -680,20 +685,22 @@ If <code class="docutils literal notranslate"><span class="pre">False</span></co
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>ValueError</strong> – If skew angle is greater than 90. If number of transverse grid lines is less than 2.</p>
 </dd>
-<dt class="field-odd">Show-inheritance<span class="colon">:</span></dt>
-<dd class="field-odd"><p></p></dd>
 </dl>
 </dd></dl>
 
+</section>
+<section id="ospgrillageshell">
+<h3>OspGrillageShell<a class="headerlink" href="#ospgrillageshell" title="Link to this heading">#</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.osp_grillage.OspGrillageShell">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">OspGrillageShell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bridge_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">long_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skew</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_long_grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_trans_grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_beam_dist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Ortho'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'3D'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OspGrillageShell" title="Link to this definition">#</a></dt>
-<dd><p>Grillage model composed of shell elements.</p>
+<dd><p>Bases: <a class="reference internal" href="#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a></p>
+<p>Grillage model composed of shell elements.</p>
 <p>Concrete implementation of OspGrillage using ShellMITC4 or ShellDKGQ elements
 to represent the bridge deck as a continuous surface. Suitable for detailed
 analysis of slab and composite deck systems.</p>
 <section id="id1">
-<h3>Attributes<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<h4>Attributes<a class="headerlink" href="#id1" title="Link to this heading">#</a></h4>
 <dl class="simple">
 <dt>offset_beam_y_dist<span class="classifier">float</span></dt><dd><p>Vertical offset of beam members from shell surface.</p>
 </dd>
@@ -809,18 +816,20 @@ If <code class="docutils literal notranslate"><span class="pre">False</span></co
 <dt class="field-odd">raises ValueError<span class="colon">:</span></dt>
 <dd class="field-odd"><p>If skew angle is greater than 90. If number of transverse grid lines is less than 2.</p>
 </dd>
-<dt class="field-even">show-inheritance<span class="colon">:</span></dt>
-<dd class="field-even"><p></p></dd>
 </dl>
 </section>
 <dl class="field-list simple">
 </dl>
 </dd></dl>
 
+</section>
+<section id="analysis">
+<h3>Analysis<a class="headerlink" href="#analysis" title="Link to this heading">#</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.osp_grillage.Analysis">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">analysis_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ops_grillage_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pyfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_counter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ele_counter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">analysis_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Static'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_counter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pattern_counter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_case</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.Analysis" title="Link to this definition">#</a></dt>
-<dd><p>Main class to handle the run/execution of load case, including incremental load cases of a moving load analysis.
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Main class to handle the run/execution of load case, including incremental load cases of a moving load analysis.
 Analysis class is created and handled by the OspGrillage class.</p>
 <p>The following are the roles of Analysis object:</p>
 <ul class="simple">
@@ -830,22 +839,23 @@ Analysis class is created and handled by the OspGrillage class.</p>
 <li><p>manages multiple load case’s ops.load() commands, applying the specified load factors to the load cases for load combinations</p></li>
 </ul>
 <dl class="field-list simple">
-<dt class="field-odd">Show-inheritance<span class="colon">:</span></dt>
-<dd class="field-odd"><p></p></dd>
 </dl>
 </dd></dl>
 
+</section>
+<section id="results">
+<h3>Results<a class="headerlink" href="#results" title="Link to this heading">#</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="ospgrillage.osp_grillage.Results">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh_obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.Results" title="Link to this definition">#</a></dt>
-<dd><p>Main class to store results of an Analysis class object, process into data array output for post processing/plotting.
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Main class to store results of an Analysis class object, process into data array output for post processing/plotting.
 Class object is accessed within OspGrillage class object.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Show-inheritance<span class="colon">:</span></dt>
-<dd class="field-odd"><p></p></dd>
 </dl>
 </dd></dl>
 
+</section>
 </section>
 </section>
 
@@ -899,11 +909,26 @@ Class object is accessed within OspGrillage class object.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#factory-function">Factory function</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage-methods">OspGrillage methods</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-reference">Class reference</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.osp_grillage.OspGrillage"><code class="docutils literal notranslate"><span class="pre">OspGrillage</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.osp_grillage.OspGrillageBeam"><code class="docutils literal notranslate"><span class="pre">OspGrillageBeam</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.osp_grillage.OspGrillageShell"><code class="docutils literal notranslate"><span class="pre">OspGrillageShell</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.osp_grillage.Analysis"><code class="docutils literal notranslate"><span class="pre">Analysis</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.osp_grillage.Results"><code class="docutils literal notranslate"><span class="pre">Results</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage">OspGrillage</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.osp_grillage.OspGrillage"><code class="docutils literal notranslate"><span class="pre">OspGrillage</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillagebeam">OspGrillageBeam</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.osp_grillage.OspGrillageBeam"><code class="docutils literal notranslate"><span class="pre">OspGrillageBeam</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillageshell">OspGrillageShell</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.osp_grillage.OspGrillageShell"><code class="docutils literal notranslate"><span class="pre">OspGrillageShell</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#analysis">Analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.osp_grillage.Analysis"><code class="docutils literal notranslate"><span class="pre">Analysis</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#results">Results</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.osp_grillage.Results"><code class="docutils literal notranslate"><span class="pre">Results</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
