@@ -484,7 +484,8 @@ class Loads:
         """
         magnitude = []
         for load_point in self.point_list:
-            magnitude.append(load_point.p)
+            if load_point is not None:
+                magnitude.append(load_point.p)
 
         return magnitude
 

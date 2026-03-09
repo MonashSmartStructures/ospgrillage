@@ -106,3 +106,34 @@ def test_create_section(ref_bridge_properties):
         section=exterior_I_beam_section,
         material=concrete,
     )
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Section – validation and auto-computed properties
+# ─────────────────────────────────────────────────────────────────────────────
+
+def test_section_raises_if_E_supplied():
+    """Section must raise ValueError if elastic modulus E is passed directly."""
+    with pytest.raises(ValueError):
+        og.create_section(A=0.02, J=1e-4, Iy=1e-4, Iz=1e-4, E=30e9)
+
+
+def test_section_raises_if_G_supplied():
+    """Section must raise ValueError if shear modulus G is passed directly."""
+    with pytest.raises(ValueError):
+        og.create_section(A=0.02, J=1e-4, Iy=1e-4, Iz=1e-4, G=12e9)
+
+
+def test_parse_section_properties_computes_Ay_Az():
+    """parse_section_properties must compute Ay = 0.5*A and Az = 0.2*A."""
+    import numpy as np
+    sec = og.create_section(A=0.1, J=1e-4, Iy=5e-5, Iz=1e-4)
+    assert np.isclose(sec.Ay, 0.05)
+    assert np.isclose(sec.Az, 0.02)
+
+
+def test_parse_section_properties_computes_Iy():
+    """parse_section_properties must compute Iy = 0.2*Iz when Iy is not given."""
+    import numpy as np
+    sec = og.create_section(A=0.1, J=1e-4, Iz=1e-3)
+    assert np.isclose(sec.Iy, 0.2e-3)

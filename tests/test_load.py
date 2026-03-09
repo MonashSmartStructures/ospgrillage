@@ -1194,3 +1194,238 @@ def test_transient(beam_element_bridge):
         # do something with results
         print(result)
         print("Next step")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# create_load_vertex – error paths
+# ─────────────────────────────────────────────────────────────────────────────
+
+def test_create_load_vertex_missing_x_raises():
+    """create_load_vertex must raise ValueError when x is absent."""
+    with pytest.raises(ValueError):
+        og.create_load_vertex(z=1.0, p=10)
+
+
+def test_create_load_vertex_missing_z_raises():
+    """create_load_vertex must raise ValueError when z is absent."""
+    with pytest.raises(ValueError):
+        og.create_load_vertex(x=1.0, p=10)
+
+
+def test_create_load_vertex_missing_both_raises():
+    """create_load_vertex must raise ValueError when both x and z are absent."""
+    with pytest.raises(ValueError):
+        og.create_load_vertex(y=0, p=10)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# create_load – nodal branch and error branch
+# ─────────────────────────────────────────────────────────────────────────────
+
+def test_create_load_nodal_returns_nodal_load():
+    """create_load with loadtype='nodal' must return a NodalLoad."""
+    load = og.create_load(
+        loadtype="nodal",
+        node_tag=42,
+        Fx=0, Fy=-10e3, Fz=0, Mx=0, My=0, Mz=0,
+        name="test_nodal",
+    )
+    assert isinstance(load, og.NodalLoad)
+
+
+def test_create_load_nodal_stores_forces():
+    """NodalLoad forces must match the values passed to create_load."""
+    load = og.create_load(
+        loadtype="nodal",
+        node_tag=1,
+        Fx=1.0, Fy=2.0, Fz=3.0, Mx=4.0, My=5.0, Mz=6.0,
+    )
+    assert load.Fx == 1.0
+    assert load.Fy == 2.0
+    assert load.Fz == 3.0
+    assert load.Mx == 4.0
+    assert load.My == 5.0
+    assert load.Mz == 6.0
+
+
+def test_create_load_invalid_type_raises():
+    """create_load with no points and unknown loadtype must raise TypeError."""
+    with pytest.raises(TypeError):
+        og.create_load(loadtype="invalid_type_xyz")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# NodalLoad – methods
+# ─────────────────────────────────────────────────────────────────────────────
+
+def test_nodal_load_get_nodal_load_call():
+    """get_nodal_load_call must return the correct ('load', args, {}) tuple."""
+    forces = og.NodeForces(Fx=0, Fy=-5e3, Fz=0, Mx=0, My=0, Mz=0)
+    nl = og.NodalLoad(node_tag=7, node_force=forces, name="nl_test")
+    func_name, args, kwargs = nl.get_nodal_load_call()
+    assert func_name == "load"
+    assert args[0] == 7       # node tag
+    assert args[2] == -5e3    # Fy
+    assert kwargs == {}
+
+
+def test_nodal_load_get_nodal_load_str():
+    """get_nodal_load_str must contain the node tag and force value."""
+    forces = og.NodeForces(Fx=0, Fy=-1e3, Fz=0, Mx=0, My=0, Mz=0)
+    nl = og.NodalLoad(node_tag=3, node_force=forces)
+    s = nl.get_nodal_load_str()
+    assert "ops.load(" in s
+    assert "3" in s
+
+
+def test_nodal_load_iterable_node_tags():
+    """NodalLoad must accept a list of node tags and store one spec entry each."""
+    forces = og.NodeForces(Fx=0, Fy=-1.0, Fz=0, Mx=0, My=0, Mz=0)
+    nl = og.NodalLoad(node_tag=[10, 11, 12], node_force=forces)
+    assert 10 in nl.spec
+    assert 11 in nl.spec
+    assert 12 in nl.spec
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Loads.apply_load_factor() and get_magnitude()
+# ─────────────────────────────────────────────────────────────────────────────
+
+def test_apply_load_factor_to_point_load():
+    """apply_load_factor() must multiply load_point_1.p by the given factor."""
+    v = og.create_load_vertex(x=1, z=2, p=10.0)
+    pt = og.create_load(loadtype="point", name="pt", point1=v)
+    pt.apply_load_factor(2.0)
+    assert pt.load_point_1.p == pytest.approx(20.0)
+
+
+def test_apply_load_factor_to_all_line_points():
+    """apply_load_factor() must scale both endpoints of a LineLoading."""
+    v1 = og.create_load_vertex(x=0, z=0, p=5.0)
+    v2 = og.create_load_vertex(x=0, z=4, p=5.0)
+    line = og.create_load(loadtype="line", name="barrier", point1=v1, point2=v2)
+    line.apply_load_factor(3.0)
+    assert line.load_point_1.p == pytest.approx(15.0)
+    assert line.load_point_2.p == pytest.approx(15.0)
+
+
+def test_get_magnitude_returns_list_of_p_values():
+    """get_magnitude() must return p values for all defined (non-None) load points."""
+    v1 = og.create_load_vertex(x=0, z=0, p=7.0)
+    v2 = og.create_load_vertex(x=0, z=4, p=9.0)
+    line = og.create_load(loadtype="line", name="test_line", point1=v1, point2=v2)
+    mags = line.get_magnitude()
+    assert 7.0 in mags
+    assert 9.0 in mags
+    assert len(mags) == 2
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# LineLoading – curved (3-point) constructor
+# ─────────────────────────────────────────────────────────────────────────────
+
+def test_line_loading_curved_three_points():
+    """LineLoading with a third midpoint must initialise without error."""
+    p1 = og.create_load_vertex(x=0,  z=0, p=1.0)
+    p2 = og.create_load_vertex(x=5,  z=2, p=1.0)
+    p3 = og.create_load_vertex(x=10, z=0, p=1.0)
+    curved = og.LineLoading(point1=p1, point2=p3, point3=p2, name="curved")
+    assert hasattr(curved, "d")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PatchLoading – 4-point quadrilateral
+# ─────────────────────────────────────────────────────────────────────────────
+
+def test_patch_load_four_points():
+    """PatchLoading with four CCW-ordered vertices must initialise without error."""
+    p1 = og.create_load_vertex(x=0, z=0, p=10.0)
+    p2 = og.create_load_vertex(x=5, z=0, p=10.0)
+    p3 = og.create_load_vertex(x=5, z=4, p=10.0)
+    p4 = og.create_load_vertex(x=0, z=4, p=10.0)
+    patch = og.PatchLoading(point1=p1, point2=p2, point3=p3, point4=p4,
+                            name="quad_patch")
+    assert patch.load_point_1 is not None
+    assert patch.load_point_4 is not None
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Path – get_path_points and get_custom_path_points
+# ─────────────────────────────────────────────────────────────────────────────
+
+def test_path_get_path_points_returns_correct_length():
+    """get_path_points must return a list of length equal to increments."""
+    start = og.Point(0, 0, 0)
+    end   = og.Point(10, 0, 0)
+    p = og.Path(start_point=start, end_point=end, increments=10)
+    pts = p.get_path_points()
+    assert len(pts) == 10
+
+
+def test_path_get_custom_path_points_returns_correct_length():
+    """get_custom_path_points must return a list of length new_increment."""
+    start = og.Point(0, 0, 0)
+    end   = og.Point(10, 0, 0)
+    p = og.Path(start_point=start, end_point=end, increments=20)
+    pts = p.get_custom_path_points(new_increment=5)
+    assert len(pts) == 5
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# LoadModel – M1600 vehicle
+# ─────────────────────────────────────────────────────────────────────────────
+
+def test_load_model_m1600_creates_compound_load():
+    """LoadModel.create() for M1600 must return a CompoundLoad with 24 point loads."""
+    lm = og.LoadModel(model_type="M1600", gap=5.0)
+    vehicle = lm.create()
+    assert vehicle is not None
+    assert len(vehicle.compound_load_obj_list) == 24
+
+
+def test_load_model_m1600_non_zero_loads():
+    """All M1600 point loads must have a non-zero p value."""
+    lm = og.LoadModel(model_type="M1600", gap=5.0)
+    vehicle = lm.create()
+    for point_load in vehicle.compound_load_obj_list:
+        assert point_load.load_point_1.p > 0
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# MovingLoad – error path when no path is set
+# ─────────────────────────────────────────────────────────────────────────────
+
+def test_moving_load_add_load_no_path_raises():
+    """MovingLoad.add_load() without a path and no set_path must raise ValueError."""
+    ml = og.create_moving_load(name="test_ml")
+    v  = og.create_load_vertex(x=0, z=0, p=10.0)
+    pt = og.create_load(loadtype="point", name="pt", point1=v)
+    lc = og.create_load_case(name="lc_for_ml")
+    lc.add_load(pt)
+    with pytest.raises(ValueError):
+        ml.add_load(load_obj=lc)
+        ml.parse_moving_load_cases()
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# ShapeFunction
+# ─────────────────────────────────────────────────────────────────────────────
+
+def test_shape_function_get_shape_function_hermite():
+    """ShapeFunction.get_shape_function('hermite') must return a callable."""
+    sf = og.ShapeFunction()
+    fn = sf.get_shape_function(eta=0.0, zeta=0.0, option="hermite")
+    assert callable(fn)
+
+
+def test_shape_function_get_shape_function_linear():
+    """ShapeFunction.get_shape_function('linear') must return a callable."""
+    sf = og.ShapeFunction()
+    fn = sf.get_shape_function(eta=0.5, zeta=0.5, option="linear")
+    assert callable(fn)
+
+
+def test_shape_function_hermite_1d_length():
+    """hermite_shape_function_1d must return four terms."""
+    result = og.ShapeFunction.hermite_shape_function_1d(zeta=0.5, a=1.0)
+    assert len(result) == 4

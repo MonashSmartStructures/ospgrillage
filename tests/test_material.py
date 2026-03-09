@@ -60,3 +60,42 @@ def test_create_material():
     expect_v = 0.3
     assert og.np.isclose(concrete_custom_wo_g.poisson_ratio, expect_v, rtol=0.1)
     # concrete_ops = og.create_material(fpc=fpc,epsc0=epsc0,fpcu=fpcu,epsU=epsU)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Material.get_material_args() – Concrete01 and Steel01 code paths
+# ─────────────────────────────────────────────────────────────────────────────
+
+def test_get_material_args_concrete():
+    """get_material_args for Concrete01 must return a non-empty arg list."""
+    # Codified lookup sets fpc; supply the remaining uniaxialMaterial params
+    # (epsc0, fpcu, epsU) that are model-dependent and not stored in the library.
+    mat = og.create_material(material="concrete", code="AS5100-2017", grade="50MPa")
+    mat.epsc0 = -0.002    # strain at peak compressive stress
+    mat.fpcu  = -5e6      # crushing stress
+    mat.epsU  = -0.005    # ultimate strain
+    ops_type, args = mat.get_material_args()
+    assert ops_type == "Concrete01"
+    assert len(args) == 4
+    assert None not in args
+
+
+def test_get_material_args_steel():
+    """get_material_args for Steel01 must return a non-empty arg list."""
+    # Bypass codified lookup (which has a pre-existing 'fc' KeyError for steel)
+    # and build a fully-specified material directly.
+    from ospgrillage.material import Material
+    mat = Material(E=200e9, v=0.3)
+    mat.material_type = "steel"
+    mat.ops_mat_type  = "Steel01"
+    mat.Fy = 500e6
+    mat.E0 = 200e9
+    mat.b  = 0.01
+    mat.a1 = 0.04
+    mat.a2 = 0.04
+    mat.a3 = 0.04
+    mat.a4 = 0.04
+    ops_type, args = mat.get_material_args()
+    assert ops_type == "Steel01"
+    assert len(args) == 7
+    assert None not in args
