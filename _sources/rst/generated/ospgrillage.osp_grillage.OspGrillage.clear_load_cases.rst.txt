@@ -1,5 +1,5 @@
-﻿ospgrillage.osp\_grillage.OspGrillage.clear\_load\_cases
-========================================================
+﻿OspGrillage.clear\_load\_cases
+==============================
 
 .. currentmodule:: ospgrillage.osp_grillage
 

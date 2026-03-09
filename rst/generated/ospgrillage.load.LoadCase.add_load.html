@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>ospgrillage.load.LoadCase.add_load &#8212; ospgrillage 0.4.1 documentation</title>
+    <title>LoadCase.add_load &#8212; ospgrillage 0.4.1 documentation</title>
   
   
   
@@ -45,8 +45,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'rst/generated/ospgrillage.load.LoadCase.add_load';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="ospgrillage.load.MovingLoad.set_path" href="ospgrillage.load.MovingLoad.set_path.html" />
-    <link rel="prev" title="ospgrillage.load.CompoundLoad.add_load" href="ospgrillage.load.CompoundLoad.add_load.html" />
+    <link rel="next" title="MovingLoad.set_path" href="ospgrillage.load.MovingLoad.set_path.html" />
+    <link rel="prev" title="CompoundLoad.add_load" href="ospgrillage.load.CompoundLoad.add_load.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.4.1" />
@@ -343,51 +343,51 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../api_grillage.html">Grillage model</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.create_grillage.html">ospgrillage.osp_grillage.create_grillage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.create_osp_model.html">ospgrillage.osp_grillage.OspGrillage.create_osp_model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.set_member.html">ospgrillage.osp_grillage.OspGrillage.set_member</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.set_boundary_condition.html">ospgrillage.osp_grillage.OspGrillage.set_boundary_condition</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.add_load_case.html">ospgrillage.osp_grillage.OspGrillage.add_load_case</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.add_load_combination.html">ospgrillage.osp_grillage.OspGrillage.add_load_combination</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.analyze.html">ospgrillage.osp_grillage.OspGrillage.analyze</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.get_results.html">ospgrillage.osp_grillage.OspGrillage.get_results</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.get_nodes.html">ospgrillage.osp_grillage.OspGrillage.get_nodes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.get_element.html">ospgrillage.osp_grillage.OspGrillage.get_element</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.clear_load_cases.html">ospgrillage.osp_grillage.OspGrillage.clear_load_cases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.create_grillage.html">create_grillage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.create_osp_model.html">OspGrillage.create_osp_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.set_member.html">OspGrillage.set_member</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.set_boundary_condition.html">OspGrillage.set_boundary_condition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.add_load_case.html">OspGrillage.add_load_case</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.add_load_combination.html">OspGrillage.add_load_combination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.analyze.html">OspGrillage.analyze</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.get_results.html">OspGrillage.get_results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.get_nodes.html">OspGrillage.get_nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.get_element.html">OspGrillage.get_element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.clear_load_cases.html">OspGrillage.clear_load_cases</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../api_material.html">Material</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.material.create_material.html">ospgrillage.material.create_material</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.material.create_material.html">create_material</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../api_members.html">Members and sections</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.members.create_section.html">ospgrillage.members.create_section</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.members.create_member.html">ospgrillage.members.create_member</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.members.create_section.html">create_section</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.members.create_member.html">create_member</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../api_load.html">Load module</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.create_load_vertex.html">ospgrillage.load.create_load_vertex</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.create_load.html">ospgrillage.load.create_load</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.create_load_case.html">ospgrillage.load.create_load_case</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.create_compound_load.html">ospgrillage.load.create_compound_load</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.create_moving_path.html">ospgrillage.load.create_moving_path</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.create_moving_load.html">ospgrillage.load.create_moving_load</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.create_load_model.html">ospgrillage.load.create_load_model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.CompoundLoad.set_global_coord.html">ospgrillage.load.CompoundLoad.set_global_coord</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.CompoundLoad.add_load.html">ospgrillage.load.CompoundLoad.add_load</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">ospgrillage.load.LoadCase.add_load</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.MovingLoad.set_path.html">ospgrillage.load.MovingLoad.set_path</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.MovingLoad.add_load.html">ospgrillage.load.MovingLoad.add_load</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.create_load_vertex.html">create_load_vertex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.create_load.html">create_load</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.create_load_case.html">create_load_case</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.create_compound_load.html">create_compound_load</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.create_moving_path.html">create_moving_path</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.create_moving_load.html">create_moving_load</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.create_load_model.html">create_load_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.CompoundLoad.set_global_coord.html">CompoundLoad.set_global_coord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.CompoundLoad.add_load.html">CompoundLoad.add_load</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">LoadCase.add_load</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.MovingLoad.set_path.html">MovingLoad.set_path</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.MovingLoad.add_load.html">MovingLoad.add_load</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../api_mesh.html">Mesh</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.mesh.create_point.html">ospgrillage.mesh.create_point</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.mesh.create_point.html">create_point</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../api_postprocessing.html">Post-processing</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.postprocessing.create_envelope.html">ospgrillage.postprocessing.create_envelope</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.postprocessing.plot_force.html">ospgrillage.postprocessing.plot_force</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.postprocessing.plot_defo.html">ospgrillage.postprocessing.plot_defo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.postprocessing.create_envelope.html">create_envelope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.postprocessing.plot_force.html">plot_force</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.postprocessing.plot_defo.html">plot_defo</a></li>
 </ul>
 </details></li>
 </ul>
@@ -436,7 +436,7 @@
     
     <li class="breadcrumb-item"><a href="../api_load.html" class="nav-link">Load module</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">ospgrillage.load.LoadCase.add_load</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">LoadCase.add_load</span></li>
   </ul>
 </nav>
 </div>
@@ -453,8 +453,8 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="ospgrillage-load-loadcase-add-load">
-<h1>ospgrillage.load.LoadCase.add_load<a class="headerlink" href="#ospgrillage-load-loadcase-add-load" title="Link to this heading">#</a></h1>
+  <section id="loadcase-add-load">
+<h1>LoadCase.add_load<a class="headerlink" href="#loadcase-add-load" title="Link to this heading">#</a></h1>
 <dl class="py method">
 <dt class="sig sig-object py" id="ospgrillage.load.LoadCase.add_load">
 <span class="sig-prename descclassname"><span class="pre">LoadCase.</span></span><span class="sig-name descname"><span class="pre">add_load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">load_obj</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LoadCase.add_load" title="Link to this definition">#</a></dt>
@@ -462,17 +462,12 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>load_obj</strong> (<em>Loads</em><em> | </em><a class="reference internal" href="../api_load.html#ospgrillage.load.CompoundLoad" title="ospgrillage.load.CompoundLoad"><em>CompoundLoad</em></a>) – <code class="xref py py-class docutils literal notranslate"><span class="pre">Loads</span></code> or :class:<a href="#id1"><span class="problematic" id="id2">`</span></a>~ospgrillage.load.CompoundLoad`object</p></li>
-<li><p><strong>kwargs</strong> – keyword arguments</p></li>
+<li><p><strong>load_obj</strong> (<em>Loads</em><em> | </em><a class="reference internal" href="../api_load.html#ospgrillage.load.CompoundLoad" title="ospgrillage.load.CompoundLoad"><em>CompoundLoad</em></a>) – <code class="xref py py-class docutils literal notranslate"><span class="pre">Loads</span></code> or <a class="reference internal" href="../api_load.html#ospgrillage.load.CompoundLoad" title="ospgrillage.load.CompoundLoad"><code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundLoad</span></code></a> object.</p></li>
+<li><p><strong>global_coord_of_load_obj</strong> (<em>Point namedTuple</em><em>, </em><em>optional</em>) – Required when load objects are defined in local coordinates.
+Sets the origin of the local coordinate system onto the global coordinate of the grillage.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Keyword<span class="colon">:</span></dt>
-<dd class="field-even"><p></p></dd>
 </dl>
-<ul class="simple">
-<li><p>global_coord_of_load_obj (<cite>Point</cite> namedTuple): if load objects are defined in local coordinate, this parameter
-is required to set the origin of local coordinate of load groups onto the global coordinate of the grillage</p></li>
-</ul>
 </dd></dl>
 
 </section>
@@ -493,7 +488,7 @@ is required to set the origin of local coordinate of load groups onto the global
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">ospgrillage.load.CompoundLoad.add_load</p>
+        <p class="prev-next-title">CompoundLoad.add_load</p>
       </div>
     </a>
     <a class="right-next"
@@ -501,7 +496,7 @@ is required to set the origin of local coordinate of load groups onto the global
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">ospgrillage.load.MovingLoad.set_path</p>
+        <p class="prev-next-title">MovingLoad.set_path</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

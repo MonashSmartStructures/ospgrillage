@@ -1,5 +1,5 @@
-﻿ospgrillage.osp\_grillage.OspGrillage.set\_boundary\_condition
-==============================================================
+﻿OspGrillage.set\_boundary\_condition
+====================================
 
 .. currentmodule:: ospgrillage.osp_grillage
 

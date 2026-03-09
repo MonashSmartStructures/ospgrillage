@@ -1,5 +1,5 @@
-﻿ospgrillage.postprocessing.plot\_defo
-=====================================
+﻿plot\_defo
+==========
 
 .. currentmodule:: ospgrillage.postprocessing
 

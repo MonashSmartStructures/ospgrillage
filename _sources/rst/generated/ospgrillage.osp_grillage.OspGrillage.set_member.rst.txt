@@ -1,5 +1,5 @@
-﻿ospgrillage.osp\_grillage.OspGrillage.set\_member
-=================================================
+﻿OspGrillage.set\_member
+=======================
 
 .. currentmodule:: ospgrillage.osp_grillage
 

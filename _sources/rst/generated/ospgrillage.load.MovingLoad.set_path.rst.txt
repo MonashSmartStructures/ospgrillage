@@ -1,5 +1,5 @@
-﻿ospgrillage.load.MovingLoad.set\_path
-=====================================
+﻿MovingLoad.set\_path
+====================
 
 .. currentmodule:: ospgrillage.load
 

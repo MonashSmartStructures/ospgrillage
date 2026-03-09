@@ -1,5 +1,5 @@
-﻿ospgrillage.load.CompoundLoad.set\_global\_coord
-================================================
+﻿CompoundLoad.set\_global\_coord
+===============================
 
 .. currentmodule:: ospgrillage.load
 

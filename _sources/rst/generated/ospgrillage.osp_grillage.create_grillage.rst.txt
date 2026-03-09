@@ -1,5 +1,5 @@
-﻿ospgrillage.osp\_grillage.create\_grillage
-==========================================
+﻿create\_grillage
+================
 
 .. currentmodule:: ospgrillage.osp_grillage
 

@@ -1,5 +1,5 @@
-﻿ospgrillage.osp\_grillage.OspGrillage.get\_nodes
-================================================
+﻿OspGrillage.get\_nodes
+======================
 
 .. currentmodule:: ospgrillage.osp_grillage
 

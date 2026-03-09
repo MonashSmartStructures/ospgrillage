@@ -1,5 +1,5 @@
-﻿ospgrillage.load.MovingLoad.add\_load
-=====================================
+﻿MovingLoad.add\_load
+====================
 
 .. currentmodule:: ospgrillage.load
 

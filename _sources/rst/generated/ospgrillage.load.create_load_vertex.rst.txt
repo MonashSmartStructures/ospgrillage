@@ -1,5 +1,5 @@
-﻿ospgrillage.load.create\_load\_vertex
-=====================================
+﻿create\_load\_vertex
+====================
 
 .. currentmodule:: ospgrillage.load
 

@@ -1,5 +1,5 @@
-﻿ospgrillage.members.create\_section
-===================================
+﻿create\_section
+===============
 
 .. currentmodule:: ospgrillage.members
 

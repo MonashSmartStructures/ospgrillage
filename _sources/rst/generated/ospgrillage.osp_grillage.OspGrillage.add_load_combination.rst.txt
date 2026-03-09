@@ -1,5 +1,5 @@
-﻿ospgrillage.osp\_grillage.OspGrillage.add\_load\_combination
-============================================================
+﻿OspGrillage.add\_load\_combination
+==================================
 
 .. currentmodule:: ospgrillage.osp_grillage
 

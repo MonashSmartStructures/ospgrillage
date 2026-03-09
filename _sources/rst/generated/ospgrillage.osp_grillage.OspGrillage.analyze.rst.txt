@@ -1,5 +1,5 @@
-﻿ospgrillage.osp\_grillage.OspGrillage.analyze
-=============================================
+﻿OspGrillage.analyze
+===================
 
 .. currentmodule:: ospgrillage.osp_grillage
 

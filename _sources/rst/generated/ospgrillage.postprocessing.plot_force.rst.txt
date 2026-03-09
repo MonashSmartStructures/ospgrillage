@@ -1,5 +1,5 @@
-﻿ospgrillage.postprocessing.plot\_force
-======================================
+﻿plot\_force
+===========
 
 .. currentmodule:: ospgrillage.postprocessing
 

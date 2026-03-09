@@ -1,5 +1,5 @@
-﻿ospgrillage.members.create\_member
-==================================
+﻿create\_member
+==============
 
 .. currentmodule:: ospgrillage.members
 

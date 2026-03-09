@@ -1,5 +1,5 @@
-﻿ospgrillage.load.create\_load\_model
-====================================
+﻿create\_load\_model
+===================
 
 .. currentmodule:: ospgrillage.load
 

@@ -1,5 +1,5 @@
-﻿ospgrillage.material.create\_material
-=====================================
+﻿create\_material
+================
 
 .. currentmodule:: ospgrillage.material
 
