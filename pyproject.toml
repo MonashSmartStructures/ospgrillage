@@ -30,7 +30,7 @@ classifiers = [
 requires-python = ">=3.9"
 dependencies = [
     "openseespy>=3.2.2.6",
-    "opsvis>=0.95.5",
+    "opsvis>=1.0",
     "vfo>=0.0.6",
     "matplotlib",
     "numpy>=1.26",

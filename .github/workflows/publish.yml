@@ -1,4 +1,5 @@
 name: Build and deploy
+
 on:
   workflow_dispatch:
   release:
@@ -10,21 +11,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+
     - name: Build wheel and SDist
       run: pipx run build
+
+    - name: Check metadata
+      run: pipx run twine check --strict dist/*
+
     - uses: actions/upload-artifact@v4
       with:
         name: artifact
         path: dist/*
-    - name: Check metadata
-      run: pipx run twine check dist/*
 
   publish:
     needs: [dist]
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/p/<YOUR_PACKAGE_NAME>
+      url: https://pypi.org/p/ospgrillage
     permissions:
       id-token: write
     if: (github.event_name == 'release' && github.event.action == 'published') || github.event_name == 'workflow_dispatch'
@@ -33,5 +42,5 @@ jobs:
       with:
         name: artifact
         path: dist
-    - name: Publish distribution 📦 to PyPI
+    - name: Publish distribution to PyPI
       uses: pypa/gh-action-pypi-publish@v1.12.4

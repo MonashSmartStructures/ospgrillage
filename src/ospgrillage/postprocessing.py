@@ -288,10 +288,10 @@ def plot_force(
         yy = [nodes[n]["coordinate"][1] for n in ele_node.values]
         zz = [nodes[n]["coordinate"][2] for n in ele_node.values]
         # use ops_vis module to get force distribution on element
+        # opsvis >= 1.0 replaced separate ex/ey/ez args with a single ecrd
+        # ndarray of shape (2, 3): rows are nodes, columns are x, y, z
         s, al = opsv.section_force_distribution_3d(
-            ex=xx,
-            ey=yy,
-            ez=zz,
+            ecrd=np.column_stack([xx, yy, zz]),
             pl=ele_components,  # TODO check inputs with opsv package
         )
 
