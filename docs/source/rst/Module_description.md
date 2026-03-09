@@ -8,7 +8,7 @@ A list of all interface functions can be found in {doc}`APIdoc`. Although users 
 
 Figure 1 summarizes the workflow of creating a grillage model using *ospgrillage*.
 
-![Figure 1: Grillage model creation flow chart](../../_images/grillage_workflow.png)
+![Figure 1: Grillage model creation flow chart](../images/grillage_workflow.png)
 
 In general, there are three steps to create a grillage model with *ospgrillage*:
 
@@ -19,7 +19,7 @@ In general, there are three steps to create a grillage model with *ospgrillage*:
 We will detail these steps by creating a grillage model of a bridge deck as shown in Figure 2.
 
 ::: {#Figure 2}
-!`Figure 2: Grillage model created using [OpenSeesPy`](../../_images/42degnegative10m.png){.align-center}
+!`Figure 2: Grillage model created using [OpenSeesPy`](../images/42degnegative10m.png){.align-center}
 ```
 To begin, import `ospgrillage` as either `ospg` or `og` as shown in the following code block. As will be needed later, we also prepared the unit convention of variables for this example as shown in the same code block.
 
@@ -126,7 +126,7 @@ Presently, grillage models typically represent a simply-supported beam-and-slab 
 
 Figure 3 illustrates these standard grillage members and their position on an exemplar orthogonal grillage mesh.
 
-![Figure 3: Standard elements supported by *ospgrillage*](../../_images/grillage_elements.png)
+![Figure 3: Standard elements supported by *ospgrillage*](../images/grillage_elements.png)
 
 **Supports are automatically set at nodes along grid A (2 to 6) and grid E (9 to 13) as pinned and roller respectively.**
 
@@ -142,7 +142,7 @@ Must take a :py{class}`str` input of either \"Ortho\" or \"Oblique\". The defaul
 
 Figure 4 shows how the grid numbers and skew angles affects the output mesh of grillage model.
 
-![Figure 4: Example grid numbers and edge angles](../../_images/grillage_dimensions.png)
+![Figure 4: Example grid numbers and edge angles](../images/grillage_dimensions.png)
 
 For the example bridge in Figure 2, the following code line creates its {class}`~ospgrillage.osp_grillage.OspGrillage` object i.e. *example\_bridge*:
 

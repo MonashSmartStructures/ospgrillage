@@ -30,7 +30,7 @@ jobs:
     - name: Install the docs-build dependencies
       run: |
         sudo apt-get install -y pandoc
-        python -m pip install sphinx sphinx-autodoc-typehints nbsphinx pydata-sphinx-theme myst-parser
+        python -m pip install sphinx nbsphinx pydata-sphinx-theme myst-parser
 
     - name: Build the docs
       run: |

@@ -64,7 +64,6 @@ extensions = [
     "sphinx.ext.coverage",
     "sphinx.ext.githubpages",
     "nbsphinx",
-    "sphinx_autodoc_typehints",
     "myst_parser",
 ]
 
@@ -75,13 +74,14 @@ myst_enable_extensions = [
 ]
 
 autodoc_member_order = "bysource"
-autoclass_content = "both"  # Add __init__ doc (ie. params) to class summaries
+autoclass_content = "both"  # Include __init__ params in class summaries
 autosummary_generate = True
 html_show_sourcelink = (
     False  # Remove 'view source code' from top of page (for html, not python)
 )
 autodoc_inherit_docstrings = True  # If no docstring, inherit from base class
-set_type_checking_flag = True  # Enable 'expensive' imports for sphinx_autodoc_typehints
+autodoc_typehints = "description"  # Show type hints in parameter descriptions
+autodoc_typehints_description_target = "documented"  # Only add types where there is already a description
 nbsphinx_allow_errors = True  # Continue through Jupyter errors
 add_module_names = False  # Remove namespaces from class/method signatures
 # Add any paths that contain templates here, relative to this directory.

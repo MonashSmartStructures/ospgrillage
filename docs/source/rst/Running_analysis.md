@@ -12,7 +12,7 @@ import ospgrillage as og
 
 Figure 1 shows the flowchart for the load module of *ospgrillage*.
 
-![Figure 1: Load analysis utility flow chart](../../_images/analysis_workflow.png)
+![Figure 1: Load analysis utility flow chart](../images/analysis_workflow.png)
 
 ## Defining loads
 
@@ -50,7 +50,7 @@ Point load is a force applied on a single infinitesimal point of the grillage mo
 
 Point loads are created using {func}`~ospgrillage.load.create_load`, passing `type = "point"`. Point load takes only a single `LoadPoint` tuple. `p` in the tuple should have units of force (eg. N, kN, kips, etc) - see Figure 2.
 
-![Figure 2: Point load](../../_images/point.png)
+![Figure 2: Point load](../images/point.png)
 
 The following example code creates a 20 force unit point load located at (5,0,2) in the global coordinate system.
 
@@ -66,7 +66,7 @@ Line loads are loads exerted along a line. Line loads are useful to represent lo
 
 Line loads are instantiated with {func}`~ospgrillage.load.create_load` passing `type = "line"` and required at least two `LoadPoint\`s (corresponds to the start and end of the line load) - see Figure 3. Using more than two tuples allows a curve line loading profile. \`p` in the {class}`LoadPoint` tuple should have units of force per distance (eg. kN/m, kips/ft, etc).
 
-![Figure 3: Line load](../../_images/line.png)
+![Figure 3: Line load](../images/line.png)
 
 The following example code is a constant Two force per distance unit line load (UDL) in the global coordinate system from -1 to 11 distance units in the `x`-axis and along the position in the `z`-axis at 3 distance units.
 
@@ -87,7 +87,7 @@ Patch loads are useful to represent loads distributed uniformly over a certain a
 
 Patch loads are instantiated {func}`~ospgrillage.load.create_load`, specifying `type = "patch"`. Patch load requires at least four {class}`LoadPoint` tuple (corresponds to the vertices of the patch load) - see Figure 4. Using eight tuples allows a curve surface loading profile. `p` in the {class}`LoadPoint` tuple should have units of force per area.
 
-![Figure 4: Patch load](../../_images/patch.png)
+![Figure 4: Patch load](../images/patch.png)
 
 The following example code creates a constant 5 force per area unit patch load in the global coordinate system.
 
@@ -112,7 +112,7 @@ To create a compound load, use the {func}`~ospgrillage.load.create_compound_load
 
 Compound load are typically defined in a **local coordinate system** and then set to global coordinate system of the grillage. Figure 5 shows the relationship and process of mapping local to global system of a compound load.
 
-![Figure 5: Compound load](../../_images/compoundload.png)
+![Figure 5: Compound load](../images/compoundload.png)
 
 The following code creates a point and line load which is to be assigned as a Compound load.
 
@@ -180,7 +180,7 @@ For moving load analysis, users create moving load objects using {class}`~ospgri
 
 Figure 6 summarizes the relationship between moving loads, paths and the position of the loads on the grillage model.
 
-![Figure 6: Moving load](../../_images/movingload.png)
+![Figure 6: Moving load](../images/movingload.png)
 
 ### Moving path
 

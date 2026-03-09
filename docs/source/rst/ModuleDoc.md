@@ -6,7 +6,7 @@ This page details the design decisions of *ospgrillage* module. In outlining the
 
 The *ospgrillage* module generates a two-dimensional (2-D) grillage model of a bridge deck in OpenSees - a plot of 2-D mesh nodes is shown in Figure 1. All information pertaining grillage model is handled by the {class}`~ospgrillage.osp_grillage.OpsGrillage` object.
 
-![Figure 1: Typical grillage model nodes.](../../_images/Figure_1.png)
+![Figure 1: Typical grillage model nodes.](../images/Figure_1.png)
 
 ### Model space
 
@@ -40,7 +40,7 @@ A {class}`~ospgrillage.mesh.Mesh` class object handles and stores information of
 
 Figure 2 shows an annotated diagram of the bridge mesh nodes in Figure 1 which we will use as an explanatory example.
 
-![Figure 2: Meshing construction lines, showing start control line (Blue), end end control line (Green), sweep path (Black) and sweeping nodes (Red).](../../_images/Moduledoc_1.PNG)
+![Figure 2: Meshing construction lines, showing start control line (Blue), end end control line (Green), sweep path (Black) and sweeping nodes (Red).](../images/Moduledoc_1.PNG)
 
 Meshing algorithm is controlled by the {class}`~ospgrillage.mesh.Mesh` class object. The following components are generated at pre-meshing stage:
 
@@ -115,7 +115,7 @@ The definition of the following components within *ops-grillage* requires attent
 
 For {class}`~ospgrillage.load.LoadCase`, all load object inputs can be either local or global. Note when local coordinate is defined for a load object, a global reference coordinate needs to be defined or else the module raises an Error regarding its point/vertices values.
 
-![Figure 3: Mapping of local coordinate of Load/Path objects to global coordinate.](../../_images/coordinate_system_mapping.PNG)
+![Figure 3: Mapping of local coordinate of Load/Path objects to global coordinate.](../images/coordinate_system_mapping.PNG)
 
 ## Links to module components
 

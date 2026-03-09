@@ -42,3 +42,4 @@ docs/source/_templates/
 
 # Future pytest cache perhaps
 .pytest_cache/
+docs/source/rst/generated/

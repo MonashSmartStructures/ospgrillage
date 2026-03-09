@@ -56,7 +56,7 @@ ele_array = all_result.ele_nodes # store variable array as ele_array
 
 The **forces** DataArray is grouped according to element types. Depending on {doc}`ModelTemplates`, there can be one or more types of elements in the grillage model. For example, **force** of a {ref}`shell-hybrid-model` are recorded in two separate DataArrays, namely **forces\_beam** and **forces\_shell** respectively (Figure 1). Similarly, **ele\_nodes** will be split into **ele\_nodes\_beam** and **ele\_nodes\_shell**.
 
-![Figure 1: Structure of DataSet.](../../_images/dataset_structure.png)
+![Figure 1: Structure of DataSet.](../images/dataset_structure.png)
 
 ### Accessing and querying data {#access results}
 
@@ -203,7 +203,7 @@ The plotting functions of post-processing module is at alpha development stage a
 
 For this section, we will refer to an exemplar 28 m super-T bridge (Figure 1). The bridge grillage has been created and its {class}`~ospgrillage.osp_grillage.OspGrillage` object is defined as `bridge_28`.
 
-![Figure 1: 28 m super-T bridge model.](../../_images/28m_bridge.PNG)
+![Figure 1: 28 m super-T bridge model.](../images/28m_bridge.PNG)
 
 To plot deflection components from **displacement** DataArray, use {func}`~ospgrillage.postprocessing.plot_defo`. To use this function users need to specify the specific grillage member - this function returns a 2-D plot of displacement diagram. Following example plots the vertical deflection of `bridge_28`, for \"exterior\_main\_beam\_2\" member - plot shown in Figure 2:
 
@@ -211,7 +211,7 @@ To plot deflection components from **displacement** DataArray, use {func}`~ospgr
 og.plot_defo(bridge_28, results, member="exterior_main_beam_2", option= "nodes")
 ```
 
-![Figure 2: Deflected shape of of exterior main beam 2.](../../_images/example_deflected.PNG)
+![Figure 2: Deflected shape of of exterior main beam 2.](../images/example_deflected.PNG)
 
 To plot force components from **forces** DataArray, use {func}`~ospgrillage.postprocessing.plot_force`. Similar to {func}`~ospgrillage.postprocessing.plot_defo`, users need to specify name string of specific grillage member. Following example plots the bending moment \"Mz\" of \"exterior\_main\_beam\_2\" in `bridge_28` - plot shown in Figure 3:
 
@@ -219,4 +219,4 @@ To plot force components from **forces** DataArray, use {func}`~ospgrillage.post
 og.plot_force(bridge_28, results, member="exterior_main_beam_2", component="Mz")
 ```
 
-![Figure 3: Bending moment about z axis of exterior main beam 2 .](../../_images/example_bmd.PNG)
+![Figure 3: Bending moment about z axis of exterior main beam 2 .](../images/example_bmd.PNG)
