@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>ospgui — GUI geometry generator &#8212; ospgrillage 0.4.1 documentation</title>
+    <title>GUI — ospgui &#8212; ospgrillage 0.4.1 documentation</title>
   
   
   
@@ -45,7 +45,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'rst/ospgui';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="Releases" href="ChangeLog.html" />
+    <link rel="next" title="Troubleshooting" href="Troubleshooting.html" />
+    <link rel="prev" title="Curve Mesh" href="../notebooks/curve_mesh.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.4.1" />
@@ -130,7 +131,7 @@
 <nav>
   <ul class="bd-navbar-elements navbar-nav">
     
-<li class="nav-item ">
+<li class="nav-item current active">
   <a class="nav-link nav-internal" href="user_guide.html">
     User Guide
   </a>
@@ -154,13 +155,6 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="ChangeLog.html">
     Releases
-  </a>
-</li>
-
-
-<li class="nav-item current active">
-  <a class="nav-link nav-internal" href="#">
-    ospgui — GUI geometry generator
   </a>
 </li>
 
@@ -265,7 +259,7 @@
 <nav>
   <ul class="bd-navbar-elements navbar-nav">
     
-<li class="nav-item ">
+<li class="nav-item current active">
   <a class="nav-link nav-internal" href="user_guide.html">
     User Guide
   </a>
@@ -289,13 +283,6 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="ChangeLog.html">
     Releases
-  </a>
-</li>
-
-
-<li class="nav-item current active">
-  <a class="nav-link nav-internal" href="#">
-    ospgui — GUI geometry generator
   </a>
 </li>
 
@@ -354,7 +341,24 @@
 <nav class="bd-docs-nav bd-links"
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
-  <div class="bd-toc-item navbar-nav"></div>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module_description.html">Creating grillage models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ModelTemplates.html">Model types available</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mesh_feature.html">Mesh features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Running_analysis.html">Performing analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PostProcessing.html">Getting Results</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="Examples.html">Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/super_t_analysis_workflow.html">Standard workflow template - Super-T girder bridge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/mesh_showcase.html">Mesh features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/multi_span.html">Multi - span feature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/curve_mesh.html">Curve Mesh</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">GUI — ospgui</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Troubleshooting.html">Troubleshooting</a></li>
+</ul>
+</div>
 </nav></div>
     </div>
   
@@ -393,7 +397,10 @@
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">ospgui — GUI geometry generator</span></li>
+    
+    <li class="breadcrumb-item"><a href="user_guide.html" class="nav-link">User Guide</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">GUI — ospgui</span></li>
   </ul>
 </nav>
 </div>
@@ -410,27 +417,192 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="ospgui-gui-geometry-generator">
-<h1>ospgui — GUI geometry generator<a class="headerlink" href="#ospgui-gui-geometry-generator" title="Link to this heading">#</a></h1>
-<p>The <em>ospgui</em> module provides a graphical user interface for building <em>ospgrillage</em>
+  <section id="gui-ospgui">
+<h1>GUI — ospgui<a class="headerlink" href="#gui-ospgui" title="Link to this heading">#</a></h1>
+<p>The <em>ospgui</em> module provides a graphical interface for building <em>ospgrillage</em>
 bridge deck models interactively, without writing Python code.</p>
-<section id="launching-the-gui">
-<h2>Launching the GUI<a class="headerlink" href="#launching-the-gui" title="Link to this heading">#</a></h2>
-<p>After installing with the <code class="docutils literal notranslate"><span class="pre">gui</span></code> extra (<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;ospgrillage[gui]&quot;</span></code>), start the
-GUI from the command line:</p>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>
+<p>The GUI depends on PyQt5, which is an optional extra:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;ospgrillage[gui]&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="launching">
+<h2>Launching<a class="headerlink" href="#launching" title="Link to this heading">#</a></h2>
+<p>From the command line:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ospgui
 </pre></div>
 </div>
-<p>or from within Python:</p>
+<p>Or from within Python:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ospgrillage.ospgui</span><span class="w"> </span><span class="kn">import</span> <span class="n">main</span>
 <span class="n">main</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Automated API documentation for <code class="docutils literal notranslate"><span class="pre">ospgui</span></code> requires PyQt5 to be installed.
-Install it with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;ospgrillage[gui]&quot;</span></code> before building the docs locally.</p>
+</section>
+<section id="api-reference">
+<h2>API reference<a class="headerlink" href="#api-reference" title="Link to this heading">#</a></h2>
+<section id="main-window">
+<h3>Main window<a class="headerlink" href="#main-window" title="Link to this heading">#</a></h3>
+<p>.. py:class:: BridgeAnalysisGUI(*args: Any, **kwargs: Any)</p>
+<dl class="myst field-list">
+<dt class="field-odd">module<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ospgrillage.ospgui</p>
+<p>Bases: :py:class:<code class="docutils literal notranslate"><span class="pre">~PyQt5.QtWidgets.QMainWindow</span></code></p>
+<p>Main window for the <em>ospgui</em> bridge geometry generator.</p>
+<p>Provides an interactive graphical interface for defining a bridge deck
+grillage model, previewing the generated <em>ospgrillage</em> Python code, and
+running the model directly within the same session.</p>
+<p>The window is divided into three panels:</p>
+<ul class="simple">
+<li><p><strong>Left</strong> — :class:<code class="docutils literal notranslate"><span class="pre">ospgrillage.ospgui.BridgeInputWidget</span></code> with tabbed input forms.</p></li>
+<li><p><strong>Centre</strong> — live code view showing the generated Python source.</p></li>
+<li><p><strong>Right</strong> — 3-D mesh preview rendered via <em>vfo</em>.</p></li>
+</ul>
+<p>Typical usage is through the <code class="docutils literal notranslate"><span class="pre">ospgui</span></code> console entry-point or
+programmatically::</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>from ospgrillage.ospgui import main
+main()
+</pre></div>
 </div>
+<p>.. note::
+Requires PyQt5.  Install with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;ospgrillage[gui]&quot;</span></code>.</p>
+<p>.. py:method:: BridgeAnalysisGUI.create_menu_bar()</p>
+<dl class="myst field-list">
+<dt class="field-odd">module<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ospgrillage.ospgui</p>
+<p>Create the main menu bar</p>
+<p>.. py:method:: BridgeAnalysisGUI.create_tool_bar()</p>
+<dl class="myst field-list">
+<dt class="field-odd">module<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ospgrillage.ospgui</p>
+<p>Create the main toolbar</p>
+<p>.. py:method:: BridgeAnalysisGUI.create_status_bar()</p>
+<dl class="myst field-list">
+<dt class="field-odd">module<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ospgrillage.ospgui</p>
+<p>Create the status bar</p>
+<p>.. py:method:: BridgeAnalysisGUI.create_main_content()</p>
+<dl class="myst field-list">
+<dt class="field-odd">module<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ospgrillage.ospgui</p>
+<p>Create the main content area with tabs</p>
+<p>.. py:method:: BridgeAnalysisGUI.apply_changes()</p>
+<dl class="myst field-list">
+<dt class="field-odd">module<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ospgrillage.ospgui</p>
+<p>Handle Apply Changes button click</p>
+<p>.. py:method:: BridgeAnalysisGUI.collect_parameters()</p>
+<dl class="myst field-list">
+<dt class="field-odd">module<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ospgrillage.ospgui</p>
+<p>Collect all parameters from input fields</p>
+<p>.. py:method:: BridgeAnalysisGUI.save_code()</p>
+<dl class="myst field-list">
+<dt class="field-odd">module<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ospgrillage.ospgui</p>
+<p>Save the generated code to a file with proper error handling</p>
+<p>.. py:method:: BridgeAnalysisGUI.run_analysis()</p>
+<dl class="myst field-list">
+<dt class="field-odd">module<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ospgrillage.ospgui</p>
+<p>Handle Run Analysis button click</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+<section id="input-widget">
+<h3>Input widget<a class="headerlink" href="#input-widget" title="Link to this heading">#</a></h3>
+<p>.. py:class:: BridgeInputWidget(*args: Any, **kwargs: Any)</p>
+<dl class="myst field-list">
+<dt class="field-odd">module<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ospgrillage.ospgui</p>
+<p>Bases: :py:class:<code class="docutils literal notranslate"><span class="pre">~PyQt5.QtWidgets.QWidget</span></code></p>
+<p>Tabbed input form for bridge geometry, materials, sections, and members.</p>
+<p>Provides a structured form with separate tabs for each category of bridge
+model inputs.  This widget is embedded inside :class:<code class="docutils literal notranslate"><span class="pre">BridgeAnalysisGUI</span></code>
+and is not intended to be instantiated directly by users.</p>
+<p>.. note::
+Requires PyQt5.  Install with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;ospgrillage[gui]&quot;</span></code>.</p>
+<p>.. py:method:: BridgeInputWidget.create_geometry_tab()</p>
+<dl class="myst field-list">
+<dt class="field-odd">module<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ospgrillage.ospgui</p>
+<p>Geometry input tab</p>
+<p>.. py:method:: BridgeInputWidget.toggle_radius_visibility(bridge_type)</p>
+<dl class="myst field-list">
+<dt class="field-odd">module<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ospgrillage.ospgui</p>
+<p>Show radius input only for curved bridges</p>
+<p>.. py:method:: BridgeInputWidget.create_materials_tab()</p>
+<dl class="myst field-list">
+<dt class="field-odd">module<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ospgrillage.ospgui</p>
+<p>Material properties tab with nested group boxes</p>
+<p>.. py:method:: BridgeInputWidget.update_material_fields(material)</p>
+<dl class="myst field-list">
+<dt class="field-odd">module<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ospgrillage.ospgui</p>
+<p>Update the compressive strength options based on material type</p>
+<p>.. py:method:: BridgeInputWidget.update_grade_fields(code, material)</p>
+<dl class="myst field-list">
+<dt class="field-odd">module<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ospgrillage.ospgui</p>
+<p>Update the grade options based on code selected</p>
+<p>.. py:method:: BridgeInputWidget.create_sections_tab()</p>
+<dl class="myst field-list">
+<dt class="field-odd">module<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ospgrillage.ospgui</p>
+<p>Cross-section input tab with specific properties</p>
+<p>.. py:method:: BridgeInputWidget.create_members_tab()</p>
+<dl class="myst field-list">
+<dt class="field-odd">module<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ospgrillage.ospgui</p>
+<p>Member assignment tab</p>
+<p>.. py:method:: BridgeInputWidget.create_loads_tab()</p>
+<dl class="myst field-list">
+<dt class="field-odd">module<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ospgrillage.ospgui</p>
+<p>Load cases tab</p>
+<p>.. py:method:: BridgeInputWidget.create_analysis_tab()</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">module<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
 </section>
 </section>
 
@@ -445,13 +617,22 @@ Install it with <code class="docutils literal notranslate"><span class="pre">pip
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="ChangeLog.html"
+       href="../notebooks/curve_mesh.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Releases</p>
+        <p class="prev-next-title">Curve Mesh</p>
       </div>
+    </a>
+    <a class="right-next"
+       href="Troubleshooting.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Troubleshooting</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
     </a>
 </div>
                 </footer>
@@ -472,7 +653,13 @@ Install it with <code class="docutils literal notranslate"><span class="pre">pip
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#launching-the-gui">Launching the GUI</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#launching">Launching</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#api-reference">API reference</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#main-window">Main window</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#input-widget">Input widget</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 

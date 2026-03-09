@@ -6,7 +6,6 @@ rst/user_guide
 rst/APIdoc
 rst/ModuleDoc
 rst/ChangeLog
-rst/ospgui
 ```
 
 ```{image} http://raw.githubusercontent.com/MonashSmartStructures/ospgrillage/main/docs/source/images/ospgrillage_logo.png
