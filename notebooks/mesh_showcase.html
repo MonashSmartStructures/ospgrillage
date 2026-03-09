@@ -49,7 +49,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Multi - span feature" href="multi_span.html" />
-    <link rel="prev" title="Mesh features" href="../rst/mesh_feature.html" />
+    <link rel="prev" title="Standard workflow template - Super-T girder bridge" href="super_t_analysis_workflow.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.4.0" />
@@ -164,7 +164,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../rst/ospgui.html">
-    ospgui User Guide
+    ospgui — GUI geometry generator
   </a>
 </li>
 
@@ -299,7 +299,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../rst/ospgui.html">
-    ospgui User Guide
+    ospgui — GUI geometry generator
   </a>
 </li>
 
@@ -360,20 +360,19 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../rst/Installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../rst/Module%20description.html">Creating grillage models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rst/Module_description.html">Creating grillage models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../rst/ModelTemplates.html">Model types available</a></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../rst/mesh_feature.html">Mesh features</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../rst/mesh_feature.html">Mesh features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rst/Running_analysis.html">Performing analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rst/PostProcessing.html">Getting Results</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../rst/Examples.html">Examples</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="super_t_analysis_workflow.html">Standard workflow template - Super-T girder bridge</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Mesh features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="multi_span.html">Multi - span feature</a></li>
 <li class="toctree-l2"><a class="reference internal" href="curve_mesh.html">Curve Mesh</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1"><a class="reference internal" href="../rst/Running_analysis.html">Performing analysis</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../rst/PostProcessing.html">Getting Results</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../rst/Examples.html">Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="super_t_analysis_workflow.html">Standard workflow template - Super-T girder bridge</a></li>
-</ul>
-</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../rst/Troubleshooting.html">Troubleshooting</a></li>
 </ul>
 </div>
 </nav></div>
@@ -418,7 +417,7 @@
     <li class="breadcrumb-item"><a href="../rst/user_guide.html" class="nav-link">User Guide</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../rst/mesh_feature.html" class="nav-link">Mesh features</a></li>
+    <li class="breadcrumb-item"><a href="../rst/Examples.html" class="nav-link">Examples</a></li>
     
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Mesh features</span></li>
   </ul>
@@ -437,7 +436,11 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="Mesh-features">
+  <p><strong>ospgrillage version used in this notebook:</strong> see <code class="docutils literal notranslate"><span class="pre">ospgrillage.__version__</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">ospgrillage</span><span class="p">;</span> <span class="nb">print</span><span class="p">(</span><span class="n">ospgrillage</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="Mesh-features">
 <h1>Mesh features<a class="headerlink" href="#Mesh-features" title="Link to this heading">#</a></h1>
 <p>In this example, we will explore the various meshing features available in ospgrillage.</p>
 <p>First, the necessary imports:</p>
@@ -601,7 +604,7 @@ No Model_ODB specified, trying to get data from the active model.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_mesh_showcase_11_1.png" src="../_images/notebooks_mesh_showcase_11_1.png" />
+<img alt="../_images/notebooks_mesh_showcase_12_1.png" src="../_images/notebooks_mesh_showcase_12_1.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -675,7 +678,7 @@ No Model_ODB specified, trying to get data from the active model.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_mesh_showcase_14_1.png" src="../_images/notebooks_mesh_showcase_14_1.png" />
+<img alt="../_images/notebooks_mesh_showcase_15_1.png" src="../_images/notebooks_mesh_showcase_15_1.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -748,7 +751,7 @@ No Model_ODB specified, trying to get data from the active model.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_mesh_showcase_17_1.png" src="../_images/notebooks_mesh_showcase_17_1.png" />
+<img alt="../_images/notebooks_mesh_showcase_18_1.png" src="../_images/notebooks_mesh_showcase_18_1.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -790,12 +793,12 @@ No Model_ODB specified, trying to get data from the active model.
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../rst/mesh_feature.html"
+       href="super_t_analysis_workflow.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Mesh features</p>
+        <p class="prev-next-title">Standard workflow template - Super-T girder bridge</p>
       </div>
     </a>
     <a class="right-next"

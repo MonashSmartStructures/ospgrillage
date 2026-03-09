@@ -1,0 +1,717 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Troubleshooting &#8212; ospgrillage 0.4.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'rst/Troubleshooting';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="API reference" href="APIdoc.html" />
+    <link rel="prev" title="Curve Mesh" href="../notebooks/curve_mesh.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.4.0" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/ospgrillage_logo.png" class="logo__image only-light" alt="ospgrillage 0.4.0 documentation - Home"/>
+    <img src="../_static/ospgrillage_logo.png" class="logo__image only-dark pst-js-only" alt="ospgrillage 0.4.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="APIdoc.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="ModuleDoc.html">
+    Package design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="ChangeLog.html">
+    Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="ospgui.html">
+    ospgui — GUI geometry generator
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MonashSmartStructures/ospgrillage" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="APIdoc.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="ModuleDoc.html">
+    Package design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="ChangeLog.html">
+    Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="ospgui.html">
+    ospgui — GUI geometry generator
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MonashSmartStructures/ospgrillage" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module_description.html">Creating grillage models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ModelTemplates.html">Model types available</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mesh_feature.html">Mesh features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Running_analysis.html">Performing analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PostProcessing.html">Getting Results</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="Examples.html">Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/super_t_analysis_workflow.html">Standard workflow template - Super-T girder bridge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/mesh_showcase.html">Mesh features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/multi_span.html">Multi - span feature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/curve_mesh.html">Curve Mesh</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Troubleshooting</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="user_guide.html" class="nav-link">User Guide</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Troubleshooting</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="troubleshooting">
+<h1>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">#</a></h1>
+<p>This page collects common errors and their solutions. If your problem is not listed here, please open an <a class="reference external" href="https://github.com/MonashSmartStructures/ospgrillage/issues">issue on GitHub</a>.</p>
+<hr class="docutils" />
+<section id="installation-problems">
+<h2>Installation problems<a class="headerlink" href="#installation-problems" title="Link to this heading">#</a></h2>
+<section id="ospgui-fails-with-modulenotfounderror-no-module-named-pyqt5">
+<h3><code class="docutils literal notranslate"><span class="pre">ospgui</span></code> fails with <code class="docutils literal notranslate"><span class="pre">ModuleNotFoundError:</span> <span class="pre">No</span> <span class="pre">module</span> <span class="pre">named</span> <span class="pre">'PyQt5'</span></code><a class="headerlink" href="#ospgui-fails-with-modulenotfounderror-no-module-named-pyqt5" title="Link to this heading">#</a></h3>
+<p>The GUI requires PyQt5, which is an optional dependency not installed by default. Install it with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;ospgrillage[gui]&quot;</span>
+</pre></div>
+</div>
+<p>or, if ospgrillage is already installed:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>PyQt5
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="openseespy-install-fails-on-macos-apple-silicon">
+<h3><code class="docutils literal notranslate"><span class="pre">openseespy</span></code> install fails on macOS (Apple Silicon)<a class="headerlink" href="#openseespy-install-fails-on-macos-apple-silicon" title="Link to this heading">#</a></h3>
+<p>OpenSeesPy ships platform-specific wheels. Make sure you are using a native arm64 Python interpreter (not a Rosetta-translated one):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import platform; print(platform.machine())&quot;</span>
+<span class="c1"># should print: arm64</span>
+</pre></div>
+</div>
+<p>If it prints <code class="docutils literal notranslate"><span class="pre">x86_64</span></code> inside an arm64 terminal you are running under Rosetta. Create a new conda environment with a native arm64 Python:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>ospg<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.11
+conda<span class="w"> </span>activate<span class="w"> </span>ospg
+pip<span class="w"> </span>install<span class="w"> </span>ospgrillage
+</pre></div>
+</div>
+</section>
+<section id="pandoc-not-found-when-building-documentation">
+<h3>Pandoc not found when building documentation<a class="headerlink" href="#pandoc-not-found-when-building-documentation" title="Link to this heading">#</a></h3>
+<p>The Sphinx docs convert Jupyter notebooks via <code class="docutils literal notranslate"><span class="pre">nbsphinx</span></code>, which requires <a class="reference external" href="https://pandoc.org">pandoc</a> on your system <code class="docutils literal notranslate"><span class="pre">PATH</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># macOS</span>
+brew<span class="w"> </span>install<span class="w"> </span>pandoc
+
+<span class="c1"># Ubuntu / Debian</span>
+sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>pandoc
+
+<span class="c1"># Windows — download the installer from https://pandoc.org/installing.html</span>
+</pre></div>
+</div>
+<p>After installing, verify with <code class="docutils literal notranslate"><span class="pre">pandoc</span> <span class="pre">--version</span></code> and re-run <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code>.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="model-creation-errors">
+<h2>Model creation errors<a class="headerlink" href="#model-creation-errors" title="Link to this heading">#</a></h2>
+<section id="valueerror-vertices-of-patch-load-give-an-invalid-patch-layout">
+<h3><code class="docutils literal notranslate"><span class="pre">ValueError:</span> <span class="pre">vertices</span> <span class="pre">of</span> <span class="pre">patch</span> <span class="pre">load</span> <span class="pre">give</span> <span class="pre">an</span> <span class="pre">invalid</span> <span class="pre">patch</span> <span class="pre">layout</span></code><a class="headerlink" href="#valueerror-vertices-of-patch-load-give-an-invalid-patch-layout" title="Link to this heading">#</a></h3>
+<p>This is raised by <code class="xref py py-class docutils literal notranslate"><span class="pre">PatchLoading</span></code> when the four vertices are not supplied in counter-clockwise (CCW) order, or define a self-intersecting quadrilateral.</p>
+<p>Check that:</p>
+<ol class="arabic simple">
+<li><p>The vertices form a valid convex (or at least non-self-intersecting) quadrilateral.</p></li>
+<li><p>The vertices are listed in CCW order when viewed from above (positive <em>y</em> looking down).</p></li>
+<li><p>Any cyclic rotation of the CCW order is accepted — only the winding direction matters.</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Correct — CCW starting from any corner</span>
+<span class="n">patch</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load</span><span class="p">(</span><span class="n">loadtype</span><span class="o">=</span><span class="s2">&quot;patch&quot;</span><span class="p">,</span>
+                       <span class="n">vertices</span><span class="o">=</span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)])</span>
+
+<span class="c1"># Also correct — CCW but starting from a different corner</span>
+<span class="n">patch</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load</span><span class="p">(</span><span class="n">loadtype</span><span class="o">=</span><span class="s2">&quot;patch&quot;</span><span class="p">,</span>
+                       <span class="n">vertices</span><span class="o">=</span><span class="p">[(</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)])</span>
+
+<span class="c1"># Wrong — clockwise order</span>
+<span class="n">patch</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load</span><span class="p">(</span><span class="n">loadtype</span><span class="o">=</span><span class="s2">&quot;patch&quot;</span><span class="p">,</span>
+                       <span class="n">vertices</span><span class="o">=</span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)])</span>
+</pre></div>
+</div>
+</section>
+<section id="skew-angle-meshing-rule-errors">
+<h3><code class="docutils literal notranslate"><span class="pre">skew</span> <span class="pre">angle</span></code> meshing rule errors<a class="headerlink" href="#skew-angle-meshing-rule-errors" title="Link to this heading">#</a></h3>
+<p><em>ospgrillage</em> enforces:</p>
+<ul class="simple">
+<li><p>Orthogonal mesh is <strong>not</strong> allowed when the skew angle is less than 11°.</p></li>
+<li><p>Oblique mesh is <strong>not</strong> allowed when the skew angle is greater than 30°.</p></li>
+</ul>
+<p>For skew angles between 11° and 30° either mesh type is permitted.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Skew angle too large for oblique mesh — use Ortho</span>
+<span class="n">bridge</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_grillage</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">skew</span><span class="o">=</span><span class="mi">35</span><span class="p">,</span> <span class="n">mesh_type</span><span class="o">=</span><span class="s2">&quot;Ortho&quot;</span><span class="p">)</span>
+
+<span class="c1"># Skew angle too small for orthogonal mesh — use Oblique</span>
+<span class="n">bridge</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_grillage</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">skew</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">mesh_type</span><span class="o">=</span><span class="s2">&quot;Oblique&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="analysis-errors">
+<h2>Analysis errors<a class="headerlink" href="#analysis-errors" title="Link to this heading">#</a></h2>
+<section id="openseespy-segfault-silent-crash">
+<h3><code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code> segfault / silent crash<a class="headerlink" href="#openseespy-segfault-silent-crash" title="Link to this heading">#</a></h3>
+<p>OpenSeesPy maintains global state. If you run multiple grillage models in the same Python process without wiping the OpenSees domain between them, the model tags clash and the solver may crash silently.</p>
+<p>Call <code class="xref py py-meth docutils literal notranslate"><span class="pre">create_osp_model()</span></code> on a fresh grillage object, or restart the Python kernel between models.</p>
+</section>
+<section id="results-appear-to-be-all-zeros">
+<h3>Results appear to be all zeros<a class="headerlink" href="#results-appear-to-be-all-zeros" title="Link to this heading">#</a></h3>
+<p>This usually means the model was not analysed before calling <code class="xref py py-meth docutils literal notranslate"><span class="pre">get_results()</span></code>. Ensure the workflow is:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">bridge</span><span class="o">.</span><span class="n">create_osp_model</span><span class="p">(</span><span class="n">pyfile</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">bridge</span><span class="o">.</span><span class="n">add_load_case</span><span class="p">(</span><span class="n">load_case</span><span class="p">)</span>
+<span class="n">bridge</span><span class="o">.</span><span class="n">analyze</span><span class="p">()</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">bridge</span><span class="o">.</span><span class="n">get_results</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="post-processing-problems">
+<h2>Post-processing problems<a class="headerlink" href="#post-processing-problems" title="Link to this heading">#</a></h2>
+<section id="keyerror-in-envelope">
+<h3><code class="docutils literal notranslate"><span class="pre">KeyError</span></code> in <code class="xref py py-class docutils literal notranslate"><span class="pre">Envelope</span></code><a class="headerlink" href="#keyerror-in-envelope" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">array</span></code> argument passed to <code class="xref py py-func docutils literal notranslate"><span class="pre">create_envelope()</span></code> must match a variable name present in the <code class="docutils literal notranslate"><span class="pre">xarray.Dataset</span></code> returned by <code class="xref py py-meth docutils literal notranslate"><span class="pre">get_results()</span></code>. Common valid names are <code class="docutils literal notranslate"><span class="pre">&quot;N&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Vy&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Vz&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Mx&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;My&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Mz&quot;</span></code>.</p>
+</section>
+<section id="vfo-visualisation-not-showing">
+<h3><code class="docutils literal notranslate"><span class="pre">vfo</span></code> / visualisation not showing<a class="headerlink" href="#vfo-visualisation-not-showing" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">vfo</span></code> opens a separate OpenGL window. In Jupyter Lab this window may appear behind the browser. Try running the visualisation script as a plain Python file outside of Jupyter, or use <code class="docutils literal notranslate"><span class="pre">%matplotlib</span> <span class="pre">widget</span></code> if only matplotlib output is needed.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="documentation-build-warnings">
+<h2>Documentation build warnings<a class="headerlink" href="#documentation-build-warnings" title="Link to this heading">#</a></h2>
+<section id="warning-document-isn-t-included-in-any-toctree">
+<h3><code class="docutils literal notranslate"><span class="pre">WARNING:</span> <span class="pre">document</span> <span class="pre">isn't</span> <span class="pre">included</span> <span class="pre">in</span> <span class="pre">any</span> <span class="pre">toctree</span></code><a class="headerlink" href="#warning-document-isn-t-included-in-any-toctree" title="Link to this heading">#</a></h3>
+<p>This warning appears when an RST file exists under <code class="docutils literal notranslate"><span class="pre">docs/source/</span></code> but is not referenced in any <code class="docutils literal notranslate"><span class="pre">toctree</span></code> directive. Either add the file to the appropriate toctree or delete it if it is no longer needed.</p>
+</section>
+<section id="warning-autodoc-failed-to-import">
+<h3><code class="docutils literal notranslate"><span class="pre">WARNING:</span> <span class="pre">autodoc:</span> <span class="pre">failed</span> <span class="pre">to</span> <span class="pre">import</span></code><a class="headerlink" href="#warning-autodoc-failed-to-import" title="Link to this heading">#</a></h3>
+<p>The Sphinx <code class="docutils literal notranslate"><span class="pre">conf.py</span></code> mocks <code class="docutils literal notranslate"><span class="pre">openseespy</span></code> so autodoc can run without the binary. If you see this for an <em>ospgrillage</em> module, check that the module path in the <code class="docutils literal notranslate"><span class="pre">autoclass</span></code> or <code class="docutils literal notranslate"><span class="pre">autosummary</span></code> directive is correct, and that any newly added source files have been committed so Sphinx can find them.</p>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../notebooks/curve_mesh.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Curve Mesh</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="APIdoc.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">API reference</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation-problems">Installation problems</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgui-fails-with-modulenotfounderror-no-module-named-pyqt5"><code class="docutils literal notranslate"><span class="pre">ospgui</span></code> fails with <code class="docutils literal notranslate"><span class="pre">ModuleNotFoundError:</span> <span class="pre">No</span> <span class="pre">module</span> <span class="pre">named</span> <span class="pre">'PyQt5'</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openseespy-install-fails-on-macos-apple-silicon"><code class="docutils literal notranslate"><span class="pre">openseespy</span></code> install fails on macOS (Apple Silicon)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pandoc-not-found-when-building-documentation">Pandoc not found when building documentation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-creation-errors">Model creation errors</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#valueerror-vertices-of-patch-load-give-an-invalid-patch-layout"><code class="docutils literal notranslate"><span class="pre">ValueError:</span> <span class="pre">vertices</span> <span class="pre">of</span> <span class="pre">patch</span> <span class="pre">load</span> <span class="pre">give</span> <span class="pre">an</span> <span class="pre">invalid</span> <span class="pre">patch</span> <span class="pre">layout</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#skew-angle-meshing-rule-errors"><code class="docutils literal notranslate"><span class="pre">skew</span> <span class="pre">angle</span></code> meshing rule errors</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analysis-errors">Analysis errors</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#openseespy-segfault-silent-crash"><code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code> segfault / silent crash</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#results-appear-to-be-all-zeros">Results appear to be all zeros</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#post-processing-problems">Post-processing problems</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#keyerror-in-envelope"><code class="docutils literal notranslate"><span class="pre">KeyError</span></code> in <code class="xref py py-class docutils literal notranslate"><span class="pre">Envelope</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#vfo-visualisation-not-showing"><code class="docutils literal notranslate"><span class="pre">vfo</span></code> / visualisation not showing</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#documentation-build-warnings">Documentation build warnings</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#warning-document-isn-t-included-in-any-toctree"><code class="docutils literal notranslate"><span class="pre">WARNING:</span> <span class="pre">document</span> <span class="pre">isn't</span> <span class="pre">included</span> <span class="pre">in</span> <span class="pre">any</span> <span class="pre">toctree</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#warning-autodoc-failed-to-import"><code class="docutils literal notranslate"><span class="pre">WARNING:</span> <span class="pre">autodoc:</span> <span class="pre">failed</span> <span class="pre">to</span> <span class="pre">import</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/rst/Troubleshooting.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2023, Justin Ngan, Colin Caprani.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

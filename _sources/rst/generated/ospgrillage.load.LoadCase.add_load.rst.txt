@@ -1,6 +1,0 @@
-﻿ospgrillage.load.LoadCase.add\_load
-===================================
-
-.. currentmodule:: ospgrillage.load
-
-.. automethod:: LoadCase.add_load

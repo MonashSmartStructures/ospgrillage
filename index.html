@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>OpenSeesPy Grillage wizard - ospgrillage &#8212; ospgrillage 0.4.0 documentation</title>
+    <title>OpenSeesPy Grillage wizard — ospgrillage &#8212; ospgrillage 0.4.0 documentation</title>
   
   
   
@@ -160,7 +160,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="rst/ospgui.html">
-    ospgui User Guide
+    ospgui — GUI geometry generator
   </a>
 </li>
 
@@ -297,7 +297,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="rst/ospgui.html">
-    ospgui User Guide
+    ospgui — GUI geometry generator
   </a>
 </li>
 
@@ -379,64 +379,45 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <a class="reference internal image-reference" href="http://raw.githubusercontent.com/MonashSmartStructures/ospgrillage/main/docs/source/images/ospgrillage_logo.png"><img alt="ospgrillage" class="align-center" src="http://raw.githubusercontent.com/MonashSmartStructures/ospgrillage/main/docs/source/images/ospgrillage_logo.png" style="width: 80%;" />
+  <div class="toctree-wrapper compound">
+</div>
+<a class="reference internal image-reference" href="http://raw.githubusercontent.com/MonashSmartStructures/ospgrillage/main/docs/source/images/ospgrillage_logo.png"><img alt="ospgrillage" class="align-center" src="http://raw.githubusercontent.com/MonashSmartStructures/ospgrillage/main/docs/source/images/ospgrillage_logo.png" style="width: 80%;" />
 </a>
 <p><a class="reference external" href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg" /></a>
 <a class="reference external" href="https://opensource.org/licenses/MIT"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" /></a>
-<img alt="version" src="https://img.shields.io/github/downloads/MonashSmartStructures/ospgrillage/total?label=version" />
-<img alt="GitHub issues" src="https://img.shields.io/github/issues/MonashSmartStructures/ospgrillage?logoColor=yellowgreen" />
-<img alt="GitHub pull requests" src="https://img.shields.io/github/issues-pr/MonashSmartStructures/ospgrillage?color=yellowgreen" />
-<img alt="PyPI" src="https://img.shields.io/pypi/v/ospgrillage" />
-<img alt="GitHub Workflow Deploy" src="https://img.shields.io/github/workflow/status/MonashSmartStructures/ospgrillage/Build%20and%20deploy" />
-<img alt="GitHub Workflow Build" src="https://img.shields.io/github/workflow/status/MonashSmartStructures/ospgrillage/Deploy%20to%20GitHub%20Pages?label=gh%20page%20build" />
-<img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/MonashSmartStructures/ospgrillage/Tests?label=Tests" />
-<img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/MonashSmartStructures/ospgrillage" />
-<img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/MonashSmartStructures/ospgrillage?color=ff69b4" />
-<a class="reference external" href="code_of_conduct.md"><img alt="Contributor Covenant" src="https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg" /></a>
+<a class="reference external" href="https://pypi.org/project/ospgrillage/"><img alt="PyPI" src="https://img.shields.io/pypi/v/ospgrillage" /></a>
 <a class="reference external" href="https://codecov.io/gh/MonashSmartStructures/ospgrillage"><img alt="codecov" src="https://codecov.io/gh/MonashSmartStructures/ospgrillage/branch/main/graph/badge.svg?token=dUTOmPBnyP" /></a>
 <a class="reference external" href="https://joss.theoj.org/papers/d44339b03dc4f1add2678167c1a1b6de"><img alt="JOSS" src="https://joss.theoj.org/papers/d44339b03dc4f1add2678167c1a1b6de/status.svg" /></a>
 <a class="reference external" href="https://zenodo.org/badge/latestdoi/365436121"><img alt="Zenodo" src="https://zenodo.org/badge/365436121.svg" /></a></p>
 <section id="openseespy-grillage-wizard-ospgrillage">
-<h1>OpenSeesPy Grillage wizard - <em>ospgrillage</em><a class="headerlink" href="#openseespy-grillage-wizard-ospgrillage" title="Link to this heading">#</a></h1>
-<p><em>ospgrillage</em> is a python wrapper of the <em>OpenSeesPy</em> package to speed up the creation of bridge deck grillage models.
-<a class="reference external" href="openseespydoc.readthedocs.io">OpenSeesPy</a> is a python interpreter of the well-know Open System for Earthquake Engineering Simulation (<a class="reference external" href="https://opensees.berkeley.edu/">OpenSees</a>) software framework.
-<em>ospgrillage</em> provides a simple python API which allows users to:</p>
+<h1>OpenSeesPy Grillage wizard — <em>ospgrillage</em><a class="headerlink" href="#openseespy-grillage-wizard-ospgrillage" title="Link to this heading">#</a></h1>
+<p><em>ospgrillage</em> is a Python wrapper around <em>OpenSeesPy</em> to speed up the creation of
+bridge deck grillage models.
+<a class="reference external" href="https://openseespydoc.readthedocs.io">OpenSeesPy</a> is a Python interpreter of the
+well-known Open System for Earthquake Engineering Simulation
+(<a class="reference external" href="https://opensees.berkeley.edu/">OpenSees</a>) framework.</p>
+<p><em>ospgrillage</em> lets you:</p>
 <ol class="arabic simple">
-<li><p>Quickly generate and analyze a bridge deck grillage model in the <em>OpenSeesPy</em> model space, including many forms of loading and load cases;</p></li>
-<li><p>Export a <code class="code docutils literal notranslate"><span class="pre">*.py</span></code> file containing the <em>OpenSeesPy</em> commands, which on execution, creates the prescribed <em>OpenSeesPy</em> grillage model.</p></li>
+<li><p>Quickly generate and analyse a bridge deck grillage model in the <em>OpenSeesPy</em>
+model space, with many forms of loading and load cases.</p></li>
+<li><p>Export a <code class="docutils literal notranslate"><span class="pre">.py</span></code> file containing the <em>OpenSeesPy</em> commands which, on execution,
+recreates the prescribed grillage model.</p></li>
 </ol>
-<p>The ability to use <em>ospgrillage</em> directly to do bridge deck analysis, or to export the <em>OpenSeesPy</em> command file for further editing, facilities an enormous range of use-cases in both bridge engineering practice and research.</p>
-<section id="documentation">
-<h2>Documentation<a class="headerlink" href="#documentation" title="Link to this heading">#</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="rst/user_guide.html">User Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="rst/APIdoc.html">API reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="rst/ModuleDoc.html">Package design</a></li>
-<li class="toctree-l1"><a class="reference internal" href="rst/ChangeLog.html">Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="rst/ospgui.html">ospgui User Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="rst/ospgui.html#installation">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="rst/ospgui.html#launching-the-gui">Launching the GUI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="rst/ospgui.html#getting-started">Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="rst/ospgui.html#features">Features</a></li>
-<li class="toctree-l1"><a class="reference internal" href="rst/ospgui.html#user-interface-overview">User Interface Overview</a></li>
-</ul>
-</div>
-</section>
 <section id="support">
 <h2>Support<a class="headerlink" href="#support" title="Link to this heading">#</a></h2>
-<p>For technical support, please raise an issue at the <a class="reference external" href="https://github.com/MonashSmartStructures/ospgrillage">Github repository</a></p>
+<p>For technical support please raise an issue at the
+<a class="reference external" href="https://github.com/MonashSmartStructures/ospgrillage">GitHub repository</a>.</p>
 </section>
 <section id="contributing">
 <h2>Contributing<a class="headerlink" href="#contributing" title="Link to this heading">#</a></h2>
-<p>We really value and welcome contributions to the <em>ospgrillage</em> package.
-Please check out our <a class="reference external" href="https://github.com/MonashSmartStructures/ospgrillage/blob/main/.github/CONTRIBUTING.md">contributing guidelines</a>.</p>
+<p>We welcome contributions to <em>ospgrillage</em>.
+Please read the
+<a class="reference external" href="https://github.com/MonashSmartStructures/ospgrillage/blob/main/CONTRIBUTING.md">contributing guidelines</a>
+before submitting a pull request.</p>
 </section>
 <section id="credits">
 <h2>Credits<a class="headerlink" href="#credits" title="Link to this heading">#</a></h2>
-<ul class="simple">
-<li><p>Mayer Melhem for producing the documentation illustrations and the design of the <em>ospgrillage</em> logo.</p></li>
-</ul>
+<p>Mayer Melhem produced the documentation illustrations and designed the <em>ospgrillage</em> logo.</p>
 </section>
 </section>
 
@@ -478,7 +459,6 @@ Please check out our <a class="reference external" href="https://github.com/Mona
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#documentation">Documentation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#support">Support</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contributing">Contributing</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#credits">Credits</a></li>
@@ -489,7 +469,7 @@ Please check out our <a class="reference external" href="https://github.com/Mona
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/index.rst">
+    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/index.md">
       <i class="fa-solid fa-pencil"></i>
       
       

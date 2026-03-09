@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>ospgui User Guide &#8212; ospgrillage 0.4.0 documentation</title>
+    <title>ospgui — GUI geometry generator &#8212; ospgrillage 0.4.0 documentation</title>
   
   
   
@@ -160,7 +160,7 @@
 
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="#">
-    ospgui User Guide
+    ospgui — GUI geometry generator
   </a>
 </li>
 
@@ -295,7 +295,7 @@
 
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="#">
-    ospgui User Guide
+    ospgui — GUI geometry generator
   </a>
 </li>
 
@@ -393,7 +393,7 @@
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">ospgui User Guide</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">ospgui — GUI geometry generator</span></li>
   </ul>
 </nav>
 </div>
@@ -410,167 +410,27 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="ospgui-user-guide">
-<h1>ospgui User Guide<a class="headerlink" href="#ospgui-user-guide" title="Link to this heading">#</a></h1>
-</section>
-<section id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h1>
-<p><code class="docutils literal notranslate"><span class="pre">ospgui</span></code> is a graphical interface for creating and visualizing bridge grillage models without writing Python code. It is built with <strong>PyQt5</strong> and distributed as an optional extension to <strong>Ospgrillage</strong>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>To use <code class="docutils literal notranslate"><span class="pre">ospgui</span></code>, <strong>Ospgrillage must be installed</strong> first. Then, install the GUI with:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>ospgrillage<span class="o">[</span>gui<span class="o">]</span>
-</pre></div>
-</div>
-</div>
-</section>
+  <section id="ospgui-gui-geometry-generator">
+<h1>ospgui — GUI geometry generator<a class="headerlink" href="#ospgui-gui-geometry-generator" title="Link to this heading">#</a></h1>
+<p>The <em>ospgui</em> module provides a graphical user interface for building <em>ospgrillage</em>
+bridge deck models interactively, without writing Python code.</p>
 <section id="launching-the-gui">
-<h1>Launching the GUI<a class="headerlink" href="#launching-the-gui" title="Link to this heading">#</a></h1>
-<p>After installation, launch the GUI from the command line:</p>
+<h2>Launching the GUI<a class="headerlink" href="#launching-the-gui" title="Link to this heading">#</a></h2>
+<p>After installing with the <code class="docutils literal notranslate"><span class="pre">gui</span></code> extra (<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;ospgrillage[gui]&quot;</span></code>), start the
+GUI from the command line:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ospgui
 </pre></div>
 </div>
-</section>
-<section id="getting-started">
-<h1>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading">#</a></h1>
-<p>To get started with <code class="docutils literal notranslate"><span class="pre">ospgui</span></code>:</p>
-<ol class="arabic simple">
-<li><p>Click <strong>Apply Changes</strong>, then <strong>Create Geometry</strong>.</p></li>
-<li><p>Once your geometry is created, you can adjust properties as needed.</p></li>
-<li><p>Use the GUI to generate the necessary files:
-- OpenSees command file
-- Ospgrillage code
-- Bridge deck mesh for analysis</p></li>
-</ol>
-</section>
-<section id="features">
-<h1>Features<a class="headerlink" href="#features" title="Link to this heading">#</a></h1>
-<p><cite>ospgui</cite> streamlines bridge geometry creation with an intuitive interface. Key features include:</p>
-<ul class="simple">
-<li><p><strong>Interactive Geometry Setup</strong>: Create straight, multi-span, skewed, or curved bridge geometries.</p></li>
-<li><p><strong>Material and Section Assignment</strong>: Choose from preset materials or define custom properties; assign cross-section details for all bridge members.</p></li>
-<li><p><strong>Member Control</strong>: Configure internal and edge beams, spacing, and offsets.</p></li>
-<li><p><strong>Automatic Code Generation</strong>: Generates Python scripts for Ospgrillage models and optionally OpenSees command files.</p></li>
-<li><p><strong>Visualization</strong>: Integrated visual feedback for the generated bridge mesh.</p></li>
-<li><p><strong>Powerful Code View</strong>: Users can review, edit, and execute <strong>any Python script</strong> directly in the GUI. You can also load external Python files from the File menu.</p></li>
-</ul>
-</section>
-<section id="user-interface-overview">
-<h1>User Interface Overview<a class="headerlink" href="#user-interface-overview" title="Link to this heading">#</a></h1>
-<p><cite>ospgui</cite> allows users to generate <strong>OpenSeesPy scripts</strong> for bridge mesh without manually writing Python scripts. The main window consists of:</p>
-<ul class="simple">
-<li><p><strong>Menu Bar</strong>: <strong>File</strong> and <strong>Create Geometry</strong> options.</p></li>
-<li><p><strong>Input Panels</strong> (left): Tabs for geometry, materials, sections, and members.</p></li>
-<li><p><strong>Code View</strong> (right): Displays the generated Ospgrillage script, which can be edited and executed.</p></li>
-</ul>
-<section id="menu-bar">
-<h2>Menu Bar<a class="headerlink" href="#menu-bar" title="Link to this heading">#</a></h2>
-<p><strong>File Menu</strong></p>
-<ul class="simple">
-<li><p><strong>New</strong>: Start a new project</p></li>
-<li><p><strong>Open</strong>: Open an existing project</p></li>
-<li><p><strong>Save</strong>: Save current project</p></li>
-<li><p><strong>Exit</strong>: Close the application</p></li>
-</ul>
-<p><strong>Create Geometry Menu</strong></p>
-<ul class="simple">
-<li><p><strong>Create Geometry</strong>: Executes the script shown in the <strong>Code View</strong>. The button ‘Create Geometry’ at the bottom left of ospgui has the same functionality as this.</p></li>
-</ul>
-</section>
-<section id="input-panels">
-<h2>Input Panels<a class="headerlink" href="#input-panels" title="Link to this heading">#</a></h2>
-<p>The left-side panel has four tabs:</p>
-<ul class="simple">
-<li><p><strong>Geometry</strong></p></li>
-<li><p><strong>Materials</strong></p></li>
-<li><p><strong>Sections</strong></p></li>
-<li><p><strong>Members</strong></p></li>
-</ul>
-</section>
-<section id="geometry-tab">
-<h2>Geometry Tab<a class="headerlink" href="#geometry-tab" title="Link to this heading">#</a></h2>
-<p>Define the bridge’s geometric and mesh properties.</p>
-<figure class="align-center">
-<img alt="Geometry Tab in `ospgui`" src="rst/_images/geometry_tab.png" />
-</figure>
-<p><strong>Basic Geometry</strong></p>
-<ul class="simple">
-<li><p><strong>Bridge Name</strong>: Name of your model</p></li>
-<li><p><strong>Length &amp; Width</strong>: Overall dimensions</p></li>
-<li><p><strong>Left/Right Skew Angle</strong>: Skew of bridge ends</p></li>
-</ul>
-<p><strong>Mesh Settings</strong></p>
-<ul class="simple">
-<li><p><strong>Bridge Type</strong>: Straight, Multi-span, or Curved</p></li>
-<li><p><strong>Longitudinal Beams</strong>: Beams along the bridge length</p></li>
-<li><p><strong>Transverse Beams</strong>: Beams across the width</p></li>
-<li><p><strong>Mesh Type</strong>: Ortho or Oblique</p></li>
-</ul>
-<p><strong>Output Mode</strong></p>
-<ul class="simple">
-<li><p><strong>OpenSees Command File</strong>: Export script for OpenSees</p></li>
-<li><p><strong>Visualization</strong>: Display the generated mesh</p></li>
-</ul>
-</section>
-<section id="materials-tab">
-<h2>Materials Tab<a class="headerlink" href="#materials-tab" title="Link to this heading">#</a></h2>
-<p>Define material properties for bridge components.</p>
-<figure class="align-center">
-<img alt="Materials Tab in `ospgui`" src="rst/_images/materials_tab.png" />
-</figure>
-<ul class="simple">
-<li><p><strong>Material Type</strong>: Concrete, Steel, etc.</p></li>
-<li><p><strong>Preset Options</strong>: Select standard codes and grades (e.g., AS5100-2017, 32MPa)</p></li>
-<li><p><strong>Custom Values</strong>: Manually input properties</p></li>
-</ul>
-</section>
-<section id="sections-tab">
-<h2>Sections Tab<a class="headerlink" href="#sections-tab" title="Link to this heading">#</a></h2>
-<p>Define cross-sectional properties of bridge members.</p>
-<figure class="align-center">
-<img alt="Sections Tab in `ospgui`" src="rst/_images/sections_tab.png" />
-</figure>
-<ul class="simple">
-<li><p><strong>Longitudinal Section</strong>: Main beams</p></li>
-<li><p><strong>Transverse Section</strong>: Internal transverse beams</p></li>
-<li><p><strong>End Transverse Section</strong>: Beams at bridge ends</p></li>
-<li><p><strong>Edge Longitudinal Section</strong>: Edge beams</p></li>
-</ul>
-</section>
-<section id="members-tab">
-<h2>Members Tab<a class="headerlink" href="#members-tab" title="Link to this heading">#</a></h2>
-<p>Set member spacing and offsets.</p>
-<figure class="align-center">
-<img alt="Members Tab in `ospgui`" src="rst/_images/members_tab.png" />
-</figure>
-<ul class="simple">
-<li><p><strong>External to Internal Distance</strong>: Spacing between external and internal beams</p></li>
-<li><p><strong>Edge Beams</strong>: Offset from bridge edge</p></li>
-</ul>
-</section>
-<section id="code-view">
-<h2>Code View<a class="headerlink" href="#code-view" title="Link to this heading">#</a></h2>
-<p>The <strong>Code View</strong> displays the generated <strong>Ospgrillage script</strong>, which can be:</p>
-<ul class="simple">
-<li><p>Reviewed and edited directly in the GUI</p></li>
-<li><p>Executed using the <strong>Create Geometry</strong> button</p></li>
-<li><p>Loaded with any external Python file via the File menu</p></li>
-</ul>
-</section>
-<section id="generation-and-visualization">
-<h2>Generation and Visualization<a class="headerlink" href="#generation-and-visualization" title="Link to this heading">#</a></h2>
-<ul class="simple">
-<li><p><strong>Apply Changes</strong>: Updates the code based on current input parameters</p></li>
-<li><p><strong>Create Geometry</strong>: Generates the bridge model</p></li>
-</ul>
-<p>Depending on the <strong>Output Mode</strong>, this either:</p>
-<ul class="simple">
-<li><p>Shows a visualization of the bridge mesh</p></li>
-<li><p>Exports an OpenSees command file</p></li>
-</ul>
-<figure class="align-center">
-<img alt="Visualization of Generated Bridge Mesh" src="rst/_images/visualization.png" />
-</figure>
+<p>or from within Python:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ospgrillage.ospgui</span><span class="w"> </span><span class="kn">import</span> <span class="n">main</span>
+<span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Automated API documentation for <code class="docutils literal notranslate"><span class="pre">ospgui</span></code> requires PyQt5 to be installed.
+Install it with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;ospgrillage[gui]&quot;</span></code> before building the docs locally.</p>
+</div>
 </section>
 </section>
 
@@ -612,31 +472,15 @@
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">ospgui User Guide</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#launching-the-gui">Launching the GUI</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-started">Getting Started</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#features">Features</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#user-interface-overview">User Interface Overview</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#menu-bar">Menu Bar</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#input-panels">Input Panels</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#geometry-tab">Geometry Tab</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#materials-tab">Materials Tab</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sections-tab">Sections Tab</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#members-tab">Members Tab</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#code-view">Code View</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#generation-and-visualization">Generation and Visualization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#launching-the-gui">Launching the GUI</a></li>
 </ul>
-</li>
-</ul>
-
   </nav></div>
 
   <div class="sidebar-secondary-item">
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/rst/ospgui.rst">
+    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/rst/ospgui.md">
       <i class="fa-solid fa-pencil"></i>
       
       

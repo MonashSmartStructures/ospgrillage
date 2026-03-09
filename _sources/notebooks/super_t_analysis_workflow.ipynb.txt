@@ -2,6 +2,17 @@
  "cells": [
   {
    "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "**ospgrillage version used in this notebook:** see `ospgrillage.__version__`\n",
+    "\n",
+    "```python\n",
+    "import ospgrillage; print(ospgrillage.__version__)\n",
+    "```"
+   ]
+  },
+  {
+   "cell_type": "markdown",
    "id": "8879c086-8c91-47d2-9fec-826e3ef3fe05",
    "metadata": {},
    "source": [
@@ -474,7 +485,7 @@
    "metadata": {},
    "source": [
     "## Adding a moving load analysis\n",
-    "For bridge loading, it is imperative to model loads that move, and to consider the static analysis of the bridge deck under each position of the moving load. Here’s how we create and add a moving load (e.g. a truck) to the 28 m bridge model."
+    "For bridge loading, it is imperative to model loads that move, and to consider the static analysis of the bridge deck under each position of the moving load. Here\u2019s how we create and add a moving load (e.g. a truck) to the 28 m bridge model."
    ]
   },
   {
@@ -630,7 +641,7 @@
    "id": "f6b7c8dc-ed98-4d01-9e2a-cb3bf870dacc",
    "metadata": {},
    "source": [
-    "The extracted_bending variable holds the load case for ‘Line Test Case’, ‘Point Test Case(Global)’, ‘Points Test Case (Local in Point)’, ‘Points Test Case (Local in Compound)’, ‘Patch Test Case’.\n",
+    "The extracted_bending variable holds the load case for \u2018Line Test Case\u2019, \u2018Point Test Case(Global)\u2019, \u2018Points Test Case (Local in Point)\u2019, \u2018Points Test Case (Local in Compound)\u2019, \u2018Patch Test Case\u2019.\n",
     "\n",
     "Should we sum the nodal forces from members on one side, we expect it to approximately equal PL/4:"
    ]

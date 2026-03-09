@@ -161,7 +161,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="ospgui.html">
-    ospgui User Guide
+    ospgui — GUI geometry generator
   </a>
 </li>
 
@@ -296,7 +296,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="ospgui.html">
-    ospgui User Guide
+    ospgui — GUI geometry generator
   </a>
 </li>
 
@@ -357,20 +357,19 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Module%20description.html">Creating grillage models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module_description.html">Creating grillage models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ModelTemplates.html">Model types available</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="mesh_feature.html">Mesh features</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l1"><a class="reference internal" href="mesh_feature.html">Mesh features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Running_analysis.html">Performing analysis</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Getting Results</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="Examples.html">Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/super_t_analysis_workflow.html">Standard workflow template - Super-T girder bridge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/mesh_showcase.html">Mesh features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/multi_span.html">Multi - span feature</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/curve_mesh.html">Curve Mesh</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1"><a class="reference internal" href="Running_analysis.html">Performing analysis</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Getting Results</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="Examples.html">Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/super_t_analysis_workflow.html">Standard workflow template - Super-T girder bridge</a></li>
-</ul>
-</details></li>
+<li class="toctree-l1"><a class="reference internal" href="Troubleshooting.html">Troubleshooting</a></li>
 </ul>
 </div>
 </nav></div>
@@ -439,14 +438,12 @@
 </div>
 <section id="extracting-results">
 <h2>Extracting results<a class="headerlink" href="#extracting-results" title="Link to this heading">#</a></h2>
-<p>After analysis, results are obtained using <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_results()</span></code></a> function.
-The following example extracts results for all defined analysis of <code class="docutils literal notranslate"><span class="pre">example_bridge</span></code> - all results and one of a specific load case only.</p>
+<p>After analysis, results are obtained using <code class="xref py py-func docutils literal notranslate"><span class="pre">get_results()</span></code> function. The following example extracts results for all defined analysis of <code class="docutils literal notranslate"><span class="pre">example_bridge</span></code> - all results and one of a specific load case only.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">all_result</span> <span class="o">=</span> <span class="n">example_bridge</span><span class="o">.</span><span class="n">get_results</span><span class="p">()</span> <span class="c1"># this extracts all results</span>
 <span class="n">patch_result</span> <span class="o">=</span> <span class="n">example_bridge</span><span class="o">.</span><span class="n">get_results</span><span class="p">(</span><span class="n">load_case</span> <span class="o">=</span> <span class="s2">&quot;patch load case&quot;</span><span class="p">)</span> <span class="c1"># this extracts only the patch load case results</span>
 </pre></div>
 </div>
-<p>The returned <strong>result</strong> variable is an
-<a class="reference external" href="http://xarray.pydata.org/en/stable/generated/xarray.Dataset.html">xarray DataSet</a>.</p>
+<p>The returned <strong>result</strong> variable is an <a class="reference external" href="http://xarray.pydata.org/en/stable/generated/xarray.Dataset.html">xarray DataSet</a>.</p>
 <p>The following is printed to terminal after printing <code class="docutils literal notranslate"><span class="pre">all_result</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">xarray</span><span class="o">.</span><span class="n">Dataset</span><span class="o">&gt;</span>
 <span class="n">Dimensions</span><span class="p">:</span>        <span class="p">(</span><span class="n">Component</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span> <span class="n">Element</span><span class="p">:</span> <span class="mi">142</span><span class="p">,</span> <span class="n">Loadcase</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="n">Node</span><span class="p">:</span> <span class="mi">77</span><span class="p">,</span> <span class="n">Nodes</span><span class="p">:</span> <span class="mi">2</span><span class="p">)</span>
@@ -464,9 +461,7 @@ The following example extracts results for all defined analysis of <code class="
 </div>
 <section id="structure-of-xarray-dataset">
 <h3>Structure of xarray DataSet<a class="headerlink" href="#structure-of-xarray-dataset" title="Link to this heading">#</a></h3>
-<p>Figure 1 shows the structure of the <cite>xarray</cite> DataSet for results.
-The dataset contains two <a class="reference external" href="http://xarray.pydata.org/en/stable/generated/xarray.DataArray.html#xarray.DataArray">xarray DataArray</a>.
-that represent two groups of load effects:</p>
+<p>Figure 1 shows the structure of the <code class="docutils literal notranslate"><span class="pre">xarray</span></code> DataSet for results. The dataset contains two <a class="reference external" href="http://xarray.pydata.org/en/stable/generated/xarray.DataArray.html#xarray.DataArray">xarray DataArray</a>. that represent two groups of load effects:</p>
 <ol class="arabic simple">
 <li><p><strong>displacements</strong> i.e. rotation and translations</p></li>
 <li><p><strong>forces</strong> e.g. bending about z axis, Shear forces etc.</p></li>
@@ -480,29 +475,13 @@ that represent two groups of load effects:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ele_array</span> <span class="o">=</span> <span class="n">all_result</span><span class="o">.</span><span class="n">ele_nodes</span> <span class="c1"># store variable array as ele_array</span>
 </pre></div>
 </div>
-<p>The  <strong>forces</strong> DataArray is grouped according to element types. Depending on <span class="xref std std-ref">ModelTemplates</span>, there can be one or more
-types of elements in the grillage model. For example, <strong>force</strong> of a <a class="reference internal" href="ModelTemplates.html#shell-hybrid-model"><span class="std std-ref">Shell &amp; Beam Elements - shell_beam</span></a> are recorded in
-two separate DataArrays, namely <strong>forces_beam</strong> and <strong>forces_shell</strong> respectively (Figure 1).
-Similarly, <strong>ele_nodes</strong> will be split into <strong>ele_nodes_beam</strong> and <strong>ele_nodes_shell</strong>.</p>
-<figure class="align-center" id="id3">
-<a class="reference internal image-reference" href="../_images/dataset_structure.png"><img alt="../_images/dataset_structure.png" src="../_images/dataset_structure.png" />
-<aside class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<span class="docutils literal">/home/runner/work/ospgrillage/ospgrillage/docs/source/rst/PostProcessing.rst</span>, line 71)</p>
-<p>Cannot scale image!
-  Could not get size from &quot;../_images/dataset_structure.png&quot;:
-  [Errno 2] No such file or directory: '../_images/dataset_structure.png'</p>
-</aside>
-</a>
-<figcaption>
-<p><span class="caption-text">Figure 1: Structure of DataSet.</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
-</figcaption>
-</figure>
+<p>The <strong>forces</strong> DataArray is grouped according to element types. Depending on <a class="reference internal" href="ModelTemplates.html"><span class="doc">Model types available</span></a>, there can be one or more types of elements in the grillage model. For example, <strong>force</strong> of a <a class="reference internal" href="ModelTemplates.html#shell-hybrid-model"><span class="std std-ref">Shell &amp; Beam Elements - shell_beam {#shell hybrid model}</span></a> are recorded in two separate DataArrays, namely <strong>forces_beam</strong> and <strong>forces_shell</strong> respectively (Figure 1). Similarly, <strong>ele_nodes</strong> will be split into <strong>ele_nodes_beam</strong> and <strong>ele_nodes_shell</strong>.</p>
+<p><img alt="Figure 1: Structure of DataSet." src="../_images/dataset_structure.png" /></p>
 </section>
-<section id="accessing-and-querying-data">
-<span id="access-results"></span><h3>Accessing and querying data<a class="headerlink" href="#accessing-and-querying-data" title="Link to this heading">#</a></h3>
-<p>From the data arrays, users can access various component in each load effect using <cite>xarray</cite>’s data array commands.
-Information on indexing and selecting DataArray data can be found <a class="reference external" href="http://xarray.pydata.org/en/stable/user-guide/indexing.html">here</a></p>
-<p>Following example extracts the displacement ‘dy’ component using <cite>xarray</cite>’s  function.</p>
+<section id="accessing-and-querying-data-access-results">
+<h3>Accessing and querying data {#access results}<a class="headerlink" href="#accessing-and-querying-data-access-results" title="Link to this heading">#</a></h3>
+<p>From the data arrays, users can access various component in each load effect using <code class="docutils literal notranslate"><span class="pre">xarray</span></code>’s data array commands. Information on indexing and selecting DataArray data can be found <a class="reference external" href="http://xarray.pydata.org/en/stable/user-guide/indexing.html">here</a></p>
+<p>Following example extracts the displacement ‘dy’ component using <code class="docutils literal notranslate"><span class="pre">xarray</span></code>’s function.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">disp_array</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Component</span><span class="o">=</span><span class="s1">&#39;dy&#39;</span><span class="p">)</span> <span class="c1"># selecting &quot;dy&quot; component</span>
 <span class="n">force_array</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Component</span><span class="o">=</span><span class="s1">&#39;Mz_i&#39;</span><span class="p">)</span> <span class="c1"># selecting &quot;Mz_i&quot; component</span>
 </pre></div>
@@ -512,25 +491,20 @@ Information on indexing and selecting DataArray data can be found <a class="refe
 <span class="n">force_array</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Loadcase</span><span class="o">=</span><span class="s2">&quot;Barrier&quot;</span><span class="p">,</span> <span class="n">Element</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
 </pre></div>
 </div>
-<p>If the load case is part of a <a class="reference internal" href="Running_analysis.html#moving-load"><span class="std std-ref">Moving load</span></a> i.e. an incremental load cases, there are several ways to lookup the respective incremental load case.
-Following example shows the various method of <cite>xarray</cite> to extract and select <strong>force</strong> data:</p>
+<p>If the load case is part of a <a class="reference internal" href="Running_analysis.html#moving-load"><span class="std std-ref">Moving load</span></a> i.e. an incremental load cases, there are several ways to lookup the respective incremental load case. Following example shows the various method of <code class="docutils literal notranslate"><span class="pre">xarray</span></code> to extract and select <strong>force</strong> data:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">by_name</span> <span class="o">=</span> <span class="n">force_array</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Loadcase</span><span class="o">=</span><span class="s2">&quot;patch load case at global position [0,0,0]&quot;</span><span class="p">)</span> <span class="c1"># by load case name</span>
 <span class="n">by_index</span> <span class="o">=</span> <span class="n">force_array</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">Loadcase</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># by indexing</span>
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>For moving load, the nomenclature of incremental load cases are generated automatically by <em>ospgrillage</em>, with
-load case name followed by “at global position [x,y,z]” where <cite>x</cite>, <cite>y</cite> , <cite>z</cite> are the positions of the moving load/ compound load with
-respect to the global grillage coordinate.</p>
+<p>For moving load, the nomenclature of incremental load cases are generated automatically by <em>ospgrillage</em>, with load case name followed by “at global position [x,y,z]” where <code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">y</span></code> , <code class="docutils literal notranslate"><span class="pre">z</span></code> are the positions of the moving load/ compound load with respect to the global grillage coordinate.</p>
 </div>
 </section>
 </section>
-<section id="getting-combinations">
-<span id="load-combinations"></span><h2>Getting combinations<a class="headerlink" href="#getting-combinations" title="Link to this heading">#</a></h2>
-<p>Load combinations are computed on the fly in <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_results()</span></code></a> by specifying a keyword argument for <code class="docutils literal notranslate"><span class="pre">combinations</span></code>.
-The keyword argument accepts a <code class="docutils literal notranslate"><span class="pre">dict</span></code> with load case name strings as key, and corresponding load factor as value.
-The returned <em>DataArray</em> will have load case multiplied by prescribed load factors and summed along the load case dimension (for each load case in load combination).</p>
+<section id="getting-combinations-load-combinations">
+<h2>Getting combinations {#load combinations}<a class="headerlink" href="#getting-combinations-load-combinations" title="Link to this heading">#</a></h2>
+<p>Load combinations are computed on the fly in <code class="xref py py-func docutils literal notranslate"><span class="pre">get_results()</span></code> by specifying a keyword argument for <code class="docutils literal notranslate"><span class="pre">combinations</span></code>. The keyword argument accepts a <code class="docutils literal notranslate"><span class="pre">dict</span></code> with load case name strings as key, and corresponding load factor as value. The returned <em>DataArray</em> will have load case multiplied by prescribed load factors and summed along the load case dimension (for each load case in load combination).</p>
 <p>The following example code defines a load combinations which comprise of two load cases.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># create dict with load case name string as key, and load factor as value</span>
 <span class="n">comb_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;patch_load_case&quot;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;moving_truck&quot;</span><span class="p">:</span><span class="mf">1.6</span><span class="p">}</span>
@@ -554,22 +528,16 @@ The returned <em>DataArray</em> will have load case multiplied by prescribed loa
     <span class="n">ele_nodes</span>      <span class="p">(</span><span class="n">Loadcase</span><span class="p">,</span> <span class="n">Element</span><span class="p">,</span> <span class="n">Nodes</span><span class="p">)</span> <span class="n">int32</span> <span class="mi">6</span> <span class="mi">9</span> <span class="mi">3</span> <span class="mi">6</span> <span class="o">...</span> <span class="mi">228</span> <span class="mi">102</span> <span class="mi">231</span> <span class="mi">105</span>
 </pre></div>
 </div>
-<p>For combinations pertaining static and moving load cases, the factored static load cases are added to each
-incremental load case of the moving load.</p>
+<p>For combinations pertaining static and moving load cases, the factored static load cases are added to each incremental load case of the moving load.</p>
 </section>
 <section id="getting-load-envelope">
 <h2>Getting load envelope<a class="headerlink" href="#getting-load-envelope" title="Link to this heading">#</a></h2>
-<p>Load envelope is generated from load combination results for extrema of load effect using <a class="reference internal" href="generated/ospgrillage.postprocessing.create_envelope.html#ospgrillage.postprocessing.create_envelope" title="ospgrillage.postprocessing.create_envelope"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_envelope()</span></code></a> function.
-Envelope are chosen based on user selected component (<em>array</em> keyword) as either “displacements” or “forces”, extrema as either maximum or minimum,
-and load effect component (e.g. “dy” for displacements).
-The following example uses creates a <a class="reference internal" href="APIdoc.html#ospgrillage.postprocessing.Envelope" title="ospgrillage.postprocessing.Envelope"><code class="xref py py-class docutils literal notranslate"><span class="pre">Envelope</span></code></a> object and uses its class function to <a class="reference internal" href="APIdoc.html#ospgrillage.postprocessing.Envelope.get" title="ospgrillage.postprocessing.Envelope.get"><code class="xref py py-func docutils literal notranslate"><span class="pre">get()</span></code></a> the enveloped DataArray:</p>
+<p>Load envelope is generated from load combination results for extrema of load effect using <code class="xref py py-func docutils literal notranslate"><span class="pre">create_envelope()</span></code> function. Envelope are chosen based on user selected component (<em>array</em> keyword) as either “displacements” or “forces”, extrema as either maximum or minimum, and load effect component (e.g. “dy” for displacements). The following example uses creates a <code class="xref py py-class docutils literal notranslate"><span class="pre">Envelope</span></code> object and uses its class function to <code class="xref py py-func docutils literal notranslate"><span class="pre">get()</span></code> the enveloped DataArray:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">envelope</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_envelope</span><span class="p">(</span><span class="n">ds</span><span class="o">=</span><span class="n">comb_results</span><span class="p">,</span><span class="n">load_effect</span><span class="o">=</span><span class="s2">&quot;dy&quot;</span><span class="p">,</span><span class="n">array</span><span class="o">=</span><span class="s2">&quot;displacements&quot;</span><span class="p">)</span> <span class="c1"># creates the envelope obj</span>
 <span class="n">disp_env</span> <span class="o">=</span> <span class="n">envelope</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="c1"># output the created envelope of xarray</span>
 </pre></div>
 </div>
-<p>By default, <a class="reference internal" href="APIdoc.html#ospgrillage.postprocessing.Envelope" title="ospgrillage.postprocessing.Envelope"><code class="xref py py-class docutils literal notranslate"><span class="pre">Envelope</span></code></a> is in query mode whereby the load case corresponding to the maxima
-are returned.
-The following is printed to the terminal when <code class="docutils literal notranslate"><span class="pre">disp_env</span></code> is printed:</p>
+<p>By default, <code class="xref py py-class docutils literal notranslate"><span class="pre">Envelope</span></code> is in query mode whereby the load case corresponding to the maxima are returned. The following is printed to the terminal when <code class="docutils literal notranslate"><span class="pre">disp_env</span></code> is printed:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">xarray</span><span class="o">.</span><span class="n">DataArray</span> <span class="s1">&#39;Loadcase&#39;</span> <span class="p">(</span><span class="n">Node</span><span class="p">:</span> <span class="mi">77</span><span class="p">,</span> <span class="n">Component</span><span class="p">:</span> <span class="mi">18</span><span class="p">)</span><span class="o">&gt;</span>
 <span class="n">array</span><span class="p">([[</span><span class="n">nan</span><span class="p">,</span> <span class="n">nan</span><span class="p">,</span> <span class="n">nan</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span>
         <span class="s1">&#39;single_moving_point at global position [2.00,0.00,2.00]&#39;</span><span class="p">,</span>
@@ -586,8 +554,7 @@ The following is printed to the terminal when <code class="docutils literal notr
   <span class="o">*</span> <span class="n">Node</span>       <span class="p">(</span><span class="n">Node</span><span class="p">)</span> <span class="n">int32</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span> <span class="mi">8</span> <span class="mi">9</span> <span class="mi">10</span> <span class="o">...</span> <span class="mi">69</span> <span class="mi">70</span> <span class="mi">71</span> <span class="mi">72</span> <span class="mi">73</span> <span class="mi">74</span> <span class="mi">75</span> <span class="mi">76</span> <span class="mi">77</span>
 </pre></div>
 </div>
-<p>One can read the coordinates to understand the valid <code class="docutils literal notranslate"><span class="pre">load_effect</span></code> kwargs.
-The following example prints the array of coordinates:</p>
+<p>One can read the coordinates to understand the valid <code class="docutils literal notranslate"><span class="pre">load_effect</span></code> kwargs. The following example prints the array of coordinates:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">max_disp</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s1">&#39;Components&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
 </pre></div>
 </div>
@@ -597,139 +564,52 @@ The following example prints the array of coordinates:</p>
    <span class="s1">&#39;theta_y&#39;</span><span class="p">,</span> <span class="s1">&#39;theta_z&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;&lt;U7&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>For more information on the inputs and options, see <a class="reference internal" href="generated/ospgrillage.postprocessing.create_envelope.html#ospgrillage.postprocessing.create_envelope" title="ospgrillage.postprocessing.create_envelope"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_envelope()</span></code></a>.</p>
+<p>For more information on the inputs and options, see <code class="xref py py-func docutils literal notranslate"><span class="pre">create_envelope()</span></code>.</p>
 </section>
 <section id="getting-specific-properties-of-model">
 <h2>Getting specific properties of model<a class="headerlink" href="#getting-specific-properties-of-model" title="Link to this heading">#</a></h2>
 <section id="node">
 <h3>Node<a class="headerlink" href="#node" title="Link to this heading">#</a></h3>
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">OspGrillage.</span></span><span class="sig-name descname"><span class="pre">get_nodes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
-<dd><p>Function to return all information for nodes in grillage model</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict contain node information</p>
-</dd>
-</dl>
-</dd></dl>
+<div class="{.automethod docutils">
+<p>ospgrillage.OspGrillage.get_nodes()</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### Element</span>
 
-</section>
-<section id="element">
-<h3>Element<a class="headerlink" href="#element" title="Link to this heading">#</a></h3>
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">OspGrillage.</span></span><span class="sig-name descname"><span class="pre">get_element</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
-<dd><p>Function to query properties of elements in grillage model.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Keyword<span class="colon">:</span></dt>
-<dd class="field-odd"><p></p></dd>
-</dl>
-<ul class="simple">
-<li><p>options (<a href="#id1"><span class="problematic" id="id2">`</span></a>str): string for element data option. Either “elements” or “nodes” (default)</p></li>
-<li><dl class="simple">
-<dt>z_group_num (<cite>int</cite>): group number [0 to N] for N is the number of groups within a specific grillage element group.</dt><dd><p>this is needed for interior beams, where users which to query specific group (e.g. 2nd group)
-within this “interior_main_beam” element group.</p>
-</dd>
-</dl>
-</li>
-<li><p>x_group_num (<cite>int</cite>): ditto for z_group_num but for x_group</p></li>
-<li><p>edge_group_num(<cite>int</cite>): ditto for z_group_num but for edge groups</p></li>
-</ul>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>List of element data (tag)</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-</section>
-<section id="plotting-results-of-dataarrays">
-<h2>Plotting results of DataArrays<a class="headerlink" href="#plotting-results-of-dataarrays" title="Link to this heading">#</a></h2>
-<section id="current-limitation-of-opensees-visualization-module">
-<h3>Current limitation of <cite>OpenSees</cite> visualization module<a class="headerlink" href="#current-limitation-of-opensees-visualization-module" title="Link to this heading">#</a></h3>
-<p><cite>OpenSeesPy</cite>’s visualization module uses either <cite>vfo</cite> or <cite>opsvis</cite>.
-However both modules requires the model instance been created in <cite>OpenSeesPy</cite> model space.</p>
-<p>In other words, results from <cite>xarray</cite> DataSet (of <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_results()</span></code></a>) cannot be plotted using the current visualization modules.
-Additionally, <cite>opsvis</cite> and <cite>vfo</cite> does not contain enveloping feature across multiple analysis - especially for moving load analysis comprise of multiple incremental load case for each moving load position.</p>
-<p>If needed, users can still utilize <cite>opsvis</cite> however only in a specific condition i.e. only a single load case is defined and <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze.html#ospgrillage.osp_grillage.OspGrillage.analyze" title="ospgrillage.osp_grillage.OspGrillage.analyze"><code class="xref py py-func docutils literal notranslate"><span class="pre">analyze()</span></code></a> in the <cite>OpenSees</cite> framework.
-With only a single load case and analysis, users can directly access the model results and plot using <cite>opsvis</cite>.
-The following code example plots the results of the <strong>current analysis instance</strong> using <cite>opsvis</cite>:</p>
+<span class="p">:::</span> <span class="p">{</span><span class="o">.</span><span class="n">automethod</span> <span class="n">noindex</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">}</span>
+<span class="n">ospgrillage</span><span class="o">.</span><span class="n">OspGrillage</span><span class="o">.</span><span class="n">get</span>\<span class="n">_element</span><span class="p">()</span>
+</pre></div>
+</div>
+<p class="rubric" id="plotting-results-of-dataarrays">Plotting results of DataArrays</p>
+<p class="rubric" id="current-limitation-of-opensees-visualization-module">Current limitation of <code class="docutils literal notranslate"><span class="pre">OpenSees</span></code> visualization module</p>
+<p><code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code>’s visualization module uses either <code class="docutils literal notranslate"><span class="pre">vfo</span></code> or <code class="docutils literal notranslate"><span class="pre">opsvis</span></code>. However both modules requires the model instance been created in <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code> model space.</p>
+<p>In other words, results from <code class="docutils literal notranslate"><span class="pre">xarray</span></code> DataSet (of <code class="xref py py-func docutils literal notranslate"><span class="pre">get_results()</span></code>) cannot be plotted using the current visualization modules. Additionally, <code class="docutils literal notranslate"><span class="pre">opsvis</span></code> and <code class="docutils literal notranslate"><span class="pre">vfo</span></code> does not contain enveloping feature across multiple analysis - especially for moving load analysis comprise of multiple incremental load case for each moving load position.</p>
+<p>If needed, users can still utilize <code class="docutils literal notranslate"><span class="pre">opsvis</span></code> however only in a specific condition i.e. only a single load case is defined and <code class="xref py py-func docutils literal notranslate"><span class="pre">analyze()</span></code> in the <code class="docutils literal notranslate"><span class="pre">OpenSees</span></code> framework. With only a single load case and analysis, users can directly access the model results and plot using <code class="docutils literal notranslate"><span class="pre">opsvis</span></code>. The following code example plots the results of the <strong>current analysis instance</strong> using `opsvis`:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">og</span><span class="o">.</span><span class="n">opsv</span><span class="o">.</span><span class="n">section_force_diagram_3d</span><span class="p">(</span><span class="s1">&#39;Mz&#39;</span><span class="p">,</span> <span class="p">{},</span> <span class="mi">1</span><span class="p">)</span> <span class="c1"># here change name string argument to force component of interest</span>
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><cite>opsv</cite> only works for model template 1 (beam grillage) and 2 (beam grillage with rigid links).
-Plotting of shell model type is not supported as of <em>ospgrillage</em> version 0.1.0</p>
+<p><code class="docutils literal notranslate"><span class="pre">opsv</span></code> only works for model template 1 (beam grillage) and 2 (beam grillage with rigid links). Plotting of shell model type is not supported as of <em>ospgrillage</em> version 0.1.0</p>
 </div>
-</section>
-<section id="ospgrillage-post-processing-module">
-<h3><em>ospgrillage</em> post-processing module<a class="headerlink" href="#ospgrillage-post-processing-module" title="Link to this heading">#</a></h3>
-<p>For users wishing to plot results from <cite>xarray</cite> DataSet (multiple analysis),
-<em>ospgrillage</em> contains a dedicated post-processing module as of version 0.1.0 to visualize these results.</p>
+<p class="rubric" id="ospgrillage-post-processing-module"><em>ospgrillage</em> post-processing module</p>
+<p>For users wishing to plot results from <code class="docutils literal notranslate"><span class="pre">xarray</span></code> DataSet (multiple analysis), <em>ospgrillage</em> contains a dedicated post-processing module as of version 0.1.0 to visualize these results.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The plotting functions of post-processing module is at alpha development stage as compared to other modules.
-As of version 0.1.0, it is sufficient to plot components from the xarray DataSets.</p>
+<p>The plotting functions of post-processing module is at alpha development stage as compared to other modules. As of version 0.1.0, it is sufficient to plot components from the xarray DataSets.</p>
 </div>
-</section>
-<section id="plotting-functions">
-<h3>Plotting functions<a class="headerlink" href="#plotting-functions" title="Link to this heading">#</a></h3>
-<p>For this section, we will refer to an exemplar 28 m super-T bridge (Figure 1).
-The bridge grillage has been created and its <a class="reference internal" href="OpsGrillage.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a> object is defined as <code class="docutils literal notranslate"><span class="pre">bridge_28</span></code>.</p>
-<figure class="align-center" id="id4">
-<a class="reference internal image-reference" href="../_images/28m_bridge.PNG"><img alt="../_images/28m_bridge.PNG" src="../_images/28m_bridge.PNG" />
-<aside class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<span class="docutils literal">/home/runner/work/ospgrillage/ospgrillage/docs/source/rst/PostProcessing.rst</span>, line 269)</p>
-<p>Cannot scale image!
-  Could not get size from &quot;../_images/28m_bridge.PNG&quot;:
-  [Errno 2] No such file or directory: '../_images/28m_bridge.PNG'</p>
-</aside>
-</a>
-<figcaption>
-<p><span class="caption-text">Figure 1: 28 m super-T bridge model.</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
-</figcaption>
-</figure>
-<p>To plot deflection components from <strong>displacement</strong> DataArray, use <a class="reference internal" href="generated/ospgrillage.postprocessing.plot_defo.html#ospgrillage.postprocessing.plot_defo" title="ospgrillage.postprocessing.plot_defo"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_defo()</span></code></a>.
-To use this function users need to specify the specific grillage member - this function returns a 2-D plot of displacement diagram.
-Following example plots the vertical deflection of <code class="docutils literal notranslate"><span class="pre">bridge_28</span></code>, for “exterior_main_beam_2” member - plot shown in Figure 2:</p>
+<p class="rubric" id="plotting-functions">Plotting functions</p>
+<p>For this section, we will refer to an exemplar 28 m super-T bridge (Figure 1). The bridge grillage has been created and its <code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code> object is defined as <code class="docutils literal notranslate"><span class="pre">bridge_28</span></code>.</p>
+<p><img alt="Figure 1: 28 m super-T bridge model." src="../_images/28m_bridge.PNG" /></p>
+<p>To plot deflection components from <strong>displacement</strong> DataArray, use <code class="xref py py-func docutils literal notranslate"><span class="pre">plot_defo()</span></code>. To use this function users need to specify the specific grillage member - this function returns a 2-D plot of displacement diagram. Following example plots the vertical deflection of <code class="docutils literal notranslate"><span class="pre">bridge_28</span></code>, for “exterior_main_beam_2” member - plot shown in Figure 2:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">og</span><span class="o">.</span><span class="n">plot_defo</span><span class="p">(</span><span class="n">bridge_28</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">member</span><span class="o">=</span><span class="s2">&quot;exterior_main_beam_2&quot;</span><span class="p">,</span> <span class="n">option</span><span class="o">=</span> <span class="s2">&quot;nodes&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<figure class="align-center" id="id5">
-<a class="reference internal image-reference" href="../_images/example_deflected.PNG"><img alt="../_images/example_deflected.PNG" src="../_images/example_deflected.PNG" />
-<aside class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<span class="docutils literal">/home/runner/work/ospgrillage/ospgrillage/docs/source/rst/PostProcessing.rst</span>, line 284)</p>
-<p>Cannot scale image!
-  Could not get size from &quot;../_images/example_deflected.PNG&quot;:
-  [Errno 2] No such file or directory: '../_images/example_deflected.PNG'</p>
-</aside>
-</a>
-<figcaption>
-<p><span class="caption-text">Figure 2: Deflected shape of of exterior main beam 2.</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
-</figcaption>
-</figure>
-<p>To plot force components from <strong>forces</strong> DataArray, use <a class="reference internal" href="generated/ospgrillage.postprocessing.plot_force.html#ospgrillage.postprocessing.plot_force" title="ospgrillage.postprocessing.plot_force"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_force()</span></code></a>.
-Similar to <a class="reference internal" href="generated/ospgrillage.postprocessing.plot_defo.html#ospgrillage.postprocessing.plot_defo" title="ospgrillage.postprocessing.plot_defo"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_defo()</span></code></a>, users need to specify name string of specific grillage member.
-Following example plots the bending moment “Mz” of “exterior_main_beam_2” in <code class="docutils literal notranslate"><span class="pre">bridge_28</span></code> - plot shown in Figure 3:</p>
+<p><img alt="Figure 2: Deflected shape of of exterior main beam 2." src="../_images/example_deflected.PNG" /></p>
+<p>To plot force components from <strong>forces</strong> DataArray, use <code class="xref py py-func docutils literal notranslate"><span class="pre">plot_force()</span></code>. Similar to <code class="xref py py-func docutils literal notranslate"><span class="pre">plot_defo()</span></code>, users need to specify name string of specific grillage member. Following example plots the bending moment “Mz” of “exterior_main_beam_2” in <code class="docutils literal notranslate"><span class="pre">bridge_28</span></code> - plot shown in Figure 3:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">og</span><span class="o">.</span><span class="n">plot_force</span><span class="p">(</span><span class="n">bridge_28</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">member</span><span class="o">=</span><span class="s2">&quot;exterior_main_beam_2&quot;</span><span class="p">,</span> <span class="n">component</span><span class="o">=</span><span class="s2">&quot;Mz&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<figure class="align-center" id="id6">
-<a class="reference internal image-reference" href="../_images/example_bmd.PNG"><img alt="../_images/example_bmd.PNG" src="../_images/example_bmd.PNG" />
-<aside class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<span class="docutils literal">/home/runner/work/ospgrillage/ospgrillage/docs/source/rst/PostProcessing.rst</span>, line 299)</p>
-<p>Cannot scale image!
-  Could not get size from &quot;../_images/example_bmd.PNG&quot;:
-  [Errno 2] No such file or directory: '../_images/example_bmd.PNG'</p>
-</aside>
-</a>
-<figcaption>
-<p><span class="caption-text">Figure 3: Bending moment about z axis of exterior main beam 2 .</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
-</figcaption>
-</figure>
+<p><img alt="Figure 3: Bending moment about z axis of exterior main beam 2 ." src="../_images/example_bmd.PNG" /></p>
+</div>
 </section>
 </section>
 </section>
@@ -783,20 +663,13 @@ Following example plots the bending moment “Mz” of “exterior_main_beam_2�
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extracting-results">Extracting results</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#structure-of-xarray-dataset">Structure of xarray DataSet</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#accessing-and-querying-data">Accessing and querying data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#accessing-and-querying-data-access-results">Accessing and querying data {#access results}</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-combinations">Getting combinations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-combinations-load-combinations">Getting combinations {#load combinations}</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-load-envelope">Getting load envelope</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-specific-properties-of-model">Getting specific properties of model</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#node">Node</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#element">Element</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#plotting-results-of-dataarrays">Plotting results of DataArrays</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#current-limitation-of-opensees-visualization-module">Current limitation of <cite>OpenSees</cite> visualization module</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage-post-processing-module"><em>ospgrillage</em> post-processing module</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plotting-functions">Plotting functions</a></li>
 </ul>
 </li>
 </ul>
@@ -806,7 +679,7 @@ Following example plots the bending moment “Mz” of “exterior_main_beam_2�
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/rst/PostProcessing.rst">
+    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/rst/PostProcessing.md">
       <i class="fa-solid fa-pencil"></i>
       
       

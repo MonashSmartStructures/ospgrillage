@@ -164,7 +164,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../rst/ospgui.html">
-    ospgui User Guide
+    ospgui — GUI geometry generator
   </a>
 </li>
 
@@ -299,7 +299,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../rst/ospgui.html">
-    ospgui User Guide
+    ospgui — GUI geometry generator
   </a>
 </li>
 
@@ -360,20 +360,19 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../rst/Installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../rst/Module%20description.html">Creating grillage models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rst/Module_description.html">Creating grillage models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../rst/ModelTemplates.html">Model types available</a></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../rst/mesh_feature.html">Mesh features</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../rst/mesh_feature.html">Mesh features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rst/Running_analysis.html">Performing analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rst/PostProcessing.html">Getting Results</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../rst/Examples.html">Examples</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="super_t_analysis_workflow.html">Standard workflow template - Super-T girder bridge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mesh_showcase.html">Mesh features</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Multi - span feature</a></li>
 <li class="toctree-l2"><a class="reference internal" href="curve_mesh.html">Curve Mesh</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1"><a class="reference internal" href="../rst/Running_analysis.html">Performing analysis</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../rst/PostProcessing.html">Getting Results</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../rst/Examples.html">Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="super_t_analysis_workflow.html">Standard workflow template - Super-T girder bridge</a></li>
-</ul>
-</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../rst/Troubleshooting.html">Troubleshooting</a></li>
 </ul>
 </div>
 </nav></div>
@@ -418,7 +417,7 @@
     <li class="breadcrumb-item"><a href="../rst/user_guide.html" class="nav-link">User Guide</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../rst/mesh_feature.html" class="nav-link">Mesh features</a></li>
+    <li class="breadcrumb-item"><a href="../rst/Examples.html" class="nav-link">Examples</a></li>
     
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Multi - span feature</span></li>
   </ul>
@@ -437,7 +436,11 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="Multi---span-feature">
+  <p><strong>ospgrillage version used in this notebook:</strong> see <code class="docutils literal notranslate"><span class="pre">ospgrillage.__version__</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">ospgrillage</span><span class="p">;</span> <span class="nb">print</span><span class="p">(</span><span class="n">ospgrillage</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="Multi---span-feature">
 <h1>Multi - span feature<a class="headerlink" href="#Multi---span-feature" title="Link to this heading">#</a></h1>
 <p>Grillages can be created with multiple spans. This is done by supporting nodes at intermediate points along the mesh (in the x global x direction) to represent supports of spans, as shown in the following figure:</p>
 <div class="nbinput docutils container">
@@ -454,7 +457,7 @@
 </pre></div>
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_multi_span_1_0.png" class="no-scaled-link" src="../_images/notebooks_multi_span_1_0.png" width="800" />
+<img alt="../_images/notebooks_multi_span_2_0.png" class="no-scaled-link" src="../_images/notebooks_multi_span_2_0.png" width="800" />
 </div>
 </div>
 <p>There are three types of multi-span meshing feature available in ospgrillage since v0.1.1.</p>
@@ -619,7 +622,7 @@
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_multi_span_13_0.png" src="../_images/notebooks_multi_span_13_0.png" />
+<img alt="../_images/notebooks_multi_span_14_0.png" src="../_images/notebooks_multi_span_14_0.png" />
 </div>
 </div>
 <p>As can be seen, the mesh spacings in each span varies according to the <code class="docutils literal notranslate"><span class="pre">nl_multi</span></code> variable we specified - 10 nodes in the second span then 20 node lines in first and third span.</p>
@@ -670,7 +673,7 @@
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_multi_span_19_0.png" src="../_images/notebooks_multi_span_19_0.png" />
+<img alt="../_images/notebooks_multi_span_20_0.png" src="../_images/notebooks_multi_span_20_0.png" />
 </div>
 </div>
 <p>As can be seen in <code class="docutils literal notranslate"><span class="pre">variant_two_model</span></code>, the meshes are separated at the intermediate support nodes. The meshing splits the nodes at the intermediate support region by the distance variable provided in <code class="docutils literal notranslate"><span class="pre">non_cont_spacing_x=</span></code> , in the global x-direction.</p>
@@ -738,7 +741,7 @@
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_multi_span_26_0.png" src="../_images/notebooks_multi_span_26_0.png" />
+<img alt="../_images/notebooks_multi_span_27_0.png" src="../_images/notebooks_multi_span_27_0.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
