@@ -18,13 +18,13 @@ Figure 1 shows the flowchart for the load module of *ospgrillage*.
 
 Loads are created with the interface function {func}`~ospgrillage.load.create_load`. Users pass argument for `type=` to specify the load type. Available loads types include {ref}`point`, {ref}`line`, and {ref}`patch` loads.
 
-Each load type requires user to specify its load point(s). This is achieved by {func}`~ospgrillage.load.create_load_vertex` function. This function creates a `LoadPoint(x,y,z,p)` where `x`,\`y\`,\`z\` are the coordinates of the load point and `p` is the magnitude of the vertical loading. Note, `p` is a unit magnitude which is interpreted differently based on the load type - this will be later explained. By default, `y` is `0` i.e. the grillage model plane.
+Each load type requires user to specify its load point(s). This is achieved by {func}`~ospgrillage.load.create_load_vertex` function. This function creates a `LoadPoint(x,y,z,p)` where `x`, `y`, `z` are the coordinates of the load point and `p` is the magnitude of the vertical loading. Note, `p` is a unit magnitude which is interpreted differently based on the load type - this will be later explained. By default, `y` is `0` i.e. the grillage model plane.
 
 ```python
 point_load_location = og.create_load_vertices(x=5, z=2, p=20)  # create load point
 ```
 
-Depending on the load type, a minimum number of `LoadPoint` `namedTuple` are required. These are set to each load type\'s `point\#=` variable for the load type\'s coordinate system, where \# is a digit from 1 to 9. Following sections will further elaborate the load vertices for each load type.
+Depending on the load type, a minimum number of `LoadPoint` `namedTuple` are required. These are set to each load type's `point#=` variable for the load type's coordinate system, where `#` is a digit from 1 to 9. Following sections will further elaborate the load vertices for each load type.
 
 Loads are generally defined in the global coordinate system with respect to the created grillage model. However, a user-defined local coordinate system is required when defining {ref}`compound-load` later on.
 
@@ -64,7 +64,7 @@ point_load = og.create_load(type="point",name="single point", point1=point_load_
 
 Line loads are loads exerted along a line. Line loads are useful to represent loads such as self weight of longitudinal beams or distributed load along beam elements.
 
-Line loads are instantiated with {func}`~ospgrillage.load.create_load` passing `type = "line"` and required at least two `LoadPoint\`s (corresponds to the start and end of the line load) - see Figure 3. Using more than two tuples allows a curve line loading profile. \`p` in the {class}`LoadPoint` tuple should have units of force per distance (eg. kN/m, kips/ft, etc).
+Line loads are instantiated with {func}`~ospgrillage.load.create_load` passing `type = "line"` and require at least two `LoadPoint` values (corresponding to the start and end of the line load) — see Figure 3. Using more than two tuples allows a curve line loading profile. `p` in the `LoadPoint` tuple should have units of force per distance (e.g. kN/m, kips/ft).
 
 ![Figure 3: Line load](../images/line.png)
 
@@ -130,9 +130,9 @@ C_Load.add_load(load_obj=wheel_1) # add wheel_1
 C_Load.add_load(load_obj=wheel_2) # add wheel_2
 ```
 
-After defining all required load objects, {class}`~ospgrillage.load.CompoundLoad` requires users to define the global coordinate to map the origin of user-defined local coordinates to the global coordinate space. This is done using {func}`~ospgrillage.load.CompoundLoad.set_global_coord` function as seen in Figure 5, passing a `` `Point(x,y,z) ``` \`namedTuple`. If not specified, the mapping\'s reference point is default to the **Origin** of coordinate system i.e. (0,0,0).
+After defining all required load objects, {class}`~ospgrillage.load.CompoundLoad` requires users to define the global coordinate to map the origin of user-defined local coordinates to the global coordinate space. This is done using {func}`~ospgrillage.load.CompoundLoad.set_global_coord` function as seen in Figure 5, passing a `Point(x,y,z)` namedtuple. If not specified, the mapping's reference point defaults to the **Origin** of the coordinate system i.e. (0,0,0).
 
-The following example sets the local **Origin** of the compound load, including all load points for all load objects of **C\_load** by x + 4, y + 0 , and z + 3.
+The following example sets the local **Origin** of the compound load, including all load points for all load objects of **C_load** by x + 4, y + 0, and z + 3.
 
 ```python
 C_Load.set_global_coord(Point(4,0,3))
@@ -145,7 +145,7 @@ When adding each load object, the {class}`~ospgrillage.load.CompoundLoad` class 
 ```{note}
 Compound loads require users to pay attention between basic and global coordinate system (see {doc}`ModuleDoc` for more information on coordinate systems)
 
-At the current stage, the {class}`~CompoundLoad` parses the load object within **local coordinate system**. When pass as input into {class}`~LoadCase`, the Compound load\'s vertices / load points are automatically converted to **global coordinates**, based on the inputs of `set_global_coord` function
+At the current stage, the {class}`~CompoundLoad` parses the load object within **local coordinate system**. When passed as input into {class}`~LoadCase`, the Compound load's vertices / load points are automatically converted to **global coordinates**, based on the inputs of `set_global_coord` function
 ```
 
 (load-cases)=
@@ -194,7 +194,7 @@ single_path = og.create_moving_path(start_point=og.Point(2,0,2), end_point= og.P
 
 ### Creating moving load
 
-The following example code creates a compound load consisting of two point loads moving along the defined **single\_path**
+The following example code creates a compound load consisting of two point loads moving along the defined **single_path**
 
 ```python
 # create components of compound load
