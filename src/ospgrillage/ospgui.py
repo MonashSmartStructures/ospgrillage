@@ -1336,6 +1336,18 @@ from math import *
             QMessageBox.critical(self, "Error", f"Failed to create geometry: {str(e)}")
 
 def main():
+    """Launch the *ospgui* graphical interface.
+
+    Entry point for the ``ospgui`` console script.  Checks that PyQt5 is
+    available and exits with a helpful message if not, otherwise starts the
+    Qt application and opens :class:`BridgeAnalysisGUI`.
+
+    Raises
+    ------
+    SystemExit
+        With code 1 if PyQt5 is not installed; with the Qt application's
+        return code on normal exit.
+    """
     if not _PYQT5_AVAILABLE:
         print(
             "ospgui requires PyQt5, which is not installed in this environment.\n"
