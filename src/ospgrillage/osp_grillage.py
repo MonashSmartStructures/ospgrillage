@@ -12,7 +12,7 @@ from datetime import datetime
 from itertools import combinations
 import logging
 import math
-from typing import List, Optional, Tuple, Union, TYPE_CHECKING
+from typing import List, Tuple, Union, TYPE_CHECKING
 
 import numpy as np
 import openseespy.opensees as ops
@@ -97,13 +97,13 @@ class _OpsProxy:
     model-building and analysis methods.
     """
 
-    def __init__(self, ops_module, filename: Optional[str] = None):
+    def __init__(self, ops_module, filename: str | None = None):
         # Use object.__setattr__ to avoid our own __getattr__
         object.__setattr__(self, "_module", ops_module)
         object.__setattr__(self, "_filename", filename)
         object.__setattr__(self, "command_log", [])
 
-    def _set_filename(self, filename: Optional[str]) -> None:
+    def _set_filename(self, filename: str | None) -> None:
         """Switch the proxy to a different target file (or back to live mode)."""
         object.__setattr__(self, "_filename", filename)
 
