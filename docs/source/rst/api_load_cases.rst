@@ -22,16 +22,6 @@ Factory functions
    ~ospgrillage.load.create_compound_load
    ~ospgrillage.load.create_load_model
 
-Class methods
--------------
-
-.. autosummary::
-   :toctree: generated/
-
-   ~ospgrillage.load.LoadCase.add_load
-   ~ospgrillage.load.CompoundLoad.add_load
-   ~ospgrillage.load.CompoundLoad.set_global_coord
-
 Class reference
 ---------------
 
@@ -39,12 +29,14 @@ LoadCase
 ~~~~~~~~
 
 .. autoclass:: ospgrillage.load.LoadCase
+   :members:
    :show-inheritance:
 
 CompoundLoad
 ~~~~~~~~~~~~
 
 .. autoclass:: ospgrillage.load.CompoundLoad
+   :members:
    :show-inheritance:
 
 LoadModel
