@@ -253,11 +253,11 @@ In tandem with this, the :class:`~ospgrillage.mesh.EdgeControlPoints` class will
 are only recognized as end supports - catering to current meshing procedures for single span configuration.
 
 The developers also acknowledges that there are conflicts between the adopted coordinate system of *ospgrillage* and the default
-coordinate system for the OpenSees's `ops_vis` module. The `ops_vis` module default isotropic angle is x - y with z axis plane
+coordinate system for the OpenSees's `opsvis` module. The `opsvis` module default isotropic angle is x - y with z axis plane
 being the model plane of a 2-D model in 3-D space. Currently it is not easy to alter the coordinate system of
-*ospgrillage*. However, the developers are hoping that `ops_vis` can cater to
+*ospgrillage*. However, the developers are hoping that `opsvis` can cater to
 multi isotropic views of the model space as oppose to the current fixed coordinate system.
 It would require substantial rework of the entire *ospgrillage* module if one decides to "fit"
-*ospgrillage* 's coordinate system to `ops_vis` - since the module assume the model plane of the 2D grillage is the
+*ospgrillage* 's coordinate system to `opsvis` - since the module assume the model plane of the 2D grillage is the
 y axis.
 

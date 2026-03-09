@@ -86,6 +86,7 @@ Documentation
    rst/APIdoc
    rst/ModuleDoc
    rst/ChangeLog
+   rst/ospgui
 
 
 

@@ -77,7 +77,7 @@ Table 1 outlines the specific variables for beam link model.
 
 
 .. note::
-    As of release 0.1.0, `OpenSeesPy` visualization module ops_vis is unable to visualize the joint offsets.
+    As of release 0.1.0, `OpenSeesPy` visualization module `vfo` and `opsvis` is unable to visualize the joint offsets.
 
 .. _shell hybrid model:
 

@@ -229,15 +229,15 @@ Plotting results of DataArrays
 Current limitation of `OpenSees` visualization module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-`OpenSeesPy`'s visualization module - `ops_vis` - offers comprehensive visualization analysis results in `OpenSees`.
-However, `ops_vis` operates only for a single model instance (and analysis) in `OpenSees`
-framework.
-In other words, results from `xarray` DataSet (of :func:`~ospgrillage.osp_grillage.OspGrillage.get_results`) cannot be plotted using the current visualization module.
-Additionally, `ops_vis` does not contain enveloping feature across multiple analysis - especially for moving load analysis comprise of multiple incremental load case for each moving load position.
+`OpenSeesPy`'s visualization module uses either `vfo` or `opsvis`.
+However both modules requires the model instance been created in `OpenSeesPy` model space.
 
-If needed, users can still utilize `ops_vis` however only in a specific condition i.e. only a single load case is defined and :func:`~ospgrillage.osp_grillage.OspGrillage.analyze` in the `OpenSees` framework.
-With only a single load case and analysis, users can directly access the model results and plot using `ops_vis`.
-The following code example plots the results of the **current analysis instance** using `ops_vis`:
+In other words, results from `xarray` DataSet (of :func:`~ospgrillage.osp_grillage.OspGrillage.get_results`) cannot be plotted using the current visualization modules.
+Additionally, `opsvis` and `vfo` does not contain enveloping feature across multiple analysis - especially for moving load analysis comprise of multiple incremental load case for each moving load position.
+
+If needed, users can still utilize `opsvis` however only in a specific condition i.e. only a single load case is defined and :func:`~ospgrillage.osp_grillage.OspGrillage.analyze` in the `OpenSees` framework.
+With only a single load case and analysis, users can directly access the model results and plot using `opsvis`.
+The following code example plots the results of the **current analysis instance** using `opsvis`:
 
 .. code-block:: python
 
