@@ -45,7 +45,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'rst/api_load';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="create_load_vertex" href="generated/ospgrillage.load.create_load_vertex.html" />
+    <link rel="next" title="Static loads" href="api_load_static.html" />
     <link rel="prev" title="create_member" href="generated/ospgrillage.members.create_member.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -366,19 +366,28 @@
 </ul>
 </details></li>
 <li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Load module</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.load.create_load_vertex.html">create_load_vertex</a></li>
-<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.load.create_load.html">create_load</a></li>
-<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.load.create_load_case.html">create_load_case</a></li>
-<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.load.create_compound_load.html">create_compound_load</a></li>
-<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.load.create_moving_path.html">create_moving_path</a></li>
-<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.load.create_moving_load.html">create_moving_load</a></li>
-<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.load.create_load_model.html">create_load_model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.set_global_coord.html">CompoundLoad.set_global_coord</a></li>
-<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.add_load.html">CompoundLoad.add_load</a></li>
-<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.load.LoadCase.add_load.html">LoadCase.add_load</a></li>
-<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.set_path.html">MovingLoad.set_path</a></li>
-<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.add_load.html">MovingLoad.add_load</a></li>
-<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.query.html">MovingLoad.query</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="api_load_static.html">Static loads</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_load_vertex.html">create_load_vertex</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_load.html">create_load</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="api_load_cases.html">Load cases</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_load_case.html">create_load_case</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_compound_load.html">create_compound_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.set_global_coord.html">CompoundLoad.set_global_coord</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.add_load.html">CompoundLoad.add_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.LoadCase.add_load.html">LoadCase.add_load</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="api_load_moving.html">Moving loads</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_moving_path.html">create_moving_path</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_moving_load.html">create_moving_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_load_model.html">create_load_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.set_path.html">MovingLoad.set_path</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.add_load.html">MovingLoad.add_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.query.html">MovingLoad.query</a></li>
+</ul>
+</details></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="api_mesh.html">Mesh</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -453,292 +462,14 @@
                   
   <section id="load-module">
 <h1>Load module<a class="headerlink" href="#load-module" title="Link to this heading">#</a></h1>
-<section id="factory-functions">
-<h2>Factory functions<a class="headerlink" href="#factory-functions" title="Link to this heading">#</a></h2>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_load_vertex.html#ospgrillage.load.create_load_vertex" title="ospgrillage.load.create_load_vertex"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_load_vertex</span></code></a>(**kwargs)</p></td>
-<td><p>User interface function to create a load vertex.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_load.html#ospgrillage.load.create_load" title="ospgrillage.load.create_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_load</span></code></a>(**kwargs)</p></td>
-<td><p>User interface function to create load types.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_load_case.html#ospgrillage.load.create_load_case" title="ospgrillage.load.create_load_case"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_load_case</span></code></a>(**kwargs)</p></td>
-<td><p>Create a load case container for loads to apply in a grillage analysis.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_compound_load.html#ospgrillage.load.create_compound_load" title="ospgrillage.load.create_compound_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_compound_load</span></code></a>(**kwargs)</p></td>
-<td><p>Create a compound load group that combines multiple individual loads.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_moving_path.html#ospgrillage.load.create_moving_path" title="ospgrillage.load.create_moving_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_moving_path</span></code></a>(**kwargs)</p></td>
-<td><p>User interface function to create Path object for moving load.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_moving_load.html#ospgrillage.load.create_moving_load" title="ospgrillage.load.create_moving_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_moving_load</span></code></a>(**kwargs)</p></td>
-<td><p>User interface function to create Moving Load object.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_load_model.html#ospgrillage.load.create_load_model" title="ospgrillage.load.create_load_model"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_load_model</span></code></a>(**kwargs)</p></td>
-<td><p>Create a load model object representing a vehicle load model.</p></td>
-</tr>
-</tbody>
-</table>
+<p>The load module is split into three focused pages:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api_load_static.html">Static loads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_load_cases.html">Load cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_load_moving.html">Moving loads</a></li>
+</ul>
 </div>
-</section>
-<section id="class-methods">
-<h2>Class methods<a class="headerlink" href="#class-methods" title="Link to this heading">#</a></h2>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.set_global_coord.html#ospgrillage.load.CompoundLoad.set_global_coord" title="ospgrillage.load.CompoundLoad.set_global_coord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_global_coord</span></code></a>(global_coord)</p></td>
-<td><p>Set global coordinate of the compound load with respect to global coordinate system of grillage model.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.add_load.html#ospgrillage.load.CompoundLoad.add_load" title="ospgrillage.load.CompoundLoad.add_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_load</span></code></a>(load_obj)</p></td>
-<td><p>Adds a <code class="xref py py-class docutils literal notranslate"><span class="pre">Load</span></code> to compound load group.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.LoadCase.add_load.html#ospgrillage.load.LoadCase.add_load" title="ospgrillage.load.LoadCase.add_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_load</span></code></a>(load_obj, **kwargs)</p></td>
-<td><p>Add a Load or Compound load object to LoadCase</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.set_path.html#ospgrillage.load.MovingLoad.set_path" title="ospgrillage.load.MovingLoad.set_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_path</span></code></a>(path_obj)</p></td>
-<td><p>Function to assign/modify the common path variable with a new Path object.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.add_load.html#ospgrillage.load.MovingLoad.add_load" title="ospgrillage.load.MovingLoad.add_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_load</span></code></a>(load_obj[, path_obj])</p></td>
-<td><p>Function to set a load type (Loads class object) with its path (Path class object).</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.MovingLoad.query.html#ospgrillage.load.MovingLoad.query" title="ospgrillage.load.MovingLoad.query"><code class="xref py py-obj docutils literal notranslate"><span class="pre">query</span></code></a>(incremental_lc_name, **kwargs)</p></td>
-<td><p>Function to query properties of moving load</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
-<section id="class-reference">
-<h2>Class reference<a class="headerlink" href="#class-reference" title="Link to this heading">#</a></h2>
-<section id="nodalload">
-<h3>NodalLoad<a class="headerlink" href="#nodalload" title="Link to this heading">#</a></h3>
-<dl class="py class">
-<dt class="sig sig-object py" id="ospgrillage.load.NodalLoad">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">NodalLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_tag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.NodalLoad" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Loads</span></code></p>
-<p>Class for Nodal loads.</p>
-<p>Inits the Nodal load class. NodalLoad requires a NodalForce(Fx,Fy,Fz,Mx,My,Mz) as input.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<em>str</em>) – Name of load</p></li>
-<li><p><strong>node_tag</strong> (<em>int</em>) – Node tag of grillage model for nodal load to be applied</p></li>
-<li><p><strong>node_force</strong> (<em>NodalForces</em><em>(</em><em>Fx</em><em>,</em><em>Fy</em><em>,</em><em>Fz</em><em>,</em><em>Mx</em><em>,</em><em>My</em><em>,</em><em>Mz</em><em>)</em>) – Named tuple of node forces</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="pointload">
-<h3>PointLoad<a class="headerlink" href="#pointload" title="Link to this heading">#</a></h3>
-<dl class="py class">
-<dt class="sig sig-object py" id="ospgrillage.load.PointLoad">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">PointLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.PointLoad" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Loads</span></code></p>
-<p>Class for concentrated point loads.</p>
-<p>Represents a single concentrated force applied at a point on the grillage
-structure. Inherits all attributes and methods from the Loads base class.</p>
-<p>Initialize a PointLoad instance.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name identifier for the point load.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="lineloading">
-<h3>LineLoading<a class="headerlink" href="#lineloading" title="Link to this heading">#</a></h3>
-<dl class="py class">
-<dt class="sig sig-object py" id="ospgrillage.load.LineLoading">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">LineLoading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LineLoading" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Loads</span></code></p>
-<p>Class for distributed line loads (UDL and non-uniform).</p>
-<p>Represents a load distributed along a line on the grillage. Supports both
-straight lines (defined by two endpoints) and curved lines (defined by three
-points forming a circular arc). Provides interpolation methods for computing
-load magnitudes at arbitrary points along the line.</p>
-<p>Initialize a LineLoading instance.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name identifier for the line load.</p></li>
-<li><p><strong>point1</strong> (<em>LoadPoint</em>) – Start point of the line load.</p></li>
-<li><p><strong>point2</strong> (<em>LoadPoint</em>) – End point of the line load.</p></li>
-<li><p><strong>point3</strong> (<em>LoadPoint</em><em>, </em><em>optional</em>) – If provided, defines a curved (circular arc) line load through
-point1, point2, and point3. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the load follows a straight line.</p></li>
-<li><p><strong>long_beam_element_load</strong> (<em>bool</em>) – Apply load to longitudinal beam elements. Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>trans_beam_element_load</strong> (<em>bool</em>) – Apply load to transverse beam elements. Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="patchloading">
-<h3>PatchLoading<a class="headerlink" href="#patchloading" title="Link to this heading">#</a></h3>
-<dl class="py class">
-<dt class="sig sig-object py" id="ospgrillage.load.PatchLoading">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">PatchLoading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.PatchLoading" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Loads</span></code></p>
-<p>Class for Patch loads.</p>
-<p>By default requires at least 4 load point for patch (quadrilateral). Can take up to 8 load points.</p>
-<p>Init the PatchLoad class. Accepts the same parameters as <code class="xref py py-class docutils literal notranslate"><span class="pre">Loads</span></code>.</p>
-</dd></dl>
-
-</section>
-<section id="compoundload">
-<h3>CompoundLoad<a class="headerlink" href="#compoundload" title="Link to this heading">#</a></h3>
-<dl class="py class">
-<dt class="sig sig-object py" id="ospgrillage.load.CompoundLoad">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">CompoundLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.CompoundLoad" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Class for Compound load. Used to group different Load objects into a Compound load group.</p>
-<p>When a Load object is pass as an input, CompoundLoad treats the initial positions (load_points) of the Load classes
-as local coordinates. Then CompoundLoad sets the loads “in-place” of the local coordinate. If class input local_coord
-is given, CompoundLoad replaces the coordinates of the initial load points (retaining the magnitude of load points)</p>
-<p>When set_global_coord() function is called, CompoundLoad sets the input global coordinate as the new centroid of the
-compounded load groups. This is done by shifting each local coordinate load point in all load groups under
-CompoundLoad by x (global) and z (global).</p>
-<p>Here are a few relationships between CompoundLoad and other classes</p>
-<ul class="simple">
-<li><p>CompoundLoad object can have Loads class and its inheritances (Line, Point, Patch)</p></li>
-<li><p>CompoundLoad handles functions of Load classes (e.g. move_load)</p></li>
-</ul>
-<p>Init the CompoundLoad class</p>
-<dl class="field-list simple">
-</dl>
-</dd></dl>
-
-</section>
-<section id="movingload">
-<h3>MovingLoad<a class="headerlink" href="#movingload" title="Link to this heading">#</a></h3>
-<dl class="py class">
-<dt class="sig sig-object py" id="ospgrillage.load.MovingLoad">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">MovingLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.MovingLoad" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Main class of moving load case. MovingLoad class parses and creates multiple loadcase object corresponding to
-traversing the input load groups - be it compound or single. Moving load is able to set various path (defined by
-Path class object) to individual load groups.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<em>str</em>) – Name string of moving load.</p></li>
-<li><p><strong>common_path</strong> (<a class="reference internal" href="#ospgrillage.load.Path" title="ospgrillage.load.Path"><em>Path</em></a><em>, </em><em>optional</em>) – Path object specifying the common path for all loads to traverse.</p></li>
-<li><p><strong>global_increment</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of increments for discretizing the Path object.</p></li>
-</ul>
-</dd>
-</dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p><code class="docutils literal notranslate"><span class="pre">global_increment</span></code> is used in advanced moving load analysis where a moving load object
-assigns each load type a corresponding unique Path object (which may differ between load groups).</p>
-</div>
-</dd></dl>
-
-</section>
-<section id="loadcase">
-<h3>LoadCase<a class="headerlink" href="#loadcase" title="Link to this heading">#</a></h3>
-<dl class="py class">
-<dt class="sig sig-object py" id="ospgrillage.load.LoadCase">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">LoadCase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LoadCase" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Main class for load cases. Each load case holds information about:
-#. Load object types (point line patch or combination i.e. compound load)
-#. load case ops load command line - this is generated by ops-grillage class method (add_load_case()) and updated to LoadCase class object.
-#. Load factor - all load objects within a Load case are link to one same load factor</p>
-<p>Here are a few relationships between LoadCase and other classes</p>
-<ul class="simple">
-<li><p>MovingLoad class creates a series of load case representing the movement of load objects in each load case.</p></li>
-<li><p>Load combination takes in several LoadCase class instance with varied load factors into a single analysis</p></li>
-<li><p>Analysis class handles the ops. commands required for</p></li>
-<li><p>OpsGrillage class takes in load case and updates the variable ‘load_command_list’ after distributing loads within the LoadCase class to nodes/elements of the Mesh in OpsGrillage.</p></li>
-<li><p>LoadCase class can have Load objects or CompoundLoad class object</p></li>
-</ul>
-<p>Init the LoadCase Class</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – str of load case name</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="loadmodel">
-<h3>LoadModel<a class="headerlink" href="#loadmodel" title="Link to this heading">#</a></h3>
-<dl class="py class">
-<dt class="sig sig-object py" id="ospgrillage.load.LoadModel">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">LoadModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LoadModel" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Class to handle load model generator. This contains library of load models and creates load model using
-<cite>CompoundLoad</cite> class.</p>
-<p>For users wishing to contribute/add load models, do so herein by adding the load model as a function to
-this class.</p>
-<p>Init the class.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>gap</strong> (<em>float</em><em> or </em><em>int</em>) – Gap between axles (specific to M1600 load model). Defaults to <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p></li>
-<li><p><strong>model_type</strong> (<em>str</em><em>, </em><em>optional</em>) – Load model type identifier.</p></li>
-<li><p><strong>units</strong> (<em>str</em><em>, </em><em>optional</em>) – Unit system to use. Defaults to <code class="docutils literal notranslate"><span class="pre">&quot;SI&quot;</span></code>.</p></li>
-<li><p><strong>origin</strong> (<em>Point namedTuple</em><em>, </em><em>optional</em>) – Origin point for the load model in global coordinates. Defaults to <code class="docutils literal notranslate"><span class="pre">Point(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></code>.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="path">
-<h3>Path<a class="headerlink" href="#path" title="Link to this heading">#</a></h3>
-<dl class="py class">
-<dt class="sig sig-object py" id="ospgrillage.load.Path">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">increments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.Path" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Class for defining and managing moving load paths.</p>
-<p>Represents a trajectory along which loads traverse during a moving load analysis.
-Supports linear paths between start and end points with configurable discretization.
-Provides methods to generate path points with different levels of refinement.</p>
-<p>Initialize a Path instance.</p>
-<section id="parameters">
-<h4>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">#</a></h4>
-<dl class="simple">
-<dt>start_point<span class="classifier">Point</span></dt><dd><p>Starting position (x, y, z) of the path</p>
-</dd>
-<dt>end_point<span class="classifier">Point</span></dt><dd><p>Ending position (x, y, z) of the path</p>
-</dd>
-<dt>increments<span class="classifier">int, default 50</span></dt><dd><p>Number of discrete steps to divide the path into.
-Higher values give finer resolution for load positioning.</p>
-</dd>
-</dl>
-</section>
-<section id="notes">
-<h4>Notes<a class="headerlink" href="#notes" title="Link to this heading">#</a></h4>
-<p>The path is created as a straight line in 3D space from start_point to end_point.
-Each coordinate is linearly interpolated using numpy.linspace.</p>
-</section>
-<dl class="field-list simple">
-</dl>
-</dd></dl>
-
-</section>
-<section id="shapefunction">
-<h3>ShapeFunction<a class="headerlink" href="#shapefunction" title="Link to this heading">#</a></h3>
-<dl class="py class">
-<dt class="sig sig-object py" id="ospgrillage.load.ShapeFunction">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ShapeFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_three_node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'triangle_linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">option_four_node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hermite'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.ShapeFunction" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Class for shape functions.</p>
-<p>To add more shape functions:
-* add the string options get_shape_function()
-* defining the shape function as a class function which takes eta and zeta as inputs</p>
-<p>Init the ShapeFunction class. Each shape function can either be triangular or quadrilateral</p>
-<dl class="field-list simple">
-</dl>
-</dd></dl>
-
-</section>
-</section>
 </section>
 
 
@@ -761,11 +492,11 @@ Each coordinate is linearly interpolated using numpy.linspace.</p>
       </div>
     </a>
     <a class="right-next"
-       href="generated/ospgrillage.load.create_load_vertex.html"
+       href="api_load_static.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">create_load_vertex</p>
+        <p class="prev-next-title">Static loads</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -779,62 +510,6 @@ Each coordinate is linearly interpolated using numpy.linspace.</p>
                 <dialog id="pst-secondary-sidebar-modal"></dialog>
                 <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
-
-  <div class="sidebar-secondary-item">
-<div
-    id="pst-page-navigation-heading-2"
-    class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> On this page
-  </div>
-  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
-    <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#factory-functions">Factory functions</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-methods">Class methods</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-reference">Class reference</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nodalload">NodalLoad</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.NodalLoad"><code class="docutils literal notranslate"><span class="pre">NodalLoad</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pointload">PointLoad</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.PointLoad"><code class="docutils literal notranslate"><span class="pre">PointLoad</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lineloading">LineLoading</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.LineLoading"><code class="docutils literal notranslate"><span class="pre">LineLoading</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#patchloading">PatchLoading</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.PatchLoading"><code class="docutils literal notranslate"><span class="pre">PatchLoading</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#compoundload">CompoundLoad</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.CompoundLoad"><code class="docutils literal notranslate"><span class="pre">CompoundLoad</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#movingload">MovingLoad</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.MovingLoad"><code class="docutils literal notranslate"><span class="pre">MovingLoad</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#loadcase">LoadCase</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.LoadCase"><code class="docutils literal notranslate"><span class="pre">LoadCase</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#loadmodel">LoadModel</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.LoadModel"><code class="docutils literal notranslate"><span class="pre">LoadModel</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#path">Path</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.Path"><code class="docutils literal notranslate"><span class="pre">Path</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#shapefunction">ShapeFunction</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.ShapeFunction"><code class="docutils literal notranslate"><span class="pre">ShapeFunction</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-  </nav></div>
 
   <div class="sidebar-secondary-item">
 

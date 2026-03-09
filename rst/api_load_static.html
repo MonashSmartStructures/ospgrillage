@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Material &#8212; ospgrillage 0.4.1 documentation</title>
+    <title>Static loads &#8212; ospgrillage 0.4.1 documentation</title>
   
   
   
@@ -42,11 +42,11 @@
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'rst/api_material';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'rst/api_load_static';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="create_material" href="generated/ospgrillage.material.create_material.html" />
-    <link rel="prev" title="OspGrillage.clear_load_cases" href="generated/ospgrillage.osp_grillage.OspGrillage.clear_load_cases.html" />
+    <link rel="next" title="create_load_vertex" href="generated/ospgrillage.load.create_load_vertex.html" />
+    <link rel="prev" title="Load module" href="api_load.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.4.1" />
@@ -356,7 +356,7 @@
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.clear_load_cases.html">OspGrillage.clear_load_cases</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Material</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api_material.html">Material</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.material.create_material.html">create_material</a></li>
 </ul>
 </details></li>
@@ -365,8 +365,8 @@
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.members.create_member.html">create_member</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="api_load.html">Load module</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="api_load_static.html">Static loads</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="api_load.html">Load module</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">Static loads</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_load_vertex.html">create_load_vertex</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_load.html">create_load</a></li>
 </ul>
@@ -443,7 +443,10 @@
     
     <li class="breadcrumb-item"><a href="APIdoc.html" class="nav-link">API reference</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Material</span></li>
+    
+    <li class="breadcrumb-item"><a href="api_load.html" class="nav-link">Load module</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Static loads</span></li>
   </ul>
 </nav>
 </div>
@@ -460,14 +463,19 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="material">
-<h1>Material<a class="headerlink" href="#material" title="Link to this heading">#</a></h1>
-<section id="factory-function">
-<h2>Factory function<a class="headerlink" href="#factory-function" title="Link to this heading">#</a></h2>
+  <section id="static-loads">
+<h1>Static loads<a class="headerlink" href="#static-loads" title="Link to this heading">#</a></h1>
+<p>These classes represent individual loads that are applied at specific
+points, along lines, or over patches of the grillage model.</p>
+<section id="factory-functions">
+<h2>Factory functions<a class="headerlink" href="#factory-functions" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.material.create_material.html#ospgrillage.material.create_material" title="ospgrillage.material.create_material"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_material</span></code></a>(**kwargs)</p></td>
-<td><p>Create a material object for use in a grillage model.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_load_vertex.html#ospgrillage.load.create_load_vertex" title="ospgrillage.load.create_load_vertex"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_load_vertex</span></code></a>(**kwargs)</p></td>
+<td><p>User interface function to create a load vertex.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_load.html#ospgrillage.load.create_load" title="ospgrillage.load.create_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_load</span></code></a>(**kwargs)</p></td>
+<td><p>User interface function to create load types.</p></td>
 </tr>
 </tbody>
 </table>
@@ -475,56 +483,81 @@
 </section>
 <section id="class-reference">
 <h2>Class reference<a class="headerlink" href="#class-reference" title="Link to this heading">#</a></h2>
-<section id="id1">
-<h3>Material<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<section id="nodalload">
+<h3>NodalLoad<a class="headerlink" href="#nodalload" title="Link to this heading">#</a></h3>
 <dl class="py class">
-<dt class="sig sig-object py" id="ospgrillage.material.Material">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Material</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.material.Material" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>This class stores information and provides methods to parse input material properties into <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code> Material
-objects.</p>
-<p><a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html">Here</a> are the information about OpenSees
-Material objects.</p>
-<p>As <em>ospgrillage</em> is mainly intended for bridge decks , concrete and steel makes up the primary
-materials. In turn, <em>ospgrillage</em> wraps the UniAxialMaterial object of <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code> since it contains the primary
-options for Concrete and Steel.</p>
-<p>The Material class also allow users to utilize codified material properties (e.g. AS5100, ASHTOO).
-These material properties are stored in a material library file (mat_lib.json). Users are required to pass in
-the appropriate keyword arguments (dict keys) to select the desirable codified materials. Users may access
-mat_lib.json. Additionally, this class is able create the mat_lib.json file and pass it through</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Current version of mat_lib.json is 0.1.0</p>
-</div>
-<p>The constructor of Material takes in three types of inputs:</p>
-<ol class="arabic simple">
-<li><p>Keywords for looking up the <em>ospgrillage</em> material library i.e. mat_lib.json.</p></li>
-<li><p>General material properties - such as E, and G</p></li>
-<li><p>Specific material arguments of <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code>.</p></li>
-</ol>
-<p>For material library lookup (option 1), provide:</p>
+<dt class="sig sig-object py" id="ospgrillage.load.NodalLoad">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">NodalLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_tag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.NodalLoad" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Loads</span></code></p>
+<p>Class for Nodal loads.</p>
+<p>Inits the Nodal load class. NodalLoad requires a NodalForce(Fx,Fy,Fz,Mx,My,Mz) as input.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>code</strong> (<em>str</em><em>, </em><em>optional</em>) – Code name string as defined in <code class="docutils literal notranslate"><span class="pre">mat_lib.json</span></code>.</p></li>
-<li><p><strong>type</strong> (<em>str</em><em>, </em><em>optional</em>) – Material type — either <code class="docutils literal notranslate"><span class="pre">&quot;concrete&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;steel&quot;</span></code>.</p></li>
-<li><p><strong>grade</strong> (<em>str</em><em>, </em><em>optional</em>) – Material grade according to the selected code.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of load</p></li>
+<li><p><strong>node_tag</strong> (<em>int</em>) – Node tag of grillage model for nodal load to be applied</p></li>
+<li><p><strong>node_force</strong> (<em>NodalForces</em><em>(</em><em>Fx</em><em>,</em><em>Fy</em><em>,</em><em>Fz</em><em>,</em><em>Mx</em><em>,</em><em>My</em><em>,</em><em>Mz</em><em>)</em>) – Named tuple of node forces</p></li>
 </ul>
 </dd>
 </dl>
-<p>For general material properties (option 2), provide:</p>
+</dd></dl>
+
+</section>
+<section id="pointload">
+<h3>PointLoad<a class="headerlink" href="#pointload" title="Link to this heading">#</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="ospgrillage.load.PointLoad">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">PointLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.PointLoad" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Loads</span></code></p>
+<p>Class for concentrated point loads.</p>
+<p>Represents a single concentrated force applied at a point on the grillage
+structure. Inherits all attributes and methods from the Loads base class.</p>
+<p>Initialize a PointLoad instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name identifier for the point load.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="lineloading">
+<h3>LineLoading<a class="headerlink" href="#lineloading" title="Link to this heading">#</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="ospgrillage.load.LineLoading">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">LineLoading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LineLoading" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Loads</span></code></p>
+<p>Class for distributed line loads (UDL and non-uniform).</p>
+<p>Represents a load distributed along a line on the grillage. Supports both
+straight lines (defined by two endpoints) and curved lines (defined by three
+points forming a circular arc). Provides interpolation methods for computing
+load magnitudes at arbitrary points along the line.</p>
+<p>Initialize a LineLoading instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>E</strong> (<em>float</em><em>, </em><em>optional</em>) – Elastic modulus.</p></li>
-<li><p><strong>G</strong> (<em>float</em><em>, </em><em>optional</em>) – Shear modulus.</p></li>
-<li><p><strong>v</strong> (<em>float</em><em>, </em><em>optional</em>) – Poisson’s ratio.</p></li>
-<li><p><strong>rho</strong> (<em>float</em><em>, </em><em>optional</em>) – Density.</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name identifier for the line load.</p></li>
+<li><p><strong>point1</strong> (<em>LoadPoint</em>) – Start point of the line load.</p></li>
+<li><p><strong>point2</strong> (<em>LoadPoint</em>) – End point of the line load.</p></li>
+<li><p><strong>point3</strong> (<em>LoadPoint</em><em>, </em><em>optional</em>) – If provided, defines a curved (circular arc) line load through
+point1, point2, and point3. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the load follows a straight line.</p></li>
+<li><p><strong>long_beam_element_load</strong> (<em>bool</em>) – Apply load to longitudinal beam elements. Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>trans_beam_element_load</strong> (<em>bool</em>) – Apply load to transverse beam elements. Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
 </dd>
 </dl>
-<p>For OpenSeesPy-specific arguments (option 3), refer to
-<a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html">OpenSeesPy</a>.</p>
+</dd></dl>
+
+</section>
+<section id="patchloading">
+<h3>PatchLoading<a class="headerlink" href="#patchloading" title="Link to this heading">#</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="ospgrillage.load.PatchLoading">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">PatchLoading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.PatchLoading" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Loads</span></code></p>
+<p>Class for Patch loads.</p>
+<p>By default requires at least 4 load point for patch (quadrilateral). Can take up to 8 load points.</p>
+<p>Init the PatchLoad class. Accepts the same parameters as <code class="xref py py-class docutils literal notranslate"><span class="pre">Loads</span></code>.</p>
 </dd></dl>
 
 </section>
@@ -542,20 +575,20 @@ mat_lib.json. Additionally, this class is able create the mat_lib.json file and 
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="generated/ospgrillage.osp_grillage.OspGrillage.clear_load_cases.html"
+       href="api_load.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">OspGrillage.clear_load_cases</p>
+        <p class="prev-next-title">Load module</p>
       </div>
     </a>
     <a class="right-next"
-       href="generated/ospgrillage.material.create_material.html"
+       href="generated/ospgrillage.load.create_load_vertex.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">create_material</p>
+        <p class="prev-next-title">create_load_vertex</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -578,10 +611,22 @@ mat_lib.json. Additionally, this class is able create the mat_lib.json file and 
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#factory-function">Factory function</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#factory-functions">Factory functions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-reference">Class reference</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Material</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.material.Material"><code class="docutils literal notranslate"><span class="pre">Material</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nodalload">NodalLoad</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.NodalLoad"><code class="docutils literal notranslate"><span class="pre">NodalLoad</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pointload">PointLoad</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.PointLoad"><code class="docutils literal notranslate"><span class="pre">PointLoad</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lineloading">LineLoading</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.LineLoading"><code class="docutils literal notranslate"><span class="pre">LineLoading</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#patchloading">PatchLoading</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.PatchLoading"><code class="docutils literal notranslate"><span class="pre">PatchLoading</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -593,7 +638,7 @@ mat_lib.json. Additionally, this class is able create the mat_lib.json file and 
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/rst/api_material.rst">
+    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/rst/api_load_static.rst">
       <i class="fa-solid fa-pencil"></i>
       
       

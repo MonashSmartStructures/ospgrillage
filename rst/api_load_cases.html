@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Material &#8212; ospgrillage 0.4.1 documentation</title>
+    <title>Load cases &#8212; ospgrillage 0.4.1 documentation</title>
   
   
   
@@ -42,11 +42,11 @@
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'rst/api_material';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'rst/api_load_cases';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="create_material" href="generated/ospgrillage.material.create_material.html" />
-    <link rel="prev" title="OspGrillage.clear_load_cases" href="generated/ospgrillage.osp_grillage.OspGrillage.clear_load_cases.html" />
+    <link rel="next" title="create_load_case" href="generated/ospgrillage.load.create_load_case.html" />
+    <link rel="prev" title="create_load" href="generated/ospgrillage.load.create_load.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.4.1" />
@@ -356,7 +356,7 @@
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.clear_load_cases.html">OspGrillage.clear_load_cases</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Material</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api_material.html">Material</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.material.create_material.html">create_material</a></li>
 </ul>
 </details></li>
@@ -365,13 +365,13 @@
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.members.create_member.html">create_member</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="api_load.html">Load module</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="api_load.html">Load module</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 has-children"><a class="reference internal" href="api_load_static.html">Static loads</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_load_vertex.html">create_load_vertex</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_load.html">create_load</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="api_load_cases.html">Load cases</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">Load cases</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_load_case.html">create_load_case</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_compound_load.html">create_compound_load</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.set_global_coord.html">CompoundLoad.set_global_coord</a></li>
@@ -443,7 +443,10 @@
     
     <li class="breadcrumb-item"><a href="APIdoc.html" class="nav-link">API reference</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Material</span></li>
+    
+    <li class="breadcrumb-item"><a href="api_load.html" class="nav-link">Load module</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Load cases</span></li>
   </ul>
 </nav>
 </div>
@@ -460,14 +463,36 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="material">
-<h1>Material<a class="headerlink" href="#material" title="Link to this heading">#</a></h1>
-<section id="factory-function">
-<h2>Factory function<a class="headerlink" href="#factory-function" title="Link to this heading">#</a></h2>
+  <section id="load-cases">
+<h1>Load cases<a class="headerlink" href="#load-cases" title="Link to this heading">#</a></h1>
+<p>These classes are used to assemble individual loads into named load cases
+and compound (grouped) loads that can be applied to the model together.</p>
+<section id="factory-functions">
+<h2>Factory functions<a class="headerlink" href="#factory-functions" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.material.create_material.html#ospgrillage.material.create_material" title="ospgrillage.material.create_material"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_material</span></code></a>(**kwargs)</p></td>
-<td><p>Create a material object for use in a grillage model.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_load_case.html#ospgrillage.load.create_load_case" title="ospgrillage.load.create_load_case"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_load_case</span></code></a>(**kwargs)</p></td>
+<td><p>Create a load case container for loads to apply in a grillage analysis.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_compound_load.html#ospgrillage.load.create_compound_load" title="ospgrillage.load.create_compound_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_compound_load</span></code></a>(**kwargs)</p></td>
+<td><p>Create a compound load group that combines multiple individual loads.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="class-methods">
+<h2>Class methods<a class="headerlink" href="#class-methods" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.set_global_coord.html#ospgrillage.load.CompoundLoad.set_global_coord" title="ospgrillage.load.CompoundLoad.set_global_coord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_global_coord</span></code></a>(global_coord)</p></td>
+<td><p>Set global coordinate of the compound load with respect to global coordinate system of grillage model.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.CompoundLoad.add_load.html#ospgrillage.load.CompoundLoad.add_load" title="ospgrillage.load.CompoundLoad.add_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_load</span></code></a>(load_obj)</p></td>
+<td><p>Adds a <code class="xref py py-class docutils literal notranslate"><span class="pre">Load</span></code> to compound load group.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.LoadCase.add_load.html#ospgrillage.load.LoadCase.add_load" title="ospgrillage.load.LoadCase.add_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_load</span></code></a>(load_obj, **kwargs)</p></td>
+<td><p>Add a Load or Compound load object to LoadCase</p></td>
 </tr>
 </tbody>
 </table>
@@ -475,56 +500,54 @@
 </section>
 <section id="class-reference">
 <h2>Class reference<a class="headerlink" href="#class-reference" title="Link to this heading">#</a></h2>
-<section id="id1">
-<h3>Material<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<section id="loadcase">
+<h3>LoadCase<a class="headerlink" href="#loadcase" title="Link to this heading">#</a></h3>
 <dl class="py class">
-<dt class="sig sig-object py" id="ospgrillage.material.Material">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Material</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.material.Material" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="ospgrillage.load.LoadCase">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">LoadCase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LoadCase" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>This class stores information and provides methods to parse input material properties into <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code> Material
-objects.</p>
-<p><a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html">Here</a> are the information about OpenSees
-Material objects.</p>
-<p>As <em>ospgrillage</em> is mainly intended for bridge decks , concrete and steel makes up the primary
-materials. In turn, <em>ospgrillage</em> wraps the UniAxialMaterial object of <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code> since it contains the primary
-options for Concrete and Steel.</p>
-<p>The Material class also allow users to utilize codified material properties (e.g. AS5100, ASHTOO).
-These material properties are stored in a material library file (mat_lib.json). Users are required to pass in
-the appropriate keyword arguments (dict keys) to select the desirable codified materials. Users may access
-mat_lib.json. Additionally, this class is able create the mat_lib.json file and pass it through</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Current version of mat_lib.json is 0.1.0</p>
-</div>
-<p>The constructor of Material takes in three types of inputs:</p>
-<ol class="arabic simple">
-<li><p>Keywords for looking up the <em>ospgrillage</em> material library i.e. mat_lib.json.</p></li>
-<li><p>General material properties - such as E, and G</p></li>
-<li><p>Specific material arguments of <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code>.</p></li>
-</ol>
-<p>For material library lookup (option 1), provide:</p>
+<p>Main class for load cases. Each load case holds information about:
+#. Load object types (point line patch or combination i.e. compound load)
+#. load case ops load command line - this is generated by ops-grillage class method (add_load_case()) and updated to LoadCase class object.
+#. Load factor - all load objects within a Load case are link to one same load factor</p>
+<p>Here are a few relationships between LoadCase and other classes</p>
+<ul class="simple">
+<li><p>MovingLoad class creates a series of load case representing the movement of load objects in each load case.</p></li>
+<li><p>Load combination takes in several LoadCase class instance with varied load factors into a single analysis</p></li>
+<li><p>Analysis class handles the ops. commands required for</p></li>
+<li><p>OpsGrillage class takes in load case and updates the variable ‘load_command_list’ after distributing loads within the LoadCase class to nodes/elements of the Mesh in OpsGrillage.</p></li>
+<li><p>LoadCase class can have Load objects or CompoundLoad class object</p></li>
+</ul>
+<p>Init the LoadCase Class</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>code</strong> (<em>str</em><em>, </em><em>optional</em>) – Code name string as defined in <code class="docutils literal notranslate"><span class="pre">mat_lib.json</span></code>.</p></li>
-<li><p><strong>type</strong> (<em>str</em><em>, </em><em>optional</em>) – Material type — either <code class="docutils literal notranslate"><span class="pre">&quot;concrete&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;steel&quot;</span></code>.</p></li>
-<li><p><strong>grade</strong> (<em>str</em><em>, </em><em>optional</em>) – Material grade according to the selected code.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – str of load case name</p>
 </dd>
 </dl>
-<p>For general material properties (option 2), provide:</p>
+</dd></dl>
+
+</section>
+<section id="compoundload">
+<h3>CompoundLoad<a class="headerlink" href="#compoundload" title="Link to this heading">#</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="ospgrillage.load.CompoundLoad">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">CompoundLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.CompoundLoad" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class for Compound load. Used to group different Load objects into a Compound load group.</p>
+<p>When a Load object is pass as an input, CompoundLoad treats the initial positions (load_points) of the Load classes
+as local coordinates. Then CompoundLoad sets the loads “in-place” of the local coordinate. If class input local_coord
+is given, CompoundLoad replaces the coordinates of the initial load points (retaining the magnitude of load points)</p>
+<p>When set_global_coord() function is called, CompoundLoad sets the input global coordinate as the new centroid of the
+compounded load groups. This is done by shifting each local coordinate load point in all load groups under
+CompoundLoad by x (global) and z (global).</p>
+<p>Here are a few relationships between CompoundLoad and other classes</p>
+<ul class="simple">
+<li><p>CompoundLoad object can have Loads class and its inheritances (Line, Point, Patch)</p></li>
+<li><p>CompoundLoad handles functions of Load classes (e.g. move_load)</p></li>
+</ul>
+<p>Init the CompoundLoad class</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>E</strong> (<em>float</em><em>, </em><em>optional</em>) – Elastic modulus.</p></li>
-<li><p><strong>G</strong> (<em>float</em><em>, </em><em>optional</em>) – Shear modulus.</p></li>
-<li><p><strong>v</strong> (<em>float</em><em>, </em><em>optional</em>) – Poisson’s ratio.</p></li>
-<li><p><strong>rho</strong> (<em>float</em><em>, </em><em>optional</em>) – Density.</p></li>
-</ul>
-</dd>
 </dl>
-<p>For OpenSeesPy-specific arguments (option 3), refer to
-<a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/uniaxialMaterial.html">OpenSeesPy</a>.</p>
 </dd></dl>
 
 </section>
@@ -542,20 +565,20 @@ mat_lib.json. Additionally, this class is able create the mat_lib.json file and 
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="generated/ospgrillage.osp_grillage.OspGrillage.clear_load_cases.html"
+       href="generated/ospgrillage.load.create_load.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">OspGrillage.clear_load_cases</p>
+        <p class="prev-next-title">create_load</p>
       </div>
     </a>
     <a class="right-next"
-       href="generated/ospgrillage.material.create_material.html"
+       href="generated/ospgrillage.load.create_load_case.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">create_material</p>
+        <p class="prev-next-title">create_load_case</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -578,10 +601,15 @@ mat_lib.json. Additionally, this class is able create the mat_lib.json file and 
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#factory-function">Factory function</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#factory-functions">Factory functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-methods">Class methods</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-reference">Class reference</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Material</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.material.Material"><code class="docutils literal notranslate"><span class="pre">Material</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#loadcase">LoadCase</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.LoadCase"><code class="docutils literal notranslate"><span class="pre">LoadCase</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#compoundload">CompoundLoad</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.CompoundLoad"><code class="docutils literal notranslate"><span class="pre">CompoundLoad</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -593,7 +621,7 @@ mat_lib.json. Additionally, this class is able create the mat_lib.json file and 
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/rst/api_material.rst">
+    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/rst/api_load_cases.rst">
       <i class="fa-solid fa-pencil"></i>
       
       

@@ -46,7 +46,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="MovingLoad.add_load" href="ospgrillage.load.MovingLoad.add_load.html" />
-    <link rel="prev" title="LoadCase.add_load" href="ospgrillage.load.LoadCase.add_load.html" />
+    <link rel="prev" title="create_load_model" href="ospgrillage.load.create_load_model.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.4.1" />
@@ -366,19 +366,28 @@
 </ul>
 </details></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../api_load.html">Load module</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.create_load_vertex.html">create_load_vertex</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.create_load.html">create_load</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.create_load_case.html">create_load_case</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.create_compound_load.html">create_compound_load</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.create_moving_path.html">create_moving_path</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.create_moving_load.html">create_moving_load</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.create_load_model.html">create_load_model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.CompoundLoad.set_global_coord.html">CompoundLoad.set_global_coord</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.CompoundLoad.add_load.html">CompoundLoad.add_load</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.LoadCase.add_load.html">LoadCase.add_load</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">MovingLoad.set_path</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.MovingLoad.add_load.html">MovingLoad.add_load</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.MovingLoad.query.html">MovingLoad.query</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api_load_static.html">Static loads</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_load_vertex.html">create_load_vertex</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_load.html">create_load</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api_load_cases.html">Load cases</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_load_case.html">create_load_case</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_compound_load.html">create_compound_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.CompoundLoad.set_global_coord.html">CompoundLoad.set_global_coord</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.CompoundLoad.add_load.html">CompoundLoad.add_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.LoadCase.add_load.html">LoadCase.add_load</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../api_load_moving.html">Moving loads</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_moving_path.html">create_moving_path</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_moving_load.html">create_moving_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_load_model.html">create_load_model</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">MovingLoad.set_path</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.MovingLoad.add_load.html">MovingLoad.add_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.MovingLoad.query.html">MovingLoad.query</a></li>
+</ul>
+</details></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../api_mesh.html">Mesh</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -437,6 +446,9 @@
     
     <li class="breadcrumb-item"><a href="../api_load.html" class="nav-link">Load module</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../api_load_moving.html" class="nav-link">Moving loads</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">MovingLoad.set_path</span></li>
   </ul>
 </nav>
@@ -463,7 +475,7 @@
 All loads added later to Moving load object will traverse the same common path object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>path_obj</strong> (<a class="reference internal" href="../api_load.html#ospgrillage.load.Path" title="ospgrillage.load.Path"><em>Path</em></a>) – Path object to specify common path variable.</p>
+<dd class="field-odd"><p><strong>path_obj</strong> (<a class="reference internal" href="../api_load_moving.html#ospgrillage.load.Path" title="ospgrillage.load.Path"><em>Path</em></a>) – Path object to specify common path variable.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -481,12 +493,12 @@ All loads added later to Moving load object will traverse the same common path o
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="ospgrillage.load.LoadCase.add_load.html"
+       href="ospgrillage.load.create_load_model.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">LoadCase.add_load</p>
+        <p class="prev-next-title">create_load_model</p>
       </div>
     </a>
     <a class="right-next"

@@ -366,19 +366,28 @@
 </ul>
 </details></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../api_load.html">Load module</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.create_load_vertex.html">create_load_vertex</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.create_load.html">create_load</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.create_load_case.html">create_load_case</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.create_compound_load.html">create_compound_load</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.create_moving_path.html">create_moving_path</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">create_moving_load</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.create_load_model.html">create_load_model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.CompoundLoad.set_global_coord.html">CompoundLoad.set_global_coord</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.CompoundLoad.add_load.html">CompoundLoad.add_load</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.LoadCase.add_load.html">LoadCase.add_load</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.MovingLoad.set_path.html">MovingLoad.set_path</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.MovingLoad.add_load.html">MovingLoad.add_load</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.load.MovingLoad.query.html">MovingLoad.query</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api_load_static.html">Static loads</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_load_vertex.html">create_load_vertex</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_load.html">create_load</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api_load_cases.html">Load cases</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_load_case.html">create_load_case</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_compound_load.html">create_compound_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.CompoundLoad.set_global_coord.html">CompoundLoad.set_global_coord</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.CompoundLoad.add_load.html">CompoundLoad.add_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.LoadCase.add_load.html">LoadCase.add_load</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../api_load_moving.html">Moving loads</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_moving_path.html">create_moving_path</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">create_moving_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.create_load_model.html">create_load_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.MovingLoad.set_path.html">MovingLoad.set_path</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.MovingLoad.add_load.html">MovingLoad.add_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ospgrillage.load.MovingLoad.query.html">MovingLoad.query</a></li>
+</ul>
+</details></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../api_mesh.html">Mesh</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -437,6 +446,9 @@
     
     <li class="breadcrumb-item"><a href="../api_load.html" class="nav-link">Load module</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../api_load_moving.html" class="nav-link">Moving loads</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">create_moving_load</span></li>
   </ul>
 </nav>
@@ -467,13 +479,13 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>common_path</strong> (<a class="reference internal" href="../api_load.html#ospgrillage.load.Path" title="ospgrillage.load.Path"><em>Path</em></a>) – Path object that all load groups will traverse.</p></li>
+<li><p><strong>common_path</strong> (<a class="reference internal" href="../api_load_moving.html#ospgrillage.load.Path" title="ospgrillage.load.Path"><em>Path</em></a>) – Path object that all load groups will traverse.</p></li>
 <li><p><strong>global_increment</strong> (<em>float</em><em> or </em><em>int</em><em>, </em><em>optional</em>) – Number of increments for discretizing the Path object.
 Used in advanced cases where a MovingLoad has multiple load groups each with a unique path.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="../api_load.html#ospgrillage.load.MovingLoad" title="ospgrillage.load.MovingLoad"><code class="xref py py-class docutils literal notranslate"><span class="pre">MovingLoad</span></code></a> object.</p>
+<dd class="field-even"><p><a class="reference internal" href="../api_load_moving.html#ospgrillage.load.MovingLoad" title="ospgrillage.load.MovingLoad"><code class="xref py py-class docutils literal notranslate"><span class="pre">MovingLoad</span></code></a> object.</p>
 </dd>
 </dl>
 </dd></dl>
