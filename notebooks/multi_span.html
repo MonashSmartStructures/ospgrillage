@@ -425,11 +425,7 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <p><strong>ospgrillage version used in this notebook:</strong> see <code class="docutils literal notranslate"><span class="pre">ospgrillage.__version__</span></code></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">ospgrillage</span><span class="p">;</span> <span class="nb">print</span><span class="p">(</span><span class="n">ospgrillage</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
-</pre></div>
-</div>
-<section id="Multi---span-feature">
+  <section id="Multi---span-feature">
 <h1>Multi - span feature<a class="headerlink" href="#Multi---span-feature" title="Link to this heading">#</a></h1>
 <p>Grillages can be created with multiple spans. This is done by supporting nodes at intermediate points along the mesh (in the x global x direction) to represent supports of spans, as shown in the following figure:</p>
 <div class="nbinput docutils container">
@@ -446,7 +442,7 @@
 </pre></div>
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_multi_span_2_0.png" class="no-scaled-link" src="../_images/notebooks_multi_span_2_0.png" width="800" />
+<img alt="../_images/notebooks_multi_span_1_0.png" class="no-scaled-link" src="../_images/notebooks_multi_span_1_0.png" width="800" />
 </div>
 </div>
 <p>There are three types of multi-span meshing feature available in ospgrillage since v0.1.1.</p>
@@ -611,7 +607,7 @@
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_multi_span_14_0.png" src="../_images/notebooks_multi_span_14_0.png" />
+<img alt="../_images/notebooks_multi_span_13_0.png" src="../_images/notebooks_multi_span_13_0.png" />
 </div>
 </div>
 <p>As can be seen, the mesh spacings in each span varies according to the <code class="docutils literal notranslate"><span class="pre">nl_multi</span></code> variable we specified - 10 nodes in the second span then 20 node lines in first and third span.</p>
@@ -662,7 +658,7 @@
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_multi_span_20_0.png" src="../_images/notebooks_multi_span_20_0.png" />
+<img alt="../_images/notebooks_multi_span_19_0.png" src="../_images/notebooks_multi_span_19_0.png" />
 </div>
 </div>
 <p>As can be seen in <code class="docutils literal notranslate"><span class="pre">variant_two_model</span></code>, the meshes are separated at the intermediate support nodes. The meshing splits the nodes at the intermediate support region by the distance variable provided in <code class="docutils literal notranslate"><span class="pre">non_cont_spacing_x=</span></code> , in the global x-direction.</p>
@@ -730,23 +726,7 @@
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_multi_span_27_0.png" src="../_images/notebooks_multi_span_27_0.png" />
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
+<img alt="../_images/notebooks_multi_span_26_0.png" src="../_images/notebooks_multi_span_26_0.png" />
 </div>
 </div>
 </section>

@@ -458,7 +458,7 @@
 </div>
 </section>
 <section id="beam-elements-only-beam-only">
-<h2>Beam Elements Only - <code class="xref py py-class docutils literal notranslate"><span class="pre">beam_only</span></code><a class="headerlink" href="#beam-elements-only-beam-only" title="Link to this heading">#</a></h2>
+<h2>Beam Elements Only — <code class="docutils literal notranslate"><span class="pre">beam_only</span></code><a class="headerlink" href="#beam-elements-only-beam-only" title="Link to this heading">#</a></h2>
 <p>This is the traditional modelling approach that is comprised of beam elements lay out in a grid pattern, with:</p>
 <ul class="simple">
 <li><p>longitudinal members representing composite sections along longitudinal direction (e.g. main beams);</p></li>
@@ -472,7 +472,7 @@
 <p>More information of this model type can be found <a class="reference external" href="https://www.steelconstruction.info/Modelling_and_analysis_of_beam_bridges">here</a>.</p>
 </section>
 <section id="beam-with-rigid-links-beam-link">
-<h2>Beam with Rigid Links - <code class="xref py py-class docutils literal notranslate"><span class="pre">beam_link</span></code><a class="headerlink" href="#beam-with-rigid-links-beam-link" title="Link to this heading">#</a></h2>
+<h2>Beam with Rigid Links — <code class="docutils literal notranslate"><span class="pre">beam_link</span></code><a class="headerlink" href="#beam-with-rigid-links-beam-link" title="Link to this heading">#</a></h2>
 <p>This is a modified version of the traditional beam element model with the following features:</p>
 <ul class="simple">
 <li><p>Offsets (in x-z plane) for start and end nodes along direction of transverse members - using joint offset.</p></li>
@@ -481,7 +481,7 @@
 <p>Figure 2 shows the details of the aforementioned model type. Figure 3 shows the model type created in a similar commercial software SPACEGASS.</p>
 <p><img alt="Figure 2: Beam grillage with rigid links - idealization." src="../_images/beam_link_idealization.PNG" /></p>
 <p><img alt="Figure 3: Beam grillage with rigid links model from SPACEGASS software." src="../_images/spacegass.PNG" /></p>
-<p>To create this model, have <a class="reference internal" href="generated/ospgrillage.osp_grillage.create_grillage.html#ospgrillage.osp_grillage.create_grillage" title="ospgrillage.osp_grillage.create_grillage"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_grillage()</span></code></a> keyword for <code class="docutils literal notranslate"><span class="pre">model_type</span></code> set to <strong>beam_link</strong>.</p>
+<p>To create this model, set <code class="docutils literal notranslate"><span class="pre">model_type=&quot;beam_link&quot;</span></code> in <a class="reference internal" href="generated/ospgrillage.osp_grillage.create_grillage.html#ospgrillage.osp_grillage.create_grillage" title="ospgrillage.osp_grillage.create_grillage"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_grillage()</span></code></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_grillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;Modified bridge grillage&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">skew</span><span class="o">=-</span><span class="mi">12</span><span class="p">,</span>
                                     <span class="n">num_long_grid</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">edge_beam_dist</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mesh_type</span><span class="o">=</span><span class="s2">&quot;Ortho&quot;</span><span class="p">,</span>
                                     <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;beam_link&quot;</span><span class="p">,</span>
@@ -489,36 +489,43 @@
 </pre></div>
 </div>
 <p>The joint offsets are rigid links. Information can be found in <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code>’s <a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/LinearTransf.html">geomtransf</a></p>
-<p>Table 1 outlines the specific variables for beam link model.</p>
-<hr class="docutils" />
-<p>Keyword argument                    Description</p>
-<hr class="docutils" />
-<p><code class="docutils literal notranslate"><span class="pre">beam\_width</span></code>           width of the beam/longitudinal members - this is needed for <em>ospgrillage</em> to define the offset distance in z direction</p>
-<p><code class="docutils literal notranslate"><span class="pre">web\_thick</span></code>            thickness of web - this is needed for <em>ospgrillage</em> to define the offset distance in z direction</p>
-</section>
-<section id="centroid-dist-y-distance-in-y-direction-to-offset-longitudinal-members-exterior-interior-main-beams">
-<h2><code class="docutils literal notranslate"><span class="pre">centroid\_dist\_y</span></code>     distance in y direction to offset longitudinal members (exterior,interior main beams)<a class="headerlink" href="#centroid-dist-y-distance-in-y-direction-to-offset-longitudinal-members-exterior-interior-main-beams" title="Link to this heading">#</a></h2>
-<dl class="myst field-list simple">
-<dt class="field-odd"> Table<span class="colon">:</span></dt>
-<dd class="field-odd"><p>1 Input arguments for shell hybrid model</p>
-</dd>
-</dl>
+<p>Table 1 outlines the specific variables for the beam link model.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Keyword argument</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">beam_width</span></code></p></td>
+<td><p>Width of the beam/longitudinal members — used to define the offset distance in the z direction.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">web_thick</span></code></p></td>
+<td><p>Thickness of web — used to define the offset distance in the z direction.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">centroid_dist_y</span></code></p></td>
+<td><p>Distance in the y direction to offset longitudinal members (exterior and interior main beams).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><em>Table 1: Input arguments for the beam link model.</em></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>As of release 0.1.0, <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code> visualization module <code class="docutils literal notranslate"><span class="pre">vfo</span></code> and <code class="docutils literal notranslate"><span class="pre">opsvis</span></code> is unable to visualize the joint offsets.</p>
 </div>
 </section>
 <section id="shell-beam-elements-shell-beam">
-<span id="shell-hybrid-model"></span><h2>Shell &amp; Beam Elements - <code class="docutils literal notranslate"><span class="pre">shell_beam</span></code><a class="headerlink" href="#shell-beam-elements-shell-beam" title="Link to this heading">#</a></h2>
-<p>This is a more refined model using two element types - shell and beam elements - with the following features:</p>
+<span id="shell-hybrid-model"></span><h2>Shell &amp; Beam Elements — <code class="docutils literal notranslate"><span class="pre">shell_beam</span></code><a class="headerlink" href="#shell-beam-elements-shell-beam" title="Link to this heading">#</a></h2>
+<p>This is a more refined model using two element types — shell and beam elements — with the following features:</p>
 <ul class="simple">
 <li><p>Shell elements lay in grids to represent bridge decks.</p></li>
 <li><p>Beam elements modelled with an offset to the plane of shell elements to represent longitudinal beam sections.</p></li>
-<li><p>Beam elements linked to shell elements at two corresponding locations using constraint equations - <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code>’s <strong>rigidLink</strong> command</p></li>
+<li><p>Beam elements linked to shell elements at two corresponding locations using constraint equations — <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code>’s <strong>rigidLink</strong> command.</p></li>
 </ul>
-<p>This model has advantageous in modelling slabs using shell elements which are well-suited to represent two-dimensional slab behaviour. Figure 4 shows the details and variables of the shell beam hybrid model.</p>
+<p>This model has advantages in modelling slabs using shell elements which are well-suited to represent two-dimensional slab behaviour. Figure 4 shows the details and variables of the shell beam hybrid model.</p>
 <p><img alt="Figure 4: Shell beam hybrid model idealization" src="../_images/shell_beam_idealization.PNG" /></p>
-<p>When <code class="xref py py-func docutils literal notranslate"><span class="pre">shell_beam()</span></code> model type is selected, <em>ospgrillage</em> automatically determines the position of shell elements within the grillage plane. Users only have to define and assign the section of the shell element via <code class="xref py py-func docutils literal notranslate"><span class="pre">create_section()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">set_shell_member()</span></code> respectively. Finally, to create this model, have <a class="reference internal" href="generated/ospgrillage.osp_grillage.create_grillage.html#ospgrillage.osp_grillage.create_grillage" title="ospgrillage.osp_grillage.create_grillage"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_grillage()</span></code></a> keyword for <code class="docutils literal notranslate"><span class="pre">model_type</span></code> set to <strong>shell</strong>. In addition, users are required to define and assign shell elements. The following example code shows the steps to create the shell model type:</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">model_type=&quot;shell_beam&quot;</span></code> is selected, <em>ospgrillage</em> automatically determines the position of shell elements within the grillage plane. Users only have to define and assign the section of the shell element via <a class="reference internal" href="generated/ospgrillage.members.create_section.html#ospgrillage.members.create_section" title="ospgrillage.members.create_section"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_section()</span></code></a> and <code class="xref py py-func docutils literal notranslate"><span class="pre">set_shell_member()</span></code> respectively. The following example code shows the steps to create the shell model type:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># create section of shell element</span>
 <span class="n">slab_shell_section</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_section</span><span class="p">(</span><span class="n">h</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span> <span class="c1"># h = thickness</span>
 <span class="c1"># shell elements for slab</span>
@@ -532,20 +539,27 @@
 <span class="n">example_bridge</span><span class="o">.</span><span class="n">set_shell_members</span><span class="p">(</span><span class="n">slab_shell</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Table 2 outlines the specific variable for shell hybrid model.</p>
-<hr class="docutils" />
-<p>Keyword argument                      Description</p>
-<hr class="docutils" />
-<p><code class="docutils literal notranslate"><span class="pre">max\_mesh\_size\_z</span></code>      max mesh size in z direction. <em>ospgrillage</em> automatically determines the mesh size in z direction based on this variable and spacing of link nodes</p>
-<p><code class="docutils literal notranslate"><span class="pre">offset\_beam\_y\_dist</span></code>   distance between offset beams and grillage shell plane.</p>
-</section>
-<section id="beam-width-this-determines-the-width-between-link-nodes-left-and-right-links-to-offset-beam-elements-in-global-z-direction">
-<h2><code class="docutils literal notranslate"><span class="pre">beam\_width</span></code>             this determines the width between link nodes - left and right links to offset beam elements - in global z direction<a class="headerlink" href="#beam-width-this-determines-the-width-between-link-nodes-left-and-right-links-to-offset-beam-elements-in-global-z-direction" title="Link to this heading">#</a></h2>
-<dl class="myst field-list simple">
-<dt class="field-odd"> Table<span class="colon">:</span></dt>
-<dd class="field-odd"><p>2 Input arguments for shell hybrid model</p>
-</dd>
-</dl>
+<p>Table 2 outlines the specific variables for the shell hybrid model.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Keyword argument</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">max_mesh_size_z</span></code></p></td>
+<td><p>Max mesh size in the z direction. <em>ospgrillage</em> automatically determines the mesh size based on this value and the spacing of link nodes.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">offset_beam_y_dist</span></code></p></td>
+<td><p>Distance between offset beams and the grillage shell plane.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">beam_width</span></code></p></td>
+<td><p>Width between link nodes (left and right links to offset beam elements) in the global z direction.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><em>Table 2: Input arguments for the shell hybrid model.</em></p>
 </section>
 </section>
 
@@ -597,11 +611,9 @@
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#which-model-type-should-i-use">Which model type should I use?</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#beam-elements-only-beam-only">Beam Elements Only - <code class="xref py py-class docutils literal notranslate"><span class="pre">beam_only</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#beam-with-rigid-links-beam-link">Beam with Rigid Links - <code class="xref py py-class docutils literal notranslate"><span class="pre">beam_link</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#centroid-dist-y-distance-in-y-direction-to-offset-longitudinal-members-exterior-interior-main-beams"><code class="docutils literal notranslate"><span class="pre">centroid\_dist\_y</span></code>     distance in y direction to offset longitudinal members (exterior,interior main beams)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#shell-beam-elements-shell-beam">Shell &amp; Beam Elements - <code class="docutils literal notranslate"><span class="pre">shell_beam</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#beam-width-this-determines-the-width-between-link-nodes-left-and-right-links-to-offset-beam-elements-in-global-z-direction"><code class="docutils literal notranslate"><span class="pre">beam\_width</span></code>             this determines the width between link nodes - left and right links to offset beam elements - in global z direction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#beam-elements-only-beam-only">Beam Elements Only — <code class="docutils literal notranslate"><span class="pre">beam_only</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#beam-with-rigid-links-beam-link">Beam with Rigid Links — <code class="docutils literal notranslate"><span class="pre">beam_link</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#shell-beam-elements-shell-beam">Shell &amp; Beam Elements — <code class="docutils literal notranslate"><span class="pre">shell_beam</span></code></a></li>
 </ul>
   </nav></div>
 

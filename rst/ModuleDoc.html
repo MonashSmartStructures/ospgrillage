@@ -345,6 +345,7 @@
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Package design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ChangeLog.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="links_and_references.html">Links and references</a></li>
 </ul>
 </div>
 </nav></div>
@@ -491,15 +492,10 @@
 </section>
 <section id="mesh-variables">
 <h3>Mesh variables<a class="headerlink" href="#mesh-variables" title="Link to this heading">#</a></h3>
-<ul class="simple">
-<li><p>Nodes information are stored as dictionaries</p></li>
-<li></li>
-</ul>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Elements are specified by list.
-
-:   A typical element list is like this `[2, 2, 3, 0, 2]`. The entries are the element tag, `node_i`, `node_j`, grouping (based on list), and geometric transformation tag.
-</pre></div>
-</div>
+<p>Node information is stored as dictionaries. Elements are specified as
+lists; a typical element list is <code class="docutils literal notranslate"><span class="pre">[2,</span> <span class="pre">2,</span> <span class="pre">3,</span> <span class="pre">0,</span> <span class="pre">2]</span></code>, where the entries
+are the element tag, <code class="docutils literal notranslate"><span class="pre">node_i</span></code>, <code class="docutils literal notranslate"><span class="pre">node_j</span></code>, grouping index, and geometric
+transformation tag.</p>
 <p>Dictionaries are used to store information of mesh:</p>
 <ul class="simple">
 <li><p>Common element group as key: return z groups</p></li>
@@ -521,30 +517,6 @@
 </ul>
 <p>For <a class="reference internal" href="api_load_cases.html#ospgrillage.load.LoadCase" title="ospgrillage.load.LoadCase"><code class="xref py py-class docutils literal notranslate"><span class="pre">LoadCase</span></code></a>, all load object inputs can be either local or global. Note when local coordinate is defined for a load object, a global reference coordinate needs to be defined or else the module raises an Error regarding its point/vertices values.</p>
 <p><img alt="Figure 3: Mapping of local coordinate of Load/Path objects to global coordinate." src="../_images/coordinate_system_mapping.PNG" /></p>
-</section>
-<section id="links-to-module-components">
-<h2>Links to module components<a class="headerlink" href="#links-to-module-components" title="Link to this heading">#</a></h2>
-<ol class="arabic simple">
-<li><p><a class="reference internal" href="Module_description.html"><span class="doc">Creating grillage models</span></a></p></li>
-<li><p><a class="reference internal" href="Examples.html"><span class="doc">Examples</span></a></p></li>
-<li><p><a class="reference internal" href="Running_analysis.html"><span class="doc">Performing analysis</span></a></p></li>
-<li><p><a class="reference internal" href="APIdoc.html"><span class="doc">API reference</span></a></p></li>
-</ol>
-</section>
-<section id="links-to-useful-resources">
-<h2>Links to useful resources<a class="headerlink" href="#links-to-useful-resources" title="Link to this heading">#</a></h2>
-<p>Use the following links for more on:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="http://bridgedesign.org.uk/tutorial/bs-grillage.php">Grillage modelling</a></p></li>
-<li><p><a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/">OpenSeesPy documentation</a></p></li>
-<li><p><a class="reference external" href="https://www.researchgate.net/publication/289736527_Effect_of_skew_angle_on_behavior_of_simply_supported_R_C_T-beam_bridge_decks">Example bridge with skew edges</a></p></li>
-</ul>
-<section id="references">
-<h3>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h3>
-<ul class="simple">
-<li><p>Caprani, Colin &amp; Melhem, Mayer &amp; Siamphukdee, Kanjana. (2017). Reliability analysis of a Super-T prestressed concrete girder at serviceability limit state to AS 5100:2017. Australian Journal of Structural Engineering. 18. 1-13. 10.1080/13287982.2017.1332843.</p></li>
-</ul>
-</section>
 </section>
 <section id="openseespy-dispatch-layer">
 <h2>OpenSeesPy dispatch layer<a class="headerlink" href="#openseespy-dispatch-layer" title="Link to this heading">#</a></h2>
@@ -671,11 +643,6 @@
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#local-vs-global-coordinate-system">Local vs global coordinate system</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#links-to-module-components">Links to module components</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#links-to-useful-resources">Links to useful resources</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
-</ul>
-</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#openseespy-dispatch-layer">OpenSeesPy dispatch layer</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#motivation">Motivation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#how-opsproxy-works">How <code class="docutils literal notranslate"><span class="pre">_OpsProxy</span></code> works</a></li>

@@ -87,13 +87,10 @@ All nodes defined during an iteration step for an intersecting point is set to h
 
 ### Mesh variables
 
--   Nodes information are stored as dictionaries
-
--   
-
-    Elements are specified by list.
-
-    :   A typical element list is like this `[2, 2, 3, 0, 2]`. The entries are the element tag, `node_i`, `node_j`, grouping (based on list), and geometric transformation tag.
+Node information is stored as dictionaries. Elements are specified as
+lists; a typical element list is `[2, 2, 3, 0, 2]`, where the entries
+are the element tag, `node_i`, `node_j`, grouping index, and geometric
+transformation tag.
 
 Dictionaries are used to store information of mesh:
 
@@ -116,25 +113,6 @@ The definition of the following components within *ops-grillage* requires attent
 For {class}`~ospgrillage.load.LoadCase`, all load object inputs can be either local or global. Note when local coordinate is defined for a load object, a global reference coordinate needs to be defined or else the module raises an Error regarding its point/vertices values.
 
 ![Figure 3: Mapping of local coordinate of Load/Path objects to global coordinate.](../images/coordinate_system_mapping.PNG)
-
-## Links to module components
-
-1.  {doc}`Module_description`
-2.  {doc}`Examples`
-3.  {doc}`Running_analysis`
-4.  {doc}`APIdoc`
-
-## Links to useful resources
-
-Use the following links for more on:
-
--   [Grillage modelling](http://bridgedesign.org.uk/tutorial/bs-grillage.php)
--   [OpenSeesPy documentation](https://openseespydoc.readthedocs.io/en/latest/)
--   [Example bridge with skew edges](https://www.researchgate.net/publication/289736527_Effect_of_skew_angle_on_behavior_of_simply_supported_R_C_T-beam_bridge_decks)
-
-### References
-
--   Caprani, Colin & Melhem, Mayer & Siamphukdee, Kanjana. (2017). Reliability analysis of a Super-T prestressed concrete girder at serviceability limit state to AS 5100:2017. Australian Journal of Structural Engineering. 18. 1-13. 10.1080/13287982.2017.1332843.
 
 ## OpenSeesPy dispatch layer
 

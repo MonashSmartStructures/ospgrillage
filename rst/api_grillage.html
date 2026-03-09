@@ -517,135 +517,47 @@
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">OspGrillage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bridge_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">long_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skew</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_long_grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_trans_grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_beam_dist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Ortho'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'3D'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OspGrillage" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Base class representing an OpenSees grillage structural model.</p>
-<p>Manages the creation, configuration, and analysis of a grillage model
+<p>Manages the creation, configuration, and analysis of a grillage model,
 including mesh generation, member assignment, load cases, and result
-extraction. Provides interface to OpenSees for static and transient analysis.</p>
-<section id="attributes">
-<h4>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">#</a></h4>
-<dl class="simple">
-<dt>mesh_type<span class="classifier">str</span></dt><dd><p>Type of mesh - “Ortho” for orthogonal or “Oblique” for oblique mesh.</p>
-</dd>
-<dt>model_name<span class="classifier">str</span></dt><dd><p>Name identifier for the grillage model.</p>
-</dd>
-<dt>long_dim<span class="classifier">float</span></dt><dd><p>Longitudinal span length (x-axis direction).</p>
-</dd>
-<dt>width<span class="classifier">float</span></dt><dd><p>Transverse width of the grillage (z-axis direction).</p>
-</dd>
-<dt>num_long_grid<span class="classifier">int</span></dt><dd><p>Number of longitudinal member grid lines.</p>
-</dd>
-<dt>num_trans_grid<span class="classifier">int</span></dt><dd><p>Number of transverse member grid lines.</p>
-</dd>
-</dl>
+extraction. Provides an interface to OpenSees for static and transient
+analysis.</p>
+<p>Users should not instantiate this class directly; use
+<a class="reference internal" href="generated/ospgrillage.osp_grillage.create_grillage.html#ospgrillage.osp_grillage.create_grillage" title="ospgrillage.osp_grillage.create_grillage"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_grillage()</span></code></a> instead, which returns
+the appropriate concrete subclass
+(<a class="reference internal" href="#ospgrillage.osp_grillage.OspGrillageBeam" title="ospgrillage.osp_grillage.OspGrillageBeam"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillageBeam</span></code></a> or
+<a class="reference internal" href="#ospgrillage.osp_grillage.OspGrillageShell" title="ospgrillage.osp_grillage.OspGrillageShell"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillageShell</span></code></a>) based on
+<code class="docutils literal notranslate"><span class="pre">model_type</span></code>.</p>
 <p>Init the OspGrillage class</p>
 <dl class="field-list simple">
-<dt class="field-odd">param bridge_name<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Name of bridge model and output .py file</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bridge_name</strong> (<em>str</em>) – Name of bridge model and output .py file</p></li>
+<li><p><strong>long_dim</strong> (<em>int</em><em> or </em><em>float</em>) – Length of the model in the longitudinal direction (default: x axis)</p></li>
+<li><p><strong>width</strong> (<em>int</em><em> or </em><em>float</em>) – Width of the model in the transverse direction (default: z axis)</p></li>
+<li><p><strong>skew</strong> (<em>int</em><em> or </em><em>float</em>) – Skew angle of the start and end edges of model</p></li>
+<li><p><strong>num_long_grid</strong> (<em>int</em>) – Number of grid lines in longitudinal direction</p></li>
+<li><p><strong>num_trans_grid</strong> (<em>int</em>) – Number of grid lines in the transverse direction.</p></li>
+<li><p><strong>edge_beam_dist</strong> (<em>int</em><em> or </em><em>float</em>) – Distance of edge beam node lines to exterior main beam node lines</p></li>
+<li><p><strong>mesh_type</strong> (<em>string</em>) – Type of mesh either “Ortho” for orthogonal mesh or “Oblique” for oblique mesh</p></li>
+<li><p><strong>beam_z_spacing</strong> (<em>list</em><em> of </em><em>int</em><em> or </em><em>float</em>) – Custom spacing of longitudinal members (global z-direction).
+Supersedes <code class="docutils literal notranslate"><span class="pre">num_long_grid</span></code> when provided.</p></li>
+<li><p><strong>beam_x_spacing</strong> (<em>list</em><em> of </em><em>int</em><em> or </em><em>float</em>) – Custom spacing of transverse members (global x-direction).
+Supersedes <code class="docutils literal notranslate"><span class="pre">num_trans_grid</span></code> when provided.</p></li>
+<li><p><strong>ext_to_int_dist</strong> (<em>int</em><em>, </em><em>float</em><em>, or </em><em>list</em><em> of </em><em>int/float</em>) – Distance between internal beams and exterior main beams.
+If a list of size 2 is provided, the two values are applied to the left and right side respectively.</p></li>
+<li><p><strong>multi_span_dist_list</strong> (<em>list</em><em> of </em><em>int</em><em> or </em><em>float</em>) – List of span lengths (x-direction) for each span in a multi-span model.</p></li>
+<li><p><strong>multi_span_num_points</strong> (<em>list</em><em> of </em><em>int</em>) – Number of transverse members per span. If not specified, <code class="docutils literal notranslate"><span class="pre">num_trans_grid</span></code>
+is applied uniformly to all spans in <code class="docutils literal notranslate"><span class="pre">multi_span_dist_list</span></code>.</p></li>
+<li><p><strong>continuous</strong> (<em>bool</em>) – Set continuity of spans. Default <code class="docutils literal notranslate"><span class="pre">True</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">False</span></code>, spans are separated by <code class="docutils literal notranslate"><span class="pre">non_cont_spacing_x</span></code>.</p></li>
+<li><p><strong>stitch_slab_elements</strong> (<em>bool</em>) – Set stitch elements between spans. Elements are assigned via
+<code class="docutils literal notranslate"><span class="pre">set_member()</span></code> with <code class="docutils literal notranslate"><span class="pre">member=&quot;stitch_elements&quot;</span></code>.</p></li>
+<li><p><strong>non_cont_spacing_x</strong> (<em>float</em>) – Spacing or length of stitch elements for non-continuous spans.</p></li>
+</ul>
 </dd>
-<dt class="field-even">type bridge_name<span class="colon">:</span></dt>
-<dd class="field-even"><p>str</p>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If skew angle is greater than 90. If number of transverse grid lines is less than 2.</p>
 </dd>
-<dt class="field-odd">param long_dim<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Length of the model in the longitudinal direction (default: x axis)</p>
-</dd>
-<dt class="field-even">type long_dim<span class="colon">:</span></dt>
-<dd class="field-even"><p>int or float</p>
-</dd>
-<dt class="field-odd">param width<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Width of the model in the transverse direction (default: z axis)</p>
-</dd>
-<dt class="field-even">type width<span class="colon">:</span></dt>
-<dd class="field-even"><p>int or float</p>
-</dd>
-<dt class="field-odd">param skew<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Skew angle of the start and end edges of model</p>
-</dd>
-<dt class="field-even">type skew<span class="colon">:</span></dt>
-<dd class="field-even"><p>int or float</p>
-</dd>
-<dt class="field-odd">param num_long_grid<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Number of grid lines in longitudinal direction</p>
-</dd>
-<dt class="field-even">type num_long_grid<span class="colon">:</span></dt>
-<dd class="field-even"><p>int</p>
-</dd>
-<dt class="field-odd">param num_trans_grid<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Number of  grid lines in the transverse direction -</p>
-</dd>
-<dt class="field-even">type num_trans_grid<span class="colon">:</span></dt>
-<dd class="field-even"><p>int</p>
-</dd>
-<dt class="field-odd">param edge_beam_dist<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Distance of edge beam node lines to exterior main beam node lines</p>
-</dd>
-<dt class="field-even">type edge_beam_dist<span class="colon">:</span></dt>
-<dd class="field-even"><p>int or float</p>
-</dd>
-<dt class="field-odd">param mesh_type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Type of mesh either “Ortho” for orthogonal mesh or “Oblique” for oblique mesh</p>
-</dd>
-<dt class="field-even">type mesh_type<span class="colon">:</span></dt>
-<dd class="field-even"><p>string</p>
-</dd>
-<dt class="field-odd">param beam_z_spacing<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Custom spacing of longitudinal members (global z-direction).
-Supersedes <code class="docutils literal notranslate"><span class="pre">num_long_grid</span></code> when provided.</p>
-</dd>
-<dt class="field-even">type beam_z_spacing<span class="colon">:</span></dt>
-<dd class="field-even"><p>list of int or float</p>
-</dd>
-<dt class="field-odd">param beam_x_spacing<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Custom spacing of transverse members (global x-direction).
-Supersedes <code class="docutils literal notranslate"><span class="pre">num_trans_grid</span></code> when provided.</p>
-</dd>
-<dt class="field-even">type beam_x_spacing<span class="colon">:</span></dt>
-<dd class="field-even"><p>list of int or float</p>
-</dd>
-<dt class="field-odd">param ext_to_int_dist<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Distance between internal beams and exterior main beams.
-If a list of size 2 is provided, the two values are applied to the left and right side respectively.</p>
-</dd>
-<dt class="field-even">type ext_to_int_dist<span class="colon">:</span></dt>
-<dd class="field-even"><p>int, float, or list of int/float</p>
-</dd>
-<dt class="field-odd">param multi_span_dist_list<span class="colon">:</span></dt>
-<dd class="field-odd"><p>List of span lengths (x-direction) for each span in a multi-span model.</p>
-</dd>
-<dt class="field-even">type multi_span_dist_list<span class="colon">:</span></dt>
-<dd class="field-even"><p>list of int or float</p>
-</dd>
-<dt class="field-odd">param multi_span_num_points<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Number of transverse members per span. If not specified, <code class="docutils literal notranslate"><span class="pre">num_trans_grid</span></code>
-is applied uniformly to all spans in <code class="docutils literal notranslate"><span class="pre">multi_span_dist_list</span></code>.</p>
-</dd>
-<dt class="field-even">type multi_span_num_points<span class="colon">:</span></dt>
-<dd class="field-even"><p>list of int</p>
-</dd>
-<dt class="field-odd">param continuous<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Set continuity of spans. Default <code class="docutils literal notranslate"><span class="pre">True</span></code>.
-If <code class="docutils literal notranslate"><span class="pre">False</span></code>, spans are separated by <code class="docutils literal notranslate"><span class="pre">non_cont_spacing_x</span></code>.</p>
-</dd>
-<dt class="field-even">type continuous<span class="colon">:</span></dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-<dt class="field-odd">param stitch_slab_elements<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Set stitch elements between spans. Elements are assigned via
-<code class="docutils literal notranslate"><span class="pre">set_member()</span></code> with <code class="docutils literal notranslate"><span class="pre">member=&quot;stitch_elements&quot;</span></code>.</p>
-</dd>
-<dt class="field-even">type stitch_slab_elements<span class="colon">:</span></dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-<dt class="field-odd">param non_cont_spacing_x<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Spacing or length of stitch elements for non-continuous spans.</p>
-</dd>
-<dt class="field-even">type non_cont_spacing_x<span class="colon">:</span></dt>
-<dd class="field-even"><p>float</p>
-</dd>
-<dt class="field-odd">raises ValueError<span class="colon">:</span></dt>
-<dd class="field-odd"><p>If skew angle is greater than 90. If number of transverse grid lines is less than 2.</p>
-</dd>
-</dl>
-</section>
-<dl class="field-list simple">
 </dl>
 </dd></dl>
 
@@ -669,7 +581,7 @@ Suitable for skeletal bridge models with distinct beam members.</p>
 <li><p><strong>width</strong> (<em>int</em><em> or </em><em>float</em>) – Width of the model in the transverse direction (default: z axis)</p></li>
 <li><p><strong>skew</strong> (<em>int</em><em> or </em><em>float</em>) – Skew angle of the start and end edges of model</p></li>
 <li><p><strong>num_long_grid</strong> (<em>int</em>) – Number of grid lines in longitudinal direction</p></li>
-<li><p><strong>num_trans_grid</strong> (<em>int</em>) – Number of  grid lines in the transverse direction -</p></li>
+<li><p><strong>num_trans_grid</strong> (<em>int</em>) – Number of grid lines in the transverse direction.</p></li>
 <li><p><strong>edge_beam_dist</strong> (<em>int</em><em> or </em><em>float</em>) – Distance of edge beam node lines to exterior main beam node lines</p></li>
 <li><p><strong>mesh_type</strong> (<em>string</em>) – Type of mesh either “Ortho” for orthogonal mesh or “Oblique” for oblique mesh</p></li>
 <li><p><strong>beam_z_spacing</strong> (<em>list</em><em> of </em><em>int</em><em> or </em><em>float</em>) – Custom spacing of longitudinal members (global z-direction).
@@ -705,8 +617,8 @@ If <code class="docutils literal notranslate"><span class="pre">False</span></co
 <p>Concrete implementation of OspGrillage using ShellMITC4 or ShellDKGQ elements
 to represent the bridge deck as a continuous surface. Suitable for detailed
 analysis of slab and composite deck systems.</p>
-<section id="id1">
-<h4>Attributes<a class="headerlink" href="#id1" title="Link to this heading">#</a></h4>
+<section id="attributes">
+<h4>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">#</a></h4>
 <dl class="simple">
 <dt>offset_beam_y_dist<span class="classifier">float</span></dt><dd><p>Vertical offset of beam members from shell surface.</p>
 </dd>
@@ -748,7 +660,7 @@ analysis of slab and composite deck systems.</p>
 <dd class="field-even"><p>int</p>
 </dd>
 <dt class="field-odd">param num_trans_grid<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Number of  grid lines in the transverse direction -</p>
+<dd class="field-odd"><p>Number of grid lines in the transverse direction.</p>
 </dd>
 <dt class="field-even">type num_trans_grid<span class="colon">:</span></dt>
 <dd class="field-even"><p>int</p>
