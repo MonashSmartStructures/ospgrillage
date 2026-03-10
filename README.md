@@ -38,7 +38,7 @@ Install using pip:
     pip install ospgrillage
 ```
     
-Refer to [installation](https://monashsmartstructures.github.io/ospgrillage/rst/Installation.html) for more information.
+Refer to the [installation docs](https://monashsmartstructures.github.io/ospgrillage/pages/installation.html) for more information.
 
 ## Contributions
 
@@ -46,9 +46,13 @@ Check out our [contributing guide](https://github.com/MonashSmartStructures/ospg
 
 ## Citing
 
-If you use *ospgrillage* in you work, please cite the corresponding JOSS paper:
+If you use *ospgrillage* in your work, please cite the corresponding JOSS paper:
 
-Ngan J.W. and Caprani, C.C. (2022), "ospgrillage: A bridge deck grillage analysis preprocessor for OpenSeesPy", *Journal of Open Source Software*, 7(77), 4404, [doi.org/10.21105/joss.04404](https://doi.org/10.21105/joss.04404)
+> Ngan, J.W. and Caprani, C.C. (2022), "*ospgrillage*: A bridge deck grillage analysis
+> preprocessor for OpenSeesPy", *Journal of Open Source Software*, 7(77), 4404.
+> [doi.org/10.21105/joss.04404](https://doi.org/10.21105/joss.04404)
+
+[![JOSS](https://joss.theoj.org/papers/d44339b03dc4f1add2678167c1a1b6de/status.svg)](https://joss.theoj.org/papers/d44339b03dc4f1add2678167c1a1b6de)
 
 
 # Capabilities
