@@ -2,10 +2,10 @@
 :hidden:
 :maxdepth: 1
 
-rst/getting_started
-rst/user_guide
-rst/APIdoc
-rst/additional_resources
+pages/getting_started
+pages/user_guide
+pages/api_reference
+pages/additional_resources
 ```
 
 ```{image} http://raw.githubusercontent.com/MonashSmartStructures/ospgrillage/main/docs/source/images/ospgrillage_logo.png
@@ -52,7 +52,7 @@ For technical support please raise an issue at the
 ## Contributing
 
 We welcome contributions to *ospgrillage*.
-Please read the {doc}`contributing guidelines <rst/contributing>`
+Please read the {doc}`contributing guidelines <pages/contributing>`
 before submitting a pull request.
 
 ## Credits
