@@ -72,6 +72,29 @@ the project adheres to [Semantic Versioning](https://semver.org/).
 - Docs build workflow now installs `myst-parser`; `sphinx_docs_to_gh_pages.yml`
   modernised to use `peaceiris/actions-gh-pages@v4`.
 
+### Docs
+- Documentation navigation restructured into four top-level sections: Getting
+  Started, User Guide, API Reference, and Additional Resources.
+- API reference split into per-module pages (Grillage, Material, Members, Load,
+  Mesh, PostProcessing); Load module further subdivided into load types, load
+  cases, and moving loads.
+- All documentation source files renamed to match their page titles
+  (e.g. `Module_description.md` → `creating_grillage_models.md`); source folder
+  renamed `rst/` → `pages/`.
+- Pandoc conversion artefacts removed throughout: escaped characters in prose
+  (`\'`, `\"`, `\_`), malformed MyST/RST directives, broken internal anchors,
+  and Pandoc grid tables converted to GFM pipe tables.
+- Docstrings improved for `PatchLoading`, `LoadCase`, `CompoundLoad`, and
+  `OspGrillage` (full `:param:` / `:raises:` fields; NumPy `Attributes` section
+  rewritten as plain prose to avoid raw-text rendering without Napoleon).
+- *Getting Results* page rewritten with an xarray concept overview, a summary
+  table of data variables, and annotated `.sel()` / `.isel()` examples.
+- Contributing guidelines page added via MyST `{include}` of root
+  `CONTRIBUTING.md` (single source of truth).
+- JOSS citation added to the front page and Additional Resources.
+- Jupyter example notebooks cleaned up: version-output cells and trailing empty
+  cells removed from all four notebooks.
+
 ---
 
 ## [0.4.0] — 2024-08-06
