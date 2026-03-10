@@ -411,8 +411,9 @@
   <section id="releases">
 <h1>Releases<a class="headerlink" href="#releases" title="Link to this heading">#</a></h1>
 <p>Here is the summary change log for <em>ospgrillage</em>. Full details of commit logs can be found in the <a class="reference external" href="https://github.com/MonashSmartStructures/ospgrillage/commits/main">commit history</a>. The complete machine-readable changelog is maintained in <a class="reference external" href="https://github.com/MonashSmartStructures/ospgrillage/blob/main/CHANGELOG.md">CHANGELOG.md</a> at the repository root.</p>
-<section id="unreleased-main">
-<h2>Unreleased (main)<a class="headerlink" href="#unreleased-main" title="Link to this heading">#</a></h2>
+<section id="version-0-4-1-march-2026">
+<h2>Version 0.4.1 (March 2026)<a class="headerlink" href="#version-0-4-1-march-2026" title="Link to this heading">#</a></h2>
+<p><strong>Code changes</strong></p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">_OpsProxy</span></code> dual-mode dispatch layer: single code path for live execution and script serialisation — no more parallel string-building branches.</p></li>
 <li><p>Load assignment pipeline refactored from format strings to <code class="docutils literal notranslate"><span class="pre">(func_name,</span> <span class="pre">args,</span> <span class="pre">kwargs)</span></code> tuples; <code class="docutils literal notranslate"><span class="pre">eval()</span></code> removed from the analysis loop.</p></li>
@@ -420,7 +421,19 @@
 <li><p>NumPy-style docstrings added to all public functions and classes.</p></li>
 <li><p>Dead code removed from <code class="docutils literal notranslate"><span class="pre">Analysis.__init__</span></code> (9 obsolete command-string attributes, <code class="docutils literal notranslate"><span class="pre">analysis_arguments</span></code> dict).</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Envelope.get()</span></code> rewritten without <code class="docutils literal notranslate"><span class="pre">eval()</span></code>.</p></li>
-<li><p>Sphinx documentation overhauled: orphaned stubs removed, <code class="docutils literal notranslate"><span class="pre">sphinx_autodoc_typehints</span></code> enabled, <code class="docutils literal notranslate"><span class="pre">Installation.rst</span></code> and <code class="docutils literal notranslate"><span class="pre">APIdoc.rst</span></code> corrected.</p></li>
+<li><p>Minimum supported Python version raised from 3.9 to 3.10.</p></li>
+<li><p>30 new tests added; overall coverage rises from 71 % to 75 %.</p></li>
+</ul>
+<p><strong>Documentation overhaul</strong></p>
+<ul class="simple">
+<li><p>Navigation restructured into four top-level sections: Getting Started, User Guide, API Reference, and Additional Resources.</p></li>
+<li><p>API reference split into per-module pages; Load module further subdivided into load types, load cases, and moving loads.</p></li>
+<li><p>All source files renamed to match their page titles; source folder renamed <code class="docutils literal notranslate"><span class="pre">rst/</span></code> → <code class="docutils literal notranslate"><span class="pre">pages/</span></code>.</p></li>
+<li><p>Pandoc conversion artefacts removed throughout (escaped characters, malformed directives, broken anchors, Pandoc grid tables).</p></li>
+<li><p>Docstrings improved for <code class="docutils literal notranslate"><span class="pre">PatchLoading</span></code>, <code class="docutils literal notranslate"><span class="pre">LoadCase</span></code>, <code class="docutils literal notranslate"><span class="pre">CompoundLoad</span></code>, and <code class="docutils literal notranslate"><span class="pre">OspGrillage</span></code>.</p></li>
+<li><p><em>Getting Results</em> page rewritten with an xarray concept overview and annotated examples.</p></li>
+<li><p>Contributing guidelines page added; JOSS citation added to front page.</p></li>
+<li><p>Jupyter example notebooks cleaned up (version-output cells and trailing empty cells removed).</p></li>
 </ul>
 </section>
 <section id="version-0-4-0-aug-2024">
@@ -530,7 +543,7 @@
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unreleased-main">Unreleased (main)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-4-1-march-2026">Version 0.4.1 (March 2026)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-4-0-aug-2024">Version 0.4.0 (Aug 2024)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-3-2-oct-2023">Version 0.3.2 (Oct 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-3-1-jan-2023">Version 0.3.1 (Jan 2023)</a></li>

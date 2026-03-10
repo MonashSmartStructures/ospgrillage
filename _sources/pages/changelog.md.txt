@@ -2,15 +2,29 @@
 
 Here is the summary change log for *ospgrillage*. Full details of commit logs can be found in the [commit history](https://github.com/MonashSmartStructures/ospgrillage/commits/main). The complete machine-readable changelog is maintained in [CHANGELOG.md](https://github.com/MonashSmartStructures/ospgrillage/blob/main/CHANGELOG.md) at the repository root.
 
-## Unreleased (main)
+## Version 0.4.1 (March 2026)
 
--   `_OpsProxy` dual-mode dispatch layer: single code path for live execution and script serialisation --- no more parallel string-building branches.
+**Code changes**
+
+-   `_OpsProxy` dual-mode dispatch layer: single code path for live execution and script serialisation — no more parallel string-building branches.
 -   Load assignment pipeline refactored from format strings to `(func_name, args, kwargs)` tuples; `eval()` removed from the analysis loop.
 -   `PatchLoading` vertex validation is now cyclic-rotation-aware.
 -   NumPy-style docstrings added to all public functions and classes.
 -   Dead code removed from `Analysis.__init__` (9 obsolete command-string attributes, `analysis_arguments` dict).
 -   `Envelope.get()` rewritten without `eval()`.
--   Sphinx documentation overhauled: orphaned stubs removed, `sphinx_autodoc_typehints` enabled, `Installation.rst` and `APIdoc.rst` corrected.
+-   Minimum supported Python version raised from 3.9 to 3.10.
+-   30 new tests added; overall coverage rises from 71 % to 75 %.
+
+**Documentation overhaul**
+
+-   Navigation restructured into four top-level sections: Getting Started, User Guide, API Reference, and Additional Resources.
+-   API reference split into per-module pages; Load module further subdivided into load types, load cases, and moving loads.
+-   All source files renamed to match their page titles; source folder renamed `rst/` → `pages/`.
+-   Pandoc conversion artefacts removed throughout (escaped characters, malformed directives, broken anchors, Pandoc grid tables).
+-   Docstrings improved for `PatchLoading`, `LoadCase`, `CompoundLoad`, and `OspGrillage`.
+-   *Getting Results* page rewritten with an xarray concept overview and annotated examples.
+-   Contributing guidelines page added; JOSS citation added to front page.
+-   Jupyter example notebooks cleaned up (version-output cells and trailing empty cells removed).
 
 ## Version 0.4.0 (Aug 2024)
 
