@@ -3,6 +3,6 @@
 ```{toctree}
 :maxdepth: 1
 
-Installation
-Module_description
+installation
+creating_grillage_models
 ```

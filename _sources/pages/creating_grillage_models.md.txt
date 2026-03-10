@@ -2,7 +2,7 @@
 
 The *ospgrillage* module contains **interface functions** which can be called following the module syntax. These interface functions generally have `set_`, `create_` or `get_` in their syntax. For example, {func}`~ospgrillage.material.create_material` creates a material object for the grillage model.
 
-A list of all interface functions can be found in {doc}`APIdoc`. Although users can opt to interact with module objects directly, we recommend the more pythonic interface functions.
+A list of all interface functions can be found in {doc}`api_reference`. Although users can opt to interact with module objects directly, we recommend the more pythonic interface functions.
 
 ## Workflow overview
 

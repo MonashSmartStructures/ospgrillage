@@ -143,7 +143,7 @@ C_Load.set_global_coord(Point(4,0,3))
 When adding each load object, the {class}`~ospgrillage.load.CompoundLoad` class allow users to input a `load_coord=` keyword argument. This relates to the load object - whether it was previously defined in the user-defined *local* or in the *global* coordinate system. The following explains the various input conditions
 
 ```{note}
-Compound loads require users to pay attention between basic and global coordinate system (see {doc}`ModuleDoc` for more information on coordinate systems)
+Compound loads require users to pay attention between basic and global coordinate system (see {doc}`package_design` for more information on coordinate systems)
 
 At the current stage, the {class}`~CompoundLoad` parses the load object within **local coordinate system**. When passed as input into {class}`~LoadCase`, the Compound load's vertices / load points are automatically converted to **global coordinates**, based on the inputs of `set_global_coord` function
 ```
