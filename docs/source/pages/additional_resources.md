@@ -3,9 +3,9 @@
 ```{toctree}
 :maxdepth: 1
 
-ModuleDoc
+package_design
 contributing
-Troubleshooting
-ChangeLog
+troubleshooting
+changelog
 links_and_references
 ```

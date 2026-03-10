@@ -3,10 +3,10 @@
 ```{toctree}
 :maxdepth: 1
 
-ModelTemplates
-mesh_feature
-Running_analysis
-PostProcessing
-Examples
+model_templates
+mesh_features
+performing_analysis
+getting_results
+examples
 ospgui
 ```
