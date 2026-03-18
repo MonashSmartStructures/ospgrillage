@@ -29,8 +29,8 @@ jobs:
 
     - name: Install the docs-build dependencies
       run: |
-        sudo apt-get update && sudo apt-get install -y pandoc libblas3 liblapack3
-        python -m pip install sphinx nbsphinx pydata-sphinx-theme myst-parser ipykernel
+        sudo apt-get install -y pandoc
+        python -m pip install sphinx nbsphinx pydata-sphinx-theme myst-parser
 
     - name: Build the docs
       run: |
