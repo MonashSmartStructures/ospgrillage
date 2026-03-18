@@ -94,6 +94,7 @@ def __getattr__(name):
         )
         try:
             import vfo.vfo as _opsplt
+
             return _opsplt
         except ImportError:
             raise ImportError(

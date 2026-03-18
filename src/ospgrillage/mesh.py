@@ -1761,6 +1761,7 @@ class EdgeControlLine:
             self.custom_beam_z_spacing = kwargs.get("beam_z_spacing", None)
             if self.custom_beam_z_spacing is not None:
                 import warnings
+
                 warnings.warn(
                     "beam_z_spacing is deprecated; use beam_spacing instead.",
                     DeprecationWarning,

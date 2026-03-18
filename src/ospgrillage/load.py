@@ -1159,9 +1159,7 @@ class LoadCase:
         :type load_factor: float, optional
         """
         load_dict = dict()
-        load_dict.setdefault(
-            "load", deepcopy(load)
-        )  # create copy of object instance
+        load_dict.setdefault("load", deepcopy(load))  # create copy of object instance
         # check if load's load points are local points, if True, check if kwargs global coord is provided
         global_coord_of_load_obj: Point = kwargs.get("global_coord_of_load_obj", None)
 

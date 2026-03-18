@@ -188,8 +188,18 @@ _FORCE_COMP_DICT = {"Fx": 0, "Fy": 1, "Fz": 2, "Mx": 3, "My": 4, "Mz": 5}
 _FORCE_COMP_FACTOR = {"Fx": 1, "Fy": 1, "Fz": 1, "Mx": 1, "My": 1, "Mz": -1}
 
 _FORCE_COMPONENTS = [
-    "Vx_i", "Vy_i", "Vz_i", "Mx_i", "My_i", "Mz_i",
-    "Vx_j", "Vy_j", "Vz_j", "Mx_j", "My_j", "Mz_j",
+    "Vx_i",
+    "Vy_i",
+    "Vz_i",
+    "Mx_i",
+    "My_i",
+    "Mz_i",
+    "Vx_j",
+    "Vy_j",
+    "Vz_j",
+    "Mx_j",
+    "My_j",
+    "Mz_j",
 ]
 
 
@@ -209,8 +219,15 @@ def _num_z_groups(ospgrillage_obj, member):
     return len(z_grp)
 
 
-def _extract_force_data(ospgrillage_obj, result_obj, component, member,
-                        loadcase=None, option="elements", z_group_num=0):
+def _extract_force_data(
+    ospgrillage_obj,
+    result_obj,
+    component,
+    member,
+    loadcase=None,
+    option="elements",
+    z_group_num=0,
+):
     """Extract force distribution data for a single member.
 
     Iterates over every element in the requested *member* group, calls
@@ -231,12 +248,16 @@ def _extract_force_data(ospgrillage_obj, result_obj, component, member,
         already multiplied by the component sign factor.
     :rtype: tuple[list, list, list]
     """
-    comp_index = component if isinstance(component, int) else _FORCE_COMP_DICT[component]
+    comp_index = (
+        component if isinstance(component, int) else _FORCE_COMP_DICT[component]
+    )
     factor = _FORCE_COMP_FACTOR[component] if isinstance(component, str) else 1
 
     nodes = ospgrillage_obj.get_nodes()
     eletag = ospgrillage_obj.get_element(
-        member=member, options=option, z_group_num=z_group_num,
+        member=member,
+        options=option,
+        z_group_num=z_group_num,
     )
 
     if ospgrillage_obj.model_type == "shell_beam":
@@ -250,11 +271,14 @@ def _extract_force_data(ospgrillage_obj, result_obj, component, member,
         # get force components for this element
         if loadcase:
             ele_components = force_result.sel(
-                Loadcase=loadcase, Element=ele, Component=_FORCE_COMPONENTS,
+                Loadcase=loadcase,
+                Element=ele,
+                Component=_FORCE_COMPONENTS,
             ).values
         else:
             ele_components = force_result.sel(
-                Element=ele, Component=_FORCE_COMPONENTS,
+                Element=ele,
+                Component=_FORCE_COMPONENTS,
             )[0].values
 
         # get nodes of element
@@ -284,8 +308,15 @@ def _extract_force_data(ospgrillage_obj, result_obj, component, member,
     return all_xx, all_zz, all_values
 
 
-def _extract_def_data(ospgrillage_obj, result_obj, member, component="y",
-                       loadcase=None, option="nodes", z_group_num=0):
+def _extract_def_data(
+    ospgrillage_obj,
+    result_obj,
+    member,
+    component="y",
+    loadcase=None,
+    option="nodes",
+    z_group_num=0,
+):
     """Extract displacement data for a single member.
 
     Iterates over the nodes belonging to *member* and collects their
@@ -309,11 +340,14 @@ def _extract_def_data(ospgrillage_obj, result_obj, member, component="y",
 
     nodes = ospgrillage_obj.get_nodes()
     node_result = ospgrillage_obj.get_element(
-        member=member, options=plot_option, z_group_num=z_group_num,
+        member=member,
+        options=plot_option,
+        z_group_num=z_group_num,
     )
     # Longitudinal members return [[node_list]], others return [node_list]
     nodes_to_plot = (
-        node_result[0] if node_result and isinstance(node_result[0], list)
+        node_result[0]
+        if node_result and isinstance(node_result[0], list)
         else node_result
     )
 
@@ -322,11 +356,14 @@ def _extract_def_data(ospgrillage_obj, result_obj, member, component="y",
     for node in nodes_to_plot:
         if loadcase:
             disp = result_obj.displacements.sel(
-                Component=dis_comp, Node=node, Loadcase=loadcase,
+                Component=dis_comp,
+                Node=node,
+                Loadcase=loadcase,
             ).values
         else:
             disp = result_obj.displacements.sel(
-                Component=dis_comp, Node=node,
+                Component=dis_comp,
+                Node=node,
             )[0].values
         xx_list.append(nodes[node]["coordinate"][0])
         zz_list.append(nodes[node]["coordinate"][2])
@@ -368,10 +405,22 @@ def _spatial_aspect_ratio(fig):
     return dict(x=dx / dmax, y=dy / dmax, z=1)
 
 
-def _plotly_3d_force(ospgrillage_obj, result_obj, component, members,
-                     loadcase=None, comp_label=None, *,
-                     fig=None, figsize=None, scale=1.0, title=_AUTO,
-                     alpha=1.0, fill=True, fill_alpha=None):
+def _plotly_3d_force(
+    ospgrillage_obj,
+    result_obj,
+    component,
+    members,
+    loadcase=None,
+    comp_label=None,
+    *,
+    fig=None,
+    figsize=None,
+    scale=1.0,
+    title=_AUTO,
+    alpha=1.0,
+    fill=True,
+    fill_alpha=None,
+):
     """Build an interactive 3D Plotly figure of force diagrams.
 
     Each member is drawn as a ``Scatter3d`` trace with:
@@ -415,8 +464,7 @@ def _plotly_3d_force(ospgrillage_obj, result_obj, component, members,
     # the baseline (structural engineering convention).
     sign = -1.0
 
-    colours = ["black", "blue", "red", "green", "orange", "purple",
-               "brown", "grey"]
+    colours = ["black", "blue", "red", "green", "orange", "purple", "brown", "grey"]
     trace_idx = 0
 
     for member in members:
@@ -424,7 +472,11 @@ def _plotly_3d_force(ospgrillage_obj, result_obj, component, members,
         for zg in range(n_groups):
             try:
                 all_xx, all_zz, all_vals = _extract_force_data(
-                    ospgrillage_obj, result_obj, component, member, loadcase,
+                    ospgrillage_obj,
+                    result_obj,
+                    component,
+                    member,
+                    loadcase,
                     z_group_num=zg,
                 )
             except (KeyError, ValueError, IndexError):
@@ -442,36 +494,48 @@ def _plotly_3d_force(ospgrillage_obj, result_obj, component, members,
             for ex, ez, ev in zip(all_xx, all_zz, all_vals):
                 sv = ev * scale * sign
                 # Force diagram line
-                fig.add_trace(go.Scatter3d(
-                    x=ex, y=ez, z=sv,
-                    mode="lines",
-                    line=dict(color=colour, width=4),
-                    opacity=alpha,
-                    name=trace_name,
-                    showlegend=False,
-                ))
+                fig.add_trace(
+                    go.Scatter3d(
+                        x=ex,
+                        y=ez,
+                        z=sv,
+                        mode="lines",
+                        line=dict(color=colour, width=4),
+                        opacity=alpha,
+                        name=trace_name,
+                        showlegend=False,
+                    )
+                )
                 # Baseline (zero) line
-                fig.add_trace(go.Scatter3d(
-                    x=ex, y=ez, z=np.zeros_like(sv),
-                    mode="lines",
-                    line=dict(color=colour, width=1, dash="dot"),
-                    opacity=alpha,
-                    showlegend=False,
-                ))
+                fig.add_trace(
+                    go.Scatter3d(
+                        x=ex,
+                        y=ez,
+                        z=np.zeros_like(sv),
+                        mode="lines",
+                        line=dict(color=colour, width=1, dash="dot"),
+                        opacity=alpha,
+                        showlegend=False,
+                    )
+                )
                 # Vertical drop-lines from each node to the baseline
                 drop_x, drop_y, drop_z = [], [], []
                 for xi, zi, vi in zip(ex, ez, sv):
                     drop_x.extend([xi, xi, None])
                     drop_y.extend([zi, zi, None])
                     drop_z.extend([vi, 0.0, None])
-                fig.add_trace(go.Scatter3d(
-                    x=drop_x, y=drop_y, z=drop_z,
-                    mode="lines",
-                    line=dict(color=colour, width=1),
-                    opacity=alpha * 0.6,
-                    showlegend=False,
-                    hoverinfo="skip",
-                ))
+                fig.add_trace(
+                    go.Scatter3d(
+                        x=drop_x,
+                        y=drop_y,
+                        z=drop_z,
+                        mode="lines",
+                        line=dict(color=colour, width=1),
+                        opacity=alpha * 0.6,
+                        showlegend=False,
+                        hoverinfo="skip",
+                    )
+                )
                 # Collect fill vertices for the combined ribbon
                 if fill:
                     n_pts = len(ex)
@@ -480,33 +544,44 @@ def _plotly_3d_force(ospgrillage_obj, result_obj, component, members,
                         mesh_vy.extend(list(ez) + list(ez))
                         mesh_vz.extend(list(sv) + [0.0] * n_pts)
                         for idx in range(n_pts - 1):
-                            mesh_ii.extend([voffset + idx,
-                                            voffset + idx + 1])
-                            mesh_jj.extend([voffset + idx + 1,
-                                            voffset + n_pts + idx + 1])
-                            mesh_kk.extend([voffset + n_pts + idx,
-                                            voffset + n_pts + idx])
+                            mesh_ii.extend([voffset + idx, voffset + idx + 1])
+                            mesh_jj.extend(
+                                [voffset + idx + 1, voffset + n_pts + idx + 1]
+                            )
+                            mesh_kk.extend(
+                                [voffset + n_pts + idx, voffset + n_pts + idx]
+                            )
                         voffset += 2 * n_pts
 
             # One combined Mesh3d ribbon per member
             if fill and mesh_vx:
-                fig.add_trace(go.Mesh3d(
-                    x=mesh_vx, y=mesh_vy, z=mesh_vz,
-                    i=mesh_ii, j=mesh_jj, k=mesh_kk,
-                    color=colour,
-                    opacity=_fill_alpha,
-                    flatshading=True,
-                    showlegend=False,
-                    hoverinfo="skip",
-                ))
+                fig.add_trace(
+                    go.Mesh3d(
+                        x=mesh_vx,
+                        y=mesh_vy,
+                        z=mesh_vz,
+                        i=mesh_ii,
+                        j=mesh_jj,
+                        k=mesh_kk,
+                        color=colour,
+                        opacity=_fill_alpha,
+                        flatshading=True,
+                        showlegend=False,
+                        hoverinfo="skip",
+                    )
+                )
 
             # One legend entry per beam
-            fig.add_trace(go.Scatter3d(
-                x=[None], y=[None], z=[None],
-                mode="lines",
-                line=dict(color=colour, width=4),
-                name=trace_name,
-            ))
+            fig.add_trace(
+                go.Scatter3d(
+                    x=[None],
+                    y=[None],
+                    z=[None],
+                    mode="lines",
+                    line=dict(color=colour, width=4),
+                    name=trace_name,
+                )
+            )
             trace_idx += 1
 
     # Compute spatial data ranges so the plan-view (x vs z) axes are
@@ -535,10 +610,19 @@ def _plotly_3d_force(ospgrillage_obj, result_obj, component, members,
     return fig
 
 
-def _plotly_3d_def(ospgrillage_obj, result_obj, members, component="y",
-                    loadcase=None, *,
-                    fig=None, figsize=None, scale=1.0, title=_AUTO,
-                    show_supports=True):
+def _plotly_3d_def(
+    ospgrillage_obj,
+    result_obj,
+    members,
+    component="y",
+    loadcase=None,
+    *,
+    fig=None,
+    figsize=None,
+    scale=1.0,
+    title=_AUTO,
+    show_supports=True,
+):
     """Build an interactive 3D Plotly figure of deflected shapes.
 
     Each member is drawn as a ``Scatter3d`` trace with markers, accompanied
@@ -564,8 +648,7 @@ def _plotly_3d_def(ospgrillage_obj, result_obj, members, component="y",
     # Negate so downward deflection plots below the baseline.
     sign = -1.0
 
-    colours = ["blue", "red", "green", "orange", "black", "purple",
-               "brown", "grey"]
+    colours = ["blue", "red", "green", "orange", "black", "purple", "brown", "grey"]
     trace_idx = 0
     _TRANSVERSE = ("transverse_slab", "start_edge", "end_edge")
 
@@ -579,7 +662,8 @@ def _plotly_3d_def(ospgrillage_obj, result_obj, members, component="y",
                 colour = colours[trace_idx % len(colours)]
                 nodes_dict = ospgrillage_obj.get_nodes()
                 eletags = ospgrillage_obj.get_element(
-                    member=member, options="elements",
+                    member=member,
+                    options="elements",
                 )
                 if ospgrillage_obj.model_type == "shell_beam":
                     ele_node_da = result_obj.ele_nodes_beam
@@ -593,13 +677,20 @@ def _plotly_3d_def(ospgrillage_obj, result_obj, members, component="y",
                     for nd in node_tags:
                         c = nodes_dict[nd]["coordinate"]
                         if loadcase:
-                            d = float(result_obj.displacements.sel(
-                                Component=component, Node=nd, Loadcase=loadcase,
-                            ).values)
+                            d = float(
+                                result_obj.displacements.sel(
+                                    Component=component,
+                                    Node=nd,
+                                    Loadcase=loadcase,
+                                ).values
+                            )
                         else:
-                            d = float(result_obj.displacements.sel(
-                                Component=component, Node=nd,
-                            )[0].values)
+                            d = float(
+                                result_obj.displacements.sel(
+                                    Component=component,
+                                    Node=nd,
+                                )[0].values
+                            )
                         all_x.append(c[0])
                         all_y.append(c[2])
                         all_v.append(d * scale * sign)
@@ -608,12 +699,16 @@ def _plotly_3d_def(ospgrillage_obj, result_obj, members, component="y",
                     all_y.append(None)
                     all_v.append(None)
 
-                fig.add_trace(go.Scatter3d(
-                    x=all_x, y=all_y, z=all_v,
-                    mode="lines",
-                    line=dict(color=colour, width=3),
-                    name=member,
-                ))
+                fig.add_trace(
+                    go.Scatter3d(
+                        x=all_x,
+                        y=all_y,
+                        z=all_v,
+                        mode="lines",
+                        line=dict(color=colour, width=3),
+                        name=member,
+                    )
+                )
                 trace_idx += 1
             except (KeyError, ValueError, IndexError):
                 pass  # member not available for this model type
@@ -622,7 +717,11 @@ def _plotly_3d_def(ospgrillage_obj, result_obj, members, component="y",
         for zg in range(n_groups):
             try:
                 xx, zz, vals = _extract_def_data(
-                    ospgrillage_obj, result_obj, member, component, loadcase,
+                    ospgrillage_obj,
+                    result_obj,
+                    member,
+                    component,
+                    loadcase,
                     z_group_num=zg,
                 )
             except (KeyError, ValueError, IndexError):
@@ -631,42 +730,58 @@ def _plotly_3d_def(ospgrillage_obj, result_obj, members, component="y",
             trace_name = member if n_groups == 1 else f"{member} [{zg+1}]"
             sv = np.array(vals) * scale * sign
 
-            fig.add_trace(go.Scatter3d(
-                x=xx, y=zz, z=sv.tolist(),
-                mode="lines+markers",
-                line=dict(color=colour, width=4),
-                marker=dict(size=3, color=colour),
-                name=trace_name,
-            ))
+            fig.add_trace(
+                go.Scatter3d(
+                    x=xx,
+                    y=zz,
+                    z=sv.tolist(),
+                    mode="lines+markers",
+                    line=dict(color=colour, width=4),
+                    marker=dict(size=3, color=colour),
+                    name=trace_name,
+                )
+            )
             # Baseline
-            fig.add_trace(go.Scatter3d(
-                x=xx, y=zz, z=[0.0] * len(vals),
-                mode="lines",
-                line=dict(color=colour, width=1, dash="dot"),
-                showlegend=False,
-            ))
+            fig.add_trace(
+                go.Scatter3d(
+                    x=xx,
+                    y=zz,
+                    z=[0.0] * len(vals),
+                    mode="lines",
+                    line=dict(color=colour, width=1, dash="dot"),
+                    showlegend=False,
+                )
+            )
             trace_idx += 1
 
     # Support markers on the zero-baseline
     if show_supports:
         supports = _extract_support_data(ospgrillage_obj)
         from collections import defaultdict
+
         by_type = defaultdict(list)
         for sup in supports:
             by_type[sup["fixity_type"]].append(sup)
         for ftype, sups in sorted(by_type.items()):
-            symbol, colour, sz = _SUPPORT_STYLE_PLOTLY.get(
-                ftype, ("x", "purple", 6))
+            symbol, colour, sz = _SUPPORT_STYLE_PLOTLY.get(ftype, ("x", "purple", 6))
             sx = [s["x"] for s in sups]
             sy = [s["z"] for s in sups]
             sz_vals = [0.0] * len(sups)  # supports sit on the baseline
-            fig.add_trace(go.Scatter3d(
-                x=sx, y=sy, z=sz_vals,
-                mode="markers",
-                marker=dict(symbol=symbol, size=sz, color=colour,
-                            line=dict(color="black", width=1)),
-                name=f"support ({ftype})",
-            ))
+            fig.add_trace(
+                go.Scatter3d(
+                    x=sx,
+                    y=sy,
+                    z=sz_vals,
+                    mode="markers",
+                    marker=dict(
+                        symbol=symbol,
+                        size=sz,
+                        color=colour,
+                        line=dict(color="black", width=1),
+                    ),
+                    name=f"support ({ftype})",
+                )
+            )
 
     aspect = _spatial_aspect_ratio(fig)
     _no_bg = dict(showbackground=False)
@@ -757,7 +872,12 @@ def plot_force(
         raise ValueError("Missing argument: member= is required")
 
     all_xx, _all_zz, all_values = _extract_force_data(
-        ospgrillage_obj, result_obj, component, member, loadcase, option,
+        ospgrillage_obj,
+        result_obj,
+        component,
+        member,
+        loadcase,
+        option,
     )
 
     if ax is None:
@@ -769,8 +889,7 @@ def plot_force(
         scaled = vals * scale
         ax.plot(xx, scaled, "-", color=color)
         if fill:
-            ax.fill_between(xx, scaled, np.zeros_like(scaled),
-                            color=color, alpha=alpha)
+            ax.fill_between(xx, scaled, np.zeros_like(scaled), color=color, alpha=alpha)
 
     if title is _AUTO:
         ax.set_title(member)
@@ -842,7 +961,12 @@ def _plot_def_mpl(
 
     dis_comp = component if component is not None else "y"
     xx_list, _zz_list, values_list = _extract_def_data(
-        ospgrillage_obj, result_obj, member, dis_comp, loadcase, option,
+        ospgrillage_obj,
+        result_obj,
+        member,
+        dis_comp,
+        loadcase,
+        option,
     )
 
     if ax is None:
@@ -951,11 +1075,7 @@ def _resolve_members(member, backend="plotly"):
 
     # Decompose the composite flag into individual members, preserving
     # the declaration order of the enum.
-    return [
-        _MEMBER_NAME_MAP[m]
-        for m in Members
-        if m in flag and m in _MEMBER_NAME_MAP
-    ]
+    return [_MEMBER_NAME_MAP[m] for m in Members if m in flag and m in _MEMBER_NAME_MAP]
 
 
 # ---------------------------------------------------------------------------
@@ -963,8 +1083,14 @@ def _resolve_members(member, backend="plotly"):
 # ---------------------------------------------------------------------------
 
 
-def plot_bmd(ospgrillage_obj, result_obj=None, members=None, loadcase=None,
-             backend="matplotlib", **kwargs):
+def plot_bmd(
+    ospgrillage_obj,
+    result_obj=None,
+    members=None,
+    loadcase=None,
+    backend="matplotlib",
+    **kwargs,
+):
     """Plot bending moment diagram (Mz) for selected member groups.
 
     :param ospgrillage_obj: Grillage model object.
@@ -993,13 +1119,19 @@ def plot_bmd(ospgrillage_obj, result_obj=None, members=None, loadcase=None,
     resolved = _resolve_members(members, backend)
     if backend == "plotly":
         show = kwargs.pop("show", True)
-        plotly_kw = {k: v for k, v in kwargs.items()
-                     if k in ("figsize", "scale", "title", "alpha", "fill",
-                              "fill_alpha")}
+        plotly_kw = {
+            k: v
+            for k, v in kwargs.items()
+            if k in ("figsize", "scale", "title", "alpha", "fill", "fill_alpha")
+        }
         plotly_kw["fig"] = kwargs.get("ax", None)
         fig = _plotly_3d_force(
-            ospgrillage_obj, result_obj, component="Mz",
-            members=resolved, loadcase=loadcase, comp_label="Mz",
+            ospgrillage_obj,
+            result_obj,
+            component="Mz",
+            members=resolved,
+            loadcase=loadcase,
+            comp_label="Mz",
             **plotly_kw,
         )
         if show:
@@ -1009,16 +1141,24 @@ def plot_bmd(ospgrillage_obj, result_obj=None, members=None, loadcase=None,
     # matplotlib path — single string returns one axes (backward compat)
     if isinstance(members, str):
         return plot_force(
-            ospgrillage_obj, result_obj, component="Mz",
-            member=members, loadcase=loadcase, **kwargs,
+            ospgrillage_obj,
+            result_obj,
+            component="Mz",
+            member=members,
+            loadcase=loadcase,
+            **kwargs,
         )
     figs = []
     for m in resolved:
         try:
             figs.append(
                 plot_force(
-                    ospgrillage_obj, result_obj, component="Mz",
-                    member=m, loadcase=loadcase, **kwargs,
+                    ospgrillage_obj,
+                    result_obj,
+                    component="Mz",
+                    member=m,
+                    loadcase=loadcase,
+                    **kwargs,
                 )
             )
         except (ValueError, KeyError, IndexError):
@@ -1026,8 +1166,14 @@ def plot_bmd(ospgrillage_obj, result_obj=None, members=None, loadcase=None,
     return figs
 
 
-def plot_sfd(ospgrillage_obj, result_obj=None, members=None, loadcase=None,
-             backend="matplotlib", **kwargs):
+def plot_sfd(
+    ospgrillage_obj,
+    result_obj=None,
+    members=None,
+    loadcase=None,
+    backend="matplotlib",
+    **kwargs,
+):
     """Plot shear force diagram (Fy) for selected member groups.
 
     :param ospgrillage_obj: Grillage model object.
@@ -1054,13 +1200,19 @@ def plot_sfd(ospgrillage_obj, result_obj=None, members=None, loadcase=None,
     resolved = _resolve_members(members, backend)
     if backend == "plotly":
         show = kwargs.pop("show", True)
-        plotly_kw = {k: v for k, v in kwargs.items()
-                     if k in ("figsize", "scale", "title", "alpha", "fill",
-                              "fill_alpha")}
+        plotly_kw = {
+            k: v
+            for k, v in kwargs.items()
+            if k in ("figsize", "scale", "title", "alpha", "fill", "fill_alpha")
+        }
         plotly_kw["fig"] = kwargs.get("ax", None)
         fig = _plotly_3d_force(
-            ospgrillage_obj, result_obj, component="Fy",
-            members=resolved, loadcase=loadcase, comp_label="Fy",
+            ospgrillage_obj,
+            result_obj,
+            component="Fy",
+            members=resolved,
+            loadcase=loadcase,
+            comp_label="Fy",
             **plotly_kw,
         )
         if show:
@@ -1070,16 +1222,24 @@ def plot_sfd(ospgrillage_obj, result_obj=None, members=None, loadcase=None,
     # matplotlib path — single string returns one axes (backward compat)
     if isinstance(members, str):
         return plot_force(
-            ospgrillage_obj, result_obj, component="Fy",
-            member=members, loadcase=loadcase, **kwargs,
+            ospgrillage_obj,
+            result_obj,
+            component="Fy",
+            member=members,
+            loadcase=loadcase,
+            **kwargs,
         )
     figs = []
     for m in resolved:
         try:
             figs.append(
                 plot_force(
-                    ospgrillage_obj, result_obj, component="Fy",
-                    member=m, loadcase=loadcase, **kwargs,
+                    ospgrillage_obj,
+                    result_obj,
+                    component="Fy",
+                    member=m,
+                    loadcase=loadcase,
+                    **kwargs,
                 )
             )
         except (ValueError, KeyError, IndexError):
@@ -1087,8 +1247,14 @@ def plot_sfd(ospgrillage_obj, result_obj=None, members=None, loadcase=None,
     return figs
 
 
-def plot_def(ospgrillage_obj, result_obj=None, members=None, loadcase=None,
-             backend="matplotlib", **kwargs):
+def plot_def(
+    ospgrillage_obj,
+    result_obj=None,
+    members=None,
+    loadcase=None,
+    backend="matplotlib",
+    **kwargs,
+):
     """Plot vertical deflection (y-displacement) for selected member groups.
 
     :param ospgrillage_obj: Grillage model object.
@@ -1115,33 +1281,51 @@ def plot_def(ospgrillage_obj, result_obj=None, members=None, loadcase=None,
     resolved = _resolve_members(members, backend)
     if backend == "plotly":
         show = kwargs.pop("show", True)
-        plotly_kw = {k: v for k, v in kwargs.items()
-                     if k in ("figsize", "scale", "title", "show_supports")}
+        plotly_kw = {
+            k: v
+            for k, v in kwargs.items()
+            if k in ("figsize", "scale", "title", "show_supports")
+        }
         plotly_kw["fig"] = kwargs.get("ax", None)
         fig = _plotly_3d_def(
-            ospgrillage_obj, result_obj, members=resolved,
-            component="y", loadcase=loadcase, **plotly_kw,
+            ospgrillage_obj,
+            result_obj,
+            members=resolved,
+            component="y",
+            loadcase=loadcase,
+            **plotly_kw,
         )
         if show:
             fig.show()
             return None
         return fig
     # matplotlib path — filter to def-compatible kwargs (no fill/alpha)
-    def_kw = {k: v for k, v in kwargs.items()
-              if k in ("figsize", "ax", "scale", "title", "color", "show")}
+    def_kw = {
+        k: v
+        for k, v in kwargs.items()
+        if k in ("figsize", "ax", "scale", "title", "color", "show")
+    }
     # Single string returns one axes (backward compat)
     if isinstance(members, str):
         return _plot_def_mpl(
-            ospgrillage_obj, result_obj, member=members,
-            component="y", loadcase=loadcase, **def_kw,
+            ospgrillage_obj,
+            result_obj,
+            member=members,
+            component="y",
+            loadcase=loadcase,
+            **def_kw,
         )
     figs = []
     for m in resolved:
         try:
             figs.append(
                 _plot_def_mpl(
-                    ospgrillage_obj, result_obj, member=m,
-                    component="y", loadcase=loadcase, **def_kw,
+                    ospgrillage_obj,
+                    result_obj,
+                    member=m,
+                    component="y",
+                    loadcase=loadcase,
+                    **def_kw,
                 )
             )
         except (ValueError, KeyError, IndexError):
@@ -1149,8 +1333,14 @@ def plot_def(ospgrillage_obj, result_obj=None, members=None, loadcase=None,
     return figs
 
 
-def plot_tmd(ospgrillage_obj, result_obj=None, members=None, loadcase=None,
-             backend="matplotlib", **kwargs):
+def plot_tmd(
+    ospgrillage_obj,
+    result_obj=None,
+    members=None,
+    loadcase=None,
+    backend="matplotlib",
+    **kwargs,
+):
     """Plot torsion moment diagram (Mx) for selected member groups.
 
     :param ospgrillage_obj: Grillage model object.
@@ -1179,13 +1369,19 @@ def plot_tmd(ospgrillage_obj, result_obj=None, members=None, loadcase=None,
     resolved = _resolve_members(members, backend)
     if backend == "plotly":
         show = kwargs.pop("show", True)
-        plotly_kw = {k: v for k, v in kwargs.items()
-                     if k in ("figsize", "scale", "title", "alpha", "fill",
-                              "fill_alpha")}
+        plotly_kw = {
+            k: v
+            for k, v in kwargs.items()
+            if k in ("figsize", "scale", "title", "alpha", "fill", "fill_alpha")
+        }
         plotly_kw["fig"] = kwargs.get("ax", None)
         fig = _plotly_3d_force(
-            ospgrillage_obj, result_obj, component="Mx",
-            members=resolved, loadcase=loadcase, comp_label="Mx",
+            ospgrillage_obj,
+            result_obj,
+            component="Mx",
+            members=resolved,
+            loadcase=loadcase,
+            comp_label="Mx",
             **plotly_kw,
         )
         if show:
@@ -1195,16 +1391,24 @@ def plot_tmd(ospgrillage_obj, result_obj=None, members=None, loadcase=None,
     # matplotlib path — single string returns one axes (backward compat)
     if isinstance(members, str):
         return plot_force(
-            ospgrillage_obj, result_obj, component="Mx",
-            member=members, loadcase=loadcase, **kwargs,
+            ospgrillage_obj,
+            result_obj,
+            component="Mx",
+            member=members,
+            loadcase=loadcase,
+            **kwargs,
         )
     figs = []
     for m in resolved:
         try:
             figs.append(
                 plot_force(
-                    ospgrillage_obj, result_obj, component="Mx",
-                    member=m, loadcase=loadcase, **kwargs,
+                    ospgrillage_obj,
+                    result_obj,
+                    component="Mx",
+                    member=m,
+                    loadcase=loadcase,
+                    **kwargs,
                 )
             )
         except (ValueError, KeyError, IndexError):
@@ -1291,13 +1495,15 @@ def _extract_support_data(grillage_obj):
             fixity_tuple = tuple(int(v) for v in fixity_vec)
             fixity_type = _FIXITY_CLASSIFICATION.get(fixity_tuple, "other")
 
-        supports.append({
-            "node_tag": node_tag,
-            "x": coord[0],
-            "y": coord[1],
-            "z": coord[2],
-            "fixity_type": fixity_type,
-        })
+        supports.append(
+            {
+                "node_tag": node_tag,
+                "x": coord[0],
+                "y": coord[1],
+                "z": coord[2],
+                "fixity_type": fixity_type,
+            }
+        )
 
     return supports
 
@@ -1346,8 +1552,12 @@ def _extract_mesh_data(grillage_obj):
             all_nodes[nj] = cj
 
     # Longitudinal members (edge_beam, exterior_main_beam_1, interior, exterior_2)
-    for member_name in ["edge_beam", "exterior_main_beam_1",
-                        "interior_main_beam", "exterior_main_beam_2"]:
+    for member_name in [
+        "edge_beam",
+        "exterior_main_beam_1",
+        "interior_main_beam",
+        "exterior_main_beam_2",
+    ]:
         if member_name not in z_group_map:
             continue
         for z_idx in z_group_map[member_name]:
@@ -1392,11 +1602,19 @@ def _extract_mesh_data(grillage_obj):
     return data, all_nodes, quads, links
 
 
-def _plot_model_matplotlib(grillage_obj, *, figsize=None, ax=None,
-                           title=_AUTO, show_nodes=True,
-                           show_node_labels=False, show_element_labels=False,
-                           color_by_member=True, show_supports=True,
-                           show=False):
+def _plot_model_matplotlib(
+    grillage_obj,
+    *,
+    figsize=None,
+    ax=None,
+    title=_AUTO,
+    show_nodes=True,
+    show_node_labels=False,
+    show_element_labels=False,
+    color_by_member=True,
+    show_supports=True,
+    show=False,
+):
     """Render a 2-D plan view (x vs z) of the grillage mesh."""
     data, all_nodes, quads, links = _extract_mesh_data(grillage_obj)
 
@@ -1409,25 +1627,36 @@ def _plot_model_matplotlib(grillage_obj, *, figsize=None, ax=None,
     if quads:
         from matplotlib.patches import Polygon
         from matplotlib.collections import PatchCollection
+
         patches = []
         for coords in quads:
             # coords is tuple of [x,y,z] lists — plot in x-z plane
             verts = [(c[0], c[2]) for c in coords]
             patches.append(Polygon(verts, closed=True))
-        pc = PatchCollection(patches, facecolor="lightblue", edgecolor="steelblue",
-                             linewidth=0.4, alpha=0.5)
+        pc = PatchCollection(
+            patches,
+            facecolor="lightblue",
+            edgecolor="steelblue",
+            linewidth=0.4,
+            alpha=0.5,
+        )
         ax.add_collection(pc)
 
     # Draw beam elements grouped by member
     for member_name, elements in data.items():
-        colour = _MEMBER_COLOURS.get(member_name, _DEFAULT_COLOUR) if color_by_member else "k"
+        colour = (
+            _MEMBER_COLOURS.get(member_name, _DEFAULT_COLOUR)
+            if color_by_member
+            else "k"
+        )
         for ci, cj, etag in elements:
             ax.plot([ci[0], cj[0]], [ci[2], cj[2]], "-", color=colour, linewidth=1)
             if show_element_labels:
                 mx = 0.5 * (ci[0] + cj[0])
                 mz = 0.5 * (ci[2] + cj[2])
-                ax.text(mx, mz, str(etag), fontsize=6, color="red",
-                        ha="center", va="center")
+                ax.text(
+                    mx, mz, str(etag), fontsize=6, color="red", ha="center", va="center"
+                )
 
     # Draw nodes
     if show_nodes or show_node_labels:
@@ -1435,8 +1664,15 @@ def _plot_model_matplotlib(grillage_obj, *, figsize=None, ax=None,
             if show_nodes:
                 ax.plot(coord[0], coord[2], ".", color="k", markersize=3)
             if show_node_labels:
-                ax.text(coord[0], coord[2], f" {ntag}", fontsize=5,
-                        color="blue", ha="left", va="bottom")
+                ax.text(
+                    coord[0],
+                    coord[2],
+                    f" {ntag}",
+                    fontsize=5,
+                    color="blue",
+                    ha="left",
+                    va="bottom",
+                )
 
     # Draw support symbols
     if show_supports:
@@ -1444,41 +1680,81 @@ def _plot_model_matplotlib(grillage_obj, *, figsize=None, ax=None,
         plotted_types = set()
         for sup in supports:
             marker, colour, sz = _SUPPORT_STYLE_MPL.get(
-                sup["fixity_type"], ("D", "purple", 7))
+                sup["fixity_type"], ("D", "purple", 7)
+            )
             ax.plot(
-                sup["x"], sup["z"], marker=marker, color=colour,
-                markersize=sz, markeredgecolor="black", markeredgewidth=0.5,
-                linestyle="none", zorder=5,
+                sup["x"],
+                sup["z"],
+                marker=marker,
+                color=colour,
+                markersize=sz,
+                markeredgecolor="black",
+                markeredgewidth=0.5,
+                linestyle="none",
+                zorder=5,
             )
             plotted_types.add(sup["fixity_type"])
 
     # Add legends — members and supports are separated for clarity.
     from matplotlib.lines import Line2D
+
     member_handles = []
     if quads:
-        member_handles.append(Line2D([0], [0], color="steelblue", linewidth=1,
-                                     marker="s", markerfacecolor="lightblue",
-                                     markersize=6, label="shell_slab"))
+        member_handles.append(
+            Line2D(
+                [0],
+                [0],
+                color="steelblue",
+                linewidth=1,
+                marker="s",
+                markerfacecolor="lightblue",
+                markersize=6,
+                label="shell_slab",
+            )
+        )
     for member_name in data:
-        colour = _MEMBER_COLOURS.get(member_name, _DEFAULT_COLOUR) if color_by_member else "k"
-        member_handles.append(Line2D([0], [0], color=colour, linewidth=1,
-                                     label=member_name))
+        colour = (
+            _MEMBER_COLOURS.get(member_name, _DEFAULT_COLOUR)
+            if color_by_member
+            else "k"
+        )
+        member_handles.append(
+            Line2D([0], [0], color=colour, linewidth=1, label=member_name)
+        )
     if member_handles and color_by_member:
-        leg1 = ax.legend(handles=member_handles, fontsize=7, loc="upper left",
-                         title="Members", title_fontsize=7)
+        leg1 = ax.legend(
+            handles=member_handles,
+            fontsize=7,
+            loc="upper left",
+            title="Members",
+            title_fontsize=7,
+        )
         ax.add_artist(leg1)
 
     if show_supports and plotted_types:
         sup_handles = []
         for ftype in sorted(plotted_types):
             marker, colour, sz = _SUPPORT_STYLE_MPL.get(ftype, ("D", "purple", 7))
-            sup_handles.append(Line2D(
-                [0], [0], linestyle="none", marker=marker, color=colour,
-                markeredgecolor="black", markeredgewidth=0.5,
-                markersize=sz, label=ftype,
-            ))
-        ax.legend(handles=sup_handles, fontsize=7, loc="upper right",
-                  title="Supports", title_fontsize=7)
+            sup_handles.append(
+                Line2D(
+                    [0],
+                    [0],
+                    linestyle="none",
+                    marker=marker,
+                    color=colour,
+                    markeredgecolor="black",
+                    markeredgewidth=0.5,
+                    markersize=sz,
+                    label=ftype,
+                )
+            )
+        ax.legend(
+            handles=sup_handles,
+            fontsize=7,
+            loc="upper right",
+            title="Supports",
+            title_fontsize=7,
+        )
 
     ax.set_xlabel("x (m)")
     ax.set_ylabel("z (m)")
@@ -1496,11 +1772,19 @@ def _plot_model_matplotlib(grillage_obj, *, figsize=None, ax=None,
     return ax
 
 
-def _plot_model_plotly(grillage_obj, *, fig=None, figsize=None,
-                       title=_AUTO, show_nodes=True,
-                       show_node_labels=False, show_element_labels=False,
-                       color_by_member=True, show_supports=True,
-                       show=False):
+def _plot_model_plotly(
+    grillage_obj,
+    *,
+    fig=None,
+    figsize=None,
+    title=_AUTO,
+    show_nodes=True,
+    show_node_labels=False,
+    show_element_labels=False,
+    color_by_member=True,
+    show_supports=True,
+    show=False,
+):
     """Render an interactive 3-D model view with Plotly."""
     go = _import_plotly()
     if fig is None:
@@ -1519,12 +1803,16 @@ def _plot_model_plotly(grillage_obj, *, fig=None, figsize=None,
             xs.extend([ci[0], cj[0], None])
             ys.extend([ci[2], cj[2], None])
             zs.extend([-ci[1], -cj[1], None])
-        fig.add_trace(go.Scatter3d(
-            x=xs, y=ys, z=zs,
-            mode="lines",
-            line=dict(color=colour, width=3),
-            name=member_name,
-        ))
+        fig.add_trace(
+            go.Scatter3d(
+                x=xs,
+                y=ys,
+                z=zs,
+                mode="lines",
+                line=dict(color=colour, width=3),
+                name=member_name,
+            )
+        )
 
     # Shell quad surface (if shell model)
     if quads:
@@ -1547,12 +1835,19 @@ def _plot_model_plotly(grillage_obj, *, fig=None, figsize=None,
                 j_idx.append(base + 1)
                 k_idx.append(base + 2)
             base += n
-        fig.add_trace(go.Mesh3d(
-            x=vx, y=vy, z=vz,
-            i=i_idx, j=j_idx, k=k_idx,
-            color="lightblue", opacity=0.5,
-            name="shell_slab",
-        ))
+        fig.add_trace(
+            go.Mesh3d(
+                x=vx,
+                y=vy,
+                z=vz,
+                i=i_idx,
+                j=j_idx,
+                k=k_idx,
+                color="lightblue",
+                opacity=0.5,
+                name="shell_slab",
+            )
+        )
 
     # Rigid links (slab ↔ offset beam)
     if links:
@@ -1561,13 +1856,17 @@ def _plot_model_plotly(grillage_obj, *, fig=None, figsize=None,
             lx.extend([sc[0], bc[0], None])
             ly.extend([sc[2], bc[2], None])  # z → plotly y
             lz.extend([-sc[1], -bc[1], None])  # y → plotly z (negated)
-        fig.add_trace(go.Scatter3d(
-            x=lx, y=ly, z=lz,
-            mode="lines",
-            line=dict(color="grey", width=1),
-            name="rigid_link",
-            showlegend=True,
-        ))
+        fig.add_trace(
+            go.Scatter3d(
+                x=lx,
+                y=ly,
+                z=lz,
+                mode="lines",
+                line=dict(color="grey", width=1),
+                name="rigid_link",
+                showlegend=True,
+            )
+        )
 
     # Node markers
     if show_nodes:
@@ -1577,16 +1876,20 @@ def _plot_model_plotly(grillage_obj, *, fig=None, figsize=None,
         nz = [-all_nodes[n][1] for n in ntags]
         text = [str(n) for n in ntags] if show_node_labels else None
         mode = "markers+text" if show_node_labels else "markers"
-        fig.add_trace(go.Scatter3d(
-            x=nx, y=ny, z=nz,
-            mode=mode,
-            marker=dict(size=2, color="black"),
-            text=text,
-            textposition="top center",
-            textfont=dict(size=8),
-            name="nodes",
-            showlegend=False,
-        ))
+        fig.add_trace(
+            go.Scatter3d(
+                x=nx,
+                y=ny,
+                z=nz,
+                mode=mode,
+                marker=dict(size=2, color="black"),
+                text=text,
+                textposition="top center",
+                textfont=dict(size=8),
+                name="nodes",
+                showlegend=False,
+            )
+        )
 
     # Element labels at midpoints
     if show_element_labels:
@@ -1597,34 +1900,46 @@ def _plot_model_plotly(grillage_obj, *, fig=None, figsize=None,
                 ey.append(0.5 * (ci[2] + cj[2]))
                 ez.append(-0.5 * (ci[1] + cj[1]))
                 etexts.append(str(etag))
-        fig.add_trace(go.Scatter3d(
-            x=ex, y=ey, z=ez,
-            mode="text",
-            text=etexts,
-            textfont=dict(size=7, color="red"),
-            showlegend=False,
-        ))
+        fig.add_trace(
+            go.Scatter3d(
+                x=ex,
+                y=ey,
+                z=ez,
+                mode="text",
+                text=etexts,
+                textfont=dict(size=7, color="red"),
+                showlegend=False,
+            )
+        )
 
     # Support markers
     if show_supports:
         supports = _extract_support_data(grillage_obj)
         from collections import defaultdict
+
         by_type = defaultdict(list)
         for sup in supports:
             by_type[sup["fixity_type"]].append(sup)
         for ftype, sups in sorted(by_type.items()):
-            symbol, colour, sz = _SUPPORT_STYLE_PLOTLY.get(
-                ftype, ("x", "purple", 6))
+            symbol, colour, sz = _SUPPORT_STYLE_PLOTLY.get(ftype, ("x", "purple", 6))
             sx = [s["x"] for s in sups]
-            sy = [s["z"] for s in sups]       # model z → plotly y
+            sy = [s["z"] for s in sups]  # model z → plotly y
             sz_vals = [-s["y"] for s in sups]  # model y → plotly z (negated)
-            fig.add_trace(go.Scatter3d(
-                x=sx, y=sy, z=sz_vals,
-                mode="markers",
-                marker=dict(symbol=symbol, size=sz, color=colour,
-                            line=dict(color="black", width=1)),
-                name=f"support ({ftype})",
-            ))
+            fig.add_trace(
+                go.Scatter3d(
+                    x=sx,
+                    y=sy,
+                    z=sz_vals,
+                    mode="markers",
+                    marker=dict(
+                        symbol=symbol,
+                        size=sz,
+                        color=colour,
+                        line=dict(color="black", width=1),
+                    ),
+                    name=f"support ({ftype})",
+                )
+            )
 
     # Layout — equal axis scaling (true proportions)
     _no_bg = dict(showbackground=False)
@@ -1694,10 +2009,22 @@ def plot_model(grillage_obj, *, backend="matplotlib", **kwargs):
         :class:`plotly.graph_objects.Figure` or None
     """
     if backend == "plotly":
-        plotly_kw = {k: v for k, v in kwargs.items()
-                     if k in ("fig", "figsize", "title", "show_nodes",
-                              "show_node_labels", "show_element_labels",
-                              "color_by_member", "show_supports", "show")}
+        plotly_kw = {
+            k: v
+            for k, v in kwargs.items()
+            if k
+            in (
+                "fig",
+                "figsize",
+                "title",
+                "show_nodes",
+                "show_node_labels",
+                "show_element_labels",
+                "color_by_member",
+                "show_supports",
+                "show",
+            )
+        }
         # Default show=True for plotly (Jupyter doesn't always auto-render)
         plotly_kw.setdefault("show", True)
         # Map ax → fig for consistency with other convenience wrappers
@@ -1705,15 +2032,25 @@ def plot_model(grillage_obj, *, backend="matplotlib", **kwargs):
             plotly_kw["fig"] = kwargs["ax"]
         return _plot_model_plotly(grillage_obj, **plotly_kw)
     elif backend == "matplotlib":
-        mpl_kw = {k: v for k, v in kwargs.items()
-                  if k in ("figsize", "ax", "title", "show_nodes",
-                           "show_node_labels", "show_element_labels",
-                           "color_by_member", "show_supports", "show")}
+        mpl_kw = {
+            k: v
+            for k, v in kwargs.items()
+            if k
+            in (
+                "figsize",
+                "ax",
+                "title",
+                "show_nodes",
+                "show_node_labels",
+                "show_element_labels",
+                "color_by_member",
+                "show_supports",
+                "show",
+            )
+        }
         return _plot_model_matplotlib(grillage_obj, **mpl_kw)
     else:
-        raise ValueError(
-            f"Unknown backend: {backend!r}. Use 'matplotlib' or 'plotly'."
-        )
+        raise ValueError(f"Unknown backend: {backend!r}. Use 'matplotlib' or 'plotly'.")
 
 
 class PostProcessor:

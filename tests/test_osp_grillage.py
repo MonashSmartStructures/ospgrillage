@@ -30,7 +30,7 @@ def test_section_parallel_axis_theorem():
 
     s2 = og.create_section(A=1.0, Iz=2.0, Iy=0.5, J=0.3, offset_y=3.0)
     assert s2.Iz == pytest.approx(2.0 + 1.0 * 9.0)  # 11.0
-    assert s2.Iy == pytest.approx(0.5 + 1.0 * 9.0)   # 9.5
+    assert s2.Iy == pytest.approx(0.5 + 1.0 * 9.0)  # 9.5
     assert s2.J == 0.3  # unchanged
 
 
@@ -38,7 +38,7 @@ def test_section_parallel_axis_default_iy():
     """When Iy is not given it defaults to 0.2*Iz, then gets the offset."""
     s = og.create_section(A=2.0, Iz=10.0, J=1.0, offset_y=1.5)
     iy_centroid = 0.2 * 10.0  # default
-    d_sq = 1.5 ** 2
+    d_sq = 1.5**2
     assert s.Iz == pytest.approx(10.0 + 2.0 * d_sq)
     assert s.Iy == pytest.approx(iy_centroid + 2.0 * d_sq)
 

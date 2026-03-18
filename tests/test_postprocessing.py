@@ -402,8 +402,11 @@ def test_plotly_single_member(bridge_model_42_negative):
     results = example_bridge.get_results(local_forces=False)
 
     fig = og.plot_bmd(
-        example_bridge, results, members="interior_main_beam",
-        backend="plotly", show=False,
+        example_bridge,
+        results,
+        members="interior_main_beam",
+        backend="plotly",
+        show=False,
     )
     assert isinstance(fig, go.Figure)
 
@@ -440,7 +443,10 @@ def test_plot_force_figsize(bridge_model_42_negative):
     """figsize is forwarded to plt.subplots."""
     bridge, results = _make_analyzed_bridge(bridge_model_42_negative)
     ax = og.plot_force(
-        bridge, results, component="Mz", member="interior_main_beam",
+        bridge,
+        results,
+        component="Mz",
+        member="interior_main_beam",
         figsize=(10, 4),
     )
     w, h = ax.get_figure().get_size_inches()
@@ -451,11 +457,15 @@ def test_plot_force_figsize(bridge_model_42_negative):
 def test_plot_force_ax(bridge_model_42_negative):
     """Passing an existing Axes should reuse the axes."""
     import matplotlib.pyplot as plt
+
     bridge, results = _make_analyzed_bridge(bridge_model_42_negative)
 
     fig_ext, ax_ext = plt.subplots(figsize=(12, 3))
     returned_ax = og.plot_force(
-        bridge, results, component="Mz", member="interior_main_beam",
+        bridge,
+        results,
+        component="Mz",
+        member="interior_main_beam",
         ax=ax_ext,
     )
     assert returned_ax is ax_ext
@@ -466,15 +476,22 @@ def test_plot_force_scale(bridge_model_42_negative):
     bridge, results = _make_analyzed_bridge(bridge_model_42_negative)
 
     ax1 = og.plot_force(
-        bridge, results, component="Mz", member="interior_main_beam",
+        bridge,
+        results,
+        component="Mz",
+        member="interior_main_beam",
         scale=1.0,
     )
     ax2 = og.plot_force(
-        bridge, results, component="Mz", member="interior_main_beam",
+        bridge,
+        results,
+        component="Mz",
+        member="interior_main_beam",
         scale=2.0,
     )
     # Compare the first line's y-data
     import numpy as np
+
     y1 = ax1.lines[0].get_ydata()
     y2 = ax2.lines[0].get_ydata()
     np.testing.assert_allclose(y2, y1 * 2, rtol=1e-10)
@@ -484,8 +501,15 @@ def test_plot_force_styling(bridge_model_42_negative):
     """Smoke test: color, fill, alpha, title, show kwargs don't error."""
     bridge, results = _make_analyzed_bridge(bridge_model_42_negative)
     ax = og.plot_force(
-        bridge, results, component="Mz", member="interior_main_beam",
-        color="r", fill=False, alpha=0.8, title="Custom Title", show=False,
+        bridge,
+        results,
+        component="Mz",
+        member="interior_main_beam",
+        color="r",
+        fill=False,
+        alpha=0.8,
+        title="Custom Title",
+        show=False,
     )
     assert ax.get_title() == "Custom Title"
     # fill=False means no PolyCollection (only lines)
@@ -496,7 +520,10 @@ def test_plot_force_title_none(bridge_model_42_negative):
     """title=None should suppress the title."""
     bridge, results = _make_analyzed_bridge(bridge_model_42_negative)
     ax = og.plot_force(
-        bridge, results, component="Mz", member="interior_main_beam",
+        bridge,
+        results,
+        component="Mz",
+        member="interior_main_beam",
         title=None,
     )
     assert ax.get_title() == ""
@@ -506,8 +533,12 @@ def test_plot_bmd_kwargs_passthrough(bridge_model_42_negative):
     """plot_bmd forwards kwargs to plot_force without error."""
     bridge, results = _make_analyzed_bridge(bridge_model_42_negative)
     ax = og.plot_bmd(
-        bridge, results, members="interior_main_beam",
-        figsize=(12, 4), scale=0.001, title="BMD (kNm)",
+        bridge,
+        results,
+        members="interior_main_beam",
+        figsize=(12, 4),
+        scale=0.001,
+        title="BMD (kNm)",
     )
     assert ax is not None
     assert ax.get_title() == "BMD (kNm)"
@@ -517,8 +548,12 @@ def test_plot_def_kwargs_passthrough(bridge_model_42_negative):
     """plot_def forwards kwargs to the deflection renderer without error."""
     bridge, results = _make_analyzed_bridge(bridge_model_42_negative)
     ax = og.plot_def(
-        bridge, results, members="interior_main_beam",
-        figsize=(12, 4), scale=1000, color="g",
+        bridge,
+        results,
+        members="interior_main_beam",
+        figsize=(12, 4),
+        scale=1000,
+        color="g",
     )
     assert ax is not None
 
@@ -529,8 +564,13 @@ def test_plotly_kwargs(bridge_model_42_negative):
     bridge, results = _make_analyzed_bridge(bridge_model_42_negative)
 
     fig = og.plot_bmd(
-        bridge, results, backend="plotly", show=False,
-        figsize=(12, 8), scale=0.5, title="Custom Plotly BMD",
+        bridge,
+        results,
+        backend="plotly",
+        show=False,
+        figsize=(12, 8),
+        scale=0.5,
+        title="Custom Plotly BMD",
     )
     assert isinstance(fig, go.Figure)
     assert fig.layout.title.text == "Custom Plotly BMD"
@@ -561,6 +601,7 @@ def test_plot_model_matplotlib_labels(bridge_model_42_negative):
 def test_plot_model_matplotlib_kwargs(bridge_model_42_negative):
     """plot_model accepts figsize, title, ax kwargs."""
     import matplotlib.pyplot as plt
+
     og.ops.wipeAnalysis()
     bridge = bridge_model_42_negative
     ax = og.plot_model(bridge, figsize=(12, 6), title="Test Model")
@@ -635,9 +676,7 @@ def test_resolve_members_flag_combination():
     """A combined flag resolves in declaration order."""
     from ospgrillage.postprocessing import _resolve_members
 
-    result = _resolve_members(
-        og.Members.TRANSVERSE_SLAB | og.Members.EDGE_BEAM
-    )
+    result = _resolve_members(og.Members.TRANSVERSE_SLAB | og.Members.EDGE_BEAM)
     assert result == ["edge_beam", "transverse_slab"]
 
 
@@ -661,7 +700,8 @@ def test_plot_bmd_with_members_flag(bridge_model_42_negative):
     """plot_bmd matplotlib backend accepts a Members flag."""
     bridge, results = _make_analyzed_bridge(bridge_model_42_negative)
     axes = og.plot_bmd(
-        bridge, results,
+        bridge,
+        results,
         members=og.Members.INTERIOR_MAIN_BEAM | og.Members.EDGE_BEAM,
     )
     assert isinstance(axes, list)
@@ -672,7 +712,8 @@ def test_plot_sfd_with_members_flag(bridge_model_42_negative):
     """plot_sfd matplotlib backend accepts a Members flag."""
     bridge, results = _make_analyzed_bridge(bridge_model_42_negative)
     axes = og.plot_sfd(
-        bridge, results,
+        bridge,
+        results,
         members=og.Members.LONGITUDINAL,
     )
     assert isinstance(axes, list)
@@ -683,7 +724,8 @@ def test_plot_def_with_members_flag(bridge_model_42_negative):
     """plot_def matplotlib backend accepts a Members flag."""
     bridge, results = _make_analyzed_bridge(bridge_model_42_negative)
     axes = og.plot_def(
-        bridge, results,
+        bridge,
+        results,
         members=og.Members.INTERIOR_MAIN_BEAM,
     )
     assert isinstance(axes, list)
@@ -695,9 +737,11 @@ def test_plot_bmd_plotly_members_flag(bridge_model_42_negative):
     go = pytest.importorskip("plotly.graph_objects")
     bridge, results = _make_analyzed_bridge(bridge_model_42_negative)
     fig = og.plot_bmd(
-        bridge, results,
+        bridge,
+        results,
         members=og.Members.LONGITUDINAL,
-        backend="plotly", show=False,
+        backend="plotly",
+        show=False,
     )
     assert isinstance(fig, go.Figure)
     assert len(fig.data) > 0
@@ -708,13 +752,14 @@ def test_plot_def_plotly_members_flag(bridge_model_42_negative):
     go = pytest.importorskip("plotly.graph_objects")
     bridge, results = _make_analyzed_bridge(bridge_model_42_negative)
     fig = og.plot_def(
-        bridge, results,
+        bridge,
+        results,
         members=og.Members.ALL,
-        backend="plotly", show=False,
+        backend="plotly",
+        show=False,
     )
     assert isinstance(fig, go.Figure)
     assert len(fig.data) > 0
-
 
 
 # ---------------------------------------------------------------------------
@@ -753,8 +798,11 @@ def test_plotly_force_fill(bridge_model_42_negative):
     bridge, results = _make_analyzed_bridge(bridge_model_42_negative)
 
     fig = og.plot_bmd(
-        bridge, results, members="interior_main_beam",
-        backend="plotly", show=False,
+        bridge,
+        results,
+        members="interior_main_beam",
+        backend="plotly",
+        show=False,
     )
     mesh_traces = [t for t in fig.data if isinstance(t, go.Mesh3d)]
     assert len(mesh_traces) >= 1
@@ -766,8 +814,12 @@ def test_plotly_force_no_fill(bridge_model_42_negative):
     bridge, results = _make_analyzed_bridge(bridge_model_42_negative)
 
     fig = og.plot_bmd(
-        bridge, results, members="interior_main_beam",
-        backend="plotly", show=False, fill=False,
+        bridge,
+        results,
+        members="interior_main_beam",
+        backend="plotly",
+        show=False,
+        fill=False,
     )
     mesh_traces = [t for t in fig.data if isinstance(t, go.Mesh3d)]
     assert len(mesh_traces) == 0
