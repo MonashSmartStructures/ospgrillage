@@ -206,7 +206,7 @@ class Section:
 
         # Apply parallel axis theorem when offset_y is provided
         if self.offset_y is not None and self.A is not None:
-            d_sq = self.offset_y ** 2
+            d_sq = self.offset_y**2
             if self.Iz is not None:
                 self.Iz += self.A * d_sq
             if self.Iy is not None:

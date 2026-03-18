@@ -370,9 +370,7 @@ def add_analysis_to_simple_grid(create_grillage):
     for i, _ in enumerate(xs):
         truck_point = ospg.create_load_vertex(x=xs[i], z=zs[i], p=P)
         two_axle_truck.add_load(
-            load=ospg.create_load(
-                loadtype="point", name="Point", point1=truck_point
-            )
+            load=ospg.create_load(loadtype="point", name="Point", point1=truck_point)
         )
 
     # create path object in global coordinate system

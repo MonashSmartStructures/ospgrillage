@@ -140,6 +140,7 @@ class _OpsProxy:
             else:
                 module = object.__getattribute__(self, "_module")
                 return getattr(module, name)(*args, **kwargs)
+
         return dispatch
 
 
@@ -406,7 +407,9 @@ class OspGrillage:
         # check inputs
         if self.mesh_radius:
             if self.mesh_radius < self.long_dim:
-                raise ValueError("mesh_radius must be greater than long_dim of grillage")
+                raise ValueError(
+                    "mesh_radius must be greater than long_dim of grillage"
+                )
 
         # ===========================================================================================================
         # Begin parsing mesh inputs and mesh procedures
@@ -589,11 +592,14 @@ class OspGrillage:
         for k, v in mesh_obj.transform_dict.items():
             vxz = k.split("|")[0]
             offset = k.split("|")[1]
-            vxz_list = eval(vxz, _data_ns)   # stored as repr(); may contain np.float64(...)
+            vxz_list = eval(
+                vxz, _data_ns
+            )  # stored as repr(); may contain np.float64(...)
             offset_data = eval(offset, _data_ns)
             if offset_data:
-                self._ops.geomTransf(transform_type, v, *vxz_list,
-                                     offset_data[0], offset_data[1])
+                self._ops.geomTransf(
+                    transform_type, v, *vxz_list, offset_data[0], offset_data[1]
+                )
             else:
                 self._ops.geomTransf(transform_type, v, *vxz_list)
 
@@ -694,7 +700,11 @@ class OspGrillage:
             self.material_command_list.append(mat_str)
         else:  # material tag defined, skip, print to terminal
             if self.diagnostics:
-                logger.debug("Material %s with tag %s has been previously defined", material_type, material_tag)
+                logger.debug(
+                    "Material %s with tag %s has been previously defined",
+                    material_type,
+                    material_tag,
+                )
         return material_tag
 
     def _get_material_tag(self):
@@ -738,10 +748,16 @@ class OspGrillage:
 
             # print to terminal
             if self.diagnostics:
-                logger.debug("Section %s of tag %s created", section_type, sectiontagcounter)
+                logger.debug(
+                    "Section %s of tag %s created", section_type, sectiontagcounter
+                )
         else:
             if self.diagnostics:
-                logger.debug("Section %s with tag %s has been previously defined", section_type, sectiontagcounter)
+                logger.debug(
+                    "Section %s with tag %s has been previously defined",
+                    section_type,
+                    sectiontagcounter,
+                )
         return sectiontagcounter
 
     def _create_standard_element_list(self):
@@ -760,9 +776,9 @@ class OspGrillage:
             self.common_grillage_element_z_group.update({key: val})
         # populate start edge and end edge entries
         self.common_grillage_element_z_group[self.common_grillage_element_keys[4]] = [0]
-        self.common_grillage_element_z_group[self.common_grillage_element_keys[5]] = (
-            list(range(1, self.Mesh_obj.global_edge_count))
-        )
+        self.common_grillage_element_z_group[
+            self.common_grillage_element_keys[5]
+        ] = list(range(1, self.Mesh_obj.global_edge_count))
         self.common_grillage_element_z_group[self.common_grillage_element_keys[6]] = [
             0
         ]  # proxy 0 for set_member() loop
@@ -1583,15 +1599,21 @@ class OspGrillage:
                 load_str.append(
                     (
                         "load",
-                        (node, 0, node_load[count], 0, node_mx[count], 0, node_mz[count]),
+                        (
+                            node,
+                            0,
+                            node_load[count],
+                            0,
+                            node_mx[count],
+                            0,
+                            node_mz[count],
+                        ),
                         {},
                     )
                 )
         else:
             for count, node in enumerate(sorted_node_tag):
-                load_str.append(
-                    ("load", (node, 0, node_load[count], 0, 0, 0, 0), {})
-                )
+                load_str.append(("load", (node, 0, node_load[count], 0, 0, 0, 0), {}))
         return load_str
 
     # Setter for Line loads and above
@@ -1995,9 +2017,9 @@ class OspGrillage:
                         "load_factor": load_factor,
                     }
                     list_of_incr_load_case_dict.append(increment_load_case_dict)
-                self.moving_load_case_dict[moving_load_obj.name] = (
-                    list_of_incr_load_case_dict
-                )
+                self.moving_load_case_dict[
+                    moving_load_obj.name
+                ] = list_of_incr_load_case_dict
 
             if self.diagnostics:
                 logger.info("Moving load case: %s created", moving_load_obj.name)
@@ -2387,19 +2409,19 @@ class OspGrillage:
 
     def get_element(self, **kwargs) -> Union[List[float]]:
         """
-                Function to query properties of elements in grillage model.
+        Function to query properties of elements in grillage model.
 
-                :param options: Query type — either ``"elements"`` or ``"nodes"`` (default).
-                :type options: str
-                :param z_group_num: Group index ``[0, N]`` for longitudinal (z-direction) element groups.
-                    Needed for interior beams when querying a specific sub-group within e.g. ``"interior_main_beam"``.
-                :type z_group_num: int
-                :param x_group_num: Group index for transverse (x-direction) element groups. Analogous to ``z_group_num``.
-                :type x_group_num: int
-                :param edge_group_num: Group index for edge element groups. Analogous to ``z_group_num``.
-                :type edge_group_num: int
-                :returns: List of element tags or node data matching the query.
-                """
+        :param options: Query type — either ``"elements"`` or ``"nodes"`` (default).
+        :type options: str
+        :param z_group_num: Group index ``[0, N]`` for longitudinal (z-direction) element groups.
+            Needed for interior beams when querying a specific sub-group within e.g. ``"interior_main_beam"``.
+        :type z_group_num: int
+        :param x_group_num: Group index for transverse (x-direction) element groups. Analogous to ``z_group_num``.
+        :type x_group_num: int
+        :param edge_group_num: Group index for edge element groups. Analogous to ``z_group_num``.
+        :type edge_group_num: int
+        :returns: List of element tags or node data matching the query.
+        """
         # get query member details
         namestring = kwargs.get("member", None)
         select_z_group = kwargs.get(
@@ -2547,7 +2569,6 @@ class OspGrillage:
 
         massDOFs = []
         for nd in ops.getNodeTags():
-
             for j in range(6):  # NDF is number of DOFs/node
                 if ops.nodeMass(nd, j + 1) > 0.0:
                     massDOFs.append(ops.nodeDOFs(nd)[j])
@@ -2634,7 +2655,6 @@ class Analysis:
         step: int = 1,
         **kwargs,
     ):
-
         self.analysis_name = analysis_name
         self.ops_grillage_name = ops_grillage_name
         self.time_series_tag = None
