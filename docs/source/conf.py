@@ -85,6 +85,7 @@ autodoc_typehints_description_target = (
     "documented"  # Only add types where there is already a description
 )
 nbsphinx_allow_errors = True  # Continue through Jupyter errors
+nbsphinx_execute = "never"  # Don't re-execute notebooks during docs build
 add_module_names = False  # Remove namespaces from class/method signatures
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
