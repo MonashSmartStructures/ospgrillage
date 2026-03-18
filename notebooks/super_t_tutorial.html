@@ -442,8 +442,8 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import ospgrillage as og
-import numpy as np
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">ospgrillage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">og</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 </pre></div>
 </div>
 </div>
@@ -451,19 +451,19 @@ import numpy as np
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>kilo = 1e3
-milli = 1e-3
-N = 1
-m = 1
-mm = milli * m
-m2 = m**2
-m3 = m**3
-m4 = m**4
-kN = kilo * N
-Pa = 1
-MPa = N / mm**2
-GPa = kilo * MPa
-kPa = kilo * Pa
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">kilo</span> <span class="o">=</span> <span class="mf">1e3</span>
+<span class="n">milli</span> <span class="o">=</span> <span class="mf">1e-3</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">m</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">mm</span> <span class="o">=</span> <span class="n">milli</span> <span class="o">*</span> <span class="n">m</span>
+<span class="n">m2</span> <span class="o">=</span> <span class="n">m</span><span class="o">**</span><span class="mi">2</span>
+<span class="n">m3</span> <span class="o">=</span> <span class="n">m</span><span class="o">**</span><span class="mi">3</span>
+<span class="n">m4</span> <span class="o">=</span> <span class="n">m</span><span class="o">**</span><span class="mi">4</span>
+<span class="n">kN</span> <span class="o">=</span> <span class="n">kilo</span> <span class="o">*</span> <span class="n">N</span>
+<span class="n">Pa</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">MPa</span> <span class="o">=</span> <span class="n">N</span> <span class="o">/</span> <span class="n">mm</span><span class="o">**</span><span class="mi">2</span>
+<span class="n">GPa</span> <span class="o">=</span> <span class="n">kilo</span> <span class="o">*</span> <span class="n">MPa</span>
+<span class="n">kPa</span> <span class="o">=</span> <span class="n">kilo</span> <span class="o">*</span> <span class="n">Pa</span>
 </pre></div>
 </div>
 </div>
@@ -473,7 +473,7 @@ kPa = kilo * Pa
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>concrete = og.create_material(material=&quot;concrete&quot;, code=&quot;AS5100-2017&quot;, grade=&quot;65MPa&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">concrete</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_material</span><span class="p">(</span><span class="n">material</span><span class="o">=</span><span class="s2">&quot;concrete&quot;</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="s2">&quot;AS5100-2017&quot;</span><span class="p">,</span> <span class="n">grade</span><span class="o">=</span><span class="s2">&quot;65MPa&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -486,24 +486,24 @@ kPa = kilo * Pa
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>edge_longitudinal_section = og.create_section(
-    A=0.934 * m2, J=0.1857 * m3, Iz=0.3478 * m4,
-    Iy=0.213602 * m4, Az=0.444795 * m2, Ay=0.258704 * m2,
-)
-longitudinal_section = og.create_section(
-    A=1.025 * m2, J=0.1878 * m3, Iz=0.3694 * m4,
-    Iy=0.3634 * m4, Az=0.4979 * m2, Ay=0.309 * m2,
-)
-transverse_section = og.create_section(
-    A=0.504 * m2, J=5.22303e-3 * m3, Iy=0.32928 * m4,
-    Iz=1.3608e-3 * m4, Ay=0.42 * m2, Az=0.42 * m2,
-    unit_width=True,
-)
-end_transverse_section = og.create_section(
-    A=0.504 / 2 * m2, J=2.5e-3 * m3, Iy=2.73e-2 * m4,
-    Iz=6.8e-4 * m4, Ay=0.21 * m2, Az=0.21 * m2,
-    unit_width=True,
-)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">edge_longitudinal_section</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_section</span><span class="p">(</span>
+    <span class="n">A</span><span class="o">=</span><span class="mf">0.934</span> <span class="o">*</span> <span class="n">m2</span><span class="p">,</span> <span class="n">J</span><span class="o">=</span><span class="mf">0.1857</span> <span class="o">*</span> <span class="n">m3</span><span class="p">,</span> <span class="n">Iz</span><span class="o">=</span><span class="mf">0.3478</span> <span class="o">*</span> <span class="n">m4</span><span class="p">,</span>
+    <span class="n">Iy</span><span class="o">=</span><span class="mf">0.213602</span> <span class="o">*</span> <span class="n">m4</span><span class="p">,</span> <span class="n">Az</span><span class="o">=</span><span class="mf">0.444795</span> <span class="o">*</span> <span class="n">m2</span><span class="p">,</span> <span class="n">Ay</span><span class="o">=</span><span class="mf">0.258704</span> <span class="o">*</span> <span class="n">m2</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">longitudinal_section</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_section</span><span class="p">(</span>
+    <span class="n">A</span><span class="o">=</span><span class="mf">1.025</span> <span class="o">*</span> <span class="n">m2</span><span class="p">,</span> <span class="n">J</span><span class="o">=</span><span class="mf">0.1878</span> <span class="o">*</span> <span class="n">m3</span><span class="p">,</span> <span class="n">Iz</span><span class="o">=</span><span class="mf">0.3694</span> <span class="o">*</span> <span class="n">m4</span><span class="p">,</span>
+    <span class="n">Iy</span><span class="o">=</span><span class="mf">0.3634</span> <span class="o">*</span> <span class="n">m4</span><span class="p">,</span> <span class="n">Az</span><span class="o">=</span><span class="mf">0.4979</span> <span class="o">*</span> <span class="n">m2</span><span class="p">,</span> <span class="n">Ay</span><span class="o">=</span><span class="mf">0.309</span> <span class="o">*</span> <span class="n">m2</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">transverse_section</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_section</span><span class="p">(</span>
+    <span class="n">A</span><span class="o">=</span><span class="mf">0.504</span> <span class="o">*</span> <span class="n">m2</span><span class="p">,</span> <span class="n">J</span><span class="o">=</span><span class="mf">5.22303e-3</span> <span class="o">*</span> <span class="n">m3</span><span class="p">,</span> <span class="n">Iy</span><span class="o">=</span><span class="mf">0.32928</span> <span class="o">*</span> <span class="n">m4</span><span class="p">,</span>
+    <span class="n">Iz</span><span class="o">=</span><span class="mf">1.3608e-3</span> <span class="o">*</span> <span class="n">m4</span><span class="p">,</span> <span class="n">Ay</span><span class="o">=</span><span class="mf">0.42</span> <span class="o">*</span> <span class="n">m2</span><span class="p">,</span> <span class="n">Az</span><span class="o">=</span><span class="mf">0.42</span> <span class="o">*</span> <span class="n">m2</span><span class="p">,</span>
+    <span class="n">unit_width</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">end_transverse_section</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_section</span><span class="p">(</span>
+    <span class="n">A</span><span class="o">=</span><span class="mf">0.504</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">m2</span><span class="p">,</span> <span class="n">J</span><span class="o">=</span><span class="mf">2.5e-3</span> <span class="o">*</span> <span class="n">m3</span><span class="p">,</span> <span class="n">Iy</span><span class="o">=</span><span class="mf">2.73e-2</span> <span class="o">*</span> <span class="n">m4</span><span class="p">,</span>
+    <span class="n">Iz</span><span class="o">=</span><span class="mf">6.8e-4</span> <span class="o">*</span> <span class="n">m4</span><span class="p">,</span> <span class="n">Ay</span><span class="o">=</span><span class="mf">0.21</span> <span class="o">*</span> <span class="n">m2</span><span class="p">,</span> <span class="n">Az</span><span class="o">=</span><span class="mf">0.21</span> <span class="o">*</span> <span class="n">m2</span><span class="p">,</span>
+    <span class="n">unit_width</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -514,10 +514,10 @@ end_transverse_section = og.create_section(
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>longitudinal_beam = og.create_member(section=longitudinal_section, material=concrete)
-edge_longitudinal_beam = og.create_member(section=edge_longitudinal_section, material=concrete)
-transverse_slab = og.create_member(section=transverse_section, material=concrete)
-end_transverse_slab = og.create_member(section=end_transverse_section, material=concrete)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">longitudinal_beam</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_member</span><span class="p">(</span><span class="n">section</span><span class="o">=</span><span class="n">longitudinal_section</span><span class="p">,</span> <span class="n">material</span><span class="o">=</span><span class="n">concrete</span><span class="p">)</span>
+<span class="n">edge_longitudinal_beam</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_member</span><span class="p">(</span><span class="n">section</span><span class="o">=</span><span class="n">edge_longitudinal_section</span><span class="p">,</span> <span class="n">material</span><span class="o">=</span><span class="n">concrete</span><span class="p">)</span>
+<span class="n">transverse_slab</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_member</span><span class="p">(</span><span class="n">section</span><span class="o">=</span><span class="n">transverse_section</span><span class="p">,</span> <span class="n">material</span><span class="o">=</span><span class="n">concrete</span><span class="p">)</span>
+<span class="n">end_transverse_slab</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_member</span><span class="p">(</span><span class="n">section</span><span class="o">=</span><span class="n">end_transverse_section</span><span class="p">,</span> <span class="n">material</span><span class="o">=</span><span class="n">concrete</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -528,12 +528,12 @@ end_transverse_slab = og.create_member(section=end_transverse_section, material=
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>L = 33.5 * m
-w = 11.565 * m
-n_l = 7
-n_t = 11
-edge_dist = 1.05 * m
-angle = 0
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">L</span> <span class="o">=</span> <span class="mf">33.5</span> <span class="o">*</span> <span class="n">m</span>
+<span class="n">w</span> <span class="o">=</span> <span class="mf">11.565</span> <span class="o">*</span> <span class="n">m</span>
+<span class="n">n_l</span> <span class="o">=</span> <span class="mi">7</span>
+<span class="n">n_t</span> <span class="o">=</span> <span class="mi">11</span>
+<span class="n">edge_dist</span> <span class="o">=</span> <span class="mf">1.05</span> <span class="o">*</span> <span class="n">m</span>
+<span class="n">angle</span> <span class="o">=</span> <span class="mi">0</span>
 </pre></div>
 </div>
 </div>
@@ -541,12 +541,12 @@ angle = 0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model = og.create_grillage(
-    bridge_name=&quot;Super-T 33_5m&quot;,
-    long_dim=L, width=w, skew=angle,
-    num_long_grid=n_l, num_trans_grid=n_t,
-    edge_beam_dist=edge_dist,
-)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_grillage</span><span class="p">(</span>
+    <span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;Super-T 33_5m&quot;</span><span class="p">,</span>
+    <span class="n">long_dim</span><span class="o">=</span><span class="n">L</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">skew</span><span class="o">=</span><span class="n">angle</span><span class="p">,</span>
+    <span class="n">num_long_grid</span><span class="o">=</span><span class="n">n_l</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="n">n_t</span><span class="p">,</span>
+    <span class="n">edge_beam_dist</span><span class="o">=</span><span class="n">edge_dist</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -554,13 +554,13 @@ angle = 0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model.set_member(longitudinal_beam, member=&quot;interior_main_beam&quot;)
-model.set_member(longitudinal_beam, member=&quot;exterior_main_beam_1&quot;)
-model.set_member(longitudinal_beam, member=&quot;exterior_main_beam_2&quot;)
-model.set_member(edge_longitudinal_beam, member=&quot;edge_beam&quot;)
-model.set_member(transverse_slab, member=&quot;transverse_slab&quot;)
-model.set_member(end_transverse_slab, member=&quot;start_edge&quot;)
-model.set_member(end_transverse_slab, member=&quot;end_edge&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">set_member</span><span class="p">(</span><span class="n">longitudinal_beam</span><span class="p">,</span> <span class="n">member</span><span class="o">=</span><span class="s2">&quot;interior_main_beam&quot;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">set_member</span><span class="p">(</span><span class="n">longitudinal_beam</span><span class="p">,</span> <span class="n">member</span><span class="o">=</span><span class="s2">&quot;exterior_main_beam_1&quot;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">set_member</span><span class="p">(</span><span class="n">longitudinal_beam</span><span class="p">,</span> <span class="n">member</span><span class="o">=</span><span class="s2">&quot;exterior_main_beam_2&quot;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">set_member</span><span class="p">(</span><span class="n">edge_longitudinal_beam</span><span class="p">,</span> <span class="n">member</span><span class="o">=</span><span class="s2">&quot;edge_beam&quot;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">set_member</span><span class="p">(</span><span class="n">transverse_slab</span><span class="p">,</span> <span class="n">member</span><span class="o">=</span><span class="s2">&quot;transverse_slab&quot;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">set_member</span><span class="p">(</span><span class="n">end_transverse_slab</span><span class="p">,</span> <span class="n">member</span><span class="o">=</span><span class="s2">&quot;start_edge&quot;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">set_member</span><span class="p">(</span><span class="n">end_transverse_slab</span><span class="p">,</span> <span class="n">member</span><span class="o">=</span><span class="s2">&quot;end_edge&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -571,7 +571,7 @@ model.set_member(end_transverse_slab, member=&quot;end_edge&quot;)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model.create_osp_model(pyfile=False)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">create_osp_model</span><span class="p">(</span><span class="n">pyfile</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -579,7 +579,7 @@ model.set_member(end_transverse_slab, member=&quot;end_edge&quot;)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>og.plot_model(model, show_nodes=True, show_node_labels=True);
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">og</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">show_nodes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show_node_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -599,17 +599,17 @@ model.set_member(end_transverse_slab, member=&quot;end_edge&quot;)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Girder self-weight as line loads on each beam
-beam_mag = 22.4 * kN / m
-DL_self_weight = og.create_load_case(name=&quot;Super T self weight&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Girder self-weight as line loads on each beam</span>
+<span class="n">beam_mag</span> <span class="o">=</span> <span class="mf">22.4</span> <span class="o">*</span> <span class="n">kN</span> <span class="o">/</span> <span class="n">m</span>
+<span class="n">DL_self_weight</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_case</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Super T self weight&quot;</span><span class="p">)</span>
 
-for z_pos in model.Mesh_obj.noz[1:-1]:
-    p1 = og.create_load_vertex(x=0, z=z_pos, p=beam_mag)
-    p2 = og.create_load_vertex(x=L, z=z_pos, p=beam_mag)
-    beam_load = og.create_load(loadtype=&quot;line&quot;, point1=p1, point2=p2, name=&quot;girder SW&quot;)
-    DL_self_weight.add_load(beam_load)
+<span class="k">for</span> <span class="n">z_pos</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">Mesh_obj</span><span class="o">.</span><span class="n">noz</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+    <span class="n">p1</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z_pos</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">beam_mag</span><span class="p">)</span>
+    <span class="n">p2</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">L</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z_pos</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">beam_mag</span><span class="p">)</span>
+    <span class="n">beam_load</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load</span><span class="p">(</span><span class="n">loadtype</span><span class="o">=</span><span class="s2">&quot;line&quot;</span><span class="p">,</span> <span class="n">point1</span><span class="o">=</span><span class="n">p1</span><span class="p">,</span> <span class="n">point2</span><span class="o">=</span><span class="n">p2</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;girder SW&quot;</span><span class="p">)</span>
+    <span class="n">DL_self_weight</span><span class="o">.</span><span class="n">add_load</span><span class="p">(</span><span class="n">beam_load</span><span class="p">)</span>
 
-model.add_load_case(DL_self_weight)
+<span class="n">model</span><span class="o">.</span><span class="n">add_load_case</span><span class="p">(</span><span class="n">DL_self_weight</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -622,16 +622,16 @@ model.add_load_case(DL_self_weight)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>overlay_p_mag = 4.32 * kN / m2
-p1 = og.create_load_vertex(x=0, z=0, p=overlay_p_mag)
-p2 = og.create_load_vertex(x=L, z=0, p=overlay_p_mag)
-p3 = og.create_load_vertex(x=L, z=w, p=overlay_p_mag)
-p4 = og.create_load_vertex(x=0, z=w, p=overlay_p_mag)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">overlay_p_mag</span> <span class="o">=</span> <span class="mf">4.32</span> <span class="o">*</span> <span class="n">kN</span> <span class="o">/</span> <span class="n">m2</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">overlay_p_mag</span><span class="p">)</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">L</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">overlay_p_mag</span><span class="p">)</span>
+<span class="n">p3</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">L</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">overlay_p_mag</span><span class="p">)</span>
+<span class="n">p4</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">overlay_p_mag</span><span class="p">)</span>
 
-overlay_slab = og.create_load(loadtype=&quot;patch&quot;, name=&quot;overlay&quot;, point1=p1, point2=p2, point3=p3, point4=p4)
-DL_overlay = og.create_load_case(name=&quot;Overlay self weight&quot;)
-DL_overlay.add_load(overlay_slab)
-model.add_load_case(DL_overlay)
+<span class="n">overlay_slab</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load</span><span class="p">(</span><span class="n">loadtype</span><span class="o">=</span><span class="s2">&quot;patch&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;overlay&quot;</span><span class="p">,</span> <span class="n">point1</span><span class="o">=</span><span class="n">p1</span><span class="p">,</span> <span class="n">point2</span><span class="o">=</span><span class="n">p2</span><span class="p">,</span> <span class="n">point3</span><span class="o">=</span><span class="n">p3</span><span class="p">,</span> <span class="n">point4</span><span class="o">=</span><span class="n">p4</span><span class="p">)</span>
+<span class="n">DL_overlay</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_case</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Overlay self weight&quot;</span><span class="p">)</span>
+<span class="n">DL_overlay</span><span class="o">.</span><span class="n">add_load</span><span class="p">(</span><span class="n">overlay_slab</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add_load_case</span><span class="p">(</span><span class="n">DL_overlay</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -643,32 +643,32 @@ model.add_load_case(DL_overlay)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Asphalt surfacing
-asphalt_udl = 1.43 * kN / m2
-p1 = og.create_load_vertex(x=0, z=0, p=asphalt_udl)
-p2 = og.create_load_vertex(x=L, z=0, p=asphalt_udl)
-p3 = og.create_load_vertex(x=L, z=w, p=asphalt_udl)
-p4 = og.create_load_vertex(x=0, z=w, p=asphalt_udl)
-asphalt_surfacing = og.create_load(loadtype=&quot;patch&quot;, name=&quot;asphalt surfacing&quot;, point1=p1, point2=p2, point3=p3, point4=p4)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Asphalt surfacing</span>
+<span class="n">asphalt_udl</span> <span class="o">=</span> <span class="mf">1.43</span> <span class="o">*</span> <span class="n">kN</span> <span class="o">/</span> <span class="n">m2</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">asphalt_udl</span><span class="p">)</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">L</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">asphalt_udl</span><span class="p">)</span>
+<span class="n">p3</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">L</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">asphalt_udl</span><span class="p">)</span>
+<span class="n">p4</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">asphalt_udl</span><span class="p">)</span>
+<span class="n">asphalt_surfacing</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load</span><span class="p">(</span><span class="n">loadtype</span><span class="o">=</span><span class="s2">&quot;patch&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;asphalt surfacing&quot;</span><span class="p">,</span> <span class="n">point1</span><span class="o">=</span><span class="n">p1</span><span class="p">,</span> <span class="n">point2</span><span class="o">=</span><span class="n">p2</span><span class="p">,</span> <span class="n">point3</span><span class="o">=</span><span class="n">p3</span><span class="p">,</span> <span class="n">point4</span><span class="o">=</span><span class="n">p4</span><span class="p">)</span>
 
-# Edge barriers
-barrier_udl = 6.54 * kN / m
-left_barrier = og.create_load(
-    loadtype=&quot;line&quot;, name=&quot;left barrier&quot;,
-    point1=og.create_load_vertex(x=0, z=0, p=barrier_udl),
-    point2=og.create_load_vertex(x=L, z=0, p=barrier_udl),
-)
-right_barrier = og.create_load(
-    loadtype=&quot;line&quot;, name=&quot;right barrier&quot;,
-    point1=og.create_load_vertex(x=0, z=w, p=barrier_udl),
-    point2=og.create_load_vertex(x=L, z=w, p=barrier_udl),
-)
+<span class="c1"># Edge barriers</span>
+<span class="n">barrier_udl</span> <span class="o">=</span> <span class="mf">6.54</span> <span class="o">*</span> <span class="n">kN</span> <span class="o">/</span> <span class="n">m</span>
+<span class="n">left_barrier</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load</span><span class="p">(</span>
+    <span class="n">loadtype</span><span class="o">=</span><span class="s2">&quot;line&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;left barrier&quot;</span><span class="p">,</span>
+    <span class="n">point1</span><span class="o">=</span><span class="n">og</span><span class="o">.</span><span class="n">create_load_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">barrier_udl</span><span class="p">),</span>
+    <span class="n">point2</span><span class="o">=</span><span class="n">og</span><span class="o">.</span><span class="n">create_load_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">L</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">barrier_udl</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">right_barrier</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load</span><span class="p">(</span>
+    <span class="n">loadtype</span><span class="o">=</span><span class="s2">&quot;line&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;right barrier&quot;</span><span class="p">,</span>
+    <span class="n">point1</span><span class="o">=</span><span class="n">og</span><span class="o">.</span><span class="n">create_load_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">barrier_udl</span><span class="p">),</span>
+    <span class="n">point2</span><span class="o">=</span><span class="n">og</span><span class="o">.</span><span class="n">create_load_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">L</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">barrier_udl</span><span class="p">),</span>
+<span class="p">)</span>
 
-SIDL = og.create_load_case(name=&quot;SIDL&quot;)
-SIDL.add_load(asphalt_surfacing)
-SIDL.add_load(left_barrier)
-SIDL.add_load(right_barrier)
-model.add_load_case(SIDL)
+<span class="n">SIDL</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_case</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;SIDL&quot;</span><span class="p">)</span>
+<span class="n">SIDL</span><span class="o">.</span><span class="n">add_load</span><span class="p">(</span><span class="n">asphalt_surfacing</span><span class="p">)</span>
+<span class="n">SIDL</span><span class="o">.</span><span class="n">add_load</span><span class="p">(</span><span class="n">left_barrier</span><span class="p">)</span>
+<span class="n">SIDL</span><span class="o">.</span><span class="n">add_load</span><span class="p">(</span><span class="n">right_barrier</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add_load_case</span><span class="p">(</span><span class="n">SIDL</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -683,19 +683,19 @@ model.add_load_case(SIDL)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># M1600 parameters
-udl_line_load = 6 * kN / m
-udl_width = 3.2 * m
-udl_mag = udl_line_load / udl_width
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># M1600 parameters</span>
+<span class="n">udl_line_load</span> <span class="o">=</span> <span class="mi">6</span> <span class="o">*</span> <span class="n">kN</span> <span class="o">/</span> <span class="n">m</span>
+<span class="n">udl_width</span> <span class="o">=</span> <span class="mf">3.2</span> <span class="o">*</span> <span class="n">m</span>
+<span class="n">udl_mag</span> <span class="o">=</span> <span class="n">udl_line_load</span> <span class="o">/</span> <span class="n">udl_width</span>
 
-# Lane positions
-n_design_lanes = 3
-x_coord = [0, 0, 0]
-z_coord = [w / 2, w / 2 - 3.2 * m, w / 2 + 3.2 * m]
+<span class="c1"># Lane positions</span>
+<span class="n">n_design_lanes</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">x_coord</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">z_coord</span> <span class="o">=</span> <span class="p">[</span><span class="n">w</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">w</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="mf">3.2</span> <span class="o">*</span> <span class="n">m</span><span class="p">,</span> <span class="n">w</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="mf">3.2</span> <span class="o">*</span> <span class="n">m</span><span class="p">]</span>
 
-# Lane factors (AS5100)
-alf = [1.0, 0.8, 0.4]
-dla = 1.3  # dynamic load allowance
+<span class="c1"># Lane factors (AS5100)</span>
+<span class="n">alf</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">]</span>
+<span class="n">dla</span> <span class="o">=</span> <span class="mf">1.3</span>  <span class="c1"># dynamic load allowance</span>
 </pre></div>
 </div>
 </div>
@@ -706,33 +706,33 @@ dla = 1.3  # dynamic load allowance
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>gap = 6.25 * m
-m1600_L1_lc = og.create_load_case(name=&quot;M1600 L1&quot;)
-m1600_L2_lc = og.create_load_case(name=&quot;M1600 L2&quot;)
-m1600_L3_lc = og.create_load_case(name=&quot;M1600 L3&quot;)
-m1600_lc_list = [m1600_L1_lc, m1600_L2_lc, m1600_L3_lc]
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gap</span> <span class="o">=</span> <span class="mf">6.25</span> <span class="o">*</span> <span class="n">m</span>
+<span class="n">m1600_L1_lc</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_case</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;M1600 L1&quot;</span><span class="p">)</span>
+<span class="n">m1600_L2_lc</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_case</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;M1600 L2&quot;</span><span class="p">)</span>
+<span class="n">m1600_L3_lc</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_case</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;M1600 L3&quot;</span><span class="p">)</span>
+<span class="n">m1600_lc_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">m1600_L1_lc</span><span class="p">,</span> <span class="n">m1600_L2_lc</span><span class="p">,</span> <span class="n">m1600_L3_lc</span><span class="p">]</span>
 
-M1600_moving_loads = []
+<span class="n">M1600_moving_loads</span> <span class="o">=</span> <span class="p">[]</span>
 
-for i in range(3):
-    # Create vehicle from built-in M1600 generator
-    M1600_vehicle_generator = og.create_load_model(model_type=&quot;M1600&quot;, gap=gap)
-    M1600_vehicle_n = M1600_vehicle_generator.create()
-    M1600_vehicle_n.set_global_coord(og.Point(x_coord[i], 0, z_coord[i]))
-    m1600_lc_list[i].add_load(M1600_vehicle_n, load_factor=alf[i])
-    M1600_moving_loads.append(M1600_vehicle_n)
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+    <span class="c1"># Create vehicle from built-in M1600 generator</span>
+    <span class="n">M1600_vehicle_generator</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_model</span><span class="p">(</span><span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;M1600&quot;</span><span class="p">,</span> <span class="n">gap</span><span class="o">=</span><span class="n">gap</span><span class="p">)</span>
+    <span class="n">M1600_vehicle_n</span> <span class="o">=</span> <span class="n">M1600_vehicle_generator</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+    <span class="n">M1600_vehicle_n</span><span class="o">.</span><span class="n">set_global_coord</span><span class="p">(</span><span class="n">og</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="n">x_coord</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">z_coord</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+    <span class="n">m1600_lc_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">add_load</span><span class="p">(</span><span class="n">M1600_vehicle_n</span><span class="p">,</span> <span class="n">load_factor</span><span class="o">=</span><span class="n">alf</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="n">M1600_moving_loads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">M1600_vehicle_n</span><span class="p">)</span>
 
-    # UDL patch for this lane
-    vertex_1 = og.create_load_vertex(x=-L, z=z_coord[i] - udl_width / 2, p=udl_mag)
-    vertex_2 = og.create_load_vertex(x=2 * L, z=z_coord[i] - udl_width / 2, p=udl_mag)
-    vertex_3 = og.create_load_vertex(x=2 * L, z=z_coord[i] + udl_width / 2, p=udl_mag)
-    vertex_4 = og.create_load_vertex(x=-L, z=z_coord[i] + udl_width / 2, p=udl_mag)
-    M1600_udl = og.create_load(
-        loadtype=&quot;patch&quot;, name=&quot;M1600 Lane UDL&quot;,
-        point1=vertex_1, point2=vertex_2, point3=vertex_3, point4=vertex_4,
-    )
-    m1600_lc_list[i].add_load(M1600_udl, load_factor=alf[i])
-    model.add_load_case(m1600_lc_list[i], load_factor=dla)
+    <span class="c1"># UDL patch for this lane</span>
+    <span class="n">vertex_1</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=-</span><span class="n">L</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z_coord</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">udl_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">udl_mag</span><span class="p">)</span>
+    <span class="n">vertex_2</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="n">L</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z_coord</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">udl_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">udl_mag</span><span class="p">)</span>
+    <span class="n">vertex_3</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="n">L</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z_coord</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">udl_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">udl_mag</span><span class="p">)</span>
+    <span class="n">vertex_4</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=-</span><span class="n">L</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z_coord</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">udl_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">udl_mag</span><span class="p">)</span>
+    <span class="n">M1600_udl</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load</span><span class="p">(</span>
+        <span class="n">loadtype</span><span class="o">=</span><span class="s2">&quot;patch&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;M1600 Lane UDL&quot;</span><span class="p">,</span>
+        <span class="n">point1</span><span class="o">=</span><span class="n">vertex_1</span><span class="p">,</span> <span class="n">point2</span><span class="o">=</span><span class="n">vertex_2</span><span class="p">,</span> <span class="n">point3</span><span class="o">=</span><span class="n">vertex_3</span><span class="p">,</span> <span class="n">point4</span><span class="o">=</span><span class="n">vertex_4</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">m1600_lc_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">add_load</span><span class="p">(</span><span class="n">M1600_udl</span><span class="p">,</span> <span class="n">load_factor</span><span class="o">=</span><span class="n">alf</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add_load_case</span><span class="p">(</span><span class="n">m1600_lc_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">load_factor</span><span class="o">=</span><span class="n">dla</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -745,18 +745,18 @@ for i in range(3):
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>start = og.create_point(x=-25, y=0, z=0)
-end = og.Point(L, 0, 0)
-m1600_path = og.create_moving_path(start_point=start, end_point=end)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">start</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_point</span><span class="p">(</span><span class="n">x</span><span class="o">=-</span><span class="mi">25</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">end</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">m1600_path</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_moving_path</span><span class="p">(</span><span class="n">start_point</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_point</span><span class="o">=</span><span class="n">end</span><span class="p">)</span>
 
-moving_load_list = []
-for i in range(3):
-    name = f&quot;Moving M1600 L{i+1}&quot;
-    moving_m1600 = og.create_moving_load(name=name)
-    moving_m1600.set_path(m1600_path)
-    moving_m1600.add_load(M1600_moving_loads[i])
-    model.add_load_case(moving_m1600)
-    moving_load_list.append(moving_m1600)
+<span class="n">moving_load_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Moving M1600 L</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">moving_m1600</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_moving_load</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">moving_m1600</span><span class="o">.</span><span class="n">set_path</span><span class="p">(</span><span class="n">m1600_path</span><span class="p">)</span>
+    <span class="n">moving_m1600</span><span class="o">.</span><span class="n">add_load</span><span class="p">(</span><span class="n">M1600_moving_loads</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add_load_case</span><span class="p">(</span><span class="n">moving_m1600</span><span class="p">)</span>
+    <span class="n">moving_load_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">moving_m1600</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -767,7 +767,7 @@ for i in range(3):
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model.analyze()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">analyze</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -779,8 +779,8 @@ for i in range(3):
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>results = model.get_results()
-results
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_results</span><span class="p">()</span>
+<span class="n">results</span>
 </pre></div>
 </div>
 </div>
@@ -1718,12 +1718,12 @@ Data variables:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Extract elements and nodes for exterior beam (Beam 1)
-member_name = &quot;exterior_main_beam_1&quot;
-ext_beam_elements = model.get_element(member=member_name, options=&quot;elements&quot;)
-ext_beam_nodes = model.get_element(member=member_name, options=&quot;nodes&quot;)
-print(f&quot;Beam 1 elements: {ext_beam_elements}&quot;)
-print(f&quot;Beam 1 nodes: {ext_beam_nodes[0]}&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract elements and nodes for exterior beam (Beam 1)</span>
+<span class="n">member_name</span> <span class="o">=</span> <span class="s2">&quot;exterior_main_beam_1&quot;</span>
+<span class="n">ext_beam_elements</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_element</span><span class="p">(</span><span class="n">member</span><span class="o">=</span><span class="n">member_name</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="s2">&quot;elements&quot;</span><span class="p">)</span>
+<span class="n">ext_beam_nodes</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_element</span><span class="p">(</span><span class="n">member</span><span class="o">=</span><span class="n">member_name</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="s2">&quot;nodes&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Beam 1 elements: </span><span class="si">{</span><span class="n">ext_beam_elements</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Beam 1 nodes: </span><span class="si">{</span><span class="n">ext_beam_nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1743,7 +1743,7 @@ Beam 1 nodes: [2, 16, 23, 30, 37, 44, 51, 58, 65, 72, 9]
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>og.plot_bmd(model, results, members=og.Members.LONGITUDINAL, loadcase=&quot;M1600 L1&quot;, backend=&quot;plotly&quot;, figsize=(14, 8));
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">og</span><span class="o">.</span><span class="n">plot_bmd</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">members</span><span class="o">=</span><span class="n">og</span><span class="o">.</span><span class="n">Members</span><span class="o">.</span><span class="n">LONGITUDINAL</span><span class="p">,</span> <span class="n">loadcase</span><span class="o">=</span><span class="s2">&quot;M1600 L1&quot;</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;plotly&quot;</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">8</span><span class="p">));</span>
 </pre></div>
 </div>
 </div>
@@ -1758,7 +1758,7 @@ Beam 1 nodes: [2, 16, 23, 30, 37, 44, 51, 58, 65, 72, 9]
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>og.plot_sfd(model, results, members=og.Members.LONGITUDINAL, loadcase=&quot;M1600 L1&quot;, backend=&quot;plotly&quot;, figsize=(14, 8));
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">og</span><span class="o">.</span><span class="n">plot_sfd</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">members</span><span class="o">=</span><span class="n">og</span><span class="o">.</span><span class="n">Members</span><span class="o">.</span><span class="n">LONGITUDINAL</span><span class="p">,</span> <span class="n">loadcase</span><span class="o">=</span><span class="s2">&quot;M1600 L1&quot;</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;plotly&quot;</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">8</span><span class="p">));</span>
 </pre></div>
 </div>
 </div>
@@ -1773,7 +1773,7 @@ Beam 1 nodes: [2, 16, 23, 30, 37, 44, 51, 58, 65, 72, 9]
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>og.plot_tmd(model, results, loadcase=&quot;M1600 L1&quot;, backend=&quot;plotly&quot;, figsize=(14, 8));
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">og</span><span class="o">.</span><span class="n">plot_tmd</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">loadcase</span><span class="o">=</span><span class="s2">&quot;M1600 L1&quot;</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;plotly&quot;</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">8</span><span class="p">));</span>
 </pre></div>
 </div>
 </div>
@@ -1788,7 +1788,7 @@ Beam 1 nodes: [2, 16, 23, 30, 37, 44, 51, 58, 65, 72, 9]
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>og.plot_def(model, results, loadcase=&quot;M1600 L1&quot;, backend=&quot;plotly&quot;, figsize=(14, 8));
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">og</span><span class="o">.</span><span class="n">plot_def</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">loadcase</span><span class="o">=</span><span class="s2">&quot;M1600 L1&quot;</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;plotly&quot;</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">8</span><span class="p">));</span>
 </pre></div>
 </div>
 </div>
@@ -1808,21 +1808,21 @@ Beam 1 nodes: [2, 16, 23, 30, 37, 44, 51, 58, 65, 72, 9]
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>DL_factor = 1.0
-LL_factor = 1.0
-SIDL_factor = 1.3
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DL_factor</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">LL_factor</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">SIDL_factor</span> <span class="o">=</span> <span class="mf">1.3</span>
 
-load_combinations = {
-    &quot;Super T self weight&quot;: DL_factor,
-    &quot;M1600 L1&quot;: LL_factor,
-    &quot;M1600 L2&quot;: LL_factor,
-    &quot;M1600 L3&quot;: LL_factor,
-    &quot;SIDL&quot;: SIDL_factor,
-    &quot;Overlay self weight&quot;: DL_factor,
-}
+<span class="n">load_combinations</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;Super T self weight&quot;</span><span class="p">:</span> <span class="n">DL_factor</span><span class="p">,</span>
+    <span class="s2">&quot;M1600 L1&quot;</span><span class="p">:</span> <span class="n">LL_factor</span><span class="p">,</span>
+    <span class="s2">&quot;M1600 L2&quot;</span><span class="p">:</span> <span class="n">LL_factor</span><span class="p">,</span>
+    <span class="s2">&quot;M1600 L3&quot;</span><span class="p">:</span> <span class="n">LL_factor</span><span class="p">,</span>
+    <span class="s2">&quot;SIDL&quot;</span><span class="p">:</span> <span class="n">SIDL_factor</span><span class="p">,</span>
+    <span class="s2">&quot;Overlay self weight&quot;</span><span class="p">:</span> <span class="n">DL_factor</span><span class="p">,</span>
+<span class="p">}</span>
 
-combination_results = model.get_results(combinations=load_combinations)
-combination_results
+<span class="n">combination_results</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_results</span><span class="p">(</span><span class="n">combinations</span><span class="o">=</span><span class="n">load_combinations</span><span class="p">)</span>
+<span class="n">combination_results</span>
 </pre></div>
 </div>
 </div>
@@ -2475,8 +2475,8 @@ Data variables:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>comb_bending = combination_results.forces.sel(Component=&quot;Mz_i&quot;, Element=ext_beam_elements)
-print(f&quot;Load combination max BM = {max(comb_bending.values / 1000):.2f} kN m&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">comb_bending</span> <span class="o">=</span> <span class="n">combination_results</span><span class="o">.</span><span class="n">forces</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">Component</span><span class="o">=</span><span class="s2">&quot;Mz_i&quot;</span><span class="p">,</span> <span class="n">Element</span><span class="o">=</span><span class="n">ext_beam_elements</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Load combination max BM = </span><span class="si">{</span><span class="nb">max</span><span class="p">(</span><span class="n">comb_bending</span><span class="o">.</span><span class="n">values</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1000</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> kN m&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
