@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Releases &#8212; ospgrillage 0.4.1 documentation</title>
+    <title>Releases &#8212; ospgrillage 0.5.0 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=c87aa342"></script>
+    <script src="../_static/documentation_options.js?v=1dd76d02"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -49,7 +49,7 @@
     <link rel="prev" title="Troubleshooting" href="troubleshooting.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.4.1" />
+  <meta name="docsearch:version" content="0.5.0" />
   </head>
   
   
@@ -115,8 +115,8 @@
       
     
     
-    <img src="../_static/ospgrillage_logo.png" class="logo__image only-light" alt="ospgrillage 0.4.1 documentation - Home"/>
-    <img src="../_static/ospgrillage_logo.png" class="logo__image only-dark pst-js-only" alt="ospgrillage 0.4.1 documentation - Home"/>
+    <img src="../_static/ospgrillage_logo.png" class="logo__image only-light" alt="ospgrillage 0.5.0 documentation - Home"/>
+    <img src="../_static/ospgrillage_logo.png" class="logo__image only-dark pst-js-only" alt="ospgrillage 0.5.0 documentation - Home"/>
   
   
 </a></div>
@@ -411,6 +411,53 @@
   <section id="releases">
 <h1>Releases<a class="headerlink" href="#releases" title="Link to this heading">#</a></h1>
 <p>Here is the summary change log for <em>ospgrillage</em>. Full details of commit logs can be found in the <a class="reference external" href="https://github.com/MonashSmartStructures/ospgrillage/commits/main">commit history</a>. The complete machine-readable changelog is maintained in <a class="reference external" href="https://github.com/MonashSmartStructures/ospgrillage/blob/main/CHANGELOG.md">CHANGELOG.md</a> at the repository root.</p>
+<section id="version-0-5-0-march-2026">
+<h2>Version 0.5.0 (March 2026)<a class="headerlink" href="#version-0-5-0-march-2026" title="Link to this heading">#</a></h2>
+<p>A usability-focused release: every result the model produces can now be
+visualised in one or two lines of code, the public API is cleaner and more
+consistent, and the documentation has been substantially rewritten.</p>
+<p><strong>Plotting — new functions and interactive backend</strong></p>
+<ul class="simple">
+<li><p>New convenience functions <code class="docutils literal notranslate"><span class="pre">plot_bmd()</span></code>, <code class="docutils literal notranslate"><span class="pre">plot_sfd()</span></code>, <code class="docutils literal notranslate"><span class="pre">plot_tmd()</span></code>, and <code class="docutils literal notranslate"><span class="pre">plot_def()</span></code> wrap <code class="docutils literal notranslate"><span class="pre">plot_force()</span></code> with the correct component pre-selected.</p></li>
+<li><p>All plotting functions accept <code class="docutils literal notranslate"><span class="pre">backend=&quot;plotly&quot;</span></code> for interactive 3-D force and deflection diagrams with rotation, zoom, and hover. Diagrams are rendered alongside the grillage mesh for immediate spatial context. Install with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">ospgrillage[gui]</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">plot_model()</span></code> visualises the grillage mesh geometry (<code class="docutils literal notranslate"><span class="pre">backend=&quot;matplotlib&quot;</span></code> for a 2-D plan view, <code class="docutils literal notranslate"><span class="pre">backend=&quot;plotly&quot;</span></code> for interactive 3-D). Replaces <code class="docutils literal notranslate"><span class="pre">og.opsv.plot_model()</span></code> / <code class="docutils literal notranslate"><span class="pre">og.opsplt.plot_model()</span></code>.</p></li>
+<li><p>Common keyword arguments across all plot functions: <code class="docutils literal notranslate"><span class="pre">figsize</span></code>, <code class="docutils literal notranslate"><span class="pre">ax</span></code> (existing matplotlib Axes), <code class="docutils literal notranslate"><span class="pre">scale</span></code>, <code class="docutils literal notranslate"><span class="pre">title</span></code>, <code class="docutils literal notranslate"><span class="pre">color</span></code>, <code class="docutils literal notranslate"><span class="pre">fill</span></code>, <code class="docutils literal notranslate"><span class="pre">alpha</span></code>, and <code class="docutils literal notranslate"><span class="pre">show</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Members</span></code> bitflag enum for filtering which member groups appear in a plot — combine with <code class="docutils literal notranslate"><span class="pre">|</span></code>, e.g. <code class="docutils literal notranslate"><span class="pre">Members.EDGE_BEAM</span> <span class="pre">|</span> <span class="pre">Members.INTERIOR_MAIN_BEAM</span></code>, or use the pre-defined composites <code class="docutils literal notranslate"><span class="pre">Members.LONGITUDINAL</span></code>, <code class="docutils literal notranslate"><span class="pre">Members.TRANSVERSE</span></code>, <code class="docutils literal notranslate"><span class="pre">Members.ALL</span></code>.</p></li>
+<li><p>Plotly 3-D plots render supports, rigid links, shell quad elements, and transverse/edge beams alongside the longitudinal members.</p></li>
+</ul>
+<p><strong>API improvements</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">load_obj</span></code> → <code class="docutils literal notranslate"><span class="pre">load</span></code> and <code class="docutils literal notranslate"><span class="pre">load_case_obj</span></code> → <code class="docutils literal notranslate"><span class="pre">load_case</span></code> in <code class="docutils literal notranslate"><span class="pre">CompoundLoad.add_load()</span></code>, <code class="docutils literal notranslate"><span class="pre">LoadCase.add_load()</span></code>, <code class="docutils literal notranslate"><span class="pre">MovingLoad.add_load()</span></code>, and <code class="docutils literal notranslate"><span class="pre">OspGrillage.add_load_case()</span></code>. The change is positional-compatible; only code using the old keyword names needs updating.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LoadVertex</span></code> namedtuple replaces <code class="docutils literal notranslate"><span class="pre">LoadPoint</span></code> as the preferred name for load coordinate+magnitude tuples. <code class="docutils literal notranslate"><span class="pre">LoadPoint</span></code> is kept as a backwards-compatible alias.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">beam_z_spacing</span></code> renamed to <code class="docutils literal notranslate"><span class="pre">beam_spacing</span></code> with a <code class="docutils literal notranslate"><span class="pre">DeprecationWarning</span></code> (old name still accepted).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Section(offset_y=…)</span></code> — users can now supply centroidal section properties and let ospgrillage apply the parallel axis theorem automatically (<code class="docutils literal notranslate"><span class="pre">I_offset</span> <span class="pre">=</span> <span class="pre">I_centroid</span> <span class="pre">+</span> <span class="pre">A</span> <span class="pre">*</span> <span class="pre">d²</span></code>). No more hand-calculating transferred second moments of area when the beam centroid is offset from the grillage model plane.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Section(E=…)</span></code> / <code class="docutils literal notranslate"><span class="pre">Section(G=…)</span></code> now raise <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> (elastic moduli belong on <code class="docutils literal notranslate"><span class="pre">Material</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">get_results(load_case=…)</span></code> accepts a name or list of names to retrieve only specific load cases — avoids compiling every moving-load increment.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">plot_deflection</span></code> renamed to <code class="docutils literal notranslate"><span class="pre">plot_def</span></code> (consistent with <code class="docutils literal notranslate"><span class="pre">plot_bmd</span></code> / <code class="docutils literal notranslate"><span class="pre">plot_sfd</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Mesh.orthogonal</span></code> attribute added (previously raised <code class="docutils literal notranslate"><span class="pre">AttributeError</span></code> on oblique meshes).</p></li>
+<li><p>Edge transverse elements (start/end edges on oblique meshes) are now correctly assigned to their own member groups.</p></li>
+</ul>
+<p><strong>Dependencies</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">vfo</span></code> is no longer a required dependency. Use <code class="docutils literal notranslate"><span class="pre">og.plot_model()</span></code> instead of <code class="docutils literal notranslate"><span class="pre">og.opsplt.plot_model()</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">og.opsv</span></code> and <code class="docutils literal notranslate"><span class="pre">og.opsplt</span></code> re-exports now emit <code class="docutils literal notranslate"><span class="pre">DeprecationWarning</span></code>.</p></li>
+<li><p>Generated pyfiles no longer import <code class="docutils literal notranslate"><span class="pre">vfo</span></code>.</p></li>
+</ul>
+<p><strong>GUI</strong></p>
+<ul class="simple">
+<li><p>Code generation updated: uses <code class="docutils literal notranslate"><span class="pre">og.plot_model()</span></code> instead of <code class="docutils literal notranslate"><span class="pre">og.opsv.plot_model()</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ext_to_int_dist</span></code> spinner replaced with a <code class="docutils literal notranslate"><span class="pre">beam_spacing</span></code> text input for full control over transverse member layout.</p></li>
+<li><p>Fixed <code class="docutils literal notranslate"><span class="pre">set_member()</span></code> code generation (member names were unquoted).</p></li>
+</ul>
+<p><strong>Documentation</strong></p>
+<ul class="simple">
+<li><p>Super-T bridge tutorial rewritten as a step-by-step walkthrough; advanced results split into a separate notebook.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">performing_analysis.md</span></code> split into <code class="docutils literal notranslate"><span class="pre">defining_loads.md</span></code>; “Running analysis” merged into <code class="docutils literal notranslate"><span class="pre">getting_results.md</span></code> (“Analysis and results”).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">get_results()</span></code> docstring now recommends the <code class="docutils literal notranslate"><span class="pre">load_case=</span></code> parameter for models with moving loads.</p></li>
+<li><p>15+ content fixes: removed non-existent <code class="docutils literal notranslate"><span class="pre">set_material()</span></code>, corrected <code class="docutils literal notranslate"><span class="pre">link_nodes_width</span></code> → <code class="docutils literal notranslate"><span class="pre">beam_width</span></code>, <code class="docutils literal notranslate"><span class="pre">NodalForce</span></code> → <code class="docutils literal notranslate"><span class="pre">NodeForces</span></code>, <code class="docutils literal notranslate"><span class="pre">type=</span></code> → <code class="docutils literal notranslate"><span class="pre">loadtype=</span></code>, duplicate member assignments, Sphinx cross-references throughout, missing API methods added.</p></li>
+<li><p>Removed stale <code class="docutils literal notranslate"><span class="pre">html_static_path</span></code> / <code class="docutils literal notranslate"><span class="pre">html_theme_path</span></code> from <code class="docutils literal notranslate"><span class="pre">conf.py</span></code>.</p></li>
+</ul>
+</section>
 <section id="version-0-4-1-march-2026">
 <h2>Version 0.4.1 (March 2026)<a class="headerlink" href="#version-0-4-1-march-2026" title="Link to this heading">#</a></h2>
 <p><strong>Code changes</strong></p>
@@ -543,6 +590,7 @@
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-5-0-march-2026">Version 0.5.0 (March 2026)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-4-1-march-2026">Version 0.4.1 (March 2026)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-4-0-aug-2024">Version 0.4.0 (Aug 2024)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-3-2-oct-2023">Version 0.3.2 (Oct 2023)</a></li>

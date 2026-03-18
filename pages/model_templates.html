@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Model types available &#8212; ospgrillage 0.4.1 documentation</title>
+    <title>Model types available &#8212; ospgrillage 0.5.0 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=c87aa342"></script>
+    <script src="../_static/documentation_options.js?v=1dd76d02"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -49,7 +49,7 @@
     <link rel="prev" title="User Guide" href="user_guide.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.4.1" />
+  <meta name="docsearch:version" content="0.5.0" />
   </head>
   
   
@@ -115,8 +115,8 @@
       
     
     
-    <img src="../_static/ospgrillage_logo.png" class="logo__image only-light" alt="ospgrillage 0.4.1 documentation - Home"/>
-    <img src="../_static/ospgrillage_logo.png" class="logo__image only-dark pst-js-only" alt="ospgrillage 0.4.1 documentation - Home"/>
+    <img src="../_static/ospgrillage_logo.png" class="logo__image only-light" alt="ospgrillage 0.5.0 documentation - Home"/>
+    <img src="../_static/ospgrillage_logo.png" class="logo__image only-dark pst-js-only" alt="ospgrillage 0.5.0 documentation - Home"/>
   
   
 </a></div>
@@ -349,13 +349,14 @@
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/curve_mesh.html">Curve Mesh</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1"><a class="reference internal" href="performing_analysis.html">Performing analysis</a></li>
-<li class="toctree-l1"><a class="reference internal" href="getting_results.html">Getting Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="defining_loads.html">Defining loads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_results.html">Analysis and results</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="examples.html">Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/super_t_analysis_workflow.html">Standard workflow template - Super-T girder bridge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/super_t_tutorial.html">Super-T Bridge Grillage Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/mesh_showcase.html">Mesh features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/multi_span.html">Multi - span feature</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/curve_mesh.html">Curve Mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/advanced_results.html">Advanced Results Processing</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="ospgui.html">GUI — ospgui</a></li>
@@ -446,7 +447,7 @@
 <tr class="row-even"><td><p><strong>Shell &amp; Beam</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">&quot;shell_beam&quot;</span></code></p></td>
 <td><p>Studies where two-dimensional slab behaviour is important (punching, local bending); highest fidelity but most computationally expensive.</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">max_mesh_size_z</span></code>, <code class="docutils literal notranslate"><span class="pre">offset_beam_y_dist</span></code>, <code class="docutils literal notranslate"><span class="pre">link_nodes_width</span></code>; shell member must be assigned via <code class="docutils literal notranslate"><span class="pre">set_shell_members()</span></code>.</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">max_mesh_size_z</span></code>, <code class="docutils literal notranslate"><span class="pre">offset_beam_y_dist</span></code>, <code class="docutils literal notranslate"><span class="pre">beam_width</span></code>; shell member must be assigned via <code class="docutils literal notranslate"><span class="pre">set_shell_members()</span></code>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -464,7 +465,7 @@
 <li><p>longitudinal members representing composite sections along longitudinal direction (e.g. main beams);</p></li>
 <li><p>transverse members representing slabs or secondary beam sections.</p></li>
 </ul>
-<p>This is the default model type if <code class="docutils literal notranslate"><span class="pre">model_type</span></code> keyword argument is not specified to <a class="reference internal" href="generated/ospgrillage.osp_grillage.create_grillage.html#ospgrillage.osp_grillage.create_grillage" title="ospgrillage.osp_grillage.create_grillage"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_grillage()</span></code></a></p>
+<p>This is the default model type when the <code class="docutils literal notranslate"><span class="pre">model_type</span></code> keyword argument is not specified in <a class="reference internal" href="generated/ospgrillage.osp_grillage.create_grillage.html#ospgrillage.osp_grillage.create_grillage" title="ospgrillage.osp_grillage.create_grillage"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_grillage()</span></code></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_bridge</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_grillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;Super T grillage&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">skew</span><span class="o">=-</span><span class="mi">42</span><span class="p">,</span>
                                 <span class="n">num_long_grid</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">edge_beam_dist</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mesh_type</span><span class="o">=</span><span class="s2">&quot;Ortho&quot;</span><span class="p">)</span>
 </pre></div>
@@ -512,7 +513,7 @@
 <p><em>Table 1: Input arguments for the beam link model.</em></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>As of release 0.1.0, <code class="docutils literal notranslate"><span class="pre">OpenSeesPy</span></code> visualization module <code class="docutils literal notranslate"><span class="pre">vfo</span></code> and <code class="docutils literal notranslate"><span class="pre">opsvis</span></code> is unable to visualize the joint offsets.</p>
+<p>As of release 0.1.0, joint offsets are not shown in <code class="docutils literal notranslate"><span class="pre">og.plot_model()</span></code> visualisations.</p>
 </div>
 </section>
 <section id="shell-beam-elements-shell-beam">
@@ -525,7 +526,7 @@
 </ul>
 <p>This model has advantages in modelling slabs using shell elements which are well-suited to represent two-dimensional slab behaviour. Figure 4 shows the details and variables of the shell beam hybrid model.</p>
 <p><img alt="Figure 4: Shell beam hybrid model idealization" src="../_images/shell_beam_idealization.PNG" /></p>
-<p>When <code class="docutils literal notranslate"><span class="pre">model_type=&quot;shell_beam&quot;</span></code> is selected, <em>ospgrillage</em> automatically determines the position of shell elements within the grillage plane. Users only have to define and assign the section of the shell element via <a class="reference internal" href="generated/ospgrillage.members.create_section.html#ospgrillage.members.create_section" title="ospgrillage.members.create_section"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_section()</span></code></a> and <code class="xref py py-func docutils literal notranslate"><span class="pre">set_shell_member()</span></code> respectively. The following example code shows the steps to create the shell model type:</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">model_type=&quot;shell_beam&quot;</span></code> is selected, <em>ospgrillage</em> automatically determines the position of shell elements within the grillage plane. Users only need to define and assign the section of the shell element via <a class="reference internal" href="generated/ospgrillage.members.create_section.html#ospgrillage.members.create_section" title="ospgrillage.members.create_section"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_section()</span></code></a> and <code class="docutils literal notranslate"><span class="pre">set_shell_members()</span></code> respectively. The following example shows the steps to create the shell model type:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># create section of shell element</span>
 <span class="n">slab_shell_section</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_section</span><span class="p">(</span><span class="n">h</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span> <span class="c1"># h = thickness</span>
 <span class="c1"># shell elements for slab</span>
@@ -534,7 +535,7 @@
 <span class="n">example_bridge</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_grillage</span><span class="p">(</span><span class="n">bridge_name</span><span class="o">=</span><span class="s2">&quot;Shell grillage&quot;</span><span class="p">,</span> <span class="n">long_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">skew</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                                     <span class="n">num_long_grid</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">num_trans_grid</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">edge_beam_dist</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mesh_type</span><span class="o">=</span><span class="s2">&quot;Orth&quot;</span><span class="p">,</span>
                                     <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;shell_beam&quot;</span><span class="p">,</span> <span class="n">max_mesh_size_z</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">offset_beam_y_dist</span><span class="o">=</span><span class="mf">0.499</span><span class="p">,</span>
-                                    <span class="n">link_nodes_width</span><span class="o">=</span><span class="mf">0.89</span><span class="p">)</span>
+                                    <span class="n">beam_width</span><span class="o">=</span><span class="mf">0.89</span><span class="p">)</span>
 <span class="c1"># set shell members to shell elements</span>
 <span class="n">example_bridge</span><span class="o">.</span><span class="n">set_shell_members</span><span class="p">(</span><span class="n">slab_shell</span><span class="p">)</span>
 </pre></div>

@@ -25,6 +25,9 @@ OspGrillage methods
    ~ospgrillage.osp_grillage.OspGrillage.get_nodes
    ~ospgrillage.osp_grillage.OspGrillage.get_element
    ~ospgrillage.osp_grillage.OspGrillage.clear_load_cases
+   ~ospgrillage.osp_grillage.OspGrillage.set_spring_support
+   ~ospgrillage.osp_grillage.OspGrillage.set_previous_state
+   ~ospgrillage.osp_grillage.OspGrillage.store_state
 
 Class reference
 ---------------

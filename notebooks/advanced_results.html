@@ -1,0 +1,1047 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Advanced Results Processing &#8212; ospgrillage 0.5.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=1dd76d02"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/advanced_results';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="GUI — ospgui" href="../pages/ospgui.html" />
+    <link rel="prev" title="Super-T Bridge Grillage Analysis" href="super_t_tutorial.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.5.0" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/ospgrillage_logo.png" class="logo__image only-light" alt="ospgrillage 0.5.0 documentation - Home"/>
+    <img src="../_static/ospgrillage_logo.png" class="logo__image only-dark pst-js-only" alt="ospgrillage 0.5.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../pages/getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../pages/user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../pages/api_reference.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../pages/additional_resources.html">
+    Additional Resources
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MonashSmartStructures/ospgrillage" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../pages/getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../pages/user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../pages/api_reference.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../pages/additional_resources.html">
+    Additional Resources
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MonashSmartStructures/ospgrillage" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../pages/model_templates.html">Model types available</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../pages/mesh_features.html">Mesh features</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="mesh_showcase.html">Mesh features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_span.html">Multi - span feature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="curve_mesh.html">Curve Mesh</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../pages/defining_loads.html">Defining loads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pages/getting_results.html">Analysis and results</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../pages/examples.html">Examples</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="super_t_tutorial.html">Super-T Bridge Grillage Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mesh_showcase.html">Mesh features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_span.html">Multi - span feature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="curve_mesh.html">Curve Mesh</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Advanced Results Processing</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../pages/ospgui.html">GUI — ospgui</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../pages/user_guide.html" class="nav-link">User Guide</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../pages/examples.html" class="nav-link">Examples</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Advanced Results Processing</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="Advanced-Results-Processing">
+<h1>Advanced Results Processing<a class="headerlink" href="#Advanced-Results-Processing" title="Link to this heading">#</a></h1>
+<p>This notebook demonstrates advanced techniques for extracting and processing ospgrillage results using <a class="reference external" href="http://xarray.pydata.org/en/stable/">xarray</a>. It builds on the <a class="reference internal" href="super_t_tutorial.html"><span class="doc">Super-T Tutorial</span></a>.</p>
+<section id="Setup">
+<h2>Setup<a class="headerlink" href="#Setup" title="Link to this heading">#</a></h2>
+<p>We first recreate the Super-T bridge model from the tutorial. See that notebook for detailed explanations.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import ospgrillage as og
+import numpy as np
+
+# Units
+kilo, milli, N, m = 1e3, 1e-3, 1, 1
+mm = milli * m
+m2, m3, m4 = m**2, m**3, m**4
+kN = kilo * N
+MPa = N / mm**2
+GPa = kilo * MPa
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>concrete = og.create_material(material=&quot;concrete&quot;, code=&quot;AS5100-2017&quot;, grade=&quot;65MPa&quot;)
+
+longitudinal_section = og.create_section(A=1.025*m2, J=0.1878*m3, Iz=0.3694*m4, Iy=0.3634*m4, Az=0.4979*m2, Ay=0.309*m2)
+edge_longitudinal_section = og.create_section(A=0.934*m2, J=0.1857*m3, Iz=0.3478*m4, Iy=0.213602*m4, Az=0.444795*m2, Ay=0.258704*m2)
+transverse_section = og.create_section(A=0.504*m2, J=5.22303e-3*m3, Iy=0.32928*m4, Iz=1.3608e-3*m4, Ay=0.42*m2, Az=0.42*m2, unit_width=True)
+end_transverse_section = og.create_section(A=0.504/2*m2, J=2.5e-3*m3, Iy=2.73e-2*m4, Iz=6.8e-4*m4, Ay=0.21*m2, Az=0.21*m2, unit_width=True)
+
+longitudinal_beam = og.create_member(section=longitudinal_section, material=concrete)
+edge_longitudinal_beam = og.create_member(section=edge_longitudinal_section, material=concrete)
+transverse_slab = og.create_member(section=transverse_section, material=concrete)
+end_transverse_slab = og.create_member(section=end_transverse_section, material=concrete)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>L = 33.5 * m
+w = 11.565 * m
+
+model = og.create_grillage(
+    bridge_name=&quot;Super-T 33_5m&quot;, long_dim=L, width=w, skew=0,
+    num_long_grid=7, num_trans_grid=11, edge_beam_dist=1.05 * m,
+)
+model.set_member(longitudinal_beam, member=&quot;interior_main_beam&quot;)
+model.set_member(longitudinal_beam, member=&quot;exterior_main_beam_1&quot;)
+model.set_member(longitudinal_beam, member=&quot;exterior_main_beam_2&quot;)
+model.set_member(edge_longitudinal_beam, member=&quot;edge_beam&quot;)
+model.set_member(transverse_slab, member=&quot;transverse_slab&quot;)
+model.set_member(end_transverse_slab, member=&quot;start_edge&quot;)
+model.set_member(end_transverse_slab, member=&quot;end_edge&quot;)
+model.create_osp_model(pyfile=False)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Dead loads
+beam_mag = 22.4 * kN / m
+DL_self_weight = og.create_load_case(name=&quot;Super T self weight&quot;)
+for z_pos in model.Mesh_obj.noz[1:-1]:
+    p1 = og.create_load_vertex(x=0, z=z_pos, p=beam_mag)
+    p2 = og.create_load_vertex(x=L, z=z_pos, p=beam_mag)
+    DL_self_weight.add_load(og.create_load(loadtype=&quot;line&quot;, point1=p1, point2=p2, name=&quot;SW&quot;))
+model.add_load_case(DL_self_weight)
+
+# Overlay slab
+overlay = og.create_load(loadtype=&quot;patch&quot;, name=&quot;overlay&quot;,
+    point1=og.create_load_vertex(x=0, z=0, p=4.32*kN/m2),
+    point2=og.create_load_vertex(x=L, z=0, p=4.32*kN/m2),
+    point3=og.create_load_vertex(x=L, z=w, p=4.32*kN/m2),
+    point4=og.create_load_vertex(x=0, z=w, p=4.32*kN/m2))
+DL_overlay = og.create_load_case(name=&quot;Overlay self weight&quot;)
+DL_overlay.add_load(overlay)
+model.add_load_case(DL_overlay)
+
+# SIDL
+asphalt = og.create_load(loadtype=&quot;patch&quot;, name=&quot;asphalt&quot;,
+    point1=og.create_load_vertex(x=0, z=0, p=1.43*kN/m2),
+    point2=og.create_load_vertex(x=L, z=0, p=1.43*kN/m2),
+    point3=og.create_load_vertex(x=L, z=w, p=1.43*kN/m2),
+    point4=og.create_load_vertex(x=0, z=w, p=1.43*kN/m2))
+left_barrier = og.create_load(loadtype=&quot;line&quot;, name=&quot;left barrier&quot;,
+    point1=og.create_load_vertex(x=0, z=0, p=6.54*kN/m),
+    point2=og.create_load_vertex(x=L, z=0, p=6.54*kN/m))
+right_barrier = og.create_load(loadtype=&quot;line&quot;, name=&quot;right barrier&quot;,
+    point1=og.create_load_vertex(x=0, z=w, p=6.54*kN/m),
+    point2=og.create_load_vertex(x=L, z=w, p=6.54*kN/m))
+SIDL = og.create_load_case(name=&quot;SIDL&quot;)
+SIDL.add_load(asphalt)
+SIDL.add_load(left_barrier)
+SIDL.add_load(right_barrier)
+model.add_load_case(SIDL)
+
+# M1600 traffic
+gap = 6.25 * m
+z_coord = [w/2, w/2 - 3.2*m, w/2 + 3.2*m]
+alf = [1.0, 0.8, 0.4]
+dla = 1.3
+udl_width = 3.2 * m
+udl_mag = 6*kN/m / udl_width
+
+m1600_lc_list = [og.create_load_case(name=f&quot;M1600 L{i+1}&quot;) for i in range(3)]
+M1600_moving_loads = []
+for i in range(3):
+    vehicle = og.create_load_model(model_type=&quot;M1600&quot;, gap=gap).create()
+    vehicle.set_global_coord(og.Point(0, 0, z_coord[i]))
+    m1600_lc_list[i].add_load(vehicle, load_factor=alf[i])
+    M1600_moving_loads.append(vehicle)
+    udl = og.create_load(loadtype=&quot;patch&quot;, name=&quot;UDL&quot;,
+        point1=og.create_load_vertex(x=-L, z=z_coord[i]-udl_width/2, p=udl_mag),
+        point2=og.create_load_vertex(x=2*L, z=z_coord[i]-udl_width/2, p=udl_mag),
+        point3=og.create_load_vertex(x=2*L, z=z_coord[i]+udl_width/2, p=udl_mag),
+        point4=og.create_load_vertex(x=-L, z=z_coord[i]+udl_width/2, p=udl_mag))
+    m1600_lc_list[i].add_load(udl, load_factor=alf[i])
+    model.add_load_case(m1600_lc_list[i], load_factor=dla)
+
+# Moving loads
+path = og.create_moving_path(
+    start_point=og.create_point(x=-25, y=0, z=0),
+    end_point=og.Point(L, 0, 0))
+for i in range(3):
+    ml = og.create_moving_load(name=f&quot;Moving M1600 L{i+1}&quot;)
+    ml.set_path(path)
+    ml.add_load(M1600_moving_loads[i])
+    model.add_load_case(ml)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model.analyze()
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Understanding-the-Results-Dataset">
+<h2>Understanding the Results Dataset<a class="headerlink" href="#Understanding-the-Results-Dataset" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">get_results()</span></code> method returns an xarray <code class="docutils literal notranslate"><span class="pre">Dataset</span></code> containing multiple <code class="docutils literal notranslate"><span class="pre">DataArray</span></code> objects. Each DataArray is indexed along named dimensions.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Retrieve static load case results only (fast).
+# Moving load results have hundreds of increments — we fetch those
+# separately in the Envelopes section below.
+static_load_cases = [&quot;Super T self weight&quot;, &quot;Overlay self weight&quot;, &quot;SIDL&quot;,
+                     &quot;M1600 L1&quot;, &quot;M1600 L2&quot;, &quot;M1600 L3&quot;]
+results = model.get_results(load_case=static_load_cases)
+results
+</pre></div>
+</div>
+</div>
+<p>The Dataset contains several DataArrays, each indexed along named dimensions:</p>
+<ul class="simple">
+<li><p><strong>``displacements``</strong> — <code class="docutils literal notranslate"><span class="pre">(Loadcase,</span> <span class="pre">Node,</span> <span class="pre">Component)</span></code> with translations (<code class="docutils literal notranslate"><span class="pre">x,</span> <span class="pre">y,</span> <span class="pre">z</span></code>), rotations (<code class="docutils literal notranslate"><span class="pre">theta_x,</span> <span class="pre">…</span></code>), velocities (<code class="docutils literal notranslate"><span class="pre">dx,</span> <span class="pre">dy,</span> <span class="pre">dz</span></code>), and accelerations (<code class="docutils literal notranslate"><span class="pre">ddx,</span> <span class="pre">…</span></code>)</p></li>
+<li><p><strong>``forces``</strong> — <code class="docutils literal notranslate"><span class="pre">(Loadcase,</span> <span class="pre">Element,</span> <span class="pre">Component)</span></code> with i-end and j-end forces (<code class="docutils literal notranslate"><span class="pre">Vx_i,</span> <span class="pre">Vy_i,</span> <span class="pre">…,</span> <span class="pre">Mz_j</span></code>)</p></li>
+<li><p><strong>``ele_nodes``</strong> — maps each Element tag to its <code class="docutils literal notranslate"><span class="pre">i</span></code> and <code class="docutils literal notranslate"><span class="pre">j</span></code> node tags</p></li>
+</ul>
+<p>Above we retrieved only the six static load cases. Moving loads generate hundreds of incremental positions — we’ll fetch those later with <code class="docutils literal notranslate"><span class="pre">load_case=&quot;Moving</span> <span class="pre">M1600</span> <span class="pre">L2&quot;</span></code> when we need them for envelopes.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Summarise the static load cases in the results
+loadcases = list(results.coords[&quot;Loadcase&quot;].values)
+print(f&quot;Static load cases ({len(loadcases)}):&quot;)
+for lc in loadcases:
+    print(f&quot;  - {lc}&quot;)
+
+# Show the available component names (cast to plain str for tidy output)
+disp_comps = [str(c) for c in results.displacements.coords[&quot;Component&quot;].values]
+force_comps = [str(c) for c in results.forces.coords[&quot;Component&quot;].values]
+
+# Displacement: translation + rotation + velocity + acceleration
+translations = [c for c in disp_comps if c in (&quot;x&quot;, &quot;y&quot;, &quot;z&quot;)]
+rotations    = [c for c in disp_comps if c.startswith(&quot;theta&quot;)]
+print(f&quot;\nDisplacement components ({len(disp_comps)} total):&quot;)
+print(f&quot;  Translations: {translations}&quot;)
+print(f&quot;  Rotations:    {rotations}&quot;)
+
+# Forces: i-end and j-end
+force_i = [c for c in force_comps if c.endswith(&quot;_i&quot;)]
+force_j = [c for c in force_comps if c.endswith(&quot;_j&quot;)]
+print(f&quot;\nForce components ({len(force_comps)} total):&quot;)
+print(f&quot;  i-end: {force_i}&quot;)
+print(f&quot;  j-end: {force_j}&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Access a specific DataArray
+displacements = results.displacements
+forces = results.forces
+print(f&quot;Displacements shape: {displacements.shape}&quot;)
+print(f&quot;Forces shape: {forces.shape}&quot;)
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Selecting-Results-with-.sel()">
+<h2>Selecting Results with <code class="docutils literal notranslate"><span class="pre">.sel()</span></code><a class="headerlink" href="#Selecting-Results-with-.sel()" title="Link to this heading">#</a></h2>
+<p>xarray’s <code class="docutils literal notranslate"><span class="pre">.sel()</span></code> method is the primary way to extract specific results. You can select along any dimension.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Select vertical displacement for a specific load case
+dy_sw = results.displacements.sel(Loadcase=&quot;Super T self weight&quot;, Component=&quot;y&quot;)
+print(f&quot;Self-weight deflections (first 5 nodes): {dy_sw.values[:5]}&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Select bending moment for specific elements
+member_name = &quot;exterior_main_beam_1&quot;
+ext_beam_elements = model.get_element(member=member_name, options=&quot;elements&quot;)
+ext_beam_nodes = model.get_element(member=member_name, options=&quot;nodes&quot;)
+
+mz = results.forces.sel(Loadcase=&quot;M1600 L1&quot;, Component=&quot;Mz_i&quot;, Element=ext_beam_elements)
+print(f&quot;M1600 L1 bending moments on Beam 1 (kNm):\n{mz.values / 1000}&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Select multiple load cases at once
+multi_lc = results.forces.sel(
+    Loadcase=[&quot;M1600 L1&quot;, &quot;M1600 L2&quot;, &quot;M1600 L3&quot;],
+    Component=&quot;Mz_i&quot;,
+    Element=ext_beam_elements,
+)
+print(f&quot;Shape: {multi_lc.shape}  (3 load cases x {len(ext_beam_elements)} elements)&quot;)
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Moving-Load-Results">
+<h2>Moving Load Results<a class="headerlink" href="#Moving-Load-Results" title="Link to this heading">#</a></h2>
+<p>Moving load analyses generate one load case per incremental position. Use the <code class="docutils literal notranslate"><span class="pre">load_case</span></code> keyword to retrieve a specific moving load — this avoids fetching the entire (large) dataset.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Moving load results for Lane 2
+moving_results = model.get_results(load_case=&quot;Moving M1600 L2&quot;)
+print(f&quot;Moving M1600 L2 has {len(moving_results.coords[&#39;Loadcase&#39;])} incremental positions&quot;)
+
+# Peek at first and last increment names
+lc_names = list(moving_results.coords[&quot;Loadcase&quot;].values)
+print(f&quot;  First: {lc_names[0]}&quot;)
+print(f&quot;  Last:  {lc_names[-1]}&quot;)
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Load-Combinations">
+<h2>Load Combinations<a class="headerlink" href="#Load-Combinations" title="Link to this heading">#</a></h2>
+<p>Pass a dictionary of <code class="docutils literal notranslate"><span class="pre">{load_case_name:</span> <span class="pre">factor}</span></code> to compute factored combinations on the fly.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>combination = {
+    &quot;Super T self weight&quot;: 1.0,
+    &quot;M1600 L1&quot;: 1.0,
+    &quot;M1600 L2&quot;: 1.0,
+    &quot;M1600 L3&quot;: 1.0,
+    &quot;SIDL&quot;: 1.3,
+    &quot;Overlay self weight&quot;: 1.0,
+}
+comb_results = model.get_results(combinations=combination)
+comb_results
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Extract maximum combined bending moment
+comb_mz = comb_results.forces.sel(Component=&quot;Mz_i&quot;, Element=ext_beam_elements)
+print(f&quot;Max combined BM on Beam 1 = {max(comb_mz.values / 1000):.2f} kN m&quot;)
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Envelopes">
+<h2>Envelopes<a class="headerlink" href="#Envelopes" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">create_envelope()</span></code> function finds the maximum (or minimum) response across all load cases for each element. This is essential for design — it tells you the worst-case response regardless of which load case caused it.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Envelope of static load cases
+envelope = og.create_envelope(ds=results, load_effect=&quot;Mz_i&quot;, array=&quot;forces&quot;)
+bending_env = envelope.get()
+bending_env
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Envelope of moving load positions
+moving_envelope = og.create_envelope(ds=moving_results, load_effect=&quot;Mz_i&quot;, array=&quot;forces&quot;)
+moving_env = moving_envelope.get()
+moving_env.sel(Element=ext_beam_elements, Component=&quot;Mz_i&quot;)
+</pre></div>
+</div>
+</div>
+<section id="Query-Mode-—-Which-Load-Case-Governs?">
+<h3>Query Mode — Which Load Case Governs?<a class="headerlink" href="#Query-Mode-—-Which-Load-Case-Governs?" title="Link to this heading">#</a></h3>
+<p>Set <code class="docutils literal notranslate"><span class="pre">query_mode=True</span></code> to find out which load case produced the maximum at each element. The result is a DataArray whose values are load case <strong>name strings</strong> — one per element — telling you which position governs.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>query_envelope = og.create_envelope(
+    ds=moving_results, load_effect=&quot;Mz_i&quot;, array=&quot;forces&quot;, query_mode=True
+)
+query_env = query_envelope.get()
+
+# Which moving load position gives max BM on each element of Beam 1?
+governing = query_env.sel(Element=ext_beam_elements, Component=&quot;Mz_i&quot;)
+print(&quot;Governing load case per element:&quot;)
+for elem, lc_name in zip(governing.Element.values, governing.values):
+    print(f&quot;  Element {elem}: {lc_name}&quot;)
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="Custom-Post-Processing">
+<h2>Custom Post-Processing<a class="headerlink" href="#Custom-Post-Processing" title="Link to this heading">#</a></h2>
+<p>Extract numpy arrays for custom calculations.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Support nodes sit on the bridge edges (edge_node_recorder maps node tag -&gt; edge group)
+support_nodes = list(model.Mesh_obj.edge_node_recorder.keys())
+print(f&quot;Support node tags ({len(support_nodes)}): {support_nodes}&quot;)
+
+# Vertical displacement at supports under self-weight (should be near zero)
+dy_supports = results.displacements.sel(
+    Loadcase=&quot;Super T self weight&quot;, Component=&quot;y&quot;, Node=support_nodes
+)
+print(f&quot;Support deflections: {dy_supports.values}&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Compare maximum bending across all beams
+for member in [&quot;exterior_main_beam_1&quot;, &quot;interior_main_beam&quot;, &quot;exterior_main_beam_2&quot;]:
+    elements = model.get_element(member=member, options=&quot;elements&quot;)
+    mz = results.forces.sel(Loadcase=&quot;M1600 L1&quot;, Component=&quot;Mz_i&quot;, Element=elements)
+    print(f&quot;{member}: max Mz = {max(mz.values) / 1000:.1f} kN m&quot;)
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Filtering-Member-Groups-in-Plots">
+<h2>Filtering Member Groups in Plots<a class="headerlink" href="#Filtering-Member-Groups-in-Plots" title="Link to this heading">#</a></h2>
+<p>The convenience plotting functions (<code class="docutils literal notranslate"><span class="pre">plot_bmd</span></code>, <code class="docutils literal notranslate"><span class="pre">plot_sfd</span></code>, <code class="docutils literal notranslate"><span class="pre">plot_def</span></code>) accept a <code class="docutils literal notranslate"><span class="pre">member</span></code> parameter that controls which member groups are plotted. You can pass:</p>
+<ul class="simple">
+<li><p>A <strong>string</strong> — a single member name (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;interior_main_beam&quot;</span></code>)</p></li>
+<li><p>An <code class="docutils literal notranslate"><span class="pre">og.Members</span></code> <strong>bitflag</strong> — one or more groups combined with <code class="docutils literal notranslate"><span class="pre">|</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code> (default) — all members for plotly, longitudinal only for matplotlib</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">og.Members</span></code> enum provides individual flags for each member type and pre-defined composites for common selections:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Available flags
+print(&quot;Individual flags:&quot;)
+for flag in og.Members:
+    print(f&quot;  og.Members.{flag.name}&quot;)
+
+print(&quot;\nComposites:&quot;)
+print(f&quot;  og.Members.LONGITUDINAL = {og.Members.LONGITUDINAL}&quot;)
+print(f&quot;  og.Members.TRANSVERSE   = {og.Members.TRANSVERSE}&quot;)
+print(f&quot;  og.Members.ALL          = {og.Members.ALL}&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Plot BMD for longitudinal members only
+og.plot_bmd(model, results, members=og.Members.LONGITUDINAL,
+            loadcase=&quot;M1600 L1&quot;, backend=&quot;plotly&quot;, figsize=(14, 8));
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Combine individual flags to plot just edge beam and interior main beam
+og.plot_sfd(model, results,
+            members=og.Members.EDGE_BEAM | og.Members.INTERIOR_MAIN_BEAM,
+            loadcase=&quot;M1600 L1&quot;, backend=&quot;plotly&quot;, figsize=(14, 8));
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Plot deflection for transverse members only
+og.plot_def(model, results,
+            loadcase=&quot;M1600 L1&quot;, backend=&quot;plotly&quot;, figsize=(14, 8));
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Summary">
+<h2>Summary<a class="headerlink" href="#Summary" title="Link to this heading">#</a></h2>
+<p>Key techniques covered:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Technique</p></th>
+<th class="head"><p>Method</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Get static results</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">model.get_results(load_case=[...])</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Get moving results</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">model.get_results(load_case=&quot;Moving</span> <span class="pre">M1600</span> <span class="pre">L2&quot;)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Select specific results</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">results.forces.sel(Loadcase=...,</span> <span class="pre">Component=...,</span> <span class="pre">Element=...)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Load combinations</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">model.get_results(combinations={...})</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Envelopes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">og.create_envelope(ds=...,</span> <span class="pre">load_effect=...,</span> <span class="pre">array=...)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Query governing case</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">og.create_envelope(...,</span> <span class="pre">query_mode=True)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Extract numpy arrays</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">.values</span></code> on any DataArray</p></td>
+</tr>
+<tr class="row-odd"><td><p>Filter member groups</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">og.plot_bmd(...,</span> <span class="pre">members=og.Members.LONGITUDINAL)</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="super_t_tutorial.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Super-T Bridge Grillage Analysis</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../pages/ospgui.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">GUI — ospgui</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Setup">Setup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Understanding-the-Results-Dataset">Understanding the Results Dataset</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Selecting-Results-with-.sel()">Selecting Results with <code class="docutils literal notranslate"><span class="pre">.sel()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Moving-Load-Results">Moving Load Results</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Load-Combinations">Load Combinations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Envelopes">Envelopes</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Query-Mode-—-Which-Load-Case-Governs?">Query Mode — Which Load Case Governs?</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Custom-Post-Processing">Custom Post-Processing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Filtering-Member-Groups-in-Plots">Filtering Member Groups in Plots</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Summary">Summary</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/notebooks/advanced_results.ipynb">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2023, Justin Ngan, Colin Caprani.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

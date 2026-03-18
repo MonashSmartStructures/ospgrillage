@@ -2,6 +2,53 @@
 
 Here is the summary change log for *ospgrillage*. Full details of commit logs can be found in the [commit history](https://github.com/MonashSmartStructures/ospgrillage/commits/main). The complete machine-readable changelog is maintained in [CHANGELOG.md](https://github.com/MonashSmartStructures/ospgrillage/blob/main/CHANGELOG.md) at the repository root.
 
+## Version 0.5.0 (March 2026)
+
+A usability-focused release: every result the model produces can now be
+visualised in one or two lines of code, the public API is cleaner and more
+consistent, and the documentation has been substantially rewritten.
+
+**Plotting — new functions and interactive backend**
+
+-   New convenience functions `plot_bmd()`, `plot_sfd()`, `plot_tmd()`, and `plot_def()` wrap `plot_force()` with the correct component pre-selected.
+-   All plotting functions accept `backend="plotly"` for interactive 3-D force and deflection diagrams with rotation, zoom, and hover. Diagrams are rendered alongside the grillage mesh for immediate spatial context. Install with `pip install ospgrillage[gui]`.
+-   `plot_model()` visualises the grillage mesh geometry (`backend="matplotlib"` for a 2-D plan view, `backend="plotly"` for interactive 3-D). Replaces `og.opsv.plot_model()` / `og.opsplt.plot_model()`.
+-   Common keyword arguments across all plot functions: `figsize`, `ax` (existing matplotlib Axes), `scale`, `title`, `color`, `fill`, `alpha`, and `show`.
+-   `Members` bitflag enum for filtering which member groups appear in a plot — combine with `|`, e.g. `Members.EDGE_BEAM | Members.INTERIOR_MAIN_BEAM`, or use the pre-defined composites `Members.LONGITUDINAL`, `Members.TRANSVERSE`, `Members.ALL`.
+-   Plotly 3-D plots render supports, rigid links, shell quad elements, and transverse/edge beams alongside the longitudinal members.
+
+**API improvements**
+
+-   `load_obj` → `load` and `load_case_obj` → `load_case` in `CompoundLoad.add_load()`, `LoadCase.add_load()`, `MovingLoad.add_load()`, and `OspGrillage.add_load_case()`. The change is positional-compatible; only code using the old keyword names needs updating.
+-   `LoadVertex` namedtuple replaces `LoadPoint` as the preferred name for load coordinate+magnitude tuples. `LoadPoint` is kept as a backwards-compatible alias.
+-   `beam_z_spacing` renamed to `beam_spacing` with a `DeprecationWarning` (old name still accepted).
+-   `Section(offset_y=…)` — users can now supply centroidal section properties and let ospgrillage apply the parallel axis theorem automatically (``I_offset = I_centroid + A * d²``). No more hand-calculating transferred second moments of area when the beam centroid is offset from the grillage model plane.
+-   `Section(E=…)` / `Section(G=…)` now raise `ValueError` (elastic moduli belong on `Material`).
+-   `get_results(load_case=…)` accepts a name or list of names to retrieve only specific load cases — avoids compiling every moving-load increment.
+-   `plot_deflection` renamed to `plot_def` (consistent with `plot_bmd` / `plot_sfd`).
+-   `Mesh.orthogonal` attribute added (previously raised `AttributeError` on oblique meshes).
+-   Edge transverse elements (start/end edges on oblique meshes) are now correctly assigned to their own member groups.
+
+**Dependencies**
+
+-   `vfo` is no longer a required dependency. Use `og.plot_model()` instead of `og.opsplt.plot_model()`.
+-   `og.opsv` and `og.opsplt` re-exports now emit `DeprecationWarning`.
+-   Generated pyfiles no longer import `vfo`.
+
+**GUI**
+
+-   Code generation updated: uses `og.plot_model()` instead of `og.opsv.plot_model()`.
+-   `ext_to_int_dist` spinner replaced with a `beam_spacing` text input for full control over transverse member layout.
+-   Fixed `set_member()` code generation (member names were unquoted).
+
+**Documentation**
+
+-   Super-T bridge tutorial rewritten as a step-by-step walkthrough; advanced results split into a separate notebook.
+-   `performing_analysis.md` split into `defining_loads.md`; "Running analysis" merged into `getting_results.md` ("Analysis and results").
+-   `get_results()` docstring now recommends the `load_case=` parameter for models with moving loads.
+-   15+ content fixes: removed non-existent `set_material()`, corrected `link_nodes_width` → `beam_width`, `NodalForce` → `NodeForces`, `type=` → `loadtype=`, duplicate member assignments, Sphinx cross-references throughout, missing API methods added.
+-   Removed stale `html_static_path` / `html_theme_path` from `conf.py`.
+
 ## Version 0.4.1 (March 2026)
 
 **Code changes**

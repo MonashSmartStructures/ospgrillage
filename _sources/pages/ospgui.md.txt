@@ -34,7 +34,7 @@ The window is divided into three panels:
   (provided by `BridgeInputWidget`).
 - **Centre** — a live code view showing the generated *ospgrillage* Python source,
   updated as parameters change.
-- **Right** — a 3-D mesh preview rendered via *vfo*.
+- **Right** — a mesh preview rendered via ``og.plot_model()``.
 
 ## API reference
 

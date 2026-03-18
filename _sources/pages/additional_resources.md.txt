@@ -1,5 +1,7 @@
 # Additional Resources
 
+Design notes, contribution guidelines, troubleshooting tips, and external references.
+
 ```{toctree}
 :maxdepth: 1
 

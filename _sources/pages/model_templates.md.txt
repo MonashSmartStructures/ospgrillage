@@ -8,7 +8,7 @@ The table below summarises the three available model types and the situations ea
 |---|---|---|---|
 | **Beam only** | *(default)* `"beam_only"` | Routine bridge deck grillage analysis; fastest to set up and run; well understood by practitioners. | None beyond the standard arguments. |
 | **Beam with rigid links** | `"beam_link"` | Composite sections where the neutral axes of longitudinal and transverse members are offset from the grillage plane (e.g. Super-T girders). | `beam_width`, `web_thick`, `centroid_dist_y` |
-| **Shell & Beam** | `"shell_beam"` | Studies where two-dimensional slab behaviour is important (punching, local bending); highest fidelity but most computationally expensive. | `max_mesh_size_z`, `offset_beam_y_dist`, `link_nodes_width`; shell member must be assigned via `set_shell_members()`. |
+| **Shell & Beam** | `"shell_beam"` | Studies where two-dimensional slab behaviour is important (punching, local bending); highest fidelity but most computationally expensive. | `max_mesh_size_z`, `offset_beam_y_dist`, `beam_width`; shell member must be assigned via `set_shell_members()`. |
 
 **Rule of thumb:** start with *Beam only* to verify boundary conditions and loading, then switch to *Beam with rigid links* or *Shell & Beam* once the global model is validated.
 
@@ -25,7 +25,7 @@ This is the traditional modelling approach that is comprised of beam elements la
 -   longitudinal members representing composite sections along longitudinal direction (e.g. main beams);
 -   transverse members representing slabs or secondary beam sections.
 
-This is the default model type if `model_type` keyword argument is not specified to {func}`~ospgrillage.osp_grillage.create_grillage`
+This is the default model type when the `model_type` keyword argument is not specified in {func}`~ospgrillage.osp_grillage.create_grillage`.
 
 ```python
 example_bridge = og.create_grillage(bridge_name="Super T grillage", long_dim=10, width=7, skew=-42,
@@ -69,7 +69,7 @@ Table 1 outlines the specific variables for the beam link model.
 *Table 1: Input arguments for the beam link model.*
 
 ```{note}
-As of release 0.1.0, `OpenSeesPy` visualization module `vfo` and `opsvis` is unable to visualize the joint offsets.
+As of release 0.1.0, joint offsets are not shown in ``og.plot_model()`` visualisations.
 ```
 
 (shell-hybrid-model)=
@@ -85,7 +85,7 @@ This model has advantages in modelling slabs using shell elements which are well
 
 ![Figure 4: Shell beam hybrid model idealization](../images/shell_beam_idealization.PNG)
 
-When `model_type="shell_beam"` is selected, *ospgrillage* automatically determines the position of shell elements within the grillage plane. Users only have to define and assign the section of the shell element via {func}`~ospgrillage.members.create_section` and {func}`~ospgrillage.osp_grillage.OspGrillageShell.set_shell_member` respectively. The following example code shows the steps to create the shell model type:
+When `model_type="shell_beam"` is selected, *ospgrillage* automatically determines the position of shell elements within the grillage plane. Users only need to define and assign the section of the shell element via {func}`~ospgrillage.members.create_section` and `set_shell_members()` respectively. The following example shows the steps to create the shell model type:
 
 ```python
 # create section of shell element
@@ -96,7 +96,7 @@ slab_shell = og.create_member(section=slab_shell_section, material=concrete)
 example_bridge = og.create_grillage(bridge_name="Shell grillage", long_dim=10, width=7, skew=0,
                                     num_long_grid=6, num_trans_grid=11, edge_beam_dist=1, mesh_type="Orth",
                                     model_type="shell_beam", max_mesh_size_z=0.5, offset_beam_y_dist=0.499,
-                                    link_nodes_width=0.89)
+                                    beam_width=0.89)
 # set shell members to shell elements
 example_bridge.set_shell_members(slab_shell)
 ```

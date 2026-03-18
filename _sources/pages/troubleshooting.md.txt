@@ -129,9 +129,11 @@ results = bridge.get_results()
 
 The `array` argument passed to {func}`~ospgrillage.postprocessing.create_envelope` must match a variable name present in the `xarray.Dataset` returned by {meth}`~ospgrillage.osp_grillage.OspGrillage.get_results`. Common valid names are `"N"`, `"Vy"`, `"Vz"`, `"Mx"`, `"My"`, `"Mz"`.
 
-### `vfo` / visualisation not showing
+### Visualisation not showing
 
-`vfo` opens a separate OpenGL window. In Jupyter Lab this window may appear behind the browser. Try running the visualisation script as a plain Python file outside of Jupyter, or use `%matplotlib widget` if only matplotlib output is needed.
+If using the matplotlib backend, ensure `%matplotlib inline` (or `widget`) is set in
+Jupyter.  For the Plotly backend (`backend="plotly"`), plots render inline
+automatically in Jupyter notebooks.
 
 ------------------------------------------------------------------------
 

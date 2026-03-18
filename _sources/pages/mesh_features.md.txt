@@ -1,5 +1,8 @@
 # Mesh features
 
+*ospgrillage* supports several mesh layouts to cover a wide range of bridge geometries.
+The notebooks below demonstrate each capability with worked examples.
+
 ## Mesh capabilities
 
 ```{toctree}

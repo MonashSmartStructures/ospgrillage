@@ -1,4 +1,4 @@
-# Getting Results
+# Analysis and results
 
 For all example code in this page, *ospgrillage* is imported as `og`
 
@@ -6,10 +6,27 @@ For all example code in this page, *ospgrillage* is imported as `og`
 import ospgrillage as og
 ```
 
+## Running analysis
+
+Once all defined load cases (static and moving) have been added to the grillage object, analysis can be conducted.
+
+To analyse load case(s), call {meth}`~ospgrillage.osp_grillage.OspGrillage.analyze`. By default this runs all defined load cases. To run only specific load cases, pass a load case name `str` or a `list` of names to the `load_case` keyword argument. The following example shows the various options:
+
+```python
+# analyze all
+example_bridge.analyze()
+# or a single str
+example_bridge.analyze(load_case="DL")
+# or a single element list
+example_bridge.analyze(load_case=["DL"])
+# or a list of multiple load cases
+example_bridge.analyze(load_case=["DL","SDL"])
+```
+
 ## Extracting results
 
 After analysis, results are obtained using
-{func}`~ospgrillage.osp_grillage.OspGrillage.get_results`.
+{meth}`~ospgrillage.osp_grillage.OspGrillage.get_results`.
 
 ```python
 all_result   = example_bridge.get_results()
@@ -22,12 +39,14 @@ The first call returns results for every load case; the second filters to one.
 
 The returned object is an [xarray Dataset](http://xarray.pydata.org/en/stable/generated/xarray.Dataset.html) — think of it as a multi-dimensional, labelled table. Rather than accessing data by integer index (row 3, column 7), you access it by *name* (`Loadcase="Barrier"`, `Component="Mz_i"`). This makes result queries self-describing and much less error-prone.
 
-The Dataset contains three named **data variables**:
+The Dataset contains five named **data variables**:
 
 | Variable | Axes (dimensions) | Contents |
 |---|---|---|
-| `displacements` | Loadcase × Node × Component | Translations (dx, dy, dz) and rotations (theta_x/y/z) at each node |
-| `forces` | Loadcase × Element × Component | Internal forces (Mx, My, Mz, Vx, Vy, Vz) at each element end (_i, _j) |
+| `displacements` | Loadcase × Node × Component | Translations (x, y, z) and rotations (theta_x, theta_y, theta_z) at each node |
+| `velocity` | Loadcase × Node × Component | Velocities (dx, dy, dz) and angular velocities (dtheta_x/y/z) |
+| `acceleration` | Loadcase × Node × Component | Accelerations (ddx, ddy, ddz) and angular accelerations |
+| `forces` | Loadcase × Element × Component | Internal forces (Vx, Vy, Vz, Mx, My, Mz) at each element end (_i, _j) |
 | `ele_nodes` | Element × Nodes | Which node tags (i, j) belong to each element |
 
 For a {ref}`shell-hybrid-model`, forces are split into `forces_beam` / `forces_shell`
@@ -68,16 +87,15 @@ ele_array   = all_result.ele_nodes     # element→node connectivity
 
 ### Available force and displacement components
 
-To see the full list of component labels:
+Each DataArray has its own `Component` coordinate.  To see the labels:
 
 ```python
-force_array.coords['Component'].values
-```
+disp_array.coords['Component'].values
+# array(['x', 'y', 'z', 'theta_x', 'theta_y', 'theta_z'])
 
-```
-array(['Mx_i', 'Mx_j', 'My_i', 'My_j', 'Mz_i', 'Mz_j', 'Vx_i', 'Vx_j',
-       'Vy_i', 'Vy_j', 'Vz_i', 'Vz_j', 'dx', 'dy', 'dz', 'theta_x',
-       'theta_y', 'theta_z'], dtype='<U7')
+force_array.coords['Component'].values
+# array(['Vx_i', 'Vy_i', 'Vz_i', 'Mx_i', 'My_i', 'Mz_i',
+#        'Vx_j', 'Vy_j', 'Vz_j', 'Mx_j', 'My_j', 'Mz_j'])
 ```
 
 Suffix `_i` / `_j` denotes the start / end node of the element respectively.
@@ -88,8 +106,8 @@ Suffix `_i` / `_j` denotes the start / end node of the element respectively.
 Use xarray's `.sel()` to pick results by *name*, and `.isel()` to pick by *integer position*:
 
 ```python
-# All nodes, one component
-disp_array.sel(Component='dy')
+# All nodes, one component — vertical displacement
+disp_array.sel(Component='y')
 
 # One load case, one node
 disp_array.sel(Loadcase="patch load case", Node=20)
@@ -121,7 +139,7 @@ DataArrays, see the
 ## Getting combinations
 
 Load combinations are computed on the fly in
-{func}`~ospgrillage.osp_grillage.OspGrillage.get_results` by passing a `combinations`
+{meth}`~ospgrillage.osp_grillage.OspGrillage.get_results` by passing a `combinations`
 dictionary: keys are load case name strings and values are load factors.
 *ospgrillage* multiplies each load case by its factor and sums the results.
 
@@ -156,13 +174,13 @@ all load cases. Use {func}`~ospgrillage.postprocessing.create_envelope` to build
 {class}`~ospgrillage.postprocessing.Envelope` object, then call `.get()`:
 
 ```python
-envelope = og.create_envelope(ds=comb_result, load_effect="dy", array="displacements")
+envelope = og.create_envelope(ds=comb_result, load_effect="y", array="displacements")
 disp_env = envelope.get()
 print(disp_env)
 ```
 
-By default `get()` returns, for each node, the *name of the load case* that produced
-the maximum value of `dy`:
+By default `get()` returns, for each node, the maximum value of vertical
+displacement `y`:
 
 ```
 <xarray.DataArray 'Loadcase' (Node: 77, Component: 18)>
@@ -181,43 +199,35 @@ For more options see {func}`~ospgrillage.postprocessing.create_envelope`.
 
 ### Node
 
-Use {func}`~ospgrillage.osp_grillage.OspGrillage.get_nodes` to retrieve node
+Use {meth}`~ospgrillage.osp_grillage.OspGrillage.get_nodes` to retrieve node
 information from the model.
 
 ### Element
 
-Use {func}`~ospgrillage.osp_grillage.OspGrillage.get_element` to query element
+Use {meth}`~ospgrillage.osp_grillage.OspGrillage.get_element` to query element
 properties and tags from the model.
 
 ## Plotting results
 
-### Current limitation of OpenSees visualization modules
+### Model visualisation
 
-`OpenSeesPy`'s visualization modules (`vfo` and `opsvis`) require the model to be
-active in the OpenSees model space. Results retrieved via `get_results()` are stored
-in an xarray Dataset and cannot be fed back to these modules for multi-load-case
-plotting. Additionally, neither module supports enveloping across multiple incremental
-load cases.
-
-For single-load-case inspection only, `opsvis` can be used directly after analysis:
+Use {func}`~ospgrillage.postprocessing.plot_model` to inspect the mesh geometry
+before or after analysis:
 
 ```python
-og.opsv.section_force_diagram_3d('Mz', {}, 1)
+og.plot_model(bridge_28)                                     # matplotlib plan view
+og.plot_model(bridge_28, backend="plotly")                   # interactive 3D
+og.plot_model(bridge_28, show_node_labels=True)              # with node tags
 ```
 
-```{note}
-`opsv` only works for model templates `beam_only` and `beam_link`. Shell model
-plotting is not supported as of *ospgrillage* version 0.1.0.
-```
+### Post-processing results
 
-### ospgrillage post-processing module
-
-For multi-load-case or moving load results, *ospgrillage* includes a dedicated
-post-processing module.
+*ospgrillage* includes a dedicated post-processing module for force diagrams,
+deflected shapes, and envelopes across multiple load cases.
 
 ```{note}
-The plotting functions of the post-processing module are at alpha development stage.
-As of version 0.1.0 they are sufficient for plotting components from xarray DataSets.
+The post-processing module supports force diagrams and deflected shapes for
+beam-based model types (`beam_only` and `beam_link`).
 ```
 
 For this section, we refer to an exemplar 28 m super-T bridge (Figure 2). The
@@ -226,10 +236,10 @@ grillage object is named `bridge_28`.
 ![Figure 2: 28 m super-T bridge model.](../images/28m_bridge.PNG)
 
 To plot deflection from the `displacements` DataArray use
-{func}`~ospgrillage.postprocessing.plot_defo`, specifying a grillage member name:
+{func}`~ospgrillage.postprocessing.plot_def`, specifying a grillage member name:
 
 ```python
-og.plot_defo(bridge_28, results, member="exterior_main_beam_2", option="nodes")
+og.plot_def(bridge_28, results, members="exterior_main_beam_2")
 ```
 
 ![Figure 3: Deflected shape of exterior main beam 2.](../images/example_deflected.PNG)
@@ -242,3 +252,119 @@ og.plot_force(bridge_28, results, member="exterior_main_beam_2", component="Mz")
 ```
 
 ![Figure 4: Bending moment about z axis of exterior main beam 2.](../images/example_bmd.PNG)
+
+### Convenience plotting functions
+
+For the most common diagrams, convenience wrappers are provided that default to
+plotting all member groups when no `member` is specified:
+
+```python
+og.plot_bmd(bridge_28, results)          # bending moment diagram (Mz)
+og.plot_sfd(bridge_28, results)          # shear force diagram (Fy)
+og.plot_def(bridge_28, results)   # vertical deflection (y)
+```
+
+Each returns a list of figures (one per member group).  Pass
+`member="interior_main_beam"` to plot a single member instead.
+
+### Selecting member groups
+
+The `member` parameter accepts a string for a single member, or a
+{class}`~ospgrillage.postprocessing.Members` bitflag to plot any combination
+of groups:
+
+```python
+# Plot only longitudinal members
+og.plot_bmd(bridge_28, results, member=og.Members.LONGITUDINAL, backend="plotly")
+
+# Combine individual members with |
+og.plot_bmd(bridge_28, results,
+            member=og.Members.EDGE_BEAM | og.Members.INTERIOR_MAIN_BEAM,
+            backend="plotly")
+
+# Plot everything (the default for plotly)
+og.plot_bmd(bridge_28, results, member=og.Members.ALL, backend="plotly")
+```
+
+Available individual flags:
+
+| Flag | Member name string |
+|---|---|
+| `EDGE_BEAM` | `"edge_beam"` |
+| `EXTERIOR_MAIN_BEAM_1` | `"exterior_main_beam_1"` |
+| `INTERIOR_MAIN_BEAM` | `"interior_main_beam"` |
+| `EXTERIOR_MAIN_BEAM_2` | `"exterior_main_beam_2"` |
+| `START_EDGE` | `"start_edge"` |
+| `END_EDGE` | `"end_edge"` |
+| `TRANSVERSE_SLAB` | `"transverse_slab"` |
+
+Pre-defined composites: `LONGITUDINAL` (all four longitudinal types),
+`TRANSVERSE` (transverse slab + start/end edges), `ALL` (everything).
+
+### Customising plots
+
+All plotting functions accept keyword arguments for common customisations:
+
+```python
+# Wide figure, values in kN·m, custom title, red with no fill
+og.plot_bmd(bridge_28, results,
+            member="interior_main_beam",
+            figsize=(12, 4),
+            scale=0.001,
+            title="Bending Moment (kN·m)",
+            color="r",
+            fill=False)
+```
+
+To compose multi-panel figures, pass an existing matplotlib `Axes`:
+
+```python
+import matplotlib.pyplot as plt
+fig, axes = plt.subplots(1, 3, figsize=(18, 4))
+og.plot_bmd(bridge_28, results, member="interior_main_beam", ax=axes[0])
+og.plot_sfd(bridge_28, results, member="interior_main_beam", ax=axes[1])
+og.plot_def(bridge_28, results, member="interior_main_beam", ax=axes[2], color="g")
+fig.tight_layout()
+```
+
+The full set of keyword arguments is:
+
+| Kwarg | Default | Description |
+|---|---|---|
+| `figsize` | matplotlib default | Figure size in inches `(width, height)` |
+| `ax` | `None` | Existing Axes (matplotlib) or Figure (Plotly) to draw on |
+| `scale` | `1.0` | Multiply values by this factor (e.g. `0.001` for N → kN) |
+| `title` | auto | Custom title string, or `None` to suppress |
+| `color` | `"k"` / `"b"` | Line colour |
+| `fill` | `True` | Shade the area under force diagrams |
+| `alpha` | `0.4` | Fill / trace transparency |
+| `show` | `False` | Call `fig.show()` before returning |
+
+### Interactive 3D plots (Plotly)
+
+For interactive rotation — especially useful in Jupyter notebooks — pass
+`backend="plotly"`:
+
+```bash
+pip install ospgrillage[gui]   # includes plotly
+```
+
+```python
+og.plot_bmd(bridge_28, results, backend="plotly")
+og.plot_sfd(bridge_28, results, backend="plotly")
+og.plot_def(bridge_28, results, backend="plotly")
+```
+
+Each returns a single [Plotly](https://plotly.com/python/) `Figure` that
+renders interactively in Jupyter notebooks and in browser windows from the
+terminal.  The figure can be further customised using the standard Plotly
+API.  The GUI auto-detects plotly and uses it by default when available.
+
+## Worked examples
+
+For complete worked examples, see:
+
+- {doc}`Super-T bridge tutorial <../notebooks/super_t_tutorial>` — end-to-end
+  model creation, loading, analysis, and results extraction.
+- {doc}`Advanced results processing <../notebooks/advanced_results>` — xarray selection,
+  load combinations, envelopes, and custom post-processing.

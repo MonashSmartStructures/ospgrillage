@@ -26,6 +26,7 @@ Class methods
    ~ospgrillage.load.MovingLoad.set_path
    ~ospgrillage.load.MovingLoad.add_load
    ~ospgrillage.load.MovingLoad.query
+   ~ospgrillage.load.MovingLoad.parse_moving_load_cases
 
 Class reference
 ---------------
