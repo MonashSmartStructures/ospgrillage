@@ -430,7 +430,7 @@
 <h1>Mesh features<a class="headerlink" href="#Mesh-features" title="Link to this heading">#</a></h1>
 <p>In this example, we will explore the various meshing features available in ospgrillage.</p>
 <p>First, the necessary imports:</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
@@ -440,61 +440,6 @@
 <span class="o">%</span><span class="k">matplotlib</span> inline
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">ImportError</span>                               Traceback (most recent call last)
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/site-packages/openseespylinux/__init__.py:12</span>
-<span class="ansi-green-fg">     11</span> <span class="ansi-bold" style="color: rgb(0,135,0)">try</span>:
-<span class="ansi-green-fg">---&gt; </span><span class="ansi-green-fg">12</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">from</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">openseespylinux</span><span class="ansi-blue-intense-fg ansi-bold">.</span><span class="ansi-blue-intense-fg ansi-bold">opensees</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-bold" style="color: rgb(0,135,0)">import</span> *
-<span class="ansi-green-fg">     13</span> <span class="ansi-bold" style="color: rgb(0,135,0)">except</span>:
-
-<span class="ansi-red-fg">ImportError</span>: libblas.so.3: cannot open shared object file: No such file or directory
-
-During handling of the above exception, another exception occurred:
-
-<span class="ansi-red-fg">RuntimeError</span>                              Traceback (most recent call last)
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/site-packages/openseespy/opensees/__init__.py:11</span>
-<span class="ansi-green-fg">     10</span> <span class="ansi-bold" style="color: rgb(0,135,0)">try</span>:
-<span class="ansi-green-fg">---&gt; </span><span class="ansi-green-fg">11</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">from</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">openseespylinux</span><span class="ansi-blue-intense-fg ansi-bold">.</span><span class="ansi-blue-intense-fg ansi-bold">opensees</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-bold" style="color: rgb(0,135,0)">import</span> *
-<span class="ansi-green-fg">     13</span> <span class="ansi-bold" style="color: rgb(0,135,0)">except</span>:
-
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/site-packages/openseespylinux/__init__.py:14</span>
-<span class="ansi-green-fg">     13</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">except</span>:
-<span class="ansi-green-fg">---&gt; </span><span class="ansi-green-fg">14</span>         <span class="ansi-bold" style="color: rgb(0,135,0)">raise</span> <span class="ansi-bold" style="color: rgb(215,95,95)">RuntimeError</span>(<span class="ansi-yellow-fg">&#39;</span><span class="ansi-yellow-fg">Failed to import openseespy on Linux.</span><span class="ansi-yellow-fg">&#39;</span>)
-<span class="ansi-green-fg">     16</span> <span class="ansi-bold" style="color: rgb(0,135,0)">else</span>:
-
-<span class="ansi-red-fg">RuntimeError</span>: Failed to import openseespy on Linux.
-
-During handling of the above exception, another exception occurred:
-
-<span class="ansi-red-fg">RuntimeError</span>                              Traceback (most recent call last)
-<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[1]</span><span class="ansi-green-fg">, line 2</span>
-<span class="ansi-green-fg">      1</span> <span class="ansi-bold" style="color: rgb(0,135,0)">import</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">numpy</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-bold" style="color: rgb(0,135,0)">as</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">np</span>
-<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">2</span> <span class="ansi-bold" style="color: rgb(0,135,0)">import</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">ospgrillage</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-bold" style="color: rgb(0,135,0)">as</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">og</span>
-<span class="ansi-green-fg">      3</span> <span class="ansi-bold" style="color: rgb(0,135,0)">from</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">IPython</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-bold" style="color: rgb(0,135,0)">import</span> display  <span style="color: rgb(95,135,135)"># to display images in this notebook</span>
-<span class="ansi-green-fg">      4</span> get_ipython().run_line_magic(<span class="ansi-yellow-fg">&#39;</span><span class="ansi-yellow-fg">matplotlib</span><span class="ansi-yellow-fg">&#39;</span>, <span class="ansi-yellow-fg">&#39;</span><span class="ansi-yellow-fg">inline</span><span class="ansi-yellow-fg">&#39;</span>)
-
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/site-packages/ospgrillage/__init__.py:4</span>
-<span class="ansi-green-fg">      1</span> <span class="ansi-bold" style="color: rgb(0,135,0)">import</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">warnings</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-bold" style="color: rgb(0,135,0)">as</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">_warnings</span>
-<span class="ansi-green-fg">      3</span> <span class="ansi-bold" style="color: rgb(0,135,0)">import</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">numpy</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-bold" style="color: rgb(0,135,0)">as</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">np</span>  <span style="color: rgb(95,135,135)"># re-exported: tests and users access ospgrillage.np</span>
-<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">4</span> <span class="ansi-bold" style="color: rgb(0,135,0)">import</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">openseespy</span><span class="ansi-blue-intense-fg ansi-bold">.</span><span class="ansi-blue-intense-fg ansi-bold">opensees</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-bold" style="color: rgb(0,135,0)">as</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">ops</span>  <span style="color: rgb(95,135,135)"># re-exported: tests and users access ospgrillage.ops</span>
-<span class="ansi-green-fg">      5</span> <span class="ansi-bold" style="color: rgb(0,135,0)">import</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">opsvis</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-bold" style="color: rgb(0,135,0)">as</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">opsv</span>  <span style="color: rgb(95,135,135)"># used internally by postprocessing (section_force_distribution_3d)</span>
-<span class="ansi-green-fg">      6</span> <span class="ansi-bold" style="color: rgb(0,135,0)">import</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">matplotlib</span><span class="ansi-blue-intense-fg ansi-bold">.</span><span class="ansi-blue-intense-fg ansi-bold">pyplot</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-bold" style="color: rgb(0,135,0)">as</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">plt</span>  <span style="color: rgb(95,135,135)"># re-exported: users access ospgrillage.plt</span>
-
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/site-packages/openseespy/opensees/__init__.py:14</span>
-<span class="ansi-green-fg">     11</span>         <span class="ansi-bold" style="color: rgb(0,135,0)">from</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">openseespylinux</span><span class="ansi-blue-intense-fg ansi-bold">.</span><span class="ansi-blue-intense-fg ansi-bold">opensees</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-bold" style="color: rgb(0,135,0)">import</span> *
-<span class="ansi-green-fg">     13</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">except</span>:
-<span class="ansi-green-fg">---&gt; </span><span class="ansi-green-fg">14</span>         <span class="ansi-bold" style="color: rgb(0,135,0)">raise</span> <span class="ansi-bold" style="color: rgb(215,95,95)">RuntimeError</span>(<span class="ansi-yellow-fg">&#39;</span><span class="ansi-yellow-fg">Failed to import openseespy on Linux.</span><span class="ansi-yellow-fg">&#39;</span>)
-<span class="ansi-green-fg">     16</span> <span class="ansi-bold" style="color: rgb(0,135,0)">elif</span> sys.platform.startswith(<span class="ansi-yellow-fg">&#39;</span><span class="ansi-yellow-fg">win</span><span class="ansi-yellow-fg">&#39;</span>):
-<span class="ansi-green-fg">     18</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">try</span>:
-
-<span class="ansi-red-fg">RuntimeError</span>: Failed to import openseespy on Linux.
-</pre></div></div>
 </div>
 <p>Then, we define the properties as per Super-T bridge example.</p>
 <div class="nbinput nblast docutils container">
@@ -537,7 +482,7 @@ During handling of the above exception, another exception occurred:
 </div>
 </div>
 <p>First we create and define the sections and material for each grillage elements of the models.</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
@@ -592,29 +537,10 @@ During handling of the above exception, another exception occurred:
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[4]</span><span class="ansi-green-fg">, line 1</span>
-<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">1</span> concrete = <span class="ansi-yellow-bg">og</span>.create_material(material=<span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">concrete</span><span class="ansi-yellow-fg">&#34;</span>, code=<span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">AS5100-2017</span><span class="ansi-yellow-fg">&#34;</span>, grade=<span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">65MPa</span><span class="ansi-yellow-fg">&#34;</span>)
-<span class="ansi-green-fg">      3</span> <span style="color: rgb(95,135,135)"># define sections (parameters from LUSAS model)</span>
-<span class="ansi-green-fg">      4</span> edge_longitudinal_section = og.create_section(
-<span class="ansi-green-fg">      5</span>     A=<span class="ansi-green-fg">0.934</span> * m2,
-<span class="ansi-green-fg">      6</span>     J=<span class="ansi-green-fg">0.1857</span> * m3,
-<span class="ansi-green-fg">   (...)</span><span class="ansi-green-fg">     10</span>     Ay=<span class="ansi-green-fg">0.258704</span> * m2,
-<span class="ansi-green-fg">     11</span> )
-
-<span class="ansi-red-fg">NameError</span>: name &#39;og&#39; is not defined
-</pre></div></div>
-</div>
 <section id="Oblique-mesh-with-skew-angle">
 <h2>Oblique mesh with skew angle<a class="headerlink" href="#Oblique-mesh-with-skew-angle" title="Link to this heading">#</a></h2>
 <p>Here we create the grillage model with a skew angle of 20 degree and oblique mesh type.</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
@@ -630,28 +556,6 @@ During handling of the above exception, another exception occurred:
 <span class="p">)</span>
 <br/></pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[5]</span><span class="ansi-green-fg">, line 1</span>
-<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">1</span> oblique_grillage = <span class="ansi-yellow-bg">og</span>.create_grillage(
-<span class="ansi-green-fg">      2</span>     bridge_name=<span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">Oblique_28m</span><span class="ansi-yellow-fg">&#34;</span>,
-<span class="ansi-green-fg">      3</span>     long_dim=<span class="ansi-green-fg">10</span>,
-<span class="ansi-green-fg">      4</span>     width=<span class="ansi-green-fg">7</span>,
-<span class="ansi-green-fg">      5</span>     skew=<span class="ansi-green-fg">20</span>,
-<span class="ansi-green-fg">      6</span>     num_long_grid=n_l,
-<span class="ansi-green-fg">      7</span>     num_trans_grid=n_t,
-<span class="ansi-green-fg">      8</span>     edge_beam_dist=<span class="ansi-green-fg">1</span>,
-<span class="ansi-green-fg">      9</span>     mesh_type=<span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">Oblique</span><span class="ansi-yellow-fg">&#34;</span>,
-<span class="ansi-green-fg">     10</span> )
-
-<span class="ansi-red-fg">NameError</span>: name &#39;og&#39; is not defined
-</pre></div></div>
 </div>
 <p>Assign the grillage members to the model and create grillage</p>
 <div class="nbinput docutils container">
@@ -673,26 +577,27 @@ During handling of the above exception, another exception occurred:
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: title={&#39;center&#39;: &#39;Grillage Model&#39;}, xlabel=&#39;x (m)&#39;, ylabel=&#39;z (m)&#39;&gt;
+</pre></div></div>
+</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<div class="highlight"><pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[6]</span><span class="ansi-green-fg">, line 1</span>
-<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">1</span> <span class="ansi-yellow-bg">oblique_grillage</span>.set_member(longitudinal_beam, member=<span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">interior_main_beam</span><span class="ansi-yellow-fg">&#34;</span>)
-<span class="ansi-green-fg">      2</span> oblique_grillage.set_member(longitudinal_beam, member=<span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">exterior_main_beam_1</span><span class="ansi-yellow-fg">&#34;</span>)
-<span class="ansi-green-fg">      3</span> oblique_grillage.set_member(longitudinal_beam, member=<span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">exterior_main_beam_2</span><span class="ansi-yellow-fg">&#34;</span>)
-
-<span class="ansi-red-fg">NameError</span>: name &#39;oblique_grillage&#39; is not defined
-</pre></div></div>
+<img alt="../_images/notebooks_mesh_showcase_11_1.png" src="../_images/notebooks_mesh_showcase_11_1.png" />
+</div>
 </div>
 </section>
 <section id="Orthogonal-mesh-with-negative-skew-angle">
 <h2>Orthogonal mesh with negative skew angle<a class="headerlink" href="#Orthogonal-mesh-with-negative-skew-angle" title="Link to this heading">#</a></h2>
 <p>Here we create the same model but instead with orthogonal mesh type and a negative skew angle - defined as -20. The latter creates a mesh that skews (angle) towards the right instead of left.</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
@@ -708,28 +613,6 @@ During handling of the above exception, another exception occurred:
 <span class="p">)</span>
 <br/></pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[7]</span><span class="ansi-green-fg">, line 1</span>
-<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">1</span> ortho_grillage = <span class="ansi-yellow-bg">og</span>.create_grillage(
-<span class="ansi-green-fg">      2</span>     bridge_name=<span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">Oblique_28m</span><span class="ansi-yellow-fg">&#34;</span>,
-<span class="ansi-green-fg">      3</span>     long_dim=<span class="ansi-green-fg">10</span>,
-<span class="ansi-green-fg">      4</span>     width=<span class="ansi-green-fg">7</span>,
-<span class="ansi-green-fg">      5</span>     skew=-<span class="ansi-green-fg">20</span>,
-<span class="ansi-green-fg">      6</span>     num_long_grid=n_l,
-<span class="ansi-green-fg">      7</span>     num_trans_grid=<span class="ansi-green-fg">5</span>,
-<span class="ansi-green-fg">      8</span>     edge_beam_dist=<span class="ansi-green-fg">1</span>,
-<span class="ansi-green-fg">      9</span>     mesh_type=<span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">Ortho</span><span class="ansi-yellow-fg">&#34;</span>,
-<span class="ansi-green-fg">     10</span> )
-
-<span class="ansi-red-fg">NameError</span>: name &#39;og&#39; is not defined
-</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
@@ -750,26 +633,27 @@ During handling of the above exception, another exception occurred:
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: title={&#39;center&#39;: &#39;Grillage Model&#39;}, xlabel=&#39;x (m)&#39;, ylabel=&#39;z (m)&#39;&gt;
+</pre></div></div>
+</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<div class="highlight"><pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[8]</span><span class="ansi-green-fg">, line 1</span>
-<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">1</span> <span class="ansi-yellow-bg">ortho_grillage</span>.set_member(longitudinal_beam, member=<span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">interior_main_beam</span><span class="ansi-yellow-fg">&#34;</span>)
-<span class="ansi-green-fg">      2</span> ortho_grillage.set_member(longitudinal_beam, member=<span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">exterior_main_beam_1</span><span class="ansi-yellow-fg">&#34;</span>)
-<span class="ansi-green-fg">      3</span> ortho_grillage.set_member(longitudinal_beam, member=<span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">exterior_main_beam_2</span><span class="ansi-yellow-fg">&#34;</span>)
-
-<span class="ansi-red-fg">NameError</span>: name &#39;ortho_grillage&#39; is not defined
-</pre></div></div>
+<img alt="../_images/notebooks_mesh_showcase_14_1.png" src="../_images/notebooks_mesh_showcase_14_1.png" />
+</div>
 </div>
 </section>
 <section id="Skew-mesh-with-distinct-edge-angles">
 <h2>Skew mesh with distinct edge angles<a class="headerlink" href="#Skew-mesh-with-distinct-edge-angles" title="Link to this heading">#</a></h2>
 <p>Different skew angles can be defined for the support edges. Here we create a mesh where the left and right support edges are 40 and 0 degrees respectively. To do this, pass a list containing two elements - the angles of the skew edges - to the skew keyword argument.</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
@@ -785,28 +669,6 @@ During handling of the above exception, another exception occurred:
 <span class="p">)</span>
 <br/><br/></pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[9]</span><span class="ansi-green-fg">, line 1</span>
-<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">1</span> varied_edge_angle_grillage = <span class="ansi-yellow-bg">og</span>.create_grillage(
-<span class="ansi-green-fg">      2</span>     bridge_name=<span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">SuperT_10m</span><span class="ansi-yellow-fg">&#34;</span>,
-<span class="ansi-green-fg">      3</span>     long_dim=<span class="ansi-green-fg">10</span>,
-<span class="ansi-green-fg">      4</span>     width=<span class="ansi-green-fg">7</span>,
-<span class="ansi-green-fg">      5</span>     skew=[<span class="ansi-green-fg">40</span>, <span class="ansi-green-fg">0</span>],
-<span class="ansi-green-fg">      6</span>     num_long_grid=<span class="ansi-green-fg">7</span>,
-<span class="ansi-green-fg">      7</span>     num_trans_grid=<span class="ansi-green-fg">5</span>,
-<span class="ansi-green-fg">      8</span>     edge_beam_dist=<span class="ansi-green-fg">1</span>,
-<span class="ansi-green-fg">      9</span>     mesh_type=<span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">Ortho</span><span class="ansi-yellow-fg">&#34;</span>,
-<span class="ansi-green-fg">     10</span> )
-
-<span class="ansi-red-fg">NameError</span>: name &#39;og&#39; is not defined
-</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
@@ -827,20 +689,21 @@ During handling of the above exception, another exception occurred:
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: title={&#39;center&#39;: &#39;Grillage Model&#39;}, xlabel=&#39;x (m)&#39;, ylabel=&#39;z (m)&#39;&gt;
+</pre></div></div>
+</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<div class="highlight"><pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[10]</span><span class="ansi-green-fg">, line 1</span>
-<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">1</span> <span class="ansi-yellow-bg">varied_edge_angle_grillage</span>.set_member(longitudinal_beam, member=<span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">interior_main_beam</span><span class="ansi-yellow-fg">&#34;</span>)
-<span class="ansi-green-fg">      2</span> varied_edge_angle_grillage.set_member(longitudinal_beam, member=<span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">exterior_main_beam_1</span><span class="ansi-yellow-fg">&#34;</span>)
-<span class="ansi-green-fg">      3</span> varied_edge_angle_grillage.set_member(longitudinal_beam, member=<span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">exterior_main_beam_2</span><span class="ansi-yellow-fg">&#34;</span>)
-
-<span class="ansi-red-fg">NameError</span>: name &#39;varied_edge_angle_grillage&#39; is not defined
-</pre></div></div>
+<img alt="../_images/notebooks_mesh_showcase_17_1.png" src="../_images/notebooks_mesh_showcase_17_1.png" />
+</div>
 </div>
 </section>
 </section>

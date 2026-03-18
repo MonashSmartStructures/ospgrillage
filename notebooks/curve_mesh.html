@@ -447,7 +447,7 @@
 </div>
 </div>
 <p>In this example, we create a single span bridge grillage model with span and width of 10 m and 7 m respectively. For demonstration purposes, the curve radius shall be 20 m. First, we begin with the necessary imports.</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
@@ -456,60 +456,6 @@
 <span class="o">%</span><span class="k">matplotlib</span> inline
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">ImportError</span>                               Traceback (most recent call last)
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/site-packages/openseespylinux/__init__.py:12</span>
-<span class="ansi-green-fg">     11</span> <span class="ansi-bold" style="color: rgb(0,135,0)">try</span>:
-<span class="ansi-green-fg">---&gt; </span><span class="ansi-green-fg">12</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">from</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">openseespylinux</span><span class="ansi-blue-intense-fg ansi-bold">.</span><span class="ansi-blue-intense-fg ansi-bold">opensees</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-bold" style="color: rgb(0,135,0)">import</span> *
-<span class="ansi-green-fg">     13</span> <span class="ansi-bold" style="color: rgb(0,135,0)">except</span>:
-
-<span class="ansi-red-fg">ImportError</span>: libblas.so.3: cannot open shared object file: No such file or directory
-
-During handling of the above exception, another exception occurred:
-
-<span class="ansi-red-fg">RuntimeError</span>                              Traceback (most recent call last)
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/site-packages/openseespy/opensees/__init__.py:11</span>
-<span class="ansi-green-fg">     10</span> <span class="ansi-bold" style="color: rgb(0,135,0)">try</span>:
-<span class="ansi-green-fg">---&gt; </span><span class="ansi-green-fg">11</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">from</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">openseespylinux</span><span class="ansi-blue-intense-fg ansi-bold">.</span><span class="ansi-blue-intense-fg ansi-bold">opensees</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-bold" style="color: rgb(0,135,0)">import</span> *
-<span class="ansi-green-fg">     13</span> <span class="ansi-bold" style="color: rgb(0,135,0)">except</span>:
-
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/site-packages/openseespylinux/__init__.py:14</span>
-<span class="ansi-green-fg">     13</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">except</span>:
-<span class="ansi-green-fg">---&gt; </span><span class="ansi-green-fg">14</span>         <span class="ansi-bold" style="color: rgb(0,135,0)">raise</span> <span class="ansi-bold" style="color: rgb(215,95,95)">RuntimeError</span>(<span class="ansi-yellow-fg">&#39;</span><span class="ansi-yellow-fg">Failed to import openseespy on Linux.</span><span class="ansi-yellow-fg">&#39;</span>)
-<span class="ansi-green-fg">     16</span> <span class="ansi-bold" style="color: rgb(0,135,0)">else</span>:
-
-<span class="ansi-red-fg">RuntimeError</span>: Failed to import openseespy on Linux.
-
-During handling of the above exception, another exception occurred:
-
-<span class="ansi-red-fg">RuntimeError</span>                              Traceback (most recent call last)
-<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[2]</span><span class="ansi-green-fg">, line 2</span>
-<span class="ansi-green-fg">      1</span> <span class="ansi-bold" style="color: rgb(0,135,0)">import</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">numpy</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-bold" style="color: rgb(0,135,0)">as</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">np</span>
-<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">2</span> <span class="ansi-bold" style="color: rgb(0,135,0)">import</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">ospgrillage</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-bold" style="color: rgb(0,135,0)">as</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">og</span>
-<span class="ansi-green-fg">      3</span> get_ipython().run_line_magic(<span class="ansi-yellow-fg">&#39;</span><span class="ansi-yellow-fg">matplotlib</span><span class="ansi-yellow-fg">&#39;</span>, <span class="ansi-yellow-fg">&#39;</span><span class="ansi-yellow-fg">inline</span><span class="ansi-yellow-fg">&#39;</span>)
-
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/site-packages/ospgrillage/__init__.py:4</span>
-<span class="ansi-green-fg">      1</span> <span class="ansi-bold" style="color: rgb(0,135,0)">import</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">warnings</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-bold" style="color: rgb(0,135,0)">as</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">_warnings</span>
-<span class="ansi-green-fg">      3</span> <span class="ansi-bold" style="color: rgb(0,135,0)">import</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">numpy</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-bold" style="color: rgb(0,135,0)">as</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">np</span>  <span style="color: rgb(95,135,135)"># re-exported: tests and users access ospgrillage.np</span>
-<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">4</span> <span class="ansi-bold" style="color: rgb(0,135,0)">import</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">openseespy</span><span class="ansi-blue-intense-fg ansi-bold">.</span><span class="ansi-blue-intense-fg ansi-bold">opensees</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-bold" style="color: rgb(0,135,0)">as</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">ops</span>  <span style="color: rgb(95,135,135)"># re-exported: tests and users access ospgrillage.ops</span>
-<span class="ansi-green-fg">      5</span> <span class="ansi-bold" style="color: rgb(0,135,0)">import</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">opsvis</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-bold" style="color: rgb(0,135,0)">as</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">opsv</span>  <span style="color: rgb(95,135,135)"># used internally by postprocessing (section_force_distribution_3d)</span>
-<span class="ansi-green-fg">      6</span> <span class="ansi-bold" style="color: rgb(0,135,0)">import</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">matplotlib</span><span class="ansi-blue-intense-fg ansi-bold">.</span><span class="ansi-blue-intense-fg ansi-bold">pyplot</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-bold" style="color: rgb(0,135,0)">as</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">plt</span>  <span style="color: rgb(95,135,135)"># re-exported: users access ospgrillage.plt</span>
-
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/site-packages/openseespy/opensees/__init__.py:14</span>
-<span class="ansi-green-fg">     11</span>         <span class="ansi-bold" style="color: rgb(0,135,0)">from</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">openseespylinux</span><span class="ansi-blue-intense-fg ansi-bold">.</span><span class="ansi-blue-intense-fg ansi-bold">opensees</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-bold" style="color: rgb(0,135,0)">import</span> *
-<span class="ansi-green-fg">     13</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">except</span>:
-<span class="ansi-green-fg">---&gt; </span><span class="ansi-green-fg">14</span>         <span class="ansi-bold" style="color: rgb(0,135,0)">raise</span> <span class="ansi-bold" style="color: rgb(215,95,95)">RuntimeError</span>(<span class="ansi-yellow-fg">&#39;</span><span class="ansi-yellow-fg">Failed to import openseespy on Linux.</span><span class="ansi-yellow-fg">&#39;</span>)
-<span class="ansi-green-fg">     16</span> <span class="ansi-bold" style="color: rgb(0,135,0)">elif</span> sys.platform.startswith(<span class="ansi-yellow-fg">&#39;</span><span class="ansi-yellow-fg">win</span><span class="ansi-yellow-fg">&#39;</span>):
-<span class="ansi-green-fg">     18</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">try</span>:
-
-<span class="ansi-red-fg">RuntimeError</span>: Failed to import openseespy on Linux.
-</pre></div></div>
 </div>
 <p>Then, we define the parameters of the grillage.</p>
 <div class="nbinput nblast docutils container">
@@ -607,24 +553,13 @@ During handling of the above exception, another exception occurred:
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[5]</span><span class="ansi-green-fg">, line 1</span>
-<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">1</span> concrete = <span class="ansi-yellow-bg">og</span>.create_material(material=<span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">concrete</span><span class="ansi-yellow-fg">&#34;</span>, code=<span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">AS5100-2017</span><span class="ansi-yellow-fg">&#34;</span>, grade=<span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">65MPa</span><span class="ansi-yellow-fg">&#34;</span>)
-<span class="ansi-green-fg">      3</span> <span style="color: rgb(95,135,135)"># define sections (parameters from LUSAS model)</span>
-<span class="ansi-green-fg">      4</span> edge_longitudinal_section = og.create_section(
-<span class="ansi-green-fg">      5</span>     A=<span class="ansi-green-fg">0.934</span> * m2,
-<span class="ansi-green-fg">      6</span>     J=<span class="ansi-green-fg">0.1857</span> * m3,
-<span class="ansi-green-fg">   (...)</span><span class="ansi-green-fg">     10</span>     Ay=<span class="ansi-green-fg">0.258704</span> * m2,
-<span class="ansi-green-fg">     11</span> )
-
-<span class="ansi-red-fg">NameError</span>: name &#39;og&#39; is not defined
+Material library unable to be read; using default library
 </pre></div></div>
 </div>
 <p>At the <code class="docutils literal notranslate"><span class="pre">create_grillage</span></code> step, pass in the mesh radius to <code class="docutils literal notranslate"><span class="pre">mesh_radius=</span></code> keyword argument.</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
@@ -640,28 +575,6 @@ During handling of the above exception, another exception occurred:
 <span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[6]</span><span class="ansi-green-fg">, line 1</span>
-<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">1</span> example_bridge = <span class="ansi-yellow-bg">og</span>.create_grillage(
-<span class="ansi-green-fg">      2</span>     bridge_name=<span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">SuperT_10m</span><span class="ansi-yellow-fg">&#34;</span>,
-<span class="ansi-green-fg">      3</span>     long_dim=L,
-<span class="ansi-green-fg">      4</span>     width=w,
-<span class="ansi-green-fg">      5</span>     skew=<span class="ansi-green-fg">0</span>,
-<span class="ansi-green-fg">      6</span>     num_long_grid=n_l,
-<span class="ansi-green-fg">      7</span>     num_trans_grid=n_t,
-<span class="ansi-green-fg">      8</span>     mesh_type=<span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">Ortho</span><span class="ansi-yellow-fg">&#34;</span>,
-<span class="ansi-green-fg">      9</span>     mesh_radius=mesh_radius,
-<span class="ansi-green-fg">     10</span> )
-
-<span class="ansi-red-fg">NameError</span>: name &#39;og&#39; is not defined
-</pre></div></div>
 </div>
 <p>Finally, we set the members accordingly, create the model and plot.</p>
 <div class="nbinput docutils container">
@@ -687,16 +600,8 @@ During handling of the above exception, another exception occurred:
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<div class="highlight"><pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[7]</span><span class="ansi-green-fg">, line 1</span>
-<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">1</span> <span class="ansi-yellow-bg">example_bridge</span>.set_member(longitudinal_beam, member=<span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">interior_main_beam</span><span class="ansi-yellow-fg">&#34;</span>)
-<span class="ansi-green-fg">      2</span> example_bridge.set_member(longitudinal_beam, member=<span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">exterior_main_beam_1</span><span class="ansi-yellow-fg">&#34;</span>)
-<span class="ansi-green-fg">      3</span> example_bridge.set_member(longitudinal_beam, member=<span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">exterior_main_beam_2</span><span class="ansi-yellow-fg">&#34;</span>)
-
-<span class="ansi-red-fg">NameError</span>: name &#39;example_bridge&#39; is not defined
-</pre></div></div>
+<img alt="../_images/notebooks_curve_mesh_14_0.png" src="../_images/notebooks_curve_mesh_14_0.png" />
+</div>
 </div>
 </section>
 
