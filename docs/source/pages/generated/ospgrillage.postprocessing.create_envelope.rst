@@ -1,6 +1,0 @@
-﻿create\_envelope
-================
-
-.. currentmodule:: ospgrillage.postprocessing
-
-.. autofunction:: create_envelope

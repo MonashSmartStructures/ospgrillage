@@ -1,6 +1,0 @@
-﻿OspGrillage.get\_nodes
-======================
-
-.. currentmodule:: ospgrillage.osp_grillage
-
-.. automethod:: OspGrillage.get_nodes

@@ -1,6 +1,0 @@
-﻿create\_load\_case
-==================
-
-.. currentmodule:: ospgrillage.load
-
-.. autofunction:: create_load_case

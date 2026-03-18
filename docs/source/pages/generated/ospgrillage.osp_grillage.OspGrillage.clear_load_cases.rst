@@ -1,6 +1,0 @@
-﻿OspGrillage.clear\_load\_cases
-==============================
-
-.. currentmodule:: ospgrillage.osp_grillage
-
-.. automethod:: OspGrillage.clear_load_cases

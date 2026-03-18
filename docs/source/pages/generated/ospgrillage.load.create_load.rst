@@ -1,6 +1,0 @@
-﻿create\_load
-============
-
-.. currentmodule:: ospgrillage.load
-
-.. autofunction:: create_load

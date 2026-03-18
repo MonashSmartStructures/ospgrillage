@@ -43,3 +43,4 @@ docs/source/_static/
 # Future pytest cache perhaps
 .pytest_cache/
 docs/source/rst/generated/
+docs/source/pages/generated/

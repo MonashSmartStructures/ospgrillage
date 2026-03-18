@@ -1,6 +1,0 @@
-﻿create\_moving\_load
-====================
-
-.. currentmodule:: ospgrillage.load
-
-.. autofunction:: create_moving_load

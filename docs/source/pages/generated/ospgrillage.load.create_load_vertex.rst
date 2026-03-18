@@ -1,6 +1,0 @@
-﻿create\_load\_vertex
-====================
-
-.. currentmodule:: ospgrillage.load
-
-.. autofunction:: create_load_vertex

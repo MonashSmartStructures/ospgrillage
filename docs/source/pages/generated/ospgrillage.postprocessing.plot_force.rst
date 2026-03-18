@@ -1,6 +1,0 @@
-﻿plot\_force
-===========
-
-.. currentmodule:: ospgrillage.postprocessing
-
-.. autofunction:: plot_force
