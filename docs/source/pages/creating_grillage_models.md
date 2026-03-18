@@ -95,6 +95,18 @@ I_beam_section = og.create_section(A=0.896*m2, J=0.133*m4, Iy=0.213*m4, Iz=0.259
 
 The module's {class}`~ospgrillage.members.Section` object wraps [OpenSees element command](https://openseespydoc.readthedocs.io/en/latest/src/element.html).
 
+When the beam centroid is offset from the grillage model plane (e.g. a precast beam acting compositely with a deck slab), pass `offset_y` — the vertical distance from the centroid to the model plane. *ospgrillage* applies the parallel axis theorem automatically so that the section properties you supply can be the **centroidal** values straight from a section-property table:
+
+```python
+# Centroidal I-beam properties with a 0.45 m offset to the slab mid-plane
+I_beam_section = og.create_section(
+    A=0.896*m2, J=0.133*m4, Iy=0.213*m4, Iz=0.259*m4,
+    Ay=0.233*m2, Az=0.58*m2, offset_y=0.45,
+)
+```
+
+If `offset_y` is omitted (the default), no adjustment is made — use this when you have already calculated the transferred properties yourself.
+
 The following codes creates the sections for the other grillage elements specified previously:
 
 ```python
