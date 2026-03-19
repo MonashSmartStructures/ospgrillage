@@ -7,9 +7,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta content="0; url=defining_loads.html" http-equiv="refresh" />
 
-    <title>&lt;no title&gt; &#8212; ospgrillage 0.5.0 documentation</title>
+    <title>Tutorials &#8212; ospgrillage 0.5.0 documentation</title>
   
   
   
@@ -43,9 +42,11 @@
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'pages/performing_analysis';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'pages/tutorials';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Super-T Bridge Grillage Analysis" href="../notebooks/super_t_tutorial.html" />
+    <link rel="prev" title="Working with results" href="working_with_results.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.5.0" />
@@ -144,19 +145,43 @@
 </li>
 
 
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="ospgui.html">
+    GUI — ospgui
+  </a>
+</li>
+
+
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="api_reference.html">
     API reference
   </a>
 </li>
 
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="additional_resources.html">
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="additional_resources.html">
     Additional Resources
   </a>
 </li>
 
+                </ul>
+            </li>
+            
   </ul>
 </nav></div>
       
@@ -242,10 +267,8 @@
       
       
       
-        
-      
       <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -270,6 +293,20 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="user_guide.html">
     User Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="ospgui.html">
+    GUI — ospgui
   </a>
 </li>
 
@@ -337,6 +374,22 @@
     
   </div>
   
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/super_t_tutorial.html">Super-T Bridge Grillage Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/advanced_results.html">Advanced Results Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/mesh_showcase.html">Mesh features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/multi_span.html">Multi - span feature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/curve_mesh.html">Curve Mesh</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
       <div class="sidebar-primary-item">
@@ -372,7 +425,7 @@
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">&lt;no title&gt;</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Tutorials</span></li>
   </ul>
 </nav>
 </div>
@@ -389,7 +442,21 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <p>This page has moved to <a class="reference internal" href="defining_loads.html"><span class="doc">Defining loads</span></a>.</p>
+  <section id="tutorials">
+<h1>Tutorials<a class="headerlink" href="#tutorials" title="Link to this heading">#</a></h1>
+<p>The following Jupyter notebooks walk through complete <em>ospgrillage</em> workflows — from
+model creation through analysis to post-processing. They can be run interactively
+or viewed as rendered HTML.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/super_t_tutorial.html">Super-T Bridge Grillage Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/advanced_results.html">Advanced Results Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/mesh_showcase.html">Mesh features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/multi_span.html">Multi - span feature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/curve_mesh.html">Curve Mesh</a></li>
+</ul>
+</div>
+</section>
 
 
                 </article>
@@ -401,6 +468,24 @@
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
+    <a class="left-prev"
+       href="working_with_results.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Working with results</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../notebooks/super_t_tutorial.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Super-T Bridge Grillage Analysis</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
 </div>
                 </footer>
               
@@ -413,22 +498,10 @@
 
 
   <div class="sidebar-secondary-item">
-<div
-    id="pst-page-navigation-heading-2"
-    class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> On this page
-  </div>
-  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
-    <ul class="simple visible nav section-nav flex-column">
-</ul>
-
-  </nav></div>
-
-  <div class="sidebar-secondary-item">
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/pages/performing_analysis.md">
+    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/pages/tutorials.md">
       <i class="fa-solid fa-pencil"></i>
       
       

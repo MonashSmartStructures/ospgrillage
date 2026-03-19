@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Mesh features &#8212; ospgrillage 0.5.0 documentation</title>
+    <title>Running an analysis &#8212; ospgrillage 0.5.0 documentation</title>
   
   
   
@@ -42,11 +42,11 @@
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'pages/mesh_features';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'pages/running_analysis';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Mesh features" href="../notebooks/mesh_showcase.html" />
-    <link rel="prev" title="Model types available" href="model_templates.html" />
+    <link rel="next" title="Working with results" href="working_with_results.html" />
+    <link rel="prev" title="Defining loads" href="defining_loads.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.5.0" />
@@ -146,18 +146,42 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="api_reference.html">
-    API reference
+  <a class="nav-link nav-internal" href="tutorials.html">
+    Tutorials
   </a>
 </li>
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="additional_resources.html">
+  <a class="nav-link nav-internal" href="ospgui.html">
+    GUI — ospgui
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="api_reference.html">
+    API reference
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="additional_resources.html">
     Additional Resources
   </a>
 </li>
 
+                </ul>
+            </li>
+            
   </ul>
 </nav></div>
       
@@ -274,6 +298,20 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="ospgui.html">
+    GUI — ospgui
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="api_reference.html">
     API reference
   </a>
@@ -343,23 +381,9 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="model_templates.html">Model types available</a></li>
-<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Mesh features</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/mesh_showcase.html">Mesh features</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/multi_span.html">Multi - span feature</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/curve_mesh.html">Curve Mesh</a></li>
-</ul>
-</details></li>
 <li class="toctree-l1"><a class="reference internal" href="defining_loads.html">Defining loads</a></li>
-<li class="toctree-l1"><a class="reference internal" href="getting_results.html">Analysis and results</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="examples.html">Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/super_t_tutorial.html">Super-T Bridge Grillage Analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/mesh_showcase.html">Mesh features</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/multi_span.html">Multi - span feature</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/curve_mesh.html">Curve Mesh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/advanced_results.html">Advanced Results Processing</a></li>
-</ul>
-</details></li>
-<li class="toctree-l1"><a class="reference internal" href="ospgui.html">GUI — ospgui</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Running an analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="working_with_results.html">Working with results</a></li>
 </ul>
 </div>
 </nav></div>
@@ -403,7 +427,7 @@
     
     <li class="breadcrumb-item"><a href="user_guide.html" class="nav-link">User Guide</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Mesh features</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Running an analysis</span></li>
   </ul>
 </nav>
 </div>
@@ -420,33 +444,39 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="mesh-features">
-<h1>Mesh features<a class="headerlink" href="#mesh-features" title="Link to this heading">#</a></h1>
-<p><em>ospgrillage</em> supports several mesh layouts to cover a wide range of bridge geometries.
-The notebooks below demonstrate each capability with worked examples.</p>
-<section id="mesh-capabilities">
-<h2>Mesh capabilities<a class="headerlink" href="#mesh-capabilities" title="Link to this heading">#</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/mesh_showcase.html">Mesh features</a></li>
-</ul>
+  <section id="running-an-analysis">
+<h1>Running an analysis<a class="headerlink" href="#running-an-analysis" title="Link to this heading">#</a></h1>
+<p>For all example code on this page, <em>ospgrillage</em> is imported as <code class="docutils literal notranslate"><span class="pre">og</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">ospgrillage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">og</span>
+</pre></div>
+</div>
+<section id="analyse-load-cases">
+<h2>Analyse load cases<a class="headerlink" href="#analyse-load-cases" title="Link to this heading">#</a></h2>
+<p>Once all defined load cases (static and moving) have been added to the grillage object, analysis can be conducted.</p>
+<p>To analyse load case(s), call <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze.html#ospgrillage.osp_grillage.OspGrillage.analyze" title="ospgrillage.osp_grillage.OspGrillage.analyze"><code class="xref py py-meth docutils literal notranslate"><span class="pre">analyze()</span></code></a>. By default this runs all defined load cases. To run only specific load cases, pass a load case name <code class="docutils literal notranslate"><span class="pre">str</span></code> or a <code class="docutils literal notranslate"><span class="pre">list</span></code> of names to the <code class="docutils literal notranslate"><span class="pre">load_case</span></code> keyword argument. The following example shows the various options:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># analyze all</span>
+<span class="n">example_bridge</span><span class="o">.</span><span class="n">analyze</span><span class="p">()</span>
+<span class="c1"># or a single str</span>
+<span class="n">example_bridge</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span><span class="n">load_case</span><span class="o">=</span><span class="s2">&quot;DL&quot;</span><span class="p">)</span>
+<span class="c1"># or a single element list</span>
+<span class="n">example_bridge</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span><span class="n">load_case</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;DL&quot;</span><span class="p">])</span>
+<span class="c1"># or a list of multiple load cases</span>
+<span class="n">example_bridge</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span><span class="n">load_case</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;DL&quot;</span><span class="p">,</span><span class="s2">&quot;SDL&quot;</span><span class="p">])</span>
+</pre></div>
 </div>
 </section>
-<section id="multi-span-feature">
-<h2>Multi span feature<a class="headerlink" href="#multi-span-feature" title="Link to this heading">#</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/multi_span.html">Multi - span feature</a></li>
-</ul>
-</div>
+<section id="querying-the-model">
+<h2>Querying the model<a class="headerlink" href="#querying-the-model" title="Link to this heading">#</a></h2>
+<section id="nodes">
+<h3>Nodes<a class="headerlink" href="#nodes" title="Link to this heading">#</a></h3>
+<p>Use <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_nodes.html#ospgrillage.osp_grillage.OspGrillage.get_nodes" title="ospgrillage.osp_grillage.OspGrillage.get_nodes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_nodes()</span></code></a> to retrieve node
+information from the model.</p>
 </section>
-<section id="curve-mesh-feature">
-<h2>Curve mesh feature<a class="headerlink" href="#curve-mesh-feature" title="Link to this heading">#</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/curve_mesh.html">Curve Mesh</a></li>
-</ul>
-</div>
+<section id="elements">
+<h3>Elements<a class="headerlink" href="#elements" title="Link to this heading">#</a></h3>
+<p>Use <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_element.html#ospgrillage.osp_grillage.OspGrillage.get_element" title="ospgrillage.osp_grillage.OspGrillage.get_element"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_element()</span></code></a> to query element
+properties and tags from the model.</p>
+</section>
 </section>
 </section>
 
@@ -461,20 +491,20 @@ The notebooks below demonstrate each capability with worked examples.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="model_templates.html"
+       href="defining_loads.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Model types available</p>
+        <p class="prev-next-title">Defining loads</p>
       </div>
     </a>
     <a class="right-next"
-       href="../notebooks/mesh_showcase.html"
+       href="working_with_results.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Mesh features</p>
+        <p class="prev-next-title">Working with results</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -497,9 +527,12 @@ The notebooks below demonstrate each capability with worked examples.</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mesh-capabilities">Mesh capabilities</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-span-feature">Multi span feature</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#curve-mesh-feature">Curve mesh feature</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analyse-load-cases">Analyse load cases</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#querying-the-model">Querying the model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nodes">Nodes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#elements">Elements</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
@@ -507,7 +540,7 @@ The notebooks below demonstrate each capability with worked examples.</p>
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/pages/mesh_features.md">
+    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/pages/running_analysis.md">
       <i class="fa-solid fa-pencil"></i>
       
       

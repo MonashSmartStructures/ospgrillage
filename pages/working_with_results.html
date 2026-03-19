@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Analysis and results &#8212; ospgrillage 0.5.0 documentation</title>
+    <title>Working with results &#8212; ospgrillage 0.5.0 documentation</title>
   
   
   
@@ -42,11 +42,11 @@
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'pages/getting_results';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'pages/working_with_results';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Examples" href="examples.html" />
-    <link rel="prev" title="Defining loads" href="defining_loads.html" />
+    <link rel="next" title="Tutorials" href="tutorials.html" />
+    <link rel="prev" title="Running an analysis" href="running_analysis.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.5.0" />
@@ -146,18 +146,42 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="api_reference.html">
-    API reference
+  <a class="nav-link nav-internal" href="tutorials.html">
+    Tutorials
   </a>
 </li>
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="additional_resources.html">
+  <a class="nav-link nav-internal" href="ospgui.html">
+    GUI — ospgui
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="api_reference.html">
+    API reference
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="additional_resources.html">
     Additional Resources
   </a>
 </li>
 
+                </ul>
+            </li>
+            
   </ul>
 </nav></div>
       
@@ -274,6 +298,20 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="ospgui.html">
+    GUI — ospgui
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="api_reference.html">
     API reference
   </a>
@@ -343,23 +381,9 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="model_templates.html">Model types available</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="mesh_features.html">Mesh features</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/mesh_showcase.html">Mesh features</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/multi_span.html">Multi - span feature</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/curve_mesh.html">Curve Mesh</a></li>
-</ul>
-</details></li>
 <li class="toctree-l1"><a class="reference internal" href="defining_loads.html">Defining loads</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Analysis and results</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="examples.html">Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/super_t_tutorial.html">Super-T Bridge Grillage Analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/mesh_showcase.html">Mesh features</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/multi_span.html">Multi - span feature</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/curve_mesh.html">Curve Mesh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/advanced_results.html">Advanced Results Processing</a></li>
-</ul>
-</details></li>
-<li class="toctree-l1"><a class="reference internal" href="ospgui.html">GUI — ospgui</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running_analysis.html">Running an analysis</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Working with results</a></li>
 </ul>
 </div>
 </nav></div>
@@ -403,7 +427,7 @@
     
     <li class="breadcrumb-item"><a href="user_guide.html" class="nav-link">User Guide</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Analysis and results</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Working with results</span></li>
   </ul>
 </nav>
 </div>
@@ -420,27 +444,12 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="analysis-and-results">
-<h1>Analysis and results<a class="headerlink" href="#analysis-and-results" title="Link to this heading">#</a></h1>
-<p>For all example code in this page, <em>ospgrillage</em> is imported as <code class="docutils literal notranslate"><span class="pre">og</span></code></p>
+  <section id="working-with-results">
+<h1>Working with results<a class="headerlink" href="#working-with-results" title="Link to this heading">#</a></h1>
+<p>For all example code on this page, <em>ospgrillage</em> is imported as <code class="docutils literal notranslate"><span class="pre">og</span></code></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">ospgrillage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">og</span>
 </pre></div>
 </div>
-<section id="running-analysis">
-<h2>Running analysis<a class="headerlink" href="#running-analysis" title="Link to this heading">#</a></h2>
-<p>Once all defined load cases (static and moving) have been added to the grillage object, analysis can be conducted.</p>
-<p>To analyse load case(s), call <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze.html#ospgrillage.osp_grillage.OspGrillage.analyze" title="ospgrillage.osp_grillage.OspGrillage.analyze"><code class="xref py py-meth docutils literal notranslate"><span class="pre">analyze()</span></code></a>. By default this runs all defined load cases. To run only specific load cases, pass a load case name <code class="docutils literal notranslate"><span class="pre">str</span></code> or a <code class="docutils literal notranslate"><span class="pre">list</span></code> of names to the <code class="docutils literal notranslate"><span class="pre">load_case</span></code> keyword argument. The following example shows the various options:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># analyze all</span>
-<span class="n">example_bridge</span><span class="o">.</span><span class="n">analyze</span><span class="p">()</span>
-<span class="c1"># or a single str</span>
-<span class="n">example_bridge</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span><span class="n">load_case</span><span class="o">=</span><span class="s2">&quot;DL&quot;</span><span class="p">)</span>
-<span class="c1"># or a single element list</span>
-<span class="n">example_bridge</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span><span class="n">load_case</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;DL&quot;</span><span class="p">])</span>
-<span class="c1"># or a list of multiple load cases</span>
-<span class="n">example_bridge</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span><span class="n">load_case</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;DL&quot;</span><span class="p">,</span><span class="s2">&quot;SDL&quot;</span><span class="p">])</span>
-</pre></div>
-</div>
-</section>
 <section id="extracting-results">
 <h2>Extracting results<a class="headerlink" href="#extracting-results" title="Link to this heading">#</a></h2>
 <p>After analysis, results are obtained using
@@ -463,23 +472,23 @@
 </thead>
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">displacements</span></code></p></td>
-<td><p>Loadcase × Node × Component</p></td>
+<td><p>Loadcase x Node x Component</p></td>
 <td><p>Translations (x, y, z) and rotations (theta_x, theta_y, theta_z) at each node</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">velocity</span></code></p></td>
-<td><p>Loadcase × Node × Component</p></td>
+<td><p>Loadcase x Node x Component</p></td>
 <td><p>Velocities (dx, dy, dz) and angular velocities (dtheta_x/y/z)</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">acceleration</span></code></p></td>
-<td><p>Loadcase × Node × Component</p></td>
+<td><p>Loadcase x Node x Component</p></td>
 <td><p>Accelerations (ddx, ddy, ddz) and angular accelerations</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">forces</span></code></p></td>
-<td><p>Loadcase × Element × Component</p></td>
+<td><p>Loadcase x Element x Component</p></td>
 <td><p>Internal forces (Vx, Vy, Vz, Mx, My, Mz) at each element end (_i, _j)</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ele_nodes</span></code></p></td>
-<td><p>Element × Nodes</p></td>
+<td><p>Element x Nodes</p></td>
 <td><p>Which node tags (i, j) belong to each element</p></td>
 </tr>
 </tbody>
@@ -512,7 +521,7 @@ list the integer tags from the OpenSees model.</p>
 <h3>Extracting the data variables<a class="headerlink" href="#extracting-the-data-variables" title="Link to this heading">#</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">disp_array</span> <span class="o">=</span> <span class="n">all_result</span><span class="o">.</span><span class="n">displacements</span>  <span class="c1"># nodal displacements &amp; rotations</span>
 <span class="n">force_array</span> <span class="o">=</span> <span class="n">all_result</span><span class="o">.</span><span class="n">forces</span>        <span class="c1"># element end forces</span>
-<span class="n">ele_array</span>   <span class="o">=</span> <span class="n">all_result</span><span class="o">.</span><span class="n">ele_nodes</span>     <span class="c1"># element→node connectivity</span>
+<span class="n">ele_array</span>   <span class="o">=</span> <span class="n">all_result</span><span class="o">.</span><span class="n">ele_nodes</span>     <span class="c1"># element-&gt;node connectivity</span>
 </pre></div>
 </div>
 </section>
@@ -562,8 +571,8 @@ DataArrays, see the
 </div>
 </section>
 </section>
-<section id="getting-combinations">
-<h2>Getting combinations<a class="headerlink" href="#getting-combinations" title="Link to this heading">#</a></h2>
+<section id="load-combinations">
+<h2>Load combinations<a class="headerlink" href="#load-combinations" title="Link to this heading">#</a></h2>
 <p>Load combinations are computed on the fly in
 <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_results()</span></code></a> by passing a <code class="docutils literal notranslate"><span class="pre">combinations</span></code>
 dictionary: keys are load case name strings and values are load factors.
@@ -590,8 +599,8 @@ dictionary: keys are load case name strings and values are load factors.
 <p>When a combination mixes static and moving load cases, the factored static load case
 is added to <em>each</em> increment of the moving load.</p>
 </section>
-<section id="getting-load-envelope">
-<h2>Getting load envelope<a class="headerlink" href="#getting-load-envelope" title="Link to this heading">#</a></h2>
+<section id="load-envelopes">
+<h2>Load envelopes<a class="headerlink" href="#load-envelopes" title="Link to this heading">#</a></h2>
 <p>A load envelope finds the maximum (or minimum) of a chosen result component across
 all load cases. Use <a class="reference internal" href="generated/ospgrillage.postprocessing.create_envelope.html#ospgrillage.postprocessing.create_envelope" title="ospgrillage.postprocessing.create_envelope"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_envelope()</span></code></a> to build an
 <a class="reference internal" href="api_postprocessing.html#ospgrillage.postprocessing.Envelope" title="ospgrillage.postprocessing.Envelope"><code class="xref py py-class docutils literal notranslate"><span class="pre">Envelope</span></code></a> object, then call <code class="docutils literal notranslate"><span class="pre">.get()</span></code>:</p>
@@ -613,19 +622,6 @@ displacement <code class="docutils literal notranslate"><span class="pre">y</spa
 </pre></div>
 </div>
 <p>For more options see <a class="reference internal" href="generated/ospgrillage.postprocessing.create_envelope.html#ospgrillage.postprocessing.create_envelope" title="ospgrillage.postprocessing.create_envelope"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_envelope()</span></code></a>.</p>
-</section>
-<section id="getting-specific-properties-of-model">
-<h2>Getting specific properties of model<a class="headerlink" href="#getting-specific-properties-of-model" title="Link to this heading">#</a></h2>
-<section id="node">
-<h3>Node<a class="headerlink" href="#node" title="Link to this heading">#</a></h3>
-<p>Use <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_nodes.html#ospgrillage.osp_grillage.OspGrillage.get_nodes" title="ospgrillage.osp_grillage.OspGrillage.get_nodes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_nodes()</span></code></a> to retrieve node
-information from the model.</p>
-</section>
-<section id="element">
-<h3>Element<a class="headerlink" href="#element" title="Link to this heading">#</a></h3>
-<p>Use <a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_element.html#ospgrillage.osp_grillage.OspGrillage.get_element" title="ospgrillage.osp_grillage.OspGrillage.get_element"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_element()</span></code></a> to query element
-properties and tags from the model.</p>
-</section>
 </section>
 <section id="plotting-results">
 <h2>Plotting results<a class="headerlink" href="#plotting-results" title="Link to this heading">#</a></h2>
@@ -731,12 +727,12 @@ of groups:</p>
 <section id="customising-plots">
 <h3>Customising plots<a class="headerlink" href="#customising-plots" title="Link to this heading">#</a></h3>
 <p>All plotting functions accept keyword arguments for common customisations:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Wide figure, values in kN·m, custom title, red with no fill</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Wide figure, values in kN*m, custom title, red with no fill</span>
 <span class="n">og</span><span class="o">.</span><span class="n">plot_bmd</span><span class="p">(</span><span class="n">bridge_28</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span>
             <span class="n">member</span><span class="o">=</span><span class="s2">&quot;interior_main_beam&quot;</span><span class="p">,</span>
             <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
             <span class="n">scale</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>
-            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Bending Moment (kN·m)&quot;</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Bending Moment (kN*m)&quot;</span><span class="p">,</span>
             <span class="n">color</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span>
             <span class="n">fill</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
@@ -769,7 +765,7 @@ of groups:</p>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">scale</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">1.0</span></code></p></td>
-<td><p>Multiply values by this factor (e.g. <code class="docutils literal notranslate"><span class="pre">0.001</span></code> for N → kN)</p></td>
+<td><p>Multiply values by this factor (e.g. <code class="docutils literal notranslate"><span class="pre">0.001</span></code> for N to kN)</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">title</span></code></p></td>
 <td><p>auto</p></td>
@@ -813,16 +809,6 @@ terminal.  The figure can be further customised using the standard Plotly
 API.  The GUI auto-detects plotly and uses it by default when available.</p>
 </section>
 </section>
-<section id="worked-examples">
-<h2>Worked examples<a class="headerlink" href="#worked-examples" title="Link to this heading">#</a></h2>
-<p>For complete worked examples, see:</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="../notebooks/super_t_tutorial.html"><span class="doc">Super-T bridge tutorial</span></a> — end-to-end
-model creation, loading, analysis, and results extraction.</p></li>
-<li><p><a class="reference internal" href="../notebooks/advanced_results.html"><span class="doc">Advanced results processing</span></a> — xarray selection,
-load combinations, envelopes, and custom post-processing.</p></li>
-</ul>
-</section>
 </section>
 
 
@@ -836,20 +822,20 @@ load combinations, envelopes, and custom post-processing.</p></li>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="defining_loads.html"
+       href="running_analysis.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Defining loads</p>
+        <p class="prev-next-title">Running an analysis</p>
       </div>
     </a>
     <a class="right-next"
-       href="examples.html"
+       href="tutorials.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Examples</p>
+        <p class="prev-next-title">Tutorials</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -872,7 +858,6 @@ load combinations, envelopes, and custom post-processing.</p></li>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-analysis">Running analysis</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extracting-results">Extracting results</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-an-xarray-dataset">What is an xarray Dataset?</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#extracting-the-data-variables">Extracting the data variables</a></li>
@@ -880,13 +865,8 @@ load combinations, envelopes, and custom post-processing.</p></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selecting-results-by-label">Selecting results by label</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-combinations">Getting combinations</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-load-envelope">Getting load envelope</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-specific-properties-of-model">Getting specific properties of model</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#node">Node</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#element">Element</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-combinations">Load combinations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-envelopes">Load envelopes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#plotting-results">Plotting results</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#model-visualisation">Model visualisation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#post-processing-results">Post-processing results</a></li>
@@ -896,7 +876,6 @@ load combinations, envelopes, and custom post-processing.</p></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interactive-3d-plots-plotly">Interactive 3D plots (Plotly)</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#worked-examples">Worked examples</a></li>
 </ul>
   </nav></div>
 
@@ -904,7 +883,7 @@ load combinations, envelopes, and custom post-processing.</p></li>
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/pages/getting_results.md">
+    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/pages/working_with_results.md">
       <i class="fa-solid fa-pencil"></i>
       
       
