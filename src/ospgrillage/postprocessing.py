@@ -420,6 +420,7 @@ def _plotly_3d_force(
     alpha=1.0,
     fill=True,
     fill_alpha=None,
+    show_supports=True,
 ):
     """Build an interactive 3D Plotly figure of force diagrams.
 
@@ -583,6 +584,35 @@ def _plotly_3d_force(
                 )
             )
             trace_idx += 1
+
+    # Support markers on the zero-baseline
+    if show_supports:
+        supports = _extract_support_data(ospgrillage_obj)
+        from collections import defaultdict
+
+        by_type = defaultdict(list)
+        for sup in supports:
+            by_type[sup["fixity_type"]].append(sup)
+        for ftype, sups in sorted(by_type.items()):
+            symbol, colour, sz = _SUPPORT_STYLE_PLOTLY.get(ftype, ("x", "purple", 6))
+            sx = [s["x"] for s in sups]
+            sy = [s["z"] for s in sups]
+            sz_vals = [0.0] * len(sups)
+            fig.add_trace(
+                go.Scatter3d(
+                    x=sx,
+                    y=sy,
+                    z=sz_vals,
+                    mode="markers",
+                    marker=dict(
+                        symbol=symbol,
+                        size=sz,
+                        color=colour,
+                        line=dict(color="black", width=1),
+                    ),
+                    name=f"support ({ftype})",
+                )
+            )
 
     # Compute spatial data ranges so the plan-view (x vs z) axes are
     # proportional while the force axis scales freely.
@@ -826,6 +856,7 @@ def plot_force(
     fill: bool = True,
     alpha: float = 0.4,
     show: bool = False,
+    show_supports: bool = False,
 ):
     """
     Plot a force diagram for a grillage model result for a specified component and load case.
@@ -865,6 +896,9 @@ def plot_force(
     :type alpha: float
     :param show: If ``True``, call ``plt.show()`` before returning.
     :type show: bool
+    :param show_supports: If ``True``, draw support markers on the zero
+        baseline.  Default ``False``.
+    :type show_supports: bool
     :returns: Matplotlib axes (use ``ax.get_figure()`` to obtain the figure).
     :rtype: :class:`~matplotlib.axes.Axes`
     """
@@ -895,6 +929,23 @@ def plot_force(
         ax.set_title(member)
     elif title is not None:
         ax.set_title(title)
+    if show_supports:
+        supports = _extract_support_data(ospgrillage_obj)
+        for sup in supports:
+            marker, colour, sz = _SUPPORT_STYLE_MPL.get(
+                sup["fixity_type"], ("D", "purple", 7)
+            )
+            ax.plot(
+                sup["x"],
+                0,
+                marker=marker,
+                color=colour,
+                markersize=sz,
+                markeredgecolor="black",
+                markeredgewidth=0.5,
+                zorder=5,
+            )
+
     ax.set_xlabel("x (m) ")
     ax.set_ylabel(component)
     fig.tight_layout()
@@ -919,6 +970,7 @@ def _plot_def_mpl(
     title=_AUTO,
     color: str = "b",
     show: bool = False,
+    show_supports: bool = False,
 ):
     """
     Plot a displacement diagram for a grillage model result for a specified component and load case.
@@ -976,6 +1028,23 @@ def _plot_def_mpl(
 
     scaled = np.array(values_list) * scale
     ax.plot(xx_list, scaled, "-", color=color)
+
+    if show_supports:
+        supports = _extract_support_data(ospgrillage_obj)
+        for sup in supports:
+            marker, colour, sz = _SUPPORT_STYLE_MPL.get(
+                sup["fixity_type"], ("D", "purple", 7)
+            )
+            ax.plot(
+                sup["x"],
+                0,
+                marker=marker,
+                color=colour,
+                markersize=sz,
+                markeredgecolor="black",
+                markeredgewidth=0.5,
+                zorder=5,
+            )
 
     if title is _AUTO:
         ax.set_title(member)
@@ -1122,7 +1191,8 @@ def plot_bmd(
         plotly_kw = {
             k: v
             for k, v in kwargs.items()
-            if k in ("figsize", "scale", "title", "alpha", "fill", "fill_alpha")
+            if k
+            in ("figsize", "scale", "title", "alpha", "fill", "fill_alpha", "show_supports")
         }
         plotly_kw["fig"] = kwargs.get("ax", None)
         fig = _plotly_3d_force(
@@ -1203,7 +1273,8 @@ def plot_sfd(
         plotly_kw = {
             k: v
             for k, v in kwargs.items()
-            if k in ("figsize", "scale", "title", "alpha", "fill", "fill_alpha")
+            if k
+            in ("figsize", "scale", "title", "alpha", "fill", "fill_alpha", "show_supports")
         }
         plotly_kw["fig"] = kwargs.get("ax", None)
         fig = _plotly_3d_force(
@@ -1303,7 +1374,7 @@ def plot_def(
     def_kw = {
         k: v
         for k, v in kwargs.items()
-        if k in ("figsize", "ax", "scale", "title", "color", "show")
+        if k in ("figsize", "ax", "scale", "title", "color", "show", "show_supports")
     }
     # Single string returns one axes (backward compat)
     if isinstance(members, str):
@@ -1372,7 +1443,8 @@ def plot_tmd(
         plotly_kw = {
             k: v
             for k, v in kwargs.items()
-            if k in ("figsize", "scale", "title", "alpha", "fill", "fill_alpha")
+            if k
+            in ("figsize", "scale", "title", "alpha", "fill", "fill_alpha", "show_supports")
         }
         plotly_kw["fig"] = kwargs.get("ax", None)
         fig = _plotly_3d_force(
