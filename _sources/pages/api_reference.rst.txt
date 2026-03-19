@@ -12,4 +12,5 @@ factory functions (``create_*``) and the underlying classes.
    api_members
    api_load
    api_mesh
+   api_analysis
    api_postprocessing

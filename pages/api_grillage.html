@@ -349,8 +349,6 @@
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.set_boundary_condition.html">OspGrillage.set_boundary_condition</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.add_load_case.html">OspGrillage.add_load_case</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.add_load_combination.html">OspGrillage.add_load_combination</a></li>
-<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze.html">OspGrillage.analyze</a></li>
-<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html">OspGrillage.get_results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_nodes.html">OspGrillage.get_nodes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_element.html">OspGrillage.get_element</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.clear_load_cases.html">OspGrillage.clear_load_cases</a></li>
@@ -393,6 +391,11 @@
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="api_mesh.html">Mesh</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.mesh.create_point.html">create_point</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api_analysis.html">Analysis and results</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze.html">OspGrillage.analyze</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html">OspGrillage.get_results</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="api_postprocessing.html">Post-processing</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -496,12 +499,6 @@
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.add_load_combination.html#ospgrillage.osp_grillage.OspGrillage.add_load_combination" title="ospgrillage.osp_grillage.OspGrillage.add_load_combination"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_load_combination</span></code></a>(load_combination_name, ...)</p></td>
 <td><p>Function to add load combination to analysis.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze.html#ospgrillage.osp_grillage.OspGrillage.analyze" title="ospgrillage.osp_grillage.OspGrillage.analyze"><code class="xref py py-obj docutils literal notranslate"><span class="pre">analyze</span></code></a>(**kwargs)</p></td>
-<td><p>Function to analyze defined load</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_results</span></code></a>(**kwargs)</p></td>
-<td><p>Return analysis results as an xarray <code class="docutils literal notranslate"><span class="pre">Dataset</span></code>.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_nodes.html#ospgrillage.osp_grillage.OspGrillage.get_nodes" title="ospgrillage.osp_grillage.OspGrillage.get_nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_nodes</span></code></a>([number])</p></td>
 <td><p>Function to return all information for nodes in grillage model</p></td>
@@ -756,39 +753,6 @@ If <code class="docutils literal notranslate"><span class="pre">False</span></co
 </dd></dl>
 
 </section>
-<section id="analysis">
-<h3>Analysis<a class="headerlink" href="#analysis" title="Link to this heading">#</a></h3>
-<dl class="py class">
-<dt class="sig sig-object py" id="ospgrillage.osp_grillage.Analysis">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">analysis_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ops_grillage_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pyfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_counter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ele_counter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">analysis_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Static'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_counter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pattern_counter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_case</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.Analysis" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Main class to handle the run/execution of load case, including incremental load cases of a moving load analysis.
-Analysis class is created and handled by the OspGrillage class.</p>
-<p>The following are the roles of Analysis object:</p>
-<ul class="simple">
-<li><p>store information of ops commands for performing static (default) analysis of single/multiple load case(s).</p></li>
-<li><p>execute the required ops commands to perform analysis using the OspGrillage model instance.</p></li>
-<li><p>if flagged, writes an executable py file instead which performs the exact analysis as it would for an OspGrillage instance instead.</p></li>
-<li><p>manages multiple load case’s ops.load() commands, applying the specified load factors to the load cases for load combinations</p></li>
-</ul>
-<dl class="field-list simple">
-</dl>
-</dd></dl>
-
-</section>
-<section id="results">
-<h3>Results<a class="headerlink" href="#results" title="Link to this heading">#</a></h3>
-<dl class="py class">
-<dt class="sig sig-object py" id="ospgrillage.osp_grillage.Results">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh_obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.Results" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Main class to store results of an Analysis class object, process into data array output for post processing/plotting.
-Class object is accessed within OspGrillage class object.</p>
-<dl class="field-list simple">
-</dl>
-</dd></dl>
-
-</section>
 </section>
 </section>
 
@@ -852,14 +816,6 @@ Class object is accessed within OspGrillage class object.</p>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillageshell">OspGrillageShell</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.osp_grillage.OspGrillageShell"><code class="docutils literal notranslate"><span class="pre">OspGrillageShell</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#analysis">Analysis</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.osp_grillage.Analysis"><code class="docutils literal notranslate"><span class="pre">Analysis</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#results">Results</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.osp_grillage.Results"><code class="docutils literal notranslate"><span class="pre">Results</span></code></a></li>
 </ul>
 </li>
 </ul>

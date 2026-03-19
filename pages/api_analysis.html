@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Load types &#8212; ospgrillage 0.5.0 documentation</title>
+    <title>Analysis and results &#8212; ospgrillage 0.5.0 documentation</title>
   
   
   
@@ -42,11 +42,11 @@
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'pages/api_load_types';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'pages/api_analysis';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="create_load_vertex" href="generated/ospgrillage.load.create_load_vertex.html" />
-    <link rel="prev" title="Load module" href="api_load.html" />
+    <link rel="next" title="OspGrillage.analyze" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze.html" />
+    <link rel="prev" title="create_point" href="generated/ospgrillage.mesh.create_point.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.5.0" />
@@ -366,8 +366,8 @@
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.members.create_member.html">create_member</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="api_load.html">Load module</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">Load types</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api_load.html">Load module</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="api_load_types.html">Load types</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_load_vertex.html">create_load_vertex</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/ospgrillage.load.create_load.html">create_load</a></li>
 </ul>
@@ -393,7 +393,7 @@
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.mesh.create_point.html">create_point</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="api_analysis.html">Analysis and results</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Analysis and results</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze.html">OspGrillage.analyze</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html">OspGrillage.get_results</a></li>
 </ul>
@@ -451,10 +451,7 @@
     
     <li class="breadcrumb-item"><a href="api_reference.html" class="nav-link">API reference</a></li>
     
-    
-    <li class="breadcrumb-item"><a href="api_load.html" class="nav-link">Load module</a></li>
-    
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Load types</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Analysis and results</span></li>
   </ul>
 </nav>
 </div>
@@ -471,51 +468,18 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="load-types">
-<h1>Load types<a class="headerlink" href="#load-types" title="Link to this heading">#</a></h1>
-<p>These classes represent individual loads applied at specific points, along
-lines, or over patches of the grillage model. They are the basic building
-blocks that are assembled into <a class="reference internal" href="api_load_cases.html"><span class="doc">load cases and models</span></a>.</p>
-<section id="data-types">
-<h2>Data types<a class="headerlink" href="#data-types" title="Link to this heading">#</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="ospgrillage.load.LoadVertex">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">LoadVertex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LoadVertex" title="Link to this definition">#</a></dt>
-<dd><p>A <code class="docutils literal notranslate"><span class="pre">namedtuple</span></code> giving a spatial coordinate and load magnitude — the
-building block of all load types.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> – x coordinate.</p></li>
-<li><p><strong>y</strong> – y coordinate (usually <code class="docutils literal notranslate"><span class="pre">0</span></code> for grillage models).</p></li>
-<li><p><strong>z</strong> – z coordinate.</p></li>
-<li><p><strong>p</strong> – Load magnitude (force, force/length, or force/area).</p></li>
-</ul>
-</dd>
-</dl>
-<div class="versionadded">
-<p><span class="versionmodified added">Added in version 0.5.0.</span></p>
-</div>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="ospgrillage.load.LoadPoint">
-<span class="sig-prename descclassname"><span class="pre">ospgrillage.load.</span></span><span class="sig-name descname"><span class="pre">LoadPoint</span></span><a class="headerlink" href="#ospgrillage.load.LoadPoint" title="Link to this definition">#</a></dt>
-<dd><p>Deprecated alias for <a class="reference internal" href="#ospgrillage.load.LoadVertex" title="ospgrillage.load.LoadVertex"><code class="xref py py-class docutils literal notranslate"><span class="pre">LoadVertex</span></code></a>.  Existing code using
-<code class="docutils literal notranslate"><span class="pre">LoadPoint</span></code> will continue to work, but new code should use
-<code class="docutils literal notranslate"><span class="pre">LoadVertex</span></code>.</p>
-</dd></dl>
-
-</section>
-<section id="factory-functions">
-<h2>Factory functions<a class="headerlink" href="#factory-functions" title="Link to this heading">#</a></h2>
+  <section id="analysis-and-results">
+<h1>Analysis and results<a class="headerlink" href="#analysis-and-results" title="Link to this heading">#</a></h1>
+<p>Running the analysis and extracting results.</p>
+<section id="ospgrillage-methods">
+<h2>OspGrillage methods<a class="headerlink" href="#ospgrillage-methods" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_load_vertex.html#ospgrillage.load.create_load_vertex" title="ospgrillage.load.create_load_vertex"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_load_vertex</span></code></a>(**kwargs)</p></td>
-<td><p>Create a <code class="xref py py-class docutils literal notranslate"><span class="pre">LoadVertex</span></code> — a spatial coordinate with load magnitude.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze.html#ospgrillage.osp_grillage.OspGrillage.analyze" title="ospgrillage.osp_grillage.OspGrillage.analyze"><code class="xref py py-obj docutils literal notranslate"><span class="pre">analyze</span></code></a>(**kwargs)</p></td>
+<td><p>Function to analyze defined load</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.load.create_load.html#ospgrillage.load.create_load" title="ospgrillage.load.create_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_load</span></code></a>(**kwargs)</p></td>
-<td><p>User interface function to create load types.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_results</span></code></a>(**kwargs)</p></td>
+<td><p>Return analysis results as an xarray <code class="docutils literal notranslate"><span class="pre">Dataset</span></code>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -523,111 +487,35 @@ building block of all load types.</p>
 </section>
 <section id="class-reference">
 <h2>Class reference<a class="headerlink" href="#class-reference" title="Link to this heading">#</a></h2>
-<section id="nodalload">
-<h3>NodalLoad<a class="headerlink" href="#nodalload" title="Link to this heading">#</a></h3>
+<section id="analysis">
+<h3>Analysis<a class="headerlink" href="#analysis" title="Link to this heading">#</a></h3>
 <dl class="py class">
-<dt class="sig sig-object py" id="ospgrillage.load.NodalLoad">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">NodalLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_tag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.NodalLoad" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Loads</span></code></p>
-<p>Class for Nodal loads.</p>
-<p>Inits the Nodal load class. NodalLoad requires a NodalForce(Fx,Fy,Fz,Mx,My,Mz) as input.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<em>str</em>) – Name of load</p></li>
-<li><p><strong>node_tag</strong> (<em>int</em>) – Node tag of grillage model for nodal load to be applied</p></li>
-<li><p><strong>node_force</strong> (<em>NodalForces</em><em>(</em><em>Fx</em><em>,</em><em>Fy</em><em>,</em><em>Fz</em><em>,</em><em>Mx</em><em>,</em><em>My</em><em>,</em><em>Mz</em><em>)</em>) – Named tuple of node forces</p></li>
+<dt class="sig sig-object py" id="ospgrillage.osp_grillage.Analysis">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">analysis_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ops_grillage_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pyfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_counter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ele_counter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">analysis_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Static'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_counter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pattern_counter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_case</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.Analysis" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Main class to handle the run/execution of load case, including incremental load cases of a moving load analysis.
+Analysis class is created and handled by the OspGrillage class.</p>
+<p>The following are the roles of Analysis object:</p>
+<ul class="simple">
+<li><p>store information of ops commands for performing static (default) analysis of single/multiple load case(s).</p></li>
+<li><p>execute the required ops commands to perform analysis using the OspGrillage model instance.</p></li>
+<li><p>if flagged, writes an executable py file instead which performs the exact analysis as it would for an OspGrillage instance instead.</p></li>
+<li><p>manages multiple load case’s ops.load() commands, applying the specified load factors to the load cases for load combinations</p></li>
 </ul>
-</dd>
+<dl class="field-list simple">
 </dl>
 </dd></dl>
 
 </section>
-<section id="pointload">
-<h3>PointLoad<a class="headerlink" href="#pointload" title="Link to this heading">#</a></h3>
+<section id="results">
+<h3>Results<a class="headerlink" href="#results" title="Link to this heading">#</a></h3>
 <dl class="py class">
-<dt class="sig sig-object py" id="ospgrillage.load.PointLoad">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">PointLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.PointLoad" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Loads</span></code></p>
-<p>Class for concentrated point loads.</p>
-<p>Represents a single concentrated force applied at a point on the grillage
-structure. Inherits all attributes and methods from the Loads base class.</p>
-<p>Initialize a PointLoad instance.</p>
+<dt class="sig sig-object py" id="ospgrillage.osp_grillage.Results">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh_obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.Results" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Main class to store results of an Analysis class object, process into data array output for post processing/plotting.
+Class object is accessed within OspGrillage class object.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name identifier for the point load.</p></li>
-<li><p><strong>point1</strong> (<a class="reference internal" href="#ospgrillage.load.LoadVertex" title="ospgrillage.load.LoadVertex"><em>LoadVertex</em></a>) – Location and magnitude of the concentrated load.</p></li>
-<li><p><strong>Fx</strong> (<em>float</em><em>, </em><em>optional</em>) – Force in the global x direction.</p></li>
-<li><p><strong>Fy</strong> (<em>float</em><em>, </em><em>optional</em>) – Force in the global y direction.</p></li>
-<li><p><strong>Fz</strong> (<em>float</em><em>, </em><em>optional</em>) – Force in the global z direction.</p></li>
-<li><p><strong>Mx</strong> (<em>float</em><em>, </em><em>optional</em>) – Moment about the global x axis.</p></li>
-<li><p><strong>My</strong> (<em>float</em><em>, </em><em>optional</em>) – Moment about the global y axis.</p></li>
-<li><p><strong>Mz</strong> (<em>float</em><em>, </em><em>optional</em>) – Moment about the global z axis.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="lineloading">
-<h3>LineLoading<a class="headerlink" href="#lineloading" title="Link to this heading">#</a></h3>
-<dl class="py class">
-<dt class="sig sig-object py" id="ospgrillage.load.LineLoading">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">LineLoading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.LineLoading" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Loads</span></code></p>
-<p>Class for distributed line loads (UDL and non-uniform).</p>
-<p>Represents a load distributed along a line on the grillage. Supports both
-straight lines (defined by two endpoints) and curved lines (defined by three
-points forming a circular arc). Provides interpolation methods for computing
-load magnitudes at arbitrary points along the line.</p>
-<p>Initialize a LineLoading instance.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name identifier for the line load.</p></li>
-<li><p><strong>point1</strong> (<a class="reference internal" href="#ospgrillage.load.LoadVertex" title="ospgrillage.load.LoadVertex"><em>LoadVertex</em></a>) – Start point of the line load.</p></li>
-<li><p><strong>point2</strong> (<a class="reference internal" href="#ospgrillage.load.LoadVertex" title="ospgrillage.load.LoadVertex"><em>LoadVertex</em></a>) – End point of the line load.</p></li>
-<li><p><strong>point3</strong> (<a class="reference internal" href="#ospgrillage.load.LoadVertex" title="ospgrillage.load.LoadVertex"><em>LoadVertex</em></a><em>, </em><em>optional</em>) – If provided, defines a curved (circular arc) line load through
-point1, point2, and point3. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the load follows a straight line.</p></li>
-<li><p><strong>long_beam_element_load</strong> (<em>bool</em>) – Apply load to longitudinal beam elements. Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>trans_beam_element_load</strong> (<em>bool</em>) – Apply load to transverse beam elements. Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="patchloading">
-<h3>PatchLoading<a class="headerlink" href="#patchloading" title="Link to this heading">#</a></h3>
-<dl class="py class">
-<dt class="sig sig-object py" id="ospgrillage.load.PatchLoading">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">PatchLoading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.load.PatchLoading" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Loads</span></code></p>
-<p>Class for Patch loads.</p>
-<p>By default requires at least 4 load point for patch (quadrilateral). Can take up to 8 load points.</p>
-<p>Initialize a PatchLoading instance.</p>
-<p>Requires exactly 4 load points (<code class="docutils literal notranslate"><span class="pre">point1</span></code>–<code class="docutils literal notranslate"><span class="pre">point4</span></code>) supplied in
-counter-clockwise order to define the patch boundary. Up to 8 points
-may be provided for higher-order patches.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>point1</strong> (<a class="reference internal" href="#ospgrillage.load.LoadVertex" title="ospgrillage.load.LoadVertex"><em>LoadVertex</em></a>) – First vertex of the patch boundary (CCW order). Required.</p></li>
-<li><p><strong>point2</strong> (<a class="reference internal" href="#ospgrillage.load.LoadVertex" title="ospgrillage.load.LoadVertex"><em>LoadVertex</em></a>) – Second vertex of the patch boundary (CCW order). Required.</p></li>
-<li><p><strong>point3</strong> (<a class="reference internal" href="#ospgrillage.load.LoadVertex" title="ospgrillage.load.LoadVertex"><em>LoadVertex</em></a>) – Third vertex of the patch boundary (CCW order). Required.</p></li>
-<li><p><strong>point4</strong> (<a class="reference internal" href="#ospgrillage.load.LoadVertex" title="ospgrillage.load.LoadVertex"><em>LoadVertex</em></a>) – Fourth vertex of the patch boundary (CCW order). Required.</p></li>
-<li><p><strong>point5</strong> (<a class="reference internal" href="#ospgrillage.load.LoadVertex" title="ospgrillage.load.LoadVertex"><em>LoadVertex</em></a><em>, </em><em>optional</em>) – Fifth vertex for 8-point (higher-order) patches.</p></li>
-<li><p><strong>point6</strong> (<a class="reference internal" href="#ospgrillage.load.LoadVertex" title="ospgrillage.load.LoadVertex"><em>LoadVertex</em></a><em>, </em><em>optional</em>) – Sixth vertex for 8-point patches.</p></li>
-<li><p><strong>point7</strong> (<a class="reference internal" href="#ospgrillage.load.LoadVertex" title="ospgrillage.load.LoadVertex"><em>LoadVertex</em></a><em>, </em><em>optional</em>) – Seventh vertex for 8-point patches.</p></li>
-<li><p><strong>point8</strong> (<a class="reference internal" href="#ospgrillage.load.LoadVertex" title="ospgrillage.load.LoadVertex"><em>LoadVertex</em></a><em>, </em><em>optional</em>) – Eighth vertex for 8-point patches.</p></li>
-<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name identifier for this load.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>ValueError</strong> – If fewer than 4 vertices are supplied, or if the
-vertices do not form a valid counter-clockwise polygon.</p>
-</dd>
 </dl>
 </dd></dl>
 
@@ -646,20 +534,20 @@ vertices do not form a valid counter-clockwise polygon.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="api_load.html"
+       href="generated/ospgrillage.mesh.create_point.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Load module</p>
+        <p class="prev-next-title">create_point</p>
       </div>
     </a>
     <a class="right-next"
-       href="generated/ospgrillage.load.create_load_vertex.html"
+       href="generated/ospgrillage.osp_grillage.OspGrillage.analyze.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">create_load_vertex</p>
+        <p class="prev-next-title">OspGrillage.analyze</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -682,27 +570,14 @@ vertices do not form a valid counter-clockwise polygon.</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-types">Data types</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.LoadVertex"><code class="docutils literal notranslate"><span class="pre">ospgrillage.load.LoadVertex</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.LoadPoint"><code class="docutils literal notranslate"><span class="pre">ospgrillage.load.LoadPoint</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#factory-functions">Factory functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage-methods">OspGrillage methods</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-reference">Class reference</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nodalload">NodalLoad</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.NodalLoad"><code class="docutils literal notranslate"><span class="pre">NodalLoad</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#analysis">Analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.osp_grillage.Analysis"><code class="docutils literal notranslate"><span class="pre">Analysis</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pointload">PointLoad</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.PointLoad"><code class="docutils literal notranslate"><span class="pre">PointLoad</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lineloading">LineLoading</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.LineLoading"><code class="docutils literal notranslate"><span class="pre">LineLoading</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#patchloading">PatchLoading</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.load.PatchLoading"><code class="docutils literal notranslate"><span class="pre">PatchLoading</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#results">Results</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.osp_grillage.Results"><code class="docutils literal notranslate"><span class="pre">Results</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -714,7 +589,7 @@ vertices do not form a valid counter-clockwise polygon.</p>
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/pages/api_load_types.rst">
+    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/pages/api_analysis.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
