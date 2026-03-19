@@ -1,26 +1,9 @@
-# Analysis and results
+# Working with results
 
-For all example code in this page, *ospgrillage* is imported as `og`
+For all example code on this page, *ospgrillage* is imported as `og`
 
 ```python
 import ospgrillage as og
-```
-
-## Running analysis
-
-Once all defined load cases (static and moving) have been added to the grillage object, analysis can be conducted.
-
-To analyse load case(s), call {meth}`~ospgrillage.osp_grillage.OspGrillage.analyze`. By default this runs all defined load cases. To run only specific load cases, pass a load case name `str` or a `list` of names to the `load_case` keyword argument. The following example shows the various options:
-
-```python
-# analyze all
-example_bridge.analyze()
-# or a single str
-example_bridge.analyze(load_case="DL")
-# or a single element list
-example_bridge.analyze(load_case=["DL"])
-# or a list of multiple load cases
-example_bridge.analyze(load_case=["DL","SDL"])
 ```
 
 ## Extracting results
@@ -43,11 +26,11 @@ The Dataset contains five named **data variables**:
 
 | Variable | Axes (dimensions) | Contents |
 |---|---|---|
-| `displacements` | Loadcase × Node × Component | Translations (x, y, z) and rotations (theta_x, theta_y, theta_z) at each node |
-| `velocity` | Loadcase × Node × Component | Velocities (dx, dy, dz) and angular velocities (dtheta_x/y/z) |
-| `acceleration` | Loadcase × Node × Component | Accelerations (ddx, ddy, ddz) and angular accelerations |
-| `forces` | Loadcase × Element × Component | Internal forces (Vx, Vy, Vz, Mx, My, Mz) at each element end (_i, _j) |
-| `ele_nodes` | Element × Nodes | Which node tags (i, j) belong to each element |
+| `displacements` | Loadcase x Node x Component | Translations (x, y, z) and rotations (theta_x, theta_y, theta_z) at each node |
+| `velocity` | Loadcase x Node x Component | Velocities (dx, dy, dz) and angular velocities (dtheta_x/y/z) |
+| `acceleration` | Loadcase x Node x Component | Accelerations (ddx, ddy, ddz) and angular accelerations |
+| `forces` | Loadcase x Element x Component | Internal forces (Vx, Vy, Vz, Mx, My, Mz) at each element end (_i, _j) |
+| `ele_nodes` | Element x Nodes | Which node tags (i, j) belong to each element |
 
 For a {ref}`shell-hybrid-model`, forces are split into `forces_beam` / `forces_shell`
 and element connectivity into `ele_nodes_beam` / `ele_nodes_shell`.
@@ -82,7 +65,7 @@ Figure 1 illustrates the overall dataset structure.
 ```python
 disp_array = all_result.displacements  # nodal displacements & rotations
 force_array = all_result.forces        # element end forces
-ele_array   = all_result.ele_nodes     # element→node connectivity
+ele_array   = all_result.ele_nodes     # element->node connectivity
 ```
 
 ### Available force and displacement components
@@ -136,7 +119,7 @@ DataArrays, see the
 [xarray indexing documentation](http://xarray.pydata.org/en/stable/user-guide/indexing.html).
 ```
 
-## Getting combinations
+## Load combinations
 
 Load combinations are computed on the fly in
 {meth}`~ospgrillage.osp_grillage.OspGrillage.get_results` by passing a `combinations`
@@ -167,7 +150,7 @@ Data variables:
 When a combination mixes static and moving load cases, the factored static load case
 is added to *each* increment of the moving load.
 
-## Getting load envelope
+## Load envelopes
 
 A load envelope finds the maximum (or minimum) of a chosen result component across
 all load cases. Use {func}`~ospgrillage.postprocessing.create_envelope` to build an
@@ -194,18 +177,6 @@ Coordinates:
 ```
 
 For more options see {func}`~ospgrillage.postprocessing.create_envelope`.
-
-## Getting specific properties of model
-
-### Node
-
-Use {meth}`~ospgrillage.osp_grillage.OspGrillage.get_nodes` to retrieve node
-information from the model.
-
-### Element
-
-Use {meth}`~ospgrillage.osp_grillage.OspGrillage.get_element` to query element
-properties and tags from the model.
 
 ## Plotting results
 
@@ -306,12 +277,12 @@ Pre-defined composites: `LONGITUDINAL` (all four longitudinal types),
 All plotting functions accept keyword arguments for common customisations:
 
 ```python
-# Wide figure, values in kN·m, custom title, red with no fill
+# Wide figure, values in kN*m, custom title, red with no fill
 og.plot_bmd(bridge_28, results,
             member="interior_main_beam",
             figsize=(12, 4),
             scale=0.001,
-            title="Bending Moment (kN·m)",
+            title="Bending Moment (kN*m)",
             color="r",
             fill=False)
 ```
@@ -333,7 +304,7 @@ The full set of keyword arguments is:
 |---|---|---|
 | `figsize` | matplotlib default | Figure size in inches `(width, height)` |
 | `ax` | `None` | Existing Axes (matplotlib) or Figure (Plotly) to draw on |
-| `scale` | `1.0` | Multiply values by this factor (e.g. `0.001` for N → kN) |
+| `scale` | `1.0` | Multiply values by this factor (e.g. `0.001` for N to kN) |
 | `title` | auto | Custom title string, or `None` to suppress |
 | `color` | `"k"` / `"b"` | Line colour |
 | `fill` | `True` | Shade the area under force diagrams |
@@ -359,12 +330,3 @@ Each returns a single [Plotly](https://plotly.com/python/) `Figure` that
 renders interactively in Jupyter notebooks and in browser windows from the
 terminal.  The figure can be further customised using the standard Plotly
 API.  The GUI auto-detects plotly and uses it by default when available.
-
-## Worked examples
-
-For complete worked examples, see:
-
-- {doc}`Super-T bridge tutorial <../notebooks/super_t_tutorial>` — end-to-end
-  model creation, loading, analysis, and results extraction.
-- {doc}`Advanced results processing <../notebooks/advanced_results>` — xarray selection,
-  load combinations, envelopes, and custom post-processing.

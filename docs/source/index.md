@@ -4,6 +4,8 @@
 
 pages/getting_started
 pages/user_guide
+pages/tutorials
+pages/ospgui
 pages/api_reference
 pages/additional_resources
 ```
