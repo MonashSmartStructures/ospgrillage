@@ -1344,7 +1344,7 @@ from math import *
         """Handle Run Analysis button click"""
         try:
             # First apply any changes
-            # self.apply_changes()
+            self.apply_changes()
 
             # Update status bar
             self.statusbar.showMessage("Running analysis...")
@@ -1409,7 +1409,7 @@ from math import *
                             margin=dict(r=200),
                         )
                         if _WEBENGINE_AVAILABLE:
-                            self.viz_tab.setHtml(fig.to_html(include_plotlyjs="cdn"))
+                            self.viz_tab.setHtml(fig.to_html(include_plotlyjs=True))
                             self.right_panel.setCurrentWidget(self.viz_tab)
                         else:
                             # Open interactive 3D view in system browser
