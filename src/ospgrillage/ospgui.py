@@ -125,12 +125,12 @@ class BridgeInputWidget(QWidget):
 
         self.left_skew_angle = QDoubleSpinBox()
         self.left_skew_angle.setRange(-89, 89)
-        self.left_skew_angle.setValue(0)
+        self.left_skew_angle.setValue(5)
         self.left_skew_angle.setSuffix(" °")
 
         self.right_skew_angle = QDoubleSpinBox()
         self.right_skew_angle.setRange(-89, 89)
-        self.right_skew_angle.setValue(0)
+        self.right_skew_angle.setValue(5)
         self.right_skew_angle.setSuffix(" °")
 
         basic_form.addRow("Bridge Name", self.bridge_name)
@@ -149,14 +149,14 @@ class BridgeInputWidget(QWidget):
 
         self.long_beams = QSpinBox()
         self.long_beams.setRange(2, 20)
-        self.long_beams.setValue(5)
+        self.long_beams.setValue(7)
 
         self.trans_beams = QSpinBox()
         self.trans_beams.setRange(2, 100)
         self.trans_beams.setValue(10)
 
         self.mesh_type = QComboBox()
-        self.mesh_type.addItems(["Ortho", "Oblique"])
+        self.mesh_type.addItems(["Oblique", "Ortho"])
 
         self.opensees_file = QRadioButton("Opensees Command File")
         self.visualize = QRadioButton("Visualization")
@@ -265,6 +265,7 @@ class BridgeInputWidget(QWidget):
         self.update_grade_fields(
             "AS5100-2017", "Concrete"
         )  # Initialize with concrete options
+        self.grade_box.setCurrentText("65MPa")
 
         # Code of Material
         self.material_fc = QComboBox()
