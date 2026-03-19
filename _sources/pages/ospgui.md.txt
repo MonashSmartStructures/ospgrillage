@@ -1,4 +1,4 @@
-# GUI — ospgui
+# GUI
 
 The *ospgui* module provides a graphical interface for building *ospgrillage*
 bridge deck models interactively, without writing Python code.
@@ -26,6 +26,11 @@ from ospgrillage.ospgui import main
 main()
 ```
 
+```{image} ../images/gui_screenshot.png
+:width: 100%
+:alt: ospgui with interactive 3D Plotly visualization
+```
+
 ## Interface overview
 
 The window is divided into three panels:
@@ -34,7 +39,8 @@ The window is divided into three panels:
   (provided by `BridgeInputWidget`).
 - **Centre** — a live code view showing the generated *ospgrillage* Python source,
   updated as parameters change.
-- **Right** — a mesh preview rendered via ``og.plot_model()``.
+- **Right** — an interactive 3-D mesh preview rendered via Plotly
+  (rotate, zoom, and pan the model).
 
 ## API reference
 
