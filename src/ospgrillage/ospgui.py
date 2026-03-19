@@ -1376,8 +1376,20 @@ from math import *
             # Execute the generated ospgrillage code shown in the code view panel.
             # current_code is always the output of the GUI's own code-generation
             # methods (generate_code / apply_changes), never raw user text input.
+            #
+            # When the 3-D view is available we strip the matplotlib
+            # og.plot_model(...) call from the generated code so it doesn't
+            # pop up a separate window — the plotly view replaces it.
+            exec_code = current_code
+            if _WEBENGINE_AVAILABLE:
+                exec_code = "\n".join(
+                    line
+                    for line in current_code.splitlines()
+                    if "og.plot_model" not in line
+                )
+
             try:
-                exec(current_code, namespace)  # noqa: S102
+                exec(exec_code, namespace)  # noqa: S102
 
                 # Render interactive 3D model in the visualization tab
                 if (
@@ -1388,6 +1400,16 @@ from math import *
                     try:
                         fig = og.plot_model(
                             namespace["model"], backend="plotly", show=False
+                        )
+                        # Move legends outside the plot area
+                        fig.update_layout(
+                            legend=dict(
+                                x=1.02,
+                                y=1,
+                                xanchor="left",
+                                yanchor="top",
+                            ),
+                            margin=dict(r=200),
                         )
                         self.viz_tab.setHtml(fig.to_html(include_plotlyjs="cdn"))
                         self.right_panel.setCurrentWidget(self.viz_tab)
