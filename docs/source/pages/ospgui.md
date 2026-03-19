@@ -26,6 +26,11 @@ from ospgrillage.ospgui import main
 main()
 ```
 
+```{image} ../images/gui_screenshot.png
+:width: 100%
+:alt: ospgui with interactive 3D Plotly visualization
+```
+
 ## Interface overview
 
 The window is divided into three panels:

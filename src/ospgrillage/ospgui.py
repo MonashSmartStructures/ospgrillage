@@ -922,8 +922,8 @@ class BridgeAnalysisGUI(QMainWindow):
         self.code_tab.setLineWrapMode(QTextEdit.NoWrap)
 
         # Add tabs to right panel
-        self.right_panel.addTab(self.viz_tab, "3D View")
         self.right_panel.addTab(self.code_tab, "Code View")
+        self.right_panel.addTab(self.viz_tab, "3D View")
 
         # Add panels to main layout
         main_layout.addWidget(self.input_panel, stretch=1)
