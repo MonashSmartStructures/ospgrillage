@@ -1192,7 +1192,15 @@ def plot_bmd(
             k: v
             for k, v in kwargs.items()
             if k
-            in ("figsize", "scale", "title", "alpha", "fill", "fill_alpha", "show_supports")
+            in (
+                "figsize",
+                "scale",
+                "title",
+                "alpha",
+                "fill",
+                "fill_alpha",
+                "show_supports",
+            )
         }
         plotly_kw["fig"] = kwargs.get("ax", None)
         fig = _plotly_3d_force(
@@ -1274,7 +1282,15 @@ def plot_sfd(
             k: v
             for k, v in kwargs.items()
             if k
-            in ("figsize", "scale", "title", "alpha", "fill", "fill_alpha", "show_supports")
+            in (
+                "figsize",
+                "scale",
+                "title",
+                "alpha",
+                "fill",
+                "fill_alpha",
+                "show_supports",
+            )
         }
         plotly_kw["fig"] = kwargs.get("ax", None)
         fig = _plotly_3d_force(
@@ -1444,7 +1460,15 @@ def plot_tmd(
             k: v
             for k, v in kwargs.items()
             if k
-            in ("figsize", "scale", "title", "alpha", "fill", "fill_alpha", "show_supports")
+            in (
+                "figsize",
+                "scale",
+                "title",
+                "alpha",
+                "fill",
+                "fill_alpha",
+                "show_supports",
+            )
         }
         plotly_kw["fig"] = kwargs.get("ax", None)
         fig = _plotly_3d_force(
