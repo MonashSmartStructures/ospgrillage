@@ -53,6 +53,26 @@ def _import_plotly():
         )
 
 
+def _show_plotly_fig(fig):
+    """Display a Plotly figure with output compatible with nbsphinx/Sphinx.
+
+    In a Jupyter/IPython session this emits ``text/html`` using
+    ``fig.to_html(include_plotlyjs="cdn")``.  The ``text/html`` MIME type
+    is understood by *nbsphinx* so the interactive 3-D plot survives the
+    Sphinx build and renders with full rotate/zoom/hover on the
+    documentation pages (e.g. GitHub Pages).
+
+    Outside IPython the function falls back to ``fig.show()`` which opens
+    the system browser.
+    """
+    try:
+        from IPython.display import display, HTML
+
+        display(HTML(fig.to_html(include_plotlyjs="cdn", full_html=False)))
+    except ImportError:
+        fig.show()
+
+
 def create_envelope(**kwargs):
     """
     Create an envelope object for post-processing result envelopes.
@@ -1205,7 +1225,7 @@ def plot_bmd(
             **plotly_kw,
         )
         if show:
-            fig.show()
+            _show_plotly_fig(fig)
             return None
         return fig
     # matplotlib path — single string returns one axes (backward compat)
@@ -1287,7 +1307,7 @@ def plot_sfd(
             **plotly_kw,
         )
         if show:
-            fig.show()
+            _show_plotly_fig(fig)
             return None
         return fig
     # matplotlib path — single string returns one axes (backward compat)
@@ -1367,7 +1387,7 @@ def plot_def(
             **plotly_kw,
         )
         if show:
-            fig.show()
+            _show_plotly_fig(fig)
             return None
         return fig
     # matplotlib path — filter to def-compatible kwargs (no fill/alpha)
@@ -1457,7 +1477,7 @@ def plot_tmd(
             **plotly_kw,
         )
         if show:
-            fig.show()
+            _show_plotly_fig(fig)
             return None
         return fig
     # matplotlib path — single string returns one axes (backward compat)
@@ -2035,7 +2055,7 @@ def _plot_model_plotly(
     fig.update_layout(**layout_kw)
 
     if show:
-        fig.show()
+        _show_plotly_fig(fig)
         return None  # avoid Jupyter double-display via _repr_html_
 
     return fig
