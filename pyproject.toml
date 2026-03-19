@@ -49,7 +49,7 @@ Tracker = "https://github.com/MonashSmartStructures/ospgrillage/issues"
 
 [project.optional-dependencies]
 test = ["pytest >= 6.2.2"]
-gui = ["PyQt5", "plotly >= 5.0"]
+gui = ["PyQt5", "PyQtWebEngine", "plotly >= 5.0"]
 legacy-viz = ["vfo>=0.0.6"]
 
 
