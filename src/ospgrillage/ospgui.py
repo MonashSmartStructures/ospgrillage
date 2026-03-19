@@ -1378,26 +1378,22 @@ from math import *
             # current_code is always the output of the GUI's own code-generation
             # methods (generate_code / apply_changes), never raw user text input.
             #
-            # When the 3-D view is available we strip the matplotlib
-            # og.plot_model(...) call from the generated code so it doesn't
-            # pop up a separate window — the plotly view replaces it.
-            exec_code = current_code
-            if _WEBENGINE_AVAILABLE:
-                exec_code = "\n".join(
-                    line
-                    for line in current_code.splitlines()
-                    if "og.plot_model" not in line
-                )
+            # Suppress matplotlib plt.show() during exec so the generated code
+            # doesn't pop up a separate window.  The generated code still
+            # contains og.plot_model(...) so it works when saved and run
+            # standalone.
+            import matplotlib.pyplot as _plt
+
+            _orig_show = _plt.show
+            _plt.show = lambda *a, **kw: None
+            try:
+                exec(current_code, namespace)  # noqa: S102
+            finally:
+                _plt.show = _orig_show
 
             try:
-                exec(exec_code, namespace)  # noqa: S102
-
-                # Render interactive 3D model in the visualization tab
-                if (
-                    _WEBENGINE_AVAILABLE
-                    and "model" in namespace
-                    and namespace["model"] is not None
-                ):
+                # Render interactive 3D model
+                if "model" in namespace and namespace["model"] is not None:
                     try:
                         fig = og.plot_model(
                             namespace["model"], backend="plotly", show=False
@@ -1412,8 +1408,14 @@ from math import *
                             ),
                             margin=dict(r=200),
                         )
-                        self.viz_tab.setHtml(fig.to_html(include_plotlyjs="cdn"))
-                        self.right_panel.setCurrentWidget(self.viz_tab)
+                        if _WEBENGINE_AVAILABLE:
+                            self.viz_tab.setHtml(
+                                fig.to_html(include_plotlyjs="cdn")
+                            )
+                            self.right_panel.setCurrentWidget(self.viz_tab)
+                        else:
+                            # Open interactive 3D view in system browser
+                            fig.show()
                     except Exception as viz_err:
                         logger.warning("Plotly visualization failed: %s", viz_err)
 
