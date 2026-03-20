@@ -537,7 +537,15 @@
 <p><em>Table 1: Input arguments for the beam link model.</em></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>As of release 0.1.0, joint offsets are not shown in <code class="docutils literal notranslate"><span class="pre">og.plot_model()</span></code> visualisations.</p>
+<p>The beam-link model applies offsets through OpenSees geometric-transform
+joint offsets — the eccentricity is internal to the element stiffness
+formulation, not a separate set of nodes.  Because the nodes remain on the
+mesh plane, <code class="docutils literal notranslate"><span class="pre">og.plot_model()</span></code> correctly draws them at their nodal
+positions (i.e. the model appears flat).</p>
+<p>For the <strong>shell-beam</strong> model, offset beam nodes are created at physically
+shifted coordinates and connected to the shell plane by rigid-link
+constraints.  These links are visible in the Plotly 3-D backend
+(<code class="docutils literal notranslate"><span class="pre">backend=&quot;plotly&quot;</span></code>) and can be toggled with <code class="docutils literal notranslate"><span class="pre">show_rigid_links=False</span></code>.</p>
 </div>
 </section>
 <section id="shell-beam-elements-shell-beam">

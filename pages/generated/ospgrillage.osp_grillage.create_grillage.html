@@ -535,6 +535,33 @@ Supersedes <code class="docutils literal notranslate"><span class="pre">num_long
 </ul>
 </dd>
 </dl>
+<p><strong>Beam-link model</strong> (<code class="docutils literal notranslate"><span class="pre">model_type=&quot;beam_link&quot;</span></code>):</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>beam_width</strong> (<em>float</em><em>, </em><em>optional</em>) – Width of longitudinal members.  Half this value defines
+the z-direction offset for transverse rigid links.</p></li>
+<li><p><strong>web_thick</strong> (<em>float</em><em>, </em><em>optional</em>) – Web thickness (reserved for future use).</p></li>
+<li><p><strong>centroid_dist_y</strong> (<em>float</em><em>, </em><em>optional</em>) – Vertical (y-direction) offset applied to
+longitudinal beam elements via the geometric-transform joint offset.</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Shell-beam model</strong> (<code class="docutils literal notranslate"><span class="pre">model_type=&quot;shell_beam&quot;</span></code>):</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>offset_beam_y_dist</strong> (<em>float</em><em>, </em><em>optional</em>) – Vertical distance between the offset beam
+nodes and the shell plane.</p></li>
+<li><p><strong>beam_width</strong> (<em>float</em><em>, </em><em>optional</em>) – Width between the left and right rigid-link attachment
+points in the global z-direction.</p></li>
+<li><p><strong>max_mesh_size_z</strong> (<em>float</em><em>, </em><em>optional</em>) – Maximum shell element mesh size in the
+z-direction.</p></li>
+<li><p><strong>max_mesh_size_x</strong> (<em>float</em><em>, </em><em>optional</em>) – Maximum shell element mesh size in the
+x-direction.</p></li>
+</ul>
+</dd>
+</dl>
 <p>Depending on the <code class="docutils literal notranslate"><span class="pre">model_type</span></code> argument, this function returns the relevant concrete class of
 <a class="reference internal" href="../api_grillage.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a>.</p>
 <dl class="field-list simple">
