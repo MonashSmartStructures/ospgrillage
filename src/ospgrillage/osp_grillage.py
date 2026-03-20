@@ -3515,28 +3515,26 @@ class OspGrillageShell(OspGrillage):
         )
         # populate start edge, end edge, and transverse slab entries
         # (matches base class logic at OspGrillage._create_standard_element_list)
-        self.common_grillage_element_z_group[
-            self.common_grillage_element_keys[4]
-        ] = [0]
+        self.common_grillage_element_z_group[self.common_grillage_element_keys[4]] = [0]
         self.common_grillage_element_z_group[
             self.common_grillage_element_keys[5]
         ] = list(range(1, self.Mesh_obj.global_edge_count))
-        self.common_grillage_element_z_group[
-            self.common_grillage_element_keys[6]
-        ] = [0]  # proxy 0 for set_member() loop
+        self.common_grillage_element_z_group[self.common_grillage_element_keys[6]] = [
+            0
+        ]  # proxy 0 for set_member() loop
         self.common_grillage_element_z_group[
             self.common_grillage_element_keys[0] + "_1"
         ] = [
-            self.common_grillage_element_z_group[
-                self.common_grillage_element_keys[0]
-            ][0]
+            self.common_grillage_element_z_group[self.common_grillage_element_keys[0]][
+                0
+            ]
         ]
         self.common_grillage_element_z_group[
             self.common_grillage_element_keys[0] + "_2"
         ] = [
-            self.common_grillage_element_z_group[
-                self.common_grillage_element_keys[0]
-            ][1]
+            self.common_grillage_element_z_group[self.common_grillage_element_keys[0]][
+                1
+            ]
         ]
 
     # ----------------------------------------------------------------------------------------------------------------

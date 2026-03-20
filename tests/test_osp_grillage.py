@@ -125,11 +125,15 @@ def test_shell_link_get_element(shell_link_bridge):
         nodes = model.get_element(member=member, options="nodes")
         assert nodes, f"get_element(member={member!r}, options='nodes') returned empty"
         elems = model.get_element(member=member, options="elements")
-        assert elems, f"get_element(member={member!r}, options='elements') returned empty"
+        assert (
+            elems
+        ), f"get_element(member={member!r}, options='elements') returned empty"
 
     # transverse slab
     nodes = model.get_element(member="transverse_slab", options="nodes")
-    assert nodes, "get_element(member='transverse_slab', options='nodes') returned empty"
+    assert (
+        nodes
+    ), "get_element(member='transverse_slab', options='nodes') returned empty"
 
 
 # test creating default beam model without specifying edge beam distance
