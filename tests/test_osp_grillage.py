@@ -115,7 +115,9 @@ def test_beam_link_get_element(beam_link_bridge):
 
     for member in ["start_edge", "end_edge"]:
         elems = model.get_element(member=member, options="elements")
-        assert elems, f"get_element(member={member!r}, options='elements') returned empty"
+        assert (
+            elems
+        ), f"get_element(member={member!r}, options='elements') returned empty"
 
     nodes = model.get_element(member="transverse_slab", options="nodes")
     assert nodes, "transverse_slab returned empty"
@@ -136,11 +138,11 @@ def test_beam_link_analysis(beam_link_bridge):
     assert results is not None
 
     # vertical displacement should be non-zero and finite
-    disp_y = np.array(
-        results["displacements"].sel(Component="y").values, dtype=float
-    )
+    disp_y = np.array(results["displacements"].sel(Component="y").values, dtype=float)
     assert np.all(np.isfinite(disp_y)), "Non-finite displacement values"
-    assert np.any(disp_y != 0.0), "All displacements are zero — analysis produced no results"
+    assert np.any(
+        disp_y != 0.0
+    ), "All displacements are zero — analysis produced no results"
 
 
 # test creating model using shell link

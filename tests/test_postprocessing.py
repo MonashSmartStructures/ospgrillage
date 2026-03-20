@@ -922,8 +922,8 @@ def test_beam_link_get_results(beam_link_bridge):
     results = model.get_results()
     assert results is not None
 
-    disp_y = np.array(
-        results["displacements"].sel(Component="y").values, dtype=float
-    )
+    disp_y = np.array(results["displacements"].sel(Component="y").values, dtype=float)
     assert np.all(np.isfinite(disp_y)), "Non-finite displacement values"
-    assert np.any(disp_y != 0.0), "All displacements are zero — analysis produced no results"
+    assert np.any(
+        disp_y != 0.0
+    ), "All displacements are zero — analysis produced no results"
