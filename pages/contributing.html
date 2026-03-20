@@ -501,6 +501,102 @@ dependencies manually:</p>
 </pre></div>
 </div>
 <p>All tests must pass before a pull request will be merged.</p>
+<section id="writing-effective-tests">
+<h3>Writing effective tests<a class="headerlink" href="#writing-effective-tests" title="Link to this heading">#</a></h3>
+<p>Line coverage alone is not sufficient.  A test that creates a model and only checks
+<code class="docutils literal notranslate"><span class="pre">assert</span> <span class="pre">og.ops.getNodeTags()</span></code> tells you the constructor didn’t crash — it says nothing
+about whether the model actually works.</p>
+<p>Every test should exercise the <strong>user-facing operation</strong> it is guarding, not just the
+setup step.  Concretely:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>What you changed</p></th>
+<th class="head"><p>Minimum test expectation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Mesh generation</p></td>
+<td><p>Verify node/element counts <strong>and</strong> spot-check coordinates or connectivity</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">get_element()</span></code></p></td>
+<td><p>Call it for every relevant member name; assert non-empty results</p></td>
+</tr>
+<tr class="row-even"><td><p>Analysis / loads</p></td>
+<td><p>Run <code class="docutils literal notranslate"><span class="pre">analyze()</span></code>, then call <code class="docutils literal notranslate"><span class="pre">get_results()</span></code> and check values are finite and non-zero</p></td>
+</tr>
+<tr class="row-odd"><td><p>Plotting functions</p></td>
+<td><p>Call the function (both backends if applicable); assert it returns without error and produces a figure/axes object</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pyfile=True</span></code> output</p></td>
+<td><p>Generate the file, read it back, and verify key commands are present</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>When adding or modifying a feature, check the coverage matrix below and fill any
+adjacent gaps — e.g. if you fix a bug in <code class="docutils literal notranslate"><span class="pre">shell_beam</span></code> meshing, also add a
+<code class="docutils literal notranslate"><span class="pre">get_element()</span></code> or <code class="docutils literal notranslate"><span class="pre">plot_model()</span></code> call for that model type if one doesn’t exist.</p>
+<section id="coverage-matrix-keep-up-to-date">
+<h4>Coverage matrix (keep up to date)<a class="headerlink" href="#coverage-matrix-keep-up-to-date" title="Link to this heading">#</a></h4>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Operation</p></th>
+<th class="head text-center"><p><code class="docutils literal notranslate"><span class="pre">beam_only</span></code></p></th>
+<th class="head text-center"><p><code class="docutils literal notranslate"><span class="pre">beam_link</span></code></p></th>
+<th class="head text-center"><p><code class="docutils literal notranslate"><span class="pre">shell_beam</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Construction</p></td>
+<td class="text-center"><p>✅</p></td>
+<td class="text-center"><p>✅</p></td>
+<td class="text-center"><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">get_element()</span></code></p></td>
+<td class="text-center"><p>✅</p></td>
+<td class="text-center"><p>✅</p></td>
+<td class="text-center"><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">analyze()</span></code> + loads</p></td>
+<td class="text-center"><p>✅</p></td>
+<td class="text-center"><p>✅</p></td>
+<td class="text-center"><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">get_results()</span></code></p></td>
+<td class="text-center"><p>✅</p></td>
+<td class="text-center"><p>✅</p></td>
+<td class="text-center"><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">plot_model()</span></code></p></td>
+<td class="text-center"><p>✅</p></td>
+<td class="text-center"><p>✅</p></td>
+<td class="text-center"><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">plot_bmd/sfd/tmd/def()</span></code></p></td>
+<td class="text-center"><p>✅</p></td>
+<td class="text-center"><p>—</p></td>
+<td class="text-center"><p>—</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">plot_force()</span></code></p></td>
+<td class="text-center"><p>✅</p></td>
+<td class="text-center"><p>—</p></td>
+<td class="text-center"><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>Multi-span</p></td>
+<td class="text-center"><p>✅</p></td>
+<td class="text-center"><p>—</p></td>
+<td class="text-center"><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>Oblique mesh</p></td>
+<td class="text-center"><p>✅</p></td>
+<td class="text-center"><p>—</p></td>
+<td class="text-center"><p>—</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
 </section>
 <hr class="docutils" />
 <section id="code-style">
@@ -646,7 +742,13 @@ When reporting a bug, include:</p>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#contributing-to-ospgrillage">Contributing to ospgrillage</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#table-of-contents">Table of contents</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#development-setup">Development setup</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-the-tests">Running the tests</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-the-tests">Running the tests</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#writing-effective-tests">Writing effective tests</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#coverage-matrix-keep-up-to-date">Coverage matrix (keep up to date)</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#code-style">Code style</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#docstrings">Docstrings</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-the-documentation">Building the documentation</a></li>
