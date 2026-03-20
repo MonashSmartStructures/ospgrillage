@@ -310,6 +310,42 @@ def test_multispan_feature(ref_bridge_properties):
     )
 
 
+def test_multispan_ortho_node_positions(ref_bridge_properties):
+    """Multi-span Ortho mesh must place transverse beams within each span (issue #120)."""
+    I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
+
+    spans = [11, 11.5, 11]
+    model = og.create_grillage(
+        bridge_name="Test_Ortho_MultiSpan",
+        long_dim=33.5,
+        width=11.565,
+        skew=0,
+        num_long_grid=7,
+        num_trans_grid=11,
+        edge_beam_dist=1.05,
+        ext_to_int_dist=2.2775,
+        mesh_type="Ortho",
+        multi_span_dist_list=spans,
+    )
+
+    # All transverse element node x-coordinates must lie within [0, 33.5]
+    mesh = model.Mesh_obj
+    all_x = [
+        mesh.node_spec[n]["coordinate"][0]
+        for ele in mesh.trans_ele
+        for n in [ele[1], ele[2]]
+    ]
+    assert min(all_x) >= -0.01, f"node x below 0: {min(all_x)}"
+    assert max(all_x) <= 33.51, f"node x above bridge length: {max(all_x)}"
+
+    # Transverse beams should be present in every span
+    unique_x = sorted(set(round(x, 4) for x in all_x))
+    span_bounds = [0, 11, 22.5, 33.5]
+    for s in range(len(spans)):
+        in_span = [x for x in unique_x if span_bounds[s] < x < span_bounds[s + 1]]
+        assert len(in_span) > 0, f"No transverse beams in span {s}"
+
+
 def test_member_assignment_for_specific_span_feature(ref_bridge_properties):
     # model is based on tst_multispan_feature
     I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
