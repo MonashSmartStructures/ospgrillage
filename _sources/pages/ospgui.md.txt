@@ -5,7 +5,7 @@ bridge deck models interactively, without writing Python code.
 
 ## Installation
 
-The GUI depends on PyQt5, which is an optional extra:
+The GUI depends on PyQt6, which is an optional extra:
 
 ```bash
 pip install "ospgrillage[gui]"
@@ -48,9 +48,9 @@ The window is divided into three panels:
 
 Launch the *ospgui* graphical interface.
 
-Entry point for the `ospgui` console script. Checks that PyQt5 is available
+Entry point for the `ospgui` console script. Checks that PyQt6 is available
 and exits with a helpful message if not, otherwise starts the Qt application
 and opens `BridgeAnalysisGUI`.
 
-**Raises:** `SystemExit` — with code 1 if PyQt5 is not installed; with the Qt
+**Raises:** `SystemExit` — with code 1 if PyQt6 is not installed; with the Qt
 application's return code on normal exit.

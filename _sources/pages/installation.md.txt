@@ -48,13 +48,13 @@ jupyter lab
 
 ## Optional: GUI (ospgui)
 
-The interactive geometry generator `ospgui` requires **PyQt5**, which is a large binary dependency and is therefore not installed by default. To include it:
+The interactive geometry generator `ospgui` requires **PyQt6**, which is a large binary dependency and is therefore not installed by default. To include it:
 
 ```bash
 pip install "ospgrillage[gui]"
 ```
 
-If you run `ospgui` without PyQt5 installed you will see a clear error message with the install command above rather than a bare traceback.
+If you run `ospgui` without PyQt6 installed you will see a clear error message with the install command above rather than a bare traceback.
 
 ## Installing dependencies
 

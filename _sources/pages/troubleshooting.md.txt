@@ -6,9 +6,9 @@ This page collects common errors and their solutions. If your problem is not lis
 
 ## Installation problems
 
-### `ospgui` fails with `ModuleNotFoundError: No module named 'PyQt5'`
+### `ospgui` fails with `ModuleNotFoundError: No module named 'PyQt6'`
 
-The GUI requires PyQt5, which is an optional dependency not installed by default. Install it with:
+The GUI requires PyQt6, which is an optional dependency not installed by default. Install it with:
 
 ```bash
 pip install "ospgrillage[gui]"
@@ -17,7 +17,7 @@ pip install "ospgrillage[gui]"
 or, if ospgrillage is already installed:
 
 ```bash
-pip install PyQt5
+pip install PyQt6
 ```
 
 ------------------------------------------------------------------------

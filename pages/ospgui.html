@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>GUI &#8212; ospgrillage 0.5.2 documentation</title>
+    <title>GUI &#8212; ospgrillage 0.5.3 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=8e576371"></script>
+    <script src="../_static/documentation_options.js?v=2a2fe768"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -49,7 +49,7 @@
     <link rel="prev" title="Curve Mesh" href="../notebooks/curve_mesh.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.5.2" />
+  <meta name="docsearch:version" content="0.5.3" />
   </head>
   
   
@@ -115,8 +115,8 @@
       
     
     
-    <img src="../_static/ospgrillage_logo.png" class="logo__image only-light" alt="ospgrillage 0.5.2 documentation - Home"/>
-    <img src="../_static/ospgrillage_logo.png" class="logo__image only-dark pst-js-only" alt="ospgrillage 0.5.2 documentation - Home"/>
+    <img src="../_static/ospgrillage_logo.png" class="logo__image only-light" alt="ospgrillage 0.5.3 documentation - Home"/>
+    <img src="../_static/ospgrillage_logo.png" class="logo__image only-dark pst-js-only" alt="ospgrillage 0.5.3 documentation - Home"/>
   
   
 </a></div>
@@ -441,7 +441,7 @@
 bridge deck models interactively, without writing Python code.</p>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>
-<p>The GUI depends on PyQt5, which is an optional extra:</p>
+<p>The GUI depends on PyQt6, which is an optional extra:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;ospgrillage[gui]&quot;</span>
 </pre></div>
 </div>
@@ -477,10 +477,10 @@ updated as parameters change.</p></li>
 <section id="main">
 <h3><code class="docutils literal notranslate"><span class="pre">main()</span></code><a class="headerlink" href="#main" title="Link to this heading">#</a></h3>
 <p>Launch the <em>ospgui</em> graphical interface.</p>
-<p>Entry point for the <code class="docutils literal notranslate"><span class="pre">ospgui</span></code> console script. Checks that PyQt5 is available
+<p>Entry point for the <code class="docutils literal notranslate"><span class="pre">ospgui</span></code> console script. Checks that PyQt6 is available
 and exits with a helpful message if not, otherwise starts the Qt application
 and opens <code class="docutils literal notranslate"><span class="pre">BridgeAnalysisGUI</span></code>.</p>
-<p><strong>Raises:</strong> <code class="docutils literal notranslate"><span class="pre">SystemExit</span></code> — with code 1 if PyQt5 is not installed; with the Qt
+<p><strong>Raises:</strong> <code class="docutils literal notranslate"><span class="pre">SystemExit</span></code> — with code 1 if PyQt6 is not installed; with the Qt
 application’s return code on normal exit.</p>
 </section>
 </section>
