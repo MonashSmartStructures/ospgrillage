@@ -107,6 +107,31 @@ def test_create_shell_link_model(shell_link_bridge):
     assert og.ops.getNodeTags()
 
 
+# test get_element() works for all member types on shell_beam model (issue #121)
+def test_shell_link_get_element(shell_link_bridge):
+    model = shell_link_bridge
+    # longitudinal members — should return non-empty node lists
+    for member in [
+        "edge_beam",
+        "exterior_main_beam_1",
+        "interior_main_beam",
+        "exterior_main_beam_2",
+    ]:
+        nodes = model.get_element(member=member, options="nodes")
+        assert nodes, f"get_element(member={member!r}, options='nodes') returned empty"
+
+    # edge members
+    for member in ["start_edge", "end_edge"]:
+        nodes = model.get_element(member=member, options="nodes")
+        assert nodes, f"get_element(member={member!r}, options='nodes') returned empty"
+        elems = model.get_element(member=member, options="elements")
+        assert elems, f"get_element(member={member!r}, options='elements') returned empty"
+
+    # transverse slab
+    nodes = model.get_element(member="transverse_slab", options="nodes")
+    assert nodes, "get_element(member='transverse_slab', options='nodes') returned empty"
+
+
 # test creating default beam model without specifying edge beam distance
 def test_uniform_spacing_no_edge_dist(bridge_model_42_negative_custom_spacing):
     example_bridge = bridge_model_42_negative_custom_spacing
