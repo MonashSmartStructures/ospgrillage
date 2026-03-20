@@ -100,6 +100,49 @@ def test_create_beam_link_model(beam_link_bridge):
     assert og.ops.eleNodes(100)
 
 
+# -- beam_link functional tests (issue: coverage audit) -----------------------
+def test_beam_link_get_element(beam_link_bridge):
+    """get_element() must work for all member types on beam_link models."""
+    model = beam_link_bridge
+    for member in [
+        "edge_beam",
+        "exterior_main_beam_1",
+        "interior_main_beam",
+        "exterior_main_beam_2",
+    ]:
+        nodes = model.get_element(member=member, options="nodes")
+        assert nodes, f"get_element(member={member!r}) returned empty"
+
+    for member in ["start_edge", "end_edge"]:
+        elems = model.get_element(member=member, options="elements")
+        assert elems, f"get_element(member={member!r}, options='elements') returned empty"
+
+    nodes = model.get_element(member="transverse_slab", options="nodes")
+    assert nodes, "transverse_slab returned empty"
+
+
+def test_beam_link_analysis(beam_link_bridge):
+    """beam_link model must produce finite, non-zero results under a point load."""
+    model = beam_link_bridge
+    P = 1 * kN
+    lp = og.create_load_vertex(x=5, y=0, z=3.5, p=P)
+    load = og.create_load(name="unit", point1=lp)
+    lc = og.create_load_case(name="point")
+    lc.add_load(load)
+
+    model.add_load_case(lc)
+    model.analyze()
+    results = model.get_results()
+    assert results is not None
+
+    # vertical displacement should be non-zero and finite
+    disp_y = np.array(
+        results["displacements"].sel(Component="y").values, dtype=float
+    )
+    assert np.all(np.isfinite(disp_y)), "Non-finite displacement values"
+    assert np.any(disp_y != 0.0), "All displacements are zero — analysis produced no results"
+
+
 # test creating model using shell link
 def test_create_shell_link_model(shell_link_bridge):
     shell_link_model = shell_link_bridge

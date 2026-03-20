@@ -855,3 +855,75 @@ def test_plot_model_no_supports(bridge_model_42_negative):
     fig = og.plot_model(bridge, backend="plotly", show=False, show_supports=False)
     support_traces = [t for t in fig.data if "support" in (t.name or "")]
     assert len(support_traces) == 0
+
+
+# ---------------------------------------------------------------------------
+# Cross-model-type coverage (beam_link, shell_beam)
+# ---------------------------------------------------------------------------
+def test_plot_model_beam_link_matplotlib(beam_link_bridge):
+    """plot_model matplotlib works for beam_link models."""
+    og.ops.wipeAnalysis()
+    ax = og.plot_model(beam_link_bridge)
+    assert ax is not None
+    assert len(ax.lines) > 0
+
+
+def test_plot_model_beam_link_plotly(beam_link_bridge):
+    """plot_model plotly works for beam_link models."""
+    go = pytest.importorskip("plotly.graph_objects")
+    og.ops.wipeAnalysis()
+    fig = og.plot_model(beam_link_bridge, backend="plotly", show=False)
+    assert isinstance(fig, go.Figure)
+    assert len(fig.data) > 0
+
+
+def test_plot_model_shell_beam_matplotlib(shell_link_bridge):
+    """plot_model matplotlib works for shell_beam models."""
+    og.ops.wipeAnalysis()
+    ax = og.plot_model(shell_link_bridge)
+    assert ax is not None
+    assert len(ax.lines) > 0
+
+
+def test_plot_model_shell_beam_plotly(shell_link_bridge):
+    """plot_model plotly works for shell_beam models including rigid links."""
+    go = pytest.importorskip("plotly.graph_objects")
+    og.ops.wipeAnalysis()
+    fig = og.plot_model(shell_link_bridge, backend="plotly", show=False)
+    assert isinstance(fig, go.Figure)
+    # shell_beam should have rigid link traces
+    link_traces = [t for t in fig.data if "rigid_link" in (t.name or "")]
+    assert len(link_traces) >= 1
+
+
+def test_plot_model_shell_beam_hide_rigid_links(shell_link_bridge):
+    """show_rigid_links=False suppresses rigid link traces."""
+    go = pytest.importorskip("plotly.graph_objects")
+    og.ops.wipeAnalysis()
+    fig = og.plot_model(
+        shell_link_bridge, backend="plotly", show=False, show_rigid_links=False
+    )
+    link_traces = [t for t in fig.data if "rigid_link" in (t.name or "")]
+    assert len(link_traces) == 0
+
+
+def test_beam_link_get_results(beam_link_bridge):
+    """beam_link model produces finite results under a point load."""
+    og.ops.wipeAnalysis()
+    model = beam_link_bridge
+    P = 10000
+    lp = og.create_load_vertex(x=5, y=0, z=3.5, p=P)
+    load = og.create_load(name="unit", point1=lp)
+    lc = og.create_load_case(name="point")
+    lc.add_load(load)
+
+    model.add_load_case(lc)
+    model.analyze()
+    results = model.get_results()
+    assert results is not None
+
+    disp_y = np.array(
+        results["displacements"].sel(Component="y").values, dtype=float
+    )
+    assert np.all(np.isfinite(disp_y)), "Non-finite displacement values"
+    assert np.any(disp_y != 0.0), "All displacements are zero — analysis produced no results"
