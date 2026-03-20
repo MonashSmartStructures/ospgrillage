@@ -1414,7 +1414,9 @@ from math import *
                             from PyQt6.QtCore import QUrl
 
                             tmp = tempfile.NamedTemporaryFile(
-                                suffix=".html", delete=False, mode="w",
+                                suffix=".html",
+                                delete=False,
+                                mode="w",
                                 encoding="utf-8",
                             )
                             tmp.write(fig.to_html(include_plotlyjs=True))
