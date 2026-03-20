@@ -1729,6 +1729,7 @@ def _plot_model_matplotlib(
     show_element_labels=False,
     color_by_member=True,
     show_supports=True,
+    show_rigid_links=True,
     show=False,
 ):
     """Render a 2-D plan view (x vs z) of the grillage mesh."""
@@ -1899,6 +1900,7 @@ def _plot_model_plotly(
     show_element_labels=False,
     color_by_member=True,
     show_supports=True,
+    show_rigid_links=True,
     show=False,
 ):
     """Render an interactive 3-D model view with Plotly."""
@@ -1966,7 +1968,7 @@ def _plot_model_plotly(
         )
 
     # Rigid links (slab ↔ offset beam)
-    if links:
+    if show_rigid_links and links:
         lx, ly, lz = [], [], []
         for sc, bc in links:
             lx.extend([sc[0], bc[0], None])
@@ -2115,6 +2117,9 @@ def plot_model(grillage_obj, *, backend="matplotlib", **kwargs):
     :param show_supports: Draw support symbols at restrained nodes.
         Default ``True``.
     :type show_supports: bool
+    :param show_rigid_links: Draw rigid-link connections (shell-beam models
+        only).  Default ``True``.
+    :type show_rigid_links: bool
     :param show: If ``True``, display the plot immediately.
         Defaults to ``True`` for plotly, ``False`` for matplotlib
         (matplotlib inline backends auto-display).
@@ -2138,6 +2143,7 @@ def plot_model(grillage_obj, *, backend="matplotlib", **kwargs):
                 "show_element_labels",
                 "color_by_member",
                 "show_supports",
+                "show_rigid_links",
                 "show",
             )
         }
@@ -2161,6 +2167,7 @@ def plot_model(grillage_obj, *, backend="matplotlib", **kwargs):
                 "show_element_labels",
                 "color_by_member",
                 "show_supports",
+                "show_rigid_links",
                 "show",
             )
         }

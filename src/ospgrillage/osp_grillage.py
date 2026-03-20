@@ -174,6 +174,32 @@ def create_grillage(**kwargs):
         Supersedes ``num_long_grid`` and ``edge_beam_dist`` when provided.
     :type beam_spacing: list of int or float
 
+    **Beam-link model** (``model_type="beam_link"``):
+
+    :param beam_width: Width of longitudinal members.  Half this value defines
+        the z-direction offset for transverse rigid links.
+    :type beam_width: float, optional
+    :param web_thick: Web thickness (reserved for future use).
+    :type web_thick: float, optional
+    :param centroid_dist_y: Vertical (y-direction) offset applied to
+        longitudinal beam elements via the geometric-transform joint offset.
+    :type centroid_dist_y: float, optional
+
+    **Shell-beam model** (``model_type="shell_beam"``):
+
+    :param offset_beam_y_dist: Vertical distance between the offset beam
+        nodes and the shell plane.
+    :type offset_beam_y_dist: float, optional
+    :param beam_width: Width between the left and right rigid-link attachment
+        points in the global z-direction.
+    :type beam_width: float, optional
+    :param max_mesh_size_z: Maximum shell element mesh size in the
+        z-direction.
+    :type max_mesh_size_z: float, optional
+    :param max_mesh_size_x: Maximum shell element mesh size in the
+        x-direction.
+    :type max_mesh_size_x: float, optional
+
     Depending on the ``model_type`` argument, this function returns the relevant concrete class of
     :class:`~ospgrillage.osp_grillage.OspGrillage`.
 
