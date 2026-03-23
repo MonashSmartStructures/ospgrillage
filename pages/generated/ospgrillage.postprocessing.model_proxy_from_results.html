@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>OspGrillage.add_load_combination &#8212; ospgrillage 0.6.0 documentation</title>
+    <title>model_proxy_from_results &#8212; ospgrillage 0.6.0 documentation</title>
   
   
   
@@ -42,11 +42,11 @@
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'pages/generated/ospgrillage.osp_grillage.OspGrillage.add_load_combination';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'pages/generated/ospgrillage.postprocessing.model_proxy_from_results';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="OspGrillage.get_nodes" href="ospgrillage.osp_grillage.OspGrillage.get_nodes.html" />
-    <link rel="prev" title="OspGrillage.add_load_case" href="ospgrillage.osp_grillage.OspGrillage.add_load_case.html" />
+    <link rel="next" title="Additional Resources" href="../additional_resources.html" />
+    <link rel="prev" title="plot_srf" href="ospgrillage.postprocessing.plot_srf.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.6.0" />
@@ -380,13 +380,13 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../api_grillage.html">Grillage model</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api_grillage.html">Grillage model</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.create_grillage.html">create_grillage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.create_osp_model.html">OspGrillage.create_osp_model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.set_member.html">OspGrillage.set_member</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.set_boundary_condition.html">OspGrillage.set_boundary_condition</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.add_load_case.html">OspGrillage.add_load_case</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">OspGrillage.add_load_combination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.add_load_combination.html">OspGrillage.add_load_combination</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.get_nodes.html">OspGrillage.get_nodes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.get_element.html">OspGrillage.get_element</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.clear_load_cases.html">OspGrillage.clear_load_cases</a></li>
@@ -436,7 +436,7 @@
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.get_results.html">OspGrillage.get_results</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../api_postprocessing.html">Post-processing</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../api_postprocessing.html">Post-processing</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.postprocessing.create_envelope.html">create_envelope</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.postprocessing.plot_force.html">plot_force</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.postprocessing.plot_bmd.html">plot_bmd</a></li>
@@ -445,7 +445,7 @@
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.postprocessing.plot_def.html">plot_def</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.postprocessing.plot_model.html">plot_model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.postprocessing.plot_srf.html">plot_srf</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.postprocessing.model_proxy_from_results.html">model_proxy_from_results</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">model_proxy_from_results</a></li>
 </ul>
 </details></li>
 </ul>
@@ -492,9 +492,9 @@
     <li class="breadcrumb-item"><a href="../api_reference.html" class="nav-link">API reference</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../api_grillage.html" class="nav-link">Grillage model</a></li>
+    <li class="breadcrumb-item"><a href="../api_postprocessing.html" class="nav-link">Post-processing</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">OspGrillage.add_load_combination</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">model_proxy_from_results</span></li>
   </ul>
 </nav>
 </div>
@@ -511,32 +511,40 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="ospgrillage-add-load-combination">
-<h1>OspGrillage.add_load_combination<a class="headerlink" href="#ospgrillage-add-load-combination" title="Link to this heading">#</a></h1>
-<dl class="py method">
-<dt class="sig sig-object py" id="ospgrillage.osp_grillage.OspGrillage.add_load_combination">
-<span class="sig-prename descclassname"><span class="pre">OspGrillage.</span></span><span class="sig-name descname"><span class="pre">add_load_combination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">load_combination_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_case_and_factor_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OspGrillage.add_load_combination" title="Link to this definition">#</a></dt>
-<dd><p>Function to add load combination to analysis. Load combinations are defined through a dict with
-load case name str to be included in combination as keys, and load factor (type float/int) as value of dict.</p>
+  <section id="model-proxy-from-results">
+<h1>model_proxy_from_results<a class="headerlink" href="#model-proxy-from-results" title="Link to this heading">#</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ospgrillage.postprocessing.model_proxy_from_results">
+<span class="sig-name descname"><span class="pre">model_proxy_from_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.postprocessing.model_proxy_from_results" title="Link to this definition">#</a></dt>
+<dd><p>Create a lightweight model proxy from a self-contained results Dataset.</p>
+<p>The proxy satisfies the interface required by plotting functions
+(<a class="reference internal" href="ospgrillage.postprocessing.plot_bmd.html#ospgrillage.postprocessing.plot_bmd" title="ospgrillage.postprocessing.plot_bmd"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_bmd()</span></code></a>, <a class="reference internal" href="ospgrillage.postprocessing.plot_sfd.html#ospgrillage.postprocessing.plot_sfd" title="ospgrillage.postprocessing.plot_sfd"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_sfd()</span></code></a>, etc.) so that results saved to
+NetCDF can be visualised without the original
+<a class="reference internal" href="../api_grillage.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a> object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>load_combination_name</strong> (<em>str</em>) – Name string of load combination</p></li>
-<li><p><strong>load_case_and_factor_dict</strong> (<em>str</em>) – dict with name string of load cases within the combination as key,
-corresponding load factor as value.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>ds</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">xarray.Dataset</span></code>) – Dataset loaded via <code class="docutils literal notranslate"><span class="pre">xarray.open_dataset()</span></code>.  Must contain
+a <code class="docutils literal notranslate"><span class="pre">node_coordinates</span></code> variable and <code class="docutils literal notranslate"><span class="pre">member_elements</span></code> /
+<code class="docutils literal notranslate"><span class="pre">model_type</span></code> attributes (added automatically by
+<a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_results()</span></code></a>).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A proxy object with <code class="docutils literal notranslate"><span class="pre">get_nodes()</span></code>, <code class="docutils literal notranslate"><span class="pre">get_element()</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">common_grillage_element_z_group</span></code> matching the OspGrillage
+interface.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>KeyError</strong> – If the Dataset is missing the required geometry data.</p>
 </dd>
 </dl>
-<p>Example format of input dict for add_load_combination:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">load_comb</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name_of_load_case_1&quot;</span><span class="p">:</span><span class="mf">1.2</span><span class="p">,</span> <span class="s2">&quot;name_of_load_case_2&quot;</span><span class="p">:</span> <span class="mf">1.5</span><span class="p">}</span>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ospgrillage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">og</span>
+
+<span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_dataset</span><span class="p">(</span><span class="s2">&quot;results.nc&quot;</span><span class="p">)</span>
+<span class="n">proxy</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">model_proxy_from_results</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
+<span class="n">og</span><span class="o">.</span><span class="n">plot_bmd</span><span class="p">(</span><span class="n">proxy</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;plotly&quot;</span><span class="p">)</span>
 </pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>As of release 0.1.0, load combinations can be directly obtained (calculated on the fly) by specifying
-<code class="docutils literal notranslate"><span class="pre">combination</span></code> kwarg in <a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_results()</span></code></a>. Hence, <cite>add_combination</cite>
-is here for adding and storing information of load combination to  <a class="reference internal" href="../api_grillage.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a>
-object.</p>
 </div>
 </dd></dl>
 
@@ -553,20 +561,20 @@ object.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="ospgrillage.osp_grillage.OspGrillage.add_load_case.html"
+       href="ospgrillage.postprocessing.plot_srf.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">OspGrillage.add_load_case</p>
+        <p class="prev-next-title">plot_srf</p>
       </div>
     </a>
     <a class="right-next"
-       href="ospgrillage.osp_grillage.OspGrillage.get_nodes.html"
+       href="../additional_resources.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">OspGrillage.get_nodes</p>
+        <p class="prev-next-title">Additional Resources</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -589,7 +597,7 @@ object.</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.osp_grillage.OspGrillage.add_load_combination"><code class="docutils literal notranslate"><span class="pre">OspGrillage.add_load_combination()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.postprocessing.model_proxy_from_results"><code class="docutils literal notranslate"><span class="pre">model_proxy_from_results()</span></code></a></li>
 </ul>
   </nav></div>
 
@@ -597,7 +605,7 @@ object.</p>
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/pages/generated/ospgrillage.osp_grillage.OspGrillage.add_load_combination.rst">
+    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/pages/generated/ospgrillage.postprocessing.model_proxy_from_results.rst">
       <i class="fa-solid fa-pencil"></i>
       
       

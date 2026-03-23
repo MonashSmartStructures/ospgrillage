@@ -3274,24 +3274,105 @@
   },
   {
    "cell_type": "markdown",
+   "id": "gs4p3xl939",
+   "source": "## Saving and Loading Results\n\nThe `save_filename` keyword writes the Dataset to a NetCDF file — useful for\narchiving results or sharing them without re-running the analysis.  The saved\nfile is **self-contained**: it includes node coordinates and member-element\nconnectivity, so you can plot from it without the original model object.",
+   "metadata": {}
+  },
+  {
+   "cell_type": "code",
+   "id": "6sdnlvz3qe2",
+   "source": "# Save results to NetCDF\nresults.to_netcdf(\"super_t_results.nc\")\nprint(\"Saved to super_t_results.nc\")\n\n# Reload from disk — no model object needed\nimport xarray as xr\nreloaded = xr.open_dataset(\"super_t_results.nc\")\nprint(f\"Reloaded dataset: {len(reloaded.data_vars)} variables, \"\n      f\"{len(reloaded.coords['Loadcase'])} load cases\")\n\n# Create a lightweight proxy for plotting\nproxy = og.model_proxy_from_results(reloaded)\n\n# Verify round-trip fidelity\nnp.testing.assert_array_equal(\n    results.forces.values, reloaded.forces.values\n)\nprint(\"Round-trip verified: saved and reloaded forces match exactly.\")",
+   "metadata": {},
+   "execution_count": null,
+   "outputs": []
+  },
+  {
+   "cell_type": "code",
+   "id": "5sh0jm8kma6",
+   "source": "# Plot directly from the reloaded file — no original model needed\nog.plot_bmd(proxy, reloaded, members=og.Members.LONGITUDINAL,\n            loadcase=\"M1600 L1\", backend=\"plotly\", figsize=(14, 8));",
+   "metadata": {},
+   "execution_count": null,
+   "outputs": []
+  },
+  {
+   "cell_type": "code",
+   "id": "cu1gggmv2cm",
+   "source": "# Clean up temporary file\nimport os\nos.remove(\"super_t_results.nc\")\nprint(\"Cleaned up temporary file.\")",
+   "metadata": {},
+   "execution_count": null,
+   "outputs": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "uvfiokw6e8",
+   "source": "## Shell-Beam Results and `plot_srf`\n\nThe examples above use a **beam-only** model.  For `shell_beam` models the\nslab is modelled with shell elements and the results Dataset contains\nadditional DataArrays:\n\n- **`forces_shell`** — `(Loadcase, Element, Component)` with shell element\n  nodal forces at 4 corner nodes (`Vx_i…Vz_l`, `Mx_i…Mz_l`) plus\n  nodal displacements.\n- **`stresses_shell`** — `(Loadcase, Element, Stress)` with 8 stress\n  resultants at 4 Gauss points per element (32 values):\n  `N11, N22, N12, M11, M22, M12, Q13, Q23`.\n\n`plot_srf()` renders contour plots over the shell mesh for shell forces\n(`Mx, My, Mz, Vx, Vy, Vz`), nodal displacements (`Dx, Dy, Dz`), and\nstress resultants (`N11`–`Q23`).",
+   "metadata": {}
+  },
+  {
+   "cell_type": "code",
+   "id": "xmd5mx0un6",
+   "source": "# Build a small shell-beam model\nconcrete_shell = og.create_material(\n    material=\"concrete\", code=\"AS5100-2017\", grade=\"50MPa\", rho=2400\n)\nshell_sec = og.create_section(h=0.2)\nslab_shell = og.create_member(section=shell_sec, material=concrete_shell)\n\n# Reuse the beam section from earlier\nshell_long_sec = og.create_section(\n    A=0.034, J=2.08e-3, Iz=6.77e-3, Iy=2.04e-3, Az=6.10e-3, Ay=3.99e-3,\n)\nshell_long_beam = og.create_member(section=shell_long_sec, material=concrete)\n\nLs, ws = 10.0 * m, 7.0 * m\nshell_model = og.create_grillage(\n    bridge_name=\"Shell Beam Demo\", long_dim=Ls, width=ws, skew=0,\n    num_long_grid=5, num_trans_grid=11, edge_beam_dist=1.0 * m,\n    mesh_type=\"Orth\", model_type=\"shell_beam\",\n    max_mesh_size_z=1.0, max_mesh_size_x=1.0,\n    offset_beam_y_dist=0.499, beam_width=0.89,\n)\nshell_model.set_member(shell_long_beam, member=\"interior_main_beam\")\nshell_model.set_member(shell_long_beam, member=\"exterior_main_beam_1\")\nshell_model.set_member(shell_long_beam, member=\"exterior_main_beam_2\")\nshell_model.set_shell_members(slab_shell)\nshell_model.create_osp_model(pyfile=False)\n\n# Apply a patch load\npatch = og.create_load(\n    loadtype=\"patch\", name=\"UDL\",\n    point1=og.create_load_vertex(x=0, z=0, p=10 * kN / m**2),\n    point2=og.create_load_vertex(x=Ls, z=0, p=10 * kN / m**2),\n    point3=og.create_load_vertex(x=Ls, z=ws, p=10 * kN / m**2),\n    point4=og.create_load_vertex(x=0, z=ws, p=10 * kN / m**2),\n)\nudl_lc = og.create_load_case(name=\"UDL\")\nudl_lc.add_load(patch)\nshell_model.add_load_case(udl_lc)\n\nshell_model.analyze()\nshell_results = shell_model.get_results()\nshell_results",
+   "metadata": {},
+   "execution_count": null,
+   "outputs": []
+  },
+  {
+   "cell_type": "code",
+   "id": "osgqm5wks3",
+   "source": "# Inspect the shell-specific DataArrays\nprint(\"forces_shell:\")\nprint(f\"  shape:      {shell_results.forces_shell.shape}\")\nprint(f\"  dimensions: {shell_results.forces_shell.dims}\")\nprint(f\"  components: {list(shell_results.forces_shell.coords['Component'].values)}\")\n\nprint(\"\\nstresses_shell:\")\nprint(f\"  shape:      {shell_results.stresses_shell.shape}\")\nprint(f\"  dimensions: {shell_results.stresses_shell.dims}\")\n\n# The Stress coordinate contains 32 labels: 8 resultants x 4 Gauss points\nstress_labels = list(shell_results.stresses_shell.coords[\"Stress\"].values)\nprint(f\"  stress labels ({len(stress_labels)}): {stress_labels[:8]} ...\")\nprint(f\"  (8 resultants x 4 Gauss points = {len(stress_labels)} values per element)\")",
+   "metadata": {},
+   "execution_count": null,
+   "outputs": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "oeookzs11je",
+   "source": "### Shell contour plots\n\n`plot_srf` supports three families of component:\n\n| Family | Components | Source DataArray |\n|---|---|---|\n| Shell forces | `Vx, Vy, Vz, Mx, My, Mz` | `forces_shell` |\n| Displacements | `Dx, Dy, Dz` | `displacements` |\n| Stress resultants | `N11, N22, N12, M11, M22, M12, Q13, Q23` | `stresses_shell` |",
+   "metadata": {}
+  },
+  {
+   "cell_type": "code",
+   "id": "jh6q6tmlgym",
+   "source": "# Shell bending moment contour (Mx)\nog.plot_srf(shell_results, component=\"Mx\", backend=\"plotly\");",
+   "metadata": {},
+   "execution_count": null,
+   "outputs": []
+  },
+  {
+   "cell_type": "code",
+   "id": "31o47o0u4ik",
+   "source": "# Vertical displacement contour (Dy) — use a sequential colorscale\nog.plot_srf(shell_results, component=\"Dy\", colorscale=\"Viridis\", backend=\"plotly\");",
+   "metadata": {},
+   "execution_count": null,
+   "outputs": []
+  },
+  {
+   "cell_type": "code",
+   "id": "ypjups44h3",
+   "source": "# Stress resultant contour (M11 — plate bending about local 2-axis)\nog.plot_srf(shell_results, component=\"M11\", backend=\"plotly\");",
+   "metadata": {},
+   "execution_count": null,
+   "outputs": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "3rpp2x4ce3s",
+   "source": "### Composing shell contours with beam diagrams\n\nPass the Plotly figure returned by `plot_srf` as `ax=` to `plot_bmd`,\n`plot_sfd`, `plot_tmd`, or `plot_def` to overlay beam diagrams on the\nshell contour.",
+   "metadata": {}
+  },
+  {
+   "cell_type": "code",
+   "id": "70468si5i0q",
+   "source": "# Shell Mx contour with BMD overlay\nfig = og.plot_srf(shell_results, component=\"Mx\", backend=\"plotly\", show=False)\nog.plot_bmd(shell_model, shell_results, ax=fig, backend=\"plotly\");",
+   "metadata": {},
+   "execution_count": null,
+   "outputs": []
+  },
+  {
+   "cell_type": "markdown",
    "id": "a1b2c3d5",
    "metadata": {},
-   "source": [
-    "## Summary\n",
-    "\n",
-    "Key techniques covered:\n",
-    "\n",
-    "| Technique | Method |\n",
-    "|---|---|\n",
-    "| Get static results | `model.get_results(load_case=[...])` |\n",
-    "| Get moving results | `model.get_results(load_case=\"Moving M1600 L2\")` |\n",
-    "| Select specific results | `results.forces.sel(Loadcase=..., Component=..., Element=...)` |\n",
-    "| Load combinations | `model.get_results(combinations={...})` |\n",
-    "| Envelopes | `og.create_envelope(ds=..., load_effect=..., array=...)` |\n",
-    "| Query governing case | `og.create_envelope(..., query_mode=True)` |\n",
-    "| Extract numpy arrays | `.values` on any DataArray |\n",
-    "| Filter member groups | `og.plot_bmd(..., members=og.Members.LONGITUDINAL)` |"
-   ]
+   "source": "## Summary\n\nKey techniques covered:\n\n| Technique | Method |\n|---|---|\n| Get static results | `model.get_results(load_case=[...])` |\n| Get moving results | `model.get_results(load_case=\"Moving M1600 L2\")` |\n| Select specific results | `results.forces.sel(Loadcase=..., Component=..., Element=...)` |\n| Load combinations | `model.get_results(combinations={...})` |\n| Envelopes | `og.create_envelope(ds=..., load_effect=..., array=...)` |\n| Query governing case | `og.create_envelope(..., query_mode=True)` |\n| Extract numpy arrays | `.values` on any DataArray |\n| Filter member groups | `og.plot_bmd(..., members=og.Members.LONGITUDINAL)` |\n| Save results to file | `model.get_results(save_filename=\"out.nc\")` |\n| Reload from file | `xr.open_dataset(\"out.nc\")` |\n| Plot from saved file | `proxy = og.model_proxy_from_results(ds)` then `og.plot_bmd(proxy, ds)` |\n| Shell contour plot | `og.plot_srf(results, component=\"Mx\")` |\n| Stress resultant contour | `og.plot_srf(results, component=\"M11\")` |\n| Compose contour + beam | `fig = og.plot_srf(..., show=False)` then `og.plot_bmd(..., ax=fig)` |"
   }
  ],
  "metadata": {

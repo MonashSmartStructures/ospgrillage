@@ -14,6 +14,8 @@ Factory functions
    ~ospgrillage.postprocessing.plot_tmd
    ~ospgrillage.postprocessing.plot_def
    ~ospgrillage.postprocessing.plot_model
+   ~ospgrillage.postprocessing.plot_srf
+   ~ospgrillage.postprocessing.model_proxy_from_results
 
 Class reference
 ---------------

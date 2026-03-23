@@ -173,6 +173,118 @@ for load_dict in self.load_cases_dict_list:
 
 The result is a single code path that works identically in live and script modes --- there is no `eval()` or string interpolation anywhere in the analysis loop.
 
+## Shell stress extraction pipeline
+
+For `shell_beam` models, *ospgrillage* extracts shell section stress
+resultants alongside the standard nodal displacements and element forces.
+This section describes the data flow from OpenSeesPy through to the
+`stresses_shell` DataArray and the `plot_srf` contour renderer.
+
+### Extraction: OpenSeesPy → `ele_stresses`
+
+During `extract_grillage_responses()` in the `Analysis` class, each
+element tag is queried with:
+
+```python
+ele_stress = ops.eleResponse(ele_tag, "stresses")
+```
+
+For 4-node shell elements (e.g. `ShellMITC4`), OpenSeesPy returns a
+flat list of **32 floats**: 8 stress resultants at each of 4 Gauss
+points.  The 8 resultants at each GP are, in order:
+
+| Index | Symbol | Meaning |
+|---|---|---|
+| 0 | N11 | Membrane force per unit length in local 1-direction |
+| 1 | N22 | Membrane force per unit length in local 2-direction |
+| 2 | N12 | In-plane shear force per unit length |
+| 3 | M11 | Bending moment per unit length about local 2-axis |
+| 4 | M22 | Bending moment per unit length about local 1-axis |
+| 5 | M12 | Twisting moment per unit length |
+| 6 | Q13 | Transverse shear in the 1–3 plane |
+| 7 | Q23 | Transverse shear in the 2–3 plane |
+
+Beam elements return an empty list for `"stresses"`, so only shell
+elements populate `Analysis.ele_stresses`.
+
+### Storage: `Results.basic_load_case_record_stresses`
+
+The `Results.extract_analysis()` method copies the per-element stress
+dict into `basic_load_case_record_stresses`, keyed by load case name:
+
+```python
+self.basic_load_case_record_stresses[lc_name] = {ele_tag: [32 floats], ...}
+```
+
+### DataArray assembly: `stresses_shell`
+
+When `Results.compile_results()` builds the xarray Dataset, the stress
+data is packed into a `stresses_shell` DataArray with three dimensions:
+
+```
+stresses_shell (Loadcase × Element × Stress)
+```
+
+The **Stress** coordinate contains 32 labels of the form
+`N11_gp1, N22_gp1, …, Q23_gp1, N11_gp2, …, Q23_gp4`.  These are
+generated in `Results.__init__`:
+
+```python
+_gp_labels = ["gp1", "gp2", "gp3", "gp4"]
+_sr_labels = ["N11", "N22", "N12", "M11", "M22", "M12", "Q13", "Q23"]
+self.stress_component_shell = [
+    f"{sr}_{gp}" for gp in _gp_labels for sr in _sr_labels
+]
+```
+
+### Why a separate "Stress" dimension?
+
+The `forces_shell` array uses a `Component` dimension with labels like
+`Vx_i`, `Vy_j`, etc.  If `stresses_shell` also used `Component`,
+xarray would attempt to auto-align the two arrays along that shared
+dimension during Dataset operations (merge, concat, arithmetic).  Since
+the stress labels are unrelated to the force labels, this would produce
+NaN-filled expansions.  Using a distinct `Stress` dimension avoids this.
+
+### Contour rendering: `plot_srf` pipeline
+
+{func}`~ospgrillage.postprocessing.plot_srf` dispatches to one of three
+extraction helpers depending on the requested component:
+
+1. **Shell forces** (`Vx`–`Mz`) →
+   `_extract_shell_contour_data()` — reads `forces_shell`, extracts
+   the `_i`/`_j`/`_k`/`_l` columns for the component, and averages
+   at shared nodes.
+2. **Displacements** (`Dx`, `Dy`, `Dz`) →
+   `_extract_shell_disp_data()` — reads `displacements` directly at
+   each shell node.
+3. **Stress resultants** (`N11`–`Q23`) →
+   `_extract_shell_stress_data()` — reads `stresses_shell`, averages
+   the 4 GP values per element, then averages contributions from
+   neighbouring elements at shared nodes.
+
+All three return `(node_values, element_quads)` which feed into
+`_triangulate_shell_mesh()`.
+
+### Triangulation and coordinate conventions
+
+`_triangulate_shell_mesh()` builds deduplicated vertex arrays and
+triangle indices for Plotly `Mesh3d`.  Each quad element is split into
+two triangles.  Shared nodes get a single vertex so that intensity
+interpolation is smooth across element boundaries.
+
+The coordinate mapping from the *ospgrillage* model space to Plotly's
+display axes is:
+
+| Model axis | Plotly axis | Label |
+|---|---|---|
+| x (span) | x | `"x (m)"` |
+| z (width) | y | `"z (m)"` |
+| −y (vertical, inverted) | z | `"y (m)"` |
+
+The y-axis inversion ensures that deflections render downward (gravity
+direction) in the 3-D view.
+
 ## Further development
 
 *ospgrillage* is developed as a open-source package. In turn, the developers welcome contributors to add/improve on the current release of *ospgrillage*.

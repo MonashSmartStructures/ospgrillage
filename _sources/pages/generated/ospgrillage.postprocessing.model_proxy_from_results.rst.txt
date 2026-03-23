@@ -1,0 +1,6 @@
+﻿model\_proxy\_from\_results
+===========================
+
+.. currentmodule:: ospgrillage.postprocessing
+
+.. autofunction:: model_proxy_from_results

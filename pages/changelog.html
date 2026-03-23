@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Releases &#8212; ospgrillage 0.5.3 documentation</title>
+    <title>Releases &#8212; ospgrillage 0.6.0 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=2a2fe768"></script>
+    <script src="../_static/documentation_options.js?v=8fa8b3e9"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -49,7 +49,7 @@
     <link rel="prev" title="Troubleshooting" href="troubleshooting.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.5.3" />
+  <meta name="docsearch:version" content="0.6.0" />
   </head>
   
   
@@ -115,8 +115,8 @@
       
     
     
-    <img src="../_static/ospgrillage_logo.png" class="logo__image only-light" alt="ospgrillage 0.5.3 documentation - Home"/>
-    <img src="../_static/ospgrillage_logo.png" class="logo__image only-dark pst-js-only" alt="ospgrillage 0.5.3 documentation - Home"/>
+    <img src="../_static/ospgrillage_logo.png" class="logo__image only-light" alt="ospgrillage 0.6.0 documentation - Home"/>
+    <img src="../_static/ospgrillage_logo.png" class="logo__image only-dark pst-js-only" alt="ospgrillage 0.6.0 documentation - Home"/>
   
   
 </a></div>
@@ -449,6 +449,61 @@
   <section id="releases">
 <h1>Releases<a class="headerlink" href="#releases" title="Link to this heading">#</a></h1>
 <p>Here is the summary change log for <em>ospgrillage</em>. Full details of commit logs can be found in the <a class="reference external" href="https://github.com/MonashSmartStructures/ospgrillage/commits/main">commit history</a>. The complete machine-readable changelog is maintained in <a class="reference external" href="https://github.com/MonashSmartStructures/ospgrillage/blob/main/CHANGELOG.md">CHANGELOG.md</a> at the repository root.</p>
+<section id="version-0-6-0-march-2026">
+<h2>Version 0.6.0 (March 2026)<a class="headerlink" href="#version-0-6-0-march-2026" title="Link to this heading">#</a></h2>
+<p>A visualisation and post-processing release: shell element stress
+resultant contour plots, self-contained results files, and a GUI results
+viewer make it possible to inspect shell-beam hybrid models end-to-end.</p>
+<p><strong>Shell contour plots (<code class="docutils literal notranslate"><span class="pre">plot_srf</span></code>)</strong></p>
+<ul class="simple">
+<li><p>New <a class="reference internal" href="generated/ospgrillage.postprocessing.plot_srf.html#ospgrillage.postprocessing.plot_srf" title="ospgrillage.postprocessing.plot_srf"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_srf()</span></code></a> function renders
+contour plots over the shell mesh for three families of component:
+shell forces (<code class="docutils literal notranslate"><span class="pre">Vx</span></code>–<code class="docutils literal notranslate"><span class="pre">Mz</span></code>), nodal displacements (<code class="docutils literal notranslate"><span class="pre">Dx</span></code>, <code class="docutils literal notranslate"><span class="pre">Dy</span></code>, <code class="docutils literal notranslate"><span class="pre">Dz</span></code>),
+and section stress resultants (<code class="docutils literal notranslate"><span class="pre">N11</span></code>, <code class="docutils literal notranslate"><span class="pre">N22</span></code>, <code class="docutils literal notranslate"><span class="pre">N12</span></code>, <code class="docutils literal notranslate"><span class="pre">M11</span></code>, <code class="docutils literal notranslate"><span class="pre">M22</span></code>,
+<code class="docutils literal notranslate"><span class="pre">M12</span></code>, <code class="docutils literal notranslate"><span class="pre">Q13</span></code>, <code class="docutils literal notranslate"><span class="pre">Q23</span></code>).</p></li>
+<li><p>Supports both Plotly (interactive 3-D) and matplotlib (2-D) backends.</p></li>
+<li><p>Shell contours can be composed with beam diagrams by passing the
+Plotly figure as <code class="docutils literal notranslate"><span class="pre">ax=</span></code> to <code class="docutils literal notranslate"><span class="pre">plot_bmd</span></code> / <code class="docutils literal notranslate"><span class="pre">plot_sfd</span></code> / <code class="docutils literal notranslate"><span class="pre">plot_tmd</span></code> /
+<code class="docutils literal notranslate"><span class="pre">plot_def</span></code>.</p></li>
+<li><p>Configurable colorscale, opacity, and colorbar display.</p></li>
+</ul>
+<p><strong>Stress extraction pipeline</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">extract_grillage_responses()</span></code> now queries <code class="docutils literal notranslate"><span class="pre">eleResponse(tag,</span> <span class="pre">&quot;stresses&quot;)</span></code>
+for shell elements, capturing 8 stress resultants at 4 Gauss points
+(32 values per element).</p></li>
+<li><p>New <code class="docutils literal notranslate"><span class="pre">stresses_shell</span></code> DataArray in the results Dataset (dimensions:
+Loadcase × Element × Stress) with a dedicated <code class="docutils literal notranslate"><span class="pre">Stress</span></code> coordinate to
+avoid dimension conflicts with <code class="docutils literal notranslate"><span class="pre">forces_shell</span></code>.</p></li>
+</ul>
+<p><strong>Self-contained results files</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">.nc</span></code> files saved via <code class="docutils literal notranslate"><span class="pre">get_results(save_filename=...)</span></code> now embed node
+coordinates and member-element connectivity, making them fully
+self-contained.</p></li>
+<li><p><a class="reference internal" href="generated/ospgrillage.postprocessing.model_proxy_from_results.html#ospgrillage.postprocessing.model_proxy_from_results" title="ospgrillage.postprocessing.model_proxy_from_results"><code class="xref py py-func docutils literal notranslate"><span class="pre">model_proxy_from_results()</span></code></a> creates a
+lightweight <code class="docutils literal notranslate"><span class="pre">_ModelProxy</span></code> from a saved Dataset — all plotting
+functions work without the original <code class="docutils literal notranslate"><span class="pre">OspGrillage</span></code> object.</p></li>
+</ul>
+<p><strong>GUI results viewer</strong></p>
+<ul class="simple">
+<li><p><strong>File &gt; Open Results (.nc)</strong> loads saved results into an interactive
+viewer with BMD, SFD, TMD, Deflection, and Shell Contour tabs.</p></li>
+<li><p>Shell Contour tab provides component, colorscale, and overlay
+controls (compose shell contours with beam diagrams).</p></li>
+<li><p>Contour controls grey out when a non-contour tab is active and hide
+entirely for non-shell models.</p></li>
+</ul>
+<p><strong>GUI fixes</strong></p>
+<ul class="simple">
+<li><p>Disabled combo-box pseudo-state styles for better visual feedback.</p></li>
+<li><p>3-D lighting disabled on shell contours to remove specular artefacts.</p></li>
+<li><p>BMD title no longer overwrites SRF title when composing; colorbar
+moved to the left.</p></li>
+<li><p>Support markers handled gracefully with <code class="docutils literal notranslate"><span class="pre">_ModelProxy</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fig.show()</span></code> works correctly in IPython terminal sessions.</p></li>
+</ul>
+</section>
 <section id="version-0-5-0-march-2026">
 <h2>Version 0.5.0 (March 2026)<a class="headerlink" href="#version-0-5-0-march-2026" title="Link to this heading">#</a></h2>
 <p>A usability-focused release: every result the model produces can now be
@@ -628,6 +683,7 @@ consistent, and the documentation has been substantially rewritten.</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-6-0-march-2026">Version 0.6.0 (March 2026)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-5-0-march-2026">Version 0.5.0 (March 2026)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-4-1-march-2026">Version 0.4.1 (March 2026)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-4-0-aug-2024">Version 0.4.0 (Aug 2024)</a></li>

@@ -2,6 +2,61 @@
 
 Here is the summary change log for *ospgrillage*. Full details of commit logs can be found in the [commit history](https://github.com/MonashSmartStructures/ospgrillage/commits/main). The complete machine-readable changelog is maintained in [CHANGELOG.md](https://github.com/MonashSmartStructures/ospgrillage/blob/main/CHANGELOG.md) at the repository root.
 
+## Version 0.6.0 (March 2026)
+
+A visualisation and post-processing release: shell element stress
+resultant contour plots, self-contained results files, and a GUI results
+viewer make it possible to inspect shell-beam hybrid models end-to-end.
+
+**Shell contour plots (`plot_srf`)**
+
+-   New {func}`~ospgrillage.postprocessing.plot_srf` function renders
+    contour plots over the shell mesh for three families of component:
+    shell forces (`Vx`–`Mz`), nodal displacements (`Dx`, `Dy`, `Dz`),
+    and section stress resultants (`N11`, `N22`, `N12`, `M11`, `M22`,
+    `M12`, `Q13`, `Q23`).
+-   Supports both Plotly (interactive 3-D) and matplotlib (2-D) backends.
+-   Shell contours can be composed with beam diagrams by passing the
+    Plotly figure as `ax=` to `plot_bmd` / `plot_sfd` / `plot_tmd` /
+    `plot_def`.
+-   Configurable colorscale, opacity, and colorbar display.
+
+**Stress extraction pipeline**
+
+-   `extract_grillage_responses()` now queries `eleResponse(tag, "stresses")`
+    for shell elements, capturing 8 stress resultants at 4 Gauss points
+    (32 values per element).
+-   New `stresses_shell` DataArray in the results Dataset (dimensions:
+    Loadcase × Element × Stress) with a dedicated `Stress` coordinate to
+    avoid dimension conflicts with `forces_shell`.
+
+**Self-contained results files**
+
+-   `.nc` files saved via `get_results(save_filename=...)` now embed node
+    coordinates and member-element connectivity, making them fully
+    self-contained.
+-   {func}`~ospgrillage.postprocessing.model_proxy_from_results` creates a
+    lightweight `_ModelProxy` from a saved Dataset — all plotting
+    functions work without the original `OspGrillage` object.
+
+**GUI results viewer**
+
+-   **File > Open Results (.nc)** loads saved results into an interactive
+    viewer with BMD, SFD, TMD, Deflection, and Shell Contour tabs.
+-   Shell Contour tab provides component, colorscale, and overlay
+    controls (compose shell contours with beam diagrams).
+-   Contour controls grey out when a non-contour tab is active and hide
+    entirely for non-shell models.
+
+**GUI fixes**
+
+-   Disabled combo-box pseudo-state styles for better visual feedback.
+-   3-D lighting disabled on shell contours to remove specular artefacts.
+-   BMD title no longer overwrites SRF title when composing; colorbar
+    moved to the left.
+-   Support markers handled gracefully with `_ModelProxy`.
+-   `fig.show()` works correctly in IPython terminal sessions.
+
 ## Version 0.5.0 (March 2026)
 
 A usability-focused release: every result the model produces can now be

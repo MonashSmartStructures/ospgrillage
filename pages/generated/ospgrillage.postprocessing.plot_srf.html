@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>OspGrillage.add_load_combination &#8212; ospgrillage 0.6.0 documentation</title>
+    <title>plot_srf &#8212; ospgrillage 0.6.0 documentation</title>
   
   
   
@@ -42,11 +42,11 @@
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'pages/generated/ospgrillage.osp_grillage.OspGrillage.add_load_combination';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'pages/generated/ospgrillage.postprocessing.plot_srf';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="OspGrillage.get_nodes" href="ospgrillage.osp_grillage.OspGrillage.get_nodes.html" />
-    <link rel="prev" title="OspGrillage.add_load_case" href="ospgrillage.osp_grillage.OspGrillage.add_load_case.html" />
+    <link rel="next" title="model_proxy_from_results" href="ospgrillage.postprocessing.model_proxy_from_results.html" />
+    <link rel="prev" title="plot_model" href="ospgrillage.postprocessing.plot_model.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.6.0" />
@@ -380,13 +380,13 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../api_grillage.html">Grillage model</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api_grillage.html">Grillage model</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.create_grillage.html">create_grillage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.create_osp_model.html">OspGrillage.create_osp_model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.set_member.html">OspGrillage.set_member</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.set_boundary_condition.html">OspGrillage.set_boundary_condition</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.add_load_case.html">OspGrillage.add_load_case</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">OspGrillage.add_load_combination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.add_load_combination.html">OspGrillage.add_load_combination</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.get_nodes.html">OspGrillage.get_nodes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.get_element.html">OspGrillage.get_element</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.clear_load_cases.html">OspGrillage.clear_load_cases</a></li>
@@ -436,7 +436,7 @@
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.get_results.html">OspGrillage.get_results</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../api_postprocessing.html">Post-processing</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../api_postprocessing.html">Post-processing</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.postprocessing.create_envelope.html">create_envelope</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.postprocessing.plot_force.html">plot_force</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.postprocessing.plot_bmd.html">plot_bmd</a></li>
@@ -444,7 +444,7 @@
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.postprocessing.plot_tmd.html">plot_tmd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.postprocessing.plot_def.html">plot_def</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.postprocessing.plot_model.html">plot_model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ospgrillage.postprocessing.plot_srf.html">plot_srf</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">plot_srf</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.postprocessing.model_proxy_from_results.html">model_proxy_from_results</a></li>
 </ul>
 </details></li>
@@ -492,9 +492,9 @@
     <li class="breadcrumb-item"><a href="../api_reference.html" class="nav-link">API reference</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../api_grillage.html" class="nav-link">Grillage model</a></li>
+    <li class="breadcrumb-item"><a href="../api_postprocessing.html" class="nav-link">Post-processing</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">OspGrillage.add_load_combination</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">plot_srf</span></li>
   </ul>
 </nav>
 </div>
@@ -511,33 +511,82 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="ospgrillage-add-load-combination">
-<h1>OspGrillage.add_load_combination<a class="headerlink" href="#ospgrillage-add-load-combination" title="Link to this heading">#</a></h1>
-<dl class="py method">
-<dt class="sig sig-object py" id="ospgrillage.osp_grillage.OspGrillage.add_load_combination">
-<span class="sig-prename descclassname"><span class="pre">OspGrillage.</span></span><span class="sig-name descname"><span class="pre">add_load_combination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">load_combination_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_case_and_factor_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.OspGrillage.add_load_combination" title="Link to this definition">#</a></dt>
-<dd><p>Function to add load combination to analysis. Load combinations are defined through a dict with
-load case name str to be included in combination as keys, and load factor (type float/int) as value of dict.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>load_combination_name</strong> (<em>str</em>) – Name string of load combination</p></li>
-<li><p><strong>load_case_and_factor_dict</strong> (<em>str</em>) – dict with name string of load cases within the combination as key,
-corresponding load factor as value.</p></li>
+  <section id="plot-srf">
+<h1>plot_srf<a class="headerlink" href="#plot-srf" title="Link to this heading">#</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ospgrillage.postprocessing.plot_srf">
+<span class="sig-name descname"><span class="pre">plot_srf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result_obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Mx'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loadcase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'plotly'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.postprocessing.plot_srf" title="Link to this definition">#</a></dt>
+<dd><p>Plot a contour field over the shell mesh.</p>
+<p>Visualises shell element data as an interpolated contour over the
+deck slab mesh of a <code class="docutils literal notranslate"><span class="pre">shell_beam</span></code> model.  Three families of
+component are supported:</p>
+<ul class="simple">
+<li><p><strong>Shell forces</strong> — <code class="docutils literal notranslate"><span class="pre">Vx</span></code>, <code class="docutils literal notranslate"><span class="pre">Vy</span></code>, <code class="docutils literal notranslate"><span class="pre">Vz</span></code>, <code class="docutils literal notranslate"><span class="pre">Mx</span></code>, <code class="docutils literal notranslate"><span class="pre">My</span></code>,
+<code class="docutils literal notranslate"><span class="pre">Mz</span></code>.  Element end forces averaged at shared nodes.</p></li>
+<li><p><strong>Displacements</strong> — <code class="docutils literal notranslate"><span class="pre">Dx</span></code>, <code class="docutils literal notranslate"><span class="pre">Dy</span></code>, <code class="docutils literal notranslate"><span class="pre">Dz</span></code>.  Nodal translations
+read directly from the <code class="docutils literal notranslate"><span class="pre">displacements</span></code> array.</p></li>
+<li><p><strong>Stress resultants</strong> — <code class="docutils literal notranslate"><span class="pre">N11</span></code>, <code class="docutils literal notranslate"><span class="pre">N22</span></code>, <code class="docutils literal notranslate"><span class="pre">N12</span></code>, <code class="docutils literal notranslate"><span class="pre">M11</span></code>,
+<code class="docutils literal notranslate"><span class="pre">M22</span></code>, <code class="docutils literal notranslate"><span class="pre">M12</span></code>, <code class="docutils literal notranslate"><span class="pre">Q13</span></code>, <code class="docutils literal notranslate"><span class="pre">Q23</span></code>.  Section stress resultants
+averaged across the 4 Gauss points per element, then averaged
+at shared nodes.</p></li>
 </ul>
-</dd>
-</dl>
-<p>Example format of input dict for add_load_combination:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">load_comb</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name_of_load_case_1&quot;</span><span class="p">:</span><span class="mf">1.2</span><span class="p">,</span> <span class="s2">&quot;name_of_load_case_2&quot;</span><span class="p">:</span> <span class="mf">1.5</span><span class="p">}</span>
+<p>The returned Plotly figure can be composed with beam force
+diagrams by passing it as <code class="docutils literal notranslate"><span class="pre">ax=</span></code> to <a class="reference internal" href="ospgrillage.postprocessing.plot_bmd.html#ospgrillage.postprocessing.plot_bmd" title="ospgrillage.postprocessing.plot_bmd"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_bmd()</span></code></a> etc.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">plot_srf</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="s2">&quot;Mx&quot;</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;plotly&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">og</span><span class="o">.</span><span class="n">plot_bmd</span><span class="p">(</span><span class="n">proxy</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;plotly&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>As of release 0.1.0, load combinations can be directly obtained (calculated on the fly) by specifying
-<code class="docutils literal notranslate"><span class="pre">combination</span></code> kwarg in <a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_results()</span></code></a>. Hence, <cite>add_combination</cite>
-is here for adding and storing information of load combination to  <a class="reference internal" href="../api_grillage.html#ospgrillage.osp_grillage.OspGrillage" title="ospgrillage.osp_grillage.OspGrillage"><code class="xref py py-class docutils literal notranslate"><span class="pre">OspGrillage</span></code></a>
-object.</p>
-</div>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">#</a></h2>
+<dl>
+<dt>result_obj<span class="classifier">xarray.Dataset</span></dt><dd><p>Results dataset.  Must contain <code class="docutils literal notranslate"><span class="pre">ele_nodes_shell</span></code> and
+<code class="docutils literal notranslate"><span class="pre">node_coordinates</span></code>.  Depending on <em>component</em>, also requires
+<code class="docutils literal notranslate"><span class="pre">forces_shell</span></code> (shell forces), <code class="docutils literal notranslate"><span class="pre">displacements</span></code>
+(displacement components), or <code class="docutils literal notranslate"><span class="pre">stresses_shell</span></code> (stress
+resultants).</p>
+</dd>
+<dt>component<span class="classifier">str, default <code class="docutils literal notranslate"><span class="pre">&quot;Mx&quot;</span></code></span></dt><dd><p>Component to plot.  One of:</p>
+<ul class="simple">
+<li><p>Shell forces: <code class="docutils literal notranslate"><span class="pre">&quot;Vx&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Vy&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Vz&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Mx&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;My&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Mz&quot;</span></code></p></li>
+<li><p>Displacements: <code class="docutils literal notranslate"><span class="pre">&quot;Dx&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Dy&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Dz&quot;</span></code></p></li>
+<li><p>Stress resultants: <code class="docutils literal notranslate"><span class="pre">&quot;N11&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;N22&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;N12&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;M11&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;M22&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;M12&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Q13&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Q23&quot;</span></code></p></li>
+</ul>
+</dd>
+<dt>loadcase<span class="classifier">str or None, default <code class="docutils literal notranslate"><span class="pre">None</span></code></span></dt><dd><p>Load case name to plot.  <code class="docutils literal notranslate"><span class="pre">None</span></code> uses the first load case.</p>
+</dd>
+<dt>backend<span class="classifier">str, default <code class="docutils literal notranslate"><span class="pre">&quot;plotly&quot;</span></code></span></dt><dd><p><code class="docutils literal notranslate"><span class="pre">&quot;plotly&quot;</span></code> for interactive 3-D or <code class="docutils literal notranslate"><span class="pre">&quot;matplotlib&quot;</span></code> for 2-D.</p>
+</dd>
+<dt>colorscale<span class="classifier">str, default <code class="docutils literal notranslate"><span class="pre">&quot;RdBu_r&quot;</span></code></span></dt><dd><p>Plotly colorscale name (or matplotlib <em>cmap</em> name).  Use a
+diverging scale (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;RdBu_r&quot;</span></code>) for signed data and a
+sequential scale (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;Viridis&quot;</span></code>) for displacements.</p>
+</dd>
+<dt>show<span class="classifier">bool</span></dt><dd><p>Display the plot immediately.  Default <code class="docutils literal notranslate"><span class="pre">True</span></code> for plotly,
+<code class="docutils literal notranslate"><span class="pre">False</span></code> for matplotlib.</p>
+</dd>
+<dt><a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs</dt><dd><p>Forwarded to the backend renderer.  Accepted keys include
+<em>figsize</em>, <em>title</em>, <em>opacity</em>, <em>show_colorbar</em>, <em>averaging</em>,
+and <em>ax</em> / <em>fig</em> for composing onto an existing figure.</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h2>Returns<a class="headerlink" href="#returns" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>plotly.graph_objects.Figure or matplotlib.axes.Axes</dt><dd><p>The figure object, or <code class="docutils literal notranslate"><span class="pre">None</span></code> when <em>show</em> is <code class="docutils literal notranslate"><span class="pre">True</span></code> (plotly
+backend only).</p>
+</dd>
+</dl>
+</section>
+<section id="raises">
+<h2>Raises<a class="headerlink" href="#raises" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>ValueError</dt><dd><p>If the dataset does not contain the required data variables
+for the requested <em>component</em>.</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
 </section>
@@ -553,20 +602,20 @@ object.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="ospgrillage.osp_grillage.OspGrillage.add_load_case.html"
+       href="ospgrillage.postprocessing.plot_model.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">OspGrillage.add_load_case</p>
+        <p class="prev-next-title">plot_model</p>
       </div>
     </a>
     <a class="right-next"
-       href="ospgrillage.osp_grillage.OspGrillage.get_nodes.html"
+       href="ospgrillage.postprocessing.model_proxy_from_results.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">OspGrillage.get_nodes</p>
+        <p class="prev-next-title">model_proxy_from_results</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -589,7 +638,7 @@ object.</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.osp_grillage.OspGrillage.add_load_combination"><code class="docutils literal notranslate"><span class="pre">OspGrillage.add_load_combination()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.postprocessing.plot_srf"><code class="docutils literal notranslate"><span class="pre">plot_srf()</span></code></a></li>
 </ul>
   </nav></div>
 
@@ -597,7 +646,7 @@ object.</p>
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/pages/generated/ospgrillage.osp_grillage.OspGrillage.add_load_combination.rst">
+    <a href="https://github.com/MonashSmartStructures/ospgrillage/edit/main/docs/source/pages/generated/ospgrillage.postprocessing.plot_srf.rst">
       <i class="fa-solid fa-pencil"></i>
       
       

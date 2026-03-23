@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>GUI &#8212; ospgrillage 0.5.3 documentation</title>
+    <title>GUI &#8212; ospgrillage 0.6.0 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=2a2fe768"></script>
+    <script src="../_static/documentation_options.js?v=8fa8b3e9"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -49,7 +49,7 @@
     <link rel="prev" title="Curve Mesh" href="../notebooks/curve_mesh.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.5.3" />
+  <meta name="docsearch:version" content="0.6.0" />
   </head>
   
   
@@ -115,8 +115,8 @@
       
     
     
-    <img src="../_static/ospgrillage_logo.png" class="logo__image only-light" alt="ospgrillage 0.5.3 documentation - Home"/>
-    <img src="../_static/ospgrillage_logo.png" class="logo__image only-dark pst-js-only" alt="ospgrillage 0.5.3 documentation - Home"/>
+    <img src="../_static/ospgrillage_logo.png" class="logo__image only-light" alt="ospgrillage 0.6.0 documentation - Home"/>
+    <img src="../_static/ospgrillage_logo.png" class="logo__image only-dark pst-js-only" alt="ospgrillage 0.6.0 documentation - Home"/>
   
   
 </a></div>
@@ -472,6 +472,79 @@ updated as parameters change.</p></li>
 (rotate, zoom, and pan the model).</p></li>
 </ul>
 </section>
+<section id="results-viewer">
+<h2>Results viewer<a class="headerlink" href="#results-viewer" title="Link to this heading">#</a></h2>
+<p>The GUI can open saved results files (<code class="docutils literal notranslate"><span class="pre">.nc</span></code>) for interactive
+post-processing — no Python scripting required.</p>
+<section id="opening-results">
+<h3>Opening results<a class="headerlink" href="#opening-results" title="Link to this heading">#</a></h3>
+<p>Use <strong>File &gt; Open Results (.nc)</strong> (or Ctrl+O) to load a self-contained
+NetCDF file produced by
+<a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_results()</span></code></a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">bridge</span><span class="o">.</span><span class="n">get_results</span><span class="p">(</span><span class="n">save_filename</span><span class="o">=</span><span class="s2">&quot;bridge_results.nc&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The interface switches to a results view with five interactive tabs:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Tab</p></th>
+<th class="head"><p>Contents</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Deflection</strong></p></td>
+<td><p>Vertical deflected shape</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>BMD</strong></p></td>
+<td><p>Bending moment diagram</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>SFD</strong></p></td>
+<td><p>Shear force diagram</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>TMD</strong></p></td>
+<td><p>Torsion moment diagram</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Shell Contour</strong></p></td>
+<td><p>Shell element contour plot (shell_beam models only)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>A left-hand panel provides <strong>loadcase</strong> and <strong>member filter</strong> controls
+that apply to all tabs.</p>
+<a class="reference internal image-reference" href="../_images/gui_results_deflection.png"><img alt="Results viewer showing the Deflection tab with interactive 3-D deflected shape" src="../_images/gui_results_deflection.png" style="width: 100%;" />
+</a>
+<p><em>Results viewer — Deflection tab showing the deflected shape of a
+shell-beam bridge under dead load.</em></p>
+</section>
+<section id="shell-contour-tab">
+<h3>Shell Contour tab<a class="headerlink" href="#shell-contour-tab" title="Link to this heading">#</a></h3>
+<p>For <code class="docutils literal notranslate"><span class="pre">shell_beam</span></code> models, the Shell Contour tab renders a
+<a class="reference internal" href="generated/ospgrillage.postprocessing.plot_srf.html#ospgrillage.postprocessing.plot_srf" title="ospgrillage.postprocessing.plot_srf"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_srf()</span></code></a> contour over the deck
+slab.  Three additional controls appear in the left panel:</p>
+<ul class="simple">
+<li><p><strong>Component</strong> — any of the 17 available components: shell forces
+(<code class="docutils literal notranslate"><span class="pre">Mx</span></code>–<code class="docutils literal notranslate"><span class="pre">Mz</span></code>), displacements (<code class="docutils literal notranslate"><span class="pre">Dx</span></code>–<code class="docutils literal notranslate"><span class="pre">Dz</span></code>), or stress resultants
+(<code class="docutils literal notranslate"><span class="pre">N11</span></code>–<code class="docutils literal notranslate"><span class="pre">Q23</span></code>).</p></li>
+<li><p><strong>Colorscale</strong> — <code class="docutils literal notranslate"><span class="pre">RdBu_r</span></code>, <code class="docutils literal notranslate"><span class="pre">Viridis</span></code>, <code class="docutils literal notranslate"><span class="pre">Plasma</span></code>, <code class="docutils literal notranslate"><span class="pre">Cividis</span></code>, or
+<code class="docutils literal notranslate"><span class="pre">Turbo</span></code>.</p></li>
+<li><p><strong>Overlay</strong> — optionally composite a beam diagram (<code class="docutils literal notranslate"><span class="pre">BMD</span></code>, <code class="docutils literal notranslate"><span class="pre">SFD</span></code>,
+<code class="docutils literal notranslate"><span class="pre">TMD</span></code>, or <code class="docutils literal notranslate"><span class="pre">Deflection</span></code>) on top of the contour.</p></li>
+</ul>
+<p>The contour controls are greyed out when viewing a non-contour tab and
+hidden entirely for non-shell models.</p>
+<a class="reference internal image-reference" href="../_images/gui_results_shell_contour.png"><img alt="Shell Contour tab showing Mx bending moment contour over the deck slab" src="../_images/gui_results_shell_contour.png" style="width: 100%;" />
+</a>
+<p><em>Shell Contour tab — Mx bending moment with the RdBu_r diverging
+colorscale.  Red indicates positive (sagging), blue negative (hogging).</em></p>
+<p>The <strong>Overlay</strong> dropdown composites beam force diagrams on top of the
+shell contour for direct comparison:</p>
+<a class="reference internal image-reference" href="../_images/gui_results_shell_contour_overlay.png"><img alt="Shell contour with BMD overlay showing beam bending moments over the deck slab" src="../_images/gui_results_shell_contour_overlay.png" style="width: 100%;" />
+</a>
+<p><em>Shell Mx contour with a BMD overlay — beam bending moment diagrams
+rendered alongside the deck slab response.</em></p>
+</section>
+</section>
 <section id="api-reference">
 <h2>API reference<a class="headerlink" href="#api-reference" title="Link to this heading">#</a></h2>
 <section id="main">
@@ -536,6 +609,11 @@ application’s return code on normal exit.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#launching">Launching</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interface-overview">Interface overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#results-viewer">Results viewer</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#opening-results">Opening results</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#shell-contour-tab">Shell Contour tab</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#api-reference">API reference</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 </ul>

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Working with results &#8212; ospgrillage 0.5.3 documentation</title>
+    <title>Working with results &#8212; ospgrillage 0.6.0 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=2a2fe768"></script>
+    <script src="../_static/documentation_options.js?v=8fa8b3e9"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -49,7 +49,7 @@
     <link rel="prev" title="Running an analysis" href="running_analysis.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.5.3" />
+  <meta name="docsearch:version" content="0.6.0" />
   </head>
   
   
@@ -115,8 +115,8 @@
       
     
     
-    <img src="../_static/ospgrillage_logo.png" class="logo__image only-light" alt="ospgrillage 0.5.3 documentation - Home"/>
-    <img src="../_static/ospgrillage_logo.png" class="logo__image only-dark pst-js-only" alt="ospgrillage 0.5.3 documentation - Home"/>
+    <img src="../_static/ospgrillage_logo.png" class="logo__image only-light" alt="ospgrillage 0.6.0 documentation - Home"/>
+    <img src="../_static/ospgrillage_logo.png" class="logo__image only-dark pst-js-only" alt="ospgrillage 0.6.0 documentation - Home"/>
   
   
 </a></div>
@@ -495,7 +495,11 @@
 </table>
 </div>
 <p>For a <a class="reference internal" href="model_templates.html#shell-hybrid-model"><span class="std std-ref">Shell &amp; Beam Elements — shell_beam</span></a>, forces are split into <code class="docutils literal notranslate"><span class="pre">forces_beam</span></code> / <code class="docutils literal notranslate"><span class="pre">forces_shell</span></code>
-and element connectivity into <code class="docutils literal notranslate"><span class="pre">ele_nodes_beam</span></code> / <code class="docutils literal notranslate"><span class="pre">ele_nodes_shell</span></code>.</p>
+and element connectivity into <code class="docutils literal notranslate"><span class="pre">ele_nodes_beam</span></code> / <code class="docutils literal notranslate"><span class="pre">ele_nodes_shell</span></code>.
+Additionally, <code class="docutils literal notranslate"><span class="pre">stresses_shell</span></code> (Loadcase x Element x Stress) contains
+shell section stress resultants at 4 Gauss points — 8 components per
+point (N11, N22, N12, M11, M22, M12, Q13, Q23) giving 32 values per
+element.  See <a class="reference internal" href="#plot-srf"><span class="std std-ref">Shell contour plots (plot_srf)</span></a> for visualisation.</p>
 <p>Printing <code class="docutils literal notranslate"><span class="pre">all_result</span></code> shows the structure:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">xarray</span><span class="o">.</span><span class="n">Dataset</span><span class="o">&gt;</span>
 <span class="n">Dimensions</span><span class="p">:</span>        <span class="p">(</span><span class="n">Component</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span> <span class="n">Element</span><span class="p">:</span> <span class="mi">142</span><span class="p">,</span> <span class="n">Loadcase</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="n">Node</span><span class="p">:</span> <span class="mi">77</span><span class="p">,</span> <span class="n">Nodes</span><span class="p">:</span> <span class="mi">2</span><span class="p">)</span>
@@ -622,6 +626,76 @@ displacement <code class="docutils literal notranslate"><span class="pre">y</spa
 </pre></div>
 </div>
 <p>For more options see <a class="reference internal" href="generated/ospgrillage.postprocessing.create_envelope.html#ospgrillage.postprocessing.create_envelope" title="ospgrillage.postprocessing.create_envelope"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_envelope()</span></code></a>.</p>
+</section>
+<section id="saving-and-loading-results">
+<h2>Saving and loading results<a class="headerlink" href="#saving-and-loading-results" title="Link to this heading">#</a></h2>
+<p>Results can be saved to a <a class="reference external" href="https://www.unidata.ucar.edu/software/netcdf/">NetCDF</a>
+file — the standard binary format for labelled multi-dimensional data — by
+passing the <code class="docutils literal notranslate"><span class="pre">save_filename</span></code> keyword to
+<a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_results()</span></code></a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Save while retrieving</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">example_bridge</span><span class="o">.</span><span class="n">get_results</span><span class="p">(</span><span class="n">save_filename</span><span class="o">=</span><span class="s2">&quot;my_results.nc&quot;</span><span class="p">)</span>
+
+<span class="c1"># Also works with load combinations</span>
+<span class="n">comb</span> <span class="o">=</span> <span class="n">example_bridge</span><span class="o">.</span><span class="n">get_results</span><span class="p">(</span>
+    <span class="n">combinations</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Dead load&quot;</span><span class="p">:</span> <span class="mf">1.2</span><span class="p">,</span> <span class="s2">&quot;SIDL&quot;</span><span class="p">:</span> <span class="mf">1.5</span><span class="p">},</span>
+    <span class="n">save_filename</span><span class="o">=</span><span class="s2">&quot;combination_results.nc&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>This writes the full xarray Dataset — including node coordinates and
+member-element connectivity — to a <code class="docutils literal notranslate"><span class="pre">.nc</span></code> file in the current working
+directory.</p>
+<section id="loading-saved-results">
+<h3>Loading saved results<a class="headerlink" href="#loading-saved-results" title="Link to this heading">#</a></h3>
+<p>To reload saved results later, use xarray directly:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
+<span class="n">reloaded</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_dataset</span><span class="p">(</span><span class="s2">&quot;my_results.nc&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The reloaded Dataset has the same structure (<code class="docutils literal notranslate"><span class="pre">displacements</span></code>, <code class="docutils literal notranslate"><span class="pre">forces</span></code>,
+<code class="docutils literal notranslate"><span class="pre">ele_nodes</span></code>, etc.) so all the selection and envelope operations described
+above work identically.</p>
+</section>
+<section id="plotting-from-a-saved-file">
+<h3>Plotting from a saved file<a class="headerlink" href="#plotting-from-a-saved-file" title="Link to this heading">#</a></h3>
+<p>The saved file is <strong>self-contained</strong>: it includes the node coordinates and
+member mappings needed by the plotting functions.  Use
+<a class="reference internal" href="generated/ospgrillage.postprocessing.model_proxy_from_results.html#ospgrillage.postprocessing.model_proxy_from_results" title="ospgrillage.postprocessing.model_proxy_from_results"><code class="xref py py-func docutils literal notranslate"><span class="pre">model_proxy_from_results()</span></code></a> to create a
+lightweight proxy that stands in for the original grillage model:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ospgrillage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">og</span>
+
+<span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_dataset</span><span class="p">(</span><span class="s2">&quot;my_results.nc&quot;</span><span class="p">)</span>
+<span class="n">proxy</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">model_proxy_from_results</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
+
+<span class="c1"># All plotting functions work with the proxy</span>
+<span class="n">og</span><span class="o">.</span><span class="n">plot_bmd</span><span class="p">(</span><span class="n">proxy</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;plotly&quot;</span><span class="p">)</span>
+<span class="n">og</span><span class="o">.</span><span class="n">plot_sfd</span><span class="p">(</span><span class="n">proxy</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;plotly&quot;</span><span class="p">)</span>
+<span class="n">og</span><span class="o">.</span><span class="n">plot_def</span><span class="p">(</span><span class="n">proxy</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;plotly&quot;</span><span class="p">)</span>
+<span class="n">og</span><span class="o">.</span><span class="n">plot_tmd</span><span class="p">(</span><span class="n">proxy</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;plotly&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The proxy supports force diagrams and deflected shapes.  For the full
+model geometry visualisation (<a class="reference internal" href="generated/ospgrillage.postprocessing.plot_model.html#ospgrillage.postprocessing.plot_model" title="ospgrillage.postprocessing.plot_model"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_model()</span></code></a>)
+you still need the original :class:<code class="docutils literal notranslate"><span class="pre">~ospgrillage.osp_grillage.OspGrillage</span></code>
+object.</p>
+</div>
+</section>
+<section id="viewing-results-in-the-gui">
+<h3>Viewing results in the GUI<a class="headerlink" href="#viewing-results-in-the-gui" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">ospgui</span></code> application can open <code class="docutils literal notranslate"><span class="pre">.nc</span></code> files directly via
+<strong>File &gt; Open Results (.nc)</strong> (Ctrl+O).  This switches to a results viewer
+with interactive BMD, SFD, TMD, and deflection tabs, plus loadcase and
+member-filter controls.</p>
+<p>To generate test <code class="docutils literal notranslate"><span class="pre">.nc</span></code> files for all three mesh types (Oblique, GMS,
+Ortho), run::</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python tests/generate_test_results.py
+</pre></div>
+</div>
+</section>
 </section>
 <section id="plotting-results">
 <h2>Plotting results<a class="headerlink" href="#plotting-results" title="Link to this heading">#</a></h2>
@@ -809,6 +883,250 @@ terminal.  The figure can be further customised using the standard Plotly
 API.  The GUI auto-detects plotly and uses it by default when available.</p>
 </section>
 </section>
+<section id="shell-contour-plots-plot-srf">
+<span id="plot-srf"></span><h2>Shell contour plots (<code class="docutils literal notranslate"><span class="pre">plot_srf</span></code>)<a class="headerlink" href="#shell-contour-plots-plot-srf" title="Link to this heading">#</a></h2>
+<p>For <code class="docutils literal notranslate"><span class="pre">shell_beam</span></code> models, <a class="reference internal" href="generated/ospgrillage.postprocessing.plot_srf.html#ospgrillage.postprocessing.plot_srf" title="ospgrillage.postprocessing.plot_srf"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_srf()</span></code></a>
+renders contour plots over the shell mesh.  It supports three families of
+component:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Family</p></th>
+<th class="head"><p>Components</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Shell forces</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Vx</span></code>, <code class="docutils literal notranslate"><span class="pre">Vy</span></code>, <code class="docutils literal notranslate"><span class="pre">Vz</span></code>, <code class="docutils literal notranslate"><span class="pre">Mx</span></code>, <code class="docutils literal notranslate"><span class="pre">My</span></code>, <code class="docutils literal notranslate"><span class="pre">Mz</span></code></p></td>
+<td><p>Element end forces averaged to nodes</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Displacements</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Dx</span></code>, <code class="docutils literal notranslate"><span class="pre">Dy</span></code>, <code class="docutils literal notranslate"><span class="pre">Dz</span></code></p></td>
+<td><p>Nodal translations (x, y, z)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Stress resultants</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">N11</span></code>, <code class="docutils literal notranslate"><span class="pre">N22</span></code>, <code class="docutils literal notranslate"><span class="pre">N12</span></code>, <code class="docutils literal notranslate"><span class="pre">M11</span></code>, <code class="docutils literal notranslate"><span class="pre">M22</span></code>, <code class="docutils literal notranslate"><span class="pre">M12</span></code>, <code class="docutils literal notranslate"><span class="pre">Q13</span></code>, <code class="docutils literal notranslate"><span class="pre">Q23</span></code></p></td>
+<td><p>Section stress resultants averaged from Gauss points</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">plot_srf</span></code> requires a <code class="docutils literal notranslate"><span class="pre">shell_beam</span></code> model.  The results Dataset must
+contain <code class="docutils literal notranslate"><span class="pre">ele_nodes_shell</span></code> and <code class="docutils literal notranslate"><span class="pre">node_coordinates</span></code>.  Stress resultant
+components additionally require <code class="docutils literal notranslate"><span class="pre">stresses_shell</span></code> (generated automatically
+by ospgrillage ≥ 0.6.0).</p>
+</div>
+<section id="basic-usage">
+<h3>Basic usage<a class="headerlink" href="#basic-usage" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">plot_srf</span></code> takes a results Dataset (not a grillage object) as its first
+argument:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">bridge</span><span class="o">.</span><span class="n">get_results</span><span class="p">(</span><span class="n">save_filename</span><span class="o">=</span><span class="s2">&quot;bridge_results.nc&quot;</span><span class="p">)</span>
+
+<span class="c1"># Shell bending moment about the x-axis</span>
+<span class="n">og</span><span class="o">.</span><span class="n">plot_srf</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">component</span><span class="o">=</span><span class="s2">&quot;Mx&quot;</span><span class="p">)</span>
+
+<span class="c1"># Vertical displacement contour</span>
+<span class="n">og</span><span class="o">.</span><span class="n">plot_srf</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">component</span><span class="o">=</span><span class="s2">&quot;Dy&quot;</span><span class="p">)</span>
+
+<span class="c1"># Membrane force N11 (stress resultant)</span>
+<span class="n">og</span><span class="o">.</span><span class="n">plot_srf</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">component</span><span class="o">=</span><span class="s2">&quot;N11&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="choosing-a-loadcase">
+<h3>Choosing a loadcase<a class="headerlink" href="#choosing-a-loadcase" title="Link to this heading">#</a></h3>
+<p>By default the first loadcase is plotted.  Pass <code class="docutils literal notranslate"><span class="pre">loadcase=</span></code> to select a
+specific one:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">og</span><span class="o">.</span><span class="n">plot_srf</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">component</span><span class="o">=</span><span class="s2">&quot;Mx&quot;</span><span class="p">,</span> <span class="n">loadcase</span><span class="o">=</span><span class="s2">&quot;Dead Load&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="shell-force-components">
+<h3>Shell force components<a class="headerlink" href="#shell-force-components" title="Link to this heading">#</a></h3>
+<p>Shell element end forces (<code class="docutils literal notranslate"><span class="pre">Vx</span></code>–<code class="docutils literal notranslate"><span class="pre">Mz</span></code>) are extracted from <code class="docutils literal notranslate"><span class="pre">forces_shell</span></code>
+and averaged at shared nodes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">og</span><span class="o">.</span><span class="n">plot_srf</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="s2">&quot;Mx&quot;</span><span class="p">)</span>   <span class="c1"># bending moment about x</span>
+<span class="n">og</span><span class="o">.</span><span class="n">plot_srf</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="s2">&quot;Vy&quot;</span><span class="p">)</span>   <span class="c1"># shear force in y</span>
+<span class="n">og</span><span class="o">.</span><span class="n">plot_srf</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="s2">&quot;Mz&quot;</span><span class="p">)</span>   <span class="c1"># torsion</span>
+</pre></div>
+</div>
+</section>
+<section id="displacement-components">
+<h3>Displacement components<a class="headerlink" href="#displacement-components" title="Link to this heading">#</a></h3>
+<p>Displacement contours (<code class="docutils literal notranslate"><span class="pre">Dx</span></code>, <code class="docutils literal notranslate"><span class="pre">Dy</span></code>, <code class="docutils literal notranslate"><span class="pre">Dz</span></code>) are read directly from the
+nodal <code class="docutils literal notranslate"><span class="pre">displacements</span></code> array:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">og</span><span class="o">.</span><span class="n">plot_srf</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="s2">&quot;Dy&quot;</span><span class="p">)</span>                              <span class="c1"># vertical deflection</span>
+<span class="n">og</span><span class="o">.</span><span class="n">plot_srf</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="s2">&quot;Dy&quot;</span><span class="p">,</span> <span class="n">colorscale</span><span class="o">=</span><span class="s2">&quot;Viridis&quot;</span><span class="p">)</span>        <span class="c1"># sequential palette</span>
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Use a <strong>sequential</strong> colorscale like <code class="docutils literal notranslate"><span class="pre">Viridis</span></code> for displacements
+(single-sign data) and a <strong>diverging</strong> colorscale like <code class="docutils literal notranslate"><span class="pre">RdBu_r</span></code>
+(the default) for forces and stress resultants (signed data that
+crosses zero).</p>
+</div>
+</section>
+<section id="stress-resultant-components">
+<h3>Stress resultant components<a class="headerlink" href="#stress-resultant-components" title="Link to this heading">#</a></h3>
+<p>Shell section stress resultants are extracted via OpenSeesPy’s
+<code class="docutils literal notranslate"><span class="pre">eleResponse(tag,</span> <span class="pre">&quot;stresses&quot;)</span></code>, which returns 8 values at each of the
+4 Gauss points for a 4-node shell element:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Notation</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">N11</span></code></p></td>
+<td><p>Membrane force per unit length in local 1-direction</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">N22</span></code></p></td>
+<td><p>Membrane force per unit length in local 2-direction</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">N12</span></code></p></td>
+<td><p>In-plane shear force per unit length</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">M11</span></code></p></td>
+<td><p>Bending moment per unit length about local 2-axis</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">M22</span></code></p></td>
+<td><p>Bending moment per unit length about local 1-axis</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">M12</span></code></p></td>
+<td><p>Twisting moment per unit length</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Q13</span></code></p></td>
+<td><p>Transverse shear force per unit length in 1–3 plane</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Q23</span></code></p></td>
+<td><p>Transverse shear force per unit length in 2–3 plane</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">og</span><span class="o">.</span><span class="n">plot_srf</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="s2">&quot;M11&quot;</span><span class="p">)</span>   <span class="c1"># plate bending about local 2-axis</span>
+<span class="n">og</span><span class="o">.</span><span class="n">plot_srf</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="s2">&quot;N11&quot;</span><span class="p">)</span>   <span class="c1"># membrane force in local 1-direction</span>
+<span class="n">og</span><span class="o">.</span><span class="n">plot_srf</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="s2">&quot;Q13&quot;</span><span class="p">)</span>   <span class="c1"># transverse shear</span>
+</pre></div>
+</div>
+</section>
+<section id="composing-shell-contours-with-beam-diagrams">
+<h3>Composing shell contours with beam diagrams<a class="headerlink" href="#composing-shell-contours-with-beam-diagrams" title="Link to this heading">#</a></h3>
+<p>A common workflow is to overlay the beam BMD/SFD on top of a shell
+contour.  Pass the Plotly figure returned by <code class="docutils literal notranslate"><span class="pre">plot_srf</span></code> as the <code class="docutils literal notranslate"><span class="pre">ax=</span></code>
+argument to any beam plot function:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Create the shell contour (show=False to keep the figure object)</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">plot_srf</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="s2">&quot;Mx&quot;</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;plotly&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># 2. Create a model proxy for beam plotting</span>
+<span class="n">proxy</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">model_proxy_from_results</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+<span class="c1"># 3. Overlay the BMD onto the same figure</span>
+<span class="n">og</span><span class="o">.</span><span class="n">plot_bmd</span><span class="p">(</span><span class="n">proxy</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;plotly&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This works with <code class="docutils literal notranslate"><span class="pre">plot_bmd</span></code>, <code class="docutils literal notranslate"><span class="pre">plot_sfd</span></code>, <code class="docutils literal notranslate"><span class="pre">plot_tmd</span></code>, and <code class="docutils literal notranslate"><span class="pre">plot_def</span></code>.</p>
+</section>
+<section id="colorscale-guidance">
+<h3>Colorscale guidance<a class="headerlink" href="#colorscale-guidance" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Data type</p></th>
+<th class="head"><p>Recommended colorscale</p></th>
+<th class="head"><p>Why</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Forces / moments (<code class="docutils literal notranslate"><span class="pre">Vx</span></code>–<code class="docutils literal notranslate"><span class="pre">Mz</span></code>)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">RdBu_r</span></code> (default)</p></td>
+<td><p>Diverging — highlights sign change</p></td>
+</tr>
+<tr class="row-odd"><td><p>Stress resultants (<code class="docutils literal notranslate"><span class="pre">N11</span></code>–<code class="docutils literal notranslate"><span class="pre">Q23</span></code>)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">RdBu_r</span></code> (default)</p></td>
+<td><p>Diverging — signed data</p></td>
+</tr>
+<tr class="row-even"><td><p>Displacements (<code class="docutils literal notranslate"><span class="pre">Dx</span></code>, <code class="docutils literal notranslate"><span class="pre">Dy</span></code>, <code class="docutils literal notranslate"><span class="pre">Dz</span></code>)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Viridis</span></code></p></td>
+<td><p>Sequential — typically single-sign</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">og</span><span class="o">.</span><span class="n">plot_srf</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="s2">&quot;Mx&quot;</span><span class="p">,</span> <span class="n">colorscale</span><span class="o">=</span><span class="s2">&quot;RdBu_r&quot;</span><span class="p">)</span>     <span class="c1"># diverging (default)</span>
+<span class="n">og</span><span class="o">.</span><span class="n">plot_srf</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="s2">&quot;Dy&quot;</span><span class="p">,</span> <span class="n">colorscale</span><span class="o">=</span><span class="s2">&quot;Viridis&quot;</span><span class="p">)</span>     <span class="c1"># sequential</span>
+<span class="n">og</span><span class="o">.</span><span class="n">plot_srf</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="s2">&quot;N11&quot;</span><span class="p">,</span> <span class="n">colorscale</span><span class="o">=</span><span class="s2">&quot;Plasma&quot;</span><span class="p">)</span>     <span class="c1"># alternative sequential</span>
+</pre></div>
+</div>
+</section>
+<section id="additional-keyword-arguments">
+<h3>Additional keyword arguments<a class="headerlink" href="#additional-keyword-arguments" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Kwarg</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">backend</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;plotly&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;plotly&quot;</span></code> for interactive 3-D or <code class="docutils literal notranslate"><span class="pre">&quot;matplotlib&quot;</span></code> for 2-D</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">colorscale</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;RdBu_r&quot;</span></code></p></td>
+<td><p>Plotly colorscale name (or matplotlib <code class="docutils literal notranslate"><span class="pre">cmap</span></code> name)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">show_colorbar</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">True</span></code></p></td>
+<td><p>Display the colour bar legend</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">opacity</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">1.0</span></code></p></td>
+<td><p>Surface opacity (0–1)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">show</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">True</span></code> (plotly) / <code class="docutils literal notranslate"><span class="pre">False</span></code> (mpl)</p></td>
+<td><p>Display the figure immediately</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ax</span></code> / <code class="docutils literal notranslate"><span class="pre">fig</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p></td>
+<td><p>Existing Plotly <code class="docutils literal notranslate"><span class="pre">Figure</span></code> or matplotlib <code class="docutils literal notranslate"><span class="pre">Axes</span></code> to draw on</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">title</span></code></p></td>
+<td><p>auto</p></td>
+<td><p>Custom title string, or <code class="docutils literal notranslate"><span class="pre">None</span></code> to suppress</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">figsize</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p></td>
+<td><p>Figure size as <code class="docutils literal notranslate"><span class="pre">(width,</span> <span class="pre">height)</span></code> in inches</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="using-the-gui-shell-contour-tab">
+<h3>Using the GUI shell contour tab<a class="headerlink" href="#using-the-gui-shell-contour-tab" title="Link to this heading">#</a></h3>
+<p>When you open a <code class="docutils literal notranslate"><span class="pre">shell_beam</span></code> results file in the GUI
+(<strong>File &gt; Open Results (.nc)</strong>), a <strong>Shell Contour</strong> tab appears
+alongside the BMD, SFD, TMD, and Deflection tabs.</p>
+<p>The results panel on the left provides three controls:</p>
+<ol class="arabic simple">
+<li><p><strong>Component</strong> — select any of the 17 available components
+(<code class="docutils literal notranslate"><span class="pre">Mx</span></code>–<code class="docutils literal notranslate"><span class="pre">Mz</span></code>, <code class="docutils literal notranslate"><span class="pre">Dx</span></code>–<code class="docutils literal notranslate"><span class="pre">Dz</span></code>, <code class="docutils literal notranslate"><span class="pre">N11</span></code>–<code class="docutils literal notranslate"><span class="pre">Q23</span></code>)</p></li>
+<li><p><strong>Colorscale</strong> — choose from <code class="docutils literal notranslate"><span class="pre">RdBu_r</span></code>, <code class="docutils literal notranslate"><span class="pre">Viridis</span></code>, <code class="docutils literal notranslate"><span class="pre">Plasma</span></code>,
+<code class="docutils literal notranslate"><span class="pre">Cividis</span></code>, or <code class="docutils literal notranslate"><span class="pre">Turbo</span></code></p></li>
+<li><p><strong>Overlay</strong> — optionally composite a beam diagram (<code class="docutils literal notranslate"><span class="pre">BMD</span></code>, <code class="docutils literal notranslate"><span class="pre">SFD</span></code>,
+<code class="docutils literal notranslate"><span class="pre">TMD</span></code>, or <code class="docutils literal notranslate"><span class="pre">Deflection</span></code>) on top of the shell contour</p></li>
+</ol>
+<p>The contour controls are greyed out when a non-contour tab is selected
+and automatically enabled when you switch to the Shell Contour tab.
+For non-shell models, the tab and controls are hidden entirely.</p>
+</section>
+</section>
 </section>
 
 
@@ -867,6 +1185,12 @@ API.  The GUI auto-detects plotly and uses it by default when available.</p>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-combinations">Load combinations</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-envelopes">Load envelopes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#saving-and-loading-results">Saving and loading results</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#loading-saved-results">Loading saved results</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plotting-from-a-saved-file">Plotting from a saved file</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#viewing-results-in-the-gui">Viewing results in the GUI</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#plotting-results">Plotting results</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#model-visualisation">Model visualisation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#post-processing-results">Post-processing results</a></li>
@@ -874,6 +1198,18 @@ API.  The GUI auto-detects plotly and uses it by default when available.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selecting-member-groups">Selecting member groups</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#customising-plots">Customising plots</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interactive-3d-plots-plotly">Interactive 3D plots (Plotly)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#shell-contour-plots-plot-srf">Shell contour plots (<code class="docutils literal notranslate"><span class="pre">plot_srf</span></code>)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#basic-usage">Basic usage</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#choosing-a-loadcase">Choosing a loadcase</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#shell-force-components">Shell force components</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#displacement-components">Displacement components</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stress-resultant-components">Stress resultant components</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#composing-shell-contours-with-beam-diagrams">Composing shell contours with beam diagrams</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#colorscale-guidance">Colorscale guidance</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#additional-keyword-arguments">Additional keyword arguments</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-the-gui-shell-contour-tab">Using the GUI shell contour tab</a></li>
 </ul>
 </li>
 </ul>
