@@ -60,6 +60,41 @@ python -m pytest tests/ --cov=ospgrillage --cov-report=term-missing
 
 All tests must pass before a pull request will be merged.
 
+### Writing effective tests
+
+Line coverage alone is not sufficient.  A test that creates a model and only checks
+`assert og.ops.getNodeTags()` tells you the constructor didn't crash — it says nothing
+about whether the model actually works.
+
+Every test should exercise the **user-facing operation** it is guarding, not just the
+setup step.  Concretely:
+
+| What you changed | Minimum test expectation |
+|---|---|
+| Mesh generation | Verify node/element counts **and** spot-check coordinates or connectivity |
+| `get_element()` | Call it for every relevant member name; assert non-empty results |
+| Analysis / loads | Run `analyze()`, then call `get_results()` and check values are finite and non-zero |
+| Plotting functions | Call the function (both backends if applicable); assert it returns without error and produces a figure/axes object |
+| `pyfile=True` output | Generate the file, read it back, and verify key commands are present |
+
+When adding or modifying a feature, check the coverage matrix below and fill any
+adjacent gaps — e.g. if you fix a bug in `shell_beam` meshing, also add a
+`get_element()` or `plot_model()` call for that model type if one doesn't exist.
+
+#### Coverage matrix (keep up to date)
+
+| Operation | `beam_only` | `beam_link` | `shell_beam` |
+|---|:---:|:---:|:---:|
+| Construction | ✅ | ✅ | ✅ |
+| `get_element()` | ✅ | ✅ | ✅ |
+| `analyze()` + loads | ✅ | ✅ | ✅ |
+| `get_results()` | ✅ | ✅ | ✅ |
+| `plot_model()` | ✅ | ✅ | ✅ |
+| `plot_bmd/sfd/tmd/def()` | ✅ | — | — |
+| `plot_force()` | ✅ | — | ✅ |
+| Multi-span | ✅ | — | ✅ |
+| Oblique mesh | ✅ | — | — |
+
 ---
 
 ## Code style

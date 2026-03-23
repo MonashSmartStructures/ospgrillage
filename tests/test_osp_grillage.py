@@ -100,11 +100,85 @@ def test_create_beam_link_model(beam_link_bridge):
     assert og.ops.eleNodes(100)
 
 
+# -- beam_link functional tests (issue: coverage audit) -----------------------
+def test_beam_link_get_element(beam_link_bridge):
+    """get_element() must work for all member types on beam_link models."""
+    model = beam_link_bridge
+    for member in [
+        "edge_beam",
+        "exterior_main_beam_1",
+        "interior_main_beam",
+        "exterior_main_beam_2",
+    ]:
+        nodes = model.get_element(member=member, options="nodes")
+        assert nodes, f"get_element(member={member!r}) returned empty"
+
+    for member in ["start_edge", "end_edge"]:
+        elems = model.get_element(member=member, options="elements")
+        assert (
+            elems
+        ), f"get_element(member={member!r}, options='elements') returned empty"
+
+    nodes = model.get_element(member="transverse_slab", options="nodes")
+    assert nodes, "transverse_slab returned empty"
+
+
+def test_beam_link_analysis(beam_link_bridge):
+    """beam_link model must produce finite, non-zero results under a point load."""
+    model = beam_link_bridge
+    P = 1 * kN
+    lp = og.create_load_vertex(x=5, y=0, z=3.5, p=P)
+    load = og.create_load(name="unit", point1=lp)
+    lc = og.create_load_case(name="point")
+    lc.add_load(load)
+
+    model.add_load_case(lc)
+    model.analyze()
+    results = model.get_results()
+    assert results is not None
+
+    # vertical displacement should be non-zero and finite
+    disp_y = np.array(results["displacements"].sel(Component="y").values, dtype=float)
+    assert np.all(np.isfinite(disp_y)), "Non-finite displacement values"
+    assert np.any(
+        disp_y != 0.0
+    ), "All displacements are zero — analysis produced no results"
+
+
 # test creating model using shell link
 def test_create_shell_link_model(shell_link_bridge):
     shell_link_model = shell_link_bridge
     # og.opsplt.plot_model("nodes")
     assert og.ops.getNodeTags()
+
+
+# test get_element() works for all member types on shell_beam model (issue #121)
+def test_shell_link_get_element(shell_link_bridge):
+    model = shell_link_bridge
+    # longitudinal members — should return non-empty node lists
+    for member in [
+        "edge_beam",
+        "exterior_main_beam_1",
+        "interior_main_beam",
+        "exterior_main_beam_2",
+    ]:
+        nodes = model.get_element(member=member, options="nodes")
+        assert nodes, f"get_element(member={member!r}, options='nodes') returned empty"
+
+    # edge members
+    for member in ["start_edge", "end_edge"]:
+        nodes = model.get_element(member=member, options="nodes")
+        assert nodes, f"get_element(member={member!r}, options='nodes') returned empty"
+        elems = model.get_element(member=member, options="elements")
+        assert (
+            elems
+        ), f"get_element(member={member!r}, options='elements') returned empty"
+
+    # transverse slab
+    nodes = model.get_element(member="transverse_slab", options="nodes")
+    assert (
+        nodes
+    ), "get_element(member='transverse_slab', options='nodes') returned empty"
 
 
 # test creating default beam model without specifying edge beam distance
@@ -308,6 +382,42 @@ def test_multispan_feature(ref_bridge_properties):
             ],
         )
     )
+
+
+def test_multispan_ortho_node_positions(ref_bridge_properties):
+    """Multi-span Ortho mesh must place transverse beams within each span (issue #120)."""
+    I_beam, slab, exterior_I_beam, concrete = ref_bridge_properties
+
+    spans = [11, 11.5, 11]
+    model = og.create_grillage(
+        bridge_name="Test_Ortho_MultiSpan",
+        long_dim=33.5,
+        width=11.565,
+        skew=0,
+        num_long_grid=7,
+        num_trans_grid=11,
+        edge_beam_dist=1.05,
+        ext_to_int_dist=2.2775,
+        mesh_type="Ortho",
+        multi_span_dist_list=spans,
+    )
+
+    # All transverse element node x-coordinates must lie within [0, 33.5]
+    mesh = model.Mesh_obj
+    all_x = [
+        mesh.node_spec[n]["coordinate"][0]
+        for ele in mesh.trans_ele
+        for n in [ele[1], ele[2]]
+    ]
+    assert min(all_x) >= -0.01, f"node x below 0: {min(all_x)}"
+    assert max(all_x) <= 33.51, f"node x above bridge length: {max(all_x)}"
+
+    # Transverse beams should be present in every span
+    unique_x = sorted(set(round(x, 4) for x in all_x))
+    span_bounds = [0, 11, 22.5, 33.5]
+    for s in range(len(spans)):
+        in_span = [x for x in unique_x if span_bounds[s] < x < span_bounds[s + 1]]
+        assert len(in_span) > 0, f"No transverse beams in span {s}"
 
 
 def test_member_assignment_for_specific_span_feature(ref_bridge_properties):
