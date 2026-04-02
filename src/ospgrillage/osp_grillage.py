@@ -2633,6 +2633,9 @@ class OspGrillage:
         """
         ops.wipeAnalysis()
         ops.system("FullGeneral")
+        ops.numberer("Plain")
+        ops.constraints("Plain")
+        ops.algorithm("Linear")
         ops.analysis("Transient")
 
         # Mass
@@ -2667,6 +2670,107 @@ class OspGrillage:
                     massDOFs.append(ops.nodeDOFs(nd)[j])
 
         return M, C, K
+
+    def export_model(self, path: str) -> None:
+        """Export the grillage model matrices and mesh to a ``.npz`` file.
+
+        Extracts M, K, C matrices (via GimmeMCK), node coordinates, DOF
+        mapping, and grid cell topology, and saves everything to a ``.npz``
+        file.  The resulting file is self-contained and can be loaded
+        without ospgrillage, e.g. by :class:`pyvbi.GrillageBridge`:
+
+            ``gb = pyvbi.GrillageBridge.from_file("bridge.npz")``
+
+        The model must have been created (``create_osp_model``) and should
+        **not** be in ``pyfile`` mode.
+
+        Parameters
+        ----------
+        path : str
+            Output file path (e.g. ``"bridge_export.npz"``).
+
+        Notes
+        -----
+        Coordinate mapping: ospgrillage uses ``(x, y, z)`` where *y* is
+        vertical and *z* is transverse.  The exported ``node_coords`` array
+        uses ``(x, z)`` — i.e. the plan-view coordinates — with *z* relabelled
+        as the second column.
+
+        The ``.npz`` file contains:
+
+        - ``M``, ``K``, ``C`` — system matrices, shape ``(ndof, ndof)``
+        - ``node_coords`` — shape ``(n_nodes, 2)``, columns ``[x, z]``
+        - ``vert_dof_eqs`` — shape ``(n_nodes,)``, equation number for
+          vertical DOF (``-1`` = constrained)
+        - ``grid_cells`` — shape ``(n_cells, 4)``, node indices per cell
+          (``-1`` padding for triangles)
+        - ``span_length``, ``width`` — scalar geometry
+
+        See Also
+        --------
+        get_MCK : Extracts the raw M, C, K matrices.
+
+        Examples
+        --------
+        ::
+
+            import ospgrillage as og
+
+            model = og.create_grillage(...)
+            model.create_osp_model()
+            model.export_model("my_bridge.npz")
+        """
+        if not self.model_instance:
+            raise RuntimeError(
+                "Model has not been created yet — call create_osp_model() first."
+            )
+
+        # --- 1. Extract M, C, K via GimmeMCK ---
+        M, C, K = self.get_MCK()
+
+        # --- 2. Node coordinates and DOF mapping ---
+        # Sort node tags for consistent ordering
+        tags = sorted(self.Mesh_obj.node_spec.keys())
+        tag_to_idx = {tag: i for i, tag in enumerate(tags)}
+
+        node_coords = []  # pyvbi convention: (x_longitudinal, y_transverse)
+        vert_dof_eqs = []  # equation number for vertical DOF
+
+        for tag in tags:
+            coord = self.Mesh_obj.node_spec[tag]["coordinate"]
+            # ospgrillage: coord[0]=x, coord[1]=y(vertical), coord[2]=z(transverse)
+            # pyvbi:       x=longitudinal, y=transverse
+            node_coords.append([coord[0], coord[2]])
+
+            # Equation numbers for this node's DOFs
+            eq_nums = ops.nodeDOFs(tag)
+            # DOF index 1 (0-based) = y-translation = vertical
+            vert_dof_eqs.append(eq_nums[1])
+
+        node_coords = np.array(node_coords)
+        vert_dof_eqs = np.array(vert_dof_eqs, dtype=int)
+
+        # --- 3. Grid cells from mesh topology ---
+        grid_cells = []
+        for cell_nodes in self.Mesh_obj.grid_number_dict.values():
+            indices = [tag_to_idx[nt] for nt in cell_nodes]
+            if len(indices) == 3:
+                indices.append(-1)  # pad triangles
+            grid_cells.append(indices[:4])  # ensure max 4 per cell
+        grid_cells = np.array(grid_cells, dtype=int)
+
+        # --- 4. Save ---
+        np.savez(
+            path,
+            M=M,
+            K=K,
+            C=C,
+            node_coords=node_coords,
+            vert_dof_eqs=vert_dof_eqs,
+            grid_cells=grid_cells,
+            span_length=self.long_dim,
+            width=self.width,
+        )
 
     @staticmethod
     def store_state():
