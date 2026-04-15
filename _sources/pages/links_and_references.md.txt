@@ -27,3 +27,8 @@ If you use *ospgrillage* in your work, please cite the corresponding JOSS paper:
   Super-T prestressed concrete girder at serviceability limit state to AS 5100:2017",
   *Australian Journal of Structural Engineering*, 18, 1–13.
   [doi.org/10.1080/13287982.2017.1332843](https://doi.org/10.1080/13287982.2017.1332843)
+
+- Batoz, J.-L., Bathe, K.-J. and Ho, L.-W. (1980), "A study of three-node triangular
+  plate bending elements", *International Journal for Numerical Methods in Engineering*,
+  15(12), 1771–1812.
+  [doi.org/10.1002/nme.1620151203](https://doi.org/10.1002/nme.1620151203)

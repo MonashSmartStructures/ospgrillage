@@ -27,22 +27,23 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
   
   <!-- So that users can add custom icons -->
-  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <script defer src="../_static/scripts/fontawesome.js?digest=7f76b32a3354e82990f2"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
     <script src="../_static/documentation_options.js?v=8fa8b3e9"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'pages/package_design';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Contributing" href="contributing.html" />
@@ -50,14 +51,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.6.0" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
   </head>
-  
-  
-  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
-
+  <body data-default-mode="">
   
   
   <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
   
   <div id="pst-scroll-pixel-helper"></div>
   
@@ -89,7 +94,7 @@
 </div>
 
   
-    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
 <div class="bd-header__inner bd-page-width">
   <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
     <span class="fa-solid fa-bars"></span>
@@ -165,23 +170,13 @@
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" current active">
-  <a class="nav-link dropdown-item nav-internal" href="additional_resources.html">
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="additional_resources.html">
     Additional Resources
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -375,7 +370,14 @@
   </div>
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar"><svg class="pst-icon svg-inline--fa" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
         <div class="sidebar-primary-item">
+
 <nav class="bd-docs-nav bd-links"
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
@@ -611,157 +613,22 @@ transformation tag.</p>
 <p>The result is a single code path that works identically in live and script modes — there is no <code class="docutils literal notranslate"><span class="pre">eval()</span></code> or string interpolation anywhere in the analysis loop.</p>
 </section>
 </section>
-<section id="shell-stress-extraction-pipeline">
-<h2>Shell stress extraction pipeline<a class="headerlink" href="#shell-stress-extraction-pipeline" title="Link to this heading">#</a></h2>
-<p>For <code class="docutils literal notranslate"><span class="pre">shell_beam</span></code> models, <em>ospgrillage</em> extracts shell section stress
-resultants alongside the standard nodal displacements and element forces.
-This section describes the data flow from OpenSeesPy through to the
-<code class="docutils literal notranslate"><span class="pre">stresses_shell</span></code> DataArray and the <code class="docutils literal notranslate"><span class="pre">plot_srf</span></code> contour renderer.</p>
-<section id="extraction-openseespy-ele-stresses">
-<h3>Extraction: OpenSeesPy → <code class="docutils literal notranslate"><span class="pre">ele_stresses</span></code><a class="headerlink" href="#extraction-openseespy-ele-stresses" title="Link to this heading">#</a></h3>
-<p>During <code class="docutils literal notranslate"><span class="pre">extract_grillage_responses()</span></code> in the <code class="docutils literal notranslate"><span class="pre">Analysis</span></code> class, each
-element tag is queried with:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ele_stress</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">eleResponse</span><span class="p">(</span><span class="n">ele_tag</span><span class="p">,</span> <span class="s2">&quot;stresses&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>For 4-node shell elements (e.g. <code class="docutils literal notranslate"><span class="pre">ShellMITC4</span></code>), OpenSeesPy returns a
-flat list of <strong>32 floats</strong>: 8 stress resultants at each of 4 Gauss
-points.  The 8 resultants at each GP are, in order:</p>
-<div class="pst-scrollable-table-container"><table class="table">
-<thead>
-<tr class="row-odd"><th class="head"><p>Index</p></th>
-<th class="head"><p>Symbol</p></th>
-<th class="head"><p>Meaning</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>0</p></td>
-<td><p>N11</p></td>
-<td><p>Membrane force per unit length in local 1-direction</p></td>
-</tr>
-<tr class="row-odd"><td><p>1</p></td>
-<td><p>N22</p></td>
-<td><p>Membrane force per unit length in local 2-direction</p></td>
-</tr>
-<tr class="row-even"><td><p>2</p></td>
-<td><p>N12</p></td>
-<td><p>In-plane shear force per unit length</p></td>
-</tr>
-<tr class="row-odd"><td><p>3</p></td>
-<td><p>M11</p></td>
-<td><p>Bending moment per unit length about local 2-axis</p></td>
-</tr>
-<tr class="row-even"><td><p>4</p></td>
-<td><p>M22</p></td>
-<td><p>Bending moment per unit length about local 1-axis</p></td>
-</tr>
-<tr class="row-odd"><td><p>5</p></td>
-<td><p>M12</p></td>
-<td><p>Twisting moment per unit length</p></td>
-</tr>
-<tr class="row-even"><td><p>6</p></td>
-<td><p>Q13</p></td>
-<td><p>Transverse shear in the 1–3 plane</p></td>
-</tr>
-<tr class="row-odd"><td><p>7</p></td>
-<td><p>Q23</p></td>
-<td><p>Transverse shear in the 2–3 plane</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>Beam elements return an empty list for <code class="docutils literal notranslate"><span class="pre">&quot;stresses&quot;</span></code>, so only shell
-elements populate <code class="docutils literal notranslate"><span class="pre">Analysis.ele_stresses</span></code>.</p>
-</section>
-<section id="storage-results-basic-load-case-record-stresses">
-<h3>Storage: <code class="docutils literal notranslate"><span class="pre">Results.basic_load_case_record_stresses</span></code><a class="headerlink" href="#storage-results-basic-load-case-record-stresses" title="Link to this heading">#</a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">Results.extract_analysis()</span></code> method copies the per-element stress
-dict into <code class="docutils literal notranslate"><span class="pre">basic_load_case_record_stresses</span></code>, keyed by load case name:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">basic_load_case_record_stresses</span><span class="p">[</span><span class="n">lc_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">ele_tag</span><span class="p">:</span> <span class="p">[</span><span class="mi">32</span> <span class="n">floats</span><span class="p">],</span> <span class="o">...</span><span class="p">}</span>
-</pre></div>
-</div>
-</section>
-<section id="dataarray-assembly-stresses-shell">
-<h3>DataArray assembly: <code class="docutils literal notranslate"><span class="pre">stresses_shell</span></code><a class="headerlink" href="#dataarray-assembly-stresses-shell" title="Link to this heading">#</a></h3>
-<p>When <code class="docutils literal notranslate"><span class="pre">Results.compile_results()</span></code> builds the xarray Dataset, the stress
-data is packed into a <code class="docutils literal notranslate"><span class="pre">stresses_shell</span></code> DataArray with three dimensions:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>stresses_shell (Loadcase × Element × Stress)
-</pre></div>
-</div>
-<p>The <strong>Stress</strong> coordinate contains 32 labels of the form
-<code class="docutils literal notranslate"><span class="pre">N11_gp1,</span> <span class="pre">N22_gp1,</span> <span class="pre">…,</span> <span class="pre">Q23_gp1,</span> <span class="pre">N11_gp2,</span> <span class="pre">…,</span> <span class="pre">Q23_gp4</span></code>.  These are
-generated in <code class="docutils literal notranslate"><span class="pre">Results.__init__</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">_gp_labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;gp1&quot;</span><span class="p">,</span> <span class="s2">&quot;gp2&quot;</span><span class="p">,</span> <span class="s2">&quot;gp3&quot;</span><span class="p">,</span> <span class="s2">&quot;gp4&quot;</span><span class="p">]</span>
-<span class="n">_sr_labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;N11&quot;</span><span class="p">,</span> <span class="s2">&quot;N22&quot;</span><span class="p">,</span> <span class="s2">&quot;N12&quot;</span><span class="p">,</span> <span class="s2">&quot;M11&quot;</span><span class="p">,</span> <span class="s2">&quot;M22&quot;</span><span class="p">,</span> <span class="s2">&quot;M12&quot;</span><span class="p">,</span> <span class="s2">&quot;Q13&quot;</span><span class="p">,</span> <span class="s2">&quot;Q23&quot;</span><span class="p">]</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">stress_component_shell</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sr</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">gp</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">gp</span> <span class="ow">in</span> <span class="n">_gp_labels</span> <span class="k">for</span> <span class="n">sr</span> <span class="ow">in</span> <span class="n">_sr_labels</span>
-<span class="p">]</span>
-</pre></div>
-</div>
-</section>
-<section id="why-a-separate-stress-dimension">
-<h3>Why a separate “Stress” dimension?<a class="headerlink" href="#why-a-separate-stress-dimension" title="Link to this heading">#</a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">forces_shell</span></code> array uses a <code class="docutils literal notranslate"><span class="pre">Component</span></code> dimension with labels like
-<code class="docutils literal notranslate"><span class="pre">Vx_i</span></code>, <code class="docutils literal notranslate"><span class="pre">Vy_j</span></code>, etc.  If <code class="docutils literal notranslate"><span class="pre">stresses_shell</span></code> also used <code class="docutils literal notranslate"><span class="pre">Component</span></code>,
-xarray would attempt to auto-align the two arrays along that shared
-dimension during Dataset operations (merge, concat, arithmetic).  Since
-the stress labels are unrelated to the force labels, this would produce
-NaN-filled expansions.  Using a distinct <code class="docutils literal notranslate"><span class="pre">Stress</span></code> dimension avoids this.</p>
-</section>
-<section id="contour-rendering-plot-srf-pipeline">
-<h3>Contour rendering: <code class="docutils literal notranslate"><span class="pre">plot_srf</span></code> pipeline<a class="headerlink" href="#contour-rendering-plot-srf-pipeline" title="Link to this heading">#</a></h3>
-<p><a class="reference internal" href="generated/ospgrillage.postprocessing.plot_srf.html#ospgrillage.postprocessing.plot_srf" title="ospgrillage.postprocessing.plot_srf"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_srf()</span></code></a> dispatches to one of three
-extraction helpers depending on the requested component:</p>
-<ol class="arabic simple">
-<li><p><strong>Shell forces</strong> (<code class="docutils literal notranslate"><span class="pre">Vx</span></code>–<code class="docutils literal notranslate"><span class="pre">Mz</span></code>) →
-<code class="docutils literal notranslate"><span class="pre">_extract_shell_contour_data()</span></code> — reads <code class="docutils literal notranslate"><span class="pre">forces_shell</span></code>, extracts
-the <code class="docutils literal notranslate"><span class="pre">_i</span></code>/<code class="docutils literal notranslate"><span class="pre">_j</span></code>/<code class="docutils literal notranslate"><span class="pre">_k</span></code>/<code class="docutils literal notranslate"><span class="pre">_l</span></code> columns for the component, and averages
-at shared nodes.</p></li>
-<li><p><strong>Displacements</strong> (<code class="docutils literal notranslate"><span class="pre">Dx</span></code>, <code class="docutils literal notranslate"><span class="pre">Dy</span></code>, <code class="docutils literal notranslate"><span class="pre">Dz</span></code>) →
-<code class="docutils literal notranslate"><span class="pre">_extract_shell_disp_data()</span></code> — reads <code class="docutils literal notranslate"><span class="pre">displacements</span></code> directly at
-each shell node.</p></li>
-<li><p><strong>Stress resultants</strong> (<code class="docutils literal notranslate"><span class="pre">N11</span></code>–<code class="docutils literal notranslate"><span class="pre">Q23</span></code>) →
-<code class="docutils literal notranslate"><span class="pre">_extract_shell_stress_data()</span></code> — reads <code class="docutils literal notranslate"><span class="pre">stresses_shell</span></code>, averages
-the 4 GP values per element, then averages contributions from
-neighbouring elements at shared nodes.</p></li>
-</ol>
-<p>All three return <code class="docutils literal notranslate"><span class="pre">(node_values,</span> <span class="pre">element_quads)</span></code> which feed into
-<code class="docutils literal notranslate"><span class="pre">_triangulate_shell_mesh()</span></code>.</p>
-</section>
-<section id="triangulation-and-coordinate-conventions">
-<h3>Triangulation and coordinate conventions<a class="headerlink" href="#triangulation-and-coordinate-conventions" title="Link to this heading">#</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">_triangulate_shell_mesh()</span></code> builds deduplicated vertex arrays and
-triangle indices for Plotly <code class="docutils literal notranslate"><span class="pre">Mesh3d</span></code>.  Each quad element is split into
-two triangles.  Shared nodes get a single vertex so that intensity
-interpolation is smooth across element boundaries.</p>
-<p>The coordinate mapping from the <em>ospgrillage</em> model space to Plotly’s
-display axes is:</p>
-<div class="pst-scrollable-table-container"><table class="table">
-<thead>
-<tr class="row-odd"><th class="head"><p>Model axis</p></th>
-<th class="head"><p>Plotly axis</p></th>
-<th class="head"><p>Label</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>x (span)</p></td>
-<td><p>x</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&quot;x</span> <span class="pre">(m)&quot;</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p>z (width)</p></td>
-<td><p>y</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&quot;z</span> <span class="pre">(m)&quot;</span></code></p></td>
-</tr>
-<tr class="row-even"><td><p>−y (vertical, inverted)</p></td>
-<td><p>z</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&quot;y</span> <span class="pre">(m)&quot;</span></code></p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>The y-axis inversion ensures that deflections render downward (gravity
-direction) in the 3-D view.</p>
-</section>
+<section id="triangular-higher-order-load-distribution">
+<h2>Triangular higher-order load distribution<a class="headerlink" href="#triangular-higher-order-load-distribution" title="Link to this heading">#</a></h2>
+<p>The package currently supports two point-load distribution paths:</p>
+<ul class="simple">
+<li><p>Quadrilateral regions can use the existing bilinear (<code class="docutils literal notranslate"><span class="pre">&quot;linear&quot;</span></code>) or Hermite-style (<code class="docutils literal notranslate"><span class="pre">&quot;hermite&quot;</span></code>) distributor.</p></li>
+<li><p>Three-node triangular regions, which arise at skew edges and corners, use either linear barycentric distribution or a DKT-style condensed higher-order distributor.</p></li>
+</ul>
+<p>The triangular load path matters for influence-line and influence-surface work. The shape of a roving-load influence response depends not only on the structural model but also on how the point load is allocated to the surrounding grillage nodes. On coarse skew meshes, a purely linear triangular allocation can therefore distort the local influence shape.</p>
+<p>The current higher-order triangular path follows the DKT edge assumptions. A quadratic six-node triangle is used for the transverse displacement field and the midside transverse displacements are condensed to the three grillage corner nodes through the cubic edge relation. This produces a concentrated-load vector in the same nodal format used elsewhere in <em>ospgrillage</em>:</p>
+<ul class="simple">
+<li><p>nodal vertical forces <code class="docutils literal notranslate"><span class="pre">Fy</span></code></p></li>
+<li><p>nodal moments <code class="docutils literal notranslate"><span class="pre">Mx</span></code></p></li>
+<li><p>nodal moments <code class="docutils literal notranslate"><span class="pre">Mz</span></code></p></li>
+</ul>
+<p>This is intentionally a load-distribution formulation, not a full triangular stiffness element. Its role is to keep roving point loads and axle loads better behaved as they cross from quadrilateral regions into the skew triangular edge regions.</p>
+<p>The triangular higher-order distributor is covered by both low-level and integration-style tests. The low-level unit tests exercise the condensed DKT shape function directly at known points, including exact reproduction of a corner-node load and equal force partition at the centroid of a reference triangle. Separate bridge-model regressions then verify that the resulting load allocation still conserves the applied vertical load and behaves correctly inside the full analysis workflow.</p>
 </section>
 <section id="further-development">
 <h2>Further development<a class="headerlink" href="#further-development" title="Link to this heading">#</a></h2>
@@ -819,8 +686,8 @@ direction) in the 3-D view.</p>
     class="page-toc tocsection onthispage">
     <i class="fa-solid fa-list"></i> On this page
   </div>
-  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
-    <ul class="visible nav section-nav flex-column">
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grillage-model">Grillage model</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#model-space">Model space</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coordinate-system">Coordinate system</a></li>
@@ -841,15 +708,7 @@ direction) in the 3-D view.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tuple-pipeline">Tuple pipeline</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#shell-stress-extraction-pipeline">Shell stress extraction pipeline</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#extraction-openseespy-ele-stresses">Extraction: OpenSeesPy → <code class="docutils literal notranslate"><span class="pre">ele_stresses</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#storage-results-basic-load-case-record-stresses">Storage: <code class="docutils literal notranslate"><span class="pre">Results.basic_load_case_record_stresses</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dataarray-assembly-stresses-shell">DataArray assembly: <code class="docutils literal notranslate"><span class="pre">stresses_shell</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-a-separate-stress-dimension">Why a separate “Stress” dimension?</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#contour-rendering-plot-srf-pipeline">Contour rendering: <code class="docutils literal notranslate"><span class="pre">plot_srf</span></code> pipeline</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#triangulation-and-coordinate-conventions">Triangulation and coordinate conventions</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#triangular-higher-order-load-distribution">Triangular higher-order load distribution</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-development">Further development</a></li>
 </ul>
   </nav></div>
@@ -883,8 +742,8 @@ direction) in the 3-D view.</p>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -918,7 +777,7 @@ direction) in the 3-D view.</p>
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.17.0.
 </p></div>
       
     </div>
