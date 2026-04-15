@@ -753,8 +753,25 @@ class ResultsControlWidget(QWidget):
         self.contour_group = QGroupBox("Shell Contour")
         contour_layout = QFormLayout()
         self.contour_component_combo = QComboBox()
-        for comp in ("Mx", "My", "Mz", "Vx", "Vy", "Vz", "Dx", "Dy", "Dz",
-                     "N11", "N22", "N12", "M11", "M22", "M12", "Q13", "Q23"):
+        for comp in (
+            "Mx",
+            "My",
+            "Mz",
+            "Vx",
+            "Vy",
+            "Vz",
+            "Dx",
+            "Dy",
+            "Dz",
+            "N11",
+            "N22",
+            "N12",
+            "M11",
+            "M22",
+            "M12",
+            "Q13",
+            "Q23",
+        ):
             self.contour_component_combo.addItem(comp)
         contour_layout.addRow("Component:", self.contour_component_combo)
         self.contour_colorscale_combo = QComboBox()
@@ -973,10 +990,10 @@ class BridgeAnalysisGUI(QMainWindow):
         self.generated_code = ""
 
         # Results viewer state
-        self._mode = "wizard"       # "wizard" or "results"
-        self._model_proxy = None    # _ModelProxy from loaded results
-        self._results = None        # xarray Dataset
-        self._stale_tabs = set()    # result tab names needing re-render
+        self._mode = "wizard"  # "wizard" or "results"
+        self._model_proxy = None  # _ModelProxy from loaded results
+        self._results = None  # xarray Dataset
+        self._stale_tabs = set()  # result tab names needing re-render
 
         # Create UI components
         self.create_menu_bar()
@@ -1641,9 +1658,7 @@ from math import *
             )
             return
         except Exception as e:
-            QMessageBox.critical(
-                self, "Error", f"Could not load results file:\n{e}"
-            )
+            QMessageBox.critical(self, "Error", f"Could not load results file:\n{e}")
             return
 
         self._model_proxy = proxy
@@ -1791,7 +1806,10 @@ from math import *
             from PyQt6.QtCore import QUrl
 
             tmp = tempfile.NamedTemporaryFile(
-                suffix=".html", delete=False, mode="w", encoding="utf-8",
+                suffix=".html",
+                delete=False,
+                mode="w",
+                encoding="utf-8",
             )
             tmp.write(fig.to_html(include_plotlyjs=True))
             tmp.close()

@@ -331,8 +331,7 @@ _FORCE_COMPONENTS = [
 # ``forces_shell`` aligned with the ``ele_nodes_shell`` Nodes dimension.
 _SHELL_COMPONENTS = ("Vx", "Vy", "Vz", "Mx", "My", "Mz")
 _SHELL_COMP_COLUMNS = {
-    comp: [f"{comp}_{s}" for s in ("i", "j", "k", "l")]
-    for comp in _SHELL_COMPONENTS
+    comp: [f"{comp}_{s}" for s in ("i", "j", "k", "l")] for comp in _SHELL_COMPONENTS
 }
 
 # Displacement components for shell contour.  User-facing names map to
@@ -349,9 +348,7 @@ _STRESS_COMP_COLUMNS = {
 
 # All components accepted by plot_srf
 _SRF_COMPONENTS = (
-    _SHELL_COMPONENTS
-    + tuple(_DISP_COMPONENTS.keys())
-    + _STRESS_RESULTANTS
+    _SHELL_COMPONENTS + tuple(_DISP_COMPONENTS.keys()) + _STRESS_RESULTANTS
 )
 
 
@@ -527,7 +524,9 @@ def _extract_def_data(
 # ---------------------------------------------------------------------------
 # Shell contour data extraction
 # ---------------------------------------------------------------------------
-def _extract_shell_contour_data(result_obj, component, loadcase=None, *, averaging="nodal"):
+def _extract_shell_contour_data(
+    result_obj, component, loadcase=None, *, averaging="nodal"
+):
     """Extract per-node contour values for a shell stress resultant.
 
     Parameters
@@ -736,9 +735,9 @@ def _triangulate_shell_mesh(node_coords, element_quads):
     vx, vy, vz = [], [], []
     for tag in ordered_tags:
         c = node_coords[tag]
-        vx.append(c[0])       # model x -> plotly x
-        vy.append(c[2])       # model z -> plotly y
-        vz.append(-c[1])      # model y -> plotly z (negated)
+        vx.append(c[0])  # model x -> plotly x
+        vy.append(c[2])  # model z -> plotly y
+        vz.append(-c[1])  # model y -> plotly z (negated)
 
     # Triangle indices (each quad -> 2 triangles)
     i_idx, j_idx, k_idx = [], [], []
@@ -1281,15 +1280,22 @@ def _plotly_3d_shell_contour(
     # Extract data — dispatch to force or displacement extraction
     if component in _DISP_COMPONENTS:
         node_values, element_quads = _extract_shell_disp_data(
-            result_obj, component, loadcase,
+            result_obj,
+            component,
+            loadcase,
         )
     elif component in _STRESS_RESULTANTS:
         node_values, element_quads = _extract_shell_stress_data(
-            result_obj, component, loadcase,
+            result_obj,
+            component,
+            loadcase,
         )
     else:
         node_values, element_quads = _extract_shell_contour_data(
-            result_obj, component, loadcase, averaging=averaging,
+            result_obj,
+            component,
+            loadcase,
+            averaging=averaging,
         )
 
     # Build node coordinate dict from Dataset
@@ -1300,7 +1306,8 @@ def _plotly_3d_shell_contour(
 
     # Triangulate
     vx, vy, vz, i_idx, j_idx, k_idx, tag_to_vidx = _triangulate_shell_mesh(
-        node_coords, element_quads,
+        node_coords,
+        element_quads,
     )
 
     # Build intensity array aligned with vertex order
@@ -1318,12 +1325,17 @@ def _plotly_3d_shell_contour(
             k=k_idx,
             intensity=intensity,
             colorscale=colorscale,
-            colorbar=dict(title=component, x=-0.05, xanchor="right") if show_colorbar else None,
+            colorbar=dict(title=component, x=-0.05, xanchor="right")
+            if show_colorbar
+            else None,
             showscale=show_colorbar,
             opacity=opacity,
             flatshading=True,
             lighting=dict(
-                ambient=1.0, diffuse=0.0, specular=0.0, fresnel=0.0,
+                ambient=1.0,
+                diffuse=0.0,
+                specular=0.0,
+                fresnel=0.0,
             ),
             name=f"shell_{component}",
             hovertemplate=f"{component}: %{{intensity:.3g}}<extra></extra>",
@@ -1394,15 +1406,22 @@ def _plot_shell_contour_mpl(
 
     if component in _DISP_COMPONENTS:
         node_values, element_quads = _extract_shell_disp_data(
-            result_obj, component, loadcase,
+            result_obj,
+            component,
+            loadcase,
         )
     elif component in _STRESS_RESULTANTS:
         node_values, element_quads = _extract_shell_stress_data(
-            result_obj, component, loadcase,
+            result_obj,
+            component,
+            loadcase,
         )
     else:
         node_values, element_quads = _extract_shell_contour_data(
-            result_obj, component, loadcase, averaging=averaging,
+            result_obj,
+            component,
+            loadcase,
+            averaging=averaging,
         )
 
     # Build node coordinate dict
@@ -2205,8 +2224,7 @@ def plot_srf(
     """
     if component not in _SRF_COMPONENTS:
         raise ValueError(
-            f"Unknown component {component!r}. "
-            f"Expected one of {_SRF_COMPONENTS}."
+            f"Unknown component {component!r}. " f"Expected one of {_SRF_COMPONENTS}."
         )
     if "ele_nodes_shell" not in result_obj:
         raise ValueError(

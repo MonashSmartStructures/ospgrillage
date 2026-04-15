@@ -960,9 +960,7 @@ def test_plot_srf_custom_colorscale(shell_link_bridge):
     """Custom colorscale is applied to the Mesh3d trace."""
     go = pytest.importorskip("plotly.graph_objects")
     result = _shell_results(shell_link_bridge)
-    fig = og.plot_srf(
-        result, "Mx", backend="plotly", show=False, colorscale="Viridis"
-    )
+    fig = og.plot_srf(result, "Mx", backend="plotly", show=False, colorscale="Viridis")
     mesh = [t for t in fig.data if isinstance(t, go.Mesh3d)][0]
     assert mesh.colorscale is not None
 
@@ -980,6 +978,8 @@ def test_srf_coexistence_with_bmd(shell_link_bridge):
     has_mesh = any(isinstance(t, go.Mesh3d) for t in fig.data)
     has_scatter = any(isinstance(t, go.Scatter3d) for t in fig.data)
     assert has_mesh and has_scatter
+
+
 # Cross-model-type coverage (beam_link, shell_beam)
 # ---------------------------------------------------------------------------
 def test_plot_model_beam_link_matplotlib(beam_link_bridge):

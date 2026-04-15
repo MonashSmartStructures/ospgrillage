@@ -1452,9 +1452,7 @@ def test_dkt_triangle_shape_function_reproduces_linear_fields():
 
     nodal_w = [a * x1 + b * z1 + c, a * x2 + b * z2 + c, a * x3 + b * z3 + c]
     interpolated_w = (
-        sum(n * w for n, w in zip(Nv, nodal_w))
-        + a * sum(Nmz)
-        + b * sum(Nmx)
+        sum(n * w for n, w in zip(Nv, nodal_w)) + a * sum(Nmz) + b * sum(Nmx)
     )
 
     assert np.isclose(interpolated_w, a * x + b * z + c)
@@ -1479,7 +1477,9 @@ def test_hermite_triangle_region_uses_dkt_style_distribution(bridge_model_42_neg
         sum(coord[2] for coord in coords) / 3,
     ]
 
-    load_cmd = bridge._assign_load_to_four_node(point=point, mag=1.0, shape_func="hermite")
+    load_cmd = bridge._assign_load_to_four_node(
+        point=point, mag=1.0, shape_func="hermite"
+    )
 
     assert len(load_cmd) == 3
     vertical_sum = sum(command[1][2] for command in load_cmd)
