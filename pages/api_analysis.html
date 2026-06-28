@@ -447,11 +447,28 @@
 </details></li>
 <li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Analysis and results</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze.html">OspGrillage.analyze</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze_influence_lines.html">OspGrillage.analyze_influence_lines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze_influence_surfaces.html">OspGrillage.analyze_influence_surfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze_il.html">OspGrillage.analyze_il</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze_is.html">OspGrillage.analyze_is</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze_influence_line.html">OspGrillage.analyze_influence_line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze_influence_surface.html">OspGrillage.analyze_influence_surface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_il.html">OspGrillage.get_il</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_is.html">OspGrillage.get_is</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html">OspGrillage.get_results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_influence_results.html">OspGrillage.get_influence_results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.plot_il.html">OspGrillage.plot_il</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.plot_is.html">OspGrillage.plot_is</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.export_il.html">OspGrillage.export_il</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.export_is.html">OspGrillage.export_is</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="api_postprocessing.html">Post-processing</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.postprocessing.create_envelope.html">create_envelope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.postprocessing.create_influence_line.html">create_influence_line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.postprocessing.create_influence_surface.html">create_influence_surface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.postprocessing.plot_il.html">plot_il</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.postprocessing.plot_is.html">plot_is</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.postprocessing.plot_force.html">plot_force</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.postprocessing.plot_bmd.html">plot_bmd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.postprocessing.plot_sfd.html">plot_sfd</a></li>
@@ -525,6 +542,14 @@
   <section id="analysis-and-results">
 <h1>Analysis and results<a class="headerlink" href="#analysis-and-results" title="Link to this heading">#</a></h1>
 <p>Running the analysis and extracting results.</p>
+<p>For influence analyses, <cite>shape_function=”hermite”</cite> denotes the higher-order
+load-distribution path used by <em>ospgrillage</em>: the existing Hermite
+quadrilateral distributor is used in four-node regions, while three-node skew
+regions use the DKT-style condensed triangular distributor.</p>
+<p>For skewed/curved bridges, influence-line station abscissa
+(<code class="docutils literal notranslate"><span class="pre">load_coord=&quot;station&quot;</span></code>) and influence-surface station axes
+(<code class="docutils literal notranslate"><span class="pre">longitudinal_station</span></code>, <code class="docutils literal notranslate"><span class="pre">transverse_station</span></code>) provide geometry-robust
+reduction coordinates independent of global Cartesian layout.</p>
 <section id="ospgrillage-methods">
 <h2>OspGrillage methods<a class="headerlink" href="#ospgrillage-methods" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
@@ -532,8 +557,47 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze.html#ospgrillage.osp_grillage.OspGrillage.analyze" title="ospgrillage.osp_grillage.OspGrillage.analyze"><code class="xref py py-obj docutils literal notranslate"><span class="pre">analyze</span></code></a>(**kwargs)</p></td>
 <td><p>Function to analyze defined load</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze_influence_lines.html#ospgrillage.osp_grillage.OspGrillage.analyze_influence_lines" title="ospgrillage.osp_grillage.OspGrillage.analyze_influence_lines"><code class="xref py py-obj docutils literal notranslate"><span class="pre">analyze_influence_lines</span></code></a>(**kwargs)</p></td>
+<td><p>Run one or more influence-line studies and return a result object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze_influence_surfaces.html#ospgrillage.osp_grillage.OspGrillage.analyze_influence_surfaces" title="ospgrillage.osp_grillage.OspGrillage.analyze_influence_surfaces"><code class="xref py py-obj docutils literal notranslate"><span class="pre">analyze_influence_surfaces</span></code></a>(**kwargs)</p></td>
+<td><p>Run an influence-surface study and return a result object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze_il.html#ospgrillage.osp_grillage.OspGrillage.analyze_il" title="ospgrillage.osp_grillage.OspGrillage.analyze_il"><code class="xref py py-obj docutils literal notranslate"><span class="pre">analyze_il</span></code></a>(**kwargs)</p></td>
+<td><p>Short alias for <code class="xref py py-func docutils literal notranslate"><span class="pre">analyze_influence_line()</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze_is.html#ospgrillage.osp_grillage.OspGrillage.analyze_is" title="ospgrillage.osp_grillage.OspGrillage.analyze_is"><code class="xref py py-obj docutils literal notranslate"><span class="pre">analyze_is</span></code></a>(**kwargs)</p></td>
+<td><p>Short alias for <code class="xref py py-func docutils literal notranslate"><span class="pre">analyze_influence_surface()</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze_influence_line.html#ospgrillage.osp_grillage.OspGrillage.analyze_influence_line" title="ospgrillage.osp_grillage.OspGrillage.analyze_influence_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">analyze_influence_line</span></code></a>(**kwargs)</p></td>
+<td><p>Create and run a dedicated 100 kN axle influence-line analysis.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze_influence_surface.html#ospgrillage.osp_grillage.OspGrillage.analyze_influence_surface" title="ospgrillage.osp_grillage.OspGrillage.analyze_influence_surface"><code class="xref py py-obj docutils literal notranslate"><span class="pre">analyze_influence_surface</span></code></a>(**kwargs)</p></td>
+<td><p>Create and run a dedicated 100 kN roving-point influence-surface analysis.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_il.html#ospgrillage.osp_grillage.OspGrillage.get_il" title="ospgrillage.osp_grillage.OspGrillage.get_il"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_il</span></code></a>([name, result_set])</p></td>
+<td><p>Extract a reduced influence line using xarray-style <code class="docutils literal notranslate"><span class="pre">array</span></code> and <code class="docutils literal notranslate"><span class="pre">component</span></code> selectors.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_is.html#ospgrillage.osp_grillage.OspGrillage.get_is" title="ospgrillage.osp_grillage.OspGrillage.get_is"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_is</span></code></a>([name, result_set])</p></td>
+<td><p>Extract a reduced influence surface using xarray-style <code class="docutils literal notranslate"><span class="pre">array</span></code> and <code class="docutils literal notranslate"><span class="pre">component</span></code> selectors.</p></td>
+</tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html#ospgrillage.osp_grillage.OspGrillage.get_results" title="ospgrillage.osp_grillage.OspGrillage.get_results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_results</span></code></a>(**kwargs)</p></td>
 <td><p>Return analysis results as an xarray <code class="docutils literal notranslate"><span class="pre">Dataset</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_influence_results.html#ospgrillage.osp_grillage.OspGrillage.get_influence_results" title="ospgrillage.osp_grillage.OspGrillage.get_influence_results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_influence_results</span></code></a>([name])</p></td>
+<td><p>Return a stored influence-line or influence-surface result Dataset.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.plot_il.html#ospgrillage.osp_grillage.OspGrillage.plot_il" title="ospgrillage.osp_grillage.OspGrillage.plot_il"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_il</span></code></a>(il, **kwargs)</p></td>
+<td><p>Plot a reduced influence line.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.plot_is.html#ospgrillage.osp_grillage.OspGrillage.plot_is" title="ospgrillage.osp_grillage.OspGrillage.plot_is"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_is</span></code></a>(isurface, **kwargs)</p></td>
+<td><p>Plot a reduced influence surface as a filled contour.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.export_il.html#ospgrillage.osp_grillage.OspGrillage.export_il" title="ospgrillage.osp_grillage.OspGrillage.export_il"><code class="xref py py-obj docutils literal notranslate"><span class="pre">export_il</span></code></a>(il, filename)</p></td>
+<td><p>Export a reduced influence line to CSV.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.export_is.html#ospgrillage.osp_grillage.OspGrillage.export_is" title="ospgrillage.osp_grillage.OspGrillage.export_is"><code class="xref py py-obj docutils literal notranslate"><span class="pre">export_is</span></code></a>(isurface, filename)</p></td>
+<td><p>Export a reduced influence surface to CSV in long-form.</p></td>
 </tr>
 </tbody>
 </table>
@@ -571,6 +635,40 @@ Analysis class is created and handled by the OspGrillage class.</p>
 Class object is accessed within OspGrillage class object.</p>
 <dl class="field-list simple">
 </dl>
+</dd></dl>
+
+</section>
+<section id="influenceresultset">
+<h3>InfluenceResultSet<a class="headerlink" href="#influenceresultset" title="Link to this heading">#</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="ospgrillage.osp_grillage.InfluenceResultSet">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">InfluenceResultSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_positions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">station_positions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.InfluenceResultSet" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Separate result container for influence-line or influence-surface analyses.</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+</section>
+<section id="influencelineresults">
+<h3>InfluenceLineResults<a class="headerlink" href="#influencelineresults" title="Link to this heading">#</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="ospgrillage.osp_grillage.InfluenceLineResults">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">InfluenceLineResults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.InfluenceLineResults" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_BaseInfluenceResults</span></code></p>
+<p>User-facing influence-line result container.</p>
+<p>Includes <code class="docutils literal notranslate"><span class="pre">plot()</span></code>, <code class="docutils literal notranslate"><span class="pre">save()/to_netcdf()</span></code>, and <code class="docutils literal notranslate"><span class="pre">to_csv()</span></code> helpers.</p>
+</dd></dl>
+
+</section>
+<section id="influencesurfaceresults">
+<h3>InfluenceSurfaceResults<a class="headerlink" href="#influencesurfaceresults" title="Link to this heading">#</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="ospgrillage.osp_grillage.InfluenceSurfaceResults">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">InfluenceSurfaceResults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.osp_grillage.InfluenceSurfaceResults" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_BaseInfluenceResults</span></code></p>
+<p>User-facing influence-surface result container.</p>
+<p>Includes <code class="docutils literal notranslate"><span class="pre">plot()</span></code>, <code class="docutils literal notranslate"><span class="pre">save()/to_netcdf()</span></code>, and <code class="docutils literal notranslate"><span class="pre">to_csv()</span></code> helpers.</p>
 </dd></dl>
 
 </section>
@@ -632,6 +730,18 @@ Class object is accessed within OspGrillage class object.</p>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#results">Results</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.osp_grillage.Results"><code class="docutils literal notranslate"><span class="pre">Results</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#influenceresultset">InfluenceResultSet</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.osp_grillage.InfluenceResultSet"><code class="docutils literal notranslate"><span class="pre">InfluenceResultSet</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#influencelineresults">InfluenceLineResults</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.osp_grillage.InfluenceLineResults"><code class="docutils literal notranslate"><span class="pre">InfluenceLineResults</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#influencesurfaceresults">InfluenceSurfaceResults</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.osp_grillage.InfluenceSurfaceResults"><code class="docutils literal notranslate"><span class="pre">InfluenceSurfaceResults</span></code></a></li>
 </ul>
 </li>
 </ul>

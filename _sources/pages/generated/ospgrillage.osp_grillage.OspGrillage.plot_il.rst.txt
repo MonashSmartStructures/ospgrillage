@@ -1,0 +1,6 @@
+﻿OspGrillage.plot\_il
+====================
+
+.. currentmodule:: ospgrillage.osp_grillage
+
+.. automethod:: OspGrillage.plot_il

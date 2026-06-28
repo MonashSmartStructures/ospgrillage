@@ -1,0 +1,6 @@
+﻿OspGrillage.analyze\_influence\_lines
+=====================================
+
+.. currentmodule:: ospgrillage.osp_grillage
+
+.. automethod:: OspGrillage.analyze_influence_lines

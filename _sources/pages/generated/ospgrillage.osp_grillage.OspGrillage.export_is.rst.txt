@@ -1,0 +1,6 @@
+﻿OspGrillage.export\_is
+======================
+
+.. currentmodule:: ospgrillage.osp_grillage
+
+.. automethod:: OspGrillage.export_is

@@ -47,7 +47,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="create_envelope" href="generated/ospgrillage.postprocessing.create_envelope.html" />
-    <link rel="prev" title="OspGrillage.get_results" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html" />
+    <link rel="prev" title="OspGrillage.export_is" href="generated/ospgrillage.osp_grillage.OspGrillage.export_is.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.6.0" />
@@ -447,11 +447,28 @@
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="api_analysis.html">Analysis and results</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze.html">OspGrillage.analyze</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze_influence_lines.html">OspGrillage.analyze_influence_lines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze_influence_surfaces.html">OspGrillage.analyze_influence_surfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze_il.html">OspGrillage.analyze_il</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze_is.html">OspGrillage.analyze_is</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze_influence_line.html">OspGrillage.analyze_influence_line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze_influence_surface.html">OspGrillage.analyze_influence_surface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_il.html">OspGrillage.get_il</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_is.html">OspGrillage.get_is</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html">OspGrillage.get_results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.get_influence_results.html">OspGrillage.get_influence_results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.plot_il.html">OspGrillage.plot_il</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.plot_is.html">OspGrillage.plot_is</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.export_il.html">OspGrillage.export_il</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.export_is.html">OspGrillage.export_is</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Post-processing</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.postprocessing.create_envelope.html">create_envelope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.postprocessing.create_influence_line.html">create_influence_line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.postprocessing.create_influence_surface.html">create_influence_surface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.postprocessing.plot_il.html">plot_il</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.postprocessing.plot_is.html">plot_is</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.postprocessing.plot_force.html">plot_force</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.postprocessing.plot_bmd.html">plot_bmd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/ospgrillage.postprocessing.plot_sfd.html">plot_sfd</a></li>
@@ -524,12 +541,36 @@
                   
   <section id="post-processing">
 <h1>Post-processing<a class="headerlink" href="#post-processing" title="Link to this heading">#</a></h1>
+<p>Influence-line and influence-surface post-processing preserves the
+<cite>shape_function</cite> metadata from the stored influence study. When a study was run
+with <cite>shape_function=”hermite”</cite>, that corresponds to the higher-order load
+distribution path: Hermite on quadrilateral regions and the DKT-style condensed
+distributor on three-node triangular regions.</p>
+<p>For influence surfaces, <a class="reference internal" href="generated/ospgrillage.postprocessing.plot_is.html#ospgrillage.postprocessing.plot_is" title="ospgrillage.postprocessing.plot_is"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_is()</span></code></a> supports
+<code class="docutils literal notranslate"><span class="pre">coordinate_space=&quot;station&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">coordinate_space=&quot;physical&quot;</span></code>. Physical
+space uses mapped deck coordinates and triangulated rendering so curved/skewed
+decks are plotted as contiguous surfaces (Matplotlib and Plotly backends).</p>
+<p>For influence lines, <a class="reference internal" href="generated/ospgrillage.postprocessing.plot_il.html#ospgrillage.postprocessing.plot_il" title="ospgrillage.postprocessing.plot_il"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_il()</span></code></a> supports both
+<code class="docutils literal notranslate"><span class="pre">view=&quot;ordinate&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">view=&quot;path&quot;</span></code>. Path view overlays IL ordinates in
+3D along the load trajectory using model geometry embedded in the results file.</p>
 <section id="factory-functions">
 <h2>Factory functions<a class="headerlink" href="#factory-functions" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.postprocessing.create_envelope.html#ospgrillage.postprocessing.create_envelope" title="ospgrillage.postprocessing.create_envelope"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_envelope</span></code></a>(**kwargs)</p></td>
 <td><p>Create an envelope object for post-processing result envelopes.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.postprocessing.create_influence_line.html#ospgrillage.postprocessing.create_influence_line" title="ospgrillage.postprocessing.create_influence_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_influence_line</span></code></a>(**kwargs)</p></td>
+<td><p>Create an influence line object from stored moving-load or grid-load results.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.postprocessing.create_influence_surface.html#ospgrillage.postprocessing.create_influence_surface" title="ospgrillage.postprocessing.create_influence_surface"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_influence_surface</span></code></a>(**kwargs)</p></td>
+<td><p>Create an influence surface object from stored results.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.postprocessing.plot_il.html#ospgrillage.postprocessing.plot_il" title="ospgrillage.postprocessing.plot_il"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_il</span></code></a>(il, **kwargs)</p></td>
+<td><p>Plot a 1D influence line DataArray.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/ospgrillage.postprocessing.plot_is.html#ospgrillage.postprocessing.plot_is" title="ospgrillage.postprocessing.plot_is"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_is</span></code></a>(isurface, **kwargs)</p></td>
+<td><p>Plot a 2D influence surface DataArray.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/ospgrillage.postprocessing.plot_force.html#ospgrillage.postprocessing.plot_force" title="ospgrillage.postprocessing.plot_force"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_force</span></code></a>(ospgrillage_obj[, result_obj, ...])</p></td>
 <td><p>Plot a force diagram for a grillage model result for a specified component and load case.</p></td>
@@ -589,6 +630,34 @@ on the specified input parameters of this class.</p>
 </dd></dl>
 
 </section>
+<section id="influenceline">
+<h3>InfluenceLine<a class="headerlink" href="#influenceline" title="Link to this heading">#</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="ospgrillage.postprocessing.InfluenceLine">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">InfluenceLine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.postprocessing.InfluenceLine" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_BaseInfluence</span></code></p>
+<p>Class for extracting a response history against one load-position coordinate.</p>
+<p>Call <code class="xref py py-func docutils literal notranslate"><span class="pre">InfluenceLine.get()</span></code> to obtain an <code class="docutils literal notranslate"><span class="pre">xarray.DataArray</span></code> indexed by
+the selected load-position axis.</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+</section>
+<section id="influencesurface">
+<h3>InfluenceSurface<a class="headerlink" href="#influencesurface" title="Link to this heading">#</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="ospgrillage.postprocessing.InfluenceSurface">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">InfluenceSurface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ospgrillage.postprocessing.InfluenceSurface" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_BaseInfluence</span></code></p>
+<p>Class for extracting a response field across a 2D load-position grid.</p>
+<p>Call <code class="xref py py-func docutils literal notranslate"><span class="pre">InfluenceSurface.get()</span></code> to obtain an <code class="docutils literal notranslate"><span class="pre">xarray.DataArray</span></code> indexed by
+two load-position coordinates.</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+</section>
 <section id="postprocessor">
 <h3>PostProcessor<a class="headerlink" href="#postprocessor" title="Link to this heading">#</a></h3>
 <dl class="py class">
@@ -615,12 +684,12 @@ on the specified input parameters of this class.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="generated/ospgrillage.osp_grillage.OspGrillage.get_results.html"
+       href="generated/ospgrillage.osp_grillage.OspGrillage.export_is.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">OspGrillage.get_results</p>
+        <p class="prev-next-title">OspGrillage.export_is</p>
       </div>
     </a>
     <a class="right-next"
@@ -655,6 +724,14 @@ on the specified input parameters of this class.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-reference">Class reference</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#envelope">Envelope</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.postprocessing.Envelope"><code class="docutils literal notranslate"><span class="pre">Envelope</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#influenceline">InfluenceLine</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.postprocessing.InfluenceLine"><code class="docutils literal notranslate"><span class="pre">InfluenceLine</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#influencesurface">InfluenceSurface</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ospgrillage.postprocessing.InfluenceSurface"><code class="docutils literal notranslate"><span class="pre">InfluenceSurface</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#postprocessor">PostProcessor</a><ul class="nav section-nav flex-column">

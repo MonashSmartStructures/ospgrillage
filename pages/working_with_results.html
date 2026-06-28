@@ -581,6 +581,91 @@ these by full name or by position:</p>
 <span class="n">by_index</span> <span class="o">=</span> <span class="n">force_array</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">Loadcase</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
+</section>
+<section id="influence-lines-and-surfaces">
+<h2>Influence lines and surfaces<a class="headerlink" href="#influence-lines-and-surfaces" title="Link to this heading">#</a></h2>
+<p>Influence studies are created through
+<a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze_influence_lines.html#ospgrillage.osp_grillage.OspGrillage.analyze_influence_lines" title="ospgrillage.osp_grillage.OspGrillage.analyze_influence_lines"><code class="xref py py-meth docutils literal notranslate"><span class="pre">analyze_influence_lines()</span></code></a> and
+<a class="reference internal" href="generated/ospgrillage.osp_grillage.OspGrillage.analyze_influence_surfaces.html#ospgrillage.osp_grillage.OspGrillage.analyze_influence_surfaces" title="ospgrillage.osp_grillage.OspGrillage.analyze_influence_surfaces"><code class="xref py py-meth docutils literal notranslate"><span class="pre">analyze_influence_surfaces()</span></code></a>,
+which return durable result objects. Those objects carry the compiled
+Dataset, can be plotted directly, and can be saved later without recomputing:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ils</span> <span class="o">=</span> <span class="n">bridge</span><span class="o">.</span><span class="n">analyze_influence_lines</span><span class="p">(</span>
+    <span class="n">paths</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Lane 1&quot;</span><span class="p">:</span> <span class="n">lane_1_path</span><span class="p">,</span> <span class="s2">&quot;Lane 2&quot;</span><span class="p">:</span> <span class="n">lane_2_path</span><span class="p">}</span>
+<span class="p">)</span>
+<span class="n">ils</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">array</span><span class="o">=</span><span class="s2">&quot;forces&quot;</span><span class="p">,</span> <span class="n">component</span><span class="o">=</span><span class="s2">&quot;Mz_i&quot;</span><span class="p">,</span> <span class="n">element</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">ils</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">array</span><span class="o">=</span><span class="s2">&quot;forces&quot;</span><span class="p">,</span> <span class="n">component</span><span class="o">=</span><span class="s2">&quot;Mz_i&quot;</span><span class="p">,</span> <span class="n">element</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;plotly&quot;</span><span class="p">,</span> <span class="n">view</span><span class="o">=</span><span class="s2">&quot;path&quot;</span><span class="p">)</span>
+<span class="n">ils</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;lane_ils.nc&quot;</span><span class="p">)</span>
+
+<span class="n">iss</span> <span class="o">=</span> <span class="n">bridge</span><span class="o">.</span><span class="n">analyze_influence_surfaces</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="n">z</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Deck IS&quot;</span><span class="p">)</span>
+<span class="n">iss</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">array</span><span class="o">=</span><span class="s2">&quot;forces&quot;</span><span class="p">,</span> <span class="n">component</span><span class="o">=</span><span class="s2">&quot;Mz_i&quot;</span><span class="p">,</span> <span class="n">element</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">view</span><span class="o">=</span><span class="s2">&quot;surface3d&quot;</span><span class="p">)</span>
+
+<span class="c1"># Station-space reduction (recommended for skewed/curved decks)</span>
+<span class="n">iss</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">array</span><span class="o">=</span><span class="s2">&quot;forces&quot;</span><span class="p">,</span>
+    <span class="n">component</span><span class="o">=</span><span class="s2">&quot;Mz_i&quot;</span><span class="p">,</span>
+    <span class="n">element</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+    <span class="n">x_coord</span><span class="o">=</span><span class="s2">&quot;longitudinal_station&quot;</span><span class="p">,</span>
+    <span class="n">y_coord</span><span class="o">=</span><span class="s2">&quot;transverse_station&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>CSV export is available directly from the result objects:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># IL: one long-form CSV containing all lanes/paths</span>
+<span class="n">ils</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span>
+    <span class="s2">&quot;lane_ils.csv&quot;</span><span class="p">,</span>
+    <span class="n">array</span><span class="o">=</span><span class="s2">&quot;forces&quot;</span><span class="p">,</span>
+    <span class="n">component</span><span class="o">=</span><span class="s2">&quot;Mz_i&quot;</span><span class="p">,</span>
+    <span class="n">element</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+    <span class="n">load_coord</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># IS: rectangular station-grid CSV of ordinates</span>
+<span class="c1"># (+ optional companion point map with physical x/z)</span>
+<span class="n">iss</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span>
+    <span class="s2">&quot;deck_is_grid.csv&quot;</span><span class="p">,</span>
+    <span class="n">array</span><span class="o">=</span><span class="s2">&quot;forces&quot;</span><span class="p">,</span>
+    <span class="n">component</span><span class="o">=</span><span class="s2">&quot;Mz_i&quot;</span><span class="p">,</span>
+    <span class="n">element</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+    <span class="n">include_physical_coords</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>By default, influence surfaces are generated from the mesh station grid
+(admissible deck points). For curved or skewed bridges, reduce in station
+space with <code class="docutils literal notranslate"><span class="pre">x_coord=&quot;longitudinal_station&quot;</span></code> and
+<code class="docutils literal notranslate"><span class="pre">y_coord=&quot;transverse_station&quot;</span></code> to avoid rectangular-grid assumptions.</p>
+<p>When plotting a reduced surface, <code class="docutils literal notranslate"><span class="pre">plot_is(...,</span> <span class="pre">coordinate_space=&quot;physical&quot;)</span></code>
+uses mapped deck coordinates (<code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">z</span></code>) and triangulates valid points so the
+surface remains contiguous on curved geometry in both Matplotlib and Plotly.
+Use <code class="docutils literal notranslate"><span class="pre">coordinate_space=&quot;station&quot;</span></code> to keep station axes.</p>
+<p>The lower-level helpers
+<a class="reference internal" href="generated/ospgrillage.postprocessing.create_influence_line.html#ospgrillage.postprocessing.create_influence_line" title="ospgrillage.postprocessing.create_influence_line"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_influence_line()</span></code></a>,
+<a class="reference internal" href="generated/ospgrillage.postprocessing.create_influence_surface.html#ospgrillage.postprocessing.create_influence_surface" title="ospgrillage.postprocessing.create_influence_surface"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_influence_surface()</span></code></a>,
+<a class="reference internal" href="generated/ospgrillage.postprocessing.plot_il.html#ospgrillage.postprocessing.plot_il" title="ospgrillage.postprocessing.plot_il"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_il()</span></code></a>, and
+<a class="reference internal" href="generated/ospgrillage.postprocessing.plot_is.html#ospgrillage.postprocessing.plot_is" title="ospgrillage.postprocessing.plot_is"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_is()</span></code></a> remain available when direct
+<code class="docutils literal notranslate"><span class="pre">xarray</span></code> manipulation is preferred.</p>
+<p>Influence lines support both the traditional <code class="docutils literal notranslate"><span class="pre">view=&quot;ordinate&quot;</span></code> plot and a
+<code class="docutils literal notranslate"><span class="pre">view=&quot;path&quot;</span></code> mode that draws the ordinates along the load path on top of the
+bridge model.</p>
+<section id="technical-notes-dkt-and-station-mapping">
+<h3>Technical notes (DKT and station mapping)<a class="headerlink" href="#technical-notes-dkt-and-station-mapping" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">shape_function=&quot;hermite&quot;</span></code> uses the higher-order consistent-load path:
+Hermite interpolation on quadrilateral regions, and a DKT-style condensed
+triangular distributor where skew geometry creates 3-node regions.</p></li>
+<li><p>Influence-line <code class="docutils literal notranslate"><span class="pre">load_coord=&quot;station&quot;</span></code> is cumulative distance along each axle
+path; this is typically preferred for skewed/curved paths because global <code class="docutils literal notranslate"><span class="pre">x</span></code>
+is not a uniform path-abscissa there.</p></li>
+<li><p>Influence-surface default generation uses admissible mesh station points
+(not a global rectangular deck bounding box), then stores both station
+coordinates and mapped physical (<code class="docutils literal notranslate"><span class="pre">x</span></code>,<code class="docutils literal notranslate"><span class="pre">z</span></code>) coordinates.</p></li>
+<li><p>Physical plotting (<code class="docutils literal notranslate"><span class="pre">coordinate_space=&quot;physical&quot;</span></code>) triangulates valid mapped
+points so curved/skewed surfaces remain contiguous without assuming a
+rectangular Cartesian deck.</p></li>
+</ul>
+<p>For a complete workflow, see the
+<a class="reference internal" href="../notebooks/influence_lines_and_surfaces.html"><span class="doc">Influence Lines and Surfaces</span></a> tutorial notebook.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>For information on the full range of indexing and selection operations available on
@@ -657,6 +742,10 @@ passing the <code class="docutils literal notranslate"><span class="pre">save_fi
 <span class="p">)</span>
 </pre></div>
 </div>
+<p>If you omit the NetCDF extension and pass a stem (for example
+<code class="docutils literal notranslate"><span class="pre">save_filename=&quot;my_results&quot;</span></code>), <em>ospgrillage</em> writes semantic names:
+<code class="docutils literal notranslate"><span class="pre">*.res.nc</span></code> for ordinary results, <code class="docutils literal notranslate"><span class="pre">*.il.nc</span></code> for influence-line exports, and
+<code class="docutils literal notranslate"><span class="pre">*.is.nc</span></code> for influence-surface exports.</p>
 <p>This writes the full xarray Dataset — including node coordinates and
 member-element connectivity — to a <code class="docutils literal notranslate"><span class="pre">.nc</span></code> file in the current working
 directory.</p>
@@ -1195,6 +1284,10 @@ For non-shell models, the tab and controls are hidden entirely.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#extracting-the-data-variables">Extracting the data variables</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#available-force-and-displacement-components">Available force and displacement components</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selecting-results-by-label">Selecting results by label</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#influence-lines-and-surfaces">Influence lines and surfaces</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#technical-notes-dkt-and-station-mapping">Technical notes (DKT and station mapping)</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-combinations">Load combinations</a></li>

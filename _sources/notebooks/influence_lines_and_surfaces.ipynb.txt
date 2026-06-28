@@ -1,0 +1,360 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "# Influence Lines and Surfaces\n",
+        "\n",
+        "This notebook demonstrates the recommended influence-analysis workflow in `ospgrillage`:\n",
+        "\n",
+        "- multi-lane influence lines in one result object/file,\n",
+        "- 2D and path-overlay influence-line plotting,\n",
+        "- station-based influence-surface extraction,\n",
+        "- physical-coordinate influence-surface plotting for skewed/curved geometry,\n",
+        "- semantic NetCDF output naming (`.il.nc` / `.is.nc`) and CSV export."
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "import sys\n",
+        "from pathlib import Path\n",
+        "\n",
+        "cwd = Path.cwd().resolve()\n",
+        "for candidate in [cwd, *cwd.parents]:\n",
+        "    src_dir = candidate / \"src\"\n",
+        "    if (src_dir / \"ospgrillage\").exists():\n",
+        "        sys.path.insert(0, str(src_dir))\n",
+        "        break\n",
+        "\n",
+        "import ospgrillage as og\n",
+        "\n",
+        "try:\n",
+        "    import plotly.io as pio\n",
+        "    pio.renderers.default = \"notebook_connected\"\n",
+        "except Exception:\n",
+        "    pass"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Technical context\n",
+        "\n",
+        "- `shape_function=\"hermite\"` uses Hermite interpolation on quadrilateral\n",
+        "  regions and a DKT-style condensed triangular distributor on 3-node skew\n",
+        "  regions.\n",
+        "- Influence lines often use `load_coord=\"station\"` because station is a\n",
+        "  stable abscissa along a lane path even when the bridge is skewed/curved.\n",
+        "- Influence surfaces are built from admissible mesh station points and retain\n",
+        "  mapped physical (`x`,`z`) coordinates for plotting/export."
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Build a compact bridge model"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "concrete = og.create_material(material=\"concrete\", code=\"AS5100-2017\", grade=\"50MPa\")\n",
+        "main_section = og.create_section(A=0.896, J=0.133, Iy=0.213, Iz=0.259, Ay=0.233, Az=0.58)\n",
+        "slab_section = og.create_section(A=0.04428, J=2.6e-4, Iy=1.1e-4, Iz=2.42e-4, Ay=3.69e-1, Az=3.69e-1, unit_width=True)\n",
+        "edge_section = og.create_section(A=0.044625, J=2.28e-3, Iy=2.23e-1, Iz=1.2e-3, Ay=3.72e-2, Az=3.72e-2)\n",
+        "\n",
+        "main_beam = og.create_member(member_name=\"Main Beam\", section=main_section, material=concrete)\n",
+        "slab = og.create_member(member_name=\"Slab\", section=slab_section, material=concrete)\n",
+        "edge_beam = og.create_member(member_name=\"Edge Beam\", section=edge_section, material=concrete)\n",
+        "\n",
+        "bridge = og.create_grillage(\n",
+        "    bridge_name=\"Influence Demo\",\n",
+        "    long_dim=10,\n",
+        "    width=7,\n",
+        "    skew=0,\n",
+        "    num_long_grid=7,\n",
+        "    num_trans_grid=5,\n",
+        "    edge_beam_dist=1,\n",
+        "    mesh_type=\"Ortho\",\n",
+        ")\n",
+        "bridge.set_member(main_beam, member=\"interior_main_beam\")\n",
+        "bridge.set_member(edge_beam, member=\"exterior_main_beam_1\")\n",
+        "bridge.set_member(edge_beam, member=\"exterior_main_beam_2\")\n",
+        "bridge.set_member(edge_beam, member=\"edge_beam\")\n",
+        "bridge.set_member(slab, member=\"transverse_slab\")\n",
+        "bridge.set_member(edge_beam, member=\"start_edge\")\n",
+        "bridge.set_member(edge_beam, member=\"end_edge\")\n",
+        "bridge.create_osp_model(pyfile=False)\n",
+        "\n",
+        "target_element = bridge.get_element(member=\"interior_main_beam\", options=\"elements\")[0];"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Influence lines from multiple lane paths"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "paths = {\n",
+        "    \"Lane 1\": og.Path(start_point=og.Point(0, 0, 1.5), end_point=og.Point(10, 0, 1.5), increments=11),\n",
+        "    \"Lane 2\": og.Path(start_point=og.Point(0, 0, 3.5), end_point=og.Point(10, 0, 3.5), increments=11),\n",
+        "    \"Lane 3\": og.Path(start_point=og.Point(0, 0, 5.5), end_point=og.Point(10, 0, 5.5), increments=11),\n",
+        "}\n",
+        "\n",
+        "ils = bridge.analyze_influence_lines(\n",
+        "    paths=paths,\n",
+        "    axle_load=1.0,\n",
+        "    shape_function=\"hermite\",\n",
+        ");"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "ils.plot(\n",
+        "    array=\"forces\",\n",
+        "    component=\"Mz_j\",\n",
+        "    element=target_element,\n",
+        "    load_coord=\"station\",\n",
+        "    title=\"Influence lines by lane (station abscissa)\",\n",
+        "    ylabel=\"Mz_j ordinate\",\n",
+        ");"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "fig_il_path = ils.plot(\n",
+        "    array=\"forces\",\n",
+        "    component=\"Mz_j\",\n",
+        "    element=target_element,\n",
+        "    backend=\"plotly\",\n",
+        "    view=\"path\",\n",
+        "    load_coord=\"station\",\n",
+        "    title=\"Influence lines overlaid on axle paths\",\n",
+        "    show=False,\n",
+        ");\n",
+        "# Optional in an interactive notebook frontend:\n",
+        "# fig_il_path.show()"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Influence surface from admissible station grid"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "iss = bridge.analyze_influence_surfaces(\n",
+        "    name=\"Deck IS\",\n",
+        "    point_load=1.0,\n",
+        "    shape_function=\"hermite\",\n",
+        ");"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "iss.plot(\n",
+        "    array=\"forces\",\n",
+        "    component=\"Mz_j\",\n",
+        "    element=target_element,\n",
+        "    x_coord=\"longitudinal_station\",\n",
+        "    y_coord=\"transverse_station\",\n",
+        "    coordinate_space=\"physical\",\n",
+        "    title=\"Influence surface contour (physical x-z)\",\n",
+        ");"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "fig_is_3d = iss.plot(\n",
+        "    array=\"forces\",\n",
+        "    component=\"Mz_j\",\n",
+        "    element=target_element,\n",
+        "    x_coord=\"longitudinal_station\",\n",
+        "    y_coord=\"transverse_station\",\n",
+        "    coordinate_space=\"physical\",\n",
+        "    backend=\"plotly\",\n",
+        "    view=\"surface3d\",\n",
+        "    title=\"Influence surface mapped to physical deck coordinates\",\n",
+        "    show=False,\n",
+        ");\n",
+        "# Optional in an interactive notebook frontend:\n",
+        "# fig_is_3d.show()"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Curved Deck Example\n",
+        "\n",
+        "Curved meshes follow the same API as the dedicated `curve_mesh`\n",
+        "notebook. The compact check below uses a moderate highway-style\n",
+        "curvature (`long_dim=30`, `mesh_radius=200`) and plots the influence\n",
+        "surface in physical `x-z` space."
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "curved_bridge = og.create_grillage(\n",
+        "    bridge_name=\"Curved Influence Demo\",\n",
+        "    long_dim=30,\n",
+        "    width=7,\n",
+        "    skew=0,\n",
+        "    num_long_grid=7,\n",
+        "    num_trans_grid=15,\n",
+        "    edge_beam_dist=1,\n",
+        "    mesh_type=\"Ortho\",\n",
+        "    mesh_radius=200,\n",
+        ")\n",
+        "curved_bridge.set_member(main_beam, member=\"interior_main_beam\")\n",
+        "curved_bridge.set_member(edge_beam, member=\"exterior_main_beam_1\")\n",
+        "curved_bridge.set_member(edge_beam, member=\"exterior_main_beam_2\")\n",
+        "curved_bridge.set_member(edge_beam, member=\"edge_beam\")\n",
+        "curved_bridge.set_member(slab, member=\"transverse_slab\")\n",
+        "curved_bridge.set_member(edge_beam, member=\"start_edge\")\n",
+        "curved_bridge.set_member(edge_beam, member=\"end_edge\")\n",
+        "curved_bridge.create_osp_model(pyfile=False)\n",
+        "\n",
+        "curved_nodes = curved_bridge.get_nodes()\n",
+        "curved_target_node = min(\n",
+        "    curved_nodes,\n",
+        "    key=lambda tag: (\n",
+        "        (curved_nodes[tag][\"coordinate\"][0] - 15.0) ** 2\n",
+        "        + (curved_nodes[tag][\"coordinate\"][2] - 3.5) ** 2\n",
+        "    ),\n",
+        ")\n",
+        "curved_iss = curved_bridge.analyze_influence_surfaces(\n",
+        "    name=\"Curved Deck IS\",\n",
+        "    point_load=1.0,\n",
+        "    shape_function=\"hermite\",\n",
+        ");\n",
+        "ax_curved = curved_iss.plot(\n",
+        "    array=\"displacements\",\n",
+        "    component=\"y\",\n",
+        "    node=curved_target_node,\n",
+        "    x_coord=\"longitudinal_station\",\n",
+        "    y_coord=\"transverse_station\",\n",
+        "    coordinate_space=\"physical\",\n",
+        "    title=\"Curved-bridge IS: deck y displacement near midspan (L = 30 m, R = 200 m)\",\n",
+        ");\n",
+        "ax_curved.set_aspect(\"equal\", adjustable=\"box\");"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Save combined influence outputs\n",
+        "\n",
+        "Both result objects retain save metadata and can be written directly to\n",
+        "single NetCDF files. If a stem is given, semantic suffixes are applied:\n",
+        "`*.il.nc` for influence lines and `*.is.nc` for influence surfaces."
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "il_nc = ils.save(\"lane_ils\")\n",
+        "is_nc = iss.save(\"deck_is\")\n",
+        "print(f\"Saved {il_nc}\")\n",
+        "print(f\"Saved {is_nc}\")"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Export CSV\n",
+        "\n",
+        "- IL CSV is long-form with one row per path station.\n",
+        "- IS CSV can be exported as station-grid (`layout=\"grid\"`) and optional\n",
+        "  companion point map with physical coordinates."
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "il_csv = ils.to_csv(\n",
+        "    \"lane_ils.csv\",\n",
+        "    array=\"forces\",\n",
+        "    component=\"Mz_j\",\n",
+        "    element=target_element,\n",
+        "    load_coord=\"station\",\n",
+        ")\n",
+        "\n",
+        "is_csv = iss.to_csv(\n",
+        "    \"deck_is_grid.csv\",\n",
+        "    array=\"forces\",\n",
+        "    component=\"Mz_j\",\n",
+        "    element=target_element,\n",
+        "    include_physical_coords=True,\n",
+        ")\n",
+        "\n",
+        "print(f\"Saved {il_csv}\")\n",
+        "print(f\"Saved {is_csv}\")"
+      ]
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "display_name": "Python 3",
+      "language": "python",
+      "name": "python3"
+    },
+    "language_info": {
+      "name": "python",
+      "version": ""
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}

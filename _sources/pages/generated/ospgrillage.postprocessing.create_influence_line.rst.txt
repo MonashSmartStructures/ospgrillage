@@ -1,0 +1,6 @@
+﻿create\_influence\_line
+=======================
+
+.. currentmodule:: ospgrillage.postprocessing
+
+.. autofunction:: create_influence_line

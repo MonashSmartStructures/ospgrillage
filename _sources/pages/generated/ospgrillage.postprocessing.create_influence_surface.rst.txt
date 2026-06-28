@@ -1,0 +1,6 @@
+﻿create\_influence\_surface
+==========================
+
+.. currentmodule:: ospgrillage.postprocessing
+
+.. autofunction:: create_influence_surface

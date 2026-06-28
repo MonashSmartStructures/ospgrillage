@@ -1,0 +1,6 @@
+﻿OspGrillage.get\_influence\_results
+===================================
+
+.. currentmodule:: ospgrillage.osp_grillage
+
+.. automethod:: OspGrillage.get_influence_results

@@ -47,7 +47,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="plot_bmd" href="ospgrillage.postprocessing.plot_bmd.html" />
-    <link rel="prev" title="create_envelope" href="ospgrillage.postprocessing.create_envelope.html" />
+    <link rel="prev" title="plot_is" href="ospgrillage.postprocessing.plot_is.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.6.0" />
@@ -447,11 +447,28 @@
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../api_analysis.html">Analysis and results</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.analyze.html">OspGrillage.analyze</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.analyze_influence_lines.html">OspGrillage.analyze_influence_lines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.analyze_influence_surfaces.html">OspGrillage.analyze_influence_surfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.analyze_il.html">OspGrillage.analyze_il</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.analyze_is.html">OspGrillage.analyze_is</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.analyze_influence_line.html">OspGrillage.analyze_influence_line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.analyze_influence_surface.html">OspGrillage.analyze_influence_surface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.get_il.html">OspGrillage.get_il</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.get_is.html">OspGrillage.get_is</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.get_results.html">OspGrillage.get_results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.get_influence_results.html">OspGrillage.get_influence_results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.plot_il.html">OspGrillage.plot_il</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.plot_is.html">OspGrillage.plot_is</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.export_il.html">OspGrillage.export_il</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.osp_grillage.OspGrillage.export_is.html">OspGrillage.export_is</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../api_postprocessing.html">Post-processing</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.postprocessing.create_envelope.html">create_envelope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.postprocessing.create_influence_line.html">create_influence_line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.postprocessing.create_influence_surface.html">create_influence_surface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.postprocessing.plot_il.html">plot_il</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ospgrillage.postprocessing.plot_is.html">plot_is</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">plot_force</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.postprocessing.plot_bmd.html">plot_bmd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ospgrillage.postprocessing.plot_sfd.html">plot_sfd</a></li>
@@ -582,12 +599,12 @@ baseline.  Default <code class="docutils literal notranslate"><span class="pre">
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="ospgrillage.postprocessing.create_envelope.html"
+       href="ospgrillage.postprocessing.plot_is.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">create_envelope</p>
+        <p class="prev-next-title">plot_is</p>
       </div>
     </a>
     <a class="right-next"
