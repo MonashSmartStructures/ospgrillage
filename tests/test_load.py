@@ -1411,8 +1411,6 @@ def test_dkt_triangle_shape_function_centroid_partition_and_equilibrium():
     assert np.isclose(sum(Nv), 1.0)
     assert np.isclose(sum(Nmx), 0.0)
     assert np.isclose(sum(Nmz), 0.0)
-
-
 def test_dkt_triangle_shape_function_matches_1d_hermite_on_edge():
     """On a triangle edge, the DKT distributor should reduce to the 1D Hermite beam form."""
     Nv, Nmx, Nmz = og.ShapeFunction.dkt_triangle_shape_function(

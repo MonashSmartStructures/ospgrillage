@@ -117,6 +117,97 @@ by_name  = force_array.sel(Loadcase="patch load case at global position [0,0,0]"
 by_index = force_array.isel(Loadcase=0)
 ```
 
+## Influence lines and surfaces
+
+Influence studies are created through
+{meth}`~ospgrillage.osp_grillage.OspGrillage.analyze_influence_lines` and
+{meth}`~ospgrillage.osp_grillage.OspGrillage.analyze_influence_surfaces`,
+which return durable result objects. Those objects carry the compiled
+Dataset, can be plotted directly, and can be saved later without recomputing:
+
+```python
+ils = bridge.analyze_influence_lines(
+    paths={"Lane 1": lane_1_path, "Lane 2": lane_2_path}
+)
+ils.plot(array="forces", component="Mz_i", element=42)
+ils.plot(array="forces", component="Mz_i", element=42, backend="plotly", view="path")
+ils.save("lane_ils.nc")
+
+iss = bridge.analyze_influence_surfaces(x=[2, 4], z=[2, 3], name="Deck IS")
+iss.plot(array="forces", component="Mz_i", element=42, view="surface3d")
+
+# Station-space reduction (recommended for skewed/curved decks)
+iss.plot(
+    array="forces",
+    component="Mz_i",
+    element=42,
+    x_coord="longitudinal_station",
+    y_coord="transverse_station",
+)
+```
+
+CSV export is available directly from the result objects:
+
+```python
+# IL: one long-form CSV containing all lanes/paths
+ils.to_csv(
+    "lane_ils.csv",
+    array="forces",
+    component="Mz_i",
+    element=42,
+    load_coord="x",
+)
+
+# IS: rectangular station-grid CSV of ordinates
+# (+ optional companion point map with physical x/z)
+iss.to_csv(
+    "deck_is_grid.csv",
+    array="forces",
+    component="Mz_i",
+    element=42,
+    include_physical_coords=True,
+)
+```
+
+By default, influence surfaces are generated from the mesh station grid
+(admissible deck points). For curved or skewed bridges, reduce in station
+space with `x_coord="longitudinal_station"` and
+`y_coord="transverse_station"` to avoid rectangular-grid assumptions.
+
+When plotting a reduced surface, `plot_is(..., coordinate_space="physical")`
+uses mapped deck coordinates (`x`, `z`) and triangulates valid points so the
+surface remains contiguous on curved geometry in both Matplotlib and Plotly.
+Use `coordinate_space="station"` to keep station axes.
+
+The lower-level helpers
+{func}`~ospgrillage.postprocessing.create_influence_line`,
+{func}`~ospgrillage.postprocessing.create_influence_surface`,
+{func}`~ospgrillage.postprocessing.plot_il`, and
+{func}`~ospgrillage.postprocessing.plot_is` remain available when direct
+`xarray` manipulation is preferred.
+
+Influence lines support both the traditional `view="ordinate"` plot and a
+`view="path"` mode that draws the ordinates along the load path on top of the
+bridge model.
+
+### Technical notes (DKT and station mapping)
+
+- `shape_function="hermite"` uses the higher-order consistent-load path:
+  Hermite interpolation on quadrilateral regions, and a DKT-style condensed
+  triangular distributor where skew geometry creates 3-node regions.
+- Influence-line `load_coord="station"` is cumulative distance along each axle
+  path; this is typically preferred for skewed/curved paths because global `x`
+  is not a uniform path-abscissa there.
+- Influence-surface default generation uses admissible mesh station points
+  (not a global rectangular deck bounding box), then stores both station
+  coordinates and mapped physical (`x`,`z`) coordinates.
+- Physical plotting (`coordinate_space="physical"`) triangulates valid mapped
+  points so curved/skewed surfaces remain contiguous without assuming a
+  rectangular Cartesian deck.
+
+For a complete workflow, see the
+{doc}`../notebooks/influence_lines_and_surfaces` tutorial notebook.
+
 ```{note}
 For information on the full range of indexing and selection operations available on
 DataArrays, see the
@@ -199,6 +290,11 @@ comb = example_bridge.get_results(
     save_filename="combination_results.nc",
 )
 ```
+
+If you omit the NetCDF extension and pass a stem (for example
+`save_filename="my_results"`), *ospgrillage* writes semantic names:
+`*.res.nc` for ordinary results, `*.il.nc` for influence-line exports, and
+`*.is.nc` for influence-surface exports.
 
 This writes the full xarray Dataset — including node coordinates and
 member-element connectivity — to a ``.nc`` file in the current working

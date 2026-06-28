@@ -1923,5 +1923,4 @@ class ShapeFunction:
         )
         rhs = np.array([1.0, x - sum(Nmz), z - sum(Nmx)], dtype=float)
         Nv = np.linalg.solve(coeff_matrix, rhs).tolist()
-
         return Nv, Nmx, Nmz

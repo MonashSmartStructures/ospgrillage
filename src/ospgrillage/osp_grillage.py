@@ -5,6 +5,7 @@ or executable py file. This is done by wrapping `OpenSeesPy` commands for creati
 This module also handles all load case assignment, analysis, and results by wrapping `OpenSeesPy` command for analysis
 """
 import ast
+import csv
 import dataclasses
 from dataclasses import dataclass
 from copy import deepcopy
@@ -13,6 +14,7 @@ from itertools import combinations
 import json
 import logging
 import math
+from pathlib import Path as FilePath
 from typing import List, Tuple, Union, TYPE_CHECKING
 
 import numpy as np
@@ -25,6 +27,8 @@ from ospgrillage.load import (
     LoadVertex,
     MovingLoad,
     NodalLoad,
+    # ospgrillage moving-load path definition, not pathlib.Path
+    Path,
     PatchLoading,
     PointLoad,
     ShapeFunction,
@@ -43,7 +47,11 @@ from ospgrillage.postprocessing import (
     Envelope,
     PostProcessor,
     create_envelope,
+    create_influence_line,
+    create_influence_surface,
     plot_force,
+    plot_il as plot_influence_line,
+    plot_is as plot_influence_surface,
 )
 from ospgrillage.utils import (
     calculate_area_given_vertices,
@@ -73,8 +81,31 @@ __all__ = [
     "create_grillage",
     "Analysis",
     "GrillageElement",
+    "InfluenceLineResults",
+    "InfluenceResultSet",
+    "InfluenceSurfaceResults",
     "Results",
 ]
+
+
+def _normalise_netcdf_filename(filename: str, file_tag: str = None) -> str:
+    """Return a semantic NetCDF filename.
+
+    Rules:
+    - If ``filename`` already ends with ``.nc`` (case-insensitive), keep it.
+    - If it ends with ``.res/.il/.is``, append ``.nc``.
+    - Otherwise append ``.{file_tag}.nc`` when ``file_tag`` is provided,
+      else append ``.nc``.
+    """
+    filename = str(filename)
+    lower = filename.lower()
+    if lower.endswith(".nc"):
+        return filename
+    if lower.endswith((".res", ".il", ".is")):
+        return f"{filename}.nc"
+    if file_tag:
+        return f"{filename}.{file_tag}.nc"
+    return f"{filename}.nc"
 
 
 def _format_ops_cmd(name: str, args: tuple, kwargs: dict) -> str:
@@ -224,6 +255,325 @@ class GrillageElement:
     nodes: List
     tag: int
     a: list
+
+
+@dataclass
+class InfluenceResultSet:
+    """Separate result container for influence-line or influence-surface analyses."""
+
+    name: str
+    kind: str
+    results: "Results"
+    load_positions: list
+    station_positions: list = None
+    shape_function: str = "linear"
+
+    def compile_data_array(self, local_force_option=True, main_ele_tags=None):
+        ds = self.results.compile_data_array(
+            local_force_option=local_force_option,
+            main_ele_tags=main_ele_tags,
+        )
+        if self.load_positions:
+            xs = [float(pos[0]) for pos in self.load_positions]
+            ys = [float(pos[1]) for pos in self.load_positions]
+            zs = [float(pos[2]) for pos in self.load_positions]
+            ds = ds.assign_coords(
+                load_position_x=("Loadcase", xs),
+                load_position_y=("Loadcase", ys),
+                load_position_z=("Loadcase", zs),
+            )
+        if self.station_positions:
+            longitudinal = [float(pos[0]) for pos in self.station_positions]
+            transverse = [float(pos[1]) for pos in self.station_positions]
+            ds = ds.assign_coords(
+                load_position_longitudinal_station=("Loadcase", longitudinal),
+                load_position_transverse_station=("Loadcase", transverse),
+            )
+        ds.attrs["influence_name"] = self.name
+        ds.attrs["influence_type"] = self.kind
+        ds.attrs["shape_function"] = self.shape_function
+        return ds
+
+    def compile_named_data_array(self, local_force_option=True, main_ele_tags=None):
+        """Return the compiled Dataset with a leading InfluenceLine/Surface dimension."""
+        ds = self.compile_data_array(
+            local_force_option=local_force_option,
+            main_ele_tags=main_ele_tags,
+        )
+        index_name = "InfluenceLine" if self.kind == "line" else "InfluenceSurface"
+        ds = ds.assign_coords(
+            loadcase_position_index=("Loadcase", np.arange(ds.sizes["Loadcase"], dtype=int))
+        )
+        ds = ds.assign_coords(
+            loadcase_label=("Loadcase", [str(label) for label in ds.coords["Loadcase"].values])
+        )
+        ds = ds.assign_coords(Loadcase=ds.coords["loadcase_position_index"].values)
+        ds = ds.expand_dims({index_name: [self.name]})
+        return ds
+
+
+class _BaseInfluenceResults:
+    """Durable user-facing container for compiled influence results."""
+
+    def __init__(self, dataset, *, save_filename=None, file_tag="nc"):
+        self.dataset = dataset
+        self.data = dataset
+        self._file_tag = file_tag
+        self._save_filename = (
+            _normalise_netcdf_filename(save_filename, file_tag=file_tag)
+            if save_filename
+            else None
+        )
+
+    def save(self, filename: str = None) -> str:
+        """Save the compiled influence Dataset to NetCDF."""
+        target = filename or self._save_filename
+        if not target:
+            raise ValueError("filename= is required because no save target was stored")
+        target = _normalise_netcdf_filename(target, file_tag=self._file_tag)
+        self.dataset.to_netcdf(target)
+        self._save_filename = target
+        return target
+
+    def to_netcdf(self, filename: str = None) -> str:
+        """Alias for :meth:`save`."""
+        return self.save(filename)
+
+
+class InfluenceLineResults(_BaseInfluenceResults):
+    """User-facing influence-line result container."""
+
+    def __init__(self, dataset, *, save_filename=None):
+        super().__init__(
+            dataset,
+            save_filename=save_filename,
+            file_tag="il",
+        )
+
+    def get_line(self, **kwargs):
+        """Return one reduced influence line or a dict of overlaid lines."""
+        component = kwargs.get("component", None)
+        array = kwargs.get("array", None)
+        if component is None or array is None:
+            raise ValueError("array= and component= are required to extract an influence line")
+
+        selector_kwargs = dict(
+            ds=self.dataset,
+            array=array,
+            component=component,
+            node=kwargs.get("node", None),
+            element=kwargs.get("element", None),
+            load_coord=kwargs.get("load_coord", "x"),
+        )
+        influence_line = kwargs.get("influence_line", None)
+        if "InfluenceLine" in self.dataset.dims:
+            if influence_line is None or influence_line == "All":
+                return {
+                    str(name): create_influence_line(
+                        influence_line=str(name),
+                        **selector_kwargs,
+                    ).get()
+                    for name in self.dataset.coords["InfluenceLine"].values
+                }
+            selector_kwargs["influence_line"] = influence_line
+        return create_influence_line(**selector_kwargs).get()
+
+    def plot(self, **kwargs):
+        """Reduce and plot one or more influence lines."""
+        plot_kwargs = dict(kwargs)
+        plot_kwargs.setdefault("dataset", self.dataset)
+        return plot_influence_line(self.get_line(**kwargs), **plot_kwargs)
+
+    def to_csv(self, filename: str, **kwargs) -> str:
+        """Export one or more reduced influence lines to a single CSV file.
+
+        The CSV contains long-form rows with columns:
+        ``influence_line, abscissa, x, y, z, station, ordinate``.
+        """
+        line_data = self.get_line(**kwargs)
+        if isinstance(line_data, dict):
+            labelled_lines = list(line_data.items())
+        else:
+            label = kwargs.get("influence_line", None)
+            if label in (None, "All"):
+                label = self.dataset.attrs.get("influence_name", "Influence Line")
+            labelled_lines = [(str(label), line_data)]
+
+        with open(filename, "w", newline="") as csv_file:
+            writer = csv.writer(csv_file)
+            writer.writerow(
+                [
+                    "influence_line",
+                    "abscissa",
+                    "x",
+                    "y",
+                    "z",
+                    "station",
+                    "ordinate",
+                ]
+            )
+            for line_name, line in labelled_lines:
+                axis_name = line.dims[0]
+                axis_values = np.asarray(line.coords[axis_name].values, dtype=float)
+                x_values = np.asarray(line.coords["x"].values, dtype=float)
+                y_values = np.asarray(line.coords["y"].values, dtype=float)
+                z_values = np.asarray(line.coords["z"].values, dtype=float)
+                station_values = np.asarray(line.coords["station"].values, dtype=float)
+                ordinate_values = np.asarray(line.values, dtype=float)
+                for idx in range(len(ordinate_values)):
+                    writer.writerow(
+                        [
+                            str(line_name),
+                            float(axis_values[idx]),
+                            float(x_values[idx]),
+                            float(y_values[idx]),
+                            float(z_values[idx]),
+                            float(station_values[idx]),
+                            float(ordinate_values[idx]),
+                        ]
+                    )
+        return filename
+
+
+class InfluenceSurfaceResults(_BaseInfluenceResults):
+    """User-facing influence-surface result container."""
+
+    def __init__(self, dataset, *, save_filename=None):
+        super().__init__(
+            dataset,
+            save_filename=save_filename,
+            file_tag="is",
+        )
+
+    def get_surface(self, **kwargs):
+        """Return one reduced influence surface."""
+        component = kwargs.get("component", None)
+        array = kwargs.get("array", None)
+        if component is None or array is None:
+            raise ValueError(
+                "array= and component= are required to extract an influence surface"
+            )
+        return create_influence_surface(
+            ds=self.dataset,
+            array=array,
+            component=component,
+            node=kwargs.get("node", None),
+            element=kwargs.get("element", None),
+            x_coord=kwargs.get("x_coord", "x"),
+            y_coord=kwargs.get("y_coord", "z"),
+            influence_surface=kwargs.get("influence_surface", None),
+        ).get()
+
+    def plot(self, **kwargs):
+        """Reduce and plot one influence surface."""
+        return plot_influence_surface(self.get_surface(**kwargs), **kwargs)
+
+    def _default_surface_axes(self, kwargs):
+        """Return selector kwargs with station axes preferred when available."""
+        selector_kwargs = dict(kwargs)
+        has_station_coords = (
+            "load_position_longitudinal_station" in self.dataset.coords
+            and "load_position_transverse_station" in self.dataset.coords
+        )
+        if has_station_coords:
+            selector_kwargs.setdefault("x_coord", "longitudinal_station")
+            selector_kwargs.setdefault("y_coord", "transverse_station")
+        return selector_kwargs
+
+    def to_csv(self, filename: str, **kwargs):
+        """Export a reduced influence surface to CSV.
+
+        Parameters
+        ----------
+        filename : str
+            Output CSV path.
+        layout : {"grid", "long"}, default "grid"
+            ``"grid"`` writes a rectangular station/axis matrix of ordinates.
+            ``"long"`` writes one row per grid point.
+        include_physical_coords : bool, default False
+            If ``True`` and mapped physical coordinates are available, include
+            physical ``x,z`` coordinates in long-form output, or write a
+            companion ``*_points.csv`` file for grid output.
+        """
+        layout = kwargs.pop("layout", "grid")
+        include_physical_coords = kwargs.pop("include_physical_coords", False)
+        selector_kwargs = self._default_surface_axes(kwargs)
+        isurface = self.get_surface(**selector_kwargs)
+        x_name, y_name = isurface.dims
+        x_values = np.asarray(isurface.coords[x_name].values, dtype=float)
+        y_values = np.asarray(isurface.coords[y_name].values, dtype=float)
+        ordinate = np.asarray(isurface.values, dtype=float)
+
+        has_physical = (
+            "x" in isurface.coords
+            and "z" in isurface.coords
+            and isurface.coords["x"].dims == isurface.dims
+            and isurface.coords["z"].dims == isurface.dims
+        )
+
+        if layout == "long":
+            with open(filename, "w", newline="") as csv_file:
+                writer = csv.writer(csv_file)
+                header = [x_name, y_name]
+                if include_physical_coords and has_physical:
+                    header += ["x", "z"]
+                header += ["ordinate"]
+                writer.writerow(header)
+                x_phys = (
+                    np.asarray(isurface.coords["x"].values, dtype=float)
+                    if has_physical
+                    else None
+                )
+                z_phys = (
+                    np.asarray(isurface.coords["z"].values, dtype=float)
+                    if has_physical
+                    else None
+                )
+                for ix, x_coord in enumerate(x_values):
+                    for iy, y_coord in enumerate(y_values):
+                        row = [float(x_coord), float(y_coord)]
+                        if include_physical_coords and has_physical:
+                            row += [float(x_phys[ix, iy]), float(z_phys[ix, iy])]
+                        row += [float(ordinate[ix, iy])]
+                        writer.writerow(row)
+            return filename
+
+        if layout != "grid":
+            raise ValueError("layout must be either 'grid' or 'long'")
+
+        with open(filename, "w", newline="") as csv_file:
+            writer = csv.writer(csv_file)
+            writer.writerow([x_name] + [float(val) for val in y_values])
+            for ix, x_coord in enumerate(x_values):
+                row = [float(x_coord)] + [float(val) for val in ordinate[ix, :]]
+                writer.writerow(row)
+
+        if include_physical_coords and has_physical:
+            base = FilePath(filename)
+            suffix = base.suffix or ".csv"
+            points_file = base.with_name(f"{base.stem}_points{suffix}")
+            x_phys = np.asarray(isurface.coords["x"].values, dtype=float)
+            z_phys = np.asarray(isurface.coords["z"].values, dtype=float)
+            with open(points_file, "w", newline="") as csv_file:
+                writer = csv.writer(csv_file)
+                writer.writerow([x_name, y_name, "x", "z", "ordinate"])
+                for ix, x_coord in enumerate(x_values):
+                    for iy, y_coord in enumerate(y_values):
+                        writer.writerow(
+                            [
+                                float(x_coord),
+                                float(y_coord),
+                                float(x_phys[ix, iy]),
+                                float(z_phys[ix, iy]),
+                                float(ordinate[ix, iy]),
+                            ]
+                        )
+            return {
+                "grid": filename,
+                "points": points_file.as_posix(),
+            }
+
+        return filename
 
 
 class OspGrillage:
@@ -420,6 +770,7 @@ class OspGrillage:
         # Mesh objects, pyfile flag, and verbose flag
         self.pyfile = None
         self.results = None
+        self.influence_result_set = dict()
         self.diagnostics = kwargs.get(
             "diagnostics", False
         )  # flag for diagnostics printed to terminal
@@ -2341,6 +2692,761 @@ class OspGrillage:
 
         return ds
 
+    def _run_analysis_case_dicts(
+        self,
+        load_case_dict_list: list,
+        results_obj: "Results",
+        analysis_type: str = "Static",
+        step: int = 1,
+        time_increment: float = 0.01,
+    ) -> None:
+        """Evaluate a list of prepared load-case dictionaries into a target Results object."""
+        for load_case_dict in load_case_dict_list:
+            load_case_obj = load_case_dict["loadcase"]
+            load_command = load_case_dict["load_command"]
+            load_factor = load_case_dict["load_factor"]
+            load_case_analysis = Analysis(
+                analysis_name=load_case_obj.name,
+                analysis_type=analysis_type,
+                step=step,
+                ops_grillage_name=self.model_name,
+                pyfile=self.pyfile,
+                time_series_counter=self.global_time_series_counter,
+                pattern_counter=self.global_pattern_counter,
+                node_counter=self.Mesh_obj.node_counter,
+                ele_counter=self.Mesh_obj.element_counter,
+                constraint_type=self.constraint_type,
+                load_case=load_case_obj,
+                time_increment=time_increment,
+            )
+            load_case_analysis.add_load_command(load_command, load_factor=load_factor)
+            (
+                self.global_time_series_counter,
+                self.global_pattern_counter,
+                node_disp,
+                ele_force,
+                self.analysis_command,
+            ) = load_case_analysis.evaluate_analysis()
+            results_obj.extract_analysis(analysis_obj=load_case_analysis)
+
+    def analyze_influence_line(self, **kwargs) -> InfluenceResultSet:
+        """
+        Create and run a dedicated 100 kN axle influence-line analysis.
+
+        This analysis is stored separately from ordinary load-case results and
+        is retrieved via :func:`get_influence_results`.
+
+        :param name: Influence analysis name.
+        :type name: str
+        :param path: Optional explicit Path object describing the axle centre-line movement.
+        :type path: Path, optional
+        :param start_point: Start point of the axle path.
+        :type start_point: Point
+        :param end_point: End point of the axle path.
+        :type end_point: Point
+        :param increments: Number of axle positions along the path. Defaults to ``50``.
+        :type increments: int, optional
+        :param step: Target spacing between axle positions along the path.
+            If provided, overrides ``increments``.
+        :type step: float, optional
+        :param axle_load: Axle load magnitude. Defaults to ``100e3``.
+        :type axle_load: float, optional
+        """
+        name = kwargs.get("name", "Influence Line")
+        path = kwargs.get("path", None)
+        start_point = kwargs.get("start_point", None)
+        end_point = kwargs.get("end_point", None)
+        increments = kwargs.get("increments", 50)
+        step_size = kwargs.get("step", None)
+        axle_load = kwargs.get("axle_load", 100e3)
+        shape_function = kwargs.get("shape_function", "linear")
+        analysis_type = kwargs.get("analysis_type", "Static")
+        analysis_step = kwargs.get("analysis_step", 1)
+        time_increment = kwargs.get("time_increment", 0.01)
+        store_results = kwargs.get("store_results", True)
+
+        if path is None and (start_point is None or end_point is None):
+            raise ValueError("Either path= or both start_point= and end_point= are required for influence-line analysis")
+
+        if path is None:
+            if step_size is not None:
+                total_length = get_distance(start_point, end_point)
+                increments = max(int(np.floor(total_length / step_size)) + 1, 2)
+            path = Path(start_point=start_point, end_point=end_point, increments=increments)
+        axle = PointLoad(
+            name=f"{name} axle",
+            point1=LoadVertex(0, 0, 0, axle_load),
+            shape_function=shape_function,
+        )
+        moving_load = MovingLoad(name=name)
+        moving_load.set_path(path)
+        moving_load.add_load(axle)
+        moving_load.parse_moving_load_cases()
+
+        load_case_dict_list = []
+        for moving_load_case_list in moving_load.moving_load_case:
+            for increment_load_case in moving_load_case_list:
+                load_str = self._distribute_load_types_to_model(
+                    load_case_obj=increment_load_case
+                )
+                load_case_dict_list.append(
+                    {
+                        "name": increment_load_case.name,
+                        "loadcase": increment_load_case,
+                        "load_command": load_str,
+                        "load_factor": 1,
+                    }
+                )
+
+        influence_results = Results(self.Mesh_obj)
+        self._run_analysis_case_dicts(
+            load_case_dict_list=load_case_dict_list,
+            results_obj=influence_results,
+            analysis_type=analysis_type,
+            step=analysis_step,
+            time_increment=time_increment,
+        )
+        result_set = InfluenceResultSet(
+            name=name,
+            kind="line",
+            results=influence_results,
+            load_positions=path.get_path_points(),
+            shape_function=shape_function,
+        )
+        if store_results:
+            self.influence_result_set[name] = result_set
+            return result_set
+
+        return self.get_il(
+            result_set=result_set,
+            array=kwargs.get("array", None),
+            component=kwargs.get("component", None),
+            node=kwargs.get("node", None),
+            element=kwargs.get("element", None),
+            load_coord=kwargs.get("load_coord", "x"),
+        )
+
+    def analyze_influence_surface(self, **kwargs) -> InfluenceResultSet:
+        """
+        Create and run a dedicated 100 kN roving-point influence-surface analysis.
+
+        This analysis is stored separately from ordinary load-case results and
+        is retrieved via :func:`get_influence_results`.
+
+        :param name: Influence analysis name.
+        :type name: str
+        :param x: Iterable of global x coordinates for the roving point
+            (legacy rectangular-grid mode).
+        :type x: iterable
+        :param z: Iterable of global z coordinates for the roving point
+            (legacy rectangular-grid mode).
+        :type z: iterable
+        :param longitudinal_stations: Optional iterable of longitudinal mesh
+            station values (from ``Mesh_obj.nox``) for admissible deck sampling.
+        :type longitudinal_stations: iterable, optional
+        :param transverse_stations: Optional iterable of transverse mesh
+            station values (from ``Mesh_obj.noz``) for admissible deck sampling.
+        :type transverse_stations: iterable, optional
+        :param x_step: Default spacing used to generate x coordinates from the deck extent.
+        :type x_step: float, optional
+        :param z_step: Default spacing used to generate z coordinates from the deck extent.
+        :type z_step: float, optional
+        :param y: Model-plane y coordinate. Defaults to ``0``.
+        :type y: float, optional
+        :param point_load: Point-load magnitude. Defaults to ``100e3``.
+        :type point_load: float, optional
+
+        Notes
+        -----
+        When neither ``x``/``z`` nor station lists are provided, the default
+        surface is generated from the mesh station grid (admissible deck
+        points), not from a global rectangular bounding box.
+        """
+        name = kwargs.get("name", "Influence Surface")
+        x_points = kwargs.get("x", None)
+        z_points = kwargs.get("z", None)
+        longitudinal_stations = kwargs.get("longitudinal_stations", None)
+        transverse_stations = kwargs.get("transverse_stations", None)
+        x_step = kwargs.get("x_step", 1.0)
+        z_step = kwargs.get("z_step", 1.0)
+        y = kwargs.get("y", 0)
+        point_load = kwargs.get("point_load", 100e3)
+        shape_function = kwargs.get("shape_function", "linear")
+        analysis_type = kwargs.get("analysis_type", "Static")
+        analysis_step = kwargs.get("analysis_step", 1)
+        time_increment = kwargs.get("time_increment", 0.01)
+        store_results = kwargs.get("store_results", True)
+
+        station_positions = None
+        if longitudinal_stations is not None or transverse_stations is not None:
+            load_positions, station_positions = self._get_surface_station_positions(
+                longitudinal_stations=longitudinal_stations,
+                transverse_stations=transverse_stations,
+            )
+        elif x_points is None and z_points is None:
+            load_positions, station_positions = self._get_surface_station_positions()
+        else:
+            if x_points is None or z_points is None:
+                all_nodes = self.get_nodes()
+                x_coords = [node_data["coordinate"][0] for node_data in all_nodes.values()]
+                z_coords = [node_data["coordinate"][2] for node_data in all_nodes.values()]
+                if x_points is None:
+                    x_points = np.arange(min(x_coords), max(x_coords) + x_step * 0.5, x_step)
+                if z_points is None:
+                    z_points = np.arange(min(z_coords), max(z_coords) + z_step * 0.5, z_step)
+            load_positions = [(float(x), float(y), float(z)) for x in x_points for z in z_points]
+
+        load_case_dict_list = []
+        for x, y_val, z in load_positions:
+            point_load_case = LoadCase(
+                name=f"{name} at global position [{x:.2f},{y_val:.2f},{z:.2f}]"
+            )
+            point = PointLoad(
+                name=f"{name} point",
+                point1=LoadVertex(x, y_val, z, point_load),
+                shape_function=shape_function,
+            )
+            point_load_case.add_load(point)
+            load_str = self._distribute_load_types_to_model(load_case_obj=point_load_case)
+            load_case_dict_list.append(
+                {
+                    "name": point_load_case.name,
+                    "loadcase": point_load_case,
+                    "load_command": load_str,
+                    "load_factor": 1,
+                }
+            )
+
+        influence_results = Results(self.Mesh_obj)
+        self._run_analysis_case_dicts(
+            load_case_dict_list=load_case_dict_list,
+            results_obj=influence_results,
+            analysis_type=analysis_type,
+            step=analysis_step,
+            time_increment=time_increment,
+        )
+        result_set = InfluenceResultSet(
+            name=name,
+            kind="surface",
+            results=influence_results,
+            load_positions=load_positions,
+            station_positions=station_positions,
+            shape_function=shape_function,
+        )
+        if store_results:
+            self.influence_result_set[name] = result_set
+            return result_set
+
+        return self.get_is(
+            result_set=result_set,
+            array=kwargs.get("array", None),
+            component=kwargs.get("component", None),
+            node=kwargs.get("node", None),
+            element=kwargs.get("element", None),
+            x_coord=kwargs.get("x_coord", "x"),
+            y_coord=kwargs.get("y_coord", "z"),
+        )
+
+    def analyze_influence_lines(self, **kwargs) -> InfluenceLineResults:
+        """Run one or more influence-line studies and return a result object."""
+        save_filename = kwargs.get("save_filename", None)
+        local_force_flag = kwargs.get("local_forces", False)
+
+        paths = kwargs.get("paths", None)
+        if paths is None:
+            single_name = kwargs.get("name", "Influence Line")
+            result_set = self.analyze_influence_line(**kwargs)
+            ds = self._compile_influence_dataset(
+                result_set,
+                local_force_flag=local_force_flag,
+            )
+        else:
+            if not isinstance(paths, dict) or not paths:
+                raise ValueError("paths= must be a non-empty dict of {name: Path}")
+            common_kwargs = dict(kwargs)
+            common_kwargs.pop("paths", None)
+            common_kwargs.pop("path", None)
+            common_kwargs.pop("name", None)
+            common_kwargs.pop("save_filename", None)
+            common_kwargs.pop("local_forces", None)
+            line_names = []
+            for line_name, path in paths.items():
+                self.analyze_influence_line(
+                    name=str(line_name),
+                    path=path,
+                    **common_kwargs,
+                )
+                line_names.append(str(line_name))
+            ds = self._compile_combined_influence_line_dataset(
+                line_names,
+                local_force_flag=local_force_flag,
+            )
+
+        result = InfluenceLineResults(ds, save_filename=save_filename)
+        if save_filename:
+            result.save()
+        return result
+
+    def analyze_influence_surfaces(self, **kwargs) -> InfluenceSurfaceResults:
+        """Run an influence-surface study and return a result object."""
+        save_filename = kwargs.get("save_filename", None)
+        local_force_flag = kwargs.get("local_forces", False)
+        result_set = self.analyze_influence_surface(**kwargs)
+        ds = self._compile_influence_dataset(
+            result_set,
+            local_force_flag=local_force_flag,
+        )
+        result = InfluenceSurfaceResults(ds, save_filename=save_filename)
+        if save_filename:
+            result.save()
+        return result
+
+    def _compile_influence_dataset(self, result_set: InfluenceResultSet, local_force_flag=False):
+        ds = result_set.compile_data_array(
+            local_force_option=local_force_flag,
+            main_ele_tags=self.Mesh_obj.element_counter,
+        )
+        return self._embed_geometry(ds)
+
+    def _get_surface_station_positions(
+        self,
+        longitudinal_stations=None,
+        transverse_stations=None,
+    ):
+        """Map logical deck stations to admissible physical load positions."""
+        x_station_values = [float(val) for val in np.asarray(self.Mesh_obj.nox).tolist()]
+        z_station_values = [float(val) for val in np.asarray(self.Mesh_obj.noz).tolist()]
+
+        def _select_indices(requested, available):
+            if requested is None:
+                return list(range(len(available)))
+            indices = []
+            for value in requested:
+                matches = [
+                    idx for idx, candidate in enumerate(available)
+                    if np.isclose(candidate, float(value))
+                ]
+                if not matches:
+                    raise ValueError(
+                        f"Requested station {value!r} is not available in the mesh station grid"
+                    )
+                indices.append(matches[0])
+            return indices
+
+        x_indices = _select_indices(longitudinal_stations, x_station_values)
+        z_indices = _select_indices(transverse_stations, z_station_values)
+
+        y_ref = getattr(self.Mesh_obj, "y_elevation", 0.0)
+        station_to_coord = {}
+        for node_data in self.Mesh_obj.node_spec.values():
+            x_group = node_data.get("x_group")
+            z_group = node_data.get("z_group")
+            if not isinstance(x_group, (int, np.integer)) or not isinstance(z_group, (int, np.integer)):
+                continue
+            coord = node_data["coordinate"]
+            score = abs(coord[1] - y_ref)
+            key = (int(x_group), int(z_group))
+            current = station_to_coord.get(key)
+            if current is None or score < current[1]:
+                station_to_coord[key] = (coord, score)
+
+        if not station_to_coord:
+            raise ValueError("No mesh station groups were found for influence-surface sampling")
+
+        # Build longitudinal adjacency by row (constant z-group) from beam connectivity.
+        row_adjacency = {}
+        long_like_elements = list(getattr(self.Mesh_obj, "long_ele", [])) + list(
+            getattr(self.Mesh_obj, "connect_ele", [])
+        )
+        for element in long_like_elements:
+            if len(element) < 3:
+                continue
+            node_i = self.Mesh_obj.node_spec.get(element[1], {})
+            node_j = self.Mesh_obj.node_spec.get(element[2], {})
+            x_group_i = node_i.get("x_group")
+            x_group_j = node_j.get("x_group")
+            z_group_i = node_i.get("z_group")
+            z_group_j = node_j.get("z_group")
+            if (
+                not isinstance(x_group_i, (int, np.integer))
+                or not isinstance(x_group_j, (int, np.integer))
+                or not isinstance(z_group_i, (int, np.integer))
+                or not isinstance(z_group_j, (int, np.integer))
+            ):
+                continue
+            x_group_i = int(x_group_i)
+            x_group_j = int(x_group_j)
+            z_group_i = int(z_group_i)
+            z_group_j = int(z_group_j)
+            if z_group_i != z_group_j or x_group_i == x_group_j:
+                continue
+            row_adj = row_adjacency.setdefault(z_group_i, {})
+            row_adj.setdefault(x_group_i, set()).add(x_group_j)
+            row_adj.setdefault(x_group_j, set()).add(x_group_i)
+
+        edge_node_recorder = getattr(self.Mesh_obj, "edge_node_recorder", None)
+        first_edge = (
+            min(edge_node_recorder.values())
+            if isinstance(edge_node_recorder, dict) and edge_node_recorder
+            else None
+        )
+
+        def _row_start_group(z_group, row_groups, adjacency, x_coords):
+            if first_edge is not None:
+                counts = {}
+                for node_tag, edge_id in edge_node_recorder.items():
+                    if edge_id != first_edge:
+                        continue
+                    node_data = self.Mesh_obj.node_spec.get(node_tag, {})
+                    node_z_group = node_data.get("z_group")
+                    node_x_group = node_data.get("x_group")
+                    if (
+                        not isinstance(node_z_group, (int, np.integer))
+                        or not isinstance(node_x_group, (int, np.integer))
+                    ):
+                        continue
+                    if int(node_z_group) != z_group:
+                        continue
+                    node_x_group = int(node_x_group)
+                    if node_x_group not in row_groups:
+                        continue
+                    counts[node_x_group] = counts.get(node_x_group, 0) + 1
+                if counts:
+                    return max(counts, key=counts.get)
+
+            end_groups = [group for group in row_groups if len(adjacency.get(group, set())) <= 1]
+            if end_groups:
+                return min(end_groups, key=lambda group: x_coords[group])
+            return min(row_groups, key=lambda group: x_coords[group])
+
+        def _order_row_groups(z_group):
+            row_groups = sorted(
+                {
+                    group_x
+                    for (group_x, group_z) in station_to_coord
+                    if group_z == z_group
+                }
+            )
+            if not row_groups:
+                return []
+            x_coords = {
+                group_x: float(station_to_coord[(group_x, z_group)][0][0])
+                for group_x in row_groups
+            }
+            adjacency = {group: set() for group in row_groups}
+            for group, neighbours in row_adjacency.get(z_group, {}).items():
+                if group not in adjacency:
+                    continue
+                adjacency[group].update([n for n in neighbours if n in adjacency])
+
+            start_group = _row_start_group(z_group, row_groups, adjacency, x_coords)
+            ordered = []
+            visited = set()
+            previous = None
+            current = start_group
+            while current is not None and current not in visited:
+                ordered.append(current)
+                visited.add(current)
+                neighbours = [
+                    group
+                    for group in adjacency.get(current, set())
+                    if group != previous and group not in visited
+                ]
+                if not neighbours:
+                    break
+                if len(neighbours) == 1:
+                    next_group = neighbours[0]
+                else:
+                    next_group = min(neighbours, key=lambda group: x_coords[group])
+                previous = current
+                current = next_group
+
+            if len(ordered) < len(row_groups):
+                remaining = [group for group in row_groups if group not in visited]
+                remaining.sort(key=lambda group: x_coords[group])
+                ordered.extend(remaining)
+            return ordered
+
+        row_data = {}
+        for z_group in sorted({group_z for _, group_z in station_to_coord}):
+            ordered_groups = _order_row_groups(z_group)
+            if not ordered_groups:
+                continue
+            points = np.asarray(
+                [station_to_coord[(group_x, z_group)][0] for group_x in ordered_groups],
+                dtype=float,
+            )
+            if len(points) == 1:
+                cumulative = np.asarray([0.0], dtype=float)
+            else:
+                segment_lengths = np.linalg.norm(
+                    np.diff(points[:, [0, 2]], axis=0),
+                    axis=1,
+                )
+                cumulative = np.concatenate([[0.0], np.cumsum(segment_lengths)])
+            row_data[z_group] = {
+                "points": points,
+                "cumulative": cumulative,
+                "z_ref": float(np.mean(points[:, 2])),
+            }
+
+        requested_z_indices = sorted(set(z_indices))
+        if len(row_data) < len(requested_z_indices):
+            raise ValueError("No admissible surface load positions were found for the requested station grid")
+
+        if all(z_idx in row_data for z_idx in requested_z_indices):
+            # In standard meshes the node z_group is the transverse station index.
+            # Keep that direct mapping to avoid cyclic row reorder on curved decks.
+            z_index_to_group = {z_idx: z_idx for z_idx in requested_z_indices}
+        else:
+            z_index_to_group = {}
+            remaining_groups = set(row_data.keys())
+            for z_idx in requested_z_indices:
+                target_z = z_station_values[z_idx]
+                chosen_group = min(
+                    remaining_groups,
+                    key=lambda group: abs(row_data[group]["z_ref"] - target_z),
+                )
+                z_index_to_group[z_idx] = chosen_group
+                remaining_groups.remove(chosen_group)
+
+        x_station_start = x_station_values[0]
+        x_station_end = x_station_values[-1]
+        x_station_span = x_station_end - x_station_start
+
+        def _station_ratio(station):
+            if np.isclose(x_station_span, 0.0):
+                return 0.0
+            return (station - x_station_start) / x_station_span
+
+        def _interpolate_row(row_points, cumulative, station):
+            ratio = float(np.clip(_station_ratio(station), 0.0, 1.0))
+            if len(row_points) == 1:
+                coord = row_points[0]
+                return float(coord[0]), float(coord[1]), float(coord[2])
+            total = cumulative[-1]
+            if np.isclose(total, 0.0):
+                coord = row_points[0]
+                return float(coord[0]), float(coord[1]), float(coord[2])
+            target = ratio * total
+            segment_index = int(np.searchsorted(cumulative, target, side="right") - 1)
+            segment_index = max(0, min(segment_index, len(cumulative) - 2))
+            segment_start = cumulative[segment_index]
+            segment_end = cumulative[segment_index + 1]
+            denom = segment_end - segment_start
+            local_ratio = 0.0 if np.isclose(denom, 0.0) else (target - segment_start) / denom
+            p0 = row_points[segment_index]
+            p1 = row_points[segment_index + 1]
+            interp = p0 + local_ratio * (p1 - p0)
+            return float(interp[0]), float(interp[1]), float(interp[2])
+
+        load_positions = []
+        station_positions = []
+        for x_idx in x_indices:
+            for z_idx in z_indices:
+                z_group = z_index_to_group[z_idx]
+                row_points = row_data[z_group]["points"]
+                cumulative = row_data[z_group]["cumulative"]
+                if len(row_points) == len(x_station_values):
+                    # Use exact mesh row points when row station count matches.
+                    point = row_points[x_idx]
+                    coord = (float(point[0]), float(point[1]), float(point[2]))
+                else:
+                    coord = _interpolate_row(row_points, cumulative, x_station_values[x_idx])
+                load_positions.append(coord)
+                station_positions.append((x_station_values[x_idx], z_station_values[z_idx]))
+
+        if not load_positions:
+            raise ValueError("No admissible surface load positions were found for the requested station grid")
+
+        return load_positions, station_positions
+
+    def _compile_combined_influence_line_dataset(self, names, local_force_flag=False):
+        """Combine multiple stored influence-line result sets into one Dataset."""
+        if not names:
+            raise ValueError("At least one influence-line name is required")
+
+        datasets = []
+        expected_kind = "line"
+        for line_name in names:
+            if line_name not in self.influence_result_set:
+                raise ValueError(f"No influence analysis named {line_name!r} has been run")
+            result_set = self.influence_result_set[line_name]
+            if result_set.kind != expected_kind:
+                raise ValueError("Combined influence-line export only supports line studies")
+            ds = result_set.compile_named_data_array(
+                local_force_option=local_force_flag,
+                main_ele_tags=self.Mesh_obj.element_counter,
+            )
+            ds = self._embed_geometry(ds)
+            datasets.append(ds)
+
+        base = datasets[0]
+        for ds in datasets[1:]:
+            if ds.attrs.get("model_type") != base.attrs.get("model_type"):
+                raise ValueError("All combined influence-line studies must come from the same model type")
+            if not ds["node_coordinates"].equals(base["node_coordinates"]):
+                raise ValueError("All combined influence-line studies must share the same node layout")
+
+        combined = xr.concat(
+            datasets,
+            dim="InfluenceLine",
+            join="outer",
+            compat="override",
+            coords="all",
+            data_vars="all",
+        )
+        combined.attrs["influence_name"] = ", ".join(names)
+        combined.attrs["influence_type"] = "line"
+        combined.attrs["influence_overlay"] = "multi"
+        combined.attrs["shape_function"] = ",".join(
+            [self.influence_result_set[line_name].shape_function for line_name in names]
+        )
+        return combined
+
+    def get_influence_results(self, name: str = None, **kwargs):
+        """
+        Return a stored influence-line or influence-surface result Dataset.
+
+        :param name: Influence analysis name.
+        :type name: str
+        :param names: Optional list of influence-line analysis names to combine
+            into one Dataset for overlay plotting.
+        :type names: list[str], optional
+        :param save_filename: Optional NetCDF output path.
+        :type save_filename: str, optional
+        :param local_forces: If ``True``, use local element forces. Defaults to ``False``.
+        :type local_forces: bool, optional
+        """
+        local_force_flag = kwargs.get("local_forces", False)
+        save_filename = kwargs.get("save_filename", None)
+
+        names = kwargs.get("names", None)
+        if names is not None:
+            ds = self._compile_combined_influence_line_dataset(
+                list(names),
+                local_force_flag=local_force_flag,
+            )
+        else:
+            if name is None:
+                raise ValueError("name= or names= is required")
+            if name not in self.influence_result_set:
+                raise ValueError(f"No influence analysis named {name!r} has been run")
+            ds = self._compile_influence_dataset(
+                self.influence_result_set[name],
+                local_force_flag=local_force_flag,
+            )
+        if save_filename:
+            save_target = _normalise_netcdf_filename(
+                save_filename,
+                file_tag="il" if ds.attrs.get("influence_type") == "line" else "is",
+            )
+            ds.to_netcdf(save_target)
+        return ds
+
+    def clear_influence_results(self, name: str = None) -> None:
+        """Clear one named influence analysis or all stored influence analyses."""
+        if name is None:
+            self.influence_result_set = dict()
+        else:
+            self.influence_result_set.pop(name, None)
+
+    def analyze_il(self, **kwargs):
+        """Short alias for :func:`analyze_influence_line`."""
+        return self.analyze_influence_line(**kwargs)
+
+    def analyze_is(self, **kwargs):
+        """Short alias for :func:`analyze_influence_surface`."""
+        return self.analyze_influence_surface(**kwargs)
+
+    def get_il(self, name: str = None, result_set: InfluenceResultSet = None, **kwargs):
+        """Extract a reduced influence line using xarray-style ``array`` and ``component`` selectors."""
+        if result_set is None:
+            if name is None:
+                raise ValueError("name= or result_set= is required")
+            ds = self.get_influence_results(name, local_forces=kwargs.get("local_forces", False))
+        else:
+            ds = result_set.compile_data_array(
+                local_force_option=kwargs.get("local_forces", False),
+                main_ele_tags=self.Mesh_obj.element_counter,
+            )
+
+        component = kwargs.get("component", None)
+        array = kwargs.get("array", None)
+        if component is None or array is None:
+            raise ValueError("array= and component= are required to extract an influence line")
+        return create_influence_line(
+            ds=ds,
+            array=array,
+            component=component,
+            node=kwargs.get("node", None),
+            element=kwargs.get("element", None),
+            load_coord=kwargs.get("load_coord", "x"),
+        ).get()
+
+    def get_is(self, name: str = None, result_set: InfluenceResultSet = None, **kwargs):
+        """Extract a reduced influence surface using xarray-style ``array`` and ``component`` selectors."""
+        if result_set is None:
+            if name is None:
+                raise ValueError("name= or result_set= is required")
+            ds = self.get_influence_results(name, local_forces=kwargs.get("local_forces", False))
+        else:
+            ds = result_set.compile_data_array(
+                local_force_option=kwargs.get("local_forces", False),
+                main_ele_tags=self.Mesh_obj.element_counter,
+            )
+
+        component = kwargs.get("component", None)
+        array = kwargs.get("array", None)
+        if component is None or array is None:
+            raise ValueError("array= and component= are required to extract an influence surface")
+        return create_influence_surface(
+            ds=ds,
+            array=array,
+            component=component,
+            node=kwargs.get("node", None),
+            element=kwargs.get("element", None),
+            x_coord=kwargs.get("x_coord", "x"),
+            y_coord=kwargs.get("y_coord", "z"),
+        ).get()
+
+    def plot_il(self, il, **kwargs):
+        """Plot a reduced influence line."""
+        return plot_influence_line(il, **kwargs)
+
+    def plot_is(self, isurface, **kwargs):
+        """Plot a reduced influence surface as a filled contour."""
+        return plot_influence_surface(isurface, **kwargs)
+
+    def export_il(self, il, filename: str) -> None:
+        """Export a reduced influence line to CSV."""
+        axis_name = il.dims[0]
+        data = np.column_stack(
+            [
+                il.coords["x"].values,
+                il.coords["y"].values,
+                il.coords["z"].values,
+                il.values,
+            ]
+        )
+        header = "x,y,z,ordinate"
+        np.savetxt(filename, data, delimiter=",", header=header, comments="")
+
+    def export_is(self, isurface, filename: str) -> None:
+        """Export a reduced influence surface to CSV in long-form."""
+        x_name, y_name = isurface.dims[0], isurface.dims[1]
+        rows = []
+        for x in isurface.coords[x_name].values:
+            for y in isurface.coords[y_name].values:
+                rows.append([x, y, isurface.sel({x_name: x, y_name: y}).item()])
+        np.savetxt(
+            filename,
+            np.asarray(rows, dtype=float),
+            delimiter=",",
+            header=f"{x_name},{y_name},ordinate",
+            comments="",
+        )
+
     def get_results(self, **kwargs):
         """
         Return analysis results as an xarray ``Dataset``.
@@ -2381,6 +3487,11 @@ class OspGrillage:
         # get kwargs
         comb = kwargs.get("combinations", False)  # if Boolean true
         save_filename = kwargs.get("save_filename", None)  # str of file name
+        save_target = (
+            _normalise_netcdf_filename(save_filename, file_tag="res")
+            if save_filename
+            else None
+        )
         specific_load_case = kwargs.get("load_case", None)  # str of fil
         local_force_flag = kwargs.get("local_forces", False)
         basic_da = self.results.compile_data_array(
@@ -2507,14 +3618,14 @@ class OspGrillage:
                 combination_array = factored_array.assign_coords(
                     Loadcase=coordinate_name_list
                 )
-            if save_filename:
-                combination_array.to_netcdf(save_filename)
+            if save_target:
+                combination_array.to_netcdf(save_target)
             return combination_array
 
         else:
             # return raw data array for manual post processing
-            if save_filename:
-                basic_da.to_netcdf(save_filename)
+            if save_target:
+                basic_da.to_netcdf(save_target)
             return basic_da
 
     def get_element(self, **kwargs) -> Union[List[float]]:
