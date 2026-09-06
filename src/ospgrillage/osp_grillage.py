@@ -302,10 +302,16 @@ class InfluenceResultSet:
         )
         index_name = "InfluenceLine" if self.kind == "line" else "InfluenceSurface"
         ds = ds.assign_coords(
-            loadcase_position_index=("Loadcase", np.arange(ds.sizes["Loadcase"], dtype=int))
+            loadcase_position_index=(
+                "Loadcase",
+                np.arange(ds.sizes["Loadcase"], dtype=int),
+            )
         )
         ds = ds.assign_coords(
-            loadcase_label=("Loadcase", [str(label) for label in ds.coords["Loadcase"].values])
+            loadcase_label=(
+                "Loadcase",
+                [str(label) for label in ds.coords["Loadcase"].values],
+            )
         )
         ds = ds.assign_coords(Loadcase=ds.coords["loadcase_position_index"].values)
         ds = ds.expand_dims({index_name: [self.name]})
@@ -355,7 +361,9 @@ class InfluenceLineResults(_BaseInfluenceResults):
         component = kwargs.get("component", None)
         array = kwargs.get("array", None)
         if component is None or array is None:
-            raise ValueError("array= and component= are required to extract an influence line")
+            raise ValueError(
+                "array= and component= are required to extract an influence line"
+            )
 
         selector_kwargs = dict(
             ds=self.dataset,
@@ -1928,7 +1936,11 @@ class OspGrillage:
             if shape_func == "hermite":
                 # Three-node regions use a DKT-style condensed point-load distributor so
                 # skew-edge/corner triangles remain compatible with the higher-order path.
-                Nv, node_mx_shape, node_mz_shape = ShapeFunction.dkt_triangle_shape_function(
+                (
+                    Nv,
+                    node_mx_shape,
+                    node_mz_shape,
+                ) = ShapeFunction.dkt_triangle_shape_function(
                     x=point[0],
                     z=point[2],
                     x1=sorted_list[0].x,
@@ -2641,9 +2653,7 @@ class OspGrillage:
         # --- node coordinates DataArray ---
         node_spec = self.Mesh_obj.node_spec
         node_tags = sorted(node_spec.keys())
-        coord_data = np.array(
-            [node_spec[n]["coordinate"] for n in node_tags]
-        )
+        coord_data = np.array([node_spec[n]["coordinate"] for n in node_tags])
         ds["node_coordinates"] = xr.DataArray(
             coord_data,
             dims=("Node", "Axis"),
@@ -2766,13 +2776,17 @@ class OspGrillage:
         store_results = kwargs.get("store_results", True)
 
         if path is None and (start_point is None or end_point is None):
-            raise ValueError("Either path= or both start_point= and end_point= are required for influence-line analysis")
+            raise ValueError(
+                "Either path= or both start_point= and end_point= are required for influence-line analysis"
+            )
 
         if path is None:
             if step_size is not None:
                 total_length = get_distance(start_point, end_point)
                 increments = max(int(np.floor(total_length / step_size)) + 1, 2)
-            path = Path(start_point=start_point, end_point=end_point, increments=increments)
+            path = Path(
+                start_point=start_point, end_point=end_point, increments=increments
+            )
         axle = PointLoad(
             name=f"{name} axle",
             point1=LoadVertex(0, 0, 0, axle_load),
@@ -2888,13 +2902,23 @@ class OspGrillage:
         else:
             if x_points is None or z_points is None:
                 all_nodes = self.get_nodes()
-                x_coords = [node_data["coordinate"][0] for node_data in all_nodes.values()]
-                z_coords = [node_data["coordinate"][2] for node_data in all_nodes.values()]
+                x_coords = [
+                    node_data["coordinate"][0] for node_data in all_nodes.values()
+                ]
+                z_coords = [
+                    node_data["coordinate"][2] for node_data in all_nodes.values()
+                ]
                 if x_points is None:
-                    x_points = np.arange(min(x_coords), max(x_coords) + x_step * 0.5, x_step)
+                    x_points = np.arange(
+                        min(x_coords), max(x_coords) + x_step * 0.5, x_step
+                    )
                 if z_points is None:
-                    z_points = np.arange(min(z_coords), max(z_coords) + z_step * 0.5, z_step)
-            load_positions = [(float(x), float(y), float(z)) for x in x_points for z in z_points]
+                    z_points = np.arange(
+                        min(z_coords), max(z_coords) + z_step * 0.5, z_step
+                    )
+            load_positions = [
+                (float(x), float(y), float(z)) for x in x_points for z in z_points
+            ]
 
         load_case_dict_list = []
         for x, y_val, z in load_positions:
@@ -2907,7 +2931,9 @@ class OspGrillage:
                 shape_function=shape_function,
             )
             point_load_case.add_load(point)
-            load_str = self._distribute_load_types_to_model(load_case_obj=point_load_case)
+            load_str = self._distribute_load_types_to_model(
+                load_case_obj=point_load_case
+            )
             load_case_dict_list.append(
                 {
                     "name": point_load_case.name,
@@ -3001,7 +3027,9 @@ class OspGrillage:
             result.save()
         return result
 
-    def _compile_influence_dataset(self, result_set: InfluenceResultSet, local_force_flag=False):
+    def _compile_influence_dataset(
+        self, result_set: InfluenceResultSet, local_force_flag=False
+    ):
         ds = result_set.compile_data_array(
             local_force_option=local_force_flag,
             main_ele_tags=self.Mesh_obj.element_counter,
@@ -3014,8 +3042,12 @@ class OspGrillage:
         transverse_stations=None,
     ):
         """Map logical deck stations to admissible physical load positions."""
-        x_station_values = [float(val) for val in np.asarray(self.Mesh_obj.nox).tolist()]
-        z_station_values = [float(val) for val in np.asarray(self.Mesh_obj.noz).tolist()]
+        x_station_values = [
+            float(val) for val in np.asarray(self.Mesh_obj.nox).tolist()
+        ]
+        z_station_values = [
+            float(val) for val in np.asarray(self.Mesh_obj.noz).tolist()
+        ]
 
         def _select_indices(requested, available):
             if requested is None:
@@ -3023,7 +3055,8 @@ class OspGrillage:
             indices = []
             for value in requested:
                 matches = [
-                    idx for idx, candidate in enumerate(available)
+                    idx
+                    for idx, candidate in enumerate(available)
                     if np.isclose(candidate, float(value))
                 ]
                 if not matches:
@@ -3041,7 +3074,9 @@ class OspGrillage:
         for node_data in self.Mesh_obj.node_spec.values():
             x_group = node_data.get("x_group")
             z_group = node_data.get("z_group")
-            if not isinstance(x_group, (int, np.integer)) or not isinstance(z_group, (int, np.integer)):
+            if not isinstance(x_group, (int, np.integer)) or not isinstance(
+                z_group, (int, np.integer)
+            ):
                 continue
             coord = node_data["coordinate"]
             score = abs(coord[1] - y_ref)
@@ -3051,7 +3086,9 @@ class OspGrillage:
                 station_to_coord[key] = (coord, score)
 
         if not station_to_coord:
-            raise ValueError("No mesh station groups were found for influence-surface sampling")
+            raise ValueError(
+                "No mesh station groups were found for influence-surface sampling"
+            )
 
         # Build longitudinal adjacency by row (constant z-group) from beam connectivity.
         row_adjacency = {}
@@ -3100,10 +3137,9 @@ class OspGrillage:
                     node_data = self.Mesh_obj.node_spec.get(node_tag, {})
                     node_z_group = node_data.get("z_group")
                     node_x_group = node_data.get("x_group")
-                    if (
-                        not isinstance(node_z_group, (int, np.integer))
-                        or not isinstance(node_x_group, (int, np.integer))
-                    ):
+                    if not isinstance(
+                        node_z_group, (int, np.integer)
+                    ) or not isinstance(node_x_group, (int, np.integer)):
                         continue
                     if int(node_z_group) != z_group:
                         continue
@@ -3114,7 +3150,9 @@ class OspGrillage:
                 if counts:
                     return max(counts, key=counts.get)
 
-            end_groups = [group for group in row_groups if len(adjacency.get(group, set())) <= 1]
+            end_groups = [
+                group for group in row_groups if len(adjacency.get(group, set())) <= 1
+            ]
             if end_groups:
                 return min(end_groups, key=lambda group: x_coords[group])
             return min(row_groups, key=lambda group: x_coords[group])
@@ -3192,7 +3230,9 @@ class OspGrillage:
 
         requested_z_indices = sorted(set(z_indices))
         if len(row_data) < len(requested_z_indices):
-            raise ValueError("No admissible surface load positions were found for the requested station grid")
+            raise ValueError(
+                "No admissible surface load positions were found for the requested station grid"
+            )
 
         if all(z_idx in row_data for z_idx in requested_z_indices):
             # In standard meshes the node z_group is the transverse station index.
@@ -3234,7 +3274,9 @@ class OspGrillage:
             segment_start = cumulative[segment_index]
             segment_end = cumulative[segment_index + 1]
             denom = segment_end - segment_start
-            local_ratio = 0.0 if np.isclose(denom, 0.0) else (target - segment_start) / denom
+            local_ratio = (
+                0.0 if np.isclose(denom, 0.0) else (target - segment_start) / denom
+            )
             p0 = row_points[segment_index]
             p1 = row_points[segment_index + 1]
             interp = p0 + local_ratio * (p1 - p0)
@@ -3252,12 +3294,18 @@ class OspGrillage:
                     point = row_points[x_idx]
                     coord = (float(point[0]), float(point[1]), float(point[2]))
                 else:
-                    coord = _interpolate_row(row_points, cumulative, x_station_values[x_idx])
+                    coord = _interpolate_row(
+                        row_points, cumulative, x_station_values[x_idx]
+                    )
                 load_positions.append(coord)
-                station_positions.append((x_station_values[x_idx], z_station_values[z_idx]))
+                station_positions.append(
+                    (x_station_values[x_idx], z_station_values[z_idx])
+                )
 
         if not load_positions:
-            raise ValueError("No admissible surface load positions were found for the requested station grid")
+            raise ValueError(
+                "No admissible surface load positions were found for the requested station grid"
+            )
 
         return load_positions, station_positions
 
@@ -3270,10 +3318,14 @@ class OspGrillage:
         expected_kind = "line"
         for line_name in names:
             if line_name not in self.influence_result_set:
-                raise ValueError(f"No influence analysis named {line_name!r} has been run")
+                raise ValueError(
+                    f"No influence analysis named {line_name!r} has been run"
+                )
             result_set = self.influence_result_set[line_name]
             if result_set.kind != expected_kind:
-                raise ValueError("Combined influence-line export only supports line studies")
+                raise ValueError(
+                    "Combined influence-line export only supports line studies"
+                )
             ds = result_set.compile_named_data_array(
                 local_force_option=local_force_flag,
                 main_ele_tags=self.Mesh_obj.element_counter,
@@ -3284,9 +3336,13 @@ class OspGrillage:
         base = datasets[0]
         for ds in datasets[1:]:
             if ds.attrs.get("model_type") != base.attrs.get("model_type"):
-                raise ValueError("All combined influence-line studies must come from the same model type")
+                raise ValueError(
+                    "All combined influence-line studies must come from the same model type"
+                )
             if not ds["node_coordinates"].equals(base["node_coordinates"]):
-                raise ValueError("All combined influence-line studies must share the same node layout")
+                raise ValueError(
+                    "All combined influence-line studies must share the same node layout"
+                )
 
         combined = xr.concat(
             datasets,
@@ -3364,7 +3420,9 @@ class OspGrillage:
         if result_set is None:
             if name is None:
                 raise ValueError("name= or result_set= is required")
-            ds = self.get_influence_results(name, local_forces=kwargs.get("local_forces", False))
+            ds = self.get_influence_results(
+                name, local_forces=kwargs.get("local_forces", False)
+            )
         else:
             ds = result_set.compile_data_array(
                 local_force_option=kwargs.get("local_forces", False),
@@ -3374,7 +3432,9 @@ class OspGrillage:
         component = kwargs.get("component", None)
         array = kwargs.get("array", None)
         if component is None or array is None:
-            raise ValueError("array= and component= are required to extract an influence line")
+            raise ValueError(
+                "array= and component= are required to extract an influence line"
+            )
         return create_influence_line(
             ds=ds,
             array=array,
@@ -3389,7 +3449,9 @@ class OspGrillage:
         if result_set is None:
             if name is None:
                 raise ValueError("name= or result_set= is required")
-            ds = self.get_influence_results(name, local_forces=kwargs.get("local_forces", False))
+            ds = self.get_influence_results(
+                name, local_forces=kwargs.get("local_forces", False)
+            )
         else:
             ds = result_set.compile_data_array(
                 local_force_option=kwargs.get("local_forces", False),
@@ -3399,7 +3461,9 @@ class OspGrillage:
         component = kwargs.get("component", None)
         array = kwargs.get("array", None)
         if component is None or array is None:
-            raise ValueError("array= and component= are required to extract an influence surface")
+            raise ValueError(
+                "array= and component= are required to extract an influence surface"
+            )
         return create_influence_surface(
             ds=ds,
             array=array,
@@ -4355,7 +4419,8 @@ class Results:
                 for ele_num, stresses in analysis_obj.ele_stresses.items():
                     ele_stress_dict[ele_num] = stresses
                 self.basic_load_case_record_stresses.setdefault(
-                    analysis_obj.analysis_name, ele_stress_dict,
+                    analysis_obj.analysis_name,
+                    ele_stress_dict,
                 )
 
         # if moving load, input is a list of analysis obj
@@ -4651,10 +4716,11 @@ class Results:
                 if self.basic_load_case_record_stresses:
                     stress_list = []
                     for lc_name in basic_load_case_coord:
-                        lc_stresses = self.basic_load_case_record_stresses.get(lc_name, {})
+                        lc_stresses = self.basic_load_case_record_stresses.get(
+                            lc_name, {}
+                        )
                         lc_row = [
-                            lc_stresses.get(tag, [0.0] * 32)
-                            for tag in ele_tag_shell
+                            lc_stresses.get(tag, [0.0] * 32) for tag in ele_tag_shell
                         ]
                         stress_list.append(lc_row)
                     stress_array = np.array(stress_list)

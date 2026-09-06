@@ -526,7 +526,9 @@ class _BaseInfluence:
 
     def __init__(self, ds, component: str = None, **kwargs):
         self.ds = ds
-        self.component = component if component is not None else kwargs.get("load_effect", None)
+        self.component = (
+            component if component is not None else kwargs.get("load_effect", None)
+        )
         self.array = kwargs.get("array", "displacements")
         self.node = kwargs.get("node", None)
         self.element = kwargs.get("element", None)
@@ -640,8 +642,13 @@ class InfluenceSurface(_BaseInfluence):
                     da.coords["load_position_transverse_station"].values,
                 )
             )
-        if da.indexes.get("Loadcase", None) is not None and not da.indexes["Loadcase"].is_unique:
-            raise ValueError("Loadcase coordinates must be unique before building an influence surface")
+        if (
+            da.indexes.get("Loadcase", None) is not None
+            and not da.indexes["Loadcase"].is_unique
+        ):
+            raise ValueError(
+                "Loadcase coordinates must be unique before building an influence surface"
+            )
         da = da.set_index(Loadcase=[self.x_coord, self.y_coord]).unstack("Loadcase")
         return da.sortby(self.x_coord).sortby(self.y_coord)
 
@@ -659,7 +666,9 @@ def _normalise_influence_line_input(il):
             label = getattr(da, "name", None) or f"Influence Line {idx}"
             lines.append((label, da))
         return lines
-    raise TypeError("plot_il expects a DataArray, list/tuple of DataArrays, or dict of labelled DataArrays")
+    raise TypeError(
+        "plot_il expects a DataArray, list/tuple of DataArrays, or dict of labelled DataArrays"
+    )
 
 
 def _plot_il_path_plotly(lines, **kwargs):
@@ -667,7 +676,9 @@ def _plot_il_path_plotly(lines, **kwargs):
     go = _import_plotly()
     dataset = kwargs.get("dataset", None)
     if dataset is None:
-        raise ValueError("plot_il(view='path') requires dataset= with model geometry metadata")
+        raise ValueError(
+            "plot_il(view='path') requires dataset= with model geometry metadata"
+        )
 
     proxy = model_proxy_from_results(dataset)
     fig = kwargs.get("ax", None)
@@ -692,7 +703,16 @@ def _plot_il_path_plotly(lines, **kwargs):
     show_path_markers = kwargs.get("show_path_markers", True)
     color = kwargs.get("color", None)
     ordinate_aspect = float(kwargs.get("ordinate_aspect", 0.8))
-    default_colours = ["black", "blue", "red", "green", "orange", "purple", "brown", "grey"]
+    default_colours = [
+        "black",
+        "blue",
+        "red",
+        "green",
+        "orange",
+        "purple",
+        "brown",
+        "grey",
+    ]
 
     def _build_segmented_ribbon_mesh(x_vals, z_vals, base_vals, top_vals, eps=1e-12):
         """Build a non-self-intersecting ribbon mesh between top and baseline.
@@ -827,7 +847,9 @@ def _plot_il_path_plotly(lines, **kwargs):
         else:
             line_dict = dict(color=line_colour, width=6)
         top_mode = "lines+markers" if show_top_markers else "lines"
-        top_marker_dict = dict(symbol=marker, size=4) if show_top_markers and marker else None
+        top_marker_dict = (
+            dict(symbol=marker, size=4) if show_top_markers and marker else None
+        )
 
         fig.add_trace(
             go.Scatter3d(
@@ -841,7 +863,9 @@ def _plot_il_path_plotly(lines, **kwargs):
             )
         )
         base_mode = "lines+markers" if show_path_markers else "lines"
-        base_marker = dict(symbol=marker, size=4) if show_path_markers and marker else None
+        base_marker = (
+            dict(symbol=marker, size=4) if show_path_markers and marker else None
+        )
         fig.add_trace(
             go.Scatter3d(
                 x=x_plot,
@@ -1074,11 +1098,7 @@ def _prepare_influence_surface_plot_data(isurface, coordinate_space):
         xlabel = x_name
         ylabel = y_name
 
-    valid_mask = (
-        np.isfinite(x_grid)
-        & np.isfinite(y_grid)
-        & np.isfinite(ordinate)
-    )
+    valid_mask = np.isfinite(x_grid) & np.isfinite(y_grid) & np.isfinite(ordinate)
     use_triangulation = bool(use_physical_coords or np.any(~valid_mask))
 
     tri_data = None
@@ -1189,7 +1209,9 @@ def plot_is(isurface, **kwargs):
                     cmap=colorscale,
                 )
             else:
-                contour = ax.contourf(x_grid, y_grid, z, levels=contour_levels, cmap=colorscale)
+                contour = ax.contourf(
+                    x_grid, y_grid, z, levels=contour_levels, cmap=colorscale
+                )
             plt.colorbar(contour, ax=ax, label="ordinate")
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
@@ -1228,7 +1250,9 @@ def plot_is(isurface, **kwargs):
                             f"{xlabel}: %{{x:.3f}}<br>"
                             f"{ylabel}: %{{y:.3f}}<br>"
                             "ordinate: %{intensity:.3g}<extra></extra>"
-                        ) if surface_hover else None,
+                        )
+                        if surface_hover
+                        else None,
                         hoverinfo="skip" if not surface_hover else None,
                     )
                 )
@@ -1275,7 +1299,9 @@ def plot_is(isurface, **kwargs):
                             f"{xlabel}: %{{x:.3f}}<br>"
                             f"{ylabel}: %{{y:.3f}}<br>"
                             "ordinate: %{intensity:.3g}<extra></extra>"
-                        ) if surface_hover else None,
+                        )
+                        if surface_hover
+                        else None,
                         hoverinfo="skip" if not surface_hover else None,
                         **mesh_kwargs,
                     )
@@ -1356,8 +1382,7 @@ _FORCE_COMPONENTS = [
 # ``forces_shell`` aligned with the ``ele_nodes_shell`` Nodes dimension.
 _SHELL_COMPONENTS = ("Vx", "Vy", "Vz", "Mx", "My", "Mz")
 _SHELL_COMP_COLUMNS = {
-    comp: [f"{comp}_{s}" for s in ("i", "j", "k", "l")]
-    for comp in _SHELL_COMPONENTS
+    comp: [f"{comp}_{s}" for s in ("i", "j", "k", "l")] for comp in _SHELL_COMPONENTS
 }
 
 # Displacement components for shell contour.  User-facing names map to
@@ -1374,9 +1399,7 @@ _STRESS_COMP_COLUMNS = {
 
 # All components accepted by plot_srf
 _SRF_COMPONENTS = (
-    _SHELL_COMPONENTS
-    + tuple(_DISP_COMPONENTS.keys())
-    + _STRESS_RESULTANTS
+    _SHELL_COMPONENTS + tuple(_DISP_COMPONENTS.keys()) + _STRESS_RESULTANTS
 )
 
 
@@ -1552,7 +1575,9 @@ def _extract_def_data(
 # ---------------------------------------------------------------------------
 # Shell contour data extraction
 # ---------------------------------------------------------------------------
-def _extract_shell_contour_data(result_obj, component, loadcase=None, *, averaging="nodal"):
+def _extract_shell_contour_data(
+    result_obj, component, loadcase=None, *, averaging="nodal"
+):
     """Extract per-node contour values for a shell stress resultant.
 
     Parameters
@@ -1761,9 +1786,9 @@ def _triangulate_shell_mesh(node_coords, element_quads):
     vx, vy, vz = [], [], []
     for tag in ordered_tags:
         c = node_coords[tag]
-        vx.append(c[0])       # model x -> plotly x
-        vy.append(c[2])       # model z -> plotly y
-        vz.append(-c[1])      # model y -> plotly z (negated)
+        vx.append(c[0])  # model x -> plotly x
+        vy.append(c[2])  # model z -> plotly y
+        vz.append(-c[1])  # model y -> plotly z (negated)
 
     # Triangle indices (each quad -> 2 triangles)
     i_idx, j_idx, k_idx = [], [], []
@@ -2306,15 +2331,22 @@ def _plotly_3d_shell_contour(
     # Extract data — dispatch to force or displacement extraction
     if component in _DISP_COMPONENTS:
         node_values, element_quads = _extract_shell_disp_data(
-            result_obj, component, loadcase,
+            result_obj,
+            component,
+            loadcase,
         )
     elif component in _STRESS_RESULTANTS:
         node_values, element_quads = _extract_shell_stress_data(
-            result_obj, component, loadcase,
+            result_obj,
+            component,
+            loadcase,
         )
     else:
         node_values, element_quads = _extract_shell_contour_data(
-            result_obj, component, loadcase, averaging=averaging,
+            result_obj,
+            component,
+            loadcase,
+            averaging=averaging,
         )
 
     # Build node coordinate dict from Dataset
@@ -2325,7 +2357,8 @@ def _plotly_3d_shell_contour(
 
     # Triangulate
     vx, vy, vz, i_idx, j_idx, k_idx, tag_to_vidx = _triangulate_shell_mesh(
-        node_coords, element_quads,
+        node_coords,
+        element_quads,
     )
 
     # Build intensity array aligned with vertex order
@@ -2343,12 +2376,17 @@ def _plotly_3d_shell_contour(
             k=k_idx,
             intensity=intensity,
             colorscale=colorscale,
-            colorbar=dict(title=component, x=-0.05, xanchor="right") if show_colorbar else None,
+            colorbar=dict(title=component, x=-0.05, xanchor="right")
+            if show_colorbar
+            else None,
             showscale=show_colorbar,
             opacity=opacity,
             flatshading=True,
             lighting=dict(
-                ambient=1.0, diffuse=0.0, specular=0.0, fresnel=0.0,
+                ambient=1.0,
+                diffuse=0.0,
+                specular=0.0,
+                fresnel=0.0,
             ),
             name=f"shell_{component}",
             hovertemplate=f"{component}: %{{intensity:.3g}}<extra></extra>",
@@ -2419,15 +2457,22 @@ def _plot_shell_contour_mpl(
 
     if component in _DISP_COMPONENTS:
         node_values, element_quads = _extract_shell_disp_data(
-            result_obj, component, loadcase,
+            result_obj,
+            component,
+            loadcase,
         )
     elif component in _STRESS_RESULTANTS:
         node_values, element_quads = _extract_shell_stress_data(
-            result_obj, component, loadcase,
+            result_obj,
+            component,
+            loadcase,
         )
     else:
         node_values, element_quads = _extract_shell_contour_data(
-            result_obj, component, loadcase, averaging=averaging,
+            result_obj,
+            component,
+            loadcase,
+            averaging=averaging,
         )
 
     # Build node coordinate dict
@@ -3230,8 +3275,7 @@ def plot_srf(
     """
     if component not in _SRF_COMPONENTS:
         raise ValueError(
-            f"Unknown component {component!r}. "
-            f"Expected one of {_SRF_COMPONENTS}."
+            f"Unknown component {component!r}. " f"Expected one of {_SRF_COMPONENTS}."
         )
     if "ele_nodes_shell" not in result_obj:
         raise ValueError(
@@ -3422,7 +3466,9 @@ def _extract_mesh_data(grillage_obj):
         ``[(c1, c2, c3, c4), ...]`` where each ``ci`` is ``[x, y, z]``.
         Non-empty only for shell-type meshes.
     """
-    data = {}  # member_name -> list of (coord_i, coord_j, ele_tag, node_i_tag, node_j_tag)
+    data = (
+        {}
+    )  # member_name -> list of (coord_i, coord_j, ele_tag, node_i_tag, node_j_tag)
     all_nodes = {}  # node_tag -> [x, y, z]
     if hasattr(grillage_obj, "Mesh_obj"):
         mesh = grillage_obj.Mesh_obj
@@ -3529,14 +3575,18 @@ def _extract_mesh_data(grillage_obj):
                 if added_from_elements:
                     continue
 
-                if nodes and isinstance(nodes, list) and len(nodes) == 1 and isinstance(nodes[0], list):
+                if (
+                    nodes
+                    and isinstance(nodes, list)
+                    and len(nodes) == 1
+                    and isinstance(nodes[0], list)
+                ):
                     nodes = nodes[0]
                 if not nodes or len(nodes) < 2:
                     continue
 
-                if (
-                    isinstance(nodes[0], list)
-                    and all(isinstance(seg, list) and len(seg) >= 2 for seg in nodes)
+                if isinstance(nodes[0], list) and all(
+                    isinstance(seg, list) and len(seg) >= 2 for seg in nodes
                 ):
                     for seg_idx, seg in enumerate(nodes):
                         ni = int(seg[0])
@@ -3545,7 +3595,11 @@ def _extract_mesh_data(grillage_obj):
                             continue
                         ci = node_spec[ni]["coordinate"]
                         cj = node_spec[nj]["coordinate"]
-                        tag = int(elements[seg_idx]) if seg_idx < len(elements) else seg_idx + 1
+                        tag = (
+                            int(elements[seg_idx])
+                            if seg_idx < len(elements)
+                            else seg_idx + 1
+                        )
                         entries.append((ci, cj, tag, ni, nj))
                         all_nodes[ni] = ci
                         all_nodes[nj] = cj
@@ -3558,7 +3612,11 @@ def _extract_mesh_data(grillage_obj):
                         continue
                     ci = node_spec[ni]["coordinate"]
                     cj = node_spec[nj]["coordinate"]
-                    tag = int(elements[seg_idx]) if seg_idx < len(elements) else seg_idx + 1
+                    tag = (
+                        int(elements[seg_idx])
+                        if seg_idx < len(elements)
+                        else seg_idx + 1
+                    )
                     entries.append((ci, cj, tag, ni, nj))
                     all_nodes[ni] = ci
                     all_nodes[nj] = cj

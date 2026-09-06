@@ -86,7 +86,9 @@ def _classify_results_kind(ds) -> str:
         return "influence_surface"
 
     # Legacy influence exports may only carry influence_name + load positions.
-    if "influence_name" in ds.attrs and {"load_position_x", "load_position_z"}.issubset(coord_names):
+    if "influence_name" in ds.attrs and {"load_position_x", "load_position_z"}.issubset(
+        coord_names
+    ):
         try:
             x_vals = [float(v) for v in ds.coords["load_position_x"].values.tolist()]
             z_vals = [float(v) for v in ds.coords["load_position_z"].values.tolist()]
@@ -836,8 +838,25 @@ class ResultsControlWidget(QWidget):
         self.contour_group = QGroupBox("Shell Contour")
         contour_layout = QFormLayout()
         self.contour_component_combo = QComboBox()
-        for comp in ("Mx", "My", "Mz", "Vx", "Vy", "Vz", "Dx", "Dy", "Dz",
-                     "N11", "N22", "N12", "M11", "M22", "M12", "Q13", "Q23"):
+        for comp in (
+            "Mx",
+            "My",
+            "Mz",
+            "Vx",
+            "Vy",
+            "Vz",
+            "Dx",
+            "Dy",
+            "Dz",
+            "N11",
+            "N22",
+            "N12",
+            "M11",
+            "M22",
+            "M12",
+            "Q13",
+            "Q23",
+        ):
             self.contour_component_combo.addItem(comp)
         contour_layout.addRow("Component:", self.contour_component_combo)
         self.contour_colorscale_combo = QComboBox()
@@ -868,7 +887,9 @@ class ResultsControlWidget(QWidget):
             "Identifier of the selected response location."
         )
         self.influence_target_id_label = QLabel("Location ID")
-        influence_common_layout.addRow(self.influence_target_id_label, self.influence_target_id_combo)
+        influence_common_layout.addRow(
+            self.influence_target_id_label, self.influence_target_id_combo
+        )
         self.influence_common_group.setLayout(influence_common_layout)
         influence_layout.addWidget(self.influence_common_group)
 
@@ -909,7 +930,9 @@ class ResultsControlWidget(QWidget):
         self.influence_surface_hover_check = QCheckBox("Enable IS Hover")
         self.influence_surface_hover_check.setChecked(False)
 
-        influence_surface_layout.addRow("IS Coordinates:", self.influence_surface_mode_combo)
+        influence_surface_layout.addRow(
+            "IS Coordinates:", self.influence_surface_mode_combo
+        )
         influence_surface_layout.addRow("IS View:", self.influence_surface_view_combo)
         influence_surface_layout.addRow("", self.influence_surface_show_layer_check)
         influence_surface_layout.addRow("", self.influence_surface_hover_check)
@@ -936,6 +959,7 @@ class ResultsControlWidget(QWidget):
 
     def update_available_members(self, proxy):
         """Enable/disable checkboxes based on which members have elements."""
+
         def _norm_member_key(name):
             text = str(name or "")
             return "".join(ch for ch in text.lower() if ch.isalnum())
@@ -967,7 +991,9 @@ class ResultsControlWidget(QWidget):
             return bool(values)
 
         raw_members = getattr(proxy, "_members", {}) or {}
-        members_by_norm = {_norm_member_key(name): info for name, info in raw_members.items()}
+        members_by_norm = {
+            _norm_member_key(name): info for name, info in raw_members.items()
+        }
         has_member_catalog = bool(members_by_norm)
         if not has_member_catalog:
             for cb in self.member_checkboxes.values():
@@ -1046,7 +1072,12 @@ class ResultsControlWidget(QWidget):
                     if _nonempty_components(da):
                         arrays.append(name)
         preferred_order = {"displacements": 0, "forces": 1}
-        arrays.sort(key=lambda array_name: (preferred_order.get(array_name, 99), str(array_name)))
+        arrays.sort(
+            key=lambda array_name: (
+                preferred_order.get(array_name, 99),
+                str(array_name),
+            )
+        )
 
         self.influence_array_combo.blockSignals(True)
         self.influence_array_combo.clear()
@@ -1368,11 +1399,11 @@ class BridgeAnalysisGUI(QMainWindow):
         self.generated_code = ""
 
         # Results viewer state
-        self._mode = "wizard"       # "wizard" or "results"
-        self._model_proxy = None    # _ModelProxy from loaded results
-        self._results = None        # xarray Dataset
+        self._mode = "wizard"  # "wizard" or "results"
+        self._model_proxy = None  # _ModelProxy from loaded results
+        self._results = None  # xarray Dataset
         self._results_kind = "ordinary"  # ordinary, influence_line, influence_surface
-        self._stale_tabs = set()    # result tab names needing re-render
+        self._stale_tabs = set()  # result tab names needing re-render
 
         # Create UI components
         self.create_menu_bar()
@@ -2083,16 +2114,16 @@ from math import *
             )
             return
         except Exception as e:
-            QMessageBox.critical(
-                self, "Error", f"Could not load results file:\n{e}"
-            )
+            QMessageBox.critical(self, "Error", f"Could not load results file:\n{e}")
             return
 
         self._model_proxy = proxy
         self._results = ds
         self._results_kind = _classify_results_kind(ds)
         summary_name = os.path.basename(file_name)
-        loadcase_count = len(ds.coords["Loadcase"].values) if "Loadcase" in ds.coords else 0
+        loadcase_count = (
+            len(ds.coords["Loadcase"].values) if "Loadcase" in ds.coords else 0
+        )
         kind_label = {
             "ordinary": "Ordinary results",
             "influence_line": "Influence line results",
@@ -2314,13 +2345,20 @@ from math import *
                         "Influence surface selection is incomplete. "
                         "Choose response array/component and a valid location."
                     )
-                show_surface_layer = self.results_panel.is_influence_surface_layer_visible()
-                enable_surface_hover = self.results_panel.is_influence_surface_hover_enabled()
+                show_surface_layer = (
+                    self.results_panel.is_influence_surface_layer_visible()
+                )
+                enable_surface_hover = (
+                    self.results_panel.is_influence_surface_hover_enabled()
+                )
                 selected_mode = self.results_panel.selected_influence_surface_mode()
                 x_coord, y_coord, coordinate_space = _resolve_influence_surface_axes(
                     self._results, selected_mode
                 )
-                if selected_mode in {"station", "stations"} and coordinate_space != "station":
+                if (
+                    selected_mode in {"station", "stations"}
+                    and coordinate_space != "station"
+                ):
                     self.statusbar.showMessage(
                         "Station coordinates unavailable in this file; using physical x-z.",
                         4000,
@@ -2337,7 +2375,9 @@ from math import *
                 elif target_type == "Element":
                     is_kwargs["element"] = target_id
                 isurface = og.create_influence_surface(**is_kwargs).get()
-                finite_count = int(np.isfinite(np.asarray(isurface.values, dtype=float)).sum())
+                finite_count = int(
+                    np.isfinite(np.asarray(isurface.values, dtype=float)).sum()
+                )
                 if finite_count < 3:
                     raise ValueError(
                         "Selected component/location has too few valid points "
@@ -2367,7 +2407,9 @@ from math import *
                     )
                 else:
                     fig = model_fig
-                    fig.update_layout(title=f"{component} influence surface (model only)")
+                    fig.update_layout(
+                        title=f"{component} influence surface (model only)"
+                    )
             elif label == "Shell Contour":
                 # Shell contour — reads directly from Dataset
                 comp = self.results_panel.contour_component_combo.currentText()
@@ -2429,7 +2471,10 @@ from math import *
             from PyQt6.QtCore import QUrl
 
             tmp = tempfile.NamedTemporaryFile(
-                suffix=".html", delete=False, mode="w", encoding="utf-8",
+                suffix=".html",
+                delete=False,
+                mode="w",
+                encoding="utf-8",
             )
             tmp.write(fig.to_html(include_plotlyjs=True))
             tmp.close()
