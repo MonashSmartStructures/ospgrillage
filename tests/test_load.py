@@ -1,6 +1,4 @@
-"""
-
-"""
+""" """
 
 from fixtures import *
 
@@ -1295,7 +1293,7 @@ def test_path_get_custom_path_points_returns_correct_length():
 
 def test_load_model_m1600_creates_compound_load():
     """LoadModel.create() for M1600 must return a CompoundLoad with 24 point loads."""
-    lm = og.LoadModel(model_type="M1600", gap=5.0)
+    lm = og.LoadModel(model_type="M1600", gap=6.25)
     vehicle = lm.create()
     assert vehicle is not None
     assert len(vehicle.compound_load_obj_list) == 24
@@ -1303,7 +1301,7 @@ def test_load_model_m1600_creates_compound_load():
 
 def test_load_model_m1600_non_zero_loads():
     """All M1600 point loads must have a non-zero p value."""
-    lm = og.LoadModel(model_type="M1600", gap=5.0)
+    lm = og.LoadModel(model_type="M1600", gap=6.25)
     vehicle = lm.create()
     for point_load in vehicle.compound_load_obj_list:
         assert point_load.load_point_1.p > 0
@@ -1411,6 +1409,8 @@ def test_dkt_triangle_shape_function_centroid_partition_and_equilibrium():
     assert np.isclose(sum(Nv), 1.0)
     assert np.isclose(sum(Nmx), 0.0)
     assert np.isclose(sum(Nmz), 0.0)
+
+
 def test_dkt_triangle_shape_function_matches_1d_hermite_on_edge():
     """On a triangle edge, the DKT distributor should reduce to the 1D Hermite beam form."""
     Nv, Nmx, Nmz = og.ShapeFunction.dkt_triangle_shape_function(
@@ -1450,9 +1450,7 @@ def test_dkt_triangle_shape_function_reproduces_linear_fields():
 
     nodal_w = [a * x1 + b * z1 + c, a * x2 + b * z2 + c, a * x3 + b * z3 + c]
     interpolated_w = (
-        sum(n * w for n, w in zip(Nv, nodal_w))
-        + a * sum(Nmz)
-        + b * sum(Nmx)
+        sum(n * w for n, w in zip(Nv, nodal_w)) + a * sum(Nmz) + b * sum(Nmx)
     )
 
     assert np.isclose(interpolated_w, a * x + b * z + c)
@@ -1477,7 +1475,9 @@ def test_hermite_triangle_region_uses_dkt_style_distribution(bridge_model_42_neg
         sum(coord[2] for coord in coords) / 3,
     ]
 
-    load_cmd = bridge._assign_load_to_four_node(point=point, mag=1.0, shape_func="hermite")
+    load_cmd = bridge._assign_load_to_four_node(
+        point=point, mag=1.0, shape_func="hermite"
+    )
 
     assert len(load_cmd) == 3
     vertical_sum = sum(command[1][2] for command in load_cmd)

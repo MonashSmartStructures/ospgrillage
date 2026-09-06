@@ -8,6 +8,21 @@ the project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+- Correct M1600 inter-group axle spacings to AS 5100.2:2017 Figure 7.2.4.
+  The variable middle gap and final 5 m gap are measured from the preceding
+  group's last axle; previously both were shortened by 2.5 m in SI output.
+  The minimum-gap vehicle now spans 25 m instead of 20 m. Previously generated
+  M1600 load effects will change and should be recalculated.
+- Convert the M1600 variable gap and transverse wheel track with the remaining
+  geometry for imperial output.
+
+### Changed
+- M1600 `gap` defaults to 6.25 m and rejects non-finite or smaller values.
+  It specifies the clear distance in metres, including for imperial output;
+  larger gaps remain available for adverse-load searches. The generator creates
+  axle loads only; users must add the lane UDL and applicable design factors.
+
 ---
 
 ## [0.5.0] — 2026-03-16
