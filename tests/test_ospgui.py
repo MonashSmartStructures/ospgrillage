@@ -58,7 +58,9 @@ def test_ospgui_results_kind_classifier():
     il_attr = xr.Dataset(coords={"Loadcase": ["LC1"]}, attrs={"influence_type": "line"})
     assert mod._classify_results_kind(il_attr) == "influence_line"
 
-    is_attr = xr.Dataset(coords={"Loadcase": ["LC1"]}, attrs={"influence_type": "surface"})
+    is_attr = xr.Dataset(
+        coords={"Loadcase": ["LC1"]}, attrs={"influence_type": "surface"}
+    )
     assert mod._classify_results_kind(is_attr) == "influence_surface"
 
     il_dim = xr.Dataset(coords={"InfluenceLine": ["Lane 1"], "Loadcase": [0, 1]})
