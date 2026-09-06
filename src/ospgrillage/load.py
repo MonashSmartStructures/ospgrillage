@@ -1539,11 +1539,15 @@ class LoadModel:
 
     """
 
-    def __init__(self, gap=0, **kwargs):
+    def __init__(self, gap=6.25, **kwargs):
         """
         Init the class.
 
-        :param gap: Gap between axles (specific to M1600 load model). Defaults to ``0``.
+        :param gap: M1600 clear distance in metres from the last axle of the
+            second tri-axle group to the first axle of the third group.
+            Defaults to the minimum ``6.25``; vary this distance and the
+            vehicle position to obtain the most adverse load effect.
+            Specified in metres even when output ``units`` are imperial.
         :type gap: float or int
         :param model_type: Load model type identifier.
         :type model_type: str, optional
@@ -1590,6 +1594,9 @@ class LoadModel:
         Notes
         -----
         Currently supports "M1600" (Australian Standard AS5100).
+        The M1600 generator supplies the 24 wheel point loads only. Add the
+        6 kN/m lane UDL separately, with the required positioning, dynamic
+        allowance, accompanying-lane factors and load combinations.
         Additional load models can be added by implementing new create_* methods.
         """
         if self.model_type == "M1600":
@@ -1597,11 +1604,28 @@ class LoadModel:
 
     def create_m1600_vehicle(self, gap):
         """
-        AS5100 Australian load model.
+        Create the M1600 axle loads from AS 5100.2:2017 Figure 7.2.4.
 
-        :param gap: Gap between axle group
-        :returns: :class:`~ospgrillage.load.CompoundLoad` object of a M1600 vehicle in local coordinate.
+        Parameters
+        ----------
+        gap : float
+            Clear distance in metres from the last axle of group 2 to the
+            first axle of group 3. Must be finite and at least 6.25 m.
+            This is variable spacing, not an increment above the minimum.
+
+        Returns
+        -------
+        CompoundLoad
+            Twenty-four wheel point loads, with the configured origin.
+            The accompanying lane UDL and design factors are not included.
+
+        Raises
+        ------
+        ValueError
+            If the clear gap is non-finite or less than 6.25 m.
         """
+        if not np.isfinite(gap) or gap < 6.25:
+            raise ValueError("M1600 gap must be finite and at least 6.25 m")
         # default SI units
         m = 1
         kN = 1e3
@@ -1616,23 +1640,20 @@ class LoadModel:
         left_group_dist = 3.75 * m * ft_convert
         right_group_dist = 5 * m * ft_convert
         wheel_load = 60 * kN * ton_convert
+        # Figure dimensions are clear distances between adjacent groups,
+        # measured from the LAST axle of one to the FIRST of the next.
+        group_length = 2 * axle_dist
+        group_2_start = group_length + left_group_dist
+        group_3_start = group_2_start + group_length + gap * m * ft_convert
+        group_4_start = group_3_start + group_length + right_group_dist
         load_positions_x = [
-            0,
-            axle_dist,
-            axle_dist * 2,
-            left_group_dist + axle_dist * 2,
-            left_group_dist + axle_dist * 2 + axle_dist,
-            left_group_dist + axle_dist * 2 + 2 * axle_dist,
-            gap + left_group_dist + axle_dist * 2,
-            gap + left_group_dist + axle_dist * 2 + axle_dist,
-            gap + left_group_dist + axle_dist * 2 + 2 * axle_dist,
-            right_group_dist + gap + left_group_dist + axle_dist * 2,
-            right_group_dist + gap + left_group_dist + axle_dist * 2 + axle_dist,
-            right_group_dist + gap + left_group_dist + axle_dist * 2 + 2 * axle_dist,
+            group_start + axle * axle_dist
+            for group_start in (0, group_2_start, group_3_start, group_4_start)
+            for axle in range(3)
         ]
         load_positions_x = [point + self.x_offset for point in load_positions_x]
 
-        load_positions_z = [-1, 1]
+        load_positions_z = [-m * ft_convert, m * ft_convert]
         load_positions_z = [point + self.z_offset for point in load_positions_z]
 
         M1600_vehicle = create_compound_load(name="M1600 Vehicle")
