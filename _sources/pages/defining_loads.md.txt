@@ -16,6 +16,42 @@ Figure 1 shows the flowchart for the load module of *ospgrillage*.
 
 ## Load types
 
+### M1600 axle model
+
+```python
+vehicle = og.create_load_model(model_type="M1600", gap=6.25).create()
+```
+
+`gap` is the **clear distance from the last axle of the second tri-axle
+group to the first axle of the third**, in metres. AS 5100.2:2017
+Figure 7.2.4 specifies a minimum of 6.25 m. This is variable spacing:
+investigate larger gaps as well as longitudinal and transverse positions
+to obtain the most adverse load effect. The generator does not perform
+that search. The argument is in metres even for imperial output.
+
+At the minimum gap, the twelve axle coordinates relative to the first axle
+are:
+
+```text
+0, 1.25, 2.50, 6.25, 7.50, 8.75, 15.00, 16.25, 17.50, 22.50, 23.75, 25.00 m
+```
+
+Each axle has two 60 kN wheel point loads, 2 m apart. The returned compound
+load contains these 24 points only. Add the accompanying **6 kN/m lane UDL**
+over the 3.2 m design lane separately, with adverse loaded lengths, dynamic
+allowance, accompanying-lane factors and the required load combinations.
+
+For a useful independent check, translate the minimum-gap axle train over
+the midspan influence line of a 30 m simply supported span. The maximum
+unfactored axle moment is 5,250 kNm; the full-span lane UDL adds 675 kNm.
+Applying an illustrative full-M1600 DLA of 0.3 and ULS factor of 1.8 gives
+13,864.5 kNm for that single lane, before transverse distribution.
+
+Earlier versions shortened both the middle and final inter-group gaps by
+2.5 m in SI output. Recalculate results produced using that generator.
+
+### Vertices and individual loads
+
 Every load in *ospgrillage* is built from two things:
 
 1. **A load vertex** — `LoadVertex(x, y, z, p)` is a `namedtuple` that says *where* a load acts and *how much*. `x`, `y`, `z` are global coordinates and `p` is the load magnitude. The meaning of `p` depends on the load type (force, force/length, or force/area — see below). For grillage models, `y = 0` (the deck plane) almost always.

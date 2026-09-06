@@ -27,16 +27,16 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../_static/scripts/fontawesome.js?digest=a95f357e85573c9b56d5"></script>
+  <script defer src="../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
     <script src="../_static/documentation_options.js?v=8fa8b3e9"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
@@ -382,7 +382,8 @@
   </div>
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
-        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar"><svg class="pst-icon svg-inline--fa" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
     <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
   </svg>
   <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
@@ -472,6 +473,36 @@
 </section>
 <section id="load-types">
 <h2>Load types<a class="headerlink" href="#load-types" title="Link to this heading">#</a></h2>
+<section id="m1600-axle-model">
+<h3>M1600 axle model<a class="headerlink" href="#m1600-axle-model" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">vehicle</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_model</span><span class="p">(</span><span class="n">model_type</span><span class="o">=</span><span class="s2">"M1600"</span><span class="p">,</span> <span class="n">gap</span><span class="o">=</span><span class="mf">6.25</span><span class="p">)</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">gap</span></code> is the <strong>clear distance from the last axle of the second tri-axle
+group to the first axle of the third</strong>, in metres. AS 5100.2:2017
+Figure 7.2.4 specifies a minimum of 6.25 m. This is variable spacing:
+investigate larger gaps as well as longitudinal and transverse positions
+to obtain the most adverse load effect. The generator does not perform
+that search. The argument is in metres even for imperial output.</p>
+<p>At the minimum gap, the twelve axle coordinates relative to the first axle
+are:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>0, 1.25, 2.50, 6.25, 7.50, 8.75, 15.00, 16.25, 17.50, 22.50, 23.75, 25.00 m
+</pre></div>
+</div>
+<p>Each axle has two 60 kN wheel point loads, 2 m apart. The returned compound
+load contains these 24 points only. Add the accompanying <strong>6 kN/m lane UDL</strong>
+over the 3.2 m design lane separately, with adverse loaded lengths, dynamic
+allowance, accompanying-lane factors and the required load combinations.</p>
+<p>For a useful independent check, translate the minimum-gap axle train over
+the midspan influence line of a 30 m simply supported span. The maximum
+unfactored axle moment is 5,250 kNm; the full-span lane UDL adds 675 kNm.
+Applying an illustrative full-M1600 DLA of 0.3 and ULS factor of 1.8 gives
+13,864.5 kNm for that single lane, before transverse distribution.</p>
+<p>Earlier versions shortened both the middle and final inter-group gaps by
+2.5 m in SI output. Recalculate results produced using that generator.</p>
+</section>
+<section id="vertices-and-individual-loads">
+<h3>Vertices and individual loads<a class="headerlink" href="#vertices-and-individual-loads" title="Link to this heading">#</a></h3>
 <p>Every load in <em>ospgrillage</em> is built from two things:</p>
 <ol class="arabic simple">
 <li><p><strong>A load vertex</strong> — <code class="docutils literal notranslate"><span class="pre">LoadVertex(x,</span> <span class="pre">y,</span> <span class="pre">z,</span> <span class="pre">p)</span></code> is a <code class="docutils literal notranslate"><span class="pre">namedtuple</span></code> that says <em>where</em> a load acts and <em>how much</em>. <code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">y</span></code>, <code class="docutils literal notranslate"><span class="pre">z</span></code> are global coordinates and <code class="docutils literal notranslate"><span class="pre">p</span></code> is the load magnitude. The meaning of <code class="docutils literal notranslate"><span class="pre">p</span></code> depends on the load type (force, force/length, or force/area — see below). For grillage models, <code class="docutils literal notranslate"><span class="pre">y</span> <span class="pre">=</span> <span class="pre">0</span></code> (the deck plane) almost always.</p></li>
@@ -481,7 +512,7 @@
 <span class="n">vertex</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">LoadVertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 
 <span class="c1"># A load object wraps that into a named load</span>
-<span class="n">point_load</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">PointLoad</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;single point&quot;</span><span class="p">,</span> <span class="n">point1</span><span class="o">=</span><span class="n">vertex</span><span class="p">)</span>
+<span class="n">point_load</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">PointLoad</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"single point"</span><span class="p">,</span> <span class="n">point1</span><span class="o">=</span><span class="n">vertex</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Loads are generally defined in the global coordinate system. A user-defined local coordinate system is required when defining <a class="reference internal" href="#compound-load"><span class="std std-ref">Compound loads</span></a> later on.</p>
@@ -493,12 +524,13 @@
 </div>
 <p>Similarly, <a class="reference internal" href="generated/ospgrillage.load.create_load.html#ospgrillage.load.create_load" title="ospgrillage.load.create_load"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_load()</span></code></a> is a factory that creates the appropriate load class from a <code class="docutils literal notranslate"><span class="pre">loadtype</span></code> string. Both shortcuts produce the same objects shown below.</p>
 </div>
+</section>
 <section id="nodal-loads">
 <h3>Nodal loads<a class="headerlink" href="#nodal-loads" title="Link to this heading">#</a></h3>
 <p>Nodal loads are applied directly onto nodes of the grillage model. There are six degrees-of-freedom (DOFs) at each node.</p>
 <p>Nodal loads use <code class="docutils literal notranslate"><span class="pre">NodeForces(Fx,</span> <span class="pre">Fy,</span> <span class="pre">Fz,</span> <span class="pre">Mx,</span> <span class="pre">My,</span> <span class="pre">Mz)</span></code> instead of <code class="docutils literal notranslate"><span class="pre">LoadVertex</span></code>. The following example creates a nodal load on Node 13 with 10 force units in both the X and Y directions.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">nodalforce</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">NodeForces</span><span class="p">(</span><span class="n">Fx</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">Fy</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-<span class="n">node13force</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">NodalLoad</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;nodal 13&quot;</span><span class="p">,</span> <span class="n">node_force</span><span class="o">=</span><span class="n">nodalforce</span><span class="p">)</span>  <span class="c1"># other DOFs default to 0</span>
+<span class="n">node13force</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">NodalLoad</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"nodal 13"</span><span class="p">,</span> <span class="n">node_force</span><span class="o">=</span><span class="n">nodalforce</span><span class="p">)</span>  <span class="c1"># other DOFs default to 0</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -511,7 +543,7 @@
 <p>A point load is a concentrated force at a single location on the grillage model — e.g. a truck axle or a superimposed dead load. It requires one <code class="docutils literal notranslate"><span class="pre">LoadVertex</span></code>; <code class="docutils literal notranslate"><span class="pre">p</span></code> should have units of force (N, kN, kips) — see Figure 2.</p>
 <p><img alt="Figure 2: Point load" src="../_images/point.png" /></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 20 kN point load at (5, 0, 2)</span>
-<span class="n">point_load</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">PointLoad</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;single point&quot;</span><span class="p">,</span> <span class="n">point1</span><span class="o">=</span><span class="n">og</span><span class="o">.</span><span class="n">LoadVertex</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+<span class="n">point_load</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">PointLoad</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"single point"</span><span class="p">,</span> <span class="n">point1</span><span class="o">=</span><span class="n">og</span><span class="o">.</span><span class="n">LoadVertex</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
 </pre></div>
 </div>
 </section>
@@ -520,7 +552,7 @@
 <p>Line loads are distributed along a line — e.g. self-weight of a beam or a barrier. They require at least two <code class="docutils literal notranslate"><span class="pre">LoadVertex</span></code> values (start and end); <code class="docutils literal notranslate"><span class="pre">p</span></code> should have units of force per distance (kN/m, kips/ft) — see Figure 3.</p>
 <p><img alt="Figure 3: Line load" src="../_images/line.png" /></p>
 <p>The following example creates a constant 2 kN/m UDL from x = −1 to x = 11 at z = 3.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Barrier</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">LineLoading</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Barrier curb&quot;</span><span class="p">,</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Barrier</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">LineLoading</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Barrier curb"</span><span class="p">,</span>
                          <span class="n">point1</span><span class="o">=</span><span class="n">og</span><span class="o">.</span><span class="n">LoadVertex</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
                          <span class="n">point2</span><span class="o">=</span><span class="n">og</span><span class="o">.</span><span class="n">LoadVertex</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
 </pre></div>
@@ -534,7 +566,7 @@
 <span id="patch"></span><h3>Patch loads<a class="headerlink" href="#patch-loads" title="Link to this heading">#</a></h3>
 <p>Patch loads are distributed over an area — e.g. traffic lanes. They require at least four <code class="docutils literal notranslate"><span class="pre">LoadVertex</span></code> values (the vertices, in order); <code class="docutils literal notranslate"><span class="pre">p</span></code> should have units of force per area (kN/m², kips/ft²) — see Figure 4. Eight vertices allow a curved surface profile.</p>
 <p><img alt="Figure 4: Patch load" src="../_images/patch.png" /></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Lane</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">PatchLoading</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Lane 1&quot;</span><span class="p">,</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Lane</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">PatchLoading</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Lane 1"</span><span class="p">,</span>
                         <span class="n">point1</span><span class="o">=</span><span class="n">og</span><span class="o">.</span><span class="n">LoadVertex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
                         <span class="n">point2</span><span class="o">=</span><span class="n">og</span><span class="o">.</span><span class="n">LoadVertex</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
                         <span class="n">point3</span><span class="o">=</span><span class="n">og</span><span class="o">.</span><span class="n">LoadVertex</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
@@ -555,12 +587,12 @@
 <p><img alt="Figure 5: Compound load" src="../_images/compoundload.png" /></p>
 <p>The following code creates a point and line load which is to be assigned as a Compound load.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># components in a compound load</span>
-<span class="n">wheel_1</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load</span><span class="p">(</span><span class="n">loadtype</span><span class="o">=</span><span class="s2">&quot;point&quot;</span><span class="p">,</span> <span class="n">point1</span><span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>  <span class="c1"># point load 1</span>
-<span class="n">wheel_2</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load</span><span class="p">(</span><span class="n">loadtype</span><span class="o">=</span><span class="s2">&quot;point&quot;</span><span class="p">,</span> <span class="n">point1</span><span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>  <span class="c1"># point load 2</span>
+<span class="n">wheel_1</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load</span><span class="p">(</span><span class="n">loadtype</span><span class="o">=</span><span class="s2">"point"</span><span class="p">,</span> <span class="n">point1</span><span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>  <span class="c1"># point load 1</span>
+<span class="n">wheel_2</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load</span><span class="p">(</span><span class="n">loadtype</span><span class="o">=</span><span class="s2">"point"</span><span class="p">,</span> <span class="n">point1</span><span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>  <span class="c1"># point load 2</span>
 </pre></div>
 </div>
 <p>The following code creates a Compound load and adds the created load objects to it:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">C_Load</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_compound_load</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Axle tandem&quot;</span><span class="p">)</span>  <span class="c1"># constructor of compound load</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">C_Load</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_compound_load</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s2">"Axle tandem"</span><span class="p">)</span>  <span class="c1"># constructor of compound load</span>
 <span class="n">C_Load</span><span class="o">.</span><span class="n">add_load</span><span class="p">(</span><span class="n">wheel_1</span><span class="p">)</span> <span class="c1"># add wheel_1</span>
 <span class="n">C_Load</span><span class="o">.</span><span class="n">add_load</span><span class="p">(</span><span class="n">wheel_2</span><span class="p">)</span> <span class="c1"># add wheel_2</span>
 </pre></div>
@@ -582,7 +614,7 @@
 <span id="id1"></span><h2>Load cases<a class="headerlink" href="#load-cases" title="Link to this heading">#</a></h2>
 <p>Load cases are a set of load types (<a class="reference internal" href="#point"><span class="std std-ref">Point loads</span></a>, <a class="reference internal" href="#line"><span class="std std-ref">Line loads</span></a>, <a class="reference internal" href="#patch"><span class="std std-ref">Patch loads</span></a>, <a class="reference internal" href="#compound-load"><span class="std std-ref">Compound loads</span></a>) used to define a particular loading condition. Compound loads are treated as a single load group within a load case having same reference points (e.g. tandem axle) and properties (e.g. load factor)</p>
 <p>After load objects are created, users add them to <a class="reference internal" href="api_load_cases.html#ospgrillage.load.LoadCase" title="ospgrillage.load.LoadCase"><code class="xref py py-class docutils literal notranslate"><span class="pre">LoadCase</span></code></a> objects. First, instantiate a <a class="reference internal" href="api_load_cases.html#ospgrillage.load.LoadCase" title="ospgrillage.load.LoadCase"><code class="xref py py-class docutils literal notranslate"><span class="pre">LoadCase</span></code></a> using <a class="reference internal" href="generated/ospgrillage.load.create_load_case.html#ospgrillage.load.create_load_case" title="ospgrillage.load.create_load_case"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_load_case()</span></code></a>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">DL</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_case</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Dead Load&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">DL</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_case</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Dead Load"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Then add load objects using <a class="reference internal" href="api_load_cases.html#ospgrillage.load.LoadCase.add_load" title="ospgrillage.load.LoadCase.add_load"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_load()</span></code></a>. The following code shows how the above load types are added to the <em>DL</em> load case.</p>
@@ -615,10 +647,10 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># create components of compound load</span>
 <span class="n">front_wheel</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
 <span class="n">back_wheel</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load_vertex</span><span class="p">(</span><span class="n">x</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
-<span class="n">Line</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load</span><span class="p">(</span><span class="n">loadtype</span><span class="o">=</span><span class="s2">&quot;line&quot;</span><span class="p">,</span><span class="n">point1</span><span class="o">=</span><span class="n">front_wheel</span><span class="p">,</span><span class="n">point2</span><span class="o">=</span><span class="n">back_wheel</span><span class="p">)</span>
-<span class="n">tandem</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_compound_load</span><span class="p">(</span><span class="s2">&quot;Two wheel vehicle&quot;</span><span class="p">)</span>
+<span class="n">Line</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_load</span><span class="p">(</span><span class="n">loadtype</span><span class="o">=</span><span class="s2">"line"</span><span class="p">,</span><span class="n">point1</span><span class="o">=</span><span class="n">front_wheel</span><span class="p">,</span><span class="n">point2</span><span class="o">=</span><span class="n">back_wheel</span><span class="p">)</span>
+<span class="n">tandem</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_compound_load</span><span class="p">(</span><span class="s2">"Two wheel vehicle"</span><span class="p">)</span>
 
-<span class="n">move_line</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_moving_load</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Line Load moving&quot;</span><span class="p">)</span> <span class="c1"># moving load obj</span>
+<span class="n">move_line</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_moving_load</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Line Load moving"</span><span class="p">)</span> <span class="c1"># moving load obj</span>
 <span class="n">move_line</span><span class="o">.</span><span class="n">set_path</span><span class="p">(</span><span class="n">single_path</span><span class="p">)</span>   <span class="c1"># set path</span>
 <span class="n">move_line</span><span class="o">.</span><span class="n">add_load</span><span class="p">(</span><span class="n">Line</span><span class="p">)</span>  <span class="c1"># add compound load to moving load</span>
 </pre></div>
@@ -634,7 +666,7 @@
 <p><a class="reference internal" href="api_load_moving.html#ospgrillage.load.MovingLoad" title="ospgrillage.load.MovingLoad"><code class="xref py py-class docutils literal notranslate"><span class="pre">MovingLoad</span></code></a> also supports individual paths for each load. For this, pass a <code class="docutils literal notranslate"><span class="pre">global_increment</span></code> parameter when creating the moving load to ensure all paths use the same increment. Then, pass the <code class="docutils literal notranslate"><span class="pre">path_obj</span></code> keyword argument when adding each load.</p>
 <p>The following example shows this procedure:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># create moving load with global increment of 20 for all unique moving path</span>
-<span class="n">moving_load_group</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_moving_load</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Line Load moving&quot;</span><span class="p">,</span><span class="n">global_increment</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">moving_load_group</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">create_moving_load</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Line Load moving"</span><span class="p">,</span><span class="n">global_increment</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 
 <span class="c1"># add load + their respective path</span>
 <span class="n">move_load_group</span><span class="o">.</span><span class="n">add_load</span><span class="p">(</span><span class="n">truck_a</span><span class="p">,</span><span class="n">path_obj</span><span class="o">=</span><span class="n">path_a</span><span class="p">)</span>
@@ -694,6 +726,8 @@
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-analysis-workflow">Load analysis workflow</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-types">Load types</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#m1600-axle-model">M1600 axle model</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#vertices-and-individual-loads">Vertices and individual loads</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nodal-loads">Nodal loads</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#point-loads">Point loads</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#line-loads">Line loads</a></li>
@@ -740,8 +774,8 @@
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -775,7 +809,7 @@
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.19.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
 </p></div>
       
     </div>
